@@ -31,7 +31,7 @@ namespace NitelikliBilisim.App
             });
 
             services.AddDbContext<NbDataContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("TestConnection")));
+                options.UseSqlServer(Configuration.GetConnectionString("SqlConnectionString")));
 
             services.AddIdentity<ApplicationUser, ApplicationRole>().AddEntityFrameworkStores<NbDataContext>();
 
