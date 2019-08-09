@@ -12,6 +12,6 @@ namespace NitelikliBilisim.Core.Repositories
         int Update(TEntity entity);
         int Delete(TEntity entity);
 
-        IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> where = null);
+        IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate = null);
     }
 }

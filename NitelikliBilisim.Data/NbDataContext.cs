@@ -4,9 +4,9 @@ using NitelikliBilisim.Core.Entities.Identity;
 
 namespace NitelikliBilisim.Data
 {
-    public class OisDataContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
+    public class NbDataContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
     {
-        public OisDataContext(DbContextOptions options)
+        public NbDataContext(DbContextOptions options)
             : base(options)
         {
 
