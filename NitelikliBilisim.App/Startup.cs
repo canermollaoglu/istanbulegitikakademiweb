@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NitelikliBilisim.App.Extensions;
 
 namespace NitelikliBilisim.App
 {
@@ -31,6 +32,7 @@ namespace NitelikliBilisim.App
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddApplicationServices();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
