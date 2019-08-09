@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NitelikliBilisim.App.Extensions;
+using NitelikliBilisim.Core.Entities.Identity;
+using NitelikliBilisim.Data;
 
 namespace NitelikliBilisim.App
 {
@@ -31,6 +34,11 @@ namespace NitelikliBilisim.App
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+
+            services.AddDbContext<NbDataContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("TestConnection")));
+
+            services.AddIdentity<ApplicationUser, ApplicationRole>().AddEntityFrameworkStores<NbDataContext>();
 
             services.AddApplicationServices();
 
