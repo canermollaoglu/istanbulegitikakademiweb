@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 using NitelikliBilisim.Business.Repositories;
-using NitelikliBilisim.Core.Abstracts;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Repositories;
+using System;
 
 namespace NitelikliBilisim.App.Extensions
 {
