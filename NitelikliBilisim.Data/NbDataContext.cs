@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Entities.Identity;
 
 namespace NitelikliBilisim.Data
@@ -11,6 +12,8 @@ namespace NitelikliBilisim.Data
         {
 
         }
+
+        public DbSet<Test> Testler { get; set; }
 
     }
 }
