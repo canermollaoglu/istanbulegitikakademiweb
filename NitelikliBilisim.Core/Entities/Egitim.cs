@@ -14,11 +14,13 @@ namespace NitelikliBilisim.Core.Entities
         public string Ad { get; set; }
         [Required]
         public string Aciklama { get; set; }
+        [Column(TypeName = "decimal(8, 2)")]
         public decimal Fiyat { get; set; }
+        [Column(TypeName = "decimal(8, 2)")]
         public decimal? EskiFiyat { get; set; }
         public int GunSayisi { get; set; }
         [StringLength(250)]
-        public string BannerFoto { get; set; }
+        public string EgitimFoto { get; set; }
         [StringLength(250)]
         public string DetayFoto { get; set; }
         [StringLength(250)]

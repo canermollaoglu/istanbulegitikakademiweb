@@ -14,7 +14,7 @@ namespace NitelikliBilisim.Core.Entities
         [StringLength(500)]
         public string Aciklama { get; set; }
         [StringLength(250)]
-        public string BannerFoto { get; set; }
+        public string KategoriFoto { get; set; }
         [StringLength(250)]
         public string DetayFoto { get; set; }
         [StringLength(250)]

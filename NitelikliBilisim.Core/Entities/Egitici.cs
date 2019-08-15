@@ -12,7 +12,9 @@ namespace NitelikliBilisim.Core.Entities
         [Required, StringLength(120)]
         public string Title { get; set; }
         public string Biyografi { get; set; }
-        
+        [StringLength(250)]
+        public string DetayFoto { get; set; }
+
         public ApplicationUser Kullanici { get; set; }
     }
 }
