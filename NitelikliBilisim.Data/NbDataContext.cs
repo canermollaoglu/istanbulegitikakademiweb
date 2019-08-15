@@ -13,7 +13,11 @@ namespace NitelikliBilisim.Data
 
         }
 
-        public DbSet<Test> Testler { get; set; }
-
+        public DbSet<Kategori> Kategoriler { get; set; }
+        public DbSet<Egitim> Egitimler { get; set; }
+        public DbSet<EgitimKategori> EgitimKategoriler { get; set; }
+        public DbSet<EgitimDetay> EgitimDetaylar { get; set; }
+        public DbSet<MusteriYorum> MusteriYorumlar { get; set; }
+        public DbSet<EgitimKazanim> EgitimKazanimlar { get; set; }
     }
 }
