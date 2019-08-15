@@ -11,6 +11,12 @@ namespace NitelikliBilisim.App.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
+            services.AddScoped<IRepository<Kategori, Guid>, Repository<Kategori, Guid>>();
+            services.AddScoped<IRepository<Egitim, Guid>, Repository<Egitim, Guid>>();
+            services.AddScoped<IRepository<EgitimKategori, Guid>, Repository<EgitimKategori, Guid>>();
+            services.AddScoped<IRepository<EgitimDetay, Guid>, Repository<EgitimDetay, Guid>>();
+            services.AddScoped<IRepository<MusteriYorum, Guid>, Repository<MusteriYorum, Guid>>();
+            services.AddScoped<IRepository<EgitimKazanim, Guid>, Repository<EgitimKazanim, Guid>>();
 
             #region IdentityConfig
 

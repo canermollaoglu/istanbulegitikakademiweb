@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using NitelikliBilisim.Core.Abstracts;
+using System;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
-using NitelikliBilisim.Core.Abstracts;
 
 namespace NitelikliBilisim.Core.Entities
 {
