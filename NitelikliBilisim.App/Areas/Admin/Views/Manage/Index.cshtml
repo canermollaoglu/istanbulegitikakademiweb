@@ -3,6 +3,21 @@
     ViewData["Title"] = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-6">
+            <h1>Index</h1>
+        </div>
+    </div>
+</div>
 
-<h1>Index</h1>
 
+@section Scripts
+{
+    <script>
+    $(function() {
+      console.log("Yüklendi");
+      $("h1").html("Ana Sayfa");
+    })
+    </script>
+}
