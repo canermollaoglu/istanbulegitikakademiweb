@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin NitelikliBilisim - @ViewData["Title"]</title>
     <link href="~/vendor/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
-    <link href="~/vendor/devextreme/dist/css/dx.dark.css" rel="stylesheet" />
+    <link href="~/vendor/devextreme/dist/css/dx.common.css" rel="stylesheet" />
+    <link href="~/vendor/devextreme/dist/css/dx.material.orange.light.css" rel="stylesheet" />
     <link href="~/vendor/select2/dist/css/select2.css" rel="stylesheet" />
 
     <link href="~/css/admin.css" rel="stylesheet" />
@@ -21,7 +22,7 @@
 </head>
 <body>
     <div class="container-fluid">
-        @Html.Partial("_NavBar")
+        @await Html.PartialAsync("_NavBar")
         <div class="container-fluid">
             @RenderBody()
         </div>

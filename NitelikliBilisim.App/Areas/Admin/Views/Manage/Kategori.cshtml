@@ -4,13 +4,80 @@
     Layout = "_Layout";
 }
 
-<h2>title</h2>
-
-
+<div class="row justify-content-center">
+    <div class="col">
+        <div id="grid"></div>
+    </div>
+</div>
 
 @section Scripts
 {
     <script>
-    
+    $(function() {
+       var url = "../../../api/data";
+
+        $("#grid").dxDataGrid({
+        dataSource: DevExpress.data.AspNet.createStore({
+            key: "id",
+            loadUrl: url + "/GetKategoriData",
+            insertUrl: url + "/InsertOrder",
+            updateUrl: url + "/UpdateOrder",
+            deleteUrl: url + "/DeleteOrder",
+            onBeforeSend: function(method, ajaxOptions) {
+                ajaxOptions.xhrFields = { withCredentials: true };
+            }
+        }),
+        remoteOperations: true, 
+        filterRow: {
+            visible: true
+        },
+        headerFilter: {
+            visible: true
+        },
+        groupPanel: {
+            visible: true
+        },
+        searchPanel: {
+            visible: true,
+            width: 240,
+            placeholder: "Ara..."
+        },
+        columnAutoWidth: true,
+        showBorders: true,
+        paging: {
+            pageSize: 10
+        },
+        pager: {
+            showPageSizeSelector: true,
+            allowedPageSizes: [5, 15, 30, 45],
+            showInfo: true
+        },
+        export: {
+            enabled: true,
+            fileName: "Kategoriler_" + parseInt(Math.random() * 1000000000),
+            allowExportSelectedData: true
+        },
+        columns: [
+            {
+                dataField:"id",
+                visible: false
+            },
+            {
+                dataField: "ad",
+                caption:"Ad"
+            },
+            {
+                dataField: "aciklama",
+                caption: "Açıklama"
+            },
+            {
+               dataField: "createdDate",
+               caption: "Kayıt tarihi",
+               dataType: 'datetime',
+               format: 'dd/MM/yyyy HH:mm'
+            } 
+        ]
+        })
+    });
     </script>
 }
