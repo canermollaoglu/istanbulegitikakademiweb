@@ -13,9 +13,5 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             return View();
         }
 
-        public IActionResult Deneme()
-        {
-            return View();
-        }
     }
 }

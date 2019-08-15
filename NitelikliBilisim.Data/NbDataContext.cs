@@ -40,5 +40,8 @@ namespace NitelikliBilisim.Data
         public DbSet<MusteriYorum> MusteriYorumlar { get; set; }
         public DbSet<EgitimKazanim> EgitimKazanimlar { get; set; }
         public DbSet<Egitici> Egiticiler { get; set; }
+        public DbSet<Sepet> Sepetler { get; set; }
+        public DbSet<Satis> Satislar { get; set; }
+        public DbSet<SatisDetay> SatisDetaylar { get; set; }
     }
 }
