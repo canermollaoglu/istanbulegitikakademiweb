@@ -12,8 +12,6 @@ namespace NitelikliBilisim.App.Extensions
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
 
-            services.AddScoped<IRepository<Test, Guid>, Repository<Test, Guid>>();
-
             #region IdentityConfig
 
             services.Configure<IdentityOptions>(options =>

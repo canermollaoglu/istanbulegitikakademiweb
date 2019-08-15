@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace NitelikliBilisim.Data.Migrations
 {
-    public partial class init : Migration
+    public partial class egitimler : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -47,6 +47,49 @@ namespace NitelikliBilisim.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Egitimler",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    CreatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    UpdatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    UpdatedDate = table.Column<DateTime>(nullable: true),
+                    Ad = table.Column<string>(maxLength: 150, nullable: false),
+                    Aciklama = table.Column<string>(nullable: false),
+                    Fiyat = table.Column<decimal>(nullable: false),
+                    EskiFiyat = table.Column<decimal>(nullable: true),
+                    GunSayisi = table.Column<int>(nullable: false),
+                    BannerFoto = table.Column<string>(maxLength: 250, nullable: true),
+                    DetayFoto = table.Column<string>(maxLength: 250, nullable: true),
+                    VideoUrl = table.Column<string>(maxLength: 250, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Egitimler", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Kategoriler",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    CreatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    UpdatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    UpdatedDate = table.Column<DateTime>(nullable: true),
+                    Ad = table.Column<string>(maxLength: 150, nullable: false),
+                    Aciklama = table.Column<string>(maxLength: 500, nullable: true),
+                    BannerFoto = table.Column<string>(maxLength: 250, nullable: true),
+                    DetayFoto = table.Column<string>(maxLength: 250, nullable: true),
+                    VideoUrl = table.Column<string>(maxLength: 250, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Kategoriler", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -155,6 +198,111 @@ namespace NitelikliBilisim.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "EgitimDetaylari",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    CreatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    UpdatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    UpdatedDate = table.Column<DateTime>(nullable: true),
+                    Baslik = table.Column<string>(maxLength: 120, nullable: false),
+                    Konu = table.Column<string>(nullable: true),
+                    Sira = table.Column<int>(nullable: false),
+                    EgitimId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EgitimDetaylari", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EgitimDetaylari_Egitimler_EgitimId",
+                        column: x => x.EgitimId,
+                        principalTable: "Egitimler",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EgitimKazanimlar",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    CreatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    UpdatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    UpdatedDate = table.Column<DateTime>(nullable: true),
+                    KazanimAdi = table.Column<string>(nullable: true),
+                    Simge = table.Column<string>(nullable: true),
+                    Sira = table.Column<int>(nullable: false),
+                    EgitimId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EgitimKazanimlar", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EgitimKazanimlar_Egitimler_EgitimId",
+                        column: x => x.EgitimId,
+                        principalTable: "Egitimler",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MusteriYorumlar",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    CreatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    UpdatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    UpdatedDate = table.Column<DateTime>(nullable: true),
+                    Yorum = table.Column<string>(maxLength: 500, nullable: false),
+                    KullaniciId = table.Column<string>(maxLength: 128, nullable: false),
+                    Puan = table.Column<int>(nullable: false),
+                    OnaylayanId = table.Column<string>(maxLength: 128, nullable: true),
+                    OnaylanmaTarihi = table.Column<DateTime>(nullable: true),
+                    EgitimId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MusteriYorumlar", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MusteriYorumlar_Egitimler_EgitimId",
+                        column: x => x.EgitimId,
+                        principalTable: "Egitimler",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EgitimKategoriler",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Id2 = table.Column<Guid>(nullable: false),
+                    CreatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    UpdatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    UpdatedDate = table.Column<DateTime>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EgitimKategoriler", x => new { x.Id, x.Id2 });
+                    table.ForeignKey(
+                        name: "FK_EgitimKategoriler_Egitimler_Id",
+                        column: x => x.Id,
+                        principalTable: "Egitimler",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EgitimKategoriler_Kategoriler_Id2",
+                        column: x => x.Id2,
+                        principalTable: "Kategoriler",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -193,6 +341,26 @@ namespace NitelikliBilisim.Data.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EgitimDetaylari_EgitimId",
+                table: "EgitimDetaylari",
+                column: "EgitimId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EgitimKategoriler_Id2",
+                table: "EgitimKategoriler",
+                column: "Id2");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EgitimKazanimlar_EgitimId",
+                table: "EgitimKazanimlar",
+                column: "EgitimId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MusteriYorumlar_EgitimId",
+                table: "MusteriYorumlar",
+                column: "EgitimId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -213,10 +381,28 @@ namespace NitelikliBilisim.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "EgitimDetaylari");
+
+            migrationBuilder.DropTable(
+                name: "EgitimKategoriler");
+
+            migrationBuilder.DropTable(
+                name: "EgitimKazanimlar");
+
+            migrationBuilder.DropTable(
+                name: "MusteriYorumlar");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Kategoriler");
+
+            migrationBuilder.DropTable(
+                name: "Egitimler");
         }
     }
 }

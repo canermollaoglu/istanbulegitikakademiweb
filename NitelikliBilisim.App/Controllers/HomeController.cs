@@ -14,13 +14,11 @@ namespace NitelikliBilisim.App.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IRepository<Test, Guid> _testRepo;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
 
-        public HomeController(IRepository<Test, Guid> testRepo, UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager)
+        public HomeController(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager)
         {
-            _testRepo = testRepo;
             _userManager = userManager;
             _roleManager = roleManager;
         }
@@ -46,19 +44,13 @@ namespace NitelikliBilisim.App.Controllers
                 }
             }
 
-            var first = _testRepo.GetAll().FirstOrDefault();
-            if (first != null)
-            {
-                first.UpdatedDate = DateTime.Now;
-                _testRepo.Update(first);
-            }
+           
 
-            return View(_testRepo.GetAll());
+            return View();
         }
 
         public IActionResult Privacy()
         {
-            _testRepo.Add(new Test());
             return View();
         }
 

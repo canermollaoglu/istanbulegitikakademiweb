@@ -13,6 +13,13 @@ namespace NitelikliBilisim.Data
 
         }
 
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            builder.Entity<EgitimKategori>()
+                .HasKey(x => new { x.Id, x.Id2 });
+        }
+
         public DbSet<Kategori> Kategoriler { get; set; }
         public DbSet<Egitim> Egitimler { get; set; }
         public DbSet<EgitimKategori> EgitimKategoriler { get; set; }

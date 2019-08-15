@@ -1,13 +1,8 @@
-﻿@model IQueryable<NitelikliBilisim.Core.Entities.Test>
-@{
+﻿@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
     <h1 class="display-1">Welcome</h1>
-    @foreach (var item in Model)
-    {
-        
-        <span>Id: @item.Id Code: @item.Code Created: @($"{item.CreatedDate:f}") Updated: @($"{item.UpdatedDate:f}")</span> <br/>
-    }
+
 </div>
