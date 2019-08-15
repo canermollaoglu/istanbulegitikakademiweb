@@ -16,8 +16,12 @@ namespace NitelikliBilisim.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            #region ManyToMany
             builder.Entity<EgitimKategori>()
+                    .HasKey(x => new { x.Id, x.Id2 });
+            builder.Entity<SatisDetay>()
                 .HasKey(x => new { x.Id, x.Id2 });
+            #endregion
 
             builder.Entity<Egitici>()
                 .Property(x => x.Id)
