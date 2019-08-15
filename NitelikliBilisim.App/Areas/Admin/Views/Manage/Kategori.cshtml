@@ -20,13 +20,22 @@
         dataSource: DevExpress.data.AspNet.createStore({
             key: "id",
             loadUrl: url + "/GetKategoriData",
-            insertUrl: url + "/InsertOrder",
-            updateUrl: url + "/UpdateOrder",
-            deleteUrl: url + "/DeleteOrder",
+            insertUrl: url + "/InsertKategori",
+            updateUrl: url + "/UpdateKategori",
+            deleteUrl: url + "/DeleteKategori",
             onBeforeSend: function(method, ajaxOptions) {
                 ajaxOptions.xhrFields = { withCredentials: true };
+                console.log(ajaxOptions);
             }
         }),
+        editing: {
+            allowAdding: true,
+            allowUpdating: true,
+            allowDeleting: true
+        },
+        grouping: {
+            autoExpandAll: false
+        },
         remoteOperations: true, 
         filterRow: {
             visible: true
