@@ -10,8 +10,8 @@ using NitelikliBilisim.Data;
 namespace NitelikliBilisim.Data.Migrations
 {
     [DbContext(typeof(NbDataContext))]
-    [Migration("20190815095737_egitimler")]
-    partial class egitimler
+    [Migration("20190815103608_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -105,6 +105,32 @@ namespace NitelikliBilisim.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.Egitici", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(450);
+
+                    b.Property<string>("Biyografi");
+
+                    b.Property<DateTime>("CreatedDate");
+
+                    b.Property<string>("CreatedUser")
+                        .HasMaxLength(128);
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(120);
+
+                    b.Property<DateTime?>("UpdatedDate");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasMaxLength(128);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Egiticiler");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.Egitim", b =>
@@ -273,6 +299,9 @@ namespace NitelikliBilisim.Data.Migrations
 
                     b.Property<bool>("EmailConfirmed");
 
+                    b.Property<string>("FotoUrl")
+                        .HasMaxLength(250);
+
                     b.Property<bool>("LockoutEnabled");
 
                     b.Property<DateTimeOffset?>("LockoutEnd");
@@ -432,6 +461,14 @@ namespace NitelikliBilisim.Data.Migrations
                     b.HasOne("NitelikliBilisim.Core.Entities.Identity.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.Egitici", b =>
+                {
+                    b.HasOne("NitelikliBilisim.Core.Entities.Identity.ApplicationUser", "Kullanici")
+                        .WithOne("Egitici")
+                        .HasForeignKey("NitelikliBilisim.Core.Entities.Egitici", "Id")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

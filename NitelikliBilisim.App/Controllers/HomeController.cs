@@ -32,12 +32,12 @@ namespace NitelikliBilisim.App.Controllers
             {
                 var user = new ApplicationUser()
                 {
-                    Name = "Test",
-                    Surname = "TestSurname",
+                    Name = "Admin",
+                    Surname = "Test",
                     Email = "test@email.com",
-                    UserName = "Test_" + new Random().Next()
+                    UserName = "admin"
                 };
-                var result = await _userManager.CreateAsync(user);
+                var result = await _userManager.CreateAsync(user,"P@ssword1");
                 if (result == IdentityResult.Success)
                 {
                     await _userManager.AddToRoleAsync(user, "User");

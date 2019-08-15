@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace NitelikliBilisim.Data.Migrations
 {
-    public partial class egitimler : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -42,7 +42,8 @@ namespace NitelikliBilisim.Data.Migrations
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
                     Name = table.Column<string>(maxLength: 100, nullable: true),
-                    Surname = table.Column<string>(maxLength: 100, nullable: true)
+                    Surname = table.Column<string>(maxLength: 100, nullable: true),
+                    FotoUrl = table.Column<string>(maxLength: 250, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -193,6 +194,29 @@ namespace NitelikliBilisim.Data.Migrations
                     table.ForeignKey(
                         name: "FK_AspNetUserTokens_AspNetUsers_UserId",
                         column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Egiticiler",
+                columns: table => new
+                {
+                    Id = table.Column<string>(maxLength: 450, nullable: false),
+                    CreatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    UpdatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    UpdatedDate = table.Column<DateTime>(nullable: true),
+                    Title = table.Column<string>(maxLength: 120, nullable: false),
+                    Biyografi = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Egiticiler", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Egiticiler_AspNetUsers_Id",
+                        column: x => x.Id,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -379,6 +403,9 @@ namespace NitelikliBilisim.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Egiticiler");
 
             migrationBuilder.DropTable(
                 name: "EgitimDetaylari");

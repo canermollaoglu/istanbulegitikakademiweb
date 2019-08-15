@@ -9,5 +9,11 @@ namespace NitelikliBilisim.Core.Entities.Identity
         public string Name { get; set; }
         [StringLength(100)]
         public string Surname { get; set; }
+
+        [StringLength(250)]
+        public string FotoUrl { get; set; }
+
+
+        public Egitici Egitici { get; set; }
     }
 }

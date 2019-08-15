@@ -17,6 +17,7 @@ namespace NitelikliBilisim.App.Extensions
             services.AddScoped<IRepository<EgitimDetay, Guid>, Repository<EgitimDetay, Guid>>();
             services.AddScoped<IRepository<MusteriYorum, Guid>, Repository<MusteriYorum, Guid>>();
             services.AddScoped<IRepository<EgitimKazanim, Guid>, Repository<EgitimKazanim, Guid>>();
+            services.AddScoped<IRepository<Egitici, string>, Repository<Egitici, string>>();
 
             #region IdentityConfig
 

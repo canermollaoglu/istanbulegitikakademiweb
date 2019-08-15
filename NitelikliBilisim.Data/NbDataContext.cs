@@ -18,6 +18,15 @@ namespace NitelikliBilisim.Data
             base.OnModelCreating(builder);
             builder.Entity<EgitimKategori>()
                 .HasKey(x => new { x.Id, x.Id2 });
+
+            builder.Entity<Egitici>()
+                .Property(x => x.Id)
+                .HasMaxLength(450);
+
+            builder.Entity<ApplicationUser>()
+                .HasOne(x => x.Egitici)
+                .WithOne(x => x.Kullanici)
+                .HasForeignKey<Egitici>(x => x.Id);
         }
 
         public DbSet<Kategori> Kategoriler { get; set; }
@@ -26,5 +35,6 @@ namespace NitelikliBilisim.Data
         public DbSet<EgitimDetay> EgitimDetaylar { get; set; }
         public DbSet<MusteriYorum> MusteriYorumlar { get; set; }
         public DbSet<EgitimKazanim> EgitimKazanimlar { get; set; }
+        public DbSet<Egitici> Egiticiler { get; set; }
     }
 }
