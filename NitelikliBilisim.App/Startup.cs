@@ -66,7 +66,7 @@ namespace NitelikliBilisim.App
                 RequestPath = new PathString("/vendor")
             });
             app.UseCookiePolicy();
-
+            
             app.UseMvc(routes =>
             {
                 routes.MapRoute("areas", "{area}/{controller=Manage}/{action=Index}/{id?}");
