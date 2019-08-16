@@ -19,29 +19,8 @@ namespace NitelikliBilisim.App.Controllers
             _roleManager = roleManager;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            if (await _roleManager.RoleExistsAsync("User") == false)
-                await _roleManager.CreateAsync(new ApplicationRole() { Name = "User" });
-
-            if (!_userManager.Users.Any())
-            {
-                var user = new ApplicationUser()
-                {
-                    Name = "Admin",
-                    Surname = "Test",
-                    Email = "test@email.com",
-                    UserName = "admin"
-                };
-                var result = await _userManager.CreateAsync(user,"P@ssword1");
-                if (result == IdentityResult.Success)
-                {
-                    await _userManager.AddToRoleAsync(user, "User");
-                }
-            }
-
-           
-
             return View();
         }
 

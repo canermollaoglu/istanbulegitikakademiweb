@@ -4,6 +4,7 @@ using NitelikliBilisim.Business.Repositories;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Repositories;
 using System;
+using NitelikliBilisim.Core.Entities.Identity;
 
 namespace NitelikliBilisim.App.Extensions
 {
@@ -25,7 +26,7 @@ namespace NitelikliBilisim.App.Extensions
             #endregion
 
             #region IdentityConfig
-
+            
             services.Configure<IdentityOptions>(options =>
             {
                 // Password settings.
@@ -44,6 +45,8 @@ namespace NitelikliBilisim.App.Extensions
                 // User settings.
                 options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._+";
                 options.User.RequireUniqueEmail = true;
+
+                
             });
             services.ConfigureApplicationCookie(options =>
             {
