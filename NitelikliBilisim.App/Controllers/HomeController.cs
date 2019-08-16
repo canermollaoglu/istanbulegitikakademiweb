@@ -1,10 +1,11 @@
-﻿using System.Diagnostics;
-using System.Linq;
+﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Core.Entities.Identity;
+using NitelikliBilisim.Core.Enums;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -17,31 +18,11 @@ namespace NitelikliBilisim.App.Controllers
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            CheckRoles().Wait();
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            if (await _roleManager.RoleExistsAsync("User") == false)
-                await _roleManager.CreateAsync(new ApplicationRole() { Name = "User" });
-
-            if (!_userManager.Users.Any())
-            {
-                var user = new ApplicationUser()
-                {
-                    Name = "Admin",
-                    Surname = "Test",
-                    Email = "test@email.com",
-                    UserName = "admin"
-                };
-                var result = await _userManager.CreateAsync(user,"P@ssword1");
-                if (result == IdentityResult.Success)
-                {
-                    await _userManager.AddToRoleAsync(user, "User");
-                }
-            }
-
-           
-
             return View();
         }
 
@@ -53,7 +34,22 @@ namespace NitelikliBilisim.App.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
+        }
+
+        async Task CheckRoles()
+        {
+            var roles = Enum.GetNames(typeof(IdentityRoleList));
+            foreach (var item in roles)
+            {
+                if (await _roleManager.RoleExistsAsync(item) == false)
+                {
+                    var result = await _roleManager.CreateAsync(new ApplicationRole()
+                    {
+                        Name = item
+                    });
+                }
+            }
         }
     }
 }
