@@ -6,9 +6,6 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/core/sdk:2.2-stretch AS build
 WORKDIR /src
 COPY ["NitelikliBilisim.App/NitelikliBilisim.App.csproj", "NitelikliBilisim.App/"]
-COPY ["NitelikliBilisim.Data/NitelikliBilisim.Data.csproj", "NitelikliBilisim.Data/"]
-COPY ["NitelikliBilisim.Core/NitelikliBilisim.Core.csproj", "NitelikliBilisim.Core/"]
-COPY ["NitelikliBilisim.Business/NitelikliBilisim.Business.csproj", "NitelikliBilisim.Business/"]
 RUN dotnet restore "NitelikliBilisim.App/NitelikliBilisim.App.csproj"
 COPY . .
 WORKDIR "/src/NitelikliBilisim.App"
