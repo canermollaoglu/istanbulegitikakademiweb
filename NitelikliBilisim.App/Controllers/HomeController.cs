@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Models;
-using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Entities.Identity;
-using NitelikliBilisim.Core.Repositories;
 
 namespace NitelikliBilisim.App.Controllers
 {
