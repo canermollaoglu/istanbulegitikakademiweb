@@ -12,6 +12,7 @@ namespace NitelikliBilisim.Business.Repositories
     {
         private readonly NbDataContext _context;
         public DbSet<TEntity> Table { get; }
+
         public Repository(NbDataContext context)
         {
             _context = context;
@@ -23,26 +24,33 @@ namespace NitelikliBilisim.Business.Repositories
             return Table.Find(id);
         }
 
-        public TKey Add(TEntity entity)
+        public TKey Add(TEntity entity, bool isSaveLater = false)
         {
             Table.Add(entity);
-            _context.SaveChanges();
+            if (!isSaveLater)
+                Save();
             return entity.Id;
         }
 
-        public int Update(TEntity entity)
+        public int Update(TEntity entity, bool isSaveLater = false)
         {
             Table.Update(entity);
-            return _context.SaveChanges();
+            return isSaveLater ? 0 : Save();
         }
 
-        public int Delete(TEntity entity)
+        public int Delete(TEntity entity, bool isSaveLater = false)
         {
             Table.Remove(entity);
+            return isSaveLater ? 0 : Save();
+        }
+
+        public int Save()
+        {
+            _context.EnsureAutoHistory();
             return _context.SaveChanges();
         }
 
-        public IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate = null)
+        public IQueryable<TEntity> Get(Expression<Func<TEntity, bool>> predicate = null)
         {
             return predicate == null ? Table : Table.Where(predicate);
         }
