@@ -1,0 +1,35 @@
+@model NitelikliBilisim.Core.ViewModels.Account.LoginViewModel
+
+@{
+    ViewBag.Title = "Login";
+    Layout = "_Layout";
+}
+
+<div class="container justify-content-center">
+    <div class="row">
+        <h2>Giriş</h2>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-6">
+            <form asp-action="Login" asp-controller="Account" method="post">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="UserName">Kullanıcı Adı</label>
+                    <input type="text" asp-for="UserName" class="form-control"/>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Password">Şifre</label>
+                    <input type="password" asp-for="Password" class="form-control"/>
+                </div>
+                <div>
+                    <label asp-for="RememberMe">Beni Hatırla</label>
+                    <input type="checkbox" asp-for="RememberMe" class="form-control"/>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Giriş Yap" class="btn btn-info"/>
+                    <a asp-action="Register" asp-controller="Account" class="btn btn-warning">Kayıt ol </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

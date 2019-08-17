@@ -32,7 +32,7 @@ namespace NitelikliBilisim.App.Extensions
                 // Password settings.
                 options.Password.RequireDigit = true;
                 options.Password.RequireLowercase = false;
-                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = true;
                 options.Password.RequiredLength = 6;
                 options.Password.RequiredUniqueChars = 0;
