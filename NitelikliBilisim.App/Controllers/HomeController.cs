@@ -3,20 +3,19 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Core.Entities.Identity;
 using NitelikliBilisim.Core.Enums;
 
 namespace NitelikliBilisim.App.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
-        private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
 
-        public HomeController(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager)
+        public HomeController(RoleManager<ApplicationRole> roleManager)
         {
-            _userManager = userManager;
             _roleManager = roleManager;
             CheckRoles().Wait();
         }
