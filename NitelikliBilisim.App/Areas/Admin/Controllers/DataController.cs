@@ -26,7 +26,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         {
             loadOptions.PrimaryKey = new[] {"Id"};
 
-            var data = _kategoryRepo.GetAll().OrderBy(x => x.CreatedDate);
+            var data = _kategoryRepo.Get().OrderBy(x => x.CreatedDate);
             return DataSourceLoader.Load(data, loadOptions);
         }
 
