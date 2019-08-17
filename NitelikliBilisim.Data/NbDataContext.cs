@@ -1,5 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using System;
+using System.Linq;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using NitelikliBilisim.Core.Abstracts;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Entities.Identity;
 
@@ -7,20 +12,50 @@ namespace NitelikliBilisim.Data
 {
     public class NbDataContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
     {
-        public NbDataContext(DbContextOptions options)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public NbDataContext(DbContextOptions options, IHttpContextAccessor httpContextAccessor)
             : base(options)
         {
+            _httpContextAccessor = httpContextAccessor;
+        }
 
+        public override int SaveChanges()
+        {
+            //TODO: jwt yapınca kontrol et!!!!
+            var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
+            var selectedEntityList = ChangeTracker.Entries()
+                .Where(x => x.Entity is AuditBase && x.State == EntityState.Added);
+
+            foreach (var entity in selectedEntityList)
+            {
+                ((AuditBase) (entity.Entity)).CreatedUser = userId;
+                ((AuditBase) (entity.Entity)).CreatedDate = DateTime.Now;
+            }
+
+            selectedEntityList = ChangeTracker.Entries()
+                .Where(x => x.Entity is AuditBase && x.State == EntityState.Modified);
+
+            foreach (var entity in selectedEntityList)
+            {
+                ((AuditBase) (entity.Entity)).UpdatedUser = userId;
+                ((AuditBase) (entity.Entity)).UpdatedDate = DateTime.Now;
+            }
+
+            return base.SaveChanges();
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
             #region ManyToMany
+
             builder.Entity<EgitimKategori>()
-                    .HasKey(x => new { x.Id, x.Id2 });
+                .HasKey(x => new {x.Id, x.Id2});
             builder.Entity<SatisDetay>()
-                .HasKey(x => new { x.Id, x.Id2 });
+                .HasKey(x => new {x.Id, x.Id2});
+
             #endregion
 
             builder.Entity<Egitici>()
