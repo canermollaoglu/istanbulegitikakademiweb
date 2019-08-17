@@ -41,14 +41,14 @@ namespace NitelikliBilisim.Data
                 ((AuditBase) (entity.Entity)).UpdatedUser = userId;
                 ((AuditBase) (entity.Entity)).UpdatedDate = DateTime.Now;
             }
-
+            
             return base.SaveChanges();
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-
+            builder.EnableAutoHistory(100);
             #region ManyToMany
 
             builder.Entity<EgitimKategori>()
@@ -68,6 +68,7 @@ namespace NitelikliBilisim.Data
                 .HasForeignKey<Egitici>(x => x.Id);
         }
 
+        public DbSet<AutoHistory> DataHistories { get; set; }
         public DbSet<Kategori> Kategoriler { get; set; }
         public DbSet<Egitim> Egitimler { get; set; }
         public DbSet<EgitimKategori> EgitimKategoriler { get; set; }

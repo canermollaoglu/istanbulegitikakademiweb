@@ -46,6 +46,7 @@ namespace NitelikliBilisim.Business.Repositories
 
         public int Save()
         {
+            _context.EnsureAutoHistory();
             return _context.SaveChanges();
         }
 
