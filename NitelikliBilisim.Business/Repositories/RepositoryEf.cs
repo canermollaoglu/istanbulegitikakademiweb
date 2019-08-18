@@ -49,7 +49,6 @@ namespace NitelikliBilisim.Business.Repositories
             _context.EnsureAutoHistory();
             return _context.SaveChanges();
         }
-
         public IQueryable<TEntity> Get(Expression<Func<TEntity, bool>> predicate = null)
         {
             return predicate == null ? Table : Table.Where(predicate);
