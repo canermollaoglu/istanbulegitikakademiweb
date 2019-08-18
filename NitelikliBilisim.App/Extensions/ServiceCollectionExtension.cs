@@ -60,6 +60,24 @@ namespace NitelikliBilisim.App.Extensions
             });
             #endregion
 
+            #region OAuth
+
+            services.AddAuthentication()
+                .AddGoogle(options =>
+                {
+                    
+                })
+                .AddFacebook(options =>
+                {
+                    
+                })
+                .AddMicrosoftAccount(options =>
+                {
+                    
+                });
+
+            #endregion
+            
             return services;
         }
     }
