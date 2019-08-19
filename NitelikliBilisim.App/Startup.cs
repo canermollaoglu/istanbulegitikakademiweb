@@ -1,7 +1,7 @@
-﻿using System.IO;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -10,6 +10,7 @@ using Microsoft.Extensions.FileProviders;
 using NitelikliBilisim.App.Extensions;
 using NitelikliBilisim.Core.Entities.Identity;
 using NitelikliBilisim.Data;
+using System.IO;
 
 namespace NitelikliBilisim.App
 {
@@ -35,8 +36,10 @@ namespace NitelikliBilisim.App
             services.AddDbContext<NbDataContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("SqlConnectionString")));
 
-            services.AddIdentity<ApplicationUser, ApplicationRole>().AddEntityFrameworkStores<NbDataContext>();
-
+            services.AddIdentity<ApplicationUser, ApplicationRole>()
+                .AddEntityFrameworkStores<NbDataContext>()
+                .AddDefaultTokenProviders();
+            
             services.AddApplicationServices(this.Configuration);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
@@ -65,6 +68,8 @@ namespace NitelikliBilisim.App
                 FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"node_modules")),
                 RequestPath = new PathString("/vendor")
             });
+            app.UseAuthentication();
+
             app.UseCookiePolicy();
             
             app.UseMvc(routes =>

@@ -23,7 +23,7 @@ namespace NitelikliBilisim.Data
         public override int SaveChanges()
         {
             //TODO: jwt yapınca kontrol et!!!!
-            var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
+            var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var selectedEntityList = ChangeTracker.Entries()
                 .Where(x => x.Entity is AuditBase && x.State == EntityState.Added);
 

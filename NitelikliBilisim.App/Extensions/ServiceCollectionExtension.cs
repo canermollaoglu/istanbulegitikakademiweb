@@ -4,6 +4,13 @@ using NitelikliBilisim.Business.Repositories;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Repositories;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 
 namespace NitelikliBilisim.App.Extensions
@@ -27,7 +34,7 @@ namespace NitelikliBilisim.App.Extensions
             #endregion
 
             #region IdentityConfig
-            
+
             services.Configure<IdentityOptions>(options =>
             {
                 // Password settings.
@@ -47,7 +54,7 @@ namespace NitelikliBilisim.App.Extensions
                 options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._+";
                 options.User.RequireUniqueEmail = true;
 
-                
+
             });
             services.ConfigureApplicationCookie(options =>
             {
@@ -66,22 +73,28 @@ namespace NitelikliBilisim.App.Extensions
             services.AddAuthentication()
                 .AddGoogle(options =>
                 {
-                    IConfigurationSection googleAuthNSection =
-                        configuration.GetSection("Authentication:Google");
+                    var googleAuthNSection = configuration.GetSection("Google");
                     options.ClientId = googleAuthNSection["ClientId"];
                     options.ClientSecret = googleAuthNSection["ClientSecret"];
-                })
-                .AddFacebook(options =>
-                {
-                    
-                })
-                .AddMicrosoftAccount(options =>
-                {
-                    
+                    options.CallbackPath = new PathString("/signin-google-token");
+                    options.AuthorizationEndpoint = GoogleDefaults.AuthorizationEndpoint;
+                    options.CallbackPath = new PathString("/signin-google-token");
+                    options.Scope.Add("openid");
+                    options.Scope.Add("profile");
+                    options.Scope.Add("email");
+                    options.SaveTokens = true;
+                    options.Events.OnCreatingTicket = ctx =>
+                    {
+                        List<AuthenticationToken> tokens = ctx.Properties.GetTokens().ToList();
+                        tokens.Add(new AuthenticationToken()
+                            {Name = "TicketCreated", Value = DateTime.UtcNow.ToString()});
+                        ctx.Properties.StoreTokens(tokens);
+                        return Task.CompletedTask;
+                    };
                 });
 
             #endregion
-            
+
             return services;
         }
     }
