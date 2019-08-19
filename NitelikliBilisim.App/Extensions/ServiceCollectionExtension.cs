@@ -4,7 +4,6 @@ using NitelikliBilisim.Business.Repositories;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Repositories;
 using System;
-using NitelikliBilisim.Core.Entities.Identity;
 
 namespace NitelikliBilisim.App.Extensions
 {
