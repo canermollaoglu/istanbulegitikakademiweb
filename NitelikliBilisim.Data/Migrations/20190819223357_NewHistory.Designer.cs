@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NitelikliBilisim.Data;
 
 namespace NitelikliBilisim.Data.Migrations
 {
     [DbContext(typeof(NbDataContext))]
-    partial class NbDataContextModelSnapshot : ModelSnapshot
+    [Migration("20190819223357_NewHistory")]
+    partial class NewHistory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -115,6 +117,9 @@ namespace NitelikliBilisim.Data.Migrations
 
                     b.Property<DateTime>("Created");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired();
+
                     b.Property<int>("Kind");
 
                     b.Property<string>("RowId")
@@ -127,7 +132,9 @@ namespace NitelikliBilisim.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DataHistories");
+                    b.ToTable("AutoHistory");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("AutoHistory");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.Egitici", b =>
@@ -546,6 +553,15 @@ namespace NitelikliBilisim.Data.Migrations
                     b.HasIndex("SatisId");
 
                     b.ToTable("Sepetler");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Data.DataHistory", b =>
+                {
+                    b.HasBaseType("Microsoft.EntityFrameworkCore.AutoHistory");
+
+                    b.ToTable("DataHistories");
+
+                    b.HasDiscriminator().HasValue("DataHistory");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
