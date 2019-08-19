@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Facebook;
@@ -87,6 +88,7 @@ namespace NitelikliBilisim.App.Extensions
                     options.Events.OnCreatingTicket = ctx =>
                     {
                         var tokens = ctx.Properties.GetTokens().ToList();
+                        ctx.Identity.AddClaim(new Claim("photo", ctx.User.Value<string>("picture")));
                         tokens.Add(new AuthenticationToken()
                             {Name = "TicketCreated", Value = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)});
                         ctx.Properties.StoreTokens(tokens);
@@ -100,9 +102,13 @@ namespace NitelikliBilisim.App.Extensions
                     options.AppSecret = facebookAuthSection["AppSecret"];
                     options.CallbackPath = new PathString("/signin-facebook");
                     options.AuthorizationEndpoint = FacebookDefaults.AuthorizationEndpoint;
+                    options.Fields.Add("picture");
                     options.Events.OnCreatingTicket = ctx =>
                     {
                         var tokens = ctx.Properties.GetTokens().ToList();
+                        var profileImg = ctx.User["picture"]["data"].Value<string>("url");
+                        //ctx.Identity.AddClaim(new Claim("photo", profileImg));
+                        
                         tokens.Add(new AuthenticationToken()
                             {Name = "TicketCreated", Value = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)});
                         ctx.Properties.StoreTokens(tokens);
