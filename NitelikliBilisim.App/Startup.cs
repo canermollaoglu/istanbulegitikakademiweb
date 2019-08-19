@@ -37,7 +37,7 @@ namespace NitelikliBilisim.App
 
             services.AddIdentity<ApplicationUser, ApplicationRole>().AddEntityFrameworkStores<NbDataContext>();
 
-            services.AddApplicationServices();
+            services.AddApplicationServices(this.Configuration);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }

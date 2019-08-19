@@ -4,12 +4,14 @@ using NitelikliBilisim.Business.Repositories;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Repositories;
 using System;
+using Microsoft.Extensions.Configuration;
 
 namespace NitelikliBilisim.App.Extensions
 {
     public static class ServiceCollectionExtension
     {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+        public static IServiceCollection AddApplicationServices(this IServiceCollection services,
+            IConfiguration configuration)
         {
             #region Dependency Injections
             services.AddScoped<IRepository<Kategori, Guid>, Repository<Kategori, Guid>>();
@@ -64,7 +66,10 @@ namespace NitelikliBilisim.App.Extensions
             services.AddAuthentication()
                 .AddGoogle(options =>
                 {
-                    
+                    IConfigurationSection googleAuthNSection =
+                        configuration.GetSection("Authentication:Google");
+                    options.ClientId = googleAuthNSection["ClientId"];
+                    options.ClientSecret = googleAuthNSection["ClientSecret"];
                 })
                 .AddFacebook(options =>
                 {
