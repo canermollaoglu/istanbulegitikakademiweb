@@ -7,7 +7,10 @@
         <div class="row">
             <h2>Kayıt Ol</h2>
             <br/>
-            <img  src="@Model.Photo" class="img-thumbnail" alt="avatar" width="250" height="250"/>
+            @if (!string.IsNullOrEmpty(Model.Photo))
+            {
+                <img  src="@Model.Photo" class="img-thumbnail" alt="avatar" width="250" height="250"/>
+            }
         </div>
         <div class="row justify-content-center">
             <div class="col-6">
