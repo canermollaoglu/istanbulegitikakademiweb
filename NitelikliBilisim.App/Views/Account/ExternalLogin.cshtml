@@ -1,0 +1,38 @@
+﻿@model  NitelikliBilisim.Core.ViewModels.Account.ExternalLoginViewModel
+@{
+    ViewData["Title"] = "ExternalLogin";
+    Layout = "_Layout";
+}
+    <div class="container">
+        <div class="row">
+            <h2>Kayıt Ol</h2>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-6">
+                <form asp-controller="Account" asp-action="ExternalLoginConfirm" method="post">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <input type="hidden" asp-for="ReturnUrl"/>
+                    <input type="hidden" asp-for="LoginProvider"/>
+                    <div class="form-group">
+                        <label asp-for="UserName">Kullanıcı Adı</label>
+                        <input type="text" asp-for="UserName" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Name">Ad</label>
+                        <input type="text" asp-for="Name" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Surname">Soyad</label>
+                        <input type="text" asp-for="Surname" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Email">Email</label>
+                        <input type="email" asp-for="Email" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Kayıt Ol" class="btn btn-info" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
