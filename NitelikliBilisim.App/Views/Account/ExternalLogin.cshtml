@@ -6,6 +6,11 @@
     <div class="container">
         <div class="row">
             <h2>Kayıt Ol</h2>
+            <br/>
+            @if (!string.IsNullOrEmpty(Model.Photo))
+            {
+                <img  src="@Model.Photo" class="img-thumbnail" alt="avatar" width="250" height="250"/>
+            }
         </div>
         <div class="row justify-content-center">
             <div class="col-6">
@@ -13,6 +18,7 @@
                     <div asp-validation-summary="All" class="text-danger"></div>
                     <input type="hidden" asp-for="ReturnUrl"/>
                     <input type="hidden" asp-for="LoginProvider"/>
+                    <input type="hidden" asp-for="Photo"/>
                     <div class="form-group">
                         <label asp-for="UserName">Kullanıcı Adı</label>
                         <input type="text" asp-for="UserName" class="form-control" />
@@ -27,7 +33,7 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="Email">Email</label>
-                        <input type="email" asp-for="Email" class="form-control" />
+                        <input type="email" asp-for="Email" class="form-control" readonly />
                     </div>
                     <div class="form-group">
                         <input type="submit" value="Kayıt Ol" class="btn btn-info" />

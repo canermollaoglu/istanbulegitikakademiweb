@@ -6,9 +6,12 @@ using NitelikliBilisim.Core.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Facebook;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -76,7 +79,6 @@ namespace NitelikliBilisim.App.Extensions
                     var googleAuthNSection = configuration.GetSection("Google");
                     options.ClientId = googleAuthNSection["ClientId"];
                     options.ClientSecret = googleAuthNSection["ClientSecret"];
-                    options.CallbackPath = new PathString("/signin-google-token");
                     options.AuthorizationEndpoint = GoogleDefaults.AuthorizationEndpoint;
                     options.CallbackPath = new PathString("/signin-google-token");
                     options.Scope.Add("openid");
@@ -85,9 +87,30 @@ namespace NitelikliBilisim.App.Extensions
                     options.SaveTokens = true;
                     options.Events.OnCreatingTicket = ctx =>
                     {
-                        List<AuthenticationToken> tokens = ctx.Properties.GetTokens().ToList();
+                        var tokens = ctx.Properties.GetTokens().ToList();
+                        ctx.Identity.AddClaim(new Claim("photo", ctx.User.Value<string>("picture")));
                         tokens.Add(new AuthenticationToken()
-                            {Name = "TicketCreated", Value = DateTime.UtcNow.ToString()});
+                            {Name = "TicketCreated", Value = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)});
+                        ctx.Properties.StoreTokens(tokens);
+                        return Task.CompletedTask;
+                    };
+                })
+                .AddFacebook(options =>
+                {
+                    var facebookAuthSection = configuration.GetSection("Facebook");
+                    options.AppId = facebookAuthSection["AppId"];
+                    options.AppSecret = facebookAuthSection["AppSecret"];
+                    options.CallbackPath = new PathString("/signin-facebook");
+                    options.AuthorizationEndpoint = FacebookDefaults.AuthorizationEndpoint;
+                    options.Fields.Add("picture");
+                    options.Events.OnCreatingTicket = ctx =>
+                    {
+                        var tokens = ctx.Properties.GetTokens().ToList();
+                        var profileImg = ctx.User["picture"]["data"].Value<string>("url");
+                        //ctx.Identity.AddClaim(new Claim("photo", profileImg));
+                        
+                        tokens.Add(new AuthenticationToken()
+                            {Name = "TicketCreated", Value = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)});
                         ctx.Properties.StoreTokens(tokens);
                         return Task.CompletedTask;
                     };

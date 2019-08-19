@@ -8,6 +8,6 @@
     "devextreme": "^19.1.5",
     "select2": "^4.0.8",
     "devextreme-aspnet-data": "^2.5.0-rc1",
-    "font-awesome": "^4.7.0" 
+    "font-awesome": "^4.7.0"
   }
 }

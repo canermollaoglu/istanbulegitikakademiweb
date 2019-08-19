@@ -12,7 +12,6 @@ using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Core.Entities.Identity;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Services;
-using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.Account;
 
 namespace NitelikliBilisim.App.Controllers
@@ -161,11 +160,15 @@ namespace NitelikliBilisim.App.Controllers
                         model.Surname =
                             StringHelper.UrlFormatConverter(info.Principal.FindFirstValue(ClaimTypes.Surname));
                     }
+                    if (info.Principal.HasClaim(c => c.Type == "photo"))
+                    {
+                        model.Photo = info.Principal.FindFirstValue("photo");
+                    }
                     return View("ExternalLogin", model);
                 }
 
             }
-            return RedirectToAction("Login");
+            return RedirectToAction(nameof(Login));
         }
 
         public async Task<IActionResult> ExternalLoginConfirm(ExternalLoginViewModel model)
@@ -186,7 +189,8 @@ namespace NitelikliBilisim.App.Controllers
                 UserName = model.UserName,
                 Email = model.Email,
                 Name = model.Name,
-                Surname = model.Surname
+                Surname = model.Surname,
+                FotoUrl = model.Photo
             };
             var result = await _userManager.CreateAsync(user);
             if (result.Succeeded)
@@ -212,7 +216,7 @@ namespace NitelikliBilisim.App.Controllers
             {
                 ModelState.AddModelError(string.Empty, error.Description);
             }
-            return View("ExternalLogin");
+            return View(nameof(ExternalLogin),model);
         }
         [Authorize]
         public async Task<IActionResult> Logout()
