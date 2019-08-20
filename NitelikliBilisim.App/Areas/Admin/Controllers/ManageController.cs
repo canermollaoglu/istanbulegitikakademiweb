@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using NitelikliBilisim.App.Controllers.Base;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    public class ManageController : Controller
+    [Authorize(Roles = "Admin")]
+    public class ManageController : BaseController
     {
         public IActionResult Index()
         {
