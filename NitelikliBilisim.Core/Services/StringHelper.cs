@@ -6,7 +6,13 @@ namespace NitelikliBilisim.Core.Services
     public  class StringHelper
     {
         private static char[] _validCharacters = { '\'', '\"', '!', '^', '+', '#', '$', '%', '&', '/', '{', '}', '(', ')', '[', ']', '=', '?', '*', '\\', '-', '_', '~', ',', ';', '´', '.', ':', '|', '<', '>', '@', '€', '¨', ' ' };
+        public static string GenerateUniqueCode()
+        {
+            string base64String = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
+            base64String = System.Text.RegularExpressions.Regex.Replace(base64String, "[/+=]", "");
 
+            return base64String.ToLower(new System.Globalization.CultureInfo("en-US", false));
+        }
         public static string UrlFormatConverter(string name)
         {
             string sonuc = name.ToLower();

@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using DevExtreme.AspNet.Data;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Extensions;
@@ -7,6 +8,7 @@ using NitelikliBilisim.Core.Repositories;
 using System.Linq;
 using DevExtreme.AspNet.Data.ResponseModel;
 using Newtonsoft.Json;
+using NitelikliBilisim.Core.Services;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
@@ -31,11 +33,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult InsertKategori([FromForm]string values)
+        public IActionResult InsertKategori([FromForm] string values)
         {
             var item = new Kategori();
-            JsonConvert.PopulateObject(values,item);
-            if(!TryValidateModel(item))
+            JsonConvert.PopulateObject(values, item);
+            if (!TryValidateModel(item))
                 return BadRequest(ModelState.ToFullErrorString());
 
             _kategoryRepo.Add(item);
@@ -43,10 +45,10 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         }
 
         [HttpDelete]
-        public IActionResult DeleteKategori([FromForm]Guid key)
+        public IActionResult DeleteKategori([FromForm] Guid key)
         {
             var item = _kategoryRepo.GetById(key);
-            if(item == null) 
+            if (item == null)
                 return StatusCode(409, "Kayit bulunamadi");
 
             _kategoryRepo.Delete(item);
@@ -54,16 +56,37 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         }
 
         [HttpPut]
-        public IActionResult UpdateKategori([FromForm] Guid key, [FromForm]string values)
+        public IActionResult UpdateKategori([FromForm] Guid key, [FromForm] string values)
         {
             var item = _kategoryRepo.GetById(key);
-            if(item == null)
+            if (item == null)
                 return StatusCode(409, "Kayit bulunamadi");
-            JsonConvert.PopulateObject(values,item);
-            if(!TryValidateModel(item))
+            JsonConvert.PopulateObject(values, item);
+            if (!TryValidateModel(item))
                 return BadRequest(ModelState.ToFullErrorString());
             _kategoryRepo.Update(item);
             return Ok("Güncelleştirme işlemi başarılı");
+        }
+
+        [HttpPost]
+        public IActionResult UploadKategoriFoto()
+        {
+            if (this.Request.Form.Files.Any() && this.Request.ContentLength > 0)
+            {
+                var file = this.Request.Form.Files.First();
+                string fileName = Path.GetFileNameWithoutExtension(file.FileName);
+                string extName = Path.GetExtension(file.FileName);
+                fileName = StringHelper.UrlFormatConverter(fileName)+StringHelper.GenerateUniqueCode();
+                var klasoryolu = Path.Combine("Upload/" );
+                var dosyayolu = Path.Combine("Upload/") + fileName + extName;
+                if (!Directory.Exists(klasoryolu))
+                    Directory.CreateDirectory(klasoryolu);
+                using (var fileStream = new FileStream(dosyayolu, FileMode.Create)) {
+                    file.CopyTo(fileStream);
+                }
+            }
+
+            return Ok("ok");
         }
     }
 }

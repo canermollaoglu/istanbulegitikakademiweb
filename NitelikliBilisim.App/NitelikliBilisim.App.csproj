@@ -43,21 +43,25 @@
 
   <ItemGroup>
     <Compile Remove="logs\**" />
+    <Compile Remove="Upload\**" />
   </ItemGroup>
 
 
   <ItemGroup>
     <EmbeddedResource Remove="logs\**" />
+    <EmbeddedResource Remove="Upload\**" />
   </ItemGroup>
 
 
   <ItemGroup>
     <None Remove="logs\**" />
+    <None Remove="Upload\**" />
   </ItemGroup>
 
 
   <ItemGroup>
     <Content Remove="logs\**" />
+    <Content Remove="Upload\**" />
   </ItemGroup>
 
   <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
