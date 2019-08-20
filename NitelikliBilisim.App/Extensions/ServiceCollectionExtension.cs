@@ -4,8 +4,6 @@ using NitelikliBilisim.Business.Repositories;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Repositories;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
@@ -15,6 +13,8 @@ using Microsoft.AspNetCore.Authentication.Facebook;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using NitelikliBilisim.Core.Services;
+using NitelikliBilisim.Core.Services.Abstracts;
 
 namespace NitelikliBilisim.App.Extensions
 {
@@ -34,6 +34,7 @@ namespace NitelikliBilisim.App.Extensions
             services.AddScoped<IRepository<Sepet, Guid>, Repository<Sepet, Guid>>();
             services.AddScoped<IRepository<Satis, Guid>, Repository<Satis, Guid>>();
             services.AddScoped<IRepository<SatisDetay, Guid>, Repository<SatisDetay, Guid>>();
+            services.AddSingleton<IMessageService, EmailService>();
             #endregion
 
             #region IdentityConfig
@@ -109,6 +110,22 @@ namespace NitelikliBilisim.App.Extensions
                         var profileImg = ctx.User["picture"]["data"].Value<string>("url");
                         //ctx.Identity.AddClaim(new Claim("photo", profileImg));
                         
+                        tokens.Add(new AuthenticationToken()
+                            {Name = "TicketCreated", Value = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)});
+                        ctx.Properties.StoreTokens(tokens);
+                        return Task.CompletedTask;
+                    };
+                })
+                .AddGitHub(options =>
+                {
+                    var githubAuthNSection = configuration.GetSection("GitHub");
+                    options.ClientId = githubAuthNSection["ClientId"];
+                    options.ClientSecret = githubAuthNSection["ClientSecret"];
+                    options.Scope.Add("user:email");
+                    options.Events.OnCreatingTicket = ctx =>
+                    {
+                        var tokens = ctx.Properties.GetTokens().ToList();
+                        ctx.Identity.AddClaim(new Claim("photo", ctx.User.Value<string>("avatar_url")));
                         tokens.Add(new AuthenticationToken()
                             {Name = "TicketCreated", Value = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)});
                         ctx.Properties.StoreTokens(tokens);
