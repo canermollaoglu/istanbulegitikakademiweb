@@ -83,12 +83,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     string fileName = Path.GetFileNameWithoutExtension(file.FileName);
                     string extName = Path.GetExtension(file.FileName);
                     fileName = StringHelper.UrlFormatConverter(fileName) + StringHelper.GenerateUniqueCode();
-                    var klasoryolu = Path.Combine("Upload/");
-                    var dosyayolu = Path.Combine("Upload/") + fileName + extName;
+                    var klasoryolu = Path.Combine("wwwroot/upload/");
+                    var dosyayolu = Path.Combine("wwwroot/upload/") + fileName + extName;
                     if (!Directory.Exists(klasoryolu))
                         Directory.CreateDirectory(klasoryolu);
                     var eskiFotoYolu = data.KategoriFoto;
-                    data.KategoriFoto = dosyayolu;
+                    data.KategoriFoto = dosyayolu.Replace("wwwroot/","");
                     _kategoryRepo.Update(data, true);
                     using (var fileStream = new FileStream(dosyayolu, FileMode.Create))
                     {
@@ -97,7 +97,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
                     if (!string.IsNullOrEmpty(eskiFotoYolu))
                     {
-                        System.IO.File.Delete(Path.Combine(eskiFotoYolu));
+                        System.IO.File.Delete(Path.Combine("wwwroot/"+eskiFotoYolu));
                     }
                     _kategoryRepo.Save();
                 }
