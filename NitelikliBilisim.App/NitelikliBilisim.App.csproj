@@ -43,25 +43,22 @@
 
   <ItemGroup>
     <Compile Remove="logs\**" />
-    <Compile Remove="Upload\**" />
   </ItemGroup>
 
 
   <ItemGroup>
     <EmbeddedResource Remove="logs\**" />
-    <EmbeddedResource Remove="Upload\**" />
   </ItemGroup>
 
 
   <ItemGroup>
     <None Remove="logs\**" />
-    <None Remove="Upload\**" />
   </ItemGroup>
 
 
   <ItemGroup>
     <Content Remove="logs\**" />
-    <Content Remove="Upload\**" />
+    <Content Include="Upload\ekran_goruntusu_(29)kxj1drabiumumu9kehaffq.png" />
   </ItemGroup>
 
   <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
