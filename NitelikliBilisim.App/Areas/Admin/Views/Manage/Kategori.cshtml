@@ -13,6 +13,36 @@
 @section Scripts
 {
     <script>
+    var uploader;
+    function uploaderEvents(url) {
+        $(".file-uploader").dxFileUploader({
+            selectButtonText: "Fotoraf Seç",
+            labelText: "",
+            accept: "image/*",
+            uploadMode: "useButtons",
+            multiple: false,
+            uploadUrl: url,
+            onValueChanged: function(e) {
+                var files = e.value;
+                // if(files.length > 0) {
+                //     $("#selected-files .selected-item").remove();
+                //     $.each(files, function(i, file) {
+                //         var $selectedItem = $("<div />").addClass("selected-item");
+                //         $selectedItem.append(
+                //             $("<span />").html("Name: " + file.name + "<br/>"),
+                //             $("<span />").html("Size " + file.size + " bytes" + "<br/>"),
+                //             $("<span />").html("Type " + file.type + "<br/>"),
+                //             $("<span />").html("Last Modified Date: " + file.lastModifiedDate)
+                //         );
+                //         $selectedItem.appendTo($("#selected-files"));
+                //     });
+                //     $("#selected-files").show();
+                // }
+                // else
+                //     $("#selected-files").hide();
+            }
+        });   
+    }
     $(function() {
        var url = "../../../api/data";
 
@@ -25,13 +55,15 @@
             deleteUrl: url + "/DeleteKategori",
             onBeforeSend: function(method, ajaxOptions) {
                 ajaxOptions.xhrFields = { withCredentials: true };
-                console.log(ajaxOptions);
+                // console.log(ajaxOptions);
             }
         }),
         editing: {
+            refreshMode: "full",
+            mode: "popup",
             allowAdding: true,
             allowUpdating: true,
-            allowDeleting: true
+            allowDeleting: true           
         },
         grouping: {
             autoExpandAll: false
@@ -68,10 +100,6 @@
         },
         columns: [
             {
-                dataField:"id",
-                visible: false
-            },
-            {
                 dataField: "ad",
                 caption:"Ad"
             },
@@ -80,11 +108,50 @@
                 caption: "Açıklama"
             },
             {
+                dataField: "kategoriFoto",
+                caption: "Kategori Foto",
+                cellTemplate: function (container, options) {
+                    if(options.data.kategoriFoto != null && options.data.kategoriFoto.length>0){
+                        $('<img>')
+                            .attr("src",'../../../'+options.data.kategoriFoto)
+                            .addClass("img-thumbnail")
+                            .appendTo(container);
+                    }else{
+                        $("<span>Foto yok</span>")
+                            .appendTo(container);
+                    }
+                },
+                editCellTemplate: function(container, options) {
+                    $('<div></div>')
+                        .append($('<div class="file-uploader" name="'+options.data.id+'"></div>'))
+                        .appendTo(container);
+                    uploaderEvents('../../../api/data/UploadKategoriFoto?id='+options.data.id);
+                }
+            },
+            {
+                dataField: "detayFoto",
+                caption: "Detay Foto"
+            },
+            {
+                dataField: "videoUrl",
+                caption: "Detay Foto"
+            },
+            {
                dataField: "createdDate",
                caption: "Kayıt tarihi",
                dataType: 'datetime',
-               format: 'dd/MM/yyyy HH:mm'
-            } 
+               format: 'dd/MM/yyyy HH:mm',
+               allowUpdating: false,
+               allowEditing: false,
+            },
+            {
+               dataField: "updatedDate",
+               caption: "Güncellenme tarihi",
+               dataType: 'datetime',
+               format: 'dd/MM/yyyy HH:mm',
+               allowUpdating: false,
+               allowEditing: false,
+            }
         ]
         })
     });

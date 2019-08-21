@@ -67,6 +67,11 @@ namespace NitelikliBilisim.App
                 FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"node_modules")),
                 RequestPath = new PathString("/vendor")
             });
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Upload")),
+                RequestPath = new PathString("/upload")
+            });
             app.UseAuthentication();
 
             app.UseCookiePolicy();
