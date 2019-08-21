@@ -52,6 +52,10 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 return StatusCode(409, "Kayit bulunamadi");
 
             _kategoryRepo.Delete(item);
+            if (!string.IsNullOrEmpty(item.KategoriFoto))
+            {
+                System.IO.File.Delete(Path.Combine("wwwroot/"+item.KategoriFoto));
+            }
             return Ok();
         }
 
