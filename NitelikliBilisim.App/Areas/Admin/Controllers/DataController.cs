@@ -69,24 +69,45 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult UploadKategoriFoto()
+        public IActionResult UploadKategoriFoto(Guid id)
         {
             if (this.Request.Form.Files.Any() && this.Request.ContentLength > 0)
             {
-                var file = this.Request.Form.Files.First();
-                string fileName = Path.GetFileNameWithoutExtension(file.FileName);
-                string extName = Path.GetExtension(file.FileName);
-                fileName = StringHelper.UrlFormatConverter(fileName)+StringHelper.GenerateUniqueCode();
-                var klasoryolu = Path.Combine("Upload/" );
-                var dosyayolu = Path.Combine("Upload/") + fileName + extName;
-                if (!Directory.Exists(klasoryolu))
-                    Directory.CreateDirectory(klasoryolu);
-                using (var fileStream = new FileStream(dosyayolu, FileMode.Create)) {
-                    file.CopyTo(fileStream);
+                try
+                {
+                    var data = _kategoryRepo.GetById(id);
+                    if (data == null)
+                        return BadRequest("Kategori bulunamadı");
+
+                    var file = this.Request.Form.Files.First();
+                    string fileName = Path.GetFileNameWithoutExtension(file.FileName);
+                    string extName = Path.GetExtension(file.FileName);
+                    fileName = StringHelper.UrlFormatConverter(fileName) + StringHelper.GenerateUniqueCode();
+                    var klasoryolu = Path.Combine("Upload/");
+                    var dosyayolu = Path.Combine("Upload/") + fileName + extName;
+                    if (!Directory.Exists(klasoryolu))
+                        Directory.CreateDirectory(klasoryolu);
+                    var eskiFotoYolu = data.KategoriFoto;
+                    data.KategoriFoto = dosyayolu;
+                    _kategoryRepo.Update(data, true);
+                    using (var fileStream = new FileStream(dosyayolu, FileMode.Create))
+                    {
+                        file.CopyTo(fileStream);
+                    }
+
+                    if (!string.IsNullOrEmpty(eskiFotoYolu))
+                    {
+                        System.IO.File.Delete(Path.Combine(eskiFotoYolu));
+                    }
+                    _kategoryRepo.Save();
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
                 }
             }
 
-            return Ok("ok");
+            return Ok("İşlem başarılı");
         }
     }
 }

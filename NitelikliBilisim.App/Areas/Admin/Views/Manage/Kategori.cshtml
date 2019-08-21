@@ -14,17 +14,15 @@
 {
     <script>
     var uploader;
-    function uploaderEvents() {
+    function uploaderEvents(url) {
         $(".file-uploader").dxFileUploader({
             selectButtonText: "Fotoraf Seç",
             labelText: "",
             accept: "image/*",
-            uploadMode: "instantly",
+            uploadMode: "useButtons",
             multiple: false,
-            uploadUrl : '@Url.Action("UploadKategoriFoto","Data")',
+            uploadUrl: url,
             onValueChanged: function(e) {
-                console.log(e);
-                uploader=e;
                 var files = e.value;
                 // if(files.length > 0) {
                 //     $("#selected-files .selected-item").remove();
@@ -113,17 +111,21 @@
                 dataField: "kategoriFoto",
                 caption: "Kategori Foto",
                 cellTemplate: function (container, options) {
-                    // $('<span>' + options.data.FirmaAdi + '</span>')
-                    //     .appendTo(container);
+                    if(options.data.kategoriFoto != null && options.data.kategoriFoto.length>0){
+                        $('<img>')
+                            .attr("src",'../../../'+options.data.kategoriFoto)
+                            .addClass("img-thumbnail")
+                            .appendTo(container);
+                    }else{
+                        $("<span>Foto yok</span>")
+                            .appendTo(container);
+                    }
                 },
                 editCellTemplate: function(container, options) {
-                    // <div id="fileuploader-container">
-                    //     <div id="file-uploader"></div>
-                    // </div>
                     $('<div></div>')
                         .append($('<div class="file-uploader" name="'+options.data.id+'"></div>'))
                         .appendTo(container);
-                    uploaderEvents();
+                    uploaderEvents('../../../api/data/UploadKategoriFoto?id='+options.data.id);
                 }
             },
             {
