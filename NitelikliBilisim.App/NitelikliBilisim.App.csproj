@@ -58,7 +58,6 @@
 
   <ItemGroup>
     <Content Remove="logs\**" />
-    <Content Include="Upload\ekran_goruntusu_(29)kxj1drabiumumu9kehaffq.png" />
   </ItemGroup>
 
   <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
