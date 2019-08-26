@@ -146,12 +146,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     Name = x.Name,
                     Surname = x.Surname,
                     UserName = x.UserName,
-                    Roles = x.UserRoles.Select(r => new RoleModel { Id = r.Role.Id, Name = r.Role.Name }).ToList(),
+                    Roles = x.UserRoles.Select(r => new RoleModel { Id = r.Role.Id, Name = r.Role.Name }),
                     Title = x.Egitici != null ? x.Egitici.Title : "",
                     FotoUrl = x.FotoUrl
                 });
 
-            return DataSourceLoader.Load(data, loadOptions);
+            return DataSourceLoader.Load(data.Include(x=>x.Roles), loadOptions);
         }
         [HttpGet]
         public LoadResult RolesLookup(DataSourceLoadOptions options)
@@ -166,6 +166,18 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 },
                 options
             );
+        }
+        [HttpPut]
+        public IActionResult UpdateUser([FromForm] string key, [FromForm] string values)
+        {
+            var item = _userManager.FindByIdAsync(key).Result;
+            if (item == null)
+                return StatusCode(409, "Kayit bulunamadi");
+            JsonConvert.PopulateObject(values, item);
+            if (!TryValidateModel(item))
+                return BadRequest(ModelState.ToFullErrorString());
+
+            return Ok("Güncelleştirme işlemi başarılı");
         }
     }
 

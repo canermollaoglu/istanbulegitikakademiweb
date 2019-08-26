@@ -18,6 +18,7 @@
                 dataSource: DevExpress.data.AspNet.createStore({
                     key: "id",
                     loadUrl: url + "/GetUserData",
+                    updateUrl: url + "/UpdateUser",
                     onBeforeSend: function (method, ajaxOptions) {
                         ajaxOptions.xhrFields = { withCredentials: true };
                         // console.log(ajaxOptions);

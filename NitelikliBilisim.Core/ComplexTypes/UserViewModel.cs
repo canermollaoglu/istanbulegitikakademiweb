@@ -9,7 +9,7 @@ namespace NitelikliBilisim.Core.ComplexTypes
         public string Name { get; set; }
         public string Surname { get; set; }
         public string UserName { get; set; }
-        public List<RoleModel> Roles { get; set; }
+        public IEnumerable<RoleModel> Roles { get; set; }
         public string FotoUrl { get; set; }
     }
 }
