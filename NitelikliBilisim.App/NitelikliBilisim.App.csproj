@@ -31,33 +31,31 @@
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Models\" />
-    <Folder Include="Pages" />
     <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
 
 
   <ItemGroup>
-    <_ContentIncludedByDefault Remove="Pages\Account\Register.cshtml" />
-  </ItemGroup>
-
-
-  <ItemGroup>
     <Compile Remove="logs\**" />
+    <Compile Remove="Pages\**" />
   </ItemGroup>
 
 
   <ItemGroup>
     <EmbeddedResource Remove="logs\**" />
+    <EmbeddedResource Remove="Pages\**" />
   </ItemGroup>
 
 
   <ItemGroup>
     <None Remove="logs\**" />
+    <None Remove="Pages\**" />
   </ItemGroup>
 
 
   <ItemGroup>
     <Content Remove="logs\**" />
+    <Content Remove="Pages\**" />
   </ItemGroup>
 
   <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">

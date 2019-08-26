@@ -17,6 +17,10 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             return View();
         }
 
+        public IActionResult Kullanicilar()
+        {
+            return View();
+        }
         public IActionResult Egitim()
         {
             return View();
