@@ -6,11 +6,14 @@ using NitelikliBilisim.App.Extensions;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Repositories;
 using System.Linq;
+using System.Threading.Tasks;
 using DevExtreme.AspNet.Data.ResponseModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities.Identity;
+using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Services;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
@@ -126,24 +129,45 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         {
             loadOptions.PrimaryKey = new[] { "Id" };
 
+            var user = _userManager.FindByNameAsync("mesut").Result;
+            if (!_userManager.IsInRoleAsync(user, IdentityRoleList.User.ToString()).Result)
+            {
+                var result = _userManager.AddToRoleAsync(user, IdentityRoleList.User.ToString()).Result;
+            }
+
             var data = _userManager.Users
                 .Include(x => x.Egitici)
                 .Include(x => x.UserRoles)
                 .ThenInclude(x => x.Role)
                 .OrderBy(x => x.Name)
-                .Select(x => new
+                .Select(x => new UserViewModel
                 {
-                    x.Id,
-                    x.Name,
-                    x.Surname,
-                    x.UserName,
-                    Roles = x.UserRoles.Select(r => r.Role.Name),
-                    Title = x.Egitici!=null ? x.Egitici.Title : "",
-                    x.FotoUrl
+                    Id = x.Id,
+                    Name = x.Name,
+                    Surname = x.Surname,
+                    UserName = x.UserName,
+                    Roles = x.UserRoles.Select(r => new RoleModel { Id = r.Role.Id, Name = r.Role.Name }).ToList(),
+                    Title = x.Egitici != null ? x.Egitici.Title : "",
+                    FotoUrl = x.FotoUrl
                 });
-
 
             return DataSourceLoader.Load(data, loadOptions);
         }
+        [HttpGet]
+        public LoadResult RolesLookup(DataSourceLoadOptions options)
+        {
+            return DataSourceLoader.Load(
+                from r in _roleManager.Roles
+                orderby r.Name
+                select new
+                {
+                    Id = r.Id,
+                    Name = r.Name
+                },
+                options
+            );
+        }
     }
+
+
 }

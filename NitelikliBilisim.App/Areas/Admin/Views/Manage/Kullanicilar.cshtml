@@ -12,13 +12,13 @@
 @section Scripts
 {
     <script>
-        $(function() {
+        $(function () {
             var url = "../../../api/data";
             $("#grid").dxDataGrid({
                 dataSource: DevExpress.data.AspNet.createStore({
                     key: "id",
                     loadUrl: url + "/GetUserData",
-                    onBeforeSend: function(method, ajaxOptions) {
+                    onBeforeSend: function (method, ajaxOptions) {
                         ajaxOptions.xhrFields = { withCredentials: true };
                         // console.log(ajaxOptions);
                     }
@@ -28,9 +28,9 @@
                     mode: "popup",
                     allowAdding: false,
                     allowUpdating: true,
-                    allowDeleting: false           
+                    allowDeleting: false
                 },
-                remoteOperations: true, 
+                remoteOperations: true,
                 filterRow: {
                     visible: true
                 },
@@ -56,7 +56,88 @@
                     enabled: true,
                     fileName: "Kullanicilar_" + parseInt(Math.random() * 1000000000),
                     allowExportSelectedData: true
-                }
+                },
+                columns: [
+                    {
+                        dataField: "name",
+                        caption: "Ad"
+                    },
+                    {
+                        dataField: "surname",
+                        caption: "Soyad"
+                    },
+                    {
+                        dataField: "userName",
+                        caption: "Kullanıcı Adı"
+                    },
+                    {
+                        dataField: "roles",
+                        caption: "Roller",
+                        //calculateDisplayValue: function (rowData) {
+                        //    return rowData.roles.map(x => x.name).join(",");
+                        //},
+                        cellTemplate: function (container, options) {
+                            $(container).append(options.data.roles.map(x => x.name).join(","));
+                        },
+                        editCellTemplate: function (container, options) {
+                            $('<div></div>')
+                                .append($('<div class="tagbox"></div>'))
+                                .appendTo(container);
+                            $(".tagbox").dxTagBox({
+                                dataSource: DevExpress.data.AspNet.createStore({
+                                    key: "Value",
+                                    loadUrl: url + "/RolesLookup",
+                                    onBeforeSend: function (method, ajaxOptions) {
+                                        ajaxOptions.xhrFields = { withCredentials: true };
+                                    }
+                                }),
+                                value: options.data.roles,
+                                valueExpr: "id",
+                                displayExpr: "name",
+                                showSelectionControls: true,
+                                maxDisplayedTags: 3
+                            });
+                        }
+                        //lookup: {
+                        //    dataSource: DevExpress.data.AspNet.createStore({
+                        //        key: "Value",
+                        //        loadUrl: url + "/RolesLookup",
+                        //        onBeforeSend: function(method, ajaxOptions) {
+                        //            ajaxOptions.xhrFields = { withCredentials: true };
+                        //        }
+                        //    }),
+                        //    valueExpr: "Value",
+                        //    displayExpr: "Text"
+                        //}
+                    },
+                    {
+                        dataField: "title",
+                        caption: "Title",
+                        allowUpdating: false,
+                        allowEditing: false
+                    }
+                    //{
+                    //    dataField: "kategoriFoto",
+                    //    caption: "Kategori Foto",
+                    //    cellTemplate: function (container, options) {
+                    //        if (options.data.kategoriFoto != null && options.data.kategoriFoto.length > 0) {
+                    //            $('<img>')
+                    //                .attr("src", '../../../' + options.data.kategoriFoto)
+                    //                .addClass("img-thumbnail")
+                    //                .appendTo(container);
+                    //        } else {
+                    //            $("<span>Foto yok</span>")
+                    //                .appendTo(container);
+                    //        }
+                    //    },
+                    //    editCellTemplate: function (container, options) {
+                    //        $('<div></div>')
+                    //            .append($('<div class="file-uploader" name="' + options.data.id + '"></div>'))
+                    //            .appendTo(container);
+                    //        uploaderEvents('../../../api/data/UploadKategoriFoto?id=' + options.data.id);
+                    //    }
+                    //},
+                ]
             });
         });
     </script>
