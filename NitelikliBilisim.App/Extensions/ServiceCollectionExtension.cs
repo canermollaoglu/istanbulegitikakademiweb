@@ -8,7 +8,7 @@ using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using AutoMapper;
+using AspNet.Security.OAuth.GitHub;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Facebook;
 using Microsoft.AspNetCore.Authentication.Google;
@@ -122,6 +122,7 @@ namespace NitelikliBilisim.App.Extensions
                     var githubAuthNSection = configuration.GetSection("GitHub");
                     options.ClientId = githubAuthNSection["ClientId"];
                     options.ClientSecret = githubAuthNSection["ClientSecret"];
+                    options.AuthorizationEndpoint = GitHubAuthenticationDefaults.AuthorizationEndpoint;
                     options.Scope.Add("user:email");
                     options.Events.OnCreatingTicket = ctx =>
                     {

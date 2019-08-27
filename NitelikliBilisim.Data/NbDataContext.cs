@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NitelikliBilisim.Core.Abstracts;
@@ -10,7 +11,9 @@ using NitelikliBilisim.Core.Entities.Identity;
 
 namespace NitelikliBilisim.Data
 {
-    public class NbDataContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
+    public class NbDataContext : IdentityDbContext<ApplicationUser, ApplicationRole, string, IdentityUserClaim<string>,
+        ApplicationUserRole, IdentityUserLogin<string>,
+        IdentityRoleClaim<string>, IdentityUserToken<string>>
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
 
@@ -56,6 +59,21 @@ namespace NitelikliBilisim.Data
                 .HasKey(x => new {x.Id, x.Id2});
             builder.Entity<SatisDetay>()
                 .HasKey(x => new {x.Id, x.Id2});
+            
+            builder.Entity<ApplicationUserRole>(userRole =>
+            {
+                userRole.HasKey(ur => new { ur.UserId, ur.RoleId });
+
+                userRole.HasOne(ur => ur.Role)
+                    .WithMany(r => r.UserRoles)
+                    .HasForeignKey(ur => ur.RoleId)
+                    .IsRequired();
+
+                userRole.HasOne(ur => ur.User)
+                    .WithMany(r => r.UserRoles)
+                    .HasForeignKey(ur => ur.UserId)
+                    .IsRequired();
+            });
 
             #endregion
 

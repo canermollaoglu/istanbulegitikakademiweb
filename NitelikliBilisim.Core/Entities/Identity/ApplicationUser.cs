@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
 namespace NitelikliBilisim.Core.Entities.Identity
@@ -15,5 +16,6 @@ namespace NitelikliBilisim.Core.Entities.Identity
 
 
         public Egitici Egitici { get; set; }
+        public ICollection<ApplicationUserRole> UserRoles { get; set; }
     }
 }

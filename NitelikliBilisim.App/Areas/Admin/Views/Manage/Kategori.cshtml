@@ -1,6 +1,6 @@
 
 @{
-    ViewBag.Title = "title";
+    ViewBag.Title = "Eğitim Kategorileri";
     Layout = "_Layout";
 }
 
@@ -46,114 +46,114 @@
     $(function() {
        var url = "../../../api/data";
 
-        $("#grid").dxDataGrid({
-        dataSource: DevExpress.data.AspNet.createStore({
-            key: "id",
-            loadUrl: url + "/GetKategoriData",
-            insertUrl: url + "/InsertKategori",
-            updateUrl: url + "/UpdateKategori",
-            deleteUrl: url + "/DeleteKategori",
-            onBeforeSend: function(method, ajaxOptions) {
-                ajaxOptions.xhrFields = { withCredentials: true };
-                // console.log(ajaxOptions);
-            }
-        }),
-        editing: {
-            refreshMode: "full",
-            mode: "popup",
-            allowAdding: true,
-            allowUpdating: true,
-            allowDeleting: true           
-        },
-        grouping: {
-            autoExpandAll: false
-        },
-        remoteOperations: true, 
-        filterRow: {
-            visible: true
-        },
-        headerFilter: {
-            visible: true
-        },
-        groupPanel: {
-            visible: true
-        },
-        searchPanel: {
-            visible: true,
-            width: 240,
-            placeholder: "Ara..."
-        },
-        columnAutoWidth: true,
-        showBorders: true,
-        paging: {
-            pageSize: 10
-        },
-        pager: {
-            showPageSizeSelector: true,
-            allowedPageSizes: [5, 15, 30, 45],
-            showInfo: true
-        },
-        export: {
-            enabled: true,
-            fileName: "Kategoriler_" + parseInt(Math.random() * 1000000000),
-            allowExportSelectedData: true
-        },
-        columns: [
-            {
-                dataField: "ad",
-                caption:"Ad"
-            },
-            {
-                dataField: "aciklama",
-                caption: "Açıklama"
-            },
-            {
-                dataField: "kategoriFoto",
-                caption: "Kategori Foto",
-                cellTemplate: function (container, options) {
-                    if(options.data.kategoriFoto != null && options.data.kategoriFoto.length>0){
-                        $('<img>')
-                            .attr("src",'../../../'+options.data.kategoriFoto)
-                            .addClass("img-thumbnail")
-                            .appendTo(container);
-                    }else{
-                        $("<span>Foto yok</span>")
-                            .appendTo(container);
-                    }
-                },
-                editCellTemplate: function(container, options) {
-                    $('<div></div>')
-                        .append($('<div class="file-uploader" name="'+options.data.id+'"></div>'))
-                        .appendTo(container);
-                    uploaderEvents('../../../api/data/UploadKategoriFoto?id='+options.data.id);
-                }
-            },
-            {
-                dataField: "detayFoto",
-                caption: "Detay Foto"
-            },
-            {
-                dataField: "videoUrl",
-                caption: "Detay Foto"
-            },
-            {
-               dataField: "createdDate",
-               caption: "Kayıt tarihi",
-               dataType: 'datetime',
-               format: 'dd/MM/yyyy HH:mm',
-               allowUpdating: false,
-               allowEditing: false,
-            },
-            {
-               dataField: "updatedDate",
-               caption: "Güncellenme tarihi",
-               dataType: 'datetime',
-               format: 'dd/MM/yyyy HH:mm',
-               allowUpdating: false,
-               allowEditing: false,
-            }
-        ]
-        })
+       $("#grid").dxDataGrid({
+           dataSource: DevExpress.data.AspNet.createStore({
+               key: "id",
+               loadUrl: url + "/GetKategoriData",
+               insertUrl: url + "/InsertKategori",
+               updateUrl: url + "/UpdateKategori",
+               deleteUrl: url + "/DeleteKategori",
+               onBeforeSend: function(method, ajaxOptions) {
+                   ajaxOptions.xhrFields = { withCredentials: true };
+                   // console.log(ajaxOptions);
+               }
+           }),
+           editing: {
+               refreshMode: "full",
+               mode: "popup",
+               allowAdding: true,
+               allowUpdating: true,
+               allowDeleting: true
+           },
+           grouping: {
+               autoExpandAll: false
+           },
+           remoteOperations: true,
+           filterRow: {
+               visible: true
+           },
+           headerFilter: {
+               visible: true
+           },
+           groupPanel: {
+               visible: true
+           },
+           searchPanel: {
+               visible: true,
+               width: 240,
+               placeholder: "Ara..."
+           },
+           columnAutoWidth: true,
+           showBorders: true,
+           paging: {
+               pageSize: 10
+           },
+           pager: {
+               showPageSizeSelector: true,
+               allowedPageSizes: [5, 15, 30, 45],
+               showInfo: true
+           },
+           export: {
+               enabled: true,
+               fileName: "Kategoriler_" + parseInt(Math.random() * 1000000000),
+               allowExportSelectedData: true
+           },
+           columns: [
+               {
+                   dataField: "ad",
+                   caption: "Ad"
+               },
+               {
+                   dataField: "aciklama",
+                   caption: "Açıklama"
+               },
+               {
+                   dataField: "kategoriFoto",
+                   caption: "Kategori Foto",
+                   cellTemplate: function(container, options) {
+                       if (options.data.kategoriFoto != null && options.data.kategoriFoto.length > 0) {
+                           $('<img>')
+                               .attr("src", '../../../' + options.data.kategoriFoto)
+                               .addClass("img-thumbnail")
+                               .appendTo(container);
+                       } else {
+                           $("<span>Foto yok</span>")
+                               .appendTo(container);
+                       }
+                   },
+                   editCellTemplate: function(container, options) {
+                       $('<div></div>')
+                           .append($('<div class="file-uploader" name="' + options.data.id + '"></div>'))
+                           .appendTo(container);
+                       uploaderEvents('../../../api/data/UploadKategoriFoto?id=' + options.data.id);
+                   }
+               },
+               {
+                   dataField: "detayFoto",
+                   caption: "Detay Foto"
+               },
+               {
+                   dataField: "videoUrl",
+                   caption: "Detay Foto"
+               },
+               {
+                   dataField: "createdDate",
+                   caption: "Kayıt tarihi",
+                   dataType: 'datetime',
+                   format: 'dd/MM/yyyy HH:mm',
+                   allowUpdating: false,
+                   allowEditing: false,
+               },
+               {
+                   dataField: "updatedDate",
+                   caption: "Güncellenme tarihi",
+                   dataType: 'datetime',
+                   format: 'dd/MM/yyyy HH:mm',
+                   allowUpdating: false,
+                   allowEditing: false,
+               }
+           ]
+       });
     });
     </script>
 }
