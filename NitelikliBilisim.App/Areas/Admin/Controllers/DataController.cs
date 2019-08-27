@@ -179,7 +179,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
             return Ok("Güncelleştirme işlemi başarılı");
         }
+
+
     }
-
-
 }
