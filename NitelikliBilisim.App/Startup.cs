@@ -11,7 +11,6 @@ using NitelikliBilisim.App.Extensions;
 using NitelikliBilisim.Core.Entities.Identity;
 using NitelikliBilisim.Data;
 using System.IO;
-using AutoMapper;
 
 namespace NitelikliBilisim.App
 {
