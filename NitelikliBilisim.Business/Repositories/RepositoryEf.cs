@@ -53,5 +53,25 @@ namespace NitelikliBilisim.Business.Repositories
         {
             return predicate == null ? Table : Table.Where(predicate);
         }
+
+        public IQueryable<TEntity> Get(
+            Expression<Func<TEntity, bool>> filter = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> order = null,
+            params string[] includes)
+        {
+            IQueryable<TEntity> query = Table;
+
+            if (filter != null)
+                query = query.Where(filter);
+
+            if (includes != null && includes.Length > 0)
+                foreach (var include in includes)
+                    query = query.Include(include);
+
+            if (order != null)
+                return order(query);
+
+            return query;
+        }
     }
 }
