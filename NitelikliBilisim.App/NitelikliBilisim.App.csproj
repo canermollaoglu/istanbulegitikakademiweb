@@ -31,8 +31,6 @@
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Models\" />
-    <Folder Include="wwwroot\assets\js\" />
-    <Folder Include="wwwroot\assets\img\" />
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="wwwroot\css\" />
     <Folder Include="wwwroot\js\" />
