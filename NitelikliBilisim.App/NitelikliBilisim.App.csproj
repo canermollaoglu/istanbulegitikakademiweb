@@ -17,7 +17,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.9.2" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" />
   </ItemGroup>
 
 
@@ -31,7 +31,12 @@
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Models\" />
+    <Folder Include="wwwroot\assets\js\" />
+    <Folder Include="wwwroot\assets\img\" />
     <Folder Include="Properties\PublishProfiles\" />
+    <Folder Include="wwwroot\css\" />
+    <Folder Include="wwwroot\js\" />
+    <Folder Include="wwwroot\upload\" />
   </ItemGroup>
 
 
@@ -56,6 +61,15 @@
   <ItemGroup>
     <Content Remove="logs\**" />
     <Content Remove="Pages\**" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <None Include="wwwroot\assets\css\all_icons.min.css" />
+    <None Include="wwwroot\assets\css\bootstrap.min.css" />
+    <None Include="wwwroot\assets\css\style.css" />
+    <None Include="wwwroot\assets\css\vendors.css" />
+    <None Include="wwwroot\assets\css\vendors.unminified.css" />
   </ItemGroup>
 
   <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
