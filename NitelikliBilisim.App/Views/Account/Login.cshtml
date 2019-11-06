@@ -43,33 +43,33 @@
             <figure>
                 <a href="index.html"><img src="/img/logo.png" width="149" height="42" data-retina="true" alt=""></a>
             </figure>
-            <form>
+            <form asp-controller="account" asp-action="login" method="post">
                 <div class="access_social">
-                    <a href="#0" class="social_bt facebook">Login with Facebook</a>
-                    <a href="#0" class="social_bt google">Login with Google</a>
-                    <a href="#0" class="social_bt linkedin">Login with Linkedin</a>
+                    <a href="#0" class="social_bt facebook">Facebook ile giriş yap</a>
+                    <a href="#0" class="social_bt google">Google ile giriş yap</a>
+                    <a href="#0" class="social_bt linkedin">Linkedin ile giriş yap</a>
                 </div>
-                <div class="divider"><span>Or</span></div>
+                <div class="divider"><span>ya da</span></div>
                 <div class="form-group">
                     <span class="input">
-                        <input class="input_field" type="email" autocomplete="off" name="email">
+                        <input class="input_field" type="text" autocomplete="off" name="UserName">
                         <label class="input_label">
-                            <span class="input__label-content">Your email</span>
+                            <span class="input__label-content">Kullanıcı Adı</span>
                         </label>
                     </span>
 
                     <span class="input">
-                        <input class="input_field" type="password" autocomplete="new-password" name="password">
+                        <input class="input_field" type="password" autocomplete="new-password" name="Password">
                         <label class="input_label">
-                            <span class="input__label-content">Your password</span>
+                            <span class="input__label-content">Şifre</span>
                         </label>
                     </span>
-                    <small><a href="#0">Forgot password?</a></small>
+                    <small><a href="#0">Şifrenizi mi unuttunuz?</a></small>
                 </div>
-                <a href="#0" class="btn_1 rounded full-width add_top_60">Login to Udema</a>
-                <div class="text-center add_top_10">New to Udema? <strong><a href="/account/register">Sign up!</a></strong></div>
+                <button type="submit" class="btn_1 rounded full-width add_top_60">Giriş Yap</button>
+                <div class="text-center add_top_10">Nitelikli Bilişim'de yeni misiniz? <strong><a href="/account/register">Kaydolun!</a></strong></div>
             </form>
-            <div class="copy">© 2017 Udema</div>
+            <div class="copy">© @DateTime.Now.Year Nitelikli Bilişim</div>
         </aside>
     </div>
     <!-- /login -->
