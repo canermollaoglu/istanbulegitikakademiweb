@@ -71,7 +71,7 @@ namespace NitelikliBilisim.Business.Repositories
             if (order != null)
                 return order(query);
 
-            return query;
+            return query.AsNoTracking();
         }
     }
 }
