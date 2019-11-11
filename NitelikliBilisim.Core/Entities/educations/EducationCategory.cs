@@ -5,22 +5,21 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NitelikliBilisim.Core.Entities
 {
-    [Table("Educations")]
-    public class Education : BaseEntity<Guid>
+    [Table("EducationSpecialCategories")]
+    public class EducationCategory : BaseEntity<Guid>
     {
-        public Education()
+        public EducationCategory()
         {
             Id = Guid.NewGuid();
         }
+
         [MaxLength(128)]
         public string Name { get; set; }
         [MaxLength(512)]
         public string Description { get; set; }
-        [Column(TypeName = "decimal(8, 2)")]
-        public decimal? NewPrice { get; set; }
-        [Column(TypeName = "decimal(8, 2)")]
-        public decimal? OldPrice { get; set; }
-        public byte Days { get; set; }
-        public byte HoursPerDay { get; set; }
+
+        public Guid? BaseCategoryId { get; set; }
+        [ForeignKey("BaseCategoryId")]
+        public virtual EducationCategory BaseCategory { get; set; }
     }
 }

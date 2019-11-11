@@ -1,24 +1,21 @@
 ﻿using NitelikliBilisim.Core.Abstracts;
-using NitelikliBilisim.Core.Enums;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace NitelikliBilisim.Core.Entities
 {
-    [Table("EducationPhotoGallery")]
-    public class EducationPhotoGallery : BaseEntity<Guid>
+    [Table("EducationDetails")]
+    public class EducationDetails : BaseEntity<Guid>
     {
-        public EducationPhotoGallery()
+        public EducationDetails()
         {
             Id = Guid.NewGuid();
         }
-
-        [MaxLength(256)]
-        public string PhotoUrl { get; set; }
-        public EducationPhotoType PhotoType { get; set; }
+        [MaxLength(128)]
+        public string Title { get; set; }
+        public byte Duration { get; set; }
+        public byte Order { get; set; }
 
         [ForeignKey("Education")]
         public Guid EducationId { get; set; }

@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace NitelikliBilisim.Core.Enums
+﻿namespace NitelikliBilisim.Core.Enums
 {
-    public enum EducationPhotoType
+    public enum EducationMediaType
     {
-        GalleryItem = 1010,
+        GalleryPhoto = 1010,
         Tumbnail = 1020,
         AdPhoto = 1030,
+        Video = 1040,
         Photo_256x256 = 256256,
         Photo_128x128 = 128128,
         Photo_64x64 = 6464,

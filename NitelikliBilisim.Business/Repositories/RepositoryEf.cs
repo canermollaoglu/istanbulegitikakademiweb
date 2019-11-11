@@ -11,22 +11,22 @@ namespace NitelikliBilisim.Business.Repositories
     public class Repository<TEntity, TKey> : IRepository<TEntity, TKey> where TEntity : class, IEntity<TKey>
     {
         private readonly NbDataContext _context;
-        private DbSet<TEntity> Table { get; }
+        private DbSet<TEntity> _table { get; }
 
         public Repository(NbDataContext context)
         {
             _context = context;
-            Table = _context.Set<TEntity>();
+            _table = _context.Set<TEntity>();
         }
 
         public TEntity GetById(TKey id)
         {
-            return Table.Find(id);
+            return _table.Find(id);
         }
 
         public TKey Add(TEntity entity, bool isSaveLater = false)
         {
-            Table.Add(entity);
+            _table.Add(entity);
             if (!isSaveLater)
                 Save();
             return entity.Id;
@@ -34,13 +34,13 @@ namespace NitelikliBilisim.Business.Repositories
 
         public int Update(TEntity entity, bool isSaveLater = false)
         {
-            Table.Update(entity);
+            _table.Update(entity);
             return isSaveLater ? 0 : Save();
         }
 
         public int Delete(TEntity entity, bool isSaveLater = false)
         {
-            Table.Remove(entity);
+            _table.Remove(entity);
             return isSaveLater ? 0 : Save();
         }
 
@@ -51,7 +51,7 @@ namespace NitelikliBilisim.Business.Repositories
         }
         public IQueryable<TEntity> Get(Expression<Func<TEntity, bool>> predicate = null)
         {
-            return predicate == null ? Table : Table.Where(predicate);
+            return predicate == null ? _table : _table.Where(predicate);
         }
 
         public IQueryable<TEntity> Get(
@@ -59,7 +59,7 @@ namespace NitelikliBilisim.Business.Repositories
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> order = null,
             params string[] includes)
         {
-            IQueryable<TEntity> query = Table;
+            IQueryable<TEntity> query = _table;
 
             if (filter != null)
                 query = query.Where(filter);
