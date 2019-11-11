@@ -190,7 +190,7 @@ namespace NitelikliBilisim.App.Controllers
                 Email = model.Email,
                 Name = model.Name,
                 Surname = model.Surname,
-                FotoUrl = model.Photo,
+                AvatarPath = model.Photo,
                 EmailConfirmed = true
             };
             var result = await _userManager.CreateAsync(user);
