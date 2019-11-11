@@ -17,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Entities\sales\" />
     <Folder Include="Services\Abstracts\" />
   </ItemGroup>
 

@@ -6,9 +6,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace NitelikliBilisim.Core.Entities
 {
     [Table("EducationDetails")]
-    public class EducationDetails : BaseEntity<Guid>
+    public class EducationPart : BaseEntity<Guid>
     {
-        public EducationDetails()
+        public EducationPart()
         {
             Id = Guid.NewGuid();
         }
