@@ -15,7 +15,7 @@ namespace NitelikliBilisim.Core.Entities.Identity
         public string AvatarPath { get; set; }
 
 
-        public Educator EducatorId { get; set; }
+        public virtual Educator Educator { get; set; }
         public ICollection<ApplicationUserRole> UserRoles { get; set; }
     }
 }

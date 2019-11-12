@@ -15,6 +15,7 @@ namespace NitelikliBilisim.Core.Entities
         [MaxLength(256)]
         public string PhotoUrl { get; set; }
 
+        [ForeignKey("Id")]
         public ApplicationUser User { get; set; }
     }
 }
