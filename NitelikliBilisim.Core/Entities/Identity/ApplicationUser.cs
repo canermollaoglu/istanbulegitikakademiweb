@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
-namespace NitelikliBilisim.Core.Entities.Identity
+namespace NitelikliBilisim.Core.Entities
 {
     public class ApplicationUser : IdentityUser
     {

@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NitelikliBilisim.Core.Entities
 {
+    [Table("SaleAddresses")]
     public class SaleAddress : BaseEntity<Guid>
     {
         [ForeignKey("Id")]

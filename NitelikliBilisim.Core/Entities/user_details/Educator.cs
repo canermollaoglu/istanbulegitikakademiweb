@@ -1,11 +1,10 @@
 ﻿using NitelikliBilisim.Core.Abstracts;
-using NitelikliBilisim.Core.Entities.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NitelikliBilisim.Core.Entities
 {
-    [Table("Educator")]
+    [Table("Educators")]
     public class Educator : BaseEntity<string>
     {
         [MaxLength(128)]

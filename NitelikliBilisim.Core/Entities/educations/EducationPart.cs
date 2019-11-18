@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NitelikliBilisim.Core.Entities
 {
-    [Table("EducationDetails")]
+    [Table("EducationParts")]
     public class EducationPart : BaseEntity<Guid>
     {
         public EducationPart()

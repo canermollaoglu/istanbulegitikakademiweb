@@ -3,10 +3,12 @@ using NitelikliBilisim.Core.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace NitelikliBilisim.Core.Entities
 {
+    [Table("Customers")]
     public class Customer : BaseEntity<string>
     {
         public CustomerType CustomerType { get; set; }
@@ -15,5 +17,7 @@ namespace NitelikliBilisim.Core.Entities
         [MaxLength(32)]
         public string Surname { get; set; }
 
+        [ForeignKey("Id")]
+        public ApplicationUser User { get; set; }
     }
 }
