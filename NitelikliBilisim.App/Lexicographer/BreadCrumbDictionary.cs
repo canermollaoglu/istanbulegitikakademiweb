@@ -18,6 +18,8 @@ namespace NitelikliBilisim.App.Lexicographer
             _dictionary = new Dictionary<string, BreadCrumbItem[]>();
             _dictionary.Add("AdminHomeIndex",
                 new BreadCrumbItem[] { new BreadCrumbItem(title: "Anasayfa", url: "/"), new BreadCrumbItem(title: "Admin Paneli", url: null) });
+            _dictionary.Add("AdminEducatorAdd",
+                new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/home/index"), new BreadCrumbItem(title: "Eğitmen Ekle", url: null) });
         }
 
         public static BreadCrumbItem[] ReadPart(string part)
