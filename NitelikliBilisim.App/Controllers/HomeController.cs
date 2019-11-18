@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Models;
-using NitelikliBilisim.Core.Entities.Identity;
+using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 
 namespace NitelikliBilisim.App.Controllers

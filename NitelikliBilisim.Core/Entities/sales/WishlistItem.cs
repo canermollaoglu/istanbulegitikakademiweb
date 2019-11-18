@@ -1,5 +1,4 @@
 ﻿using NitelikliBilisim.Core.Abstracts;
-using NitelikliBilisim.Core.Entities.Identity;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 

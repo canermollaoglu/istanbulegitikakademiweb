@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NitelikliBilisim.Data;
 
 namespace NitelikliBilisim.Data.Migrations
 {
     [DbContext(typeof(NbDataContext))]
-    partial class NbDataContextModelSnapshot : ModelSnapshot
+    [Migration("20191118102322_InitialMigration")]
+    partial class InitialMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -490,33 +492,6 @@ namespace NitelikliBilisim.Data.Migrations
                     b.ToTable("Educators");
                 });
 
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducatorSocialMedia", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("CreatedDate");
-
-                    b.Property<string>("CreatedUser")
-                        .HasMaxLength(128);
-
-                    b.Property<string>("EducatorId");
-
-                    b.Property<int>("SocialMediaType");
-
-                    b.Property<DateTime?>("UpdatedDate");
-
-                    b.Property<string>("UpdatedUser")
-                        .HasMaxLength(128);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EducatorId");
-
-                    b.ToTable("EducatorSocialMedias");
-                });
-
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.Sale", b =>
                 {
                     b.Property<Guid>("Id")
@@ -738,13 +713,6 @@ namespace NitelikliBilisim.Data.Migrations
                         .WithOne("Educator")
                         .HasForeignKey("NitelikliBilisim.Core.Entities.Educator", "Id")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducatorSocialMedia", b =>
-                {
-                    b.HasOne("NitelikliBilisim.Core.Entities.Educator", "Educator")
-                        .WithMany()
-                        .HasForeignKey("EducatorId");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.SaleAddress", b =>

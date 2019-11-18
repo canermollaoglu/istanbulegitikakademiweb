@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NitelikliBilisim.Core.Abstracts;
 using NitelikliBilisim.Core.Entities;
-using NitelikliBilisim.Core.Entities.Identity;
 
 namespace NitelikliBilisim.Data
 {
@@ -92,5 +91,6 @@ namespace NitelikliBilisim.Data
         public DbSet<WishlistItem> Wishlist { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Educator> Educators { get; set; }
+        public DbSet<EducatorSocialMedia> EducatorSocialMedias { get; set; }
     }
 }
