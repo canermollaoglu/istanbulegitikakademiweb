@@ -15,16 +15,15 @@
 <body class="fixed-nav sticky-footer" id="page-top">
 
     <partial name="partials/_LayoutTopNav" />
-
     <div class="content-wrapper">
         <div class="container-fluid">
+            <partial name="partials/_LayoutBreadCrumbs" />
             @RenderBody()
         </div>
     </div>
 
     <partial name="partials/_LayoutFooter" />
     <partial name="partials/_LayoutModals" />
-
     <partial name="partials/_BaseAssetsBody" />
 
     @RenderSection("postScripts", false)

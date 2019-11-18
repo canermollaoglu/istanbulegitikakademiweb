@@ -1,0 +1,22 @@
+﻿@{
+    var breadCrumbs = ViewData["bread_crumbs"] != null ? ViewData["bread_crumbs"] as BreadCrumbItem[] : new BreadCrumbItem[0];
+}
+<ol class="breadcrumb">
+    @if (breadCrumbs.Length > 0)
+    {
+        for (int i = 0; i < breadCrumbs.Length; i++)
+        {
+            var item = breadCrumbs[i];
+            if (i != breadCrumbs.Length - 1)
+            {
+                <li class="breadcrumb-item">
+                    <a href="@item.Url">@item.Title</a>
+                </li>
+            }
+            else
+            {
+                <li class="breadcrumb-item active">@item.Title</li>
+            }
+        }
+    }
+</ol>

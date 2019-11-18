@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using NitelikliBilisim.App.Lexicographer;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
@@ -11,6 +12,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
     {
         public IActionResult Index()
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminHomeIndex");
             return View();
         }
     }
