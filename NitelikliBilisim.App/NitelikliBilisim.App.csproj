@@ -32,6 +32,7 @@
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Models\" />
     <Folder Include="Properties\PublishProfiles\" />
+    <Folder Include="wwwroot\assets\font\area-admin\" />
     <Folder Include="wwwroot\js\" />
     <Folder Include="wwwroot\upload\" />
   </ItemGroup>
