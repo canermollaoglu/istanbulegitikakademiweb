@@ -2,7 +2,7 @@
 {
     public enum CustomerType
     {
-        Bireysel = 1000,
-        Kurumsal = 2000
+        Individual = 1000,
+        Corporate = 2000
     }
 }
