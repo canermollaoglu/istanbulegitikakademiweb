@@ -1,18 +1,22 @@
-﻿<div class="box_general padding_bottom">
+﻿@section styles{
+    <link href="~/assets/css/dropzone.css" rel="stylesheet" />
+}
+
+<div class="box_general padding_bottom">
     <div class="header_box version_2">
-        <h2><i class="fa fa-file"></i>Basic info</h2>
+        <h2><i class="fa fa-file"></i>Kişisel Bilgiler</h2>
     </div>
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <label>Name</label>
-                <input type="text" class="form-control" placeholder="Your name">
+                <label>İsim</label>
+                <input type="text" class="form-control" placeholder="Eğitmenin ismi (varsa orta ismi)">
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label>Last name</label>
-                <input type="text" class="form-control" placeholder="Your last name">
+                <label>Soyisim</label>
+                <input type="text" class="form-control" placeholder="Eğitmenin soyismi">
             </div>
         </div>
     </div>
@@ -20,14 +24,14 @@
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <label>Telephone</label>
-                <input type="text" class="form-control" placeholder="Your telephone number">
+                <label>Telefon</label>
+                <input type="text" class="form-control" placeholder="Eğitmenin telefon numarası">
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label>Email</label>
-                <input type="email" class="form-control" placeholder="Your email">
+                <label>E-Posta</label>
+                <input type="email" class="form-control" placeholder="Eğitmenin e-posta adresi">
             </div>
         </div>
     </div>
@@ -35,8 +39,12 @@
     <div class="row">
         <div class="col-md-12">
             <div class="form-group">
-                <label>Profile picture</label>
-                <form action="/file-upload" class="dropzone"></form>
+                <label>Profil Fotoğrafı</label>
+                <div>
+                    <img src="#" style="display:none;" />
+                </div>
+                <button class="btn_1">Dosya Seç</button>
+                <input id="input-file" type="file" value="" style="display:none;" />
             </div>
         </div>
     </div>
@@ -46,7 +54,7 @@
 
 <div class="box_general padding_bottom">
     <div class="header_box version_2">
-        <h2><i class="fa fa-share-alt"></i>Social profiles</h2>
+        <h2><i class="fa fa-share-alt"></i>Sosyal Medya Profilleri</h2>
     </div>
     <div class="row">
         <div class="col-md-6">
@@ -57,7 +65,7 @@
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label>Linkdin</label>
+                <label>Linkedin</label>
                 <input type="text" class="form-control" placeholder="Link">
             </div>
         </div>
@@ -147,5 +155,8 @@
     <!-- /row-->
 </div>
 <!-- /box_general-->
-<p><a href="#0" class="btn_1 medium">Save</a></p>
-	  </div>
+<p><a href="#0" class="btn_1 medium">Kaydet</a></p>
+
+@section postScripts{
+    <script src="~/assets/js/dropzone.min.js"></script>
+}
