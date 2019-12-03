@@ -1,5 +1,29 @@
 ﻿@section styles{
-    <link href="~/assets/css/dropzone.css" rel="stylesheet" />
+    <style>
+        #file-upload-container {
+            height: 250px;
+            width: 175px;
+            display: inline-block;
+            margin: 0;
+            padding: 0.5%;
+            cursor: pointer;
+            color: rgba(50,50,50,1);
+            border: 1px dashed black;
+        }
+
+            #file-upload-container input[type="file"] {
+                display: none;
+            }
+
+            #file-upload-container:hover {
+                transition-duration: 0.5s;
+                color: rgb(100, 140, 214);
+            }
+
+        #img-after-preview {
+            display: none;
+        }
+    </style>
 }
 
 <div class="box_general padding_bottom">
@@ -39,12 +63,11 @@
     <div class="row">
         <div class="col-md-12">
             <div class="form-group">
-                <label>Profil Fotoğrafı</label>
-                <div>
-                    <img src="#" style="display:none;" />
+                <div id="file-upload-container">
+                    <i id="img-before-preview" class="far fa-file-image"></i><span id="img-before-text"> Profil Fotoğrafı</span>
+                    <img id="img-after-preview" style="height: 100%; width: 100%;" />
+                    <input type="file" />
                 </div>
-                <button class="btn_1">Dosya Seç</button>
-                <input id="input-file" type="file" value="" style="display:none;" />
             </div>
         </div>
     </div>
@@ -158,5 +181,44 @@
 <p><a href="#0" class="btn_1 medium">Kaydet</a></p>
 
 @section postScripts{
-    <script src="~/assets/js/dropzone.min.js"></script>
+    <script>
+        var _fileExtension = null;
+        var _fileContent = null;
+        var _fileReader = new FileReader();
+
+        var fileUploadContainer = document.getElementById("file-upload-container");
+        var fileInput = document.querySelector('#file-upload-container input[type="file"]');
+        var imgBeforePreview = document.getElementById("img-before-preview");
+        var imgAfterPreview = document.getElementById("img-after-preview");
+        var imgBeforeText = document.getElementById("img-before-text");
+
+        fileUploadContainer.onclick = fileUploadContainer_onClick;
+        fileInput.onchange = fileInput_onChange;
+        _fileReader.onload = fileReader_onLoad;
+
+        function fileUploadContainer_onClick() {
+            fileInput.click();
+        }
+
+        function fileInput_onChange(e) {
+            if (e.target.files.length > 0) {
+                var selectedFile = e.target.files[0];
+                var spiltted = selectedFile.name.split(".");
+                var extension = spiltted[spiltted.length - 1];
+                _fileExtension = extension;
+                _fileReader.readAsDataURL(selectedFile);
+            }
+        }
+
+        function fileReader_onLoad(e) {
+            if (_fileReader.DONE) {
+                var result = e.target.result;
+                _fileContent = result;
+                imgAfterPreview.setAttribute("src", result);
+                imgAfterPreview.style.display = "block";
+                imgBeforePreview.style.display = "none";
+                imgBeforeText.style.display = "none";
+            }
+        }
+    </script>
 }
