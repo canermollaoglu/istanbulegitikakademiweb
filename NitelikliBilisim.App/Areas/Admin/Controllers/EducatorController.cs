@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Lexicographer;
+using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
@@ -30,7 +31,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             if (!ModelState.IsValid)
             {
                 var errors = ModelStateUtil.GetErrors(ModelState);
-                return Json(errors);
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = errors
+                });
             }
 
             return Json("");
