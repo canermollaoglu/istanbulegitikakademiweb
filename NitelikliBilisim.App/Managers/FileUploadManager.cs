@@ -19,6 +19,11 @@ namespace NitelikliBilisim.App.Managers
             InitializeValidExtensions();
         }
 
+        public FileUploadManager(params string[] extensions)
+        {
+            _validExtensions = extensions.ToList();
+        }
+
         public FileUploadManager(IHostingEnvironment hostingEnvironment, params string[] extensions)
         {
             _hostingEnvironment = hostingEnvironment;
@@ -26,12 +31,10 @@ namespace NitelikliBilisim.App.Managers
         }
 
         // methods (public to private)
-        public string Upload(string basePath, string base64File, string extension, string previousFile = null, string preDeterminedName = null)
+        public string Upload(string path, string base64File, string extension, string previousFile = null, string preDeterminedName = null)
         {
             if (!ValidateExtensionForFiles(extension))
                 return null;
-
-            var path = $"{_hostingEnvironment.WebRootPath}/{basePath}";
 
             CreateDirectoryIfNotExists(path);
 
@@ -49,14 +52,14 @@ namespace NitelikliBilisim.App.Managers
                 $"{path}{preDeterminedName}_{fileTime}.{extension}";
 
             dbPath = string.IsNullOrWhiteSpace(preDeterminedName) ?
-                $"{basePath}/{withFileTimeName}"
+                $"{path}/{withFileTimeName}"
                 :
-                $"{basePath}/{withPreDeterminedName}";
+                $"{path}/{withPreDeterminedName}";
 
             filePath = ReplaceTrChars(filePath);
             dbPath = ReplaceTrChars(dbPath);
 
-            var previousFilePath = $"{_hostingEnvironment.WebRootPath}/{previousFile}";
+            var previousFilePath = $"{path}/{previousFile}";
             if (previousFile != null && File.Exists(previousFilePath))
                 File.Delete(previousFilePath);
 
