@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Utility;
@@ -11,6 +12,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
     [Area("Admin")]
     public class EducatorController : Controller
     {
+        private readonly IHostingEnvironment _hostingEnvironment;
+        public EducatorController(IHostingEnvironment hostingEnvironment)
+        {
+            _hostingEnvironment = hostingEnvironment;
+        }
         [Route("admin/egitmen-ekle")]
         public IActionResult Add()
         {
