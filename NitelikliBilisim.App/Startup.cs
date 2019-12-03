@@ -39,9 +39,12 @@ namespace NitelikliBilisim.App
             services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddEntityFrameworkStores<NbDataContext>()
                 .AddDefaultTokenProviders();
-            
+
             services.AddApplicationServices(this.Configuration);
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,17 +52,17 @@ namespace NitelikliBilisim.App
         {
             app.UseDeveloperExceptionPage();
             app.UseDatabaseErrorPage();
-//            if (env.IsDevelopment())
-//            {
-//                app.UseDeveloperExceptionPage();
-//                app.UseDatabaseErrorPage();
-//            }
-//            else
-//            {
-//                app.UseExceptionHandler("/Home/Error");
-//                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-//                app.UseHsts();
-//            }
+            //            if (env.IsDevelopment())
+            //            {
+            //                app.UseDeveloperExceptionPage();
+            //                app.UseDatabaseErrorPage();
+            //            }
+            //            else
+            //            {
+            //                app.UseExceptionHandler("/Home/Error");
+            //                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+            //                app.UseHsts();
+            //            }
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
@@ -71,7 +74,7 @@ namespace NitelikliBilisim.App
             app.UseAuthentication();
 
             app.UseCookiePolicy();
-            
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute("areas", "{area}/{controller=Manage}/{action=Index}/{id?}");
