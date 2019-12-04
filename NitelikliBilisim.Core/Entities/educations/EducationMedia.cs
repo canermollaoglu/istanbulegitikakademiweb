@@ -15,7 +15,7 @@ namespace NitelikliBilisim.Core.Entities
         }
 
         [MaxLength(256)]
-        public string PhotoUrl { get; set; }
+        public string FileUrl { get; set; }
         public EducationMediaType MediaType { get; set; }
 
         [ForeignKey("Education")]
