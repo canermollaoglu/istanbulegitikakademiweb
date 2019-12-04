@@ -1,4 +1,5 @@
 ﻿using NitelikliBilisim.Core.Abstracts;
+using NitelikliBilisim.Core.Enums;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -22,5 +23,7 @@ namespace NitelikliBilisim.Core.Entities
         public decimal? OldPrice { get; set; }
         public byte Days { get; set; }
         public byte HoursPerDay { get; set; }
+        public EducationLevel Level { get; set; }
+        public bool IsActive { get; set; }
     }
 }
