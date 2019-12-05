@@ -11,7 +11,7 @@ namespace NitelikliBilisim.Core.Repositories
         TKey Add(TEntity entity, bool isSaveLater = false);
         int Update(TEntity entity, bool isSaveLater = false);
         int Delete(TEntity entity, bool isSaveLater = false);
-        int Save();
+        //int Save();
         IQueryable<TEntity> Get(Expression<Func<TEntity, bool>> predicate = null);
     }
 }

@@ -3,17 +3,18 @@ using NitelikliBilisim.Core.Abstracts;
 using NitelikliBilisim.Core.Repositories;
 using NitelikliBilisim.Data;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
 namespace NitelikliBilisim.Business.Repositories
 {
-    public class Repository<TEntity, TKey> : IRepository<TEntity, TKey> where TEntity : class, IEntity<TKey>
+    public class BaseRepository<TEntity, TKey> : IRepository<TEntity, TKey> where TEntity : class, IEntity<TKey>
     {
         private readonly NbDataContext _context;
         private DbSet<TEntity> _table { get; }
 
-        public Repository(NbDataContext context)
+        public BaseRepository(NbDataContext context)
         {
             _context = context;
             _table = _context.Set<TEntity>();
@@ -54,7 +55,7 @@ namespace NitelikliBilisim.Business.Repositories
             return predicate == null ? _table : _table.Where(predicate);
         }
 
-        public IQueryable<TEntity> Get(
+        public List<TEntity> Get(
             Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> order = null,
             params string[] includes)
@@ -69,9 +70,9 @@ namespace NitelikliBilisim.Business.Repositories
                     query = query.Include(include);
 
             if (order != null)
-                return order(query);
+                return order(query).AsNoTracking().ToList();
 
-            return query.AsNoTracking();
+            return query.AsNoTracking().ToList();
         }
     }
 }
