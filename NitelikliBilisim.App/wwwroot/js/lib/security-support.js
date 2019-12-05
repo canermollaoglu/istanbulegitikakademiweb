@@ -8,7 +8,7 @@
         }
 
         TokenVerifier.prototype.addToken = function (form, data) {
-            data["__RequestVerificationToken"] = $('input[name="__RequestVerificationToken"]', $(`#form`)).val();
+            data["__RequestVerificationToken"] = $('input[name="__RequestVerificationToken"]', $(`#${form}`)).val();
             return data;
         }
 
