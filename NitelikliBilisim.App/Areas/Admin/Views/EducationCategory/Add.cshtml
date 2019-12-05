@@ -63,6 +63,7 @@
             $(selectBaseCategories).select2();
         }
         function btnSave_onClick() {
+            btnSave.off("click");
             var baseCategoryId = selectBaseCategories.options[selectBaseCategories.selectedIndex].value;
             var data = {
                 Name: inputName.value,
