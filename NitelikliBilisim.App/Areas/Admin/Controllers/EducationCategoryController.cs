@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using NitelikliBilisim.App.Areas.Admin.Models.Category;
 using NitelikliBilisim.Business.UoW;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
@@ -18,7 +19,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/kategori-ekle")]
         public IActionResult Add()
         {
-            var model = _unitOfWork.EducationCategory.Get(null, q => q.OrderBy(o => o.Name));
+            var data = _unitOfWork.EducationCategory.Get(null, q => q.OrderBy(o => o.Name));
+            var model = new AddGetVm
+            {
+                Categories = data
+            };
             return View(model);
         }
 

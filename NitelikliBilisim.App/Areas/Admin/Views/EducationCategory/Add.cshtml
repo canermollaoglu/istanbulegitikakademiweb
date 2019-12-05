@@ -1,4 +1,4 @@
-﻿@model List<NitelikliBilisim.Core.Entities.EducationCategory>
+﻿@model NitelikliBilisim.App.Areas.Admin.Models.Category.AddGetVm
 @{
     ViewData["Title"] = "Add";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -24,7 +24,7 @@
                     <label>Üst Kategori Seçiniz</label>
                     <select id="select-base-categories" class="form-control">
                         <option value="0">Üst kategorisi yok</option>
-                        @foreach (var item in Model)
+                        @foreach (var item in Model.Categories)
                         {
                             <option value="@item.Id">@item.Name</option>
                         }
