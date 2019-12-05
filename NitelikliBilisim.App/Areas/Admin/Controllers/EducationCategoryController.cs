@@ -6,10 +6,26 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class EducationCategoryController : Controller
     {
-        public IActionResult Index()
+        [Route("admin/kategori-ekle")]
+        public IActionResult Add()
         {
+            return View();
+        }
+
+        [HttpPost, Route("admin/kategori-ekle")]
+        public JsonResult Add(object o)
+        {
+
+            return Json("");
+        }
+
+        [Route("admin/kategoriler")]
+        public IActionResult List()
+        {
+
             return View();
         }
     }
