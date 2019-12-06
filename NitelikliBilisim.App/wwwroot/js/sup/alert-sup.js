@@ -67,8 +67,8 @@
     }());
     AlertSupport.ResultAlert = ResultAlert;
 
-    var DeleteConfirm = (function () {
-        function DeleteConfirm() {
+    var ConfirmModalBuilder = (function () {
+        function ConfirmModalBuilder() {
             this.modalConfirmationTrigger = $("#modal-confirmation-trigger");
             this.modalConfirmation = $("#modal-confirmation");
             this.modalConfirmationTitle = $("#modal-confirmation-title");
@@ -77,9 +77,9 @@
             this.modalBtnConfirm = $("#modal-btn-confirm");
         }
 
-        // options = { title: <string>, bodyText: <string>, cancelText: <string>, confirmText: <string> }
+        // options = { title: <string>, bodyText: <string>, cancelText: <string>, confirmText: <string>, onConfirmClick: <function> }
 
-        DeleteConfirm.prototype.buildModal = function (options) {
+        ConfirmModalBuilder.prototype.buildModal = function (options) {
             if (options) {
                 var o = options;
                 if (o.title)
@@ -90,14 +90,20 @@
                     this.modalBtnCancel.html(o.cancelText);
                 if (o.confirmText)
                     this.modalBtnConfirm.html(o.confirmText);
+                if (o.onConfirmClick)
+                    this.modalBtnConfirm.on("click", o.onConfirmClick);
             }
         }
 
-        DeleteConfirm.prototype.setUrl = function (url) {
-            this.modalBtnConfirm.attr("href", url);
+        ConfirmModalBuilder.prototype.setUrl = function (url) {
+            this.modalBtnConfirm.attr("data-url", url);
         }
 
-        return DeleteConfirm;
+        ConfirmModalBuilder.prototype.display = function () {
+            this.modalConfirmationTrigger.click();
+        }
+
+        return ConfirmModalBuilder;
     }());
-    AlertSupport.DeleteConfirm = DeleteConfirm;
+    AlertSupport.ConfirmModalBuilder = ConfirmModalBuilder;
 })(AlertSupport || (AlertSupport = {}));

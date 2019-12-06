@@ -52,6 +52,7 @@ namespace NitelikliBilisim.Data
         {
             base.OnModelCreating(builder);
             builder.EnableAutoHistory(100);
+
             #region ManyToMany
 
             builder.Entity<Bridge_EducationCategory>()
