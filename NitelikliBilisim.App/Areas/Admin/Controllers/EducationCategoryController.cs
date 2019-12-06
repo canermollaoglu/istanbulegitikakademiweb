@@ -57,8 +57,26 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/kategoriler")]
         public IActionResult List()
         {
+            var model = _unitOfWork.EducationCategory.Get(null, order => order.OrderBy(o => o.Name));
+            return View(model);
+        }
 
-            return View();
+        public IActionResult Delete(Guid? categoryId)
+        {
+            if (categoryId == null)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    message = "Silinecek veri bulunamadı"
+                });
+
+            _unitOfWork.EducationCategory.Delete(categoryId.Value);
+
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                message = "Silme işlemi başarılı"
+            });
         }
     }
 }
