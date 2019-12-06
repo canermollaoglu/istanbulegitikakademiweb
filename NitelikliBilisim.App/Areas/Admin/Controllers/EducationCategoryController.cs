@@ -61,6 +61,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             return View(model);
         }
 
+        [Route("admin/kategori-sil")]
         public IActionResult Delete(Guid? categoryId)
         {
             if (categoryId == null)

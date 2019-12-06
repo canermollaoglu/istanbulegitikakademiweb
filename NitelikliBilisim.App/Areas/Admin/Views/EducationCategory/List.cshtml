@@ -42,7 +42,7 @@
                             <td>
                                 <div class="btn-group">
                                     <a class="btn btn-warning" href="/admin/kategori-guncelle?kategoriId=@item.Id">Güncelle</a>
-                                    <button class="btn-confirmation-modal-trigger btn btn-danger" data-id="@item.Id" style="cursor:pointer;">Sil</button>
+                                    <button class="btn-confirmation-modal-trigger btn btn-danger" data-url="/admin/kategori-sil?categoryId=@item.Id" style="cursor:pointer;">Sil</button>
                                 </div>
                             </td>
                         </tr>
@@ -53,3 +53,9 @@
     </div>
     <div class="card-footer small text-muted">Veri tarihi: @DateTime.Now</div>
 </div>
+
+@section postScripts{
+    <script>
+
+    </script>
+}

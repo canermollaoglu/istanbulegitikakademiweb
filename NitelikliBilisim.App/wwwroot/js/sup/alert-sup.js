@@ -67,35 +67,37 @@
     }());
     AlertSupport.ResultAlert = ResultAlert;
 
-    //var DeleteConfirm = (function () {
-    //    function DeleteConfirm() {
-    //        this.modalConfirmationTrigger = $("#modal-confirmation-trigger");
-    //        this.modalConfirmation = $("#modal-confirmation");
-    //        this.modalConfirmationTitle = $("#modal-confirmation-title");
-    //        this.modalConfirmationBodyText = $("#modal-confirmation-body-text");
-    //        this.modalBtnCancel = $("#modal-btn-cancel");
-    //        this.modalBtnConfirm = $("#modal-btn-confirm");
-    //    }
+    var DeleteConfirm = (function () {
+        function DeleteConfirm() {
+            this.modalConfirmationTrigger = $("#modal-confirmation-trigger");
+            this.modalConfirmation = $("#modal-confirmation");
+            this.modalConfirmationTitle = $("#modal-confirmation-title");
+            this.modalConfirmationBodyText = $("#modal-confirmation-body-text");
+            this.modalBtnCancel = $("#modal-btn-cancel");
+            this.modalBtnConfirm = $("#modal-btn-confirm");
+        }
 
-    //    // options = { confirmUrl: <string>, modalOptions: { title: <string>, bodyText: <string>, cancelText: <string>, confirmText: <string> } }
-    //    DeleteConfirm.prototype.show = function (options) {
-    //        this.modalBtnConfirm.attr("href", options.confirmUrl);
-    //        if (options.modalOptions) {
-    //            var o = options.modalOptions;
-    //            if (o.title)
-    //                this.modalConfirmationTitle.html(o.title);
-    //            if (o.bodyText)
-    //                this.modalConfirmationBodyText.html(o.bodyText);
-    //            if (o.cancelText)
-    //                this.modalBtnCancel.html(o.cancelText);
-    //            if (o.confirmText)
-    //                this.modalBtnConfirm.html(o.confirmText);
-    //        }
+        // options = { title: <string>, bodyText: <string>, cancelText: <string>, confirmText: <string> }
 
-    //        this.modalConfirmationTrigger.click();
-    //    }
+        DeleteConfirm.prototype.buildModal = function (options) {
+            if (options) {
+                var o = options;
+                if (o.title)
+                    this.modalConfirmationTitle.html(o.title);
+                if (o.bodyText)
+                    this.modalConfirmationBodyText.html(o.bodyText);
+                if (o.cancelText)
+                    this.modalBtnCancel.html(o.cancelText);
+                if (o.confirmText)
+                    this.modalBtnConfirm.html(o.confirmText);
+            }
+        }
 
-    //    return DeleteConfirm;
-    //}());
-    //AlertSupport.DeleteConfirm = DeleteConfirm;
+        DeleteConfirm.prototype.setUrl = function (url) {
+            this.modalBtnConfirm.attr("href", url);
+        }
+
+        return DeleteConfirm;
+    }());
+    AlertSupport.DeleteConfirm = DeleteConfirm;
 })(AlertSupport || (AlertSupport = {}));
