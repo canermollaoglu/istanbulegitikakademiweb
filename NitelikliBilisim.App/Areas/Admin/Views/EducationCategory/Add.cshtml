@@ -84,9 +84,9 @@
                 method: "post",
                 data: data,
                 success: (res) => {
-                    var alertBuilder = new AlertSupport.Builder();
+                    var resultAlert = new AlertSupport.ResultAlert();
                     if (res.isSuccess) {
-                        alertBuilder.display({
+                        resultAlert.display({
                             success: true,
                             message: "İşlem başarılı. Anasayfaya dönmek için {link}",
                             redirectElement: {
@@ -95,7 +95,7 @@
                             }
                         });
                     } else {
-                        alertBuilder.display({
+                        resultAlert.display({
                             success: false,
                             errors: res.errors,
                             message: "Sayfayı yenilemek için {link}",

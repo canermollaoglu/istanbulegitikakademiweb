@@ -1,8 +1,8 @@
 ﻿var AlertSupport;
 (function (AlertSupport) {
 
-    var Builder = (function () {
-        function Builder() {
+    var ResultAlert = (function () {
+        function ResultAlert() {
             this.alertContainer = $("#div-alert-container");
             this.alertIcon = $("#alert-icon");
             this.alertMessageList = $("#alert-message-list");
@@ -12,7 +12,7 @@
         }
 
         // options = { success: <bool>, errors: [], message: <string>, redirectElement: {content: <string>, link: <string>} }
-        Builder.prototype.display = function (options) {
+        ResultAlert.prototype.display = function (options) {
             this.alertMessageList.html("");
             this.alertSingleMessage.html("");
             buildMessage(this.alertSingleMessage, options);
@@ -63,7 +63,39 @@
             }
         }
 
-        return Builder;
+        return ResultAlert;
     }());
-    AlertSupport.Builder = Builder;
+    AlertSupport.ResultAlert = ResultAlert;
+
+    //var DeleteConfirm = (function () {
+    //    function DeleteConfirm() {
+    //        this.modalConfirmationTrigger = $("#modal-confirmation-trigger");
+    //        this.modalConfirmation = $("#modal-confirmation");
+    //        this.modalConfirmationTitle = $("#modal-confirmation-title");
+    //        this.modalConfirmationBodyText = $("#modal-confirmation-body-text");
+    //        this.modalBtnCancel = $("#modal-btn-cancel");
+    //        this.modalBtnConfirm = $("#modal-btn-confirm");
+    //    }
+
+    //    // options = { confirmUrl: <string>, modalOptions: { title: <string>, bodyText: <string>, cancelText: <string>, confirmText: <string> } }
+    //    DeleteConfirm.prototype.show = function (options) {
+    //        this.modalBtnConfirm.attr("href", options.confirmUrl);
+    //        if (options.modalOptions) {
+    //            var o = options.modalOptions;
+    //            if (o.title)
+    //                this.modalConfirmationTitle.html(o.title);
+    //            if (o.bodyText)
+    //                this.modalConfirmationBodyText.html(o.bodyText);
+    //            if (o.cancelText)
+    //                this.modalBtnCancel.html(o.cancelText);
+    //            if (o.confirmText)
+    //                this.modalBtnConfirm.html(o.confirmText);
+    //        }
+
+    //        this.modalConfirmationTrigger.click();
+    //    }
+
+    //    return DeleteConfirm;
+    //}());
+    //AlertSupport.DeleteConfirm = DeleteConfirm;
 })(AlertSupport || (AlertSupport = {}));
