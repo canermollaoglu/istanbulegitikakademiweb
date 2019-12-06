@@ -5,6 +5,10 @@
 }
 @section styles{
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
+}
+@section alerts{
+    <partial name="partials/_Alert" />
 }
 <div class="box_general padding_bottom">
     <div class="header_box version_2">
@@ -46,6 +50,7 @@
 <p><button id="btn-save" class="btn_1 medium">Kaydet</button></p>
 @section postScripts{
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+    <script src="~/js/sup/alert-sup.js"></script>
     <script src="~/js/lib/security-support.js"></script>
     <script>
         /* elements */
@@ -79,7 +84,29 @@
                 method: "post",
                 data: data,
                 success: (res) => {
-                    console.log(res);
+                    var alertBuilder = new AlertSupport.Builder();
+                    if (res.isSuccess) {
+                        alertBuilder.display({
+                            success: true,
+                            message: "İşlem başarılı. Anasayfaya dönmek için {link}",
+                            redirectElement: {
+                                content: "tıklayınız",
+                                link: "/"
+                            }
+                        });
+                    } else {
+                        alertBuilder.display({
+                            success: false,
+                            errors: res.errors,
+                            message: "Sayfayı yenilemek için {link}",
+                            redirectElement: {
+                                content: "tıklayınız",
+                                link: location.href
+                            }
+                        });
+                    }
+
+                    btnSave.on("click", btnSave_onClick);
                 }
             });
         }
