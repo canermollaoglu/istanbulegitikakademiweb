@@ -15,5 +15,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
             return View();
         }
+
+        [Route("admin/egitimler")]
+        public IActionResult List()
+        {
+
+            return View();
+        }
     }
 }
