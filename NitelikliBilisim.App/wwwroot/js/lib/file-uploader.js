@@ -22,8 +22,11 @@
             this.preview = document.getElementById(settings.preview);
 
         }
-        FileUploader.prototype.createFile = function () {
-
+        FileUploader.prototype.getFile = function () {
+            return {
+                base64content: this.base64Content,
+                extension: this.extension
+            }
         }
         FileUploader.prototype.validateExtension = function () {
 
@@ -49,7 +52,6 @@
                 afterPreview.style.display = "block";
             }
         }
-
         return FileUploader;
     }());
     UploadSupport.FileUploader = FileUploader;

@@ -28,9 +28,9 @@
                     <label>Kategorilerini Seçiniz</label>
                     <select id="select-categories" multiple="multiple" class="form-control">
                         @*@foreach (var item in Model.Categories)
-                        {
-                            <option value="@item.Id">@item.Name</option>
-                        }*@
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }*@
                         <option value="q">0</option>
                         <option value="w">0</option>
                         <option value="e">0</option>
@@ -75,9 +75,9 @@
                     <label>Seviyeyi Seçiniz</label>
                     <select id="select-levels" class="form-control">
                         @*@foreach (var item in Model.Categories)
-                        {
-                            <option value="@item.Id">@item.Name</option>
-                        }*@
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }*@
                         <option value="q">0</option>
                         <option value="w">0</option>
                         <option value="e">0</option>
@@ -92,13 +92,19 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Banner (jpeg)</label>
-                    <input type="text" class="form-control" placeholder="Eğitimin kaç gün süreceğini giriniz..." id="input-days">
+                    <div class="file-upload-container" id="file-upload-container-for-banner">
+                        <img class="img-after-preview" id="img-after-preview-for-banner" />
+                        <input type="file" />
+                    </div>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Ön İzleme (jpeg ya da mp4)</label>
-                    <input type="text" class="form-control" placeholder="Derslerin günlük kaç saat işleneceğinizi giriniz..." id="input-hours-per-day">
+                    <div class="file-upload-container" id="file-upload-container-for-preview">
+                        <img class="img-after-preview" id="img-after-preview-for-preview" />
+                        <input type="file" />
+                    </div>
                 </div>
             </div>
         </div>
@@ -115,6 +121,8 @@
         var selectCategories = $("#select-categories");
         var selectLevels = document.getElementById("select-levels");
         var btnSave = $("#btn-save");
+        var fileManager1 = null;
+        var fileManager2 = null;
 
         /* assignments */
         $(document).ready(document_onLoad);
@@ -124,6 +132,10 @@
         function document_onLoad() {
             selectCategories.select2();
             $(selectLevels).select2();
+            fileManager1.set({
+                container: "file-upload-container-banner",
+
+            });
         }
         function btnSave_onClick() {
             console.log(selectCategories.val());
