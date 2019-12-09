@@ -33,18 +33,24 @@
                     this.preview.setAttribute("src", result);
                     var afterPreview = document.querySelector(`#${this.containerId} .img-after-preview`);
                     afterPreview.style.display = "block";
+                    document.querySelector(`#${this.containerId} p`).style.display = "none";
                 }
             };
             this.preview = document.getElementById(settings.preview);
             if (settings.validExtensions)
                 validExtensions = settings.validExtensions;
+            if (settings.style) {
+                this.container.style.content = settings.style.content;
+            }
         }
+
         FileUploader.prototype.getFile = function () {
             return {
                 base64content: this.base64content,
                 extension: this.extension
             }
         }
+
         FileUploader.prototype.validateExtension = function () {
             if (validExtensions.indexOf(extension) == -1)
                 return false;

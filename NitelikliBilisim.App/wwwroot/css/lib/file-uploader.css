@@ -1,12 +1,16 @@
 ﻿.file-upload-container {
-    height: 250px;
-    width: 175px;
+    min-height: 75px;
     display: block;
     margin: 0;
     padding: 0.5%;
     cursor: pointer;
     color: rgba(50,50,50,1);
     border: 1px dashed black;
+}
+
+.file-upload-container {
+    font-size: 75%;
+    font-style: italic;
 }
 
     .file-upload-container input[type="file"] {

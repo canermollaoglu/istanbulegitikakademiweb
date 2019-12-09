@@ -21,7 +21,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Eğitim İsmi</label>
-                    <input type="text" class="form-control" placeholder="Eğitim isminizi giriniz..." id="input-name">
+                    <input type="text" class="form-control" placeholder="Eğitim ismini giriniz..." id="input-name">
                 </div>
             </div>
             <div class="col-md-6">
@@ -32,12 +32,12 @@
                             {
                                 <option value="@item.Id">@item.Name</option>
                             }*@
-                        <option value="q">0</option>
-                        <option value="w">0</option>
-                        <option value="e">0</option>
-                        <option value="r">0</option>
-                        <option value="t">0</option>
-                        <option value="y">0</option>
+                        <option value="q">Kategori-I</option>
+                        <option value="w">Kategori-II</option>
+                        <option value="e">Kategori-III</option>
+                        <option value="r">Kategori-IV</option>
+                        <option value="t">Kategori-V</option>
+                        <option value="y">Kategori-VI</option>
                     </select>
                 </div>
             </div>
@@ -79,12 +79,9 @@
                             {
                                 <option value="@item.Id">@item.Name</option>
                             }*@
-                        <option value="q">0</option>
-                        <option value="w">0</option>
-                        <option value="e">0</option>
-                        <option value="r">0</option>
-                        <option value="t">0</option>
-                        <option value="y">0</option>
+                        <option value="1010">Başlangıç</option>
+                        <option value="1020">Orta</option>
+                        <option value="1030">İleri</option>
                     </select>
                 </div>
             </div>
@@ -95,6 +92,7 @@
                     <label>Banner (jpeg)</label>
                     <div class="file-upload-container" id="file-upload-container-for-banner">
                         <img class="img-after-preview" id="img-after-preview-for-banner" />
+                        <p><i class="fa fa-file"></i> Resim yüklemek için tıklayınız...</p>
                         <input type="file" />
                     </div>
                 </div>
@@ -104,6 +102,7 @@
                     <label>Ön İzleme (jpeg ya da mp4)</label>
                     <div class="file-upload-container" id="file-upload-container-for-preview">
                         <img class="img-after-preview" id="img-after-preview-for-preview" />
+                        <p><i class="fa fa-file"></i> Resim yüklemek için tıklayınız...</p>
                         <input type="file" />
                     </div>
                 </div>
@@ -139,7 +138,8 @@
             fileManager1.set({
                 container: "file-upload-container-for-banner",
                 preview: "img-after-preview-for-banner",
-                validExtensions: ["jpg", "jpeg"]
+                validExtensions: ["jpg", "jpeg"],
+                style: { content: "Resim Yükle" }
             });
             fileManager2.set({
                 container: "file-upload-container-for-preview",
