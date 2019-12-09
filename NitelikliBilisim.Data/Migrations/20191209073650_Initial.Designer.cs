@@ -10,8 +10,8 @@ using NitelikliBilisim.Data;
 namespace NitelikliBilisim.Data.Migrations
 {
     [DbContext(typeof(NbDataContext))]
-    [Migration("20191118102322_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20191209073650_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -283,6 +283,10 @@ namespace NitelikliBilisim.Data.Migrations
 
                     b.Property<byte>("HoursPerDay");
 
+                    b.Property<bool>("IsActive");
+
+                    b.Property<int>("Level");
+
                     b.Property<string>("Name")
                         .HasMaxLength(128);
 
@@ -329,7 +333,7 @@ namespace NitelikliBilisim.Data.Migrations
 
                     b.HasIndex("BaseCategoryId");
 
-                    b.ToTable("EducationSpecialCategories");
+                    b.ToTable("EducationCategories");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationComment", b =>
@@ -388,10 +392,10 @@ namespace NitelikliBilisim.Data.Migrations
 
                     b.Property<Guid>("EducationId");
 
-                    b.Property<int>("MediaType");
-
-                    b.Property<string>("PhotoUrl")
+                    b.Property<string>("FileUrl")
                         .HasMaxLength(256);
+
+                    b.Property<int>("MediaType");
 
                     b.Property<DateTime?>("UpdatedDate");
 
@@ -490,6 +494,33 @@ namespace NitelikliBilisim.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Educators");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducatorSocialMedia", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedDate");
+
+                    b.Property<string>("CreatedUser")
+                        .HasMaxLength(128);
+
+                    b.Property<string>("EducatorId");
+
+                    b.Property<int>("SocialMediaType");
+
+                    b.Property<DateTime?>("UpdatedDate");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasMaxLength(128);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EducatorId");
+
+                    b.ToTable("EducatorSocialMedias");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.Sale", b =>
@@ -713,6 +744,13 @@ namespace NitelikliBilisim.Data.Migrations
                         .WithOne("Educator")
                         .HasForeignKey("NitelikliBilisim.Core.Entities.Educator", "Id")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducatorSocialMedia", b =>
+                {
+                    b.HasOne("NitelikliBilisim.Core.Entities.Educator", "Educator")
+                        .WithMany()
+                        .HasForeignKey("EducatorId");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.SaleAddress", b =>

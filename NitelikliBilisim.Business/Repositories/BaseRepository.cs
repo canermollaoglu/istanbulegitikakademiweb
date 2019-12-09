@@ -64,7 +64,7 @@ namespace NitelikliBilisim.Business.Repositories
         public List<TEntity> Get(
             Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> order = null,
-            params string[] includes)
+            params Expression<Func<TEntity, object>>[] includes)
         {
             IQueryable<TEntity> query = _table;
 

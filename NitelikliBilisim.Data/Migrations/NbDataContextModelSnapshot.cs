@@ -704,9 +704,8 @@ namespace NitelikliBilisim.Data.Migrations
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationCategory", b =>
                 {
                     b.HasOne("NitelikliBilisim.Core.Entities.EducationCategory", "BaseCategory")
-                        .WithMany("SubCategories")
-                        .HasForeignKey("BaseCategoryId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .WithMany()
+                        .HasForeignKey("BaseCategoryId");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationComment", b =>

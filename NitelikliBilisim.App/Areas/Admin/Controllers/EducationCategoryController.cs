@@ -57,7 +57,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/kategoriler")]
         public IActionResult List()
         {
-            var model = _unitOfWork.EducationCategory.Get(null, order => order.OrderBy(o => o.Name), "EducationCategory");
+            var model = _unitOfWork.EducationCategory.Get(null, order => order.OrderBy(o => o.Name), x => x.BaseCategory);
             return View(model);
         }
 
