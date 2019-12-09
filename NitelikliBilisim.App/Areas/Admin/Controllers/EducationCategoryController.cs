@@ -57,7 +57,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/kategoriler")]
         public IActionResult List()
         {
-            var model = _unitOfWork.EducationCategory.Get(null, order => order.OrderBy(o => o.Name));
+            var model = _unitOfWork.EducationCategory.Get(null, order => order.OrderBy(o => o.Name), "EducationCategory");
             return View(model);
         }
 
@@ -69,6 +69,14 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 {
                     isSuccess = false,
                     message = "Silinecek veri bulunamadı"
+                });
+
+            var subCategories = _unitOfWork.EducationCategory.Get(x => x.BaseCategoryId == categoryId).ToList();
+            if (subCategories.Count > 0)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Silinmek istenilen kategori, bir ya da birden fazla kategoriyi barındırmaktadır. Lütfen önce o kategorileri siliniz ya da üst kategorisini güncelleyiniz." }
                 });
 
             _unitOfWork.EducationCategory.Delete(categoryId.Value);
