@@ -6,6 +6,7 @@
 @section styles{
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
     <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
+    <link href="~/css/lib/file-uploader.css" rel="stylesheet" />
 }
 @section alerts{
     <partial name="partials/_Alert" />
@@ -116,6 +117,7 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
     <script src="~/js/sup/alert-sup.js"></script>
     <script src="~/js/lib/security-support.js"></script>
+    <script src="~/js/lib/file-uploader.js"></script>
     <script>
         /* elements */
         var selectCategories = $("#select-categories");
@@ -132,13 +134,23 @@
         function document_onLoad() {
             selectCategories.select2();
             $(selectLevels).select2();
+            fileManager1 = new UploadSupport.FileUploader();
+            fileManager2 = new UploadSupport.FileUploader();
             fileManager1.set({
-                container: "file-upload-container-banner",
-
+                container: "file-upload-container-for-banner",
+                preview: "img-after-preview-for-banner",
+                validExtensions: ["jpg", "jpeg"]
+            });
+            fileManager2.set({
+                container: "file-upload-container-for-preview",
+                preview: "img-after-preview-for-preview",
+                validExtensions: ["jpg", "jpeg", "mp4"]
             });
         }
         function btnSave_onClick() {
             console.log(selectCategories.val());
+            console.log(fileManager1.getFile());
+            console.log(fileManager2.getFile());
         }
     </script>
 }

@@ -1,7 +1,7 @@
 ﻿.file-upload-container {
     height: 250px;
     width: 175px;
-    display: inline-block;
+    display: block;
     margin: 0;
     padding: 0.5%;
     cursor: pointer;
