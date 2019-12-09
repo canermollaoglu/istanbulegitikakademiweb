@@ -1,0 +1,23 @@
+﻿.file-upload-container {
+    height: 250px;
+    width: 175px;
+    display: inline-block;
+    margin: 0;
+    padding: 0.5%;
+    cursor: pointer;
+    color: rgba(50,50,50,1);
+    border: 1px dashed black;
+}
+
+    .file-upload-container input[type="file"] {
+        display: none;
+    }
+
+    .file-upload-container:hover {
+        transition-duration: 0.5s;
+        color: rgb(100, 140, 214);
+    }
+
+.img-after-preview {
+    display: none;
+}
