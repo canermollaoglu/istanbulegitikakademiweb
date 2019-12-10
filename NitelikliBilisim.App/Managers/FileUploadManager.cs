@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Managers
@@ -31,30 +32,22 @@ namespace NitelikliBilisim.App.Managers
         }
 
         // methods (public to private)
-        public string Upload(string path, string base64File, string extension, string previousFile = null, string preDeterminedName = null)
+        public string Upload(string path, string base64File, string extension, string directory = null, string previousFile = null)
         {
             if (!ValidateExtensionForFiles(extension))
                 return null;
 
             CreateDirectoryIfNotExists(path);
 
+            if (!string.IsNullOrWhiteSpace(directory))
+                path += MakeDirectoryName(directory);
+
             string fileTime = DateTime.Now.ToFileTime().ToString();
-            string filePath = "";
-            string dbPath = "";
-            string withFileTimeName = $"{fileTime.ToString()}.{extension}";
-            string withPreDeterminedName = $"{preDeterminedName}_{fileTime}.{extension}";
-            withPreDeterminedName = ClearIllegalChars(withPreDeterminedName);
-            preDeterminedName = preDeterminedName != null ? ClearIllegalChars(preDeterminedName) : null;
+            string withFileTimeName = $"{fileTime}.{extension}";
 
-            filePath = string.IsNullOrWhiteSpace(preDeterminedName) ?
-                $"{path}{fileTime}.{extension}"
-                :
-                $"{path}{preDeterminedName}_{fileTime}.{extension}";
+            string filePath = $"{path}{fileTime}.{extension}";
 
-            dbPath = string.IsNullOrWhiteSpace(preDeterminedName) ?
-                $"{path}/{withFileTimeName}"
-                :
-                $"{path}/{withPreDeterminedName}";
+            string dbPath = $"{path}/{withFileTimeName}";
 
             filePath = ReplaceTrChars(filePath);
             dbPath = ReplaceTrChars(dbPath);
@@ -126,6 +119,24 @@ namespace NitelikliBilisim.App.Managers
                 .Replace("?", "")
                 .Replace("*", "");
         }
+        public string MakeDirectoryName(string name)
+        {
+            name = name.ToLower();
+            name = ReplaceTrChars(name);
+            name = ClearIllegalChars(name);
+            name = name.Replace("-", "");
+            var splitted = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            var builder = new StringBuilder();
+            for (int i = 0; i < splitted.Length; i++)
+            {
+                if (i != splitted.Length - 1)
+                    builder.Append($"{splitted[i]}-");
+                else
+                    builder.Append(splitted[i]);
+            }
+
+            return builder.ToString();
+        }
         public string ReplaceTrChars(string text)
         {
             return text.Replace('ı', 'i')
@@ -142,3 +153,45 @@ namespace NitelikliBilisim.App.Managers
         }
     }
 }
+
+//public string Upload(string path, string base64File, string extension, string previousFile = null, string preDeterminedName = null)
+//{
+//    if (!ValidateExtensionForFiles(extension))
+//        return null;
+
+//    CreateDirectoryIfNotExists(path);
+
+//    string fileTime = DateTime.Now.ToFileTime().ToString();
+//    string filePath = "";
+//    string dbPath = "";
+//    string withFileTimeName = $"{fileTime.ToString()}.{extension}";
+//    string withPreDeterminedName = $"{preDeterminedName}_{fileTime}.{extension}";
+//    withPreDeterminedName = ClearIllegalChars(withPreDeterminedName);
+//    preDeterminedName = preDeterminedName != null ? ClearIllegalChars(preDeterminedName) : null;
+
+//    filePath = string.IsNullOrWhiteSpace(preDeterminedName) ?
+//        $"{path}{fileTime}.{extension}"
+//        :
+//        $"{path}{preDeterminedName}_{fileTime}.{extension}";
+
+//    dbPath = string.IsNullOrWhiteSpace(preDeterminedName) ?
+//        $"{path}/{withFileTimeName}"
+//        :
+//        $"{path}/{withPreDeterminedName}";
+
+//    filePath = ReplaceTrChars(filePath);
+//    dbPath = ReplaceTrChars(dbPath);
+
+//    var previousFilePath = $"{path}/{previousFile}";
+//    if (previousFile != null && File.Exists(previousFilePath))
+//        File.Delete(previousFilePath);
+
+//    byte[] fileContent = ConvertBase64StringToByteArray(base64File);
+
+//    using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+//    {
+//        fs.Write(fileContent, 0, fileContent.Length);
+//    }
+
+//    return dbPath;
+//}

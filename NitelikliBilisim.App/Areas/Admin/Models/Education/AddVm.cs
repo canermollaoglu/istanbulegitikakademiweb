@@ -29,5 +29,15 @@ namespace NitelikliBilisim.App.Areas.Admin.Models.Education
         public int? EducationLevel { get; set; }
         [Required(ErrorMessage = "Eğitim en az 1 kategoriye ait olmalıdır")]
         public List<Guid> CategoryIds { get; set; }
+        public _PostedFile BannerFile { get; set; }
+        public _PostedFile PreviewFile { get; set; }
+    }
+
+    public class _PostedFile
+    {
+        [Required(ErrorMessage = "Dosya içeriği boş olamaz")]
+        public string Base64Content { get; set; }
+        [Required(ErrorMessage = "Dosya uzantısı boş olamaz")]
+        public string Extension { get; set; }
     }
 }

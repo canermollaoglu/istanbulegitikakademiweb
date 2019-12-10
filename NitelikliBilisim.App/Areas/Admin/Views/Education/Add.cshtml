@@ -108,40 +108,5 @@
     <script src="~/js/sup/alert-sup.js"></script>
     <script src="~/js/lib/security-support.js"></script>
     <script src="~/js/lib/file-uploader.js"></script>
-    <script>
-        /* elements */
-        var selectCategories = $("#select-categories");
-        var selectLevels = document.getElementById("select-levels");
-        var btnSave = $("#btn-save");
-        var fileManager1 = null;
-        var fileManager2 = null;
-
-        /* assignments */
-        $(document).ready(document_onLoad);
-        btnSave.on("click", btnSave_onClick);
-
-        /* events */
-        function document_onLoad() {
-            selectCategories.select2({ placeholder: "Eğitimin kategorilerini seçiniz..." });
-            $(selectLevels).select2();
-            fileManager1 = new UploadSupport.FileUploader();
-            fileManager2 = new UploadSupport.FileUploader();
-            fileManager1.set({
-                container: "file-upload-container-for-banner",
-                preview: "img-after-preview-for-banner",
-                validExtensions: ["jpg", "jpeg"],
-                style: { content: "Resim Yükle" }
-            });
-            fileManager2.set({
-                container: "file-upload-container-for-preview",
-                preview: "img-after-preview-for-preview",
-                validExtensions: ["jpg", "jpeg", "mp4"]
-            });
-        }
-        function btnSave_onClick() {
-            console.log(selectCategories.val());
-            console.log(fileManager1.getFile());
-            console.log(fileManager2.getFile());
-        }
-    </script>
+    <script src="~/js/areas/admin/admin-education-add.js"></script>
 }

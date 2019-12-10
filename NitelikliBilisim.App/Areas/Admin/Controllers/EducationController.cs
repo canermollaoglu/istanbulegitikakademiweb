@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Areas.Admin.Models.Education;
 using NitelikliBilisim.App.Areas.Admin.VmCreator.Education;
+using NitelikliBilisim.App.Managers;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
@@ -16,10 +18,14 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly EducationVmCreator _vmCreator;
-        public EducationController(UnitOfWork unitOfWork)
+        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly FileUploadManager _fileUploadManager;
+        public EducationController(UnitOfWork unitOfWork, IHostingEnvironment hostingEnvironment)
         {
             _unitOfWork = unitOfWork;
             _vmCreator = new EducationVmCreator(_unitOfWork);
+            _hostingEnvironment = hostingEnvironment;
+            _fileUploadManager = new FileUploadManager("mp4", "jpg", "jpeg", "png");
         }
         [Route("admin/egitim-ekle")]
         public IActionResult Add()
@@ -49,6 +55,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 Days = data.Days.Value,
                 HoursPerDay = data.HoursPerDay.Value
             }, data.CategoryIds);
+
+            _fileUploadManager.Upload(_hostingEnvironment.WebRootPath, data.BannerFile.Base64Content, data.BannerFile.Extension, $"/uploads/media-items/{data.Name}");
 
             return Json(new ResponseModel
             {
