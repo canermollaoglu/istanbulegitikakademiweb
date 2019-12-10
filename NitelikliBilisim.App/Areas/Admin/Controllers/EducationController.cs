@@ -41,7 +41,14 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 });
             }
 
-            
+            _unitOfWork.Education.Insert(new Core.Entities.Education
+            {
+                Name = data.Name,
+                Level = (Core.Enums.EducationLevel)data.EducationLevel.Value,
+                NewPrice = data.Price.Value,
+                Days = data.Days.Value,
+                HoursPerDay = data.HoursPerDay.Value
+            }, data.CategoryIds);
 
             return Json(new ResponseModel
             {

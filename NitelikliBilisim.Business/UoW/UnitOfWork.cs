@@ -11,6 +11,7 @@ namespace NitelikliBilisim.Business.UoW
     {
         private readonly NbDataContext _context;
         private EducationCategoryRepository _educationCategory;
+        private EducationRepository _education;
         public UnitOfWork(NbDataContext context)
         {
             _context = context;
@@ -26,6 +27,13 @@ namespace NitelikliBilisim.Business.UoW
             get
             {
                 return _educationCategory ?? (_educationCategory = new EducationCategoryRepository(_context));
+            }
+        }
+        public EducationRepository Education
+        {
+            get
+            {
+                return _education ?? (_education = new EducationRepository(_context));
             }
         }
     }
