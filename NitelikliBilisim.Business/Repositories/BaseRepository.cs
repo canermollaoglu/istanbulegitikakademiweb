@@ -11,7 +11,7 @@ namespace NitelikliBilisim.Business.Repositories
 {
     public class BaseRepository<TEntity, TKey> : IRepository<TEntity, TKey> where TEntity : class, IEntity<TKey>
     {
-        private readonly NbDataContext _context;
+        protected readonly NbDataContext _context;
         private DbSet<TEntity> _table { get; }
 
         public BaseRepository(NbDataContext context)

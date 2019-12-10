@@ -86,6 +86,9 @@ function btnSave_onClick() {
             }
 
             btnSave.on("click", btnSave_onClick);
+        },
+        error: (error) => {
+            alert(error.message);
         }
     });
 }

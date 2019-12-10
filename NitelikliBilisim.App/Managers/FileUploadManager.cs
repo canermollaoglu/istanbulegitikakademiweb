@@ -15,16 +15,6 @@ namespace NitelikliBilisim.App.Managers
         private readonly IHostingEnvironment _hostingEnvironment;
 
         // ctors
-        public FileUploadManager()
-        {
-            InitializeValidExtensions();
-        }
-
-        public FileUploadManager(params string[] extensions)
-        {
-            _validExtensions = extensions.ToList();
-        }
-
         public FileUploadManager(IHostingEnvironment hostingEnvironment, params string[] extensions)
         {
             _hostingEnvironment = hostingEnvironment;
@@ -32,22 +22,27 @@ namespace NitelikliBilisim.App.Managers
         }
 
         // methods (public to private)
-        public string Upload(string path, string base64File, string extension, string directory = null, string previousFile = null)
+        public string Upload(string path, string base64File, string extension, string tag, string directory = null, string previousFile = null)
         {
             if (!ValidateExtensionForFiles(extension))
                 return null;
 
-            CreateDirectoryIfNotExists(path);
+            //CreateDirectoryIfNotExists(path);
 
             if (!string.IsNullOrWhiteSpace(directory))
-                path += MakeDirectoryName(directory);
+            {
+                path += $"/{MakeDirectoryName(directory)}";
+                if (!Directory.Exists($"{_hostingEnvironment.WebRootPath}/{path}"))
+                    Directory.CreateDirectory($"{_hostingEnvironment.WebRootPath}/{path}");
+                path += "/";
+            }
 
             string fileTime = DateTime.Now.ToFileTime().ToString();
-            string withFileTimeName = $"{fileTime}.{extension}";
+            string withFileTimeName = $"{fileTime}-{tag}.{extension}";
 
-            string filePath = $"{path}{fileTime}.{extension}";
+            string filePath = $"{_hostingEnvironment.WebRootPath}{path}{withFileTimeName}";
 
-            string dbPath = $"{path}/{withFileTimeName}";
+            string dbPath = $"{path}{withFileTimeName}";
 
             filePath = ReplaceTrChars(filePath);
             dbPath = ReplaceTrChars(dbPath);
@@ -58,9 +53,16 @@ namespace NitelikliBilisim.App.Managers
 
             byte[] fileContent = ConvertBase64StringToByteArray(base64File);
 
-            using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+            try
             {
-                fs.Write(fileContent, 0, fileContent.Length);
+                using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                {
+                    fs.Write(fileContent, 0, fileContent.Length);
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
             }
 
             return dbPath;

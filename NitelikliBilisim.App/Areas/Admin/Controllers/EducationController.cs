@@ -10,6 +10,8 @@ using NitelikliBilisim.App.Managers;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Enums;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
@@ -25,7 +27,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             _unitOfWork = unitOfWork;
             _vmCreator = new EducationVmCreator(_unitOfWork);
             _hostingEnvironment = hostingEnvironment;
-            _fileUploadManager = new FileUploadManager("mp4", "jpg", "jpeg", "png");
+            _fileUploadManager = new FileUploadManager(hostingEnvironment, "mp4", "jpg", "jpeg", "png");
         }
         [Route("admin/egitim-ekle")]
         public IActionResult Add()
@@ -47,6 +49,20 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 });
             }
 
+            var bannerPath = _fileUploadManager.Upload($"/uploads/media-items/", data.BannerFile.Base64Content, data.BannerFile.Extension, "banner", data.Name);
+            var banner = new EducationMedia
+            {
+              FileUrl = bannerPath,
+              MediaType = EducationMediaType.Banner
+            };
+
+            var previewPath = _fileUploadManager.Upload($"/uploads/media-items/", data.PreviewFile.Base64Content, data.PreviewFile.Extension, "preview", data.Name);
+            var preview = new EducationMedia
+            {
+                FileUrl = previewPath,
+                MediaType = data.PreviewFile.Extension == "mp4" ? EducationMediaType.PreviewVideo : EducationMediaType.PreviewPhoto
+            };
+
             _unitOfWork.Education.Insert(new Core.Entities.Education
             {
                 Name = data.Name,
@@ -54,9 +70,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 NewPrice = data.Price.Value,
                 Days = data.Days.Value,
                 HoursPerDay = data.HoursPerDay.Value
-            }, data.CategoryIds);
-
-            _fileUploadManager.Upload(_hostingEnvironment.WebRootPath, data.BannerFile.Base64Content, data.BannerFile.Extension, $"/uploads/media-items/{data.Name}");
+            }, data.CategoryIds, new List<EducationMedia> { banner, preview });
 
             return Json(new ResponseModel
             {

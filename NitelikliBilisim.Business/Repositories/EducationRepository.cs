@@ -8,18 +8,16 @@ namespace NitelikliBilisim.Business.Repositories
 {
     public class EducationRepository : BaseRepository<Education, Guid>
     {
-        private readonly NbDataContext context;
         public EducationRepository(NbDataContext context) : base(context)
         {
-            this.context = context;
         }
 
-        public bool Insert(Education entity, List<Guid> categoryIds, bool isSaveLater = false)
+        public Guid? Insert(Education entity, List<Guid> categoryIds, List<EducationMedia> medias, bool isSaveLater = false)
         {
             if (categoryIds == null || categoryIds.Count == 0)
-                return false;
+                return null;
 
-            using (var transaction = context.Database.BeginTransaction())
+            using (var transaction = _context.Database.BeginTransaction())
             {
                 try
                 {
@@ -33,16 +31,19 @@ namespace NitelikliBilisim.Business.Repositories
                             Id = categoryId,
                             Id2 = educationId
                         });
+                    foreach (var item in medias)
+                        item.EducationId = educationId;
 
-                    context.Bridge_EducationCategories.AddRange(bridge);
-                    context.SaveChanges();
+                    _context.EducationMedias.AddRange(medias);
+                    _context.Bridge_EducationCategories.AddRange(bridge);
+                    _context.SaveChanges();
                     transaction.Commit();
-                    return true;
+                    return educationId;
                 }
                 catch
                 {
                     transaction.Rollback();
-                    return false;
+                    return null;
                 }
             }
         }
