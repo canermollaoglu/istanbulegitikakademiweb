@@ -1,4 +1,4 @@
-﻿
+﻿@model NitelikliBilisim.App.Areas.Admin.Models.Education.AddGetVm
 @{
     ViewData["Title"] = "Eğitim Ekle";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -28,16 +28,10 @@
                 <div class="form-group">
                     <label>Kategorilerini Seçiniz</label>
                     <select id="select-categories" multiple="multiple" class="form-control">
-                        @*@foreach (var item in Model.Categories)
-                            {
-                                <option value="@item.Id">@item.Name</option>
-                            }*@
-                        <option value="q">Kategori-I</option>
-                        <option value="w">Kategori-II</option>
-                        <option value="e">Kategori-III</option>
-                        <option value="r">Kategori-IV</option>
-                        <option value="t">Kategori-V</option>
-                        <option value="y">Kategori-VI</option>
+                        @foreach (var item in Model.Categories)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
                     </select>
                 </div>
             </div>
@@ -75,13 +69,10 @@
                 <div class="form-group">
                     <label>Seviyeyi Seçiniz</label>
                     <select id="select-levels" class="form-control">
-                        @*@foreach (var item in Model.Categories)
-                            {
-                                <option value="@item.Id">@item.Name</option>
-                            }*@
-                        <option value="1010">Başlangıç</option>
-                        <option value="1020">Orta</option>
-                        <option value="1030">İleri</option>
+                        @foreach (var item in Model.Levels)
+                        {
+                            <option value="@item.Key">@item.Value</option>
+                        }
                     </select>
                 </div>
             </div>
@@ -131,7 +122,7 @@
 
         /* events */
         function document_onLoad() {
-            selectCategories.select2();
+            selectCategories.select2({ placeholder: "Eğitimin kategorilerini seçiniz..." });
             $(selectLevels).select2();
             fileManager1 = new UploadSupport.FileUploader();
             fileManager2 = new UploadSupport.FileUploader();
