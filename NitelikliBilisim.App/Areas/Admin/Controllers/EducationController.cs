@@ -16,6 +16,13 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             return View();
         }
 
+        [HttpPost, Route("admin/egitim-ekle")]
+        public IActionResult Add(object o)
+        {
+
+            return Json("");
+        }
+
         [Route("admin/egitimler")]
         public IActionResult List()
         {
