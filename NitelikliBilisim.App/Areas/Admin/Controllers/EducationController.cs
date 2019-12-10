@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using NitelikliBilisim.App.Areas.Admin.Models.Education;
 using NitelikliBilisim.App.Areas.Admin.VmCreator.Education;
+using NitelikliBilisim.App.Models;
+using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
@@ -26,10 +29,25 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         }
 
         [HttpPost, Route("admin/egitim-ekle")]
-        public IActionResult Add(object o)
+        public IActionResult Add(AddPostVm data)
         {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelStateUtil.GetErrors(ModelState);
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = errors
+                });
+            }
 
-            return Json("");
+            
+
+            return Json(new ResponseModel
+            {
+                isSuccess =  true,
+                message = "Eğitim başarıyla eklenmiştir"
+            });
         }
 
         [Route("admin/egitimler")]

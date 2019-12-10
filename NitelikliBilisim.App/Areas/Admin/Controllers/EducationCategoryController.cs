@@ -41,7 +41,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     errors = errors
                 });
             }
-            _unitOfWork.EducationCategory.Add(new Core.Entities.EducationCategory
+            _unitOfWork.EducationCategory.Insert(new Core.Entities.EducationCategory
             {
                 Name = data.Name,
                 Description = data.Description,

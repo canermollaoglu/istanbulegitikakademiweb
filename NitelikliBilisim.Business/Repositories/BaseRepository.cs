@@ -25,7 +25,7 @@ namespace NitelikliBilisim.Business.Repositories
             return _table.Find(id);
         }
 
-        public TKey Add(TEntity entity, bool isSaveLater = false)
+        public virtual TKey Insert(TEntity entity, bool isSaveLater = false)
         {
             _table.Add(entity);
             if (!isSaveLater)
