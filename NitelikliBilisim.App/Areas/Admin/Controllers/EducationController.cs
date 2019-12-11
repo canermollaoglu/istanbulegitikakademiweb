@@ -66,6 +66,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             _unitOfWork.Education.Insert(new Education
             {
                 Name = data.Name,
+                Description = data.Description,
                 Level = (EducationLevel)data.EducationLevel.Value,
                 NewPrice = data.Price.Value,
                 Days = data.Days.Value,

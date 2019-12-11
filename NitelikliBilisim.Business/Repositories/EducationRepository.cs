@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NitelikliBilisim.Business.PagedEntity;
+using NitelikliBilisim.Core.DTO;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education;
 using NitelikliBilisim.Data;
@@ -106,9 +107,14 @@ namespace NitelikliBilisim.Business.Repositories
                 educationCategories.Add(new _EducationCategory { EducationId = item.EducationId, ConcattedCategories = concattedCategories });
             }
 
+            var educationDtos = new List<EducationDto>();
+            var mapper = new Mapper.Mapper<Education, EducationDto>();
+            foreach (var item in educations)
+                educationDtos.Add(mapper.Map(item));
+
             return new ListGetVm
             {
-                Educations = educations.ToList(),
+                Educations = educationDtos,
                 Medias = mediaCount,
                 Parts = partCount,
                 Gains = gainCount,

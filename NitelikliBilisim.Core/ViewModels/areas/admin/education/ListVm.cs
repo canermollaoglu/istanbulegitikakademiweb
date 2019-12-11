@@ -1,4 +1,5 @@
-﻿using NitelikliBilisim.Core.Entities;
+﻿using NitelikliBilisim.Core.DTO;
+using NitelikliBilisim.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,7 +8,7 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education
 {
     public class ListGetVm
     {
-        public List<Education> Educations { get; set; }
+        public List<EducationDto> Educations { get; set; }
         public List<_EducationSub> Medias { get; set; }
         public List<_EducationSub> Parts { get; set; }
         public List<_EducationSub> Gains { get; set; }
