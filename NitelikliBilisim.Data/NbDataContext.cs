@@ -85,6 +85,7 @@ namespace NitelikliBilisim.Data
         public DbSet<EducationComment> EducationComments { get; set; }
         public DbSet<EducationMedia> EducationMedias { get; set; }
         public DbSet<EducationPart> EducationParts { get; set; }
+        public DbSet<EducationGain> EducationGains { get; set; }
         public DbSet<EducationPromotionCode> EducationPromotionCodes { get; set; }
         public DbSet<Sale> Sales { get; set; }
         public DbSet<SaleAddress> SaleAddresses { get; set; }

@@ -22,7 +22,6 @@ namespace NitelikliBilisim.Business.UoW
             _context.EnsureAutoHistory();
             return _context.SaveChanges();
         }
-
         public EducationCategoryRepository EducationCategory
         {
             get

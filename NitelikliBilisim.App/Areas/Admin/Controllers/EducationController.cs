@@ -63,10 +63,10 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 MediaType = data.PreviewFile.Extension == "mp4" ? EducationMediaType.PreviewVideo : EducationMediaType.PreviewPhoto
             };
 
-            _unitOfWork.Education.Insert(new Core.Entities.Education
+            _unitOfWork.Education.Insert(new Education
             {
                 Name = data.Name,
-                Level = (Core.Enums.EducationLevel)data.EducationLevel.Value,
+                Level = (EducationLevel)data.EducationLevel.Value,
                 NewPrice = data.Price.Value,
                 Days = data.Days.Value,
                 HoursPerDay = data.HoursPerDay.Value
@@ -80,10 +80,10 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         }
 
         [Route("admin/egitimler")]
-        public IActionResult List()
+        public IActionResult List(int page = 0)
         {
-
-            return View();
+            var model = _vmCreator.CreateListGetVm(page);
+            return View(model);
         }
     }
 }

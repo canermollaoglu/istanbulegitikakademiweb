@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NitelikliBilisim.Business.PagedEntity;
 using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.ViewModels.areas.admin.education;
 using NitelikliBilisim.Data;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,88 @@ namespace NitelikliBilisim.Business.Repositories
                     .AsNoTracking()
                     .ToList(),
                 Count = dbSet.Count()
+            };
+        }
+
+        public ListGetVm GetPagedEducations(int page = 0, int shownRecords = 15)
+        {
+            var educations = _table
+                .OrderBy(o => o.Name)
+                .Skip(page * shownRecords)
+                .Take(shownRecords);
+
+            var mediaCount = educations.Join(_context.EducationMedias, l => l.Id, r => r.EducationId, (x, y) => new
+            {
+                EducationId = x.Id,
+                MediaId = y.Id
+            })
+            .GroupBy(g => g.EducationId)
+            .Select(x => new _EducationSub
+            {
+                EducationId = x.Key,
+                Count = x.Count()
+            }).ToList();
+            var partCount = educations.Join(_context.EducationParts, l => l.Id, r => r.EducationId, (x, y) => new
+            {
+                EducationId = x.Id,
+                PartId = y.Id
+            })
+            .GroupBy(g => g.EducationId)
+            .Select(x => new _EducationSub
+            {
+                EducationId = x.Key,
+                Count = x.Count()
+            }).ToList();
+            var gainCount = educations.Join(_context.EducationGains, l => l.Id, r => r.EducationId, (x, y) => new
+            {
+                EducationId = x.Id,
+                GainId = y.Id
+            })
+            .GroupBy(x => x.EducationId)
+            .Select(x => new _EducationSub
+            {
+                EducationId = x.Key,
+                Count = x.Count()
+            }).ToList();
+
+            var categories = educations.Join(_context.Bridge_EducationCategories, l => l.Id, r => r.Id2, (x, y) => new
+            {
+                EducationId = x.Id,
+                CategoryId = y.Id
+            }).Join(_context.EducationCategories, l => l.CategoryId, r => r.Id, (x, y) => new
+            {
+                EducationId = x.EducationId,
+                Category = y
+            })
+            .GroupBy(g => g.EducationId)
+            .Select(x => new
+            {
+                EducationId = x.Key,
+                Data = x.ToList()
+            });
+
+            var educationCategories = new List<_EducationCategory>();
+            foreach (var item in categories)
+            {
+                var concattedCategories = item.Data.Count != 0 ? "" : null;
+                for (int i = 0; i < item.Data.Count; i++)
+                {
+                    if (i != item.Data.Count - 1)
+                        concattedCategories += $"{item.Data[i].Category.Name}, ";
+                    else
+                        concattedCategories += item.Data[i].Category.Name;
+                }
+
+                educationCategories.Add(new _EducationCategory { EducationId = item.EducationId, ConcattedCategories = concattedCategories });
+            }
+
+            return new ListGetVm
+            {
+                Educations = educations.ToList(),
+                Medias = mediaCount,
+                Parts = partCount,
+                Gains = gainCount,
+                EducationCategories = educationCategories
             };
         }
 

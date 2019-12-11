@@ -1,6 +1,7 @@
 ﻿using NitelikliBilisim.App.Areas.Admin.Models.Education;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Enums;
+using NitelikliBilisim.Core.ViewModels.areas.admin.education;
 using NitelikliBilisim.Support;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,11 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.Education
                 Categories = categories,
                 Levels = levels
             };
+        }
+
+        public ListGetVm CreateListGetVm(int page = 0, int shownRecords = 15)
+        {
+            return _unitOfWork.Education.GetPagedEducations(page, shownRecords);
         }
     }
 }
