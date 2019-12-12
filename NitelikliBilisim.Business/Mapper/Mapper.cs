@@ -19,12 +19,7 @@ namespace NitelikliBilisim.Business.Mapper
                 {
                     if (entityProp.Name == dtoProp.Name)
                     {
-                        if (entityProp.PropertyType.IsEnum && dtoProp.PropertyType == typeof(string))
-                        {
-                            var val = Convert.ChangeType(entityProp.GetValue(entity), entityProp.PropertyType);
-                            dtoProp.SetValue(dto, EnumSupport.GetDescription(val));
-                        }
-                        else
+                        if (!entityProp.PropertyType.IsEnum)
                         {
                             var type = dtoProp.PropertyType;
                             if (type.IsGenericType && type.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))

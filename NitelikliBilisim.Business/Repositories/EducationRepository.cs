@@ -4,6 +4,7 @@ using NitelikliBilisim.Core.DTO;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education;
 using NitelikliBilisim.Data;
+using NitelikliBilisim.Support;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -108,9 +109,22 @@ namespace NitelikliBilisim.Business.Repositories
             }
 
             var educationDtos = new List<EducationDto>();
-            var mapper = new Mapper.Mapper<Education, EducationDto>();
+            //var mapper = new Mapper.Mapper<Education, EducationDto>();
+            //foreach (var item in educations)
+            //    educationDtos.Add(mapper.Map(item));
+
             foreach (var item in educations)
-                educationDtos.Add(mapper.Map(item));
+                educationDtos.Add(new EducationDto
+                {
+                    Id = item.Id,
+                    Name = item.Name,
+                    Description = item.Description,
+                    Days = item.Days,
+                    HoursPerDay = item.HoursPerDay,
+                    Level = EnumSupport.GetDescription(item.Level),
+                    NewPrice = item.NewPrice,
+                    IsActive = item.IsActive
+                });
 
             return new ListGetVm
             {
