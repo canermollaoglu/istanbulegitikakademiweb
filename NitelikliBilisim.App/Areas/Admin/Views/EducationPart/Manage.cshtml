@@ -13,7 +13,7 @@
 }
 <div class="card mb-3">
     <div class="card-header">
-        <i class="fa fa-table"></i> Eğitim Parçaları  @Model.EducationName 
+        <i class="fa fa-list"></i> <strong>@Model.EducationName</strong> Eğitiminin Parçaları
     </div>
     <div class="card-body">
         <div class="row">
@@ -26,7 +26,7 @@
                             <td><input type="text" value="" class="form-control" id="input-order" placeholder="Parçanın sırası" /></td>
                             <td><input type="text" value="" class="form-control" id="input-title" placeholder="Parça başlığı" /></td>
                             <td><input type="text" value="" class="form-control" id="input-duration" placeholder="Süre (dakika)" /></td>
-                            <td><button id="btn-add" class="btn btn-success" style="cursor:pointer;"><i class="fa fa-plus"></i></button></td>
+                            <td><button id="btn-add" type="button" class="btn btn-success" style="cursor:pointer;"><i class="fa fa-plus"></i></button></td>
                         </tr>
                     </table>
                 </form>
@@ -65,9 +65,11 @@
     <script src="~/assets/js/area-admin/jquery.dataTables.js"></script>
     <script src="~/assets/js/area-admin/dataTables.bootstrap4.js"></script>
     <script src="~/js/sup/alert-sup.js"></script>
+    <script src="~/js/lib/security-support.js"></script>
     <script>
         /* fields */
         var confirmModalBuilder = new AlertSupport.ConfirmModalBuilder();
+        var resultAlert = new AlertSupport.ResultAlert();
         var _educationId = $("#_education-id").val();
 
         /* elements */
@@ -83,11 +85,62 @@
             getEducationParts();
         }
         function btnAdd_onClick() {
+            btnAdd.off("click");
+            var data = {
+                EducationId: _educationId,
+                Order: $("#input-order").val(),
+                Title: $("#input-title").val(),
+                Duration: $("#input-duration").val()
+            };
+            var tokenVerifier = new SecuritySupport.TokenVerifier();
+            data = tokenVerifier.addToken("form-add-education-parts", data);
             $.ajax({
                 url: "/admin/add-education-part",
                 method: "post",
+                data: data,
                 success: (res) => {
-                    getEducationParts();
+                    if (res.isSuccess) {
+                        getEducationParts();
+                        $("#form-add-education-parts")[0].reset();
+                        resultAlert.display({
+                            success: true,
+                            message: "Kayıt işlemi başarılı"
+                        });
+                        btnAdd.on("click", btnAdd_onClick);
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors
+                        });
+                        btnAdd.on("click", btnAdd_onClick);
+                    }
+                }
+            });
+        }
+        function btnConfirmationModalTrigger_onClick() {
+            var url = this.getAttribute("data-url");
+            confirmModalBuilder.setUrl(url);
+            confirmModalBuilder.display();
+        }
+        function confirm_onClick() {
+            var url = this.getAttribute("data-url");
+            $.ajax({
+                url: url,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        getEducationParts();
+                        resultAlert.display({
+                            success: true,
+                            message: "Kayıt başarıyla silinmiştir"
+                        });
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors,
+                            message: "Hataları düzeltiniz"
+                        });
+                    }
                 }
             });
         }
@@ -102,9 +155,51 @@
                 method: "get",
                 success: (res) => {
                     if (res.isSuccess) {
-
+                        createTable(res.data.educationParts);
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors
+                        });
                     }
                 }
+            });
+        }
+        function createTable(data) {
+            tbodyEducationParts.html("");
+            var content = "";
+            if (data.length != 0)
+                for (var i = 0; i < data.length; i++) {
+                    var element = data[i];
+                    content +=
+                        `<tr>` +
+                        `<td>${element.order}</td>` +
+                        `<td>${element.title}</td>` +
+                        `<td>${element.duration} dk.</td>` +
+                        `<td>` +
+                        `<div class="btn-group">` +
+                        `<a href="/admin/egitim-parca-guncelle/${element.id}" class="btn btn-warning"><i class="fa fa-edit"></i></a>` +
+                        `<button class="btn btn-danger btn-confirmation-modal-trigger" data-url="/admin/delete-education-part/${element.id}"><i class="fa fa-trash"></i></button>` +
+                        `</div>` +
+                        `</td>` +
+                        `</tr>`;
+                }
+            else
+                content = `<tr><td colspan="5"><div class="alert alert-info"><strong>Bilgi:</strong> Eğitimin henüz parçası yoktur. Yukarıdan ekleyebilirsiniz</div></td></tr>`;
+            tbodyEducationParts.append(content);
+
+            var deleteButtons = $(".btn-confirmation-modal-trigger");
+            for (var i = 0; i < deleteButtons.length; i++) {
+                var btn = deleteButtons[i];
+                btn.onclick = btnConfirmationModalTrigger_onClick;
+            }
+
+            confirmModalBuilder.buildModal({
+                title: "Emin misiniz?",
+                bodyText: "Seçmiş olduğunuz eğitim parçası silinecektir.",
+                cancelText: "Hayır, iptal et",
+                confirmText: "Evet, eminim",
+                onConfirmClick: confirm_onClick
             });
         }
     </script>
