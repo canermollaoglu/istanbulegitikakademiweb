@@ -1,0 +1,78 @@
+﻿
+@{
+    ViewData["Title"] = "Eğitim Parça Yönetimi";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    <link href="~/assets/css/area-admin/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-table"></i> Eğitim Parçaları
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <form id="form-add-education-parts">
+                    <table class="table table-borderless">
+                        <tr>
+                            <td><input type="text" value="" class="form-control" id="input-order" placeholder="Parçanın sırası" /></td>
+                            <td><input type="text" value="" class="form-control" id="input-title" placeholder="Parça başlığı" /></td>
+                            <td><input type="text" value="" class="form-control" id="input-duration" placeholder="Süre (dakika)" /></td>
+                            <td><button id="btn-add" class="btn btn-success" style="cursor:pointer;"><i class="fa fa-plus"></i></button></td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Sıra</th>
+                                <th>Başlık</th>
+                                <th>Süre</th>
+                                <th>İşlem</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>Sıra</th>
+                                <th>Başlık</th>
+                                <th>Süre</th>
+                                <th>İşlem</th>
+                            </tr>
+                        </tfoot>
+                        <tbody id="tbody-egitim-parcalari">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer small text-muted">Veri tarihi: @DateTime.Now</div>
+</div>
+@section postScripts{
+    <script src="~/assets/js/area-admin/jquery.dataTables.js"></script>
+    <script src="~/assets/js/area-admin/dataTables.bootstrap4.js"></script>
+    <script src="~/js/sup/alert-sup.js"></script>
+    <script>
+        /* fields */
+        var confirmModalBuilder = new AlertSupport.ConfirmModalBuilder();
+
+        /* assignments */
+        $(document).ready(document_onLoad);
+
+        /* events */
+        function document_onLoad() {
+
+        }
+    </script>
+}
