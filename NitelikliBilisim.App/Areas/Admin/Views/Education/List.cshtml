@@ -54,13 +54,13 @@
                                 var isValidEducation = false;
                                 var educationMedias = Model.Medias.FirstOrDefault(x => x.EducationId == item.Id);
                                 var mediaCount = educationMedias != null ? educationMedias.Count : 0;
-                                var media = $"<a href=\"/admin/egitim-medya-yonetimi/{item.Id}\" class=\"btn btn-primary\"/><i class\"fa fa-address-book\"></i>{mediaCount}</a>";
+                                var media = $"<a href=\"/admin/egitim-medya-yonetimi/{item.Id}\" class=\"btn btn-primary\"/><i class=\"fa fa-file-photo-o\"></i> {mediaCount}</a>";
                                 var educationParts = Model.Parts.FirstOrDefault(x => x.EducationId == item.Id);
                                 var partCount = educationParts != null ? educationParts.Count : 0;
-                                var part = $"<a href=\"/admin/egitim-parca-yonetimi/{item.Id}\" class=\"btn btn-secondary\"/><i class\"fa fa-list-ul\"></i>{partCount}</a>";
+                                var part = $"<a href=\"/admin/egitim-parca-yonetimi/{item.Id}\" class=\"btn btn-secondary\"/><i class=\"fa fa-list-ul\"></i> {partCount}</a>";
                                 var educationGains = Model.Gains.FirstOrDefault(x => x.EducationId == item.Id);
                                 var gainCount = educationGains != null ? educationGains.Count : 0;
-                                var gain = $"<a href=\"/admin/egitim-kazanim-yonetimi/{item.Id}\" class=\"btn btn-info\"/><i class\"fa fa-gift\"></i>{gainCount}</a>";
+                                var gain = $"<a href=\"/admin/egitim-kazanim-yonetimi/{item.Id}\" class=\"btn btn-info\"/><i class=\"fa fa-gift\"></i> {gainCount}</a>";
                                 var categories = Model.EducationCategories.FirstOrDefault(x => x.EducationId == item.Id);
                                 var concattedCategories = categories.ConcattedCategories;
 
