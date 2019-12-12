@@ -1,4 +1,4 @@
-﻿
+﻿@model NitelikliBilisim.Core.ViewModels.areas.admin.education_parts.ManageVm
 @{
     ViewData["Title"] = "Eğitim Parça Yönetimi";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -13,12 +13,14 @@
 }
 <div class="card mb-3">
     <div class="card-header">
-        <i class="fa fa-table"></i> Eğitim Parçaları
+        <i class="fa fa-table"></i> Eğitim Parçaları  @Model.EducationName 
     </div>
     <div class="card-body">
         <div class="row">
             <div class="col-md-8 offset-md-2">
                 <form id="form-add-education-parts">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" value="@Model.EducationId" id="_education-id" />
                     <table class="table table-borderless">
                         <tr>
                             <td><input type="text" value="" class="form-control" id="input-order" placeholder="Parçanın sırası" /></td>
@@ -50,7 +52,7 @@
                                 <th>İşlem</th>
                             </tr>
                         </tfoot>
-                        <tbody id="tbody-egitim-parcalari">
+                        <tbody id="tbody-education-parts">
                         </tbody>
                     </table>
                 </div>
@@ -66,13 +68,44 @@
     <script>
         /* fields */
         var confirmModalBuilder = new AlertSupport.ConfirmModalBuilder();
+        var _educationId = $("#_education-id").val();
+
+        /* elements */
+        var btnAdd = $("#btn-add");
+        var tbodyEducationParts = $("#tbody-education-parts");
 
         /* assignments */
         $(document).ready(document_onLoad);
+        btnAdd.on("click", btnAdd_onClick);
 
         /* events */
         function document_onLoad() {
+            getEducationParts();
+        }
+        function btnAdd_onClick() {
+            $.ajax({
+                url: "/admin/add-education-part",
+                method: "post",
+                success: (res) => {
+                    getEducationParts();
+                }
+            });
+        }
 
+        /* functions */
+        function getEducationParts() {
+            if (!_educationId)
+                return;
+
+            $.ajax({
+                url: `/admin/get-education-parts/${_educationId}`,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+
+                    }
+                }
+            });
         }
     </script>
 }
