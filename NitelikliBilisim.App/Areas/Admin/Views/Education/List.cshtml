@@ -75,13 +75,13 @@
                                 }
 
                                 var validEducation = isValidEducation ?
-                                        $"<i class=\"fa fa-ok text-success\"></i>"
+                                        $"<i class=\"fa fa-unlock text-success\" style=\"padding:25%;font-size:200%;text-align:center;vertical-align:middle;\"></i>"
                                         :
-                                        $"<i class=\"fa fa-ban text-danger\"</i>";
+                                        $"<i class=\"fa fa-lock text-danger\" style=\"padding:25%;font-size:200%;text-align:center;vertical-align:middle;\"></i>";
                             }
                         </text>
                         <tr>
-                            <td><a href="/admin/egitim-guncelle/@item.Id">@Html.Raw(validEducation)</a></td>
+                            <td style="padding:0;"><a href="/admin/egitim-guncelle/@item.Id">@Html.Raw(validEducation)</a></td>
                             <td>@item.Name</td>
                             <td>@Html.Raw(concattedCategories)</td>
                             <td>@item.Days gün / @item.HoursPerDay saat</td>

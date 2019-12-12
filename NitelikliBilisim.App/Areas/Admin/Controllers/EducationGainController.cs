@@ -3,25 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using NitelikliBilisim.App.Areas.Admin.VmCreator.EducationParts;
+using NitelikliBilisim.App.Areas.Admin.VmCreator.EducationGains;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
-using NitelikliBilisim.Core.ViewModels.areas.admin.education_parts;
+using NitelikliBilisim.Core.ViewModels.areas.admin.education_gains;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class EducationPartController : Controller
+    public class EducationGainController : Controller
     {
         private readonly UnitOfWork _unitOfWork;
-        private readonly EducationPartVmCreator _vmCreator;
-        public EducationPartController(UnitOfWork unitOfWork)
+        private readonly EducationGainVmCreator _vmCreator;
+        public EducationGainController(UnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _vmCreator = new EducationPartVmCreator(_unitOfWork);
+            _vmCreator = new EducationGainVmCreator(_unitOfWork);
         }
-        [Route("admin/egitim-parca-yonetimi/{educationId}")]
+        [Route("admin/egitim-kazanim-yonetimi/{educationId}")]
         public IActionResult Manage(Guid? educationId)
         {
             if (educationId == null)
@@ -32,17 +32,17 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             return View(model);
         }
 
-        [Route("admin/get-education-parts/{educationId}")]
-        public IActionResult GetEducationParts(Guid? educationId)
+        [Route("admin/get-education-gains/{educationId}")]
+        public IActionResult GetEducationGains(Guid? educationId)
         {
             if (educationId == null)
                 return Json(new ResponseModel
                 {
                     isSuccess = false,
-                    errors = new List<string> { "Eğitimin parçalarını getirirken bir hata oluştu" }
+                    errors = new List<string> { "Eğitimin kazanımlarını getirirken bir hata oluştu" }
                 });
 
-            var model = _vmCreator.CreateEducationPartsVm(educationId.Value);
+            var model = _vmCreator.CreateEducationGainsVm(educationId.Value);
 
             return Json(new ResponseModel
             {
@@ -51,8 +51,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             });
         }
 
-        [HttpPost, Route("admin/add-education-part")]
-        public IActionResult AddPart(AddPartVm data)
+        [HttpPost, Route("admin/add-education-gain")]
+        public IActionResult AddGain(AddGainVm data)
         {
             if (!ModelState.IsValid)
             {
@@ -64,12 +64,10 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 });
             }
 
-            _unitOfWork.EducationPart.Insert(new Core.Entities.EducationPart
+            _unitOfWork.EducationGain.Insert(new Core.Entities.EducationGain
             {
-                Title = data.Title,
                 EducationId = data.EducationId,
-                Order = data.Order.GetValueOrDefault(0),
-                Duration = data.Duration.GetValueOrDefault(0)
+                Gain = data.Gain
             });
 
             return Json(new ResponseModel
@@ -78,17 +76,17 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             });
         }
 
-        [Route("admin/delete-education-part/{partId}")]
-        public IActionResult DeletePart(Guid? partId)
+        [Route("admin/delete-education-gain/{gainId}")]
+        public IActionResult DeleteGain(Guid? gainId)
         {
-            if (partId == null)
+            if (gainId == null)
                 return Json(new ResponseModel
                 {
                     isSuccess = false,
-                    errors = new List<string> { "Eğitimin parçasını silerken bir hata oluştu" }
+                    errors = new List<string> { "Eğitimin kazanımını silerken bir hata oluştu" }
                 });
 
-            _unitOfWork.EducationPart.Delete(partId.Value);
+            _unitOfWork.EducationGain.Delete(gainId.Value);
             return Json(new ResponseModel
             {
                 isSuccess = true
