@@ -38,7 +38,7 @@ namespace NitelikliBilisim.App.Managers
             }
 
             string fileTime = DateTime.Now.ToFileTime().ToString();
-            string withFileTimeName = $"{fileTime}-{tag}.{extension}";
+            string withFileTimeName = $"{fileTime}-{MakeDirectoryName(tag)}.{extension}";
 
             string filePath = $"{_hostingEnvironment.WebRootPath}{path}{withFileTimeName}";
 

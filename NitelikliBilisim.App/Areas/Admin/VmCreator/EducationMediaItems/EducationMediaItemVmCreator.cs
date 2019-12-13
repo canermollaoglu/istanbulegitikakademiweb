@@ -38,7 +38,7 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.EducationMediaItems
                 {
                     Id = item.Id,
                     EducationId = item.EducationId,
-                    MediaItemType = item.MediaType,
+                    MediaItemType = EnumSupport.GetDescription(item.MediaType),
                     FileUrl = item.FileUrl
                 });
 

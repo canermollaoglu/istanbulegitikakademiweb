@@ -21,7 +21,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Models.Education
         public string Description { get; set; }
         [Required(ErrorMessage = "Fiyat alanı boş geçilemez")]
         public decimal? Price { get; set; }
-        [Required(ErrorMessage = "Eğitimin kaç gün süreceği bilgisi boş geçilemez"), Range(1, 24, ErrorMessage = "Eğitim günü 1 günden daha az olamaz")]
+        [Required(ErrorMessage = "Eğitimin kaç gün süreceği bilgisi boş geçilemez"), Range(1, 255, ErrorMessage = "Eğitim günü 1 günden daha az olamaz")]
         public byte? Days { get; set; }
         [Required(ErrorMessage = "Eğitim günde kaç saat işleneceği bilgisi boş geçilemez"), Range(1, 24, ErrorMessage = "Günlük işlenecek ders saati 1 saatten az olamaz")]
         public byte? HoursPerDay { get; set; }

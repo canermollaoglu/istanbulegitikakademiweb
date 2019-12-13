@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Areas.Admin.VmCreator.EducationMediaItems;
+using NitelikliBilisim.App.Managers;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_media_items;
+using NitelikliBilisim.Support;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
@@ -17,10 +20,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly EducationMediaItemVmCreator _vmCreator;
-        public EducationMediaItemController(UnitOfWork unitOfWork)
+        private readonly FileUploadManager _fileUploadManager;
+        public EducationMediaItemController(IHostingEnvironment hostingEnvironment, UnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
             _vmCreator = new EducationMediaItemVmCreator(_unitOfWork);
+            _fileUploadManager = new FileUploadManager(hostingEnvironment, "jpg", "jpeg", "mp4");
         }
         [Route("admin/egitim-medya-yonetimi/{educationId}")]
         public IActionResult Manage(Guid? educationId)
@@ -61,18 +66,29 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     errors = errors
                 });
             }
-
-            _unitOfWork.EducationMedia.Insert(new Core.Entities.EducationMedia
+            try
             {
-                EducationId = data.EducationId,
-                MediaType = (EducationMediaType)data.MediaItemType,
-                FileUrl = null
-            });
-
-            return Json(new ResponseModel
+                var education = _unitOfWork.Education.GetById(data.EducationId);
+                var filePath = _fileUploadManager.Upload("/uploads/media-items/", data.PostedFile.Base64Content, data.PostedFile.Extension, EnumSupport.GetDescription((EducationMediaType)data.MediaItemType).ToLower(), education.Name);
+                _unitOfWork.EducationMedia.Insert(new Core.Entities.EducationMedia
+                {
+                    EducationId = data.EducationId,
+                    MediaType = (EducationMediaType)data.MediaItemType,
+                    FileUrl = filePath
+                });
+                return Json(new ResponseModel
+                {
+                    isSuccess = true
+                });
+            }
+            catch (Exception ex)
             {
-                isSuccess = true
-            });
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Dosya yüklenirken hata oluştu" }
+                });
+            }
         }
 
         [Route("admin/delete-education-media-item/{mediaItemId}")]

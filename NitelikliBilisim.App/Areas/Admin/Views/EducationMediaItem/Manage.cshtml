@@ -25,7 +25,7 @@
                         <tr>
                             <td>
                                 <div class="form-group">
-                                    <label>Ön İzleme (jpeg ya da mp4)</label>
+                                    <label>Medya Seçiniz</label>
                                     <div class="file-upload-container" id="file-upload-for-media-item">
                                         <img class="img-after-preview" id="img-after-preview-for-media-item" />
                                         <p><i class="fa fa-file"></i> Resim yüklemek için tıklayınız...</p>
@@ -34,14 +34,22 @@
                                 </div>
                             </td>
                             <td>
-                                <select class="form-control">
-                                    @foreach (var item in Model.MediaItemTypes)
-                                    {
-                                        <option value="@item.Key">@item.Value</option>
-                                    }
-                                </select>
+                                <div class="form-group">
+                                    <label>Medya Tipini Seçiniz</label>
+                                    <select class="form-control" id="select-media-types">
+                                        @foreach (var item in Model.MediaItemTypes)
+                                        {
+                                            <option value="@item.Key">@item.Value</option>
+                                        }
+                                    </select>
+                                </div>
                             </td>
-                            <td><button id="btn-add" type="button" class="btn btn-success" style="cursor:pointer;"><i class="fa fa-plus"></i></button></td>
+                            <td>
+                                <div class="form-group">
+                                    <label>Yükle</label>
+                                    <button id="btn-add" type="button" class="btn btn-info btn-block" style="cursor:pointer;"><i class="fa fa-upload"></i></button>
+                                </div>
+                            </td>
                         </tr>
                     </table>
                 </form>
@@ -83,10 +91,12 @@
         var confirmModalBuilder = new AlertSupport.ConfirmModalBuilder();
         var resultAlert = new AlertSupport.ResultAlert();
         var _educationId = $("#_education-id").val();
+        var fileManager = new UploadSupport.FileUploader();
 
         /* elements */
         var btnAdd = $("#btn-add");
-        var tbodyEducationParts = $("#tbody-education-media-items");
+        var tbodyEducationMediaItems = $("#tbody-education-media-items");
+        var selectMediaTypes = document.getElementById("select-media-types");
 
         /* assignments */
         $(document).ready(document_onLoad);
@@ -94,12 +104,25 @@
 
         /* events */
         function document_onLoad() {
-            getEducationParts();
+            getEducationMediaItems();
+            fileManager.set({
+                container: "file-upload-for-media-item",
+                preview: "img-after-preview-for-media-item",
+                validExtensions: ["jpg", "jpeg", "mp4"],
+                style: { content: "Resim Yükle" }
+            });
         }
         function btnAdd_onClick() {
             btnAdd.off("click");
+            var file = fileManager.getFile();
+            console.log(file);
             var data = {
-
+                EducationId: _educationId,
+                PostedFile: {
+                    Base64Content: file.base64content,
+                    Extension: file.extension
+                },
+                MediaItemType: selectMediaTypes.options[selectMediaTypes.selectedIndex].value
             };
             var tokenVerifier = new SecuritySupport.TokenVerifier();
             data = tokenVerifier.addToken("form-add-education-media-items", data);
@@ -109,7 +132,7 @@
                 data: data,
                 success: (res) => {
                     if (res.isSuccess) {
-                        getEducationParts();
+                        getEducationMediaItems();
                         $("#form-add-education-media-items")[0].reset();
                         resultAlert.display({
                             success: true,
@@ -138,7 +161,7 @@
                 method: "get",
                 success: (res) => {
                     if (res.isSuccess) {
-                        getEducationParts();
+                        getEducationMediaItems();
                         resultAlert.display({
                             success: true,
                             message: "Kayıt başarıyla silinmiştir"
@@ -155,7 +178,7 @@
         }
 
         /* functions */
-        function getEducationParts() {
+        function getEducationMediaItems() {
             if (!_educationId)
                 return;
 
@@ -164,7 +187,7 @@
                 method: "get",
                 success: (res) => {
                     if (res.isSuccess) {
-                        createTable(res.data.educationParts);
+                        createTable(res.data.educationMediaItems);
                     } else {
                         resultAlert.display({
                             success: false,
@@ -175,27 +198,26 @@
             });
         }
         function createTable(data) {
-            tbodyEducationParts.html("");
+            tbodyEducationMediaItems.html("");
             var content = "";
             if (data.length != 0)
                 for (var i = 0; i < data.length; i++) {
                     var element = data[i];
                     content +=
                         `<tr>` +
-                        `<td>${element.order}</td>` +
-                        `<td>${element.title}</td>` +
-                        `<td>${element.duration} dk.</td>` +
+                        `<td>${element.mediaItemType}</td>` +
+                        `<td style="text-align:center;"><img src="${element.fileUrl}" style="height:128px;width:150px;" /></td>` +
                         `<td>` +
                         `<div class="btn-group">` +
-                        `<a href="/admin/egitim-parca-guncelle/${element.id}" class="btn btn-warning"><i class="fa fa-edit"></i></a>` +
-                        `<button class="btn btn-danger btn-confirmation-modal-trigger" data-url="/admin/delete-education-part/${element.id}"><i class="fa fa-trash"></i></button>` +
+                        `<a href="/admin/egitim-medya-guncelle/${element.id}" class="btn btn-warning"><i class="fa fa-edit"></i></a>` +
+                        `<button class="btn btn-danger btn-confirmation-modal-trigger" data-url="/admin/delete-education-media-item/${element.id}"><i class="fa fa-trash"></i></button>` +
                         `</div>` +
                         `</td>` +
                         `</tr>`;
                 }
             else
                 content = `<tr><td colspan="5"><div class="alert alert-info"><strong>Bilgi:</strong> Eğitimin henüz medyası yoktur. Yukarıdan ekleyebilirsiniz</div></td></tr>`;
-            tbodyEducationParts.append(content);
+            tbodyEducationMediaItems.append(content);
 
             var deleteButtons = $(".btn-confirmation-modal-trigger");
             for (var i = 0; i < deleteButtons.length; i++) {

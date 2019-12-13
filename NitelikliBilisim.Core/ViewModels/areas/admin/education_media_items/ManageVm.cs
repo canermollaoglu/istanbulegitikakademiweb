@@ -1,6 +1,7 @@
 ﻿using NitelikliBilisim.Core.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_media_items
@@ -16,6 +17,7 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_media_items
     {
         public Guid EducationId { get; set; }
         public int MediaItemType { get; set; }
+        public _PostedFile PostedFile { get; set; }
     }
 
     public class GetEducationMediaItemsVm
@@ -27,7 +29,15 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_media_items
     {
         public Guid Id { get; set; }
         public Guid EducationId { get; set; }
-        public EducationMediaType MediaItemType { get; set; }
+        public string MediaItemType { get; set; }
         public string FileUrl { get; set; }
+    }
+
+    public class _PostedFile
+    {
+        [Required(ErrorMessage = "Dosya içeriği boş olamaz")]
+        public string Base64Content { get; set; }
+        [Required(ErrorMessage = "Dosya uzantısı boş olamaz")]
+        public string Extension { get; set; }
     }
 }
