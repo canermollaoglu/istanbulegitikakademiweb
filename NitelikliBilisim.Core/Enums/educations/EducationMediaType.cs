@@ -12,7 +12,7 @@ namespace NitelikliBilisim.Core.Enums
         AdPhoto = 1030,
         [Description("Ön İzleme Videosu")]
         PreviewVideo = 1040,
-        [Description("Öz İzleme Fotoğrafı")]
+        [Description("Ön İzleme Fotoğrafı")]
         PreviewPhoto = 1050,
         [Description("Banner")]
         Banner = 1060,

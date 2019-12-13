@@ -100,7 +100,15 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     isSuccess = false,
                     errors = new List<string> { "Eğitimin medyasını silerken bir hata oluştu" }
                 });
+            var mediaItem = _unitOfWork.EducationMedia.GetById(mediaItemId.Value);
 
+            if (mediaItem == null)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Eğitimin medyasını silerken bir hata oluştu" }
+                });
+            _fileUploadManager.Delete(mediaItem.FileUrl);
             _unitOfWork.EducationMedia.Delete(mediaItemId.Value);
             return Json(new ResponseModel
             {

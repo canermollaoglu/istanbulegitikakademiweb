@@ -10,7 +10,6 @@ namespace NitelikliBilisim.Business.Repositories
     {
         public EducationMediaItemRepository(NbDataContext context) : base(context)
         {
-
         }
     }
 }

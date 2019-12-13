@@ -67,7 +67,12 @@ namespace NitelikliBilisim.App.Managers
 
             return dbPath;
         }
-
+        public void Delete(string dbPath)
+        {
+            var path = $"{_hostingEnvironment.WebRootPath}{dbPath}";
+            if (File.Exists(path))
+                File.Delete(path);
+        }
         private byte[] ConvertBase64StringToByteArray(string base64File)
         {
             int index = base64File.IndexOf(',');

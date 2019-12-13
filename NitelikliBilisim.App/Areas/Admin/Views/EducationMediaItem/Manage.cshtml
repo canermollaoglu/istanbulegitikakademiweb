@@ -156,6 +156,7 @@
         }
         function confirm_onClick() {
             var url = this.getAttribute("data-url");
+            this.onclick = null;
             $.ajax({
                 url: url,
                 method: "get",
@@ -166,12 +167,14 @@
                             success: true,
                             message: "Kayıt başarıyla silinmiştir"
                         });
+                        this.onclick = confirm_onClick;
                     } else {
                         resultAlert.display({
                             success: false,
                             errors: res.errors,
                             message: "Hataları düzeltiniz"
                         });
+                        this.onclick = confirm_onClick;
                     }
                 }
             });
@@ -209,7 +212,6 @@
                         `<td style="text-align:center;"><img src="${element.fileUrl}" style="height:128px;width:150px;" /></td>` +
                         `<td>` +
                         `<div class="btn-group">` +
-                        `<a href="/admin/egitim-medya-guncelle/${element.id}" class="btn btn-warning"><i class="fa fa-edit"></i></a>` +
                         `<button class="btn btn-danger btn-confirmation-modal-trigger" data-url="/admin/delete-education-media-item/${element.id}"><i class="fa fa-trash"></i></button>` +
                         `</div>` +
                         `</td>` +
