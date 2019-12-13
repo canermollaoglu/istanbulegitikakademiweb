@@ -92,5 +92,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 isSuccess = true
             });
         }
+
+        [Route("admin/egitim-kazanim-guncelle/{gainId}")]
+        public IActionResult UpdateGain(Guid? gainId)
+        {
+            return View();
+        }
     }
 }

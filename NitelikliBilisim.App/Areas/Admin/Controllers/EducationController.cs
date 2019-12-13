@@ -86,5 +86,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             var model = _vmCreator.CreateListGetVm(page);
             return View(model);
         }
+
+        [Route("admin/egitim-guncelle/{educationId}")]
+        public IActionResult Update(Guid? educationId)
+        {
+            return View();
+        }
     }
 }

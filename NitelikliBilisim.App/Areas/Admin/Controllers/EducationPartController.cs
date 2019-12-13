@@ -94,5 +94,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 isSuccess = true
             });
         }
+
+        [Route("admin/egitim-parca-guncelle/{partId}")]
+        public IActionResult UpdatePart(Guid? partId)
+        {
+            return View();
+        }
     }
 }
