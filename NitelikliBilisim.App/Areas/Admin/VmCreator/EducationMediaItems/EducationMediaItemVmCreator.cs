@@ -1,5 +1,7 @@
 ﻿using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_media_items;
+using NitelikliBilisim.Support;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +23,8 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.EducationMediaItems
             return new ManageVm
             {
                 EducationId = education.Id,
-                EducationName = education.Name
+                EducationName = education.Name,
+                MediaItemTypes = EnumSupport.ToKeyValuePair<EducationMediaType>()
             };
         }
 
