@@ -1,7 +1,5 @@
-﻿using NitelikliBilisim.Enums;
+﻿using NitelikliBilisim.Support;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace NitelikliBilisim.Business.Mapper
 {
