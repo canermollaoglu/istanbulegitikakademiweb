@@ -1,9 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NitelikliBilisim.Business.Repositories;
 using NitelikliBilisim.Data;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace NitelikliBilisim.Business.UoW
 {
