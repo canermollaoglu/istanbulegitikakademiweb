@@ -1,34 +1,15 @@
-﻿@{ 
+﻿@{
     ViewData["Title"] = "Eğitmen Ekle";
 }
 @section styles{
-    <style>
-        #file-upload-container {
-            height: 250px;
-            width: 175px;
-            display: inline-block;
-            margin: 0;
-            padding: 0.5%;
-            cursor: pointer;
-            color: rgba(50,50,50,1);
-            border: 1px dashed black;
-        }
-
-            #file-upload-container input[type="file"] {
-                display: none;
-            }
-
-            #file-upload-container:hover {
-                transition-duration: 0.5s;
-                color: rgb(100, 140, 214);
-            }
-
-        #img-after-preview {
-            display: none;
-        }
-    </style>
+    <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
+    <link href="~/css/lib/file-uploader.css" rel="stylesheet" />
+}
+@section alerts{
+    <partial name="partials/_Alert" />
 }
 <form id="form-add-educator">
+    @Html.AntiForgeryToken()
     <div class="box_general padding_bottom">
         <div class="header_box version_2">
             <h2><i class="fa fa-file"></i>Kişisel Bilgiler</h2>
@@ -37,13 +18,13 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>İsim</label>
-                    <input type="text" class="form-control" placeholder="Eğitmenin ismi (varsa orta ismi)">
+                    <input type="text" class="form-control" placeholder="Eğitmenin ismi (varsa orta ismi)" id="input-name">
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Soyisim</label>
-                    <input type="text" class="form-control" placeholder="Eğitmenin soyismi">
+                    <input type="text" class="form-control" placeholder="Eğitmenin soyismi" id="input-surname">
                 </div>
             </div>
         </div>
@@ -52,13 +33,13 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Telefon</label>
-                    <input type="text" class="form-control" placeholder="Eğitmenin telefon numarası">
+                    <input type="text" class="form-control" placeholder="Eğitmenin telefon numarası" id="input-phone">
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label>E-Posta</label>
-                    <input type="email" class="form-control" placeholder="Eğitmenin e-posta adresi">
+                    <input type="email" class="form-control" placeholder="Eğitmenin e-posta adresi" id="input-email">
                 </div>
             </div>
         </div>
@@ -66,9 +47,9 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="form-group">
-                    <div id="file-upload-container">
-                        <i id="img-before-preview"></i><span id="img-before-text"> Profil Fotoğrafı</span>
-                        <img id="img-after-preview" style="height: 100%; width: 100%;" />
+                    <div class="file-upload-container" id="file-upload-for-educator-photo">
+                        <img class="img-after-preview" id="img-after-preview-for-educator-photo" />
+                        <p><i class="fa fa-file"></i> Resim yüklemek için tıklayınız...</p>
                         <input type="file" />
                     </div>
                 </div>
@@ -86,13 +67,13 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Facebook</label>
-                    <input type="text" class="form-control" placeholder="Link">
+                    <input type="text" class="form-control" placeholder="Link" id="input-facebook">
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Linkedin</label>
-                    <input type="text" class="form-control" placeholder="Link">
+                    <input type="text" class="form-control" placeholder="Link" id="input-linkedin">
                 </div>
             </div>
         </div>
@@ -101,38 +82,13 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Google Plus</label>
-                    <input type="text" class="form-control" placeholder="Link">
+                    <input type="text" class="form-control" placeholder="Link" id="input-google-plus">
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Twitter</label>
-                    <input type="text" class="form-control" placeholder="Link">
-                </div>
-            </div>
-        </div>
-        <!-- /row-->
-    </div>
-    <!-- /box_general-->
-
-    <div class="box_general padding_bottom">
-        <div class="header_box version_2">
-            <h2><i class="fa fa-file-text"></i>Curriculum</h2>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <label>Professional statement</label>
-                    <textarea rows="5" class="form-control" style="height:100px;" placeholder="Description"></textarea>
-                </div>
-            </div>
-        </div>
-        <!-- /row-->
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <label>Specialization <a href="#0" data-toggle="tooltip" data-placement="top" title="Separated by commas"><i class="fa fa-fw fa-question-circle"></i></a></label>
-                    <input type="text" class="form-control" placeholder="Ex: Biologist, Pediatrician...">
+                    <input type="text" class="form-control" placeholder="Link" id="input-twitter">
                 </div>
             </div>
         </div>
@@ -143,44 +99,59 @@
 
 @section postScripts{
     <script src="~/js/lib/security-support.js"></script>
+    <script src="~/js/sup/alert-sup.js"></script>
+    <script src="~/js/lib/file-uploader.js"></script>
     <script>
-        var _fileExtension = null;
-        var _fileContent = null;
-        var _fileReader = new FileReader();
+        /* fields */
+        var fileManager = new UploadSupport.FileUploader();
+        var resultAlert = new AlertSupport.ResultAlert();
 
-        var fileUploadContainer = document.getElementById("file-upload-container");
-        var fileInput = document.querySelector('#file-upload-container input[type="file"]');
-        var imgBeforePreview = document.getElementById("img-before-preview");
-        var imgAfterPreview = document.getElementById("img-after-preview");
-        var imgBeforeText = document.getElementById("img-before-text");
+        /* elements */
+        var btnSave = $("#btn-save");
 
-        fileUploadContainer.onclick = fileUploadContainer_onClick;
-        fileInput.onchange = fileInput_onChange;
-        _fileReader.onload = fileReader_onLoad;
+        /* assignments */
+        $(document).ready(document_onLoad);
+        btnSave.on("click", btnSave_onClick);
 
-        function fileUploadContainer_onClick() {
-            fileInput.click();
+        /* events */
+        function document_onLoad() {
+            fileManager.set({
+                container: "file-upload-for-educator-photo",
+                preview: "img-after-preview-for-educator-photo",
+                validExtensions: ["jpg", "jpeg"],
+                style: { content: "Resim Yükle" }
+            });
         }
-
-        function fileInput_onChange(e) {
-            if (e.target.files.length > 0) {
-                var selectedFile = e.target.files[0];
-                var spiltted = selectedFile.name.split(".");
-                var extension = spiltted[spiltted.length - 1];
-                _fileExtension = extension;
-                _fileReader.readAsDataURL(selectedFile);
+        function btnSave_onClick() {
+            btnSave.off("click");
+            var file = fileManager.getFile();
+            var data = {
+                Name: $("#input-name").val(),
+                Surname: $("#input-surname").val(),
+                Phone: $("#input-phone").val(),
+                Email: $("#input-email").val(),
+                SocialMedia: {
+                    Facebook: $("#input-facebook").val(),
+                    Linkedin: $("#input-linkedin").val(),
+                    GooglePlus: $("#input-google-plus").val(),
+                    Twitter: $("#input-twitter").val()
+                },
+                ProfilePhoto: {
+                    Base64Content: file.base64content,
+                    Extension: file.extension
+                }
             }
-        }
+            var tokenVerifier = new SecuritySupport.TokenVerifier();
+            data = tokenVerifier.addToken("form-add-educator", data);
+            console.log(data);
+            //$.ajax({
+            //    url: "",
+            //    method: "post",
+            //    data: data,
+            //    success: (res) => {
 
-        function fileReader_onLoad(e) {
-            if (_fileReader.DONE) {
-                var result = e.target.result;
-                _fileContent = result;
-                imgAfterPreview.setAttribute("src", result);
-                imgAfterPreview.style.display = "block";
-                imgBeforePreview.style.display = "none";
-                imgBeforeText.style.display = "none";
-            }
+            //    }
+            //});
         }
     </script>
 }

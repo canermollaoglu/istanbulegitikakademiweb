@@ -4,7 +4,7 @@ using NitelikliBilisim.Core.DTO;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education;
 using NitelikliBilisim.Data;
-using NitelikliBilisim.Support;
+using NitelikliBilisim.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;

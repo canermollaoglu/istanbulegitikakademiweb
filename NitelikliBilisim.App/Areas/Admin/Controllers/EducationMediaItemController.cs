@@ -11,7 +11,7 @@ using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_media_items;
-using NitelikliBilisim.Support;
+using NitelikliBilisim.Enums;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {

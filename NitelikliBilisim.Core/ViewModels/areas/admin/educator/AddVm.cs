@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 
-namespace NitelikliBilisim.App.Areas.Admin.Models.Educator
+namespace NitelikliBilisim.Core.ViewModels.areas.admin.educator
 {
     public class AddGetVm
     {
+
     }
 
     public class AddPostVm

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace NitelikliBilisim.Support
+namespace NitelikliBilisim.Enums
 {
     public static class EnumSupport
     {

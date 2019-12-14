@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
+using NitelikliBilisim.Core.ViewModels.areas.admin.educator;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
@@ -26,7 +27,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         }
 
         [HttpPost, Route("admin/egitmen-ekle")]
-        public IActionResult Add(object o)
+        public IActionResult Add(AddPostVm data)
         {
             if (!ModelState.IsValid)
             {

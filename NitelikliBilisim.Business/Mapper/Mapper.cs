@@ -1,4 +1,4 @@
-﻿using NitelikliBilisim.Support;
+﻿using NitelikliBilisim.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;
