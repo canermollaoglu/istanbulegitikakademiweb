@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Managers;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.ViewModels.areas.admin.educator;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
@@ -19,10 +21,13 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly FileUploadManager _fileManager;
         private readonly UnitOfWork _unitOfWork;
-        public EducatorController(IHostingEnvironment hostingEnvironment, UnitOfWork unitOfWork)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public EducatorController(IHostingEnvironment hostingEnvironment, UnitOfWork unitOfWork, UserManager<ApplicationUser> userManager)
         {
             _hostingEnvironment = hostingEnvironment;
             _unitOfWork = unitOfWork;
+            _userManager = userManager;
+            _fileManager = new FileUploadManager(_hostingEnvironment, "jpg", "jpeg");
         }
         [Route("admin/egitmen-ekle")]
         public IActionResult Add()
@@ -32,7 +37,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         }
 
         [HttpPost, Route("admin/egitmen-ekle")]
-        public IActionResult Add(AddPostVm data)
+        public async Task<IActionResult> Add(AddPostVm data)
         {
             if (!ModelState.IsValid)
             {
@@ -44,7 +49,33 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 });
             }
 
-            _fileManager.Upload("/uploads/educator-photos/", data.ProfilePhoto.Base64Content, data.ProfilePhoto.Extension, "profile-photo", $"{data.Name} {data.Surname}");
+            try
+            {
+                var dbPath = _fileManager.Upload("/uploads/educator-photos/", data.ProfilePhoto.Base64Content, data.ProfilePhoto.Extension, "profile-photo", $"{data.Name} {data.Surname}");
+
+                var newUser = new ApplicationUser
+                {
+                    Name = data.Name,
+                    Surname = data.Surname,
+                    AvatarPath = dbPath,
+                    UserName = data.Email,
+                    Email = data.Email
+                };
+
+                await _userManager.CreateAsync(newUser, "password");
+                //await _userManager.AddToRoleAsync(newUser, "User");
+
+                _unitOfWork.Educator.Insert(new Educator
+                {
+                    Id = newUser.Id,
+                    Title = "?",
+                    Biography = "?"
+                });
+            }
+            catch (Exception ex)
+            {
+
+            }
 
             return Json(new ResponseModel
             {

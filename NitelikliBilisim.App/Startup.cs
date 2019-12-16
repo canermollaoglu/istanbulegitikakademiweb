@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -39,6 +40,10 @@ namespace NitelikliBilisim.App
 
             services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddEntityFrameworkStores<NbDataContext>()
+                .AddUserStore<UserStore<ApplicationUser, ApplicationRole, NbDataContext>>()
+                .AddRoleStore<RoleStore<ApplicationRole, NbDataContext>>()
+                .AddUserManager<UserManager<ApplicationUser>>()
+                .AddRoleManager<RoleManager<ApplicationRole>>()
                 .AddDefaultTokenProviders();
 
             services.AddScoped<UnitOfWork>();
