@@ -62,15 +62,31 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     Email = data.Email
                 };
 
-                await _userManager.CreateAsync(newUser, "password");
-                //await _userManager.AddToRoleAsync(newUser, "User");
+                var res = await _userManager.CreateAsync(newUser, "Password1");
+                if (!res.Succeeded)
+                    return Json(new ResponseModel
+                    {
+                        isSuccess = false,
+                        errors = res.Errors.Select(x => x.Description)
+                    });
+                res = await _userManager.AddToRoleAsync(newUser, "User");
+                if (!res.Succeeded)
+                    return Json(new ResponseModel
+                    {
+                        isSuccess = false,
+                        errors = res.Errors.Select(x => x.Description)
+                    });
 
-                _unitOfWork.Educator.Insert(new Educator
+                var newEducator = new Educator
                 {
                     Id = newUser.Id,
                     Title = "?",
                     Biography = "?"
-                });
+                };
+                _unitOfWork.Educator.Insert(newEducator);
+
+                if (data.SocialMedia != null)
+                    _unitOfWork.EducatorSocialMedia.Insert(newEducator.Id, data.SocialMedia.Facebook, data.SocialMedia.Linkedin, data.SocialMedia.GooglePlus, data.SocialMedia.Twitter);
             }
             catch (Exception ex)
             {

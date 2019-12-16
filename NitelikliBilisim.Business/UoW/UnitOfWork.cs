@@ -13,6 +13,7 @@ namespace NitelikliBilisim.Business.UoW
         private EducationPartRepository _educationPart;
         private EducationGainRepository _educationGain;
         private EducatorRepository _educator;
+        private EducatorSocialMediaRepository _educatorSocialMedia;
         public UnitOfWork(NbDataContext context)
         {
             _context = context;
@@ -62,6 +63,13 @@ namespace NitelikliBilisim.Business.UoW
             get
             {
                 return _educator ?? (_educator = new EducatorRepository(_context));
+            }
+        }
+        public EducatorSocialMediaRepository EducatorSocialMedia
+        {
+            get
+            {
+                return _educatorSocialMedia ?? (_educatorSocialMedia = new EducatorSocialMediaRepository(_context));
             }
         }
     }
