@@ -40,10 +40,10 @@ namespace NitelikliBilisim.App
 
             services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddEntityFrameworkStores<NbDataContext>()
-                .AddUserStore<UserStore<ApplicationUser, ApplicationRole, NbDataContext>>()
-                .AddRoleStore<RoleStore<ApplicationRole, NbDataContext>>()
-                .AddUserManager<UserManager<ApplicationUser>>()
-                .AddRoleManager<RoleManager<ApplicationRole>>()
+                //.AddUserStore<UserStore<ApplicationUser, ApplicationRole, NbDataContext>>()
+                //.AddRoleStore<RoleStore<ApplicationRole, NbDataContext>>()
+                //.AddUserManager<UserManager<ApplicationUser>>()
+                //.AddRoleManager<RoleManager<ApplicationRole>>()
                 .AddDefaultTokenProviders();
 
             services.AddScoped<UnitOfWork>();
