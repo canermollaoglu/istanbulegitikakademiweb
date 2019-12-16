@@ -15,6 +15,17 @@
             <h2><i class="fa fa-file"></i>Kişisel Bilgiler</h2>
         </div>
         <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <div class="file-upload-container" id="file-upload-for-educator-photo">
+                        <img class="img-after-preview" id="img-after-preview-for-educator-photo" />
+                        <p><i class="fa fa-file"></i> Profil fotoğrafı yüklemek için tıklayınız...</p>
+                        <input type="file" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
                     <label>İsim</label>
@@ -43,19 +54,6 @@
                 </div>
             </div>
         </div>
-        <!-- /row-->
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <div class="file-upload-container" id="file-upload-for-educator-photo">
-                        <img class="img-after-preview" id="img-after-preview-for-educator-photo" />
-                        <p><i class="fa fa-file"></i> Resim yüklemek için tıklayınız...</p>
-                        <input type="file" />
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- /row-->
     </div>
     <!-- /box_general-->
 
@@ -104,7 +102,6 @@
     <script>
         /* fields */
         var fileManager = new UploadSupport.FileUploader();
-        var resultAlert = new AlertSupport.ResultAlert();
 
         /* elements */
         var btnSave = $("#btn-save");
@@ -143,15 +140,30 @@
             }
             var tokenVerifier = new SecuritySupport.TokenVerifier();
             data = tokenVerifier.addToken("form-add-educator", data);
-            console.log(data);
-            //$.ajax({
-            //    url: "",
-            //    method: "post",
-            //    data: data,
-            //    success: (res) => {
-
-            //    }
-            //});
+            $.ajax({
+                url: "",
+                method: "post",
+                data: data,
+                success: (res) => {
+                    var resultAlert = new AlertSupport.ResultAlert();
+                    btnSave.on("click", btnSave_onClick);
+                    if (res.isSuccess) {
+                        resultAlert.display({
+                            success: true,
+                            message: "Kayıt işlemi başarılı. {link}",
+                            redirectElement: {
+                                content: "Eğitmen listesine gitmek için tıklayınız",
+                                link: "/admin/egitmenler"
+                            }
+                        });
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors
+                        });
+                    }
+                }
+            });
         }
     </script>
 }

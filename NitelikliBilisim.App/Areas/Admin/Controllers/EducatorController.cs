@@ -5,8 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Lexicographer;
+using NitelikliBilisim.App.Managers;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
+using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ViewModels.areas.admin.educator;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
@@ -15,9 +17,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
     public class EducatorController : Controller
     {
         private readonly IHostingEnvironment _hostingEnvironment;
-        public EducatorController(IHostingEnvironment hostingEnvironment)
+        private readonly FileUploadManager _fileManager;
+        private readonly UnitOfWork _unitOfWork;
+        public EducatorController(IHostingEnvironment hostingEnvironment, UnitOfWork unitOfWork)
         {
             _hostingEnvironment = hostingEnvironment;
+            _unitOfWork = unitOfWork;
         }
         [Route("admin/egitmen-ekle")]
         public IActionResult Add()
@@ -39,7 +44,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 });
             }
 
-            return Json("");
+            _fileManager.Upload("/uploads/educator-photos/", data.ProfilePhoto.Base64Content, data.ProfilePhoto.Extension, "profile-photo", $"{data.Name} {data.Surname}");
+
+            return Json(new ResponseModel
+            {
+                isSuccess = true
+            });
         }
     }
 }

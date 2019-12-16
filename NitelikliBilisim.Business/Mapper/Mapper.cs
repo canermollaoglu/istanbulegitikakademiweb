@@ -1,5 +1,4 @@
-﻿using NitelikliBilisim.Support;
-using System;
+﻿using System;
 
 namespace NitelikliBilisim.Business.Mapper
 {
