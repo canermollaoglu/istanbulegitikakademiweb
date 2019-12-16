@@ -1255,6 +1255,7 @@ video {
   width: 600px;
   margin: 20px auto 0;
   position: relative;
+  z-index: 1;
 }
 @media (max-width: 991px) {
   #custom-search-input {
