@@ -52,8 +52,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             var bannerPath = _fileUploadManager.Upload($"/uploads/media-items/", data.BannerFile.Base64Content, data.BannerFile.Extension, "banner", data.Name);
             var banner = new EducationMedia
             {
-              FileUrl = bannerPath,
-              MediaType = EducationMediaType.Banner
+                FileUrl = bannerPath,
+                MediaType = EducationMediaType.Banner
             };
 
             var previewPath = _fileUploadManager.Upload($"/uploads/media-items/", data.PreviewFile.Base64Content, data.PreviewFile.Extension, "preview", data.Name);
@@ -75,7 +75,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
             return Json(new ResponseModel
             {
-                isSuccess =  true,
+                isSuccess = true,
                 message = "Eğitim başarıyla eklenmiştir"
             });
         }
@@ -90,7 +90,19 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/egitim-guncelle/{educationId}")]
         public IActionResult Update(Guid? educationId)
         {
-            return View();
+            if (!educationId.HasValue)
+                return Redirect("/admin/egitimler");
+
+            var model = _vmCreator.CreateUpdateGetVm(educationId.Value);
+            return View(model);
+        }
+        [HttpPost, Route("admin/egitim-guncelle")]
+        public IActionResult Update(UpdatePostVm data)
+        {
+            return Json(new ResponseModel
+            {
+                isSuccess = true
+            });
         }
     }
 }

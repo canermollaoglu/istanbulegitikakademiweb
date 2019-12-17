@@ -125,5 +125,13 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 data = educators
             });
         }
+
+        public IActionResult Update(Guid? educatorId)
+        {
+            if (!educatorId.HasValue)
+                return Redirect("/admin/egitmenler");
+
+            return View();
+        }
     }
 }

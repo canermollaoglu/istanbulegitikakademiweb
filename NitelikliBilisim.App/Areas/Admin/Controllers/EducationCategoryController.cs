@@ -7,6 +7,7 @@ using NitelikliBilisim.App.Areas.Admin.Models.Category;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.Entities;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
@@ -29,6 +30,25 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             return View(model);
         }
 
+        [Route("admin/kategori-guncelle/{categoryId}")]
+        public IActionResult Update(Guid? categoryId)
+        {
+            if (categoryId == null)
+                return Redirect("/admin/kategoriler");
+
+            var category = _unitOfWork.EducationCategory.GetById(categoryId.Value);
+            var categories = _unitOfWork.EducationCategory.Get(null, q => q.OrderBy(o => o.Name));
+            EducationCategory baseCategory = null;
+            if (category.BaseCategoryId.HasValue)
+                baseCategory = _unitOfWork.EducationCategory.GetById(category.BaseCategoryId.Value);
+            var model = new UpdateGetVm
+            {
+                Category = category,
+                Categories = categories,
+                BaseCategory = baseCategory
+            };
+            return View(model);
+        }
         [HttpPost, Route("admin/kategori-ekle")]
         public JsonResult Add(AddPostVm data)
         {
@@ -51,6 +71,29 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             {
                 isSuccess = true,
                 message = "Kategori başarıyla eklenmiştir"
+            });
+        }
+        [HttpPost, Route("admin/kategori-guncelle")]
+        public IActionResult Update(UpdatePostVm data)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelStateUtil.GetErrors(ModelState);
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = errors
+                });
+            }
+            var category = _unitOfWork.EducationCategory.GetById(data.CategoryId);
+            category.BaseCategoryId = data.BaseCategoryId;
+            category.Description = data.Description;
+            category.Name = data.Name;
+            _unitOfWork.EducationCategory.Update(category);
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                message = "Kategori başarıyla güncellenmiştir"
             });
         }
 

@@ -1,5 +1,7 @@
-﻿@{
-    ViewData["Title"] = "Eğitmen Ekle";
+﻿@model NitelikliBilisim.Core.ViewModels.areas.admin.educator.UpdateGetVm
+@{
+    ViewData["Title"] = "Eğitmen Güncelle";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 @section styles{
     <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
@@ -8,40 +10,29 @@
 @section alerts{
     <partial name="partials/_Alert" />
 }
-<form id="form-add-educator">
+<form id="form-update-educator">
     @Html.AntiForgeryToken()
     <div class="box_general padding_bottom">
         <div class="header_box version_2">
-            <h2><i class="fa fa-file"></i>Kişisel Bilgiler</h2>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <div class="file-upload-container" id="file-upload-for-educator-photo">
-                        <img class="img-after-preview" id="img-after-preview-for-educator-photo" />
-                        <p><i class="fa fa-file"></i> Profil fotoğrafı yüklemek için tıklayınız...</p>
-                        <input type="file" />
-                    </div>
-                </div>
-            </div>
+            <h2><i class="fa fa-file"></i>Eğitmen Güncelle</h2>
         </div>
         <div class="row">
             <div class="col-md-4">
                 <div class="form-group">
                     <label>Ünvan</label>
-                    <input type="text" class="form-control" placeholder="Eğitmenin ünvanı" id="input-title">
+                    <input type="text" class="form-control" placeholder="Eğitmenin ünvanı" id="input-title" value="@Model.Title">
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group">
                     <label>İsim</label>
-                    <input type="text" class="form-control" placeholder="Eğitmenin ismi (varsa orta ismi)" id="input-name">
+                    <input type="text" class="form-control" placeholder="Eğitmenin ismi (varsa orta ismi)" id="input-name" value="@Model.Name">
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group">
                     <label>Soyisim</label>
-                    <input type="text" class="form-control" placeholder="Eğitmenin soyismi" id="input-surname">
+                    <input type="text" class="form-control" placeholder="Eğitmenin soyismi" id="input-surname" value="@Model.Surname">
                 </div>
             </div>
         </div>
@@ -50,54 +41,18 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Telefon</label>
-                    <input type="text" class="form-control" placeholder="Eğitmenin telefon numarası" id="input-phone">
+                    <input type="text" class="form-control" placeholder="Eğitmenin telefon numarası" id="input-phone" value="@Model.Phone">
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label>E-Posta</label>
-                    <input type="email" class="form-control" placeholder="Eğitmenin e-posta adresi" id="input-email">
+                    <input type="email" class="form-control" placeholder="Eğitmenin e-posta adresi" id="input-email" value="@Model.Email">
                 </div>
             </div>
         </div>
     </div>
     <!-- /box_general-->
-
-    <div class="box_general padding_bottom">
-        <div class="header_box version_2">
-            <h2><i class="fa fa-share-alt"></i>Sosyal Medya Profilleri</h2>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>Facebook</label>
-                    <input type="text" class="form-control" placeholder="Link" id="input-facebook">
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>Linkedin</label>
-                    <input type="text" class="form-control" placeholder="Link" id="input-linkedin">
-                </div>
-            </div>
-        </div>
-        <!-- /row-->
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>Google Plus</label>
-                    <input type="text" class="form-control" placeholder="Link" id="input-google-plus">
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>Twitter</label>
-                    <input type="text" class="form-control" placeholder="Link" id="input-twitter">
-                </div>
-            </div>
-        </div>
-        <!-- /row-->
-    </div>
 </form>
 <p><button id="btn-save" class="btn_1 medium">Kaydet</button></p>
 
@@ -133,7 +88,6 @@
                 Surname: $("#input-surname").val(),
                 Phone: $("#input-phone").val(),
                 Email: $("#input-email").val(),
-                Title: $("#input-title").val(),
                 SocialMedia: {
                     Facebook: $("#input-facebook").val(),
                     Linkedin: $("#input-linkedin").val(),
@@ -146,7 +100,7 @@
                 }
             }
             var tokenVerifier = new SecuritySupport.TokenVerifier();
-            data = tokenVerifier.addToken("form-add-educator", data);
+            data = tokenVerifier.addToken("form-update-educator", data);
             $.ajax({
                 url: "",
                 method: "post",

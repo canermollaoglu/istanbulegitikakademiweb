@@ -171,5 +171,25 @@ namespace NitelikliBilisim.Business.Repositories
                 }
             }
         }
+
+        public List<EducationCategory> GetCategories(Guid educationId)
+        {
+            var data = _context.Bridge_EducationCategories.Where(x => x.Id2 == educationId)
+                .Join(_context.EducationCategories, l => l.Id, r => r.Id, (x, y) => new
+                {
+                    Category = y
+                }).ToList();
+            var categories = new List<EducationCategory>();
+            foreach (var item in data)
+                categories.Add(new EducationCategory
+                {
+                    Id = item.Category.Id,
+                    BaseCategoryId = item.Category.BaseCategoryId,
+                    Description = item.Category.Description,
+                    Name = item.Category.Name
+                });
+
+            return categories;
+        }
     }
 }

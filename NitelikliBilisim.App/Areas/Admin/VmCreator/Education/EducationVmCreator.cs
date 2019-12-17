@@ -32,5 +32,19 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.Education
         {
             return _unitOfWork.Education.GetPagedEducations(page, shownRecords);
         }
+
+        public UpdateGetVm CreateUpdateGetVm(Guid educationId)
+        {
+            var addGetVm = CreateAddGetVm();
+            var education = _unitOfWork.Education.GetById(educationId);
+            var relatedCategories = _unitOfWork.Education.GetCategories(educationId);
+            return new UpdateGetVm
+            {
+                Categories = addGetVm.Categories,
+                Levels = addGetVm.Levels,
+                Education = education,
+                RelatedCategories = relatedCategories
+            };
+        }
     }
 }

@@ -1,0 +1,107 @@
+﻿@model NitelikliBilisim.App.Areas.Admin.Models.Education.UpdateGetVm
+@using NitelikliBilisim.Core.Enums
+@{
+    ViewData["Title"] = "Eğitim Güncelle";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@section styles{
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
+    <link href="~/css/lib/file-uploader.css" rel="stylesheet" />
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="box_general padding_bottom">
+    <div class="header_box version_2">
+        <h2><i class="fa fa-file"></i>Eğitim Güncelle</h2>
+    </div>
+    <form id="form-add-education">
+        @Html.AntiForgeryToken()
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Eğitim İsmi</label>
+                    <input type="text" class="form-control" placeholder="Eğitim ismini giriniz..." id="input-name" value="@Model.Education.Name">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Kategorilerini Seçiniz</label>
+                    <select id="select-categories" multiple="multiple" class="form-control">
+                        @foreach (var item in Model.Categories)
+                        {
+                            if (Model.RelatedCategories.Count(x => x.Id == item.Id) > 0)
+                            {
+                                <option value="@item.Id" selected>@item.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label>Eğitim Açıklaması</label>
+                    <textarea id="input-description" rows="5" class="form-control" style="height:100px;resize:none;" placeholder="Eğitimin kullanıcı tarafından görülebilecek özet açıklaması...">@Model.Education.Description</textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Eğitim Süresi (Gün)</label>
+                    <input type="text" class="form-control" placeholder="Eğitimin kaç gün süreceğini giriniz..." id="input-days" value="@Model.Education.Days">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Günde Kaç Saat</label>
+                    <input type="text" class="form-control" placeholder="Derslerin günlük kaç saat işleneceğinizi giriniz..." id="input-hours-per-day" value="@Model.Education.HoursPerDay">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Fiyatı</label>
+                    <input type="text" class="form-control" placeholder="Fiyatı..." id="input-price" value="@Model.Education.NewPrice">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Seviyeyi Seçiniz</label>
+                    <select id="select-levels" class="form-control">
+                        @foreach (var item in Model.Levels)
+                        {
+                            if (Model.Education.Level == (EducationLevel)item.Key)
+                            {
+                                <option value="@item.Key" selected>@item.Value</option>
+                            }
+                            else
+                            {
+                                <option value="@item.Key">@item.Value</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<p><button id="btn-save" class="btn_1 medium">Kaydet</button></p>
+@section postScripts{
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+    <script src="~/js/sup/alert-sup.js"></script>
+    <script src="~/js/lib/security-support.js"></script>
+    <script src="~/js/lib/file-uploader.js"></script>
+    <script>
+        $("#select-categories").select2();
+    </script>
+}

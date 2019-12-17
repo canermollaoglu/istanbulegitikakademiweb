@@ -20,6 +20,7 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.educator
         public string Phone { get; set; }
         [Required(ErrorMessage = "E-Posta alanı boş geçilemez"), EmailAddress(ErrorMessage = "E-Posta alanı, e-posta formatına uygun değildir")]
         public string Email { get; set; }
+        public string Title { get; set; }
         public _SocialMedia SocialMedia { get; set; }
         public _PostedFile ProfilePhoto { get; set; }
     }
