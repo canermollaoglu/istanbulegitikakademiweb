@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using NitelikliBilisim.App.Areas.Admin.VmCreator.Educator;
 using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Managers;
 using NitelikliBilisim.App.Models;
@@ -23,12 +24,14 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         private readonly FileUploadManager _fileManager;
         private readonly UnitOfWork _unitOfWork;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly EducatorVmCreator _vmCreator;
         public EducatorController(IHostingEnvironment hostingEnvironment, UnitOfWork unitOfWork, UserManager<ApplicationUser> userManager)
         {
             _hostingEnvironment = hostingEnvironment;
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _fileManager = new FileUploadManager(_hostingEnvironment, "jpg", "jpeg");
+            _vmCreator = new EducatorVmCreator(_unitOfWork);
         }
         [Route("admin/egitmen-ekle")]
         public IActionResult Add()
@@ -64,6 +67,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     Surname = data.Surname,
                     AvatarPath = dbPath,
                     Email = data.Email,
+                    PhoneNumber = data.Phone,
                     UserName = $"{userName}{countText}"
                 };
                 var pwd = TextHelper.RandomPasswordGenerator();
@@ -104,10 +108,22 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             });
         }
 
+        [Route("admin/egitmenler")]
         public IActionResult List()
         {
 
             return View();
+        }
+
+        [Route("admin/get-educators")]
+        public IActionResult GetEducators()
+        {
+            var educators = _vmCreator.GetEducators();
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = educators
+            });
         }
     }
 }
