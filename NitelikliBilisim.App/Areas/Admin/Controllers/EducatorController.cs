@@ -12,6 +12,7 @@ using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.ViewModels.areas.admin.educator;
+using NitelikliBilisim.Support.Text;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
@@ -53,24 +54,44 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             {
                 var dbPath = _fileManager.Upload("/uploads/educator-photos/", data.ProfilePhoto.Base64Content, data.ProfilePhoto.Extension, "profile-photo", $"{data.Name} {data.Surname}");
 
+                var userName = TextHelper.ConcatForUserName(data.Name, data.Surname);
+                
+                var pwd = TextHelper.RandomPasswordGenerator();
+                var count = _userManager.Users.Where(x => x.UserName == userName).Count();
+                var countText = count > 0 ? count.ToString() : "";
                 var newUser = new ApplicationUser
                 {
                     Name = data.Name,
                     Surname = data.Surname,
                     AvatarPath = dbPath,
-                    UserName = data.Email,
-                    Email = data.Email
+                    Email = data.Email,
+                    UserName = $"{userName}{countText}"
                 };
+                var res = await _userManager.CreateAsync(newUser, pwd);
+                if (!res.Succeeded)
+                    return Json(new ResponseModel
+                    {
+                        isSuccess = false,
+                        errors = res.Errors.Select(x => x.Description)
+                    });
+                res = await _userManager.AddToRoleAsync(newUser, "User");
+                if (!res.Succeeded)
+                    return Json(new ResponseModel
+                    {
+                        isSuccess = false,
+                        errors = res.Errors.Select(x => x.Description)
+                    });
 
-                await _userManager.CreateAsync(newUser, "password");
-                //await _userManager.AddToRoleAsync(newUser, "User");
-
-                _unitOfWork.Educator.Insert(new Educator
+                var newEducator = new Educator
                 {
                     Id = newUser.Id,
                     Title = "?",
                     Biography = "?"
-                });
+                };
+                _unitOfWork.Educator.Insert(newEducator);
+
+                if (data.SocialMedia != null)
+                    _unitOfWork.EducatorSocialMedia.Insert(newEducator.Id, data.SocialMedia.Facebook, data.SocialMedia.Linkedin, data.SocialMedia.GooglePlus, data.SocialMedia.Twitter);
             }
             catch (Exception ex)
             {
