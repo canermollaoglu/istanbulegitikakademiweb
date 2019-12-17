@@ -11,7 +11,7 @@
             this.btnDismissAlert.on("click", () => { this.alertContainer.css("display", "none"); });
         }
 
-        // options = { success: <bool>, errors: [], message: <string>, redirectElement: {content: <string>, link: <string>} }
+        // options = { success: <bool>, errors: [], message: <string>, redirectElement: {content: <string>, link: <string>}, scrollToTop: <bool> }
         ResultAlert.prototype.display = function (options) {
             this.alertMessageList.html("");
             this.alertSingleMessage.html("");
@@ -26,13 +26,17 @@
 
             this.alertContainer.css("display", "block");
 
-            var scrollStep = -window.scrollY / 20,
-            scrollInterval = setInterval(function () {
-                if (window.scrollY != 0) {
-                    window.scrollBy(0, scrollStep);
-                }
-                else clearInterval(scrollInterval);
-            }, 15);
+            if (options.scrollToTop) {
+                var scrollStep = -window.scrollY / 20,
+                    scrollInterval = setInterval(function () {
+                        if (window.scrollY != 0) {
+                            window.scrollBy(0, scrollStep);
+                        }
+                        else clearInterval(scrollInterval);
+                    }, 15);
+            }
+            else
+                this.alertContainer.css("position", "fixed");
         }
 
         function buildMessage(element, options) {

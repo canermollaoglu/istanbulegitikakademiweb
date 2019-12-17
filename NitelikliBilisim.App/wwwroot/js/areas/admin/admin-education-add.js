@@ -34,7 +34,8 @@ function btnSave_onClick() {
     if (categoryIds.length == 0) {
         resultAlert.display({
             success: false,
-            errors: ["Eğitim en az bir kategoriye ait olmalıdır"]
+            errors: ["Eğitim en az bir kategoriye ait olmalıdır"],
+            scrollToTop: true
         });
         btnSave.on("click", btnSave_onClick);
         return;
