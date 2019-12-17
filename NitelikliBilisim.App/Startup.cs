@@ -12,6 +12,7 @@ using NitelikliBilisim.App.Extensions;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Data;
+using System.Globalization;
 using System.IO;
 
 namespace NitelikliBilisim.App
@@ -64,6 +65,11 @@ namespace NitelikliBilisim.App
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            var cultureInfo = new CultureInfo("tr-TR") { NumberFormat = { NumberDecimalSeparator = "." } };
+
+            CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+            CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
             app.UseDeveloperExceptionPage();
             app.UseDatabaseErrorPage();
             //            if (env.IsDevelopment())

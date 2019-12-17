@@ -49,13 +49,14 @@
             </figure>
             <form autocomplete="off" asp-controller="account" asp-action="register" method="post">
                 <div class="form-group">
-
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <span class="input">
                         <input class="input_field" type="text" name="UserName">
                         <label class="input_label">
                             <span class="input__label-content">Kullanıcı Adı</span>
                         </label>
                     </span>
+                    <span class="text-danger" asp-validation-for="UserName"></span>
 
                     <span class="input">
                         <input class="input_field" type="text" name="Name">
@@ -63,6 +64,7 @@
                             <span class="input__label-content">İsim</span>
                         </label>
                     </span>
+                    <span class="text-danger" asp-validation-for="Name"></span>
 
                     <span class="input">
                         <input class="input_field" type="text" name="Surname">
@@ -70,6 +72,7 @@
                             <span class="input__label-content">Soyisim</span>
                         </label>
                     </span>
+                    <span class="text-danger" asp-validation-for="Surname"></span>
 
                     <span class="input">
                         <input class="input_field" type="email" name="Email">
@@ -77,6 +80,7 @@
                             <span class="input__label-content">E-Posta</span>
                         </label>
                     </span>
+                    <span class="text-danger" asp-validation-for="Email"></span>
 
                     <span class="input">
                         <input class="input_field" type="password" id="password1" name="Password">
@@ -84,6 +88,7 @@
                             <span class="input__label-content">Şifre</span>
                         </label>
                     </span>
+                    <span class="text-danger" asp-validation-for="Password"></span>
 
                     <span class="input">
                         <input class="input_field" type="password" id="password2" name="ConfirmPassword">
@@ -91,6 +96,7 @@
                             <span class="input__label-content">Şifre Onay</span>
                         </label>
                     </span>
+                    <span class="text-danger" asp-validation-for="ConfirmPassword"></span>
 
                     <div id="pass-info" class="clearfix"></div>
                 </div>
