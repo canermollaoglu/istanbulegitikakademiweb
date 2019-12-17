@@ -94,6 +94,8 @@ namespace NitelikliBilisim.App.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
+            ModelState.AddModelError(string.Empty, "Böyle bir kullanıcı bulunmamaktadır!");
+
             return View(model);
         }
 
