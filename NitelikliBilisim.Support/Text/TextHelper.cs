@@ -10,7 +10,12 @@ namespace NitelikliBilisim.Support.Text
         {
             return Guid.NewGuid().ToString()
                 .Replace("-", "")
-                .Substring(0, size);
+                .Substring(0, size).ToUpper();
+            //var random = Guid.NewGuid().ToString()
+            //    .Replace("-", "")
+            //    .Substring(0, size);
+            //var last = random.Substring(size - 3, 3).ToUpper();
+            //return $"{random.Substring(0, 3)}{last}";
         }
         public static string ConcatForUserName(string part1, string part2)
         {

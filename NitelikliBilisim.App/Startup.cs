@@ -39,19 +39,18 @@ namespace NitelikliBilisim.App
             services.AddDbContext<NbDataContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("SqlConnectionString")));
 
-            services.AddIdentity<ApplicationUser, ApplicationRole>()
+            services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
+            {
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+                options.User.RequireUniqueEmail = true;
+                options.Password.RequireUppercase = false;
+            })
                 .AddEntityFrameworkStores<NbDataContext>()
                 //.AddUserStore<UserStore<ApplicationUser, ApplicationRole, NbDataContext>>()
                 //.AddRoleStore<RoleStore<ApplicationRole, NbDataContext>>()
                 //.AddUserManager<UserManager<ApplicationUser>>()
                 //.AddRoleManager<RoleManager<ApplicationRole>>()
                 .AddDefaultTokenProviders();
-
-            services.Configure<IdentityOptions>(options =>
-            {
-                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-                options.User.RequireUniqueEmail = true;
-            });
 
             services.AddScoped<UnitOfWork>();
 
