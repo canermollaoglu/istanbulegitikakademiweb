@@ -38,14 +38,17 @@ namespace NitelikliBilisim.App
             services.AddDbContext<NbDataContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("SqlConnectionString")));
 
-            services.Configure<IdentityOptions>(options =>
+            //services.Configure<IdentityOptions>(options =>
+            //{
+
+            //});
+
+            services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {
                 options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
                 options.User.RequireUniqueEmail = true;
                 options.Password.RequireUppercase = false;
-            });
-
-            services.AddIdentity<ApplicationUser, ApplicationRole>()
+            })
                 .AddEntityFrameworkStores<NbDataContext>()
                 //.AddUserStore<UserStore<ApplicationUser, ApplicationRole, NbDataContext>>()
                 //.AddRoleStore<RoleStore<ApplicationRole, NbDataContext>>()
