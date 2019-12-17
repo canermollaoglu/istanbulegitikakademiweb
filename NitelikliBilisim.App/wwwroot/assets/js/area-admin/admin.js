@@ -28,16 +28,6 @@
             $('.scroll-to-top').fadeOut();
         }
     });
-    // Configure tooltips globally
-    $('[data-toggle="tooltip"]').tooltip()
-    // Smooth scrolling using jQuery easing
-    $(document).on('click', 'a.scroll-to-top', function (event) {
-        var $anchor = $(this);
-        $('html, body').stop().animate({
-            scrollTop: ($($anchor.attr('href')).offset().top)
-        }, 1000, 'easeInOutExpo');
-        event.preventDefault();
-    });
 
     // Inline popups
     $('.inline-popups').each(function () {
@@ -57,25 +47,5 @@
     $('.wishlist_close').on('click', function (c) {
         $(this).parent().parent().parent().fadeOut('slow', function (c) { });
     });
-
-    // Selectbox
-    $(".selectbox").selectbox();
-
-    // Pricing add
-    function newMenuItem() {
-        var newElem = $('tr.pricing-list-item').first().clone();
-        newElem.find('input').val('');
-        newElem.appendTo('table#pricing-list-container');
-    }
-    if ($("table#pricing-list-container").is('*')) {
-        $('.add-pricing-list-item').on('click', function (e) {
-            e.preventDefault();
-            newMenuItem();
-        });
-        $(document).on("click", "#pricing-list-container .delete", function (e) {
-            e.preventDefault();
-            $(this).parent().parent().parent().remove();
-        });
-    }
 
 })(jQuery); // End of use strict
