@@ -25,6 +25,14 @@
             }
 
             this.alertContainer.css("display", "block");
+
+            var scrollStep = -window.scrollY / 20,
+            scrollInterval = setInterval(function () {
+                if (window.scrollY != 0) {
+                    window.scrollBy(0, scrollStep);
+                }
+                else clearInterval(scrollInterval);
+            }, 15);
         }
 
         function buildMessage(element, options) {
