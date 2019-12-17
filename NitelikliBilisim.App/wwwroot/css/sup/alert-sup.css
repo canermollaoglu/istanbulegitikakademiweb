@@ -12,6 +12,7 @@
 
 #btn-dismiss-alert{
     cursor: pointer;
+    position: initial;
 }
 
 #alert-icon {
