@@ -35,8 +35,8 @@
                         else clearInterval(scrollInterval);
                     }, 15);
             }
-            else
-                this.alertContainer.css("position", "fixed");
+
+            this.alertContainer.css("position", "fixed");                
         }
 
         function buildMessage(element, options) {
