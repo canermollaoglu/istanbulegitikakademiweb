@@ -56,7 +56,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
                 var userName = TextHelper.ConcatForUserName(data.Name, data.Surname);
 
-                var count = _userManager.Users.Where(x => x.UserName == userName).Count();
+                var count = _userManager.Users.Where(x => x.UserName.StartsWith(userName)).Count();
                 var countText = count > 0 ? count.ToString() : "";
                 var newUser = new ApplicationUser
                 {

@@ -38,11 +38,6 @@ namespace NitelikliBilisim.App
             services.AddDbContext<NbDataContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("SqlConnectionString")));
 
-            //services.Configure<IdentityOptions>(options =>
-            //{
-
-            //});
-
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {
                 options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
