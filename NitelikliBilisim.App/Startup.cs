@@ -38,6 +38,13 @@ namespace NitelikliBilisim.App
             services.AddDbContext<NbDataContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("SqlConnectionString")));
 
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+                options.User.RequireUniqueEmail = true;
+                options.Password.RequireUppercase = false;
+            });
+
             services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddEntityFrameworkStores<NbDataContext>()
                 //.AddUserStore<UserStore<ApplicationUser, ApplicationRole, NbDataContext>>()
@@ -45,12 +52,6 @@ namespace NitelikliBilisim.App
                 //.AddUserManager<UserManager<ApplicationUser>>()
                 //.AddRoleManager<RoleManager<ApplicationRole>>()
                 .AddDefaultTokenProviders();
-
-            services.Configure<IdentityOptions>(options =>
-            {
-                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-                options.User.RequireUniqueEmail = true;
-            });
 
             services.AddScoped<UnitOfWork>();
 

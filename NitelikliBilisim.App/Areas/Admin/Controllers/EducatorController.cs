@@ -55,8 +55,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 var dbPath = _fileManager.Upload("/uploads/educator-photos/", data.ProfilePhoto.Base64Content, data.ProfilePhoto.Extension, "profile-photo", $"{data.Name} {data.Surname}");
 
                 var userName = TextHelper.ConcatForUserName(data.Name, data.Surname);
-                
-                var pwd = TextHelper.RandomPasswordGenerator();
+
                 var count = _userManager.Users.Where(x => x.UserName == userName).Count();
                 var countText = count > 0 ? count.ToString() : "";
                 var newUser = new ApplicationUser
@@ -67,6 +66,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     Email = data.Email,
                     UserName = $"{userName}{countText}"
                 };
+                var pwd = TextHelper.RandomPasswordGenerator();
                 var res = await _userManager.CreateAsync(newUser, pwd);
                 if (!res.Succeeded)
                     return Json(new ResponseModel
@@ -102,6 +102,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             {
                 isSuccess = true
             });
+        }
+
+        public IActionResult List()
+        {
+
+            return View();
         }
     }
 }
