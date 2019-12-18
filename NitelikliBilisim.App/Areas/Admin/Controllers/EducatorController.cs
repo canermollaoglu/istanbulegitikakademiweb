@@ -70,7 +70,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     PhoneNumber = data.Phone,
                     UserName = $"{userName}{countText}"
                 };
-                var pwd = TextHelper.RandomPasswordGenerator(2);
+                var pwd = TextHelper.RandomPasswordGenerator(10);
                 var res = await _userManager.CreateAsync(newUser, pwd);
                 if (!res.Succeeded)
                 {
