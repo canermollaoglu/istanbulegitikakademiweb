@@ -206,10 +206,16 @@
             if (data.length != 0)
                 for (var i = 0; i < data.length; i++) {
                     var element = data[i];
+                    var contentItem = '';
+                    if (element.mediaItemType == 'Ön İzleme Videosu')
+                        contentItem = `<video height="128" width="150" controls="controls" preload="metadata"><source src="${element.fileUrl}#t=0.1" type="video/mp4" /></video>`;
+                    else 
+                        contentItem = `<img src="${element.fileUrl}" style="height:128px;width:150px;" />`;
+
                     content +=
                         `<tr>` +
                         `<td>${element.mediaItemType}</td>` +
-                        `<td style="text-align:center;"><img src="${element.fileUrl}" style="height:128px;width:150px;" /></td>` +
+                        `<td style="text-align:center;">${contentItem}</td>` +
                         `<td>` +
                         `<div class="btn-group">` +
                         `<button class="btn btn-danger btn-confirmation-modal-trigger" data-url="/admin/delete-education-media-item/${element.id}"><i class="fa fa-trash"></i></button>` +
