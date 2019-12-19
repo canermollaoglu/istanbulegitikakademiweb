@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Areas.Admin.Models.Category;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
+using NitelikliBilisim.Business.Debugging;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
 
@@ -100,7 +101,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/kategoriler")]
         public IActionResult List()
         {
+            var performer = new Performer();
+
             var model = _unitOfWork.EducationCategory.Get(null, order => order.OrderBy(o => o.Name), x => x.BaseCategory);
+
+            performer.Watch("List");
+
             return View(model);
         }
 

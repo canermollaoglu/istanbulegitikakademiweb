@@ -70,21 +70,30 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     PhoneNumber = data.Phone,
                     UserName = $"{userName}{countText}"
                 };
-                var pwd = TextHelper.RandomPasswordGenerator();
+                var pwd = TextHelper.RandomPasswordGenerator(10);
                 var res = await _userManager.CreateAsync(newUser, pwd);
                 if (!res.Succeeded)
+                {
+                    _fileManager.Delete(dbPath);
+
                     return Json(new ResponseModel
                     {
                         isSuccess = false,
                         errors = res.Errors.Select(x => x.Description)
                     });
+                }
+                    
                 res = await _userManager.AddToRoleAsync(newUser, "User");
                 if (!res.Succeeded)
+                {
+                    _fileManager.Delete(dbPath);
+
                     return Json(new ResponseModel
                     {
                         isSuccess = false,
                         errors = res.Errors.Select(x => x.Description)
                     });
+                }
 
                 var newEducator = new Educator
                 {

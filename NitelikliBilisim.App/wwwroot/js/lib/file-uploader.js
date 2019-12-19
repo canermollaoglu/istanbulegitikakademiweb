@@ -30,9 +30,18 @@
                 if (this.fileReader.DONE) {
                     var result = e.target.result;
                     this.base64content = result;
-                    this.preview.setAttribute("src", result);
+
+                    if (this.extension == 'mp4') {
+                        this.preview.style.width = "120px";
+                        this.preview.style.margin = "10px auto";
+                        this.preview.setAttribute("src", "/img/preview_placeholder.png");
+                    }
+                    else
+                        this.preview.setAttribute("src", result);
+
                     var afterPreview = document.querySelector(`#${this.containerId} .img-after-preview`);
                     afterPreview.style.display = "block";
+                    
                     document.querySelector(`#${this.containerId} p`).style.display = "none";
                 }
             };
