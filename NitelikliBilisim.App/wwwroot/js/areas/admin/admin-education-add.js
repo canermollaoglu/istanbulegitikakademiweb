@@ -62,7 +62,6 @@ function btnSave_onClick() {
     };
     var tokenVerifier = new SecuritySupport.TokenVerifier();
     data = tokenVerifier.addToken("form-add-education", data);
-    console.log(data);
     $.ajax({
         url: "",
         method: "post",

@@ -13,7 +13,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Models.Education
         public Dictionary<int, string> Levels { get; set; }
     }
 
-    public class AddPostVm
+    public class EducationCrudVm
     {
         [Required(ErrorMessage = "İsim alanı boş geçilemez"), MaxLength(100, ErrorMessage = "Eğitim ismi 100 karakterden fazla olamaz")]
         public string Name { get; set; }
@@ -29,6 +29,9 @@ namespace NitelikliBilisim.App.Areas.Admin.Models.Education
         public int? EducationLevel { get; set; }
         [Required(ErrorMessage = "Eğitim en az 1 kategoriye ait olmalıdır")]
         public List<Guid> CategoryIds { get; set; }
+    }
+    public class AddPostVm : EducationCrudVm
+    {
         public _PostedFile BannerFile { get; set; }
         public _PostedFile PreviewFile { get; set; }
     }

@@ -12,8 +12,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Models.Education
         public List<EducationCategory> RelatedCategories { get; set; }
     }
 
-    public class UpdatePostVm : AddPostVm
+    public class UpdatePostVm : EducationCrudVm
     {
-
+        public Guid EducationId { get; set; }
     }
 }
