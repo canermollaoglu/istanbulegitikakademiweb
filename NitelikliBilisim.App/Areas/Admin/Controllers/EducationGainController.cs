@@ -70,6 +70,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 Gain = data.Gain
             });
 
+            _unitOfWork.Education.CheckEducationState(data.EducationId);
+
             return Json(new ResponseModel
             {
                 isSuccess = true
@@ -86,7 +88,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     errors = new List<string> { "Eğitimin kazanımını silerken bir hata oluştu" }
                 });
 
+            var educationId = _unitOfWork.EducationGain.GetById(gainId.Value).EducationId;
+
             _unitOfWork.EducationGain.Delete(gainId.Value);
+
+            _unitOfWork.Education.CheckEducationState(educationId);
+
             return Json(new ResponseModel
             {
                 isSuccess = true

@@ -72,6 +72,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 Duration = data.Duration.GetValueOrDefault(0)
             });
 
+            _unitOfWork.Education.CheckEducationState(data.EducationId);
+
             return Json(new ResponseModel
             {
                 isSuccess = true
@@ -88,7 +90,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     errors = new List<string> { "Eğitimin parçasını silerken bir hata oluştu" }
                 });
 
+            var educationId = _unitOfWork.EducationPart.GetById(partId.Value).EducationId;
+
             _unitOfWork.EducationPart.Delete(partId.Value);
+
+            _unitOfWork.Education.CheckEducationState(educationId);
+
             return Json(new ResponseModel
             {
                 isSuccess = true

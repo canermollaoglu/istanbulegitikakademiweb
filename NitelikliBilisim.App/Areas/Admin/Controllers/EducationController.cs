@@ -63,7 +63,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 MediaType = data.PreviewFile.Extension == "mp4" ? EducationMediaType.PreviewVideo : EducationMediaType.PreviewPhoto
             };
 
-            _unitOfWork.Education.Insert(new Education
+            var education = new Education
             {
                 Name = data.Name,
                 Description = data.Description,
@@ -71,7 +71,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 NewPrice = data.Price.Value,
                 Days = data.Days.Value,
                 HoursPerDay = data.HoursPerDay.Value
-            }, data.CategoryIds, new List<EducationMedia> { banner, preview });
+            };
+
+            _unitOfWork.Education.Insert(education, data.CategoryIds, new List<EducationMedia> { banner, preview });
+
+            _unitOfWork.Education.CheckEducationState(education.Id);
 
             return Json(new ResponseModel
             {

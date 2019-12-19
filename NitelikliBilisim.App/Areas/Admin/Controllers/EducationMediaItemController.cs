@@ -69,6 +69,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             try
             {
                 var education = _unitOfWork.Education.GetById(data.EducationId);
+
                 var filePath = _fileUploadManager.Upload("/uploads/media-items/", data.PostedFile.Base64Content, data.PostedFile.Extension, EnumSupport.GetDescription((EducationMediaType)data.MediaItemType).ToLower(), education.Name);
                 _unitOfWork.EducationMedia.Insert(new Core.Entities.EducationMedia
                 {
@@ -76,6 +77,9 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     MediaType = (EducationMediaType)data.MediaItemType,
                     FileUrl = filePath
                 });
+
+                _unitOfWork.Education.CheckEducationState(data.EducationId);
+
                 return Json(new ResponseModel
                 {
                     isSuccess = true
@@ -110,6 +114,9 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 });
             _fileUploadManager.Delete(mediaItem.FileUrl);
             _unitOfWork.EducationMedia.Delete(mediaItemId.Value);
+
+            _unitOfWork.Education.CheckEducationState(mediaItem.EducationId);
+
             return Json(new ResponseModel
             {
                 isSuccess = true

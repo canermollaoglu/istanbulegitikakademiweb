@@ -51,7 +51,7 @@
                     {
                         <text>
                             @{
-                                var isValidEducation = false;
+                                @*var isValidEducation = false;*@
                                 var educationMedias = Model.Medias.FirstOrDefault(x => x.EducationId == item.Id);
                                 var mediaCount = educationMedias != null ? educationMedias.Count : 0;
                                 var media = $"<a href=\"/admin/egitim-medya-yonetimi/{item.Id}\" class=\"btn btn-primary\"/><i class=\"fa fa-file-photo-o\"></i> {mediaCount}</a>";
@@ -64,17 +64,17 @@
                                 var categories = Model.EducationCategories.FirstOrDefault(x => x.EducationId == item.Id);
                                 var concattedCategories = categories.ConcattedCategories;
 
-                                if (partCount > 0 && mediaCount > 0 && gainCount > 0 && concattedCategories != null)
+                                @*if (partCount > 0 && mediaCount > 0 && gainCount > 0 && concattedCategories != null)
                                 {
                                     isValidEducation = true;
-                                }
+                                }*@
 
                                 if (concattedCategories == null)
                                 {
                                     concattedCategories = "-";
                                 }
 
-                                var validEducation = isValidEducation ?
+                                var validEducation = item.IsActive ?
                                         $"<i class=\"fa fa-unlock text-success\" style=\"padding:25%;font-size:200%;text-align:center;vertical-align:middle;\"></i>"
                                         :
                                         $"<i class=\"fa fa-lock text-danger\" style=\"padding:25%;font-size:200%;text-align:center;vertical-align:middle;\"></i>";

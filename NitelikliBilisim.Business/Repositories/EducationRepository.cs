@@ -191,5 +191,27 @@ namespace NitelikliBilisim.Business.Repositories
 
             return categories;
         }
+
+        public bool CheckEducationState(Guid educationId)
+        {
+            var mediaCount = _context.EducationMedias.Count(x => x.EducationId == educationId &&
+            (x.MediaType == Core.Enums.EducationMediaType.Banner ||
+            x.MediaType == Core.Enums.EducationMediaType.PreviewPhoto ||
+            x.MediaType == Core.Enums.EducationMediaType.PreviewVideo));
+
+            var partCount = _context.EducationParts.Count(x => x.EducationId == educationId);
+
+            var gainCount = _context.EducationGains.Count(x => x.EducationId == educationId);
+
+            var categoryCount = _context.Bridge_EducationCategories.Count(x => x.Id2 == educationId);
+
+            var education = _context.Educations.First(x => x.Id == educationId);
+
+            education.IsActive = mediaCount >= 2 && partCount > 0 && gainCount > 0 && categoryCount > 0;
+
+            _context.SaveChanges();
+
+            return education.IsActive;
+        }
     }
 }
