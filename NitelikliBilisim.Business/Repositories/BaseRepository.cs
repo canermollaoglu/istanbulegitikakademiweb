@@ -33,7 +33,7 @@ namespace NitelikliBilisim.Business.Repositories
             return entity.Id;
         }
 
-        public int Update(TEntity entity, bool isSaveLater = false)
+        public virtual int Update(TEntity entity, bool isSaveLater = false)
         {
             _table.Update(entity);
             return isSaveLater ? 0 : Save();

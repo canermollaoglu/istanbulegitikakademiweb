@@ -46,5 +46,19 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.Education
                 RelatedCategories = relatedCategories
             };
         }
+
+        public void SendVmToUpdate(UpdatePostVm data)
+        {
+            _unitOfWork.Education.Update(new Core.Entities.Education
+            {
+                Id = data.EducationId,
+                Days = data.Days.Value,
+                HoursPerDay = data.HoursPerDay.Value,
+                Description = data.Description,
+                Level = (EducationLevel)data.EducationLevel,
+                Name = data.Name,
+                NewPrice = data.Price
+            }, data.CategoryIds);
+        }
     }
 }

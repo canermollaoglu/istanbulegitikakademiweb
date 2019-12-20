@@ -103,6 +103,15 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [HttpPost, Route("admin/egitim-guncelle")]
         public IActionResult Update(UpdatePostVm data)
         {
+            if (!ModelState.IsValid || data.CategoryIds.Count == 0)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = ModelStateUtil.GetErrors(ModelState)
+                });
+
+            _vmCreator.SendVmToUpdate(data);
+
             return Json(new ResponseModel
             {
                 isSuccess = true

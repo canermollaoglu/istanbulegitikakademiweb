@@ -213,5 +213,24 @@ namespace NitelikliBilisim.Business.Repositories
 
             return education.IsActive;
         }
+
+        public int Update(Education entity, List<Guid> categoryIds, bool isSaveLater = false)
+        {
+            var currentCategories = _context.Bridge_EducationCategories.Where(x => x.Id2 == entity.Id).ToList();
+
+            _context.Bridge_EducationCategories.RemoveRange(currentCategories);
+
+            var newItems = new List<Bridge_EducationCategory>();
+            foreach (var categoryId in categoryIds)
+                newItems.Add(new Bridge_EducationCategory
+                {
+                    Id = categoryId,
+                    Id2 = entity.Id
+                });
+
+            _context.Bridge_EducationCategories.AddRange(newItems);
+
+            return base.Update(entity, isSaveLater);
+        }
     }
 }
