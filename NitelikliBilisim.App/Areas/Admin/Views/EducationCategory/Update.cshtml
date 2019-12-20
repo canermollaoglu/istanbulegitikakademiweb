@@ -80,6 +80,7 @@
             btnSave.off("click");
             var baseCategoryId = selectBaseCategories.options[selectBaseCategories.selectedIndex].value;
             var data = {
+                CategoryId: $("#_category-id").val(),
                 Name: inputName.value,
                 Description: inputDescription.value,
                 BaseCategoryId: baseCategoryId
@@ -89,7 +90,7 @@
             data = tokenVerfier.addToken("form-add-category", data);
 
             $.ajax({
-                url: "/admin/kategori-ekle",
+                url: "/admin/kategori-guncelle",
                 method: "post",
                 data: data,
                 success: (res) => {

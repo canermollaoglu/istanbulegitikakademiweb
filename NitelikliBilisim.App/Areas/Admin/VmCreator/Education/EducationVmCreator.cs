@@ -57,7 +57,8 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.Education
                 Description = data.Description,
                 Level = (EducationLevel)data.EducationLevel,
                 Name = data.Name,
-                NewPrice = data.Price
+                NewPrice = data.Price,
+                IsActive = data.IsActive
             }, data.CategoryIds);
         }
     }

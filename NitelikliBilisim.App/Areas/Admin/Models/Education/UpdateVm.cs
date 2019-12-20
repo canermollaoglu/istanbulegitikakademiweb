@@ -15,5 +15,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Models.Education
     public class UpdatePostVm : EducationCrudVm
     {
         public Guid EducationId { get; set; }
+        public bool IsActive { get; set; }
     }
 }
