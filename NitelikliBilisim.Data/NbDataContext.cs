@@ -74,7 +74,6 @@ namespace NitelikliBilisim.Data
                     .HasForeignKey(ur => ur.UserId)
                     .IsRequired();
             });
-
             #endregion
         }
 

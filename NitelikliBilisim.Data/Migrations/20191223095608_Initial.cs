@@ -68,30 +68,6 @@ namespace NitelikliBilisim.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EducationCategories",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    CreatedUser = table.Column<string>(maxLength: 128, nullable: true),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    UpdatedUser = table.Column<string>(maxLength: 128, nullable: true),
-                    UpdatedDate = table.Column<DateTime>(nullable: true),
-                    Name = table.Column<string>(maxLength: 128, nullable: true),
-                    Description = table.Column<string>(maxLength: 512, nullable: true),
-                    BaseCategoryId = table.Column<Guid>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EducationCategories", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_EducationCategories_EducationCategories_BaseCategoryId",
-                        column: x => x.BaseCategoryId,
-                        principalTable: "EducationCategories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "EducationPromotionCodes",
                 columns: table => new
                 {
@@ -132,6 +108,30 @@ namespace NitelikliBilisim.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Educations", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EducationTags",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    CreatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    UpdatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    UpdatedDate = table.Column<DateTime>(nullable: true),
+                    Name = table.Column<string>(maxLength: 128, nullable: true),
+                    Description = table.Column<string>(maxLength: 512, nullable: true),
+                    BaseTagId = table.Column<Guid>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EducationTags", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EducationTags_EducationTags_BaseTagId",
+                        column: x => x.BaseTagId,
+                        principalTable: "EducationTags",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -306,34 +306,6 @@ namespace NitelikliBilisim.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Bridge_EducationCategories",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    Id2 = table.Column<Guid>(nullable: false),
-                    CreatedUser = table.Column<string>(maxLength: 128, nullable: true),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    UpdatedUser = table.Column<string>(maxLength: 128, nullable: true),
-                    UpdatedDate = table.Column<DateTime>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Bridge_EducationCategories", x => new { x.Id, x.Id2 });
-                    table.ForeignKey(
-                        name: "FK_Bridge_EducationCategories_EducationCategories_Id",
-                        column: x => x.Id,
-                        principalTable: "EducationCategories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Bridge_EducationCategories_Educations_Id2",
-                        column: x => x.Id2,
-                        principalTable: "Educations",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "EducationComments",
                 columns: table => new
                 {
@@ -362,6 +334,29 @@ namespace NitelikliBilisim.Data.Migrations
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_EducationComments_Educations_EducationId",
+                        column: x => x.EducationId,
+                        principalTable: "Educations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EducationGains",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    CreatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    UpdatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    UpdatedDate = table.Column<DateTime>(nullable: true),
+                    Gain = table.Column<string>(maxLength: 512, nullable: true),
+                    EducationId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EducationGains", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EducationGains_Educations_EducationId",
                         column: x => x.EducationId,
                         principalTable: "Educations",
                         principalColumn: "Id",
@@ -446,6 +441,34 @@ namespace NitelikliBilisim.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Bridge_EducationTags",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Id2 = table.Column<Guid>(nullable: false),
+                    CreatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    UpdatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    UpdatedDate = table.Column<DateTime>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Bridge_EducationTags", x => new { x.Id, x.Id2 });
+                    table.ForeignKey(
+                        name: "FK_Bridge_EducationTags_Educations_Id",
+                        column: x => x.Id,
+                        principalTable: "Educations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Bridge_EducationTags_EducationTags_Id2",
+                        column: x => x.Id2,
+                        principalTable: "EducationTags",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "SaleAddresses",
                 columns: table => new
                 {
@@ -517,6 +540,7 @@ namespace NitelikliBilisim.Data.Migrations
                     CreatedDate = table.Column<DateTime>(nullable: false),
                     UpdatedUser = table.Column<string>(maxLength: 128, nullable: true),
                     UpdatedDate = table.Column<DateTime>(nullable: true),
+                    Link = table.Column<string>(nullable: true),
                     EducatorId = table.Column<string>(nullable: true),
                     SocialMediaType = table.Column<int>(nullable: false)
                 },
@@ -571,14 +595,9 @@ namespace NitelikliBilisim.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Bridge_EducationCategories_Id2",
-                table: "Bridge_EducationCategories",
+                name: "IX_Bridge_EducationTags_Id2",
+                table: "Bridge_EducationTags",
                 column: "Id2");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_EducationCategories_BaseCategoryId",
-                table: "EducationCategories",
-                column: "BaseCategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EducationComments_BaseCommentId",
@@ -591,6 +610,11 @@ namespace NitelikliBilisim.Data.Migrations
                 column: "EducationId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_EducationGains_EducationId",
+                table: "EducationGains",
+                column: "EducationId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_EducationMediaItems_EducationId",
                 table: "EducationMediaItems",
                 column: "EducationId");
@@ -599,6 +623,11 @@ namespace NitelikliBilisim.Data.Migrations
                 name: "IX_EducationParts_EducationId",
                 table: "EducationParts",
                 column: "EducationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EducationTags_BaseTagId",
+                table: "EducationTags",
+                column: "BaseTagId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EducatorSocialMedias_EducatorId",
@@ -644,7 +673,7 @@ namespace NitelikliBilisim.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Bridge_EducationCategories");
+                name: "Bridge_EducationTags");
 
             migrationBuilder.DropTable(
                 name: "Customers");
@@ -654,6 +683,9 @@ namespace NitelikliBilisim.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "EducationComments");
+
+            migrationBuilder.DropTable(
+                name: "EducationGains");
 
             migrationBuilder.DropTable(
                 name: "EducationMediaItems");
@@ -677,7 +709,7 @@ namespace NitelikliBilisim.Data.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "EducationCategories");
+                name: "EducationTags");
 
             migrationBuilder.DropTable(
                 name: "Educators");

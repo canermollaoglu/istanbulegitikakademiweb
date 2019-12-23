@@ -214,7 +214,7 @@ namespace NitelikliBilisim.Data.Migrations
                     b.ToTable("AspNetUserRoles");
                 });
 
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.Bridge_EducationCategory", b =>
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.Bridge_EducationTag", b =>
                 {
                     b.Property<Guid>("Id");
 
@@ -234,7 +234,7 @@ namespace NitelikliBilisim.Data.Migrations
 
                     b.HasIndex("Id2");
 
-                    b.ToTable("Bridge_EducationCategories");
+                    b.ToTable("Bridge_EducationTags");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.Customer", b =>
@@ -302,36 +302,6 @@ namespace NitelikliBilisim.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Educations");
-                });
-
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationCategory", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<Guid?>("BaseCategoryId");
-
-                    b.Property<DateTime>("CreatedDate");
-
-                    b.Property<string>("CreatedUser")
-                        .HasMaxLength(128);
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(512);
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(128);
-
-                    b.Property<DateTime?>("UpdatedDate");
-
-                    b.Property<string>("UpdatedUser")
-                        .HasMaxLength(128);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BaseCategoryId");
-
-                    b.ToTable("EducationCategories");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationComment", b =>
@@ -494,6 +464,36 @@ namespace NitelikliBilisim.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("EducationPromotionCodes");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationTag", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid?>("BaseTagId");
+
+                    b.Property<DateTime>("CreatedDate");
+
+                    b.Property<string>("CreatedUser")
+                        .HasMaxLength(128);
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(512);
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(128);
+
+                    b.Property<DateTime?>("UpdatedDate");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasMaxLength(128);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BaseTagId");
+
+                    b.ToTable("EducationTags");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.Educator", b =>
@@ -709,14 +709,14 @@ namespace NitelikliBilisim.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.Bridge_EducationCategory", b =>
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.Bridge_EducationTag", b =>
                 {
-                    b.HasOne("NitelikliBilisim.Core.Entities.EducationCategory", "Category")
+                    b.HasOne("NitelikliBilisim.Core.Entities.Education", "Education")
                         .WithMany()
                         .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("NitelikliBilisim.Core.Entities.Education", "Education")
+                    b.HasOne("NitelikliBilisim.Core.Entities.EducationTag", "Tag")
                         .WithMany()
                         .HasForeignKey("Id2")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -728,13 +728,6 @@ namespace NitelikliBilisim.Data.Migrations
                         .WithMany()
                         .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationCategory", b =>
-                {
-                    b.HasOne("NitelikliBilisim.Core.Entities.EducationCategory", "BaseCategory")
-                        .WithMany()
-                        .HasForeignKey("BaseCategoryId");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationComment", b =>
@@ -771,6 +764,13 @@ namespace NitelikliBilisim.Data.Migrations
                         .WithMany()
                         .HasForeignKey("EducationId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationTag", b =>
+                {
+                    b.HasOne("NitelikliBilisim.Core.Entities.EducationTag", "BaseTag")
+                        .WithMany()
+                        .HasForeignKey("BaseTagId");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.Educator", b =>
