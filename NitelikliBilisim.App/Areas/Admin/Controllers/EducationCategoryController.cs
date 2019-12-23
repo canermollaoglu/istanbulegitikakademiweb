@@ -62,11 +62,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     errors = errors
                 });
             }
-            _unitOfWork.EducationTag.Insert(new EducationTag
+            _unitOfWork.EducationCategory.Insert(new EducationCategory
             {
                 Name = data.Name,
                 Description = data.Description,
-                BaseTagId = data.BaseCategoryId
+                BaseCategoryId = data.BaseCategoryId
             });
             return Json(new ResponseModel
             {
@@ -86,11 +86,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     errors = errors
                 });
             }
-            var category = _unitOfWork.EducationTag.GetById(data.CategoryId);
-            category.BaseTagId = data.BaseCategoryId;
+            var category = _unitOfWork.EducationCategory.GetById(data.CategoryId);
+            category.BaseCategoryId = data.BaseCategoryId;
             category.Description = data.Description;
             category.Name = data.Name;
-            _unitOfWork.EducationTag.Update(category);
+            _unitOfWork.EducationCategory.Update(category);
             return Json(new ResponseModel
             {
                 isSuccess = true,
@@ -102,9 +102,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         public IActionResult List()
         {
             var performer = new Performer();
-
-            var model = _unitOfWork.EducationTag.Get(null, order => order.OrderBy(o => o.Name), x => x.BaseTag);
-
+            var model = _unitOfWork.EducationCategory.Get(null, order => order.OrderBy(o => o.Name), x => x.BaseCategory);
             performer.Watch("List");
 
             return View(model);
