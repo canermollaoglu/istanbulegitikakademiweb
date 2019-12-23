@@ -8,8 +8,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Models.Category
 {
     public class UpdateGetVm : AddGetVm
     {
-        public EducationTag Tag { get; set; }
-        public EducationTag BaseTag { get; set; }
+        public EducationCategory Category { get; set; }
+        public EducationCategory BaseCategory { get; set; }
     }
     public class UpdatePostVm : AddPostVm
     {

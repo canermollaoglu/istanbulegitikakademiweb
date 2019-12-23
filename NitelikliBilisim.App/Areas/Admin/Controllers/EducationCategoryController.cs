@@ -23,7 +23,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/kategori-ekle")]
         public IActionResult Add()
         {
-            var data = _unitOfWork.EducationTag.Get(null, q => q.OrderBy(o => o.Name));
+            var data = _unitOfWork.EducationCategory.Get(null, q => q.OrderBy(o => o.Name));
             var model = new AddGetVm
             {
                 Categories = data
@@ -37,16 +37,16 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             if (categoryId == null)
                 return Redirect("/admin/kategoriler");
 
-            var category = _unitOfWork.EducationTag.GetById(categoryId.Value);
-            var categories = _unitOfWork.EducationTag.Get(null, q => q.OrderBy(o => o.Name));
-            EducationTag baseTag = null;
-            if (category.BaseTagId.HasValue)
-                baseTag = _unitOfWork.EducationTag.GetById(category.BaseTagId.Value);
+            var category = _unitOfWork.EducationCategory.GetById(categoryId.Value);
+            var categories = _unitOfWork.EducationCategory.Get(null, q => q.OrderBy(o => o.Name));
+            EducationCategory baseCategory = null;
+            if (category.BaseCategoryId.HasValue)
+                baseCategory = _unitOfWork.EducationCategory.GetById(category.BaseCategoryId.Value);
             var model = new UpdateGetVm
             {
-                Tag = category,
+                Category = category,
                 Categories = categories,
-                BaseTag = baseTag
+                BaseCategory = baseCategory
             };
             return View(model);
         }

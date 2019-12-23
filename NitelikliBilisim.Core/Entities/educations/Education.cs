@@ -25,5 +25,9 @@ namespace NitelikliBilisim.Core.Entities
         public byte HoursPerDay { get; set; }
         public EducationLevel Level { get; set; }
         public bool IsActive { get; set; }
+
+        public Guid CategoryId { get; set; }
+        [ForeignKey("CategoryId")]
+        public virtual EducationCategory Category { get; set; }
     }
 }

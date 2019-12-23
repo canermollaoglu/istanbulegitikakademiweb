@@ -12,6 +12,7 @@ using NitelikliBilisim.Core.ViewModels.areas.admin.education_tags;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class EducationTagController : Controller
     {
         private readonly UnitOfWork _unitOfWork;

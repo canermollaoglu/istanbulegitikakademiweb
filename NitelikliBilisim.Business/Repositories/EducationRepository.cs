@@ -77,7 +77,7 @@ namespace NitelikliBilisim.Business.Repositories
                 Count = x.Count()
             }).ToList();
 
-            var categories = educations.Join(_context.Bridge_EducationCategories, l => l.Id, r => r.Id2, (x, y) => new
+            var categories = educations.Join(_context.Bridge_EducationTags, l => l.Id, r => r.Id2, (x, y) => new
             {
                 EducationId = x.Id,
                 CategoryId = y.Id
@@ -159,7 +159,7 @@ namespace NitelikliBilisim.Business.Repositories
                         item.EducationId = educationId;
 
                     _context.EducationMedias.AddRange(medias);
-                    _context.Bridge_EducationCategories.AddRange(bridge);
+                    _context.Bridge_EducationTags.AddRange(bridge);
                     _context.SaveChanges();
                     transaction.Commit();
                     return educationId;
@@ -174,7 +174,7 @@ namespace NitelikliBilisim.Business.Repositories
 
         public List<EducationTag> GetTags(Guid educationId)
         {
-            var data = _context.Bridge_EducationCategories.Where(x => x.Id2 == educationId)
+            var data = _context.Bridge_EducationTags.Where(x => x.Id2 == educationId)
                 .Join(_context.EducationTags, l => l.Id, r => r.Id, (x, y) => new
                 {
                     Category = y
@@ -203,7 +203,7 @@ namespace NitelikliBilisim.Business.Repositories
 
             var gainCount = _context.EducationGains.Count(x => x.EducationId == educationId);
 
-            var categoryCount = _context.Bridge_EducationCategories.Count(x => x.Id2 == educationId);
+            var categoryCount = _context.Bridge_EducationTags.Count(x => x.Id2 == educationId);
 
             var education = _context.Educations.First(x => x.Id == educationId);
 
@@ -216,9 +216,9 @@ namespace NitelikliBilisim.Business.Repositories
 
         public int Update(Education entity, List<Guid> categoryIds, bool isSaveLater = false)
         {
-            var currentCategories = _context.Bridge_EducationCategories.Where(x => x.Id2 == entity.Id).ToList();
+            var currentCategories = _context.Bridge_EducationTags.Where(x => x.Id2 == entity.Id).ToList();
 
-            _context.Bridge_EducationCategories.RemoveRange(currentCategories);
+            _context.Bridge_EducationTags.RemoveRange(currentCategories);
 
             var newItems = new List<Bridge_EducationTag>();
             foreach (var categoryId in categoryIds)
@@ -228,7 +228,7 @@ namespace NitelikliBilisim.Business.Repositories
                     Id2 = entity.Id
                 });
 
-            _context.Bridge_EducationCategories.AddRange(newItems);
+            _context.Bridge_EducationTags.AddRange(newItems);
 
             return base.Update(entity, isSaveLater);
         }

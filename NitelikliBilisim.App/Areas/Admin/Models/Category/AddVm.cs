@@ -7,7 +7,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Models.Category
 {
     public class AddGetVm
     {
-        public List<EducationTag> Categories { get; set; }
+        public List<EducationCategory> Categories { get; set; }
     }
 
     public class AddPostVm
@@ -17,5 +17,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Models.Category
         [Required(ErrorMessage = "Açıklama alanı boş geçilemez"), MaxLength(300, ErrorMessage = "Açıklama alanı en fazla 300 karakter içerebilir")]
         public string Description { get; set; }
         public Guid? BaseCategoryId { get; set; }
+        public int CategoryType { get; set; }
     }
 }
