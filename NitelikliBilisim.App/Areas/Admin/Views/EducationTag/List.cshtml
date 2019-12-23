@@ -1,6 +1,6 @@
 ﻿@model List<NitelikliBilisim.Core.Entities.EducationTag>
 @{
-    ViewData["Title"] = "Kategori Listesi";
+    ViewData["Title"] = "Etiket Listesi";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
@@ -13,21 +13,21 @@
 }
 <div class="card mb-3">
     <div class="card-header">
-        <i class="fa fa-table"></i> Eğitim Kategorileri
+        <i class="fa fa-table"></i> Eğitim Etiketleri
     </div>
     <div class="card-body">
         <div class="table-responsive">
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
                     <tr>
-                        <th>Kategori İsmi</th>
+                        <th>Etiket İsmi</th>
                         <th>Açıklama</th>
                         <th>İşlem</th>
                     </tr>
                 </thead>
                 <tfoot>
                     <tr>
-                        <th>Kategori İsmi</th>
+                        <th>Etiket İsmi</th>
                         <th>Açıklama</th>
                         <th>İşlem</th>
                     </tr>
@@ -37,18 +37,18 @@
                     {
                         <tr>
                             @{
-                                var baseCategory = "Ana Kategori";
+                                var baseTag = "Ana Etiket";
                                 if (item.BaseTag != null)
                                 {
-                                    baseCategory = item.BaseTag.Name;
+                                    baseTag = item.BaseTag.Name;
                                 }
                             }
-                            <td>@item.Name (@baseCategory)</td>
+                            <td>@item.Name (@baseTag)</td>
                             <td>@item.Description</td>
                             <td>
                                 <div class="btn-group">
-                                    <a class="btn btn-warning" href="/admin/kategori-guncelle/@item.Id">Güncelle</a>
-                                    <button class="btn-confirmation-modal-trigger btn btn-danger" data-url="/admin/kategori-sil?categoryId=@item.Id" style="cursor:pointer;">Sil</button>
+                                    <a class="btn btn-warning" href="/admin/etiket-guncelle/@item.Id">Güncelle</a>
+                                    <button class="btn-confirmation-modal-trigger btn btn-danger" data-url="/admin/etiket-sil?categoryId=@item.Id" style="cursor:pointer;">Sil</button>
                                 </div>
                             </td>
                         </tr>

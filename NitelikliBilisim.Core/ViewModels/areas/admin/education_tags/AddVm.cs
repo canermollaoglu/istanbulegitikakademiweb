@@ -3,11 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace NitelikliBilisim.App.Areas.Admin.Models.Category
+namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_tags
 {
     public class AddGetVm
     {
-        public List<EducationTag> Categories { get; set; }
+        public List<EducationTag> Tags { get; set; }
     }
 
     public class AddPostVm
@@ -16,6 +16,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Models.Category
         public string Name { get; set; }
         [Required(ErrorMessage = "Açıklama alanı boş geçilemez"), MaxLength(300, ErrorMessage = "Açıklama alanı en fazla 300 karakter içerebilir")]
         public string Description { get; set; }
-        public Guid? BaseCategoryId { get; set; }
+        public Guid? BaseTagId { get; set; }
     }
 }

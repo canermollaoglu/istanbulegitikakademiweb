@@ -7,7 +7,7 @@ namespace NitelikliBilisim.Business.UoW
     public class UnitOfWork : IUnitOfWork
     {
         private readonly NbDataContext _context;
-        private EducationCategoryRepository _educationCategory;
+        private EducationTagRepository _educationTagRepository;
         private EducationRepository _education;
         private EducationMediaItemRepository _educationMediaItem;
         private EducationPartRepository _educationPart;
@@ -23,11 +23,11 @@ namespace NitelikliBilisim.Business.UoW
             _context.EnsureAutoHistory();
             return _context.SaveChanges();
         }
-        public EducationCategoryRepository EducationCategory
+        public EducationTagRepository EducationTag
         {
             get
             {
-                return _educationCategory ?? (_educationCategory = new EducationCategoryRepository(_context));
+                return _educationTagRepository ?? (_educationTagRepository = new EducationTagRepository(_context));
             }
         }
         public EducationRepository Education

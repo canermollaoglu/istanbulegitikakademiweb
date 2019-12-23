@@ -55,7 +55,7 @@ namespace NitelikliBilisim.Data
 
             #region ManyToMany
 
-            builder.Entity<Bridge_EducationCategory>()
+            builder.Entity<Bridge_EducationTag>()
                 .HasKey(x => new { x.Id, x.Id2 });
             builder.Entity<WishlistItem>()
                 .HasKey(x => new { x.Id, x.Id2 });
@@ -79,9 +79,9 @@ namespace NitelikliBilisim.Data
         }
 
         public DbSet<AutoHistory> DataHistories { get; set; }
-        public DbSet<Bridge_EducationCategory> Bridge_EducationCategories { get; set; }
+        public DbSet<Bridge_EducationTag> Bridge_EducationCategories { get; set; }
         public DbSet<Education> Educations { get; set; }
-        public DbSet<EducationCategory> EducationCategories { get; set; }
+        public DbSet<EducationTag> EducationTags { get; set; }
         public DbSet<EducationComment> EducationComments { get; set; }
         public DbSet<EducationMedia> EducationMedias { get; set; }
         public DbSet<EducationPart> EducationParts { get; set; }

@@ -9,7 +9,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Models.Education
 {
     public class AddGetVm
     {
-        public List<EducationCategory> Categories { get; set; }
+        public List<EducationTag> Categories { get; set; }
         public Dictionary<int, string> Levels { get; set; }
     }
 

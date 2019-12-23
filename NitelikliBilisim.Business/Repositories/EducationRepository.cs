@@ -81,7 +81,7 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 EducationId = x.Id,
                 CategoryId = y.Id
-            }).Join(_context.EducationCategories, l => l.CategoryId, r => r.Id, (x, y) => new
+            }).Join(_context.EducationTags, l => l.CategoryId, r => r.Id, (x, y) => new
             {
                 EducationId = x.EducationId,
                 Category = y
@@ -148,9 +148,9 @@ namespace NitelikliBilisim.Business.Repositories
                     entity.IsActive = false;
                     var educationId = base.Insert(entity);
 
-                    var bridge = new List<Bridge_EducationCategory>();
+                    var bridge = new List<Bridge_EducationTag>();
                     foreach (var categoryId in categoryIds)
-                        bridge.Add(new Bridge_EducationCategory
+                        bridge.Add(new Bridge_EducationTag
                         {
                             Id = categoryId,
                             Id2 = educationId
@@ -172,19 +172,19 @@ namespace NitelikliBilisim.Business.Repositories
             }
         }
 
-        public List<EducationCategory> GetCategories(Guid educationId)
+        public List<EducationTag> GetTags(Guid educationId)
         {
             var data = _context.Bridge_EducationCategories.Where(x => x.Id2 == educationId)
-                .Join(_context.EducationCategories, l => l.Id, r => r.Id, (x, y) => new
+                .Join(_context.EducationTags, l => l.Id, r => r.Id, (x, y) => new
                 {
                     Category = y
                 }).ToList();
-            var categories = new List<EducationCategory>();
+            var categories = new List<EducationTag>();
             foreach (var item in data)
-                categories.Add(new EducationCategory
+                categories.Add(new EducationTag
                 {
                     Id = item.Category.Id,
-                    BaseCategoryId = item.Category.BaseCategoryId,
+                    BaseTagId = item.Category.BaseTagId,
                     Description = item.Category.Description,
                     Name = item.Category.Name
                 });
@@ -220,9 +220,9 @@ namespace NitelikliBilisim.Business.Repositories
 
             _context.Bridge_EducationCategories.RemoveRange(currentCategories);
 
-            var newItems = new List<Bridge_EducationCategory>();
+            var newItems = new List<Bridge_EducationTag>();
             foreach (var categoryId in categoryIds)
-                newItems.Add(new Bridge_EducationCategory
+                newItems.Add(new Bridge_EducationTag
                 {
                     Id = categoryId,
                     Id2 = entity.Id

@@ -6,9 +6,9 @@ using System.Text;
 
 namespace NitelikliBilisim.Business.Repositories
 {
-    public class EducationCategoryRepository : BaseRepository<EducationCategory, Guid>
+    public class EducationTagRepository : BaseRepository<EducationTag, Guid>
     {
-        public EducationCategoryRepository(NbDataContext context) : base(context)
+        public EducationTagRepository(NbDataContext context) : base(context)
         {
         }
     }

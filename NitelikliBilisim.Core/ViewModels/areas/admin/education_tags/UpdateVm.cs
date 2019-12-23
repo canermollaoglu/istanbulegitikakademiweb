@@ -1,10 +1,7 @@
 ﻿using NitelikliBilisim.Core.Entities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace NitelikliBilisim.App.Areas.Admin.Models.Category
+namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_tags
 {
     public class UpdateGetVm : AddGetVm
     {
@@ -13,6 +10,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Models.Category
     }
     public class UpdatePostVm : AddPostVm
     {
-        public Guid CategoryId { get; set; }
+        public Guid TagId { get; set; }
     }
 }
