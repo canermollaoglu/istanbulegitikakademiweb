@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Areas.Admin.Models.Category;
 using NitelikliBilisim.App.Models;
@@ -118,7 +117,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     message = "Silinecek veri bulunamadı"
                 });
 
-            var subCategories = _unitOfWork.EducationTag.Get(x => x.BaseTagId == categoryId).ToList();
+            var subCategories = _unitOfWork.EducationCategory.Get(x => x.BaseCategoryId == categoryId).ToList();
             if (subCategories.Count > 0)
                 return Json(new ResponseModel
                 {
@@ -126,7 +125,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     errors = new List<string> { "Silinmek istenilen kategori, bir ya da birden fazla kategoriyi barındırmaktadır. Lütfen önce o kategorileri siliniz ya da üst kategorisini güncelleyiniz." }
                 });
 
-            _unitOfWork.EducationTag.Delete(categoryId.Value);
+            _unitOfWork.EducationCategory.Delete(categoryId.Value);
 
             return Json(new ResponseModel
             {

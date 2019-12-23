@@ -19,11 +19,11 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.Education
         }
         public AddGetVm CreateAddGetVm()
         {
-            var categories = _unitOfWork.EducationTag.Get(null, x => x.OrderBy(o => o.Name));
+            var tags = _unitOfWork.EducationTag.Get(null, x => x.OrderBy(o => o.Name));
             var levels = EnumSupport.ToKeyValuePair<EducationLevel>();
             return new AddGetVm
             {
-                Categories = categories,
+                Tags = tags,
                 Levels = levels
             };
         }
@@ -40,7 +40,7 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.Education
             var relatedCategories = _unitOfWork.Education.GetTags(educationId);
             return new UpdateGetVm
             {
-                Categories = addGetVm.Categories,
+                Tags = addGetVm.Tags,
                 Levels = addGetVm.Levels,
                 Education = education,
                 RelatedCategories = relatedCategories

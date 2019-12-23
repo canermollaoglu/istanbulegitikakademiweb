@@ -26,9 +26,9 @@
             </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>Kategorilerini Seçiniz</label>
+                    <label>Etiketlerini Seçiniz</label>
                     <select id="select-categories" multiple="multiple" class="form-control">
-                        @foreach (var item in Model.Categories)
+                        @foreach (var item in Model.Tags)
                         {
                             <option value="@item.Id">@item.Name</option>
                         }
