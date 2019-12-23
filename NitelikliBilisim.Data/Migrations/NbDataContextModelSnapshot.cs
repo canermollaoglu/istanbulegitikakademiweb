@@ -269,6 +269,8 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<Guid>("CategoryId");
+
                     b.Property<DateTime>("CreatedDate");
 
                     b.Property<string>("CreatedUser")
@@ -301,7 +303,43 @@ namespace NitelikliBilisim.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryId");
+
                     b.ToTable("Educations");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationCategory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid?>("BaseCategoryId");
+
+                    b.Property<int>("CategoryType");
+
+                    b.Property<DateTime>("CreatedDate");
+
+                    b.Property<string>("CreatedUser")
+                        .HasMaxLength(128);
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(512);
+
+                    b.Property<bool>("IsCurrent");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(128);
+
+                    b.Property<DateTime?>("UpdatedDate");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasMaxLength(128);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BaseCategoryId");
+
+                    b.ToTable("EducationCategories");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationComment", b =>
@@ -728,6 +766,21 @@ namespace NitelikliBilisim.Data.Migrations
                         .WithMany()
                         .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.Education", b =>
+                {
+                    b.HasOne("NitelikliBilisim.Core.Entities.EducationCategory", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationCategory", b =>
+                {
+                    b.HasOne("NitelikliBilisim.Core.Entities.EducationCategory", "BaseCategory")
+                        .WithMany()
+                        .HasForeignKey("BaseCategoryId");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationComment", b =>
