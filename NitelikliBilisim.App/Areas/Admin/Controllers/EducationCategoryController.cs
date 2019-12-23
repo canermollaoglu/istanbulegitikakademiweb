@@ -8,6 +8,8 @@ using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.Debugging;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Enums;
+using NitelikliBilisim.Enums;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
@@ -25,7 +27,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             var data = _unitOfWork.EducationCategory.Get(null, q => q.OrderBy(o => o.Name));
             var model = new AddGetVm
             {
-                Categories = data
+                Categories = data,
+                Types = EnumSupport.ToKeyValuePair<CategoryType>()
             };
             return View(model);
         }

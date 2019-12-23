@@ -8,6 +8,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Models.Category
     public class AddGetVm
     {
         public List<EducationCategory> Categories { get; set; }
+        public Dictionary<int, string> Types { get; set; }
     }
 
     public class AddPostVm
