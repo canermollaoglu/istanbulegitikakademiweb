@@ -37,10 +37,23 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6">
                 <div class="form-group">
                     <label>Kategori Açıklaması</label>
                     <textarea id="input-description" rows="5" class="form-control" style="height:100px;" placeholder="Kategori açıklaması kullanıcılar tarafından görülmeyecektir. Yalnızca admin panelde görülebilir..."></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Kategori Tipini Seçiniz</label>
+                    <select id="select-category-types" class="form-control">
+                        @foreach (var item in Model.Types)
+                        {
+                            <option value="@item.Key">@item.Value</option>
+                        }
+                    </select>
                 </div>
             </div>
         </div>
@@ -55,6 +68,7 @@
     <script>
         /* elements */
         var selectBaseCategories = document.getElementById("select-base-categories");
+        var selectCategoryTypes = document.getElementById("select-category-types");
         var inputName = document.getElementById("input-name");
         var inputDescription = document.getElementById("input-description");
         var btnSave = $("#btn-save");
@@ -70,10 +84,12 @@
         function btnSave_onClick() {
             btnSave.off("click");
             var baseCategoryId = selectBaseCategories.options[selectBaseCategories.selectedIndex].value;
+            var categoryType = selectCategoryTypes.options[selectCategoryTypes.selectedIndex].value;
             var data = {
                 Name: inputName.value,
                 Description: inputDescription.value,
-                BaseCategoryId: baseCategoryId
+                BaseCategoryId: baseCategoryId,
+                CategoryType: categoryType
             }
 
             var tokenVerfier = new SecuritySupport.TokenVerifier();
