@@ -24,10 +24,23 @@
                     <input type="text" class="form-control" placeholder="Eğitim ismini giriniz..." id="input-name">
                 </div>
             </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Kategori Seçiniz</label>
+                    <select id="select-categories" class="form-control">
+                        @foreach (var item in Model.Categories)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Etiketlerini Seçiniz</label>
-                    <select id="select-categories" multiple="multiple" class="form-control">
+                    <select id="select-tags" multiple="multiple" class="form-control">
                         @foreach (var item in Model.Tags)
                         {
                             <option value="@item.Id">@item.Name</option>

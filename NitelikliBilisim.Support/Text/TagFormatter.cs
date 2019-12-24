@@ -6,7 +6,7 @@ namespace NitelikliBilisim.Support.Text
 {
     public static class TagFormatter
     {
-        public static string Format(this string input)
+        public static string FormatForTag(this string input)
         {
             var text = input.ToLower().Trim();
             text = CharacterConverter(text);

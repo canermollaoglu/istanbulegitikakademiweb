@@ -1,6 +1,7 @@
 ﻿/* elements */
-var selectCategories = $("#select-categories");
+var selectTags = $("#select-tags");
 var selectLevels = document.getElementById("select-levels");
+var selectCategories = document.getElementById("select-categories");
 var btnSave = $("#btn-save");
 var fileManager1 = null;
 var fileManager2 = null;
@@ -11,7 +12,8 @@ btnSave.on("click", btnSave_onClick);
 
 /* events */
 function document_onLoad() {
-    selectCategories.select2({ placeholder: "Eğitimin kategorilerini seçiniz..." });
+    selectTags.select2();
+    $(selectCategories).select2({ placeholder: "Eğitimin kategorilerini seçiniz..." });
     $(selectLevels).select2();
     fileManager1 = new UploadSupport.FileUploader();
     fileManager2 = new UploadSupport.FileUploader();
@@ -30,11 +32,11 @@ function document_onLoad() {
 function btnSave_onClick() {
     btnSave.off("click");
     var resultAlert = new AlertSupport.ResultAlert();
-    var categoryIds = selectCategories.val();
-    if (categoryIds.length == 0) {
+    var tagIds = selectTags.val();
+    if (tagIds.length == 0) {
         resultAlert.display({
             success: false,
-            errors: ["Eğitim en az bir kategoriye ait olmalıdır"],
+            errors: ["Eğitim en az bir etikete sahip olmalıdır"],
             scrollToTop: true
         });
         btnSave.on("click", btnSave_onClick);
@@ -50,7 +52,8 @@ function btnSave_onClick() {
         Days: $("#input-days").val(),
         HoursPerDay: $("#input-hours-per-day").val(),
         EducationLevel: selectLevels.options[selectLevels.selectedIndex].value,
-        CategoryIds: categoryIds,
+        CategoryId: selectCategories.options[selectCategories.selectedIndex].value,
+        TagIds: tagIds,
         BannerFile: {
             Base64Content: bannerFile.base64content,
             Extension: bannerFile.extension

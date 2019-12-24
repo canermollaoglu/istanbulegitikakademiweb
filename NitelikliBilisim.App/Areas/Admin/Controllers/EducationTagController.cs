@@ -9,6 +9,7 @@ using NitelikliBilisim.Business.Debugging;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_tags;
+using NitelikliBilisim.Support.Text;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
@@ -64,7 +65,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             }
             _unitOfWork.EducationTag.Insert(new EducationTag
             {
-                Name = data.Name.Format(),
+                Name = data.Name.FormatForTag(),
                 Description = data.Description,
                 BaseTagId = data.BaseTagId
             });

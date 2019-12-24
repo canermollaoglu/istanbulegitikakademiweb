@@ -20,11 +20,13 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.Education
         public AddGetVm CreateAddGetVm()
         {
             var tags = _unitOfWork.EducationTag.Get(null, x => x.OrderBy(o => o.Name));
+            var categories = _unitOfWork.EducationCategory.Get(null, x => x.OrderBy(o => o.Name));
             var levels = EnumSupport.ToKeyValuePair<EducationLevel>();
             return new AddGetVm
             {
                 Tags = tags,
-                Levels = levels
+                Levels = levels,
+                Categories = categories
             };
         }
 
@@ -52,6 +54,7 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.Education
             _unitOfWork.Education.Update(new Core.Entities.Education
             {
                 Id = data.EducationId,
+                CategoryId = data.CategoryId,
                 Days = data.Days.Value,
                 HoursPerDay = data.HoursPerDay.Value,
                 Description = data.Description,
@@ -59,7 +62,7 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.Education
                 Name = data.Name,
                 NewPrice = data.Price,
                 IsActive = data.IsActive
-            }, data.CategoryIds);
+            }, data.TagIds);
         }
     }
 }

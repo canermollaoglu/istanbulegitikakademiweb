@@ -8,8 +8,8 @@ namespace NitelikliBilisim.Core.Entities
     public class Bridge_EducationTag : BaseEntity2<Guid, Guid>
     {
         [ForeignKey("Id")]
-        public virtual Education Education { get; set; }
-        [ForeignKey("Id2")]
         public virtual EducationTag Tag { get; set; }
+        [ForeignKey("Id2")]
+        public virtual Education Education { get; set; }
     }
 }
