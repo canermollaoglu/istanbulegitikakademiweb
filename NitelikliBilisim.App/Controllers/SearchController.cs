@@ -8,7 +8,11 @@ namespace NitelikliBilisim.App.Controllers
 {
     public class SearchController : Controller
     {
-        public IActionResult MainSearch(string searchText)
+        public IActionResult SearchResults(string searchText)
+        {
+            return View();
+        }
+        public IActionResult SearchEducation(string searchText)
         {
             return Json("");
         }
