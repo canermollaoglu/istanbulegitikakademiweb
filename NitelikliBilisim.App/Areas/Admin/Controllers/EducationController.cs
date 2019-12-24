@@ -70,7 +70,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 Level = (EducationLevel)data.EducationLevel.Value,
                 NewPrice = data.Price.Value,
                 Days = data.Days.Value,
-                HoursPerDay = data.HoursPerDay.Value
+                HoursPerDay = data.HoursPerDay.Value,
+                CategoryId = data.CategoryId
             };
 
             _unitOfWork.Education.Insert(education, data.TagIds, new List<EducationMedia> { banner, preview });
