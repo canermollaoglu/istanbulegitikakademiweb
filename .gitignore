@@ -339,3 +339,8 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+
+# Media
+uploads/
+uploads/educator-photos
+uploads/media-items

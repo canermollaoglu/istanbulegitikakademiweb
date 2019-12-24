@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 
-namespace NitelikliBilisim.Core.Entities.Identity
+namespace NitelikliBilisim.Core.Entities
 {
     public class ApplicationRole : IdentityRole
     {

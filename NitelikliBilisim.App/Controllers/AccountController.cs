@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Models;
-using NitelikliBilisim.Core.Entities.Identity;
+using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Services;
 using NitelikliBilisim.Core.ViewModels.Account;
@@ -93,6 +93,8 @@ namespace NitelikliBilisim.App.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+
+            ModelState.AddModelError(string.Empty, "Böyle bir kullanıcı bulunmamaktadır!");
 
             return View(model);
         }
@@ -190,7 +192,7 @@ namespace NitelikliBilisim.App.Controllers
                 Email = model.Email,
                 Name = model.Name,
                 Surname = model.Surname,
-                FotoUrl = model.Photo,
+                AvatarPath = model.Photo,
                 EmailConfirmed = true
             };
             var result = await _userManager.CreateAsync(user);

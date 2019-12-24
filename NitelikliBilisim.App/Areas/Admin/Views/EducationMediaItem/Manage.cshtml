@@ -1,0 +1,245 @@
+﻿@model NitelikliBilisim.Core.ViewModels.areas.admin.education_media_items.ManageVm
+@{
+    ViewData["Title"] = "Eğitim Medya Yönetimi";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@section styles{
+    <link href="~/assets/css/area-admin/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
+    <link href="~/css/lib/file-uploader.css" rel="stylesheet" />
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-list"></i> <strong>@Model.EducationName</strong> Eğitiminin Medyaları
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <form id="form-add-education-media-items">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" value="@Model.EducationId" id="_education-id" />
+                    <table class="table table-borderless">
+                        <tr>
+                            <td>
+                                <div class="form-group">
+                                    <label>Medya Seçiniz</label>
+                                    <div class="file-upload-container" id="file-upload-for-media-item">
+                                        <img class="img-after-preview" id="img-after-preview-for-media-item" />
+                                        <p><i class="fa fa-file"></i> Resim yüklemek için tıklayınız...</p>
+                                        <input type="file" />
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <label>Medya Tipini Seçiniz</label>
+                                    <select class="form-control" id="select-media-types">
+                                        @foreach (var item in Model.MediaItemTypes)
+                                        {
+                                            <option value="@item.Key">@item.Value</option>
+                                        }
+                                    </select>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <label>Yükle</label>
+                                    <button id="btn-add" type="button" class="btn btn-info btn-block" style="cursor:pointer;"><i class="fa fa-upload"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Medya Tipi</th>
+                                <th>Öz İzleme</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>Medya Tipi</th>
+                                <th>Öz İzleme</th>
+                            </tr>
+                        </tfoot>
+                        <tbody id="tbody-education-media-items">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer small text-muted">Veri tarihi: @DateTime.Now</div>
+</div>
+@section postScripts{
+    <script src="~/assets/js/area-admin/jquery.dataTables.js"></script>
+    <script src="~/assets/js/area-admin/dataTables.bootstrap4.js"></script>
+    <script src="~/js/sup/alert-sup.js"></script>
+    <script src="~/js/lib/security-support.js"></script>
+    <script src="~/js/lib/file-uploader.js"></script>
+    <script>
+        /* fields */
+        var confirmModalBuilder = new AlertSupport.ConfirmModalBuilder();
+        var resultAlert = new AlertSupport.ResultAlert();
+        var _educationId = $("#_education-id").val();
+        var fileManager = new UploadSupport.FileUploader();
+
+        /* elements */
+        var btnAdd = $("#btn-add");
+        var tbodyEducationMediaItems = $("#tbody-education-media-items");
+        var selectMediaTypes = document.getElementById("select-media-types");
+
+        /* assignments */
+        $(document).ready(document_onLoad);
+        btnAdd.on("click", btnAdd_onClick);
+
+        /* events */
+        function document_onLoad() {
+            getEducationMediaItems();
+            fileManager.set({
+                container: "file-upload-for-media-item",
+                preview: "img-after-preview-for-media-item",
+                validExtensions: ["jpg", "jpeg", "mp4"],
+                style: { content: "Resim Yükle" }
+            });
+        }
+        function btnAdd_onClick() {
+            btnAdd.off("click");
+            var file = fileManager.getFile();
+            console.log(file);
+            var data = {
+                EducationId: _educationId,
+                PostedFile: {
+                    Base64Content: file.base64content,
+                    Extension: file.extension
+                },
+                MediaItemType: selectMediaTypes.options[selectMediaTypes.selectedIndex].value
+            };
+            var tokenVerifier = new SecuritySupport.TokenVerifier();
+            data = tokenVerifier.addToken("form-add-education-media-items", data);
+            $.ajax({
+                url: "/admin/add-education-media-item",
+                method: "post",
+                data: data,
+                success: (res) => {
+                    if (res.isSuccess) {
+                        getEducationMediaItems();
+                        $("#form-add-education-media-items")[0].reset();
+                        resultAlert.display({
+                            success: true,
+                            message: "Kayıt işlemi başarılı"
+                        });
+                        btnAdd.on("click", btnAdd_onClick);
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors
+                        });
+                        btnAdd.on("click", btnAdd_onClick);
+                    }
+                }
+            });
+        }
+        function btnConfirmationModalTrigger_onClick() {
+            var url = this.getAttribute("data-url");
+            confirmModalBuilder.setUrl(url);
+            confirmModalBuilder.display();
+        }
+        function confirm_onClick() {
+            var url = this.getAttribute("data-url");
+            this.onclick = null;
+            $.ajax({
+                url: url,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        getEducationMediaItems();
+                        resultAlert.display({
+                            success: true,
+                            message: "Kayıt başarıyla silinmiştir"
+                        });
+                        this.onclick = confirm_onClick;
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors,
+                            message: "Hataları düzeltiniz"
+                        });
+                        this.onclick = confirm_onClick;
+                    }
+                }
+            });
+        }
+
+        /* functions */
+        function getEducationMediaItems() {
+            if (!_educationId)
+                return;
+
+            $.ajax({
+                url: `/admin/get-education-media-items/${_educationId}`,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        createTable(res.data.educationMediaItems);
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors
+                        });
+                    }
+                }
+            });
+        }
+        function createTable(data) {
+            tbodyEducationMediaItems.html("");
+            var content = "";
+            if (data.length != 0)
+                for (var i = 0; i < data.length; i++) {
+                    var element = data[i];
+                    var contentItem = '';
+                    if (element.mediaItemType == 'Ön İzleme Videosu')
+                        contentItem = `<video height="128" width="150" controls="controls" preload="metadata"><source src="${element.fileUrl}#t=0.1" type="video/mp4" /></video>`;
+                    else 
+                        contentItem = `<img src="${element.fileUrl}" style="height:128px;width:150px;" />`;
+
+                    content +=
+                        `<tr>` +
+                        `<td>${element.mediaItemType}</td>` +
+                        `<td style="text-align:center;">${contentItem}</td>` +
+                        `<td>` +
+                        `<div class="btn-group">` +
+                        `<button class="btn btn-danger btn-confirmation-modal-trigger" data-url="/admin/delete-education-media-item/${element.id}"><i class="fa fa-trash"></i></button>` +
+                        `</div>` +
+                        `</td>` +
+                        `</tr>`;
+                }
+            else
+                content = `<tr><td colspan="5"><div class="alert alert-info"><strong>Bilgi:</strong> Eğitimin henüz medyası yoktur. Yukarıdan ekleyebilirsiniz</div></td></tr>`;
+            tbodyEducationMediaItems.append(content);
+
+            var deleteButtons = $(".btn-confirmation-modal-trigger");
+            for (var i = 0; i < deleteButtons.length; i++) {
+                var btn = deleteButtons[i];
+                btn.onclick = btnConfirmationModalTrigger_onClick;
+            }
+
+            confirmModalBuilder.buildModal({
+                title: "Emin misiniz?",
+                bodyText: "Seçmiş olduğunuz eğitim medyası silinecektir.",
+                cancelText: "Hayır, iptal et",
+                confirmText: "Evet, eminim",
+                onConfirmClick: confirm_onClick
+            });
+        }
+    </script>
+}

@@ -77,19 +77,6 @@ namespace NitelikliBilisim.Data.Migrations
                     b.ToTable("AspNetUserLogins");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.Property<string>("UserId");
-
-                    b.Property<string>("RoleId");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetUserRoles");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.Property<string>("UserId");
@@ -130,165 +117,7 @@ namespace NitelikliBilisim.Data.Migrations
                     b.ToTable("DataHistories");
                 });
 
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.Egitici", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasMaxLength(450);
-
-                    b.Property<string>("Biyografi");
-
-                    b.Property<DateTime>("CreatedDate");
-
-                    b.Property<string>("CreatedUser")
-                        .HasMaxLength(128);
-
-                    b.Property<string>("DetayFoto")
-                        .HasMaxLength(250);
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(120);
-
-                    b.Property<DateTime?>("UpdatedDate");
-
-                    b.Property<string>("UpdatedUser")
-                        .HasMaxLength(128);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Egiticiler");
-                });
-
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.Egitim", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Aciklama")
-                        .IsRequired();
-
-                    b.Property<string>("Ad")
-                        .IsRequired()
-                        .HasMaxLength(150);
-
-                    b.Property<DateTime>("CreatedDate");
-
-                    b.Property<string>("CreatedUser")
-                        .HasMaxLength(128);
-
-                    b.Property<string>("DetayFoto")
-                        .HasMaxLength(250);
-
-                    b.Property<string>("EgitimFoto")
-                        .HasMaxLength(250);
-
-                    b.Property<decimal?>("EskiFiyat")
-                        .HasColumnType("decimal(8, 2)");
-
-                    b.Property<decimal>("Fiyat")
-                        .HasColumnType("decimal(8, 2)");
-
-                    b.Property<int>("GunSayisi");
-
-                    b.Property<DateTime?>("UpdatedDate");
-
-                    b.Property<string>("UpdatedUser")
-                        .HasMaxLength(128);
-
-                    b.Property<string>("VideoUrl")
-                        .HasMaxLength(250);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Egitimler");
-                });
-
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EgitimDetay", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Baslik")
-                        .IsRequired()
-                        .HasMaxLength(120);
-
-                    b.Property<DateTime>("CreatedDate");
-
-                    b.Property<string>("CreatedUser")
-                        .HasMaxLength(128);
-
-                    b.Property<Guid>("EgitimId");
-
-                    b.Property<string>("Konu");
-
-                    b.Property<int>("Sira");
-
-                    b.Property<DateTime?>("UpdatedDate");
-
-                    b.Property<string>("UpdatedUser")
-                        .HasMaxLength(128);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EgitimId");
-
-                    b.ToTable("EgitimDetaylari");
-                });
-
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EgitimKategori", b =>
-                {
-                    b.Property<Guid>("Id");
-
-                    b.Property<Guid>("Id2");
-
-                    b.Property<DateTime>("CreatedDate");
-
-                    b.Property<string>("CreatedUser")
-                        .HasMaxLength(128);
-
-                    b.Property<DateTime?>("UpdatedDate");
-
-                    b.Property<string>("UpdatedUser")
-                        .HasMaxLength(128);
-
-                    b.HasKey("Id", "Id2");
-
-                    b.HasIndex("Id2");
-
-                    b.ToTable("EgitimKategoriler");
-                });
-
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EgitimKazanim", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("CreatedDate");
-
-                    b.Property<string>("CreatedUser")
-                        .HasMaxLength(128);
-
-                    b.Property<Guid>("EgitimId");
-
-                    b.Property<string>("KazanimAdi");
-
-                    b.Property<string>("Simge");
-
-                    b.Property<int>("Sira");
-
-                    b.Property<DateTime?>("UpdatedDate");
-
-                    b.Property<string>("UpdatedUser")
-                        .HasMaxLength(128);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EgitimId");
-
-                    b.ToTable("EgitimKazanimlar");
-                });
-
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.Identity.ApplicationRole", b =>
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.ApplicationRole", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
@@ -312,12 +141,15 @@ namespace NitelikliBilisim.Data.Migrations
                     b.ToTable("AspNetRoles");
                 });
 
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.Identity.ApplicationUser", b =>
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("AccessFailedCount");
+
+                    b.Property<string>("AvatarPath")
+                        .HasMaxLength(256);
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
@@ -327,15 +159,12 @@ namespace NitelikliBilisim.Data.Migrations
 
                     b.Property<bool>("EmailConfirmed");
 
-                    b.Property<string>("FotoUrl")
-                        .HasMaxLength(250);
-
                     b.Property<bool>("LockoutEnabled");
 
                     b.Property<DateTimeOffset?>("LockoutEnd");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(100);
+                        .HasMaxLength(128);
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256);
@@ -352,7 +181,7 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<string>("SecurityStamp");
 
                     b.Property<string>("Surname")
-                        .HasMaxLength(100);
+                        .HasMaxLength(128);
 
                     b.Property<bool>("TwoFactorEnabled");
 
@@ -372,126 +201,20 @@ namespace NitelikliBilisim.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.Kategori", b =>
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.ApplicationUserRole", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<string>("UserId");
 
-                    b.Property<string>("Aciklama")
-                        .HasMaxLength(500);
+                    b.Property<string>("RoleId");
 
-                    b.Property<string>("Ad")
-                        .IsRequired()
-                        .HasMaxLength(150);
+                    b.HasKey("UserId", "RoleId");
 
-                    b.Property<DateTime>("CreatedDate");
+                    b.HasIndex("RoleId");
 
-                    b.Property<string>("CreatedUser")
-                        .HasMaxLength(128);
-
-                    b.Property<string>("DetayFoto")
-                        .HasMaxLength(250);
-
-                    b.Property<string>("KategoriFoto")
-                        .HasMaxLength(250);
-
-                    b.Property<DateTime?>("UpdatedDate");
-
-                    b.Property<string>("UpdatedUser")
-                        .HasMaxLength(128);
-
-                    b.Property<string>("VideoUrl")
-                        .HasMaxLength(250);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Kategoriler");
+                    b.ToTable("AspNetUserRoles");
                 });
 
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.MusteriYorum", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("CreatedDate");
-
-                    b.Property<string>("CreatedUser")
-                        .HasMaxLength(128);
-
-                    b.Property<Guid>("EgitimId");
-
-                    b.Property<string>("KullaniciId")
-                        .IsRequired()
-                        .HasMaxLength(128);
-
-                    b.Property<DateTime?>("OnaylanmaTarihi");
-
-                    b.Property<string>("OnaylayanId")
-                        .HasMaxLength(128);
-
-                    b.Property<int>("Puan");
-
-                    b.Property<DateTime?>("UpdatedDate");
-
-                    b.Property<string>("UpdatedUser")
-                        .HasMaxLength(128);
-
-                    b.Property<string>("Yorum")
-                        .IsRequired()
-                        .HasMaxLength(500);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EgitimId");
-
-                    b.ToTable("MusteriYorumlar");
-                });
-
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.Satis", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Adres");
-
-                    b.Property<DateTime>("CreatedDate");
-
-                    b.Property<string>("CreatedUser")
-                        .HasMaxLength(128);
-
-                    b.Property<bool>("EFaturaMukellefiMi");
-
-                    b.Property<int>("FaturaTipi");
-
-                    b.Property<string>("FirmaAdi");
-
-                    b.Property<string>("Il");
-
-                    b.Property<string>("Ilce");
-
-                    b.Property<string>("KartBilgi")
-                        .HasMaxLength(10);
-
-                    b.Property<string>("PostaKodu");
-
-                    b.Property<DateTime?>("UpdatedDate");
-
-                    b.Property<string>("UpdatedUser")
-                        .HasMaxLength(128);
-
-                    b.Property<string>("UserIp")
-                        .HasMaxLength(16);
-
-                    b.Property<string>("VergiDairesi");
-
-                    b.Property<string>("VergiNumarasi");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Satislar");
-                });
-
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.SatisDetay", b =>
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.Bridge_EducationTag", b =>
                 {
                     b.Property<Guid>("Id");
 
@@ -502,11 +225,470 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<string>("CreatedUser")
                         .HasMaxLength(128);
 
-                    b.Property<decimal>("Fiyat")
+                    b.Property<DateTime?>("UpdatedDate");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasMaxLength(128);
+
+                    b.HasKey("Id", "Id2");
+
+                    b.HasIndex("Id2");
+
+                    b.ToTable("Bridge_EducationTags");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.Customer", b =>
+                {
+                    b.Property<string>("Id");
+
+                    b.Property<DateTime>("CreatedDate");
+
+                    b.Property<string>("CreatedUser")
+                        .HasMaxLength(128);
+
+                    b.Property<int>("CustomerType");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(128);
+
+                    b.Property<string>("Surname")
+                        .HasMaxLength(32);
+
+                    b.Property<DateTime?>("UpdatedDate");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasMaxLength(128);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Customers");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.Education", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid>("CategoryId");
+
+                    b.Property<DateTime>("CreatedDate");
+
+                    b.Property<string>("CreatedUser")
+                        .HasMaxLength(128);
+
+                    b.Property<byte>("Days");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(512);
+
+                    b.Property<byte>("HoursPerDay");
+
+                    b.Property<bool>("IsActive");
+
+                    b.Property<int>("Level");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(128);
+
+                    b.Property<decimal?>("NewPrice")
                         .HasColumnType("decimal(8, 2)");
 
-                    b.Property<decimal>("Indirim")
-                        .HasColumnType("decimal(3, 3)");
+                    b.Property<decimal?>("OldPrice")
+                        .HasColumnType("decimal(8, 2)");
+
+                    b.Property<DateTime?>("UpdatedDate");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasMaxLength(128);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("Educations");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationCategory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid?>("BaseCategoryId");
+
+                    b.Property<int>("CategoryType");
+
+                    b.Property<DateTime>("CreatedDate");
+
+                    b.Property<string>("CreatedUser")
+                        .HasMaxLength(128);
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(512);
+
+                    b.Property<bool>("IsCurrent");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(128);
+
+                    b.Property<DateTime?>("UpdatedDate");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasMaxLength(128);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BaseCategoryId");
+
+                    b.ToTable("EducationCategories");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationComment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime?>("ApprovalDate")
+                        .HasColumnType("datetime2(3)");
+
+                    b.Property<string>("ApproverId")
+                        .HasMaxLength(128);
+
+                    b.Property<Guid?>("BaseCommentId");
+
+                    b.Property<string>("CommentatorId")
+                        .HasMaxLength(128);
+
+                    b.Property<string>("Content")
+                        .HasMaxLength(512);
+
+                    b.Property<DateTime>("CreatedDate");
+
+                    b.Property<string>("CreatedUser")
+                        .HasMaxLength(128);
+
+                    b.Property<Guid>("EducationId");
+
+                    b.Property<bool>("IsEducatorComment");
+
+                    b.Property<byte>("Points");
+
+                    b.Property<DateTime?>("UpdatedDate");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasMaxLength(128);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BaseCommentId");
+
+                    b.HasIndex("EducationId");
+
+                    b.ToTable("EducationComments");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationGain", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedDate");
+
+                    b.Property<string>("CreatedUser")
+                        .HasMaxLength(128);
+
+                    b.Property<Guid>("EducationId");
+
+                    b.Property<string>("Gain")
+                        .HasMaxLength(512);
+
+                    b.Property<DateTime?>("UpdatedDate");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasMaxLength(128);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EducationId");
+
+                    b.ToTable("EducationGains");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationMedia", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedDate");
+
+                    b.Property<string>("CreatedUser")
+                        .HasMaxLength(128);
+
+                    b.Property<Guid>("EducationId");
+
+                    b.Property<string>("FileUrl")
+                        .HasMaxLength(256);
+
+                    b.Property<int>("MediaType");
+
+                    b.Property<DateTime?>("UpdatedDate");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasMaxLength(128);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EducationId");
+
+                    b.ToTable("EducationMediaItems");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationPart", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedDate");
+
+                    b.Property<string>("CreatedUser")
+                        .HasMaxLength(128);
+
+                    b.Property<byte>("Duration");
+
+                    b.Property<Guid>("EducationId");
+
+                    b.Property<byte>("Order");
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(128);
+
+                    b.Property<DateTime?>("UpdatedDate");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasMaxLength(128);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EducationId");
+
+                    b.ToTable("EducationParts");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationPromotionCode", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(7);
+
+                    b.Property<DateTime>("CreatedDate");
+
+                    b.Property<string>("CreatedUser")
+                        .HasMaxLength(128);
+
+                    b.Property<bool>("IsUsed");
+
+                    b.Property<byte>("OffPercentage");
+
+                    b.Property<byte>("TimesUsable");
+
+                    b.Property<DateTime?>("UpdatedDate");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasMaxLength(128);
+
+                    b.Property<DateTime>("ValidThru");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EducationPromotionCodes");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationTag", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid?>("BaseTagId");
+
+                    b.Property<DateTime>("CreatedDate");
+
+                    b.Property<string>("CreatedUser")
+                        .HasMaxLength(128);
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(512);
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(128);
+
+                    b.Property<DateTime?>("UpdatedDate");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasMaxLength(128);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BaseTagId");
+
+                    b.ToTable("EducationTags");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.Educator", b =>
+                {
+                    b.Property<string>("Id");
+
+                    b.Property<string>("Biography")
+                        .HasMaxLength(8192);
+
+                    b.Property<DateTime>("CreatedDate");
+
+                    b.Property<string>("CreatedUser")
+                        .HasMaxLength(128);
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(128);
+
+                    b.Property<DateTime?>("UpdatedDate");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasMaxLength(128);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Educators");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducatorSocialMedia", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedDate");
+
+                    b.Property<string>("CreatedUser")
+                        .HasMaxLength(128);
+
+                    b.Property<string>("EducatorId");
+
+                    b.Property<string>("Link");
+
+                    b.Property<int>("SocialMediaType");
+
+                    b.Property<DateTime?>("UpdatedDate");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasMaxLength(128);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EducatorId");
+
+                    b.ToTable("EducatorSocialMedias");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.Sale", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("BillingType");
+
+                    b.Property<DateTime>("CreatedDate");
+
+                    b.Property<string>("CreatedUser")
+                        .HasMaxLength(128);
+
+                    b.Property<string>("TaxNo");
+
+                    b.Property<string>("TaxOffice");
+
+                    b.Property<DateTime?>("UpdatedDate");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasMaxLength(128);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Sales");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.SaleAddress", b =>
+                {
+                    b.Property<Guid>("Id");
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(256);
+
+                    b.Property<string>("City")
+                        .HasMaxLength(32);
+
+                    b.Property<string>("County")
+                        .HasMaxLength(32);
+
+                    b.Property<DateTime>("CreatedDate");
+
+                    b.Property<string>("CreatedUser")
+                        .HasMaxLength(128);
+
+                    b.Property<string>("PostalCode")
+                        .HasMaxLength(8);
+
+                    b.Property<DateTime?>("UpdatedDate");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasMaxLength(128);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SaleAddresses");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.SaleDetail", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedDate");
+
+                    b.Property<string>("CreatedUser")
+                        .HasMaxLength(128);
+
+                    b.Property<Guid>("EducationId");
+
+                    b.Property<decimal>("Price");
+
+                    b.Property<Guid?>("PromotionCodeId");
+
+                    b.Property<Guid>("SaleId");
+
+                    b.Property<DateTime?>("UpdatedDate");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasMaxLength(128);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EducationId");
+
+                    b.HasIndex("PromotionCodeId");
+
+                    b.HasIndex("SaleId");
+
+                    b.ToTable("SaleDetails");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.WishlistItem", b =>
+                {
+                    b.Property<string>("Id");
+
+                    b.Property<Guid>("Id2");
+
+                    b.Property<DateTime>("CreatedDate");
+
+                    b.Property<string>("CreatedUser")
+                        .HasMaxLength(128);
 
                     b.Property<DateTime?>("UpdatedDate");
 
@@ -517,40 +699,12 @@ namespace NitelikliBilisim.Data.Migrations
 
                     b.HasIndex("Id2");
 
-                    b.ToTable("SatisDetaylar");
-                });
-
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.Sepet", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("CreatedDate");
-
-                    b.Property<string>("CreatedUser")
-                        .HasMaxLength(128);
-
-                    b.Property<Guid>("EgitimId");
-
-                    b.Property<Guid?>("SatisId");
-
-                    b.Property<DateTime?>("UpdatedDate");
-
-                    b.Property<string>("UpdatedUser")
-                        .HasMaxLength(128);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EgitimId");
-
-                    b.HasIndex("SatisId");
-
-                    b.ToTable("Sepetler");
+                    b.ToTable("Wishlist");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("NitelikliBilisim.Core.Entities.Identity.ApplicationRole")
+                    b.HasOne("NitelikliBilisim.Core.Entities.ApplicationRole")
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -558,7 +712,7 @@ namespace NitelikliBilisim.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("NitelikliBilisim.Core.Entities.Identity.ApplicationUser")
+                    b.HasOne("NitelikliBilisim.Core.Entities.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -566,20 +720,7 @@ namespace NitelikliBilisim.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("NitelikliBilisim.Core.Entities.Identity.ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.HasOne("NitelikliBilisim.Core.Entities.Identity.ApplicationRole")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("NitelikliBilisim.Core.Entities.Identity.ApplicationUser")
+                    b.HasOne("NitelikliBilisim.Core.Entities.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -587,80 +728,155 @@ namespace NitelikliBilisim.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("NitelikliBilisim.Core.Entities.Identity.ApplicationUser")
+                    b.HasOne("NitelikliBilisim.Core.Entities.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.Egitici", b =>
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.ApplicationUserRole", b =>
                 {
-                    b.HasOne("NitelikliBilisim.Core.Entities.Identity.ApplicationUser", "Kullanici")
-                        .WithOne("Egitici")
-                        .HasForeignKey("NitelikliBilisim.Core.Entities.Egitici", "Id")
+                    b.HasOne("NitelikliBilisim.Core.Entities.ApplicationRole", "Role")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("NitelikliBilisim.Core.Entities.ApplicationUser", "User")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EgitimDetay", b =>
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.Bridge_EducationTag", b =>
                 {
-                    b.HasOne("NitelikliBilisim.Core.Entities.Egitim", "Egitim")
-                        .WithMany("EgitimDetaylar")
-                        .HasForeignKey("EgitimId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EgitimKategori", b =>
-                {
-                    b.HasOne("NitelikliBilisim.Core.Entities.Egitim", "Egitim")
-                        .WithMany("EgitimKategoriler")
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("NitelikliBilisim.Core.Entities.Kategori", "Kategori")
-                        .WithMany("EgitimKategoriler")
-                        .HasForeignKey("Id2")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EgitimKazanim", b =>
-                {
-                    b.HasOne("NitelikliBilisim.Core.Entities.Egitim", "Egitim")
-                        .WithMany("EgitimKazanimlar")
-                        .HasForeignKey("EgitimId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.MusteriYorum", b =>
-                {
-                    b.HasOne("NitelikliBilisim.Core.Entities.Egitim", "Egitim")
-                        .WithMany("MusteriYorumlar")
-                        .HasForeignKey("EgitimId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.SatisDetay", b =>
-                {
-                    b.HasOne("NitelikliBilisim.Core.Entities.Satis", "Satis")
+                    b.HasOne("NitelikliBilisim.Core.Entities.Education", "Education")
                         .WithMany()
                         .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("NitelikliBilisim.Core.Entities.Egitim", "Egitim")
+                    b.HasOne("NitelikliBilisim.Core.Entities.EducationTag", "Tag")
                         .WithMany()
                         .HasForeignKey("Id2")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.Sepet", b =>
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.Customer", b =>
                 {
-                    b.HasOne("NitelikliBilisim.Core.Entities.Egitim", "Egitim")
+                    b.HasOne("NitelikliBilisim.Core.Entities.ApplicationUser", "User")
                         .WithMany()
-                        .HasForeignKey("EgitimId")
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.Education", b =>
+                {
+                    b.HasOne("NitelikliBilisim.Core.Entities.EducationCategory", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationCategory", b =>
+                {
+                    b.HasOne("NitelikliBilisim.Core.Entities.EducationCategory", "BaseCategory")
+                        .WithMany()
+                        .HasForeignKey("BaseCategoryId");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationComment", b =>
+                {
+                    b.HasOne("NitelikliBilisim.Core.Entities.EducationComment", "BaseComment")
+                        .WithMany()
+                        .HasForeignKey("BaseCommentId");
+
+                    b.HasOne("NitelikliBilisim.Core.Entities.Education", "Education")
+                        .WithMany()
+                        .HasForeignKey("EducationId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationGain", b =>
+                {
+                    b.HasOne("NitelikliBilisim.Core.Entities.Education", "Education")
+                        .WithMany()
+                        .HasForeignKey("EducationId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationMedia", b =>
+                {
+                    b.HasOne("NitelikliBilisim.Core.Entities.Education", "Education")
+                        .WithMany()
+                        .HasForeignKey("EducationId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationPart", b =>
+                {
+                    b.HasOne("NitelikliBilisim.Core.Entities.Education", "Education")
+                        .WithMany()
+                        .HasForeignKey("EducationId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationTag", b =>
+                {
+                    b.HasOne("NitelikliBilisim.Core.Entities.EducationTag", "BaseTag")
+                        .WithMany()
+                        .HasForeignKey("BaseTagId");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.Educator", b =>
+                {
+                    b.HasOne("NitelikliBilisim.Core.Entities.ApplicationUser", "User")
+                        .WithOne("Educator")
+                        .HasForeignKey("NitelikliBilisim.Core.Entities.Educator", "Id")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducatorSocialMedia", b =>
+                {
+                    b.HasOne("NitelikliBilisim.Core.Entities.Educator", "Educator")
+                        .WithMany()
+                        .HasForeignKey("EducatorId");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.SaleAddress", b =>
+                {
+                    b.HasOne("NitelikliBilisim.Core.Entities.Sale", "Sale")
+                        .WithMany()
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.SaleDetail", b =>
+                {
+                    b.HasOne("NitelikliBilisim.Core.Entities.Education", "Education")
+                        .WithMany()
+                        .HasForeignKey("EducationId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("NitelikliBilisim.Core.Entities.Satis", "Satis")
+                    b.HasOne("NitelikliBilisim.Core.Entities.EducationPromotionCode", "PromotionCode")
                         .WithMany()
-                        .HasForeignKey("SatisId");
+                        .HasForeignKey("PromotionCodeId");
+
+                    b.HasOne("NitelikliBilisim.Core.Entities.Sale", "Sale")
+                        .WithMany()
+                        .HasForeignKey("SaleId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.WishlistItem", b =>
+                {
+                    b.HasOne("NitelikliBilisim.Core.Entities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("NitelikliBilisim.Core.Entities.Education", "Education")
+                        .WithMany()
+                        .HasForeignKey("Id2")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

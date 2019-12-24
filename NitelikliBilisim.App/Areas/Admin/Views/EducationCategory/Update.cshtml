@@ -1,0 +1,124 @@
+﻿@model NitelikliBilisim.App.Areas.Admin.Models.Category.UpdateGetVm
+@{
+    ViewData["Title"] = "Kategori Güncelle";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="box_general padding_bottom">
+    <div class="header_box version_2">
+        <h2><i class="fa fa-file"></i>Kategori Güncelle</h2>
+        <input type="hidden" value="@Model.Category.Id" id="_category-id" />
+    </div>
+    <form id="form-add-category">
+        @Html.AntiForgeryToken()
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Kategori İsmi</label>
+                    <input type="text" class="form-control" placeholder="Kategori İsmi" id="input-name" value="@Model.Category.Name">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Üst Kategori Seçiniz</label>
+                    <select id="select-base-categories" class="form-control">
+                        <option value="">Üst kategorisi yok</option>
+                        @foreach (var item in Model.Categories)
+                        {
+                            if (Model.BaseCategory != null && Model.BaseCategory.Id == item.Id)
+                            {
+                                <option value="@item.Id" selected>@item.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label>Kategori Açıklaması</label>
+                    <textarea id="input-description" rows="5" class="form-control" style="height:100px;" placeholder="Kategori açıklaması kullanıcılar tarafından görülmeyecektir. Yalnızca admin panelde görülebilir...">@Model.Category.Description</textarea>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<p><button id="btn-save" class="btn_1 medium">Kaydet</button></p>
+@section postScripts{
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+    <script src="~/js/sup/alert-sup.js"></script>
+    <script src="~/js/lib/security-support.js"></script>
+    <script>
+        /* elements */
+        var selectBaseCategories = document.getElementById("select-base-categories");
+        var inputName = document.getElementById("input-name");
+        var inputDescription = document.getElementById("input-description");
+        var btnSave = $("#btn-save");
+
+        /* assignments */
+        $(document).ready(document_onLoad);
+        btnSave.on("click", btnSave_onClick);
+
+        /* events */
+        function document_onLoad() {
+            $(selectBaseCategories).select2();
+        }
+        function btnSave_onClick() {
+            btnSave.off("click");
+            var baseCategoryId = selectBaseCategories.options[selectBaseCategories.selectedIndex].value;
+            var data = {
+                CategoryId: $("#_category-id").val(),
+                Name: inputName.value,
+                Description: inputDescription.value,
+                BaseCategoryId: baseCategoryId
+            }
+
+            var tokenVerfier = new SecuritySupport.TokenVerifier();
+            data = tokenVerfier.addToken("form-add-category", data);
+
+            $.ajax({
+                url: "/admin/kategori-guncelle",
+                method: "post",
+                data: data,
+                success: (res) => {
+                    var resultAlert = new AlertSupport.ResultAlert();
+                    if (res.isSuccess) {
+                        resultAlert.display({
+                            success: true,
+                            message: "İşlem başarılı. Anasayfaya dönmek için {link}",
+                            redirectElement: {
+                                content: "tıklayınız",
+                                link: "/"
+                            }
+                        });
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors,
+                            message: "Sayfayı yenilemek için {link}",
+                            redirectElement: {
+                                content: "tıklayınız",
+                                link: location.href
+                            }
+                        });
+                    }
+
+                    btnSave.on("click", btnSave_onClick);
+                }
+            });
+        }
+    </script>
+}

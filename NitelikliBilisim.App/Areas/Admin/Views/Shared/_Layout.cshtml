@@ -4,30 +4,31 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin NitelikliBilisim - @ViewData["Title"]</title>
-    <link href="~/vendor/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
-    <link href="~/vendor/devextreme/dist/css/dx.common.css" rel="stylesheet" />
-    <link href="~/vendor/devextreme/dist/css/dx.material.orange.light.css" rel="stylesheet" />
-    <link href="~/vendor/select2/dist/css/select2.css" rel="stylesheet" />
+    <title>Nitelikli Bilişim Admin - @ViewData["Title"]</title>
 
-    <link href="~/css/admin.css" rel="stylesheet" />
-    <script src="~/vendor/jquery/dist/jquery.js"></script>
-    <script src="~/vendor/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="~/vendor/jszip/dist/jszip.js"></script>
-    <script src="~/vendor/devextreme/dist/js/dx.all.js"></script>
-    <script src="~/vendor/devextreme-aspnet-data/js/dx.aspnet.data.js"></script>
-    <script src="~/vendor/select2/dist/js/select2.js"></script>
-     
-    @RenderSection("Headers", required: false)
+    <partial name="partials/_BaseAssetsHeader" />
+
+    @RenderSection("styles", false)
+    @RenderSection("preScripts", false)
 </head>
-<body>
-    <div class="container-fluid">
-        @await Html.PartialAsync("_NavBar")
+
+<body class="fixed-nav sticky-footer" id="page-top">
+    @RenderSection("alerts", false)
+
+    <partial name="partials/_LayoutTopNav" />
+    <div class="content-wrapper">
         <div class="container-fluid">
+            <partial name="partials/_LayoutBreadCrumbs" />
             @RenderBody()
         </div>
     </div>
-    <script src="~/js/admin.js"></script>
-    @RenderSection("Scripts", required: false)
+
+    <partial name="partials/_LayoutFooter" />
+    <partial name="partials/_LayoutModals" />
+    <partial name="partials/_BaseAssetsBody" />
+
+    @RenderSection("postScripts", false)
+    @RenderSection("Scripts", false)
 </body>
+
 </html>

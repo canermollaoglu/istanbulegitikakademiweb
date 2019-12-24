@@ -2,16 +2,18 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using NitelikliBilisim.App.Extensions;
-using NitelikliBilisim.Core.Entities.Identity;
+using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Data;
+using System.Globalization;
 using System.IO;
-using AutoMapper;
 
 namespace NitelikliBilisim.App
 {
@@ -37,30 +39,49 @@ namespace NitelikliBilisim.App
             services.AddDbContext<NbDataContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("SqlConnectionString")));
 
-            services.AddIdentity<ApplicationUser, ApplicationRole>()
+            services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
+            {
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+                options.User.RequireUniqueEmail = true;
+                options.Password.RequireUppercase = false;
+            })
                 .AddEntityFrameworkStores<NbDataContext>()
+                //.AddUserStore<UserStore<ApplicationUser, ApplicationRole, NbDataContext>>()
+                //.AddRoleStore<RoleStore<ApplicationRole, NbDataContext>>()
+                //.AddUserManager<UserManager<ApplicationUser>>()
+                //.AddRoleManager<RoleManager<ApplicationRole>>()
                 .AddDefaultTokenProviders();
-            
+
+            services.AddScoped<UnitOfWork>();
+
             services.AddApplicationServices(this.Configuration);
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            var cultureInfo = new CultureInfo("tr-TR") { NumberFormat = { NumberDecimalSeparator = "." } };
+
+            CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+            CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
             app.UseDeveloperExceptionPage();
             app.UseDatabaseErrorPage();
-//            if (env.IsDevelopment())
-//            {
-//                app.UseDeveloperExceptionPage();
-//                app.UseDatabaseErrorPage();
-//            }
-//            else
-//            {
-//                app.UseExceptionHandler("/Home/Error");
-//                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-//                app.UseHsts();
-//            }
+            //            if (env.IsDevelopment())
+            //            {
+            //                app.UseDeveloperExceptionPage();
+            //                app.UseDatabaseErrorPage();
+            //            }
+            //            else
+            //            {
+            //                app.UseExceptionHandler("/Home/Error");
+            //                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+            //                app.UseHsts();
+            //            }
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
@@ -72,7 +93,7 @@ namespace NitelikliBilisim.App
             app.UseAuthentication();
 
             app.UseCookiePolicy();
-            
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute("areas", "{area}/{controller=Manage}/{action=Index}/{id?}");

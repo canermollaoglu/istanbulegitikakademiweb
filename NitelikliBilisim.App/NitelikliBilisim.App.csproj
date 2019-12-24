@@ -13,11 +13,14 @@
     <PackageReference Include="AspNet.Security.OAuth.LinkedIn" Version="2.1.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="DevExtreme.AspNet.Data" Version="2.4.4" />
-    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.App">
+      <PrivateAssets Condition="'%(PackageReference.Version)' == ''">all</PrivateAssets>
+      <Publish Condition="'%(PackageReference.Version)' == ''">true</Publish>
+    </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.9.2" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" />
   </ItemGroup>
 
 
@@ -25,13 +28,17 @@
     <ProjectReference Include="..\NitelikliBilisim.Business\NitelikliBilisim.Business.csproj" />
     <ProjectReference Include="..\NitelikliBilisim.Core\NitelikliBilisim.Core.csproj" />
     <ProjectReference Include="..\NitelikliBilisim.Data\NitelikliBilisim.Data.csproj" />
+    <ProjectReference Include="..\NitelikliBilisim.Support\NitelikliBilisim.Support.csproj" />
   </ItemGroup>
 
 
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
-    <Folder Include="Areas\Admin\Models\" />
+    <Folder Include="Areas\Admin\Views\Shared\partials\categories\" />
     <Folder Include="Properties\PublishProfiles\" />
+    <Folder Include="wwwroot\assets\font\area-admin\" />
+    <Folder Include="wwwroot\uploads\educator-photos\" />
+    <Folder Include="wwwroot\uploads\media-items\" />
   </ItemGroup>
 
 
@@ -56,6 +63,15 @@
   <ItemGroup>
     <Content Remove="logs\**" />
     <Content Remove="Pages\**" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <None Include="wwwroot\assets\css\all_icons.min.css" />
+    <None Include="wwwroot\assets\css\bootstrap.min.css" />
+    <None Include="wwwroot\assets\css\style.css" />
+    <None Include="wwwroot\assets\css\vendors.css" />
+    <None Include="wwwroot\assets\css\vendors.unminified.css" />
   </ItemGroup>
 
   <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">

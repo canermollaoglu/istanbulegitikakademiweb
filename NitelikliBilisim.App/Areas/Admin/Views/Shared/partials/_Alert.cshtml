@@ -1,0 +1,43 @@
+﻿<div id="div-alert-container" class="alert alert-danger alert-dismissible">
+    <button type="button" class="close" id="btn-dismiss-alert">&times;</button>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-2">
+                <div class="row">
+                    <div class="col-md-12">
+                        <p class="text-center"><i id="alert-icon" class="fa fa-exclamation-triangle text-danger"></i></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-10">
+                <ul id="alert-message-list">
+                </ul>
+                <p id="alert-single-message"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<button id="modal-confirmation-trigger" type="button" data-toggle="modal" data-target="#modal-confirmation" style="display:none;"></button>
+<div class="modal fade" id="modal-confirmation">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 id="modal-confirmation-title" class="modal-title"></h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <p id="modal-confirmation-body-text"></p>
+            </div>
+
+            <div class="modal-footer">
+                <button id="modal-btn-cancel" type="button" class="btn btn-outline-secondary" data-dismiss="modal"></button>
+                <button id="modal-btn-confirm" href="#" class="btn btn-outline-danger" data-dismiss="modal"></button>
+            </div>
+
+        </div>
+    </div>
+</div>

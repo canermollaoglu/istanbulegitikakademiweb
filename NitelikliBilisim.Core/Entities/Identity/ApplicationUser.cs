@@ -2,20 +2,17 @@
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
-namespace NitelikliBilisim.Core.Entities.Identity
+namespace NitelikliBilisim.Core.Entities
 {
     public class ApplicationUser : IdentityUser
     {
-        [StringLength(100)]
+        [StringLength(128)]
         public string Name { get; set; }
-        [StringLength(100)]
+        [StringLength(128)]
         public string Surname { get; set; }
-
-        [StringLength(250)]
-        public string FotoUrl { get; set; }
-
-
-        public Egitici Egitici { get; set; }
+        [StringLength(256)]
+        public string AvatarPath { get; set; }
+        public virtual Educator Educator { get; set; }
         public ICollection<ApplicationUserRole> UserRoles { get; set; }
     }
 }

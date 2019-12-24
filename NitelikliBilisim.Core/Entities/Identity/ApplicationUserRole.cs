@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace NitelikliBilisim.Core.Entities.Identity
+namespace NitelikliBilisim.Core.Entities
 {
     public class ApplicationUserRole : IdentityUserRole<string>
     {

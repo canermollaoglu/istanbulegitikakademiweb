@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NitelikliBilisim.Core.Abstracts;
 using NitelikliBilisim.Core.Entities;
-using NitelikliBilisim.Core.Entities.Identity;
 
 namespace NitelikliBilisim.Data
 {
@@ -33,8 +32,8 @@ namespace NitelikliBilisim.Data
 
             foreach (var entity in selectedEntityList)
             {
-                ((AuditBase) (entity.Entity)).CreatedUser = userId;
-                ((AuditBase) (entity.Entity)).CreatedDate = DateTime.Now;
+                ((AuditBase)(entity.Entity)).CreatedUser = userId;
+                ((AuditBase)(entity.Entity)).CreatedDate = DateTime.Now;
             }
 
             selectedEntityList = ChangeTracker.Entries()
@@ -42,10 +41,10 @@ namespace NitelikliBilisim.Data
 
             foreach (var entity in selectedEntityList)
             {
-                ((AuditBase) (entity.Entity)).UpdatedUser = userId;
-                ((AuditBase) (entity.Entity)).UpdatedDate = DateTime.Now;
+                ((AuditBase)(entity.Entity)).UpdatedUser = userId;
+                ((AuditBase)(entity.Entity)).UpdatedDate = DateTime.Now;
             }
-            
+
             return base.SaveChanges();
         }
 
@@ -53,13 +52,14 @@ namespace NitelikliBilisim.Data
         {
             base.OnModelCreating(builder);
             builder.EnableAutoHistory(100);
+
             #region ManyToMany
 
-            builder.Entity<EgitimKategori>()
-                .HasKey(x => new {x.Id, x.Id2});
-            builder.Entity<SatisDetay>()
-                .HasKey(x => new {x.Id, x.Id2});
-            
+            builder.Entity<Bridge_EducationTag>()
+                .HasKey(x => new { x.Id, x.Id2 });
+            builder.Entity<WishlistItem>()
+                .HasKey(x => new { x.Id, x.Id2 });
+
             builder.Entity<ApplicationUserRole>(userRole =>
             {
                 userRole.HasKey(ur => new { ur.UserId, ur.RoleId });
@@ -74,29 +74,25 @@ namespace NitelikliBilisim.Data
                     .HasForeignKey(ur => ur.UserId)
                     .IsRequired();
             });
-
             #endregion
-
-            builder.Entity<Egitici>()
-                .Property(x => x.Id)
-                .HasMaxLength(450);
-
-            builder.Entity<ApplicationUser>()
-                .HasOne(x => x.Egitici)
-                .WithOne(x => x.Kullanici)
-                .HasForeignKey<Egitici>(x => x.Id);
         }
 
         public DbSet<AutoHistory> DataHistories { get; set; }
-        public DbSet<Kategori> Kategoriler { get; set; }
-        public DbSet<Egitim> Egitimler { get; set; }
-        public DbSet<EgitimKategori> EgitimKategoriler { get; set; }
-        public DbSet<EgitimDetay> EgitimDetaylar { get; set; }
-        public DbSet<MusteriYorum> MusteriYorumlar { get; set; }
-        public DbSet<EgitimKazanim> EgitimKazanimlar { get; set; }
-        public DbSet<Egitici> Egiticiler { get; set; }
-        public DbSet<Sepet> Sepetler { get; set; }
-        public DbSet<Satis> Satislar { get; set; }
-        public DbSet<SatisDetay> SatisDetaylar { get; set; }
+        public DbSet<Bridge_EducationTag> Bridge_EducationTags { get; set; }
+        public DbSet<Education> Educations { get; set; }
+        public DbSet<EducationCategory> EducationCategories { get; set; }
+        public DbSet<EducationTag> EducationTags { get; set; }
+        public DbSet<EducationComment> EducationComments { get; set; }
+        public DbSet<EducationMedia> EducationMedias { get; set; }
+        public DbSet<EducationPart> EducationParts { get; set; }
+        public DbSet<EducationGain> EducationGains { get; set; }
+        public DbSet<EducationPromotionCode> EducationPromotionCodes { get; set; }
+        public DbSet<Sale> Sales { get; set; }
+        public DbSet<SaleAddress> SaleAddresses { get; set; }
+        public DbSet<SaleDetail> SaleDetails { get; set; }
+        public DbSet<WishlistItem> Wishlist { get; set; }
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Educator> Educators { get; set; }
+        public DbSet<EducatorSocialMedia> EducatorSocialMedias { get; set; }
     }
 }

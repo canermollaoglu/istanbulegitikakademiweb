@@ -1,45 +1,120 @@
-@model NitelikliBilisim.Core.ViewModels.Account.RegisterViewModel
+﻿@model NitelikliBilisim.Core.ViewModels.Account.RegisterViewModel
 
 @{
-    ViewBag.Title = "Register";
-    Layout = "_Layout";
+    ViewBag.Title = "Kaydol";
 }
-<div class="container">
-    <div class="row">
-        <h2>Kayıt Ol</h2>
+
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Nitelikli Bilişim eğitim platformu">
+    <meta name="author" content="wissentech">
+    <title>Nitelikli Bilişim | Kaydol</title>
+
+    <!-- Favicons-->
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" type="image/x-icon" href="img/apple-touch-icon-57x57-precomposed.png">
+    <link rel="apple-touch-icon" type="image/x-icon" sizes="72x72" href="img/apple-touch-icon-72x72-precomposed.png">
+    <link rel="apple-touch-icon" type="image/x-icon" sizes="114x114" href="img/apple-touch-icon-114x114-precomposed.png">
+    <link rel="apple-touch-icon" type="image/x-icon" sizes="144x144" href="img/apple-touch-icon-144x144-precomposed.png">
+
+    <!-- BASE CSS -->
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/css/style.css" rel="stylesheet">
+    <link href="/assets/css/vendors.css" rel="stylesheet">
+    <link href="/assets/css/all_icons.min.css" rel="stylesheet">
+
+    <!-- YOUR CUSTOM CSS -->
+    <link href="/css/custom.css" rel="stylesheet">
+
+</head>
+
+<body id="register_bg">
+
+    <nav id="menu" class="fake_menu"></nav>
+
+    <div id="preloader">
+        <div data-loader="circle-side"></div>
     </div>
-    <div class="row justify-content-center">
-        <div class="col-6">
-            <form asp-controller="Account" asp-action="Register" method="post">
-                <div asp-validation-summary="All" class="text-danger"></div>
+    <!-- End Preload -->
+
+    <div id="login">
+        <aside>
+            <figure>
+                <a href="index.html"><img src="/img/logo.png" width="149" height="42" data-retina="true" alt=""></a>
+            </figure>
+            <form autocomplete="off" asp-controller="account" asp-action="register" method="post">
                 <div class="form-group">
-                    <label asp-for="UserName">Kullanıcı Adı</label>
-                    <input type="text" asp-for="UserName" class="form-control"/>
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <span class="input">
+                        <input class="input_field" type="text" name="UserName">
+                        <label class="input_label">
+                            <span class="input__label-content">Kullanıcı Adı</span>
+                        </label>
+                    </span>
+                    <span class="text-danger" asp-validation-for="UserName"></span>
+
+                    <span class="input">
+                        <input class="input_field" type="text" name="Name">
+                        <label class="input_label">
+                            <span class="input__label-content">İsim</span>
+                        </label>
+                    </span>
+                    <span class="text-danger" asp-validation-for="Name"></span>
+
+                    <span class="input">
+                        <input class="input_field" type="text" name="Surname">
+                        <label class="input_label">
+                            <span class="input__label-content">Soyisim</span>
+                        </label>
+                    </span>
+                    <span class="text-danger" asp-validation-for="Surname"></span>
+
+                    <span class="input">
+                        <input class="input_field" type="email" name="Email">
+                        <label class="input_label">
+                            <span class="input__label-content">E-Posta</span>
+                        </label>
+                    </span>
+                    <span class="text-danger" asp-validation-for="Email"></span>
+
+                    <span class="input">
+                        <input class="input_field" type="password" id="password1" name="Password">
+                        <label class="input_label">
+                            <span class="input__label-content">Şifre</span>
+                        </label>
+                    </span>
+                    <span class="text-danger" asp-validation-for="Password"></span>
+
+                    <span class="input">
+                        <input class="input_field" type="password" id="password2" name="ConfirmPassword">
+                        <label class="input_label">
+                            <span class="input__label-content">Şifre Onay</span>
+                        </label>
+                    </span>
+                    <span class="text-danger" asp-validation-for="ConfirmPassword"></span>
+
+                    <div id="pass-info" class="clearfix"></div>
                 </div>
-                <div class="form-group">
-                    <label asp-for="Name">Ad</label>
-                    <input type="text" asp-for="Name" class="form-control"/>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Surname">Soyad</label>
-                    <input type="text" asp-for="Surname" class="form-control"/>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Email">Email</label>
-                    <input type="email" asp-for="Email" class="form-control"/>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Password">Şifre</label>
-                    <input type="password" asp-for="Password" class="form-control"/>
-                </div>
-                <div class="form-group">
-                    <label asp-for="ConfirmPassword">Şifre Tekrar</label>
-                    <input type="password" asp-for="ConfirmPassword" class="form-control"/>
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Kayıt Ol" class="btn btn-info"/>
-                </div>
+                <button type="submit" class="btn_1 rounded full-width add_top_30">Kayıt Ol</button>
+                <div class="text-center add_top_10">Zaten hesabınız var mı? <strong><a href="/account/login">Giriş yap</a></strong></div>
             </form>
-        </div>
+            <div class="copy">© @DateTime.Now.Year Nitelikli Bilişim</div>
+        </aside>
     </div>
-</div>
+    <!-- /login -->
+    <!-- COMMON SCRIPTS -->
+    <script src="~/assets/js/jquery-3.4.1.min.js"></script>
+    <script src="/assets/js/common_scripts.js"></script>
+    <script src="/assets/js/main.js"></script>
+    <script src="/assets/js/validate.js"></script>
+
+    <!-- SPECIFIC SCRIPTS -->
+    <script src="~/assets/js/pw_strenght.js"></script>
+
+</body>
+</html>

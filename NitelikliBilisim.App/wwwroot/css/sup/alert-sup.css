@@ -1,0 +1,28 @@
+﻿#div-alert-container {
+    position: absolute;
+    display: none;
+    min-width: 300px;
+    width: 40%;
+    left: 59%;
+    margin: 0;
+    box-shadow: 5px 5px 5px black;
+    padding: 1%;
+    z-index: 10;
+}
+
+#btn-dismiss-alert{
+    cursor: pointer;
+    position: initial;
+}
+
+#alert-icon {
+    font-size: 400%;
+    padding: 1%;
+}
+
+#alert-message-list {
+    list-style-type: square;
+}
+#alert-message-list li {
+    cursor: default;
+}
