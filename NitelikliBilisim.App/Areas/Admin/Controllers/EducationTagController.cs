@@ -64,7 +64,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             }
             _unitOfWork.EducationTag.Insert(new EducationTag
             {
-                Name = data.Name,
+                Name = data.Name.Format(),
                 Description = data.Description,
                 BaseTagId = data.BaseTagId
             });
