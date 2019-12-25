@@ -5,6 +5,7 @@ using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education;
 using NitelikliBilisim.Data;
 using NitelikliBilisim.Enums;
+using NitelikliBilisim.Support.Text;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -136,9 +137,9 @@ namespace NitelikliBilisim.Business.Repositories
             };
         }
 
-        public Guid? Insert(Education entity, List<Guid> categoryIds, List<EducationMedia> medias, bool isSaveLater = false)
+        public Guid? Insert(Education entity, List<Guid> tagIds, List<EducationMedia> medias, bool isSaveLater = false)
         {
-            if (categoryIds == null || categoryIds.Count == 0)
+            if (tagIds == null || tagIds.Count == 0)
                 return null;
 
             using (var transaction = _context.Database.BeginTransaction())
@@ -147,12 +148,20 @@ namespace NitelikliBilisim.Business.Repositories
                 {
                     entity.IsActive = false;
                     var educationId = base.Insert(entity);
+                    var tag = entity.Name.FormatForTag();
+
+                    if (!_context.EducationTags.Any(x => x.Name == tag))
+                        _context.EducationTags.Add(new EducationTag
+                        {
+                            Name = tag,
+                            Description = $"{entity.Name} isimli eğitimin otomatik oluşturulmuş etiketi"
+                        });
 
                     var bridge = new List<Bridge_EducationTag>();
-                    foreach (var categoryId in categoryIds)
+                    foreach (var tagId in tagIds)
                         bridge.Add(new Bridge_EducationTag
                         {
-                            Id = categoryId,
+                            Id = tagId,
                             Id2 = educationId
                         });
                     foreach (var item in medias)
