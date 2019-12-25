@@ -262,7 +262,8 @@ namespace NitelikliBilisim.Business.Repositories
                 .ToList();
 
             var educations = _context.Educations
-                .Where(x => educationIds.Contains(x.Id))
+                .Where(x => educationIds.Contains(x.Id) && x.IsActive)
+                .Join(_context.EducationMedias)
                 .OrderByDescending(o => o.CreatedDate)
                 .Skip(page * shownResults)
                 .Take(shownResults)
