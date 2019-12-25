@@ -6,7 +6,7 @@
 		$('[data-loader="circle-side"]').fadeOut(); // will first fade out the loading animation
 		$('#preloader').delay(350).fadeOut('slow'); // will fade out the white DIV that covers the website.
 		$('body').delay(350);
-		$('#hero_in h1,#hero_in form').addClass('animated');
+		$('header, #hero_in h1, #hero_in form').addClass('animated');
 		$('.hero_single, #hero_in').addClass('start_bg_zoom');
 		$(window).scroll();
 	});
@@ -18,49 +18,6 @@
 		} else {
 			$('.header').removeClass("sticky");
 		}
-	});
-	
-	// Sticky sidebar
-	$('#sidebar').theiaStickySidebar({
-		additionalMarginTop: 150
-	});
-	
-	// Mobile Mmenu
-	var $menu = $("nav#menu").mmenu({
-		"extensions": ["pagedim-black"],
-		counters: false,
-		keyboardNavigation: {
-			enable: true,
-			enhance: true
-		},
-		navbar: {
-			title: 'MENU'
-		},
-		navbars: [{position:'bottom',content: ['<a href="#0">© 2017 Udema</a>']}]}, 
-		{
-		// configuration
-		clone: true,
-		classNames: {
-			fixedElements: {
-				fixed: "menu_2",
-				sticky: "sticky"
-			}
-		}
-	});
-	var $icon = $("#hamburger");
-	var API = $menu.data("mmenu");
-	$icon.on("click", function () {
-		API.open();
-	});
-	API.bind("open:finish", function () {
-		setTimeout(function () {
-			$icon.addClass("is-active");
-		}, 100);
-	});
-	API.bind("close:finish", function () {
-		setTimeout(function () {
-			$icon.removeClass("is-active");
-		}, 100);
 	});
     
     // Header button explore
@@ -133,7 +90,7 @@
             .find(".indicator")
             .toggleClass('ti-minus ti-plus');
     }
-    // Accordion 2 (updated v1.2)
+    // Accordion (updated v1.2)
 	$('.accordion_2').on('hidden.bs.collapse shown.bs.collapse', toggleChevron);
 		function toggleIcon(e) {
         $(e.target)
@@ -144,6 +101,23 @@
     $('.panel-group').on('hidden.bs.collapse', toggleIcon);
     $('.panel-group').on('shown.bs.collapse', toggleIcon);
 	
+	// Hamburher icon
+	var $menu= $('#main_menu');
+	$('.hamburger').on('click', function () {
+		$menu.toggleClass('show');
+		$menu.find('nav').toggleClass('animated fadeIn');
+		$menu.find('.follow_us').toggleClass('animated fadeInUp');
+		$('.header').toggleClass('sticky_menu_active');
+	});
+	var forEach=function(t,o,r){if("[object Object]"===Object.prototype.toString.call(t))for(var c in t)Object.prototype.hasOwnProperty.call(t,c)&&o.call(r,t[c],c,t);else for(var e=0,l=t.length;l>e;e++)o.call(r,t[e],e,t)};
+    var hamburgers = document.querySelectorAll(".hamburger");
+    if (hamburgers.length > 0) {
+      forEach(hamburgers, function(hamburger) {
+        hamburger.addEventListener('click', function() {
+          this.classList.toggle('is-active');
+        }, false);
+      });
+    };
 	  
 	// Input field effect
 	(function () {
@@ -229,15 +203,20 @@
 	// Sticky filters
 	$(window).bind('load resize', function () {
 		var width = $(window).width();
-		if (width <= 991) {
+		if (width <= 767) {
 			$('.sticky_horizontal').stick_in_parent({
-				offset_top: 50
+				offset_top: 64
 			});
 		} else {
 			$('.sticky_horizontal').stick_in_parent({
 				offset_top: 73
 			});
 		}
+	});
+	
+	// Sticky sidebar
+	$('#sidebar').theiaStickySidebar({
+		additionalMarginTop: 150
 	});
 	            
 	// Secondary nav scroll
