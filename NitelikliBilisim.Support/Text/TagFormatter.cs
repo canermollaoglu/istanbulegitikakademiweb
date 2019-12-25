@@ -22,6 +22,7 @@ namespace NitelikliBilisim.Support.Text
         public static string CharacterConverter(string input)
         {
             return input
+                .Replace("-", " ")
                 .Replace("\"", "")
                 .Replace("!", "")
                 .Replace("'", "")

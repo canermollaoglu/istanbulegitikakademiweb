@@ -7,7 +7,7 @@
 
     <partial name="partials/_BaseAssetsHeader" />
 
-    @RenderSection("Styles", required: false)
+    @RenderSection("styles", required: false)
 </head>
 <body>
     <div id="page">
@@ -21,6 +21,10 @@
     </div>
 
     <script src="~/js/layout/layout-search.js"></script>
-    @RenderSection("Scripts", required: false)
+    <script>
+        var searcher = new AppWide.Searcher();
+        searcher.initialize();
+    </script>
+    @RenderSection("postScripts", required: false)
 </body>
 </html>

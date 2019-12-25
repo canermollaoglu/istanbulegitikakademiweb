@@ -14,6 +14,8 @@ namespace NitelikliBilisim.App.Controllers
         {
             _unitOfWork = unitOfWork;
         }
+
+        [Route("arama-sonuclari/{searchText}")]
         public IActionResult SearchResults(string searchText)
         {
             return View();
