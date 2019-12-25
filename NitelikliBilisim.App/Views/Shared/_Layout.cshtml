@@ -10,15 +10,13 @@
     @RenderSection("styles", required: false)
 </head>
 <body>
-    <div id="page">
-        <partial name="partials/_LayoutHeader" />
+    <partial name="partials/_LayoutHeader" />
 
-        @RenderBody()
+    @RenderBody()
 
-        <partial name="partials/_LayoutFooter" />
+    <partial name="partials/_LayoutFooter" />
 
-        <partial name="partials/_BaseAssetsBody" />
-    </div>
+    <partial name="partials/_BaseAssetsBody" />
 
     <script src="~/js/layout/layout-search.js"></script>
     <script>
