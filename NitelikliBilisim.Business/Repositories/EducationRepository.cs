@@ -241,5 +241,34 @@ namespace NitelikliBilisim.Business.Repositories
 
             return base.Update(entity, isSaveLater);
         }
+
+        public List<Education> GetInfiniteScrollSearchResults(string searchText, int page = 0)
+        {
+            var shownResults = 5;
+            searchText = searchText.FormatForTag();
+
+            var tags = _context.Bridge_EducationTags
+                .Join(_context.EducationTags, l => l.Id, r => r.Id, (x, y) => new
+                {
+                    TagId = x.Id,
+                    EducationId = x.Id2,
+                    TagName = y.Name
+                })
+                .ToList();
+
+            var educationIds = tags
+                .Where(x => x.TagName.Contains(searchText))
+                .Select(x => x.EducationId)
+                .ToList();
+
+            var educations = _context.Educations
+                .Where(x => educationIds.Contains(x.Id))
+                .OrderByDescending(o => o.CreatedDate)
+                .Skip(page * shownResults)
+                .Take(shownResults)
+                .ToList();
+
+            return educations;
+        }
     }
 }
