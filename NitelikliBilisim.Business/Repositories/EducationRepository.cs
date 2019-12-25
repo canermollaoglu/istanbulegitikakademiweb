@@ -2,12 +2,15 @@
 using NitelikliBilisim.Business.PagedEntity;
 using NitelikliBilisim.Core.DTO;
 using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Enums;
+using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education;
 using NitelikliBilisim.Data;
 using NitelikliBilisim.Enums;
 using NitelikliBilisim.Support.Text;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -242,7 +245,7 @@ namespace NitelikliBilisim.Business.Repositories
             return base.Update(entity, isSaveLater);
         }
 
-        public List<Education> GetInfiniteScrollSearchResults(string searchText, int page = 0)
+        public List<EducationVm> GetInfiniteScrollSearchResults(string searchText, int page = 0)
         {
             var shownResults = 5;
             searchText = searchText.FormatForTag();
@@ -263,13 +266,38 @@ namespace NitelikliBilisim.Business.Repositories
 
             var educations = _context.Educations
                 .Where(x => educationIds.Contains(x.Id) && x.IsActive)
-                .Join(_context.EducationMedias)
-                .OrderByDescending(o => o.CreatedDate)
+                .Join(_context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Id, r => r.EducationId, (x, y) => new
+                {
+                    Education = x,
+                    EducationPreviewMedia = y
+                })
+                .Join(_context.EducationCategories, l => l.Education.CategoryId, r => r.Id, (x, y) => new
+                {
+                    Education = x.Education,
+                    EducationPreviewMedia = x.EducationPreviewMedia,
+                    CategoryName = y.Name
+                })
+                .OrderByDescending(o => o.Education.CreatedDate)
                 .Skip(page * shownResults)
                 .Take(shownResults)
                 .ToList();
 
-            return educations;
+            var data = educations.Select(x => new EducationVm
+            {
+                Base = new EducationBaseVm
+                {
+                    Name = x.Education.Name,
+                    Description = x.Education.Description,
+                    CategoryName = x.CategoryName,
+                    Level = EnumSupport.GetDescription(x.Education.Level),
+                    PriceText = x.Education.NewPrice.Value.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
+                    HoursPerDayText = x.Education.HoursPerDay.ToString(),
+                    DaysText = x.Education.Days.ToString()
+                },
+                Medias = new List<EducationMediaVm> { new EducationMediaVm { EducationId = x.Education.Id, FileUrl = x.EducationPreviewMedia.FileUrl } }
+            }).ToList();
+
+            return data;
         }
     }
 }
