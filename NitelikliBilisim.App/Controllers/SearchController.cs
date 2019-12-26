@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ViewModels;
 
@@ -26,7 +27,10 @@ namespace NitelikliBilisim.App.Controllers
         public IActionResult SearchEducation(string searchText, int page = 0)
         {
             var model = _unitOfWork.Education.GetInfiniteScrollSearchResults(searchText, page);
-            return Json(model);
+            return Json(new ResponseModel
+            {
+                data = model
+            });
         }
     }
 }
