@@ -25,7 +25,7 @@
             </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>Üst Kategori Seçiniz</label>
+                    <label>Üst Etiket Seçiniz</label>
                     <select id="select-base-categories" class="form-control">
                         <option value="">Üst etiketi yok</option>
                         @foreach (var item in Model.Tags)
@@ -73,7 +73,7 @@
             var data = {
                 Name: inputName.value,
                 Description: inputDescription.value,
-                BaseCategoryId: baseCategoryId
+                BaseTagId: baseCategoryId
             }
 
             var tokenVerfier = new SecuritySupport.TokenVerifier();

@@ -1,4 +1,4 @@
-﻿@model List<NitelikliBilisim.Core.Entities.EducationTag>
+﻿@model List<NitelikliBilisim.Core.Entities.EducationCategory>
 @{
     ViewData["Title"] = "Kategori Listesi";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -38,9 +38,9 @@
                         <tr>
                             @{
                                 var baseCategory = "Ana Kategori";
-                                if (item.BaseTag != null)
+                                if (item.BaseCategory != null)
                                 {
-                                    baseCategory = item.BaseTag.Name;
+                                    baseCategory = item.BaseCategory.Name;
                                 }
                             }
                             <td>@item.Name (@baseCategory)</td>

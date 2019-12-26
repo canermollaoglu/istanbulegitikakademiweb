@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
@@ -9,9 +10,11 @@ using NitelikliBilisim.Business.Debugging;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_tags;
+using NitelikliBilisim.Support.Text;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
+    [Authorize]
     [Area("Admin")]
     public class EducationTagController : Controller
     {
@@ -64,7 +67,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             }
             _unitOfWork.EducationTag.Insert(new EducationTag
             {
-                Name = data.Name,
+                Name = data.Name.FormatForTag(),
                 Description = data.Description,
                 BaseTagId = data.BaseTagId
             });

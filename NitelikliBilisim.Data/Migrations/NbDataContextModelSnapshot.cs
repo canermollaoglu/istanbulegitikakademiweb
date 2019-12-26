@@ -749,12 +749,12 @@ namespace NitelikliBilisim.Data.Migrations
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.Bridge_EducationTag", b =>
                 {
-                    b.HasOne("NitelikliBilisim.Core.Entities.Education", "Education")
+                    b.HasOne("NitelikliBilisim.Core.Entities.EducationTag", "Tag")
                         .WithMany()
                         .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("NitelikliBilisim.Core.Entities.EducationTag", "Tag")
+                    b.HasOne("NitelikliBilisim.Core.Entities.Education", "Education")
                         .WithMany()
                         .HasForeignKey("Id2")
                         .OnDelete(DeleteBehavior.Cascade);

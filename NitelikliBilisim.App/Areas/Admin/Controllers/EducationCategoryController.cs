@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Areas.Admin.Models.Category;
 using NitelikliBilisim.App.Models;
@@ -13,6 +14,7 @@ using NitelikliBilisim.Enums;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
+    [Authorize]
     [Area("Admin")]
     public class EducationCategoryController : Controller
     {
@@ -68,7 +70,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             {
                 Name = data.Name,
                 Description = data.Description,
-                BaseCategoryId = data.BaseCategoryId
+                BaseCategoryId = data.BaseCategoryId,
+                CategoryType = (CategoryType)data.CategoryType
             });
             return Json(new ResponseModel
             {

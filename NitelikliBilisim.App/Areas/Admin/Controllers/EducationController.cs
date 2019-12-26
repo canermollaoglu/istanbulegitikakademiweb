@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Areas.Admin.Models.Education;
@@ -15,6 +16,7 @@ using NitelikliBilisim.Core.Enums;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
+    [Authorize]
     [Area("Admin")]
     public class EducationController : Controller
     {
@@ -70,10 +72,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 Level = (EducationLevel)data.EducationLevel.Value,
                 NewPrice = data.Price.Value,
                 Days = data.Days.Value,
-                HoursPerDay = data.HoursPerDay.Value
+                HoursPerDay = data.HoursPerDay.Value,
+                CategoryId = data.CategoryId
             };
 
-            _unitOfWork.Education.Insert(education, data.CategoryIds, new List<EducationMedia> { banner, preview });
+            _unitOfWork.Education.Insert(education, data.TagIds, new List<EducationMedia> { banner, preview });
 
             _unitOfWork.Education.CheckEducationState(education.Id);
 
@@ -103,7 +106,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [HttpPost, Route("admin/egitim-guncelle")]
         public IActionResult Update(UpdatePostVm data)
         {
-            if (!ModelState.IsValid || data.CategoryIds.Count == 0)
+            if (!ModelState.IsValid || data.TagIds.Count == 0)
                 return Json(new ResponseModel
                 {
                     isSuccess = false,
