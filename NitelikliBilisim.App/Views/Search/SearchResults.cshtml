@@ -1,4 +1,4 @@
-﻿
+﻿@model NitelikliBilisim.Core.ViewModels.SearchResultsGetVm
 @{
     ViewData["Title"] = "Aram Sonuçları";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -12,7 +12,8 @@
             </div>
         </div>
     </section>
-    <!--/hero_in-->
+
+    <input type="hidden" value="@Model.SearchText" id="_search-text" />
 
     <div class="filters_listing sticky_horizontal">
         <div class="container">

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.ViewModels;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -18,7 +19,11 @@ namespace NitelikliBilisim.App.Controllers
         [Route("arama-sonuclari/{searchText}")]
         public IActionResult SearchResults(string searchText)
         {
-            return View();
+            var model = new SearchResultsGetVm
+            {
+                SearchText = searchText
+            };
+            return View(model);
         }
         public IActionResult SearchEducation(string searchText, int page = 0)
         {
