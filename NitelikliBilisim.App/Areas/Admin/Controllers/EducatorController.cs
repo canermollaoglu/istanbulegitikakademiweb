@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +18,7 @@ using NitelikliBilisim.Support.Text;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
+    [Authorize]
     [Area("Admin")]
     public class EducatorController : Controller
     {
