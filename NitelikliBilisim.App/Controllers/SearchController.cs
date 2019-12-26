@@ -25,6 +25,8 @@ namespace NitelikliBilisim.App.Controllers
             };
             return View(model);
         }
+
+        [Route("search-for-courses/{searchText}/page/{page}")]
         public IActionResult SearchEducation(string searchText, int page = 0)
         {
             var model = _unitOfWork.Education.GetInfiniteScrollSearchResults(searchText, page);

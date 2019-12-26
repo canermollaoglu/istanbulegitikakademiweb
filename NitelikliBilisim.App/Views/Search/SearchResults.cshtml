@@ -14,6 +14,7 @@
     </section>
 
     <input type="hidden" value="@Model.SearchText" id="_search-text" />
+    <input type="hidden" value="0" id="_page" />
 
     <div class="filters_listing sticky_horizontal">
         <div class="container">
@@ -48,7 +49,7 @@
     </div>
     <!-- /filters -->
 
-    <div class="container margin_60_35" id="education-container">
+    <div class="container margin_60_35" id="div-education-container">
         <div class="box_list wow">
             <div class="row no-gutters">
                 <div class="col-lg-5">
@@ -186,41 +187,36 @@
         <!-- /box_list -->
         <p class="text-center add_top_60"><a href="#0" class="btn_1">Load more</a></p>
     </div>
-    <!-- /container -->
-    <div class="bg_color_1">
-        <div class="container margin_60_35">
-            <div class="row">
-                <div class="col-md-4">
-                    <a href="#0" class="boxed_list">
-                        <i class="pe-7s-help2"></i>
-                        <h4>Need Help? Contact us</h4>
-                        <p>Cum appareat maiestatis interpretaris et, et sit.</p>
-                    </a>
-                </div>
-                <div class="col-md-4">
-                    <a href="#0" class="boxed_list">
-                        <i class="pe-7s-wallet"></i>
-                        <h4>Payments and Refunds</h4>
-                        <p>Qui ea nemore eruditi, magna prima possit eu mei.</p>
-                    </a>
-                </div>
-                <div class="col-md-4">
-                    <a href="#0" class="boxed_list">
-                        <i class="pe-7s-note2"></i>
-                        <h4>Quality Standards</h4>
-                        <p>Hinc vituperata sed ut, pro laudem nonumes ex.</p>
-                    </a>
-                </div>
-            </div>
-            <!-- /row -->
-        </div>
-        <!-- /container -->
-    </div>
-    <!-- /bg_color_1 -->
+
+    <partial name="partials/search/_SearchResultsPreFooter" />
+
 </main>
 
 @section postScripts{
     <script>
+        /* elements */
+        var divEducationContainer = $("#div-education-container");
+        var _searchText = $("#_search-text");
+        var _page = $("#_page");
 
+        /* assignments */
+        $(document).ready(document_onLoad);
+
+        /* events */
+        function document_onLoad() {
+
+            $.ajax({
+                url: `/search-for-courses/${_searchText.val()}/page/${_page.val()}`,
+                method: "get",
+                success: (res) => {
+
+                }
+            });
+        }
+
+        /* functions */
+        function prepareCourseBoxes(data) {
+
+        }
     </script>
 }
