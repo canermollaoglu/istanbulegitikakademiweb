@@ -50,8 +50,7 @@
     <!-- /filters -->
 
     <div class="container margin_60_35" id="div-education-container">
-
-        <p class="text-center add_top_60"><a href="#0" class="btn_1">Load more</a></p>
+        <p class="text-center add_top_60"><button id="btn-load-more" class="btn_1">Daha Fazla Yükle</button></p>
     </div>
 
     <partial name="partials/search/_SearchResultsPreFooter" />
@@ -60,33 +59,52 @@
 
 @section postScripts{
     <script>
-        /* elements */
-        var divEducationContainer = $("#div-education-container");
+        /* fields */
         var _searchText = $("#_search-text");
         var _page = $("#_page");
 
+        /* elements */
+        var divEducationContainer = $("#div-education-container");
+        var btnLoadMore = $("#btn-load-more");
+
         /* assignments */
         $(document).ready(document_onLoad);
+        btnLoadMore.on("click", btnLoadMore_onClick);
 
         /* events */
         function document_onLoad() {
+            getSearchResults(false);
+        }
+        function btnLoadMore_onClick() {
+            getSearchResults(true);
+        }
 
+        /* functions */
+        function getSearchResults(isLoadMore) {
             $.ajax({
                 url: `/search-for-courses/${_searchText.val()}/page/${_page.val()}`,
                 method: "get",
                 success: (res) => {
-                    var boxes = prepareCourseBoxes(res.data);
-                    divEducationContainer.append(boxes);
+                    if (res.data.length != 0) {
+                        var boxes = prepareCourseBoxes(res.data);
+                        divEducationContainer.append(boxes);
+                        if (res.data.length < 5)
+                            btnLoadMore.hide();
+                    } else {
+                        if (!isLoadMore) {
+                            divEducationContainer.html("");
+                            divEducationContainer.append("<h3>BİTTİ, 'PAGE BUTTON' İPTAL</h3>");
+                        }
+                    }
+
+                    _page.val(_page.val() + 1);
                 }
             });
         }
-
-        /* functions */
         function prepareCourseBoxes(data) {
             var boxes = "";
             for (var i = 0; i < data.length; i++) {
                 var item = data[i];
-                console.log(item);
                 boxes += `<div class="box_list wow">` +
                     `<div class="row no-gutters">` +
                     `<div class="col-lg-5">` +
@@ -106,7 +124,7 @@
 
                     `<small>${item.base.categoryName}</small>` +
                     `<h3>${item.base.name}</h3>` +
-                    ` <p>${item.base.description}</p>` +
+                    `<p>${item.base.description}</p>` +
                     `<div class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(145)</small></div>` +
                     `</div>` +
 
