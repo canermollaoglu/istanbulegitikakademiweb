@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Area("Admin")]
     public class EducationPartController : Controller
     {

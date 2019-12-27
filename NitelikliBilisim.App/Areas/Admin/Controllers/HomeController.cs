@@ -8,7 +8,7 @@ using NitelikliBilisim.App.Lexicographer;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Area("admin")]
     public class HomeController : Controller
     {
