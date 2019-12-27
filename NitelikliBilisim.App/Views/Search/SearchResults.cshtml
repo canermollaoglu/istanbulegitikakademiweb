@@ -50,7 +50,7 @@
     <!-- /filters -->
 
     <div class="container margin_60_35" id="div-education-container">
-        <p class="text-center add_top_60"><button id="btn-load-more" class="btn_1">Daha Fazla Yükle</button></p>
+
     </div>
 
     <partial name="partials/search/_SearchResultsPreFooter" />
@@ -62,14 +62,15 @@
         /* fields */
         var _searchText = $("#_search-text");
         var _page = $("#_page");
+        var btnLoadMoreText = `<p class="text-center add_top_60" id="p-btn-container"><button id="btn-load-more" class="btn_1">Daha Fazla Yükle</button></p>`;
 
         /* elements */
         var divEducationContainer = $("#div-education-container");
-        var btnLoadMore = $("#btn-load-more");
+        //var btnLoadMore = $("#btn-load-more");
 
         /* assignments */
         $(document).ready(document_onLoad);
-        btnLoadMore.on("click", btnLoadMore_onClick);
+        //btnLoadMore.on("click", btnLoadMore_onClick);
 
         /* events */
         function document_onLoad() {
@@ -81,6 +82,10 @@
 
         /* functions */
         function getSearchResults(isLoadMore) {
+            var pBtnContainer = document.getElementById("p-btn-container");
+            if (pBtnContainer)
+                pBtnContainer.remove();
+
             $.ajax({
                 url: `/search-for-courses/${_searchText.val()}/page/${_page.val()}`,
                 method: "get",
@@ -88,16 +93,20 @@
                     if (res.data.length != 0) {
                         var boxes = prepareCourseBoxes(res.data);
                         divEducationContainer.append(boxes);
-                        if (res.data.length < 5)
-                            btnLoadMore.hide();
+
+                        if (res.data.length > 4) {
+                            divEducationContainer.append(btnLoadMoreText);
+                            var btnLoadMore = $("#btn-load-more");
+                            btnLoadMore.on("click", btnLoadMore_onClick);
+                        }
                     } else {
                         if (!isLoadMore) {
                             divEducationContainer.html("");
-                            divEducationContainer.append("<h3>BİTTİ, 'PAGE BUTTON' İPTAL</h3>");
+                            divEducationContainer.append(`<div class="alert alert-info">Ne yazık ki gösterilecek sonuç yok</h3>`);
                         }
                     }
 
-                    _page.val(_page.val() + 1);
+                    _page.val(parseInt(_page.val()) + 1);
                 }
             });
         }
