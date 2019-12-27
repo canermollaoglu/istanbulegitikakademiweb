@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.ViewModels;
+using NitelikliBilisim.Enums;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -18,7 +20,8 @@ namespace NitelikliBilisim.App.Controllers
         {
             var model = new SearchResultsGetVm
             {
-                SearchText = searchText
+                SearchText = searchText,
+                OrderCriterias = EnumSupport.ToKeyValuePair<OrderCriteria>()
             };
             return View(model);
         }

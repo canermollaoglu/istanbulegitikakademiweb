@@ -31,16 +31,16 @@
                 </li>
                 <li>
                     <div class="layout_view">
-                        <a href="courses-grid.html"><i class="icon-th"></i></a>
-                        <a href="#0" class="active"><i class="icon-th-list"></i></a>
+                        <a role="button"><i class="icon-th"></i></a>
+                        <a role="button" class="active"><i class="icon-th-list"></i></a>
                     </div>
                 </li>
-                <li>
+                <li style="min-width: 150px;">
                     <select name="orderby" class="selectbox">
-                        <option value="category">Category</option>
-                        <option value="category 2">Literature</option>
-                        <option value="category 3">Architecture</option>
-                        <option value="category 4">Economy</option>
+                        @foreach (var item in Model.OrderCriterias)
+                        {
+                            <option value="@item.Key">@item.Value</option>
+                        }
                     </select>
                 </li>
             </ul>
@@ -91,7 +91,7 @@
                 method: "get",
                 success: (res) => {
                     if (res.data.length != 0) {
-                        var boxes = prepareCourseBoxes(res.data);
+                        var boxes = prepareCourseBoxesAsList(res.data);
                         divEducationContainer.append(boxes);
 
                         if (res.data.length > 4) {
@@ -110,7 +110,43 @@
                 }
             });
         }
-        function prepareCourseBoxes(data) {
+        function prepareCourseBoxesAsGrid(data) {
+            var boxes = `<div class="row">`;
+            for (var i = 0; i < data.length; i++) {
+                var item = data[i];
+                boxes += 
+                    `<div class="col-xl-4 col-lg-6 col-md-6">` +
+                    `<div class="box_grid wow">` +
+                    `<figure class="block-reveal">` +
+                    `<div class="block-horizzontal"></div>` +
+                    `<a href="#0" class="wish_bt"></a>` +
+
+                    `<a href="course-detail.html"><img src="${item.medias[0].fileUrl}" class="img-fluid" alt=""></a>` +
+
+                    `<div class="price">${item.base.priceText}</div>` +
+                    `<div class="preview"><span>Preview course</span></div>` +
+                    `</figure>` +
+
+                    `<div class="wrapper">` +
+                    `<small>${item.base.categoryName}</small>` +
+                    `<h3>${item.base.name}</h3>` +
+                    `<p>${item.base.description}</p>` +
+                    `<div class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(145)</small></div>` +
+                    `</div>` +
+
+                    `<ul>` +
+                    `<li><i class="icon_clock_alt"></i> ${item.base.daysText} gün (${item.base.hoursPerDayText}) saat</li>` +
+                    `<li><i class="icon_like"></i> 890</li>` +
+                    `<li><a href="course-detail.html">Enroll now</a></li>` +
+                    `</ul>` +
+                    `</div>` +
+                    `</div>`;
+            }
+            boxes += "</div>";
+
+            return boxes;
+        }
+        function prepareCourseBoxesAsList(data) {
             var boxes = "";
             for (var i = 0; i < data.length; i++) {
                 var item = data[i];
@@ -138,7 +174,7 @@
                     `</div>` +
 
                     `<ul>` +
-                    `<li><i class="icon_clock_alt"></i> ${item.base.daysText}/${item.base.hoursPerDayText} gün/saat</li>` +
+                    `<li><i class="icon_clock_alt"></i> ${item.base.daysText} gün (${item.base.hoursPerDayText}) saat</li>` +
                     `<li><i class="icon_like"></i> 890</li>` +
                     `<li><a href="course-detail.html">Kayıt Ol</a></li>` +
                     `</ul>` +
