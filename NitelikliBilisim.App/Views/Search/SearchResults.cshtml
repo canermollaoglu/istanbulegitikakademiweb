@@ -3,7 +3,13 @@
     ViewData["Title"] = "Aram Sonuçları";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+@section styles{
+    <style>
+        a [role="button"] {
+            cursor: pointer;
+        }
+    </style>
+}
 <main>
     <section id="hero_in" class="courses">
         <div class="wrapper">
@@ -15,6 +21,7 @@
 
     <input type="hidden" value="@Model.SearchText" id="_search-text" />
     <input type="hidden" value="0" id="_page" />
+    <input type="hidden" value="@Model.ShowAs" id="_show-as" />
 
     <div class="filters_listing sticky_horizontal">
         <div class="container">
@@ -31,8 +38,16 @@
                 </li>
                 <li>
                     <div class="layout_view">
-                        <a role="button"><i class="icon-th"></i></a>
-                        <a role="button" class="active"><i class="icon-th-list"></i></a>
+                        @if (Model.ShowAs == "grid")
+                        {
+                            <a role="button" class="active" id="btn-show-as-grid"><i class="icon-th"></i></a>
+                            <a role="button" id="btn-show-as-list"><i class="icon-th-list"></i></a>
+                        }
+                        else
+                        {
+                            <a role="button" id="btn-show-as-grid"><i class="icon-th"></i></a>
+                            <a role="button" class="active" id="btn-show-as-list"><i class="icon-th-list"></i></a>
+                        }
                     </div>
                 </li>
                 <li style="min-width: 150px;">
@@ -45,12 +60,15 @@
                 </li>
             </ul>
         </div>
-        <!-- /container -->
     </div>
-    <!-- /filters -->
 
     <div class="container margin_60_35" id="div-education-container">
+        @if (Model.ShowAs == "grid")
+        {
+            <div class="row" id="div-education-container-row">
 
+            </div>
+        }
     </div>
 
     <partial name="partials/search/_SearchResultsPreFooter" />
@@ -62,15 +80,19 @@
         /* fields */
         var _searchText = $("#_search-text");
         var _page = $("#_page");
-        var btnLoadMoreText = `<p class="text-center add_top_60" id="p-btn-container"><button id="btn-load-more" class="btn_1">Daha Fazla Yükle</button></p>`;
+        var _showAs = $("#_show-as");
 
         /* elements */
         var divEducationContainer = $("#div-education-container");
-        //var btnLoadMore = $("#btn-load-more");
+        var divEducationContainerRow = $("#div-education-container-row");
+        var btnLoadMoreText = `<p class="text-center add_top_60" id="p-btn-container"><button id="btn-load-more" class="btn_1">Daha Fazla Yükle</button></p>`;
+        var btnShowAsGrid = $("#btn-show-as-grid");
+        var btnShowAsList = $("#btn-show-as-list");
 
         /* assignments */
         $(document).ready(document_onLoad);
-        //btnLoadMore.on("click", btnLoadMore_onClick);
+        btnShowAsGrid.on("click", btnShowAsGrid_onClick);
+        btnShowAsList.on("click", btnShowAsList_onClick);
 
         /* events */
         function document_onLoad() {
@@ -78,6 +100,12 @@
         }
         function btnLoadMore_onClick() {
             getSearchResults(true);
+        }
+        function btnShowAsGrid_onClick() {
+            location.href = `/arama-sonuclari/${_searchText.val()}?showAs=grid`;
+        }
+        function btnShowAsList_onClick() {
+            location.href = `/arama-sonuclari/${_searchText.val()}?showAs=list`;
         }
 
         /* functions */
@@ -90,11 +118,19 @@
                 url: `/search-for-courses/${_searchText.val()}/page/${_page.val()}`,
                 method: "get",
                 success: (res) => {
-                    if (res.data.length != 0) {
-                        var boxes = prepareCourseBoxesAsList(res.data);
-                        divEducationContainer.append(boxes);
+                    var data = res.data.model;
+                    var showAs = _showAs.val();
 
-                        if (res.data.length > 4) {
+                    if (res.data.model.length != 0) {
+                        if (showAs === "grid") {
+                            var boxes = prepareCourseBoxesAsGrid(data);
+                            divEducationContainerRow.append(boxes);
+                        } else {
+                            var boxes = prepareCourseBoxesAsList(data);
+                            divEducationContainer.append(boxes);
+                        }
+
+                        if (data.length > 4) {
                             divEducationContainer.append(btnLoadMoreText);
                             var btnLoadMore = $("#btn-load-more");
                             btnLoadMore.on("click", btnLoadMore_onClick);
@@ -102,7 +138,7 @@
                     } else {
                         if (!isLoadMore) {
                             divEducationContainer.html("");
-                            divEducationContainer.append(`<div class="alert alert-info">Ne yazık ki gösterilecek sonuç yok</h3>`);
+                            divEducationContainer.append(`<div class="alert alert-info">Ne yazık ki gösterilecek sonuç yok</div>`);
                         }
                     }
 
@@ -111,10 +147,10 @@
             });
         }
         function prepareCourseBoxesAsGrid(data) {
-            var boxes = `<div class="row">`;
+            var boxes = "";
             for (var i = 0; i < data.length; i++) {
                 var item = data[i];
-                boxes += 
+                boxes +=
                     `<div class="col-xl-4 col-lg-6 col-md-6">` +
                     `<div class="box_grid wow">` +
                     `<figure class="block-reveal">` +
@@ -135,14 +171,13 @@
                     `</div>` +
 
                     `<ul>` +
-                    `<li><i class="icon_clock_alt"></i> ${item.base.daysText} gün (${item.base.hoursPerDayText}) saat</li>` +
+                    `<li><i class="icon_clock_alt"></i> ${item.base.daysText} gün (${item.base.hoursPerDayNumeric * item.base.daysNumeric} saat)</li>` +
                     `<li><i class="icon_like"></i> 890</li>` +
                     `<li><a href="course-detail.html">Enroll now</a></li>` +
                     `</ul>` +
                     `</div>` +
                     `</div>`;
             }
-            boxes += "</div>";
 
             return boxes;
         }
@@ -174,7 +209,7 @@
                     `</div>` +
 
                     `<ul>` +
-                    `<li><i class="icon_clock_alt"></i> ${item.base.daysText} gün (${item.base.hoursPerDayText}) saat</li>` +
+                    `<li><i class="icon_clock_alt"></i> ${item.base.daysText} gün (${item.base.hoursPerDayNumeric * item.base.daysNumeric} saat)</li>` +
                     `<li><i class="icon_like"></i> 890</li>` +
                     `<li><a href="course-detail.html">Kayıt Ol</a></li>` +
                     `</ul>` +

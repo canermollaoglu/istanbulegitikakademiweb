@@ -16,12 +16,13 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [Route("arama-sonuclari/{searchText}")]
-        public IActionResult SearchResults(string searchText)
+        public IActionResult SearchResults(string searchText, string showAs = "grid")
         {
             var model = new SearchResultsGetVm
             {
                 SearchText = searchText,
-                OrderCriterias = EnumSupport.ToKeyValuePair<OrderCriteria>()
+                OrderCriterias = EnumSupport.ToKeyValuePair<OrderCriteria>(),
+                ShowAs = showAs
             };
             return View(model);
         }
@@ -32,7 +33,10 @@ namespace NitelikliBilisim.App.Controllers
             var model = _unitOfWork.Education.GetInfiniteScrollSearchResults(searchText, page);
             return Json(new ResponseModel
             {
-                data = model
+                data = new
+                {
+                    model = model
+                }
             });
         }
     }
