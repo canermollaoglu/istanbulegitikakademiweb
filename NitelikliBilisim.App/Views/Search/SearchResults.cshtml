@@ -157,10 +157,10 @@
                     `<div class="block-horizzontal"></div>` +
                     `<a href="#0" class="wish_bt"></a>` +
 
-                    `<a href="course-detail.html"><img src="${item.medias[0].fileUrl}" class="img-fluid" alt=""></a>` +
+                    `<a href="/kurs-detayi/${item.base.id}"><img src="${item.medias[0].fileUrl}" class="img-fluid" alt=""></a>` +
 
                     `<div class="price">${item.base.priceText}</div>` +
-                    `<div class="preview"><span>Preview course</span></div>` +
+                    `<div class="preview"><span><a href="/kurs-detayi/${item.base.id}">Detaylar</a></span></div>` +
                     `</figure>` +
 
                     `<div class="wrapper">` +
@@ -173,7 +173,7 @@
                     `<ul>` +
                     `<li><i class="icon_clock_alt"></i> ${item.base.daysText} gün (${item.base.hoursPerDayNumeric * item.base.daysNumeric} saat)</li>` +
                     `<li><i class="icon_like"></i> 890</li>` +
-                    `<li><a href="course-detail.html">Enroll now</a></li>` +
+                    `<li><a href="course-detail.html">Kayıt Ol</a></li>` +
                     `</ul>` +
                     `</div>` +
                     `</div>`;
@@ -191,9 +191,9 @@
                     `<figure class="block-reveal">` +
                     `<div class="block-horizzontal"></div>` +
 
-                    `<a href="course-detail.html"><img src="${item.medias[0].fileUrl}" class="img-fluid" alt=""></a>` +
+                    `<a href="/kurs-detayi/${item.base.id}"><img src="${item.medias[0].fileUrl}" class="img-fluid" alt=""></a>` +
 
-                    `<div class="preview"><span>Detaylar</span></div>` +
+                    `<div class="preview"><span><a href="/kurs-detayi/${item.base.id}">Detaylar</a></span></div>` +
                     `</figure>` +
                     `</div>` +
                     `<div class="col-lg-7">` +

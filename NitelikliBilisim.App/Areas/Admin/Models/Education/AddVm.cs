@@ -20,6 +20,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Models.Education
         public string Name { get; set; }
         [Required(ErrorMessage = "Açıklama alanı boş geçilemez"), MaxLength(500, ErrorMessage = "Açıklama alanı 500 karakterden fazla olamaz")]
         public string Description { get; set; }
+        [Required(ErrorMessage = "Açıklama (2) alanı boş geçilemez"), MaxLength(500, ErrorMessage = "Açıklama (2) alanı 500 karakterden fazla olamaz")]
+        public string Description2 { get; set; }
         [Required(ErrorMessage = "Fiyat alanı boş geçilemez")]
         public decimal? Price { get; set; }
         [Required(ErrorMessage = "Eğitimin kaç gün süreceği bilgisi boş geçilemez"), Range(1, 255, ErrorMessage = "Eğitim günü 1 günden daha az olamaz")]
