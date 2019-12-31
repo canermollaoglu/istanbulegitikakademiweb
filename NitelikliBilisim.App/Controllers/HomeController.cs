@@ -28,6 +28,12 @@ namespace NitelikliBilisim.App.Controllers
             return View();
         }
 
+        [Route("yakinda")]
+        public IActionResult ComingSoon()
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();
