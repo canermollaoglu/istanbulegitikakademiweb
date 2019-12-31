@@ -17,6 +17,8 @@ namespace NitelikliBilisim.Core.Entities
         public string Name { get; set; }
         [MaxLength(512)]
         public string Description { get; set; }
+        [MaxLength(512)]
+        public string Description2 { get; set; }
         [Column(TypeName = "decimal(8, 2)")]
         public decimal? NewPrice { get; set; }
         [Column(TypeName = "decimal(8, 2)")]

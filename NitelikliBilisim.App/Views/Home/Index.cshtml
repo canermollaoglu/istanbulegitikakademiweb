@@ -14,8 +14,8 @@
                 <form>
                     <div id="custom-search-input">
                         <div class="input-group">
-                            <input type="text" class=" search-query" placeholder="Örnek: Windonws Form Uygulamaları...">
-                            <input type="submit" class="btn_search" value="Eğitim Bul">
+                            <input type="text" class=" search-query" placeholder="Örnek: Windonws Form Uygulamaları..." id="input-index-search">
+                            <input type="submit" class="btn_search" value="Eğitim Bul" id="btn-index-search">
                         </div>
                     </div>
                 </form>
@@ -238,7 +238,7 @@
                     <figure class="block-reveal">
                         <div class="block-horizzontal"></div>
                         @*<img src="img/categories/course_1.jpg" class="img-fluid" alt="">*@
-                    <img src="~/assets/img/course_1.jpg" class="img-fluid" />
+                        <img src="~/assets/img/course_1.jpg" class="img-fluid" />
                         <div class="info">
                             <small><i class="ti-layers"></i>23 Programmes</small>
                             <h3>Sistem ve Ağ Yönetimi</h3>
@@ -401,3 +401,21 @@
     </div>
     <!--/call_section-->
 </main>
+
+@section postScripts{
+    <script>
+        var btnIndexSearch = $("#btn-index-search");
+        var inputIndexSearch = $("#input-index-search");
+
+        btnIndexSearch.on("click", (e) => {
+            e.preventDefault();
+            var tagFormatter = new AppWide.TagFormatter();
+            var searchText = tagFormatter.formatForTag(inputIndexSearch.val());
+
+            if (!searchText || searchText === "")
+                return;
+
+            location.href = `/arama-sonuclari/${searchText}`;
+        });
+    </script>
+}

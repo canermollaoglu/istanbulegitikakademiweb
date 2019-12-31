@@ -286,18 +286,66 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 Base = new EducationBaseVm
                 {
+                    Id = x.Education.Id,
                     Name = x.Education.Name,
                     Description = x.Education.Description,
                     CategoryName = x.CategoryName,
                     Level = EnumSupport.GetDescription(x.Education.Level),
                     PriceText = x.Education.NewPrice.Value.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
                     HoursPerDayText = x.Education.HoursPerDay.ToString(),
-                    DaysText = x.Education.Days.ToString()
+                    DaysText = x.Education.Days.ToString(),
+                    DaysNumeric = x.Education.Days,
+                    HoursPerDayNumeric = x.Education.HoursPerDay
                 },
                 Medias = new List<EducationMediaVm> { new EducationMediaVm { EducationId = x.Education.Id, FileUrl = x.EducationPreviewMedia.FileUrl } }
             }).ToList();
 
             return data;
+        }
+
+        public EducationVm GetEducation(Guid id)
+        {
+            var education = _context.Educations.FirstOrDefault(x => x.Id == id);
+            var model = new EducationVm
+            {
+                Base = new EducationBaseVm
+                {
+                    Id = education.Id,
+                    Name = education.Name,
+                    CategoryName = _context.EducationCategories.FirstOrDefault(x => x.Id == education.CategoryId).Name,
+                    DaysNumeric = education.Days,
+                    DaysText = education.Days.ToString(),
+                    HoursPerDayNumeric = education.HoursPerDay,
+                    HoursPerDayText = education.HoursPerDay.ToString(),
+                    Description = education.Description,
+                    Description2 = education.Description2,
+                    PriceNumeric = education.NewPrice.GetValueOrDefault(0),
+                    Level = EnumSupport.GetDescription(education.Level),
+                    PriceText = education.NewPrice.GetValueOrDefault(0).ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"))
+                },
+                Gains = _context.EducationGains.Where(x => x.EducationId == id)
+                .Select(x => new EducationGainVm
+                {
+                    EducationId = id,
+                    Gain = x.Gain
+                }).ToList(),
+                Medias = _context.EducationMedias.Where(x => x.EducationId == id)
+                .Select(x => new EducationMediaVm
+                {
+                    EducationId = id,
+                    FileUrl = x.FileUrl
+                }).ToList(),
+                Parts = _context.EducationParts.Where(x => x.EducationId == id).OrderBy(o => o.Order)
+                .Select(x => new EducationPartVm
+                {
+                    EducationId = id,
+                    Duration = x.Duration,
+                    Order = x.Order,
+                    Title = x.Title
+                }).ToList()
+            };
+
+            return model;
         }
     }
 }

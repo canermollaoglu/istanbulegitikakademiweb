@@ -1,9 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.ViewModels;
+using NitelikliBilisim.Enums;
 
 namespace NitelikliBilisim.App.Controllers
 {
+    [Authorize]
     public class SearchController : Controller
     {
         private readonly UnitOfWork _unitOfWork;
@@ -13,11 +18,13 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [Route("arama-sonuclari/{searchText}")]
-        public IActionResult SearchResults(string searchText)
+        public IActionResult SearchResults(string searchText, string showAs = "grid")
         {
             var model = new SearchResultsGetVm
             {
-                SearchText = searchText
+                SearchText = searchText,
+                OrderCriterias = EnumSupport.ToKeyValuePair<OrderCriteria>(),
+                ShowAs = showAs
             };
             return View(model);
         }
@@ -26,7 +33,13 @@ namespace NitelikliBilisim.App.Controllers
         public IActionResult SearchEducation(string searchText, int page = 0)
         {
             var model = _unitOfWork.Education.GetInfiniteScrollSearchResults(searchText, page);
-            return Json(model);
+            return Json(new ResponseModel
+            {
+                data = new
+                {
+                    model = model
+                }
+            });
         }
     }
 }

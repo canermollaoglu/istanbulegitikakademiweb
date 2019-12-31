@@ -10,11 +10,13 @@
 
             btnSearch.on("click", () => {
                 var inputSearchBox = $("#input-hidden-search");
+                
                 var tagFormatter = new AppWide.TagFormatter();
                 var searchText = tagFormatter.formatForTag(inputSearchBox.val());
 
                 if (!searchText || searchText === "")
                     return;
+
                 location.href = `/arama-sonuclari/${searchText}`;
             });
         }

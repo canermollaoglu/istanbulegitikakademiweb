@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Controllers.Base;
@@ -25,14 +26,23 @@ namespace NitelikliBilisim.App.Controllers
 
         public IActionResult Index()
         {
+            return Redirect("/yakinda");
+            //return View();
+        }
+
+        [Route("yakinda")]
+        public IActionResult ComingSoon()
+        {
             return View();
         }
 
+        [Authorize]
         public IActionResult Privacy()
         {
             return View();
         }
 
+        [Authorize]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

@@ -38,6 +38,7 @@
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="wwwroot\assets\font\area-admin\" />
     <Folder Include="wwwroot\assets\img\" />
+    <Folder Include="wwwroot\coming-soon\" />
     <Folder Include="wwwroot\uploads\educator-photos\" />
     <Folder Include="wwwroot\uploads\media-items\" />
   </ItemGroup>
