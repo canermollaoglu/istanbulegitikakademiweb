@@ -15,6 +15,7 @@ using NitelikliBilisim.Data;
 using System;
 using System.Globalization;
 using System.IO;
+using System.Net;
 
 namespace NitelikliBilisim.App
 {
@@ -72,17 +73,16 @@ namespace NitelikliBilisim.App
 
             app.UseDeveloperExceptionPage();
             app.UseDatabaseErrorPage();
-            //if (env.IsDevelopment())
-            //{
-            //    app.UseDeveloperExceptionPage();
-            //    app.UseDatabaseErrorPage();
-            //}
-            //else
-            //{
-            //    app.UseExceptionHandler("/Home/Error");
-            //    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-            //    app.UseHsts();
-            //}
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/yakinda");
+                app.UseHsts();
+            }
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

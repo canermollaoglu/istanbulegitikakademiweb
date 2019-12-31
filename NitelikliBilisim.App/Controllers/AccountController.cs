@@ -16,6 +16,7 @@ using NitelikliBilisim.Core.ViewModels.Account;
 
 namespace NitelikliBilisim.App.Controllers
 {
+    [Authorize]
     public class AccountController : BaseController
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -75,6 +76,7 @@ namespace NitelikliBilisim.App.Controllers
 
         public async Task<IActionResult> Login(string returnUrl = null)
         {
+            return Redirect("/yakinda");
             ViewBag.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             return View(new LoginViewModel() { ReturnUrl = returnUrl });
         }

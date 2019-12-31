@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.Business.UoW;
 
 namespace NitelikliBilisim.App.Controllers
 {
+    [Authorize]
     public class CourseController : Controller
     {
         private readonly UnitOfWork _unitOfWork;
