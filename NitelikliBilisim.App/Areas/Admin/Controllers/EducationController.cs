@@ -16,7 +16,7 @@ using NitelikliBilisim.Core.Enums;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Area("Admin")]
     public class EducationController : Controller
     {

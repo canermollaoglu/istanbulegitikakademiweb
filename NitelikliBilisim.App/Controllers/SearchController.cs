@@ -8,6 +8,7 @@ using NitelikliBilisim.Enums;
 
 namespace NitelikliBilisim.App.Controllers
 {
+    [Authorize]
     public class SearchController : Controller
     {
         private readonly UnitOfWork _unitOfWork;
