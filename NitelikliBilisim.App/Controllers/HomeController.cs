@@ -26,8 +26,8 @@ namespace NitelikliBilisim.App.Controllers
 
         public IActionResult Index()
         {
-            //return Redirect("/yakinda");
-            return View();
+            return Redirect("/yakinda");
+            //return View();
         }
 
         [Route("yakinda")]
