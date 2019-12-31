@@ -8,7 +8,6 @@ using NitelikliBilisim.Business.UoW;
 
 namespace NitelikliBilisim.App.Controllers
 {
-    [Authorize]
     public class CourseController : Controller
     {
         private readonly UnitOfWork _unitOfWork;

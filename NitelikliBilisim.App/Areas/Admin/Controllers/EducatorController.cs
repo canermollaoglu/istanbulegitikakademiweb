@@ -18,7 +18,7 @@ using NitelikliBilisim.Support.Text;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Area("Admin")]
     public class EducatorController : Controller
     {
