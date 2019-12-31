@@ -335,7 +335,7 @@ namespace NitelikliBilisim.Business.Repositories
                     EducationId = id,
                     FileUrl = x.FileUrl
                 }).ToList(),
-                Parts = _context.EducationParts.Where(x => x.EducationId == id)
+                Parts = _context.EducationParts.Where(x => x.EducationId == id).OrderBy(o => o.Order)
                 .Select(x => new EducationPartVm
                 {
                     EducationId = id,
