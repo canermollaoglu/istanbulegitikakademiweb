@@ -26,8 +26,8 @@ namespace NitelikliBilisim.App.Controllers
 
         public IActionResult Index()
         {
-            return Redirect("/yakinda");
-            //return View();
+            //return Redirect("/yakinda");
+            return View();
         }
 
         [Route("yakinda")]
@@ -36,13 +36,13 @@ namespace NitelikliBilisim.App.Controllers
             return View();
         }
 
-        [Authorize]
+        //[Authorize]
         public IActionResult Privacy()
         {
             return View();
         }
 
-        [Authorize]
+        //[Authorize]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

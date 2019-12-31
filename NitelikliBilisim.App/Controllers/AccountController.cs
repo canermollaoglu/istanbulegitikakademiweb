@@ -16,7 +16,7 @@ using NitelikliBilisim.Core.ViewModels.Account;
 
 namespace NitelikliBilisim.App.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class AccountController : BaseController
     {
         private readonly UserManager<ApplicationUser> _userManager;
