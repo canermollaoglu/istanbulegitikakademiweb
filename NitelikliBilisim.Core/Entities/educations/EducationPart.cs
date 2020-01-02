@@ -20,5 +20,9 @@ namespace NitelikliBilisim.Core.Entities
         [ForeignKey("Education")]
         public Guid EducationId { get; set; }
         public virtual Education Education { get; set; }
+
+        [ForeignKey("EducationPart")]
+        public Guid? BasePartId { get; set; }
+        public virtual EducationPart BasePart { get; set; }
     }
 }
