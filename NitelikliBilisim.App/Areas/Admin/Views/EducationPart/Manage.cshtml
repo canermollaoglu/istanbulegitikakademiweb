@@ -23,6 +23,15 @@
                     <input type="hidden" value="@Model.EducationId" id="_education-id" />
                     <table class="table table-borderless">
                         <tr>
+                            <td>
+                                <select id="select-base-parts">
+                                    <option value="null">Başlık</option>
+                                    @foreach (var item in Model.BaseParts)
+                                    {
+                                        <option value="@item.Id">@item.Title</option>
+                                    }
+                                </select>
+                            </td>
                             <td><input type="text" value="" class="form-control" id="input-order" placeholder="Parçanın sırası" /></td>
                             <td><input type="text" value="" class="form-control" id="input-title" placeholder="Parça başlığı" /></td>
                             <td><input type="text" value="" class="form-control" id="input-duration" placeholder="Süre (dakika)" /></td>

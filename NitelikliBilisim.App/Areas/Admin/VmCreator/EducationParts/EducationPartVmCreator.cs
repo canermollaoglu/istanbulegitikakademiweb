@@ -18,10 +18,18 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.EducationParts
         public ManageVm CreateManageVm(Guid educationId)
         {
             var education = _unitOfWork.Education.GetById(educationId);
+            var baseParts = _unitOfWork.EducationPart.Get(x => x.EducationId == educationId && x.BasePartId == null)
+                .Select(x => new _EducationPart
+                {
+                    Id = x.Id,
+                    EducationId = x.EducationId,
+                    Title = x.Title
+                }).ToList();
             return new ManageVm
             {
                 EducationId = education.Id,
-                EducationName = education.Name
+                EducationName = education.Name,
+                BaseParts = baseParts
             };
         }
 
