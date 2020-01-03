@@ -28,6 +28,7 @@ namespace NitelikliBilisim.App.Controllers
             this._signInManager = signInManager;
         }
 
+        [Route("kayit-ol")]
         public IActionResult Register()
         {
             return View();
@@ -74,9 +75,10 @@ namespace NitelikliBilisim.App.Controllers
             return View(model);
         }
 
+        [Route("giris-yap")]
         public async Task<IActionResult> Login(string returnUrl = null)
         {
-            return Redirect("/yakinda");
+            //return Redirect("/yakinda");
             ViewBag.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             return View(new LoginViewModel() { ReturnUrl = returnUrl });
         }
