@@ -45,13 +45,32 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.EducationParts
                     EducationId = item.EducationId,
                     Title = item.Title,
                     Order = item.Order,
-                    Duration = item.Duration
+                    Duration = item.Duration,
+                    BasePartId = item.BasePartId,
+                    BasePartTitle = item.BasePartId != null ? parts.FirstOrDefault(x => x.Id == item.BasePartId).Title : "Üst Başlık"
                 });
 
             return new GetEducationPartsVm
             {
                 EducationParts = educationParts
             };
+        }
+
+        public List<_EducationPart> CreateBaseParts(Guid educationId)
+        {
+            var parts = _unitOfWork.EducationPart.Get(x => x.EducationId == educationId && x.BasePartId == null, x => x.OrderBy(o => o.Order));
+
+            var vm = new List<_EducationPart>();
+            foreach (var item in parts)
+                vm.Add(new _EducationPart
+                {
+                    Id = item.Id,
+                    EducationId = item.EducationId,
+                    Title = item.Title,
+                    Order = item.Order
+                });
+
+            return vm;
         }
     }
 }

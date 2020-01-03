@@ -32,9 +32,11 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_parts
     public class _EducationPart
     {
         public Guid Id { get; set; }
+        public Guid? BasePartId { get; set; }
         public Guid EducationId { get; set; }
         public string Title { get; set; }
         public byte Order { get; set; }
         public byte Duration { get; set; }
+        public string BasePartTitle { get; set; }
     }
 }

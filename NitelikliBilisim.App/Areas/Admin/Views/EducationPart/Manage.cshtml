@@ -7,6 +7,7 @@
 @section styles{
     <link href="~/assets/css/area-admin/dataTables.bootstrap4.css" rel="stylesheet" />
     <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
 }
 @section alerts{
     <partial name="partials/_Alert" />
@@ -17,27 +18,39 @@
     </div>
     <div class="card-body">
         <div class="row">
-            <div class="col-md-8 offset-md-2">
+            <div class="col-md-12">
                 <form id="form-add-education-parts">
                     @Html.AntiForgeryToken()
                     <input type="hidden" value="@Model.EducationId" id="_education-id" />
-                    <table class="table table-borderless">
-                        <tr>
-                            <td>
-                                <select id="select-base-parts">
-                                    <option value="null">Başlık</option>
-                                    @foreach (var item in Model.BaseParts)
-                                    {
-                                        <option value="@item.Id">@item.Title</option>
-                                    }
-                                </select>
-                            </td>
-                            <td><input type="text" value="" class="form-control" id="input-order" placeholder="Parçanın sırası" /></td>
-                            <td><input type="text" value="" class="form-control" id="input-title" placeholder="Parça başlığı" /></td>
-                            <td><input type="text" value="" class="form-control" id="input-duration" placeholder="Süre (dakika)" /></td>
-                            <td><button id="btn-add" type="button" class="btn btn-success" style="cursor:pointer;"><i class="fa fa-plus"></i></button></td>
-                        </tr>
-                    </table>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label>Üst Başlık</label>
+                            <select id="select-base-parts" class="form-control">
+                                <option value="">Üst Başlık</option>
+                                @foreach (var item in Model.BaseParts)
+                                {
+                                    <option value="@item.Id">@item.Title</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label>Parçanın sırası</label>
+                            <input type="text" value="" class="form-control" id="input-order" placeholder="Parçanın sırası" />
+                        </div>
+                        <div class="col-md-3">
+                            <label>Parça Başlığı</label>
+                            <input type="text" value="" class="form-control" id="input-title" placeholder="Parça başlığı" />
+                        </div>
+                        <div class="col-md-3">
+                            <label>Süre (dk.)</label>
+                            <input type="text" value="" class="form-control" id="input-duration" placeholder="Süre (dakika)" />
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:1%;margin-bottom:1%">
+                        <div class="offset-md-11 col-md-1">
+                            <button id="btn-add" type="button" class="btn btn-success form-control" style="cursor:pointer;"><i class="fa fa-plus"></i></button>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
@@ -71,6 +84,7 @@
     <div class="card-footer small text-muted">Veri tarihi: @DateTime.Now</div>
 </div>
 @section postScripts{
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
     <script src="~/assets/js/area-admin/jquery.dataTables.js"></script>
     <script src="~/assets/js/area-admin/dataTables.bootstrap4.js"></script>
     <script src="~/js/sup/alert-sup.js"></script>
@@ -91,15 +105,18 @@
 
         /* events */
         function document_onLoad() {
+            $("#select-base-parts").select2();
             getEducationParts();
         }
         function btnAdd_onClick() {
+            var selectBaseParts = document.getElementById("select-base-parts");
             btnAdd.off("click");
             var data = {
                 EducationId: _educationId,
                 Order: $("#input-order").val(),
                 Title: $("#input-title").val(),
-                Duration: $("#input-duration").val()
+                Duration: $("#input-duration").val(),
+                BasePartId: selectBaseParts.options[selectBaseParts.selectedIndex].value
             };
             var tokenVerifier = new SecuritySupport.TokenVerifier();
             data = tokenVerifier.addToken("form-add-education-parts", data);
@@ -116,6 +133,7 @@
                             message: "Kayıt işlemi başarılı"
                         });
                         btnAdd.on("click", btnAdd_onClick);
+                        refreshBaseParts();
                     } else {
                         resultAlert.display({
                             success: false,
@@ -143,6 +161,7 @@
                             success: true,
                             message: "Kayıt başarıyla silinmiştir"
                         });
+                        refreshBaseParts();
                     } else {
                         resultAlert.display({
                             success: false,
@@ -183,7 +202,7 @@
                     content +=
                         `<tr>` +
                         `<td>${element.order}</td>` +
-                        `<td>${element.title}</td>` +
+                        `<td>[<i>${element.basePartTitle}</i>] ${element.title}</td>` +
                         `<td>${element.duration} dk.</td>` +
                         `<td>` +
                         `<div class="btn-group">` +
@@ -209,6 +228,33 @@
                 cancelText: "Hayır, iptal et",
                 confirmText: "Evet, eminim",
                 onConfirmClick: confirm_onClick
+            });
+        }
+        function refreshBaseParts() {
+            var selectBaseParts = $("#select-base-parts");
+            selectBaseParts.html("");
+
+            $.ajax({
+                url: `/admin/get-base-parts/${_educationId}`,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        var data = res.data;
+                        selectBaseParts.append(`<option value="">Üst Başlık</option>`);
+                        var options = "";
+                        for (var i = 0; i < data.length; i++) {
+                            var item = data[i];
+                            options += `<option value="${item.id}">${item.title}</option>`;
+                        }
+                        selectBaseParts.append(options);
+                        selectBaseParts[0].selectedIndex = 0;
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors
+                        });
+                    }
+                }
             });
         }
     </script>
