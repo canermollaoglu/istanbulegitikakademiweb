@@ -333,17 +333,51 @@ namespace NitelikliBilisim.Business.Repositories
                 .Select(x => new EducationMediaVm
                 {
                     EducationId = id,
-                    FileUrl = x.FileUrl
-                }).ToList(),
-                Parts = _context.EducationParts.Where(x => x.EducationId == id).OrderBy(o => o.Order)
-                .Select(x => new EducationPartVm
-                {
-                    EducationId = id,
-                    Duration = x.Duration,
-                    Order = x.Order,
-                    Title = x.Title
+                    FileUrl = x.FileUrl,
+                    MediaType = x.MediaType
                 }).ToList()
             };
+
+            var parts = _context.EducationParts.Where(x => x.EducationId == id)
+                .OrderBy(o => o.Order)
+                .ToList();
+
+            var partVms = new List<EducationPartVm>();
+            foreach (var item in parts.Where(x => x.BasePartId == null))
+                partVms.Add(new EducationPartVm
+                {
+                    Id = item.Id,
+                    EducationId = item.EducationId,
+                    BasePartId = item.BasePartId,
+                    Title = item.Title,
+                    Duration = parts.Where(x => x.BasePartId == item.Id).Sum(x => x.Duration),
+                    Order = item.Order,
+                    SubParts = parts.Where(y => y.BasePartId == item.Id).Select(z => new EducationPartVm
+                    {
+                        Id = z.Id,
+                        EducationId = z.EducationId,
+                        BasePartId = z.BasePartId,
+                        Title = z.Title,
+                        Order = z.Order,
+                        Duration = z.Duration,
+                        SubParts = null
+                    }).ToList()
+                });
+
+            model.Parts = partVms;
+
+            int totalPartCount = 0;
+            int totalDurationCount = 0;
+            foreach (var item in partVms)
+            {
+                if (item.SubParts != null)
+                {
+                    totalPartCount += item.SubParts.Count;
+                    totalDurationCount += item.SubParts.Sum(x => x.Duration);
+                }
+            }
+            model.TotalDuration = totalDurationCount;
+            model.TotalPartCount = totalPartCount;
 
             return model;
         }
