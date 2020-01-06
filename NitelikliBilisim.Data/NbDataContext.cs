@@ -78,10 +78,10 @@ namespace NitelikliBilisim.Data
         }
 
         public DbSet<AutoHistory> DataHistories { get; set; }
-        public DbSet<Bridge_EducationTag> Bridge_EducationTags { get; set; }
         public DbSet<Education> Educations { get; set; }
         public DbSet<EducationCategory> EducationCategories { get; set; }
         public DbSet<EducationTag> EducationTags { get; set; }
+        public DbSet<Bridge_EducationTag> Bridge_EducationTags { get; set; }
         public DbSet<EducationComment> EducationComments { get; set; }
         public DbSet<EducationMedia> EducationMedias { get; set; }
         public DbSet<EducationPart> EducationParts { get; set; }
