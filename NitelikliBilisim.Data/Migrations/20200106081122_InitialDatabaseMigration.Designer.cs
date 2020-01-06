@@ -10,8 +10,8 @@ using NitelikliBilisim.Data;
 namespace NitelikliBilisim.Data.Migrations
 {
     [DbContext(typeof(NbDataContext))]
-    [Migration("20191230143321_EducationDescription2ColumnAddition")]
-    partial class EducationDescription2ColumnAddition
+    [Migration("20200106081122_InitialDatabaseMigration")]
+    partial class InitialDatabaseMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -406,6 +406,9 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<string>("Gain")
                         .HasMaxLength(512);
 
+                    b.Property<string>("Title")
+                        .HasMaxLength(128);
+
                     b.Property<DateTime?>("UpdatedDate");
 
                     b.Property<string>("UpdatedUser")
@@ -452,6 +455,8 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<Guid?>("BasePartId");
+
                     b.Property<DateTime>("CreatedDate");
 
                     b.Property<string>("CreatedUser")
@@ -472,6 +477,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasMaxLength(128);
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BasePartId");
 
                     b.HasIndex("EducationId");
 
@@ -818,6 +825,10 @@ namespace NitelikliBilisim.Data.Migrations
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationPart", b =>
                 {
+                    b.HasOne("NitelikliBilisim.Core.Entities.EducationPart", "BasePart")
+                        .WithMany()
+                        .HasForeignKey("BasePartId");
+
                     b.HasOne("NitelikliBilisim.Core.Entities.Education", "Education")
                         .WithMany()
                         .HasForeignKey("EducationId")
