@@ -8,6 +8,11 @@
     <partial name="partials/_BaseAssetsHeader" />
 
     @RenderSection("styles", required: false)
+    <style>
+        #btn-cookie-agree, #btn-cookie-privacy-policy {
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <partial name="partials/_LayoutHeader" />
@@ -18,10 +23,26 @@
 
     <partial name="partials/_BaseAssetsBody" />
 
+    <partial name="partials/_LayoutCookieConsent" />
+
     <script src="~/js/layout/layout-search.js"></script>
+    <script src="~/js/lib/cookie-agreement.js"></script>
     <script>
-        var searcher = new AppWide.Searcher();
-        searcher.initialize();
+        var __cookieBar = $("#cookie-bar");
+        var __envoy = new StorageSupport.Envoy();
+        var __searcher = new AppWide.Searcher();
+        var __btnCookieAgree = $("#btn-cookie-agree");
+
+        __btnCookieAgree.on("click", () => {
+            __envoy.createRegisterForm();
+        });
+
+        __searcher.initialize();
+
+        if (__envoy.isStorageExists("register")) {
+            __cookieBar.hide();
+        }
+
     </script>
     @RenderSection("postScripts", required: false)
 </body>
