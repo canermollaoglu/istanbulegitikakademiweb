@@ -3851,7 +3851,7 @@ section#reviews {
 }
 
 #admission_bg {
-  background: url(http://via.placeholder.com/1600x1067/ccc/fff/bg_admission.jpg) center center no-repeat fixed;
+  background: url(/assets/img/slide_2.jpg) center center no-repeat fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
