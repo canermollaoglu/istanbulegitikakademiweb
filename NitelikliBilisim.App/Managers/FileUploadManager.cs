@@ -62,6 +62,7 @@ namespace NitelikliBilisim.App.Managers
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return null;
             }
 
