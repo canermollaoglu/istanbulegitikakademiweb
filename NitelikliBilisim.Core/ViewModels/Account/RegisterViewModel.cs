@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace NitelikliBilisim.Core.ViewModels.Account
@@ -33,5 +34,9 @@ namespace NitelikliBilisim.Core.ViewModels.Account
         [Display(Name = "Şifre Tekrar")]
         [Compare("Password", ErrorMessage = "Şifreler uyuşmuyor")]
         public string ConfirmPassword { get; set; }
+
+        public bool IsNbuyStudent { get; set; }
+        public int EducationCenter { get; set; }
+        public DateTime? StartedAt { get; set; }
     }
 }

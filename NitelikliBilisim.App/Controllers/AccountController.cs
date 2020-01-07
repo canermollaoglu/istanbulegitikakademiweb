@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
@@ -9,10 +10,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Models;
+using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Services;
 using NitelikliBilisim.Core.ViewModels.Account;
+using NitelikliBilisim.Enums;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -31,15 +34,20 @@ namespace NitelikliBilisim.App.Controllers
         [Route("kayit-ol")]
         public IActionResult Register()
         {
-            return View();
+            var model = EnumSupport.ToKeyValuePair<EducationCenter>();
+            return View(model);
         }
 
-        [HttpPost]
+        [HttpPost, Route("kayit-ol")]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = ModelStateUtil.GetErrors(ModelState)
+                });
             }
 
             var user = new ApplicationUser()
@@ -59,20 +67,22 @@ namespace NitelikliBilisim.App.Controllers
                         : IdentityRoleList.User.ToString());
                 if (result.Succeeded)
                 {
-                    //TODO mail gönder, 
-                    return RedirectToAction("Index", "Home");
+                    //TODO mail gönder
                 }
-
-                var messages = string.Join(", ", result.Errors.Select(x => x.Description));
-                ModelState.AddModelError(string.Empty, messages);
             }
             else
             {
-                var messages = string.Join(", ", result.Errors.Select(x => x.Description));
-                ModelState.AddModelError(string.Empty, messages);
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Kullanıcı oluşturulurken bir hata oluştu" }
+                });
             }
 
-            return View(model);
+            return Json(new ResponseModel
+            {
+                isSuccess = true
+            });
         }
 
         [Route("giris-yap")]
@@ -223,7 +233,7 @@ namespace NitelikliBilisim.App.Controllers
             {
                 ModelState.AddModelError(string.Empty, error.Description);
             }
-            return View(nameof(ExternalLogin),model);
+            return View(nameof(ExternalLogin), model);
         }
         [Authorize]
         public async Task<IActionResult> Logout()

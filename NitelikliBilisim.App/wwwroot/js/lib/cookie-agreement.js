@@ -3,15 +3,7 @@
 
     var Envoy = (function () {
         function Envoy() {
-            this.registerForm = {
-                name: "",
-                surname: "",
-                email: "",
-                phone: "",
-                address: "",
-                city: "",
-                country: ""
-            };
+
         }
 
         Envoy.prototype.isStorageExists = function (storageName) {
@@ -24,31 +16,39 @@
         }
 
         Envoy.prototype.createRegisterForm = function () {
-            localStorage.setItem("register", JSON.stringify(this.registerForm));
+            localStorage.setItem("register", JSON.stringify({
+                name: "",
+                surname: "",
+                email: "",
+                phone: "",
+                age: "",
+                gender: "",
+                isNbuy: ""
+            }));
         }
 
         Envoy.prototype.setRegisterForm = function (registerForm) {
+            var stored = {};
             if (registerForm.name)
-                this.registerForm.name = registerForm.name;
+                stored.name = registerForm.name;
             if (registerForm.surname)
-                this.registerForm.surname = registerForm.surname;
+                stored.surname = registerForm.surname;
             if (registerForm.email)
-                this.registerForm.email = registerForm.email;
+                stored.email = registerForm.email;
             if (registerForm.phone)
-                this.registerForm.phone = registerForm.phone;
-            if (registerForm.address)
-                this.registerForm.address = registerForm.address;
-            if (registerForm.city)
-                this.registerForm.city = registerForm.city;
-            if (registerForm.country)
-                this.registerForm.country = registerForm.country;
-
-            localStorage.setItem("register", JSON.stringify(this.registerForm));
+                stored.phone = registerForm.phone;
+            if (registerForm.age)
+                stored.age = registerForm.age;
+            if (registerForm.gender)
+                stored.gender = registerForm.gender;
+            if (registerForm.isNbuy)
+                stored.isNbuy = registerForm.isNbuy;
+            localStorage.setItem("register", JSON.stringify(stored));
         }
 
         Envoy.prototype.getRegisterForm = function () {
-            this.registerForm = JSON.parse(localStorage.getItem("register"));
-            return this.registerForm;
+            var stored = JSON.parse(localStorage.getItem("register"));
+            return stored;
         }
 
         return Envoy;
