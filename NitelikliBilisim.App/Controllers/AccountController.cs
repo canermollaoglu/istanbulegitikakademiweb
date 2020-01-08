@@ -99,11 +99,13 @@ namespace NitelikliBilisim.App.Controllers
         public async Task<IActionResult> Login(string returnUrl = null)
         {
             //return Redirect("/yakinda");
+            if (HttpContext.User.Identity.IsAuthenticated)
+                return Redirect("/");
             ViewBag.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             return View(new LoginViewModel() { ReturnUrl = returnUrl });
         }
 
-        [HttpPost]
+        [HttpPost, Route("giris-yap")]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (!ModelState.IsValid)
@@ -245,7 +247,7 @@ namespace NitelikliBilisim.App.Controllers
             }
             return View(nameof(ExternalLogin), model);
         }
-        [Authorize]
+        [Authorize, Route("cikis-yap")]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
