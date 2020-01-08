@@ -19,7 +19,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Commons", "Commons", "{A32C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NitelikliBilisim.Encryption", "NitelikliBilisim.Encryption\NitelikliBilisim.Encryption.csproj", "{492C2CA8-5838-4D04-B28F-D67E434AC225}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NitelikliBilisim.Support", "NitelikliBilisim.Support\NitelikliBilisim.Support.csproj", "{111ECE42-74EB-42B4-A02A-13A4D9EFA7F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NitelikliBilisim.Support", "NitelikliBilisim.Support\NitelikliBilisim.Support.csproj", "{111ECE42-74EB-42B4-A02A-13A4D9EFA7F0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NewFolder1", "NewFolder1", "{4B5FF3D9-CFFF-4813-85B6-6EFE763ADDC5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
