@@ -1,4 +1,4 @@
-﻿@model NitelikliBilisim.Core.ViewModels.Account.RegisterViewModel
+﻿@model NitelikliBilisim.App.Models.Account.RegisterGetVm
 
 @{
     ViewBag.Title = "Kaydol";
@@ -27,13 +27,10 @@
     <link href="~/assets/css/bootstrap.min.css" rel="stylesheet">
     <link href="~/assets/css/style.css" rel="stylesheet">
     <link href="~/assets/css/vendors.css" rel="stylesheet">
-    <link href="~/assets/css/icon_fonts/css/all_icons.min.css" rel="stylesheet">
+    <link href="~/assets/css/all_icons.min.css" rel="stylesheet">
 
     <link href="~/assets/css/grey.css" rel="stylesheet" />
     <link href="~/assets/css/wizard.css" rel="stylesheet" />
-
-    @*<link href="css/custom.css" rel="stylesheet">*@
-
 </head>
 
 <body id="admission_bg">
@@ -44,7 +41,7 @@
 
     <div id="form_container" class="clearfix">
         <figure>
-            <a href="index.html"><img src="img/logo.png" width="149" height="42" data-retina="true" alt=""></a>
+            <a href="/"><img src="img/logo.png" width="149" height="42" data-retina="true" alt=""></a>
         </figure>
         <div id="wizard_container">
             <div id="top-wizard">
@@ -58,118 +55,114 @@
                     <div class="step">
                         <div id="intro">
                             <figure><img src="~/assets/img/wizard_intro_icon.svg" alt=""></figure>
-                            <h1>Admission Apply</h1>
+                            <h1>Kayıt Formu</h1>
                             <p>Exerci tibique eum cu, paulo appellantur et mei, ea partem urbanitas vim. His ei iusto nonumes atomorum. Mentitum pericula in nec. In eos habemus tibique. </p>
                             <p><strong>Mel erant legere iuvaret ea. At eum doctus voluptatibus, has id veritus constituam.</strong></p>
                         </div>
                     </div>
 
+                    @* ADIM 1 *@
                     <div class="step">
-                        <h3 class="main_question"><strong>1/3</strong>Please fill with your details</h3>
+                        <h3 class="main_question"><strong>1/3</strong>Lütfen detayları doldurunuz</h3>
                         <div class="form-group">
-                            <input type="text" name="firstname" class="form-control required" placeholder="First name">
+                            <input type="text" name="firstname" class="form-control" placeholder="İsim" id="input-name">
                         </div>
                         <div class="form-group">
-                            <input type="text" name="lastname" class="form-control required" placeholder="Last name">
+                            <input type="text" name="lastname" class="form-control" placeholder="Soyisim" id="input-surname">
                         </div>
                         <div class="form-group">
-                            <input type="email" name="email" class="form-control required" placeholder="Your Email">
+                            <input type="email" name="email" class="form-control" placeholder="E-Posta" id="input-email">
                         </div>
                         <div class="form-group">
-                            <input type="text" name="telephone" class="form-control" placeholder="Your Telephone">
+                            <input type="text" name="telephone" class="form-control" placeholder="Telefon" id="input-phone">
                         </div>
-                        <div class="form-group">
-                            <input type="text" name="age" class="form-control" placeholder="Age">
-                        </div>
-                        <div class="form-group select">
-                            <div class="styled-select">
-                                <select class="required" name="education_apply" id="education_apply">
-                                    <option value="" selected="">Select your education level</option>
-                                    <option value="Less than high school">Less than high school</option>
-                                    <option value="High school diploma or equivalent">High school diploma or equivalent</option>
-                                    <option value="Some college no degree">Some college, no degree</option>
-                                    <option value="Bachelor degree">Bachelor’s degree</option>
-                                    <option value="Doctoral or professional degree">Doctoral or professional degree</option>
-                                </select>
+                        @*<div class="form-group">
+                                <input type="text" name="age" class="form-control" placeholder="Yaş" id="input-age">
+                            </div>
+
+                            <div class="form-group radio_input">
+                                <label><input type="radio" value="Male" checked name="gender" class="icheck" id="radio-gender-male">Erkek</label>
+                                <label><input type="radio" value="Female" name="gender" class="icheck" id="radio-gender-female">Kadın</label>
+                            </div>*@
+                    </div>
+
+                    @* ADIM 2 *@
+                    <div class="step">
+                        <h3 class="main_question"><strong>2/3</strong>Eğitim Bilgileri</h3>
+
+                        <label>NBUY eğitimi aldınız mı ya da bitirdiniz mi?</label>
+                        <div style=""></div>
+                        <input type="radio" checked name="isnbuy" value="1" id="radio-nbuy-yes">Evet
+                        <input type="radio" name="isnbuy" value="2" id="radio-nbuy-no">Hayır
+
+                        <div id="div-nbuy-form-container">
+                            <div class="form-group select">
+                                <div class="styled-select">
+                                    <select class="required" id="select-education-centers">
+                                        <option value="0" selected="">Eğitimi hangi kurumdan alıyorsunuz?</option>
+                                        @foreach (var item in Model.EducationCenters)
+                                        {
+                                            <option value="@item.Key">@item.Value</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group select">
+                                <div class="styled-select">
+                                    <select class="required" id="select-education-categories">
+                                        <option value="" selected="">Ne eğitimi alıyorsunuz?</option>
+                                        @foreach (var item in Model.EducationCategories)
+                                        {
+                                            <option value="@item.Id">@item.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Eğitim ne zaman başladı?</label>
+                                <input type="date" value="" class="form-control" id="input-date-when-begun" />
                             </div>
                         </div>
-                        <div class="form-group radio_input">
-                            <label><input type="radio" value="Male" checked name="gender" class="icheck">Male</label>
-                            <label><input type="radio" value="Female" name="gender" class="icheck">Female</label>
-                        </div>
                     </div>
-                    <!-- /step-->
 
-                    <div class="step">
-                        <h3 class="main_question"><strong>2/3</strong>Please fill your address</h3>
-                        <div class="form-group">
-                            <input type="text" name="address" class="form-control required" placeholder="Address">
-                        </div>
-                        <div class="form-group">
-                            <input type="text" name="city" class="form-control required" placeholder="City">
-                        </div>
-                        <div class="form-group">
-                            <input type="text" name="zip_code" class="form-control required" placeholder="Zip code">
-                        </div>
-                        <div class="form-group">
-                            <div class="styled-select">
-                                <select class="required" name="country">
-                                    <option value="" selected>Select your country</option>
-                                    <option value="Europe">Europe</option>
-                                    <option value="Asia">Asia</option>
-                                    <option value="North America">North America</option>
-                                    <option value="South America">South America</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /step-->
-
+                    @* SON ADIM *@
                     <div class="submit step">
-                        <h3 class="main_question"><strong>3/3</strong>Your preferences</h3>
-                        <div class="form-group radio_input">
-                            <label><input type="checkbox" value="Management" name="preferences[]" class="icheck">Management adn Business</label>
+                        <h3 class="main_question"><strong>3/3</strong>Hesap Bilgileri</h3>
+                        <div class="form-group">
+                            <input type="text" name="username" class="form-control" placeholder="Kullanıcı adı" id="input-username">
                         </div>
-                        <div class="form-group radio_input">
-                            <label><input type="checkbox" value="Art" name="preferences[]" class="icheck">Art: Impressionist</label>
+                        <div class="form-group">
+                            <input type="password" name="password" class="form-control" placeholder="Şifre" id="input-password">
                         </div>
-                        <div class="form-group radio_input">
-                            <label><input type="checkbox" value="Litteratture" name="preferences[]" class="icheck">Litteratture: Poetry</label>
-                        </div>
-                        <div class="form-group radio_input">
-                            <label><input type="checkbox" value="Math" name="preferences[]" class="icheck">Math: 12 Principles</label>
-                        </div>
-                        <div class="form-group radio_input">
-                            <label><input type="checkbox" value="Architecture" name="preferences[]" class="icheck">Architecture</label>
-                        </div>
-                        <div class="form-group add_top_30">
-                            <textarea name="additional_message" class="form-control required" style="height:120px;" placeholder="Hello world....write your messagere here!"></textarea>
+                        <div class="form-group">
+                            <input type="password" name="confirmPassword" class="form-control" placeholder="Şifre onayla" id="input-confirm-password">
                         </div>
                         <div class="form-group terms">
                             <input name="terms" type="checkbox" class="icheck required" value="yes">
-                            <label>Please accept <a href="#" data-toggle="modal" data-target="#terms-txt">terms and conditions</a> ?</label>
+                            <label> <a href="#" data-toggle="modal" data-target="#terms-txt">Kullanım Şartlarını</a> okudum ve kabul ediyorum</label>
                         </div>
                     </div>
-                    <!-- /step-->
                 </div>
-                <!-- /middle-wizard -->
+
                 <div id="bottom-wizard">
-                    <button type="button" name="backward" class="backward">Backward </button>
-                    <button type="button" name="forward" class="forward">Forward</button>
-                    <button type="submit" name="process" class="submit">Submit</button>
+                    <button type="button" name="backward" class="backward">Geri </button>
+                    <button type="button" name="forward" class="forward">İleri</button>
+                    <button type="button" name="process" class="submit" id="btn-submit">Kayıt</button>
                 </div>
-                <!-- /bottom-wizard -->
+
             </form>
         </div>
-        <!-- /Wizard container -->
+
     </div>
-    <!-- /Form_container -->
-    <!-- Modal terms -->
+
+    @* TERMS & CONDITIONS *@
     <div class="modal fade" id="terms-txt" tabindex="-1" role="dialog" aria-labelledby="termsLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="termsLabel">Terms and conditions</h4>
+                    <h4 class="modal-title" id="termsLabel">Kullanım Şartları</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body">
@@ -178,7 +171,7 @@
                     <p>Lorem ipsum dolor sit amet, in porro albucius qui, in nec quod novum accumsan, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus.</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn_1" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn_1" data-dismiss="modal">Kapat</button>
                 </div>
             </div>
 
@@ -194,6 +187,102 @@
     <script src="~/assets/js/jquery.wizard.js"></script>
     <script src="~/assets/js/jquery.validate.js"></script>
     <script src="~/assets/js/admission_func.js"></script>
+    <script src="~/js/lib/cookie-agreement.js"></script>
+    <script src="~/js/lib/security-support.js"></script>
+    <script>
+        /* fields */
+        var __envoy = new StorageSupport.Envoy();
 
+        /* elements */
+        var inputName = $("#input-name");
+        var inputSurname = $("#input-surname");
+        var inputEmail = $("#input-email");
+        var inputPhone = $("#input-phone");
+        //var inputAge = $("#input-age");
+        var selectEducationCenters = document.getElementById("select-education-centers");
+        var selectEducationCategories = document.getElementById("select-education-categories");
+        //var radioGenderMale = document.getElementById("radio-gender-male");
+        var radioNbuyYes = document.getElementById("radio-nbuy-yes");
+        var radioNbuyNo = document.getElementById("radio-nbuy-no");
+        var inputDateWhenBegun = $("#input-date-when-begun");
+        var inputUsername = $("#input-username");
+        var inputPassword = $("#input-password");
+        var inputConfirmPassword = $("#input-confirm-password");
+        var btnSubmit = $("#btn-submit");
+        var divNbuyFormContainer = $("#div-nbuy-form-container");
+
+        /* assignments */
+        $(document).ready(document_onLoad);
+        window.onbeforeunload = window_onBeforeUnload;
+        btnSubmit.on("click", btnSubmit_onClick);
+        radioNbuyYes.onchange = radioNbuy_onChange;
+        radioNbuyNo.onchange = radioNbuy_onChange;
+
+        /* events */
+        function document_onLoad() {
+            if (__envoy.isStorageExists("register")) {
+                var stored = __envoy.getRegisterForm();
+                setStoredData(stored);
+            }
+        }
+        function window_onBeforeUnload() {
+            if (__envoy.isStorageExists("register")) {
+                __envoy.setRegisterForm({
+                    name: inputName.val(),
+                    surname: inputSurname.val(),
+                    email: inputEmail.val(),
+                    phone: inputPhone.val(),
+                    isNbuy: radioNbuyYes.checked
+                });
+            }
+        }
+        function btnSubmit_onClick() {
+            var data = {
+                Name: inputName.val(),
+                Surname: inputSurname.val(),
+                Email: inputEmail.val(),
+                Phone: inputPhone.val(),
+                Password: inputPassword.val(),
+                ConfirmPassword: inputConfirmPassword.val(),
+                UserName: inputUsername.val(),
+                IsNbuyStudent: radioNbuyYes.checked,
+                StartedAt: inputDateWhenBegun.val(),
+                EducationCenter: selectEducationCenters.options[selectEducationCenters.selectedIndex].value,
+                EducationCategory: selectEducationCategories.options[selectEducationCategories.selectedIndex].value
+            };
+            var tokenVerifier = new SecuritySupport.TokenVerifier();
+            data = tokenVerifier.addToken("wrapped", data);
+            $.ajax({
+                url: "kayit-ol",
+                method: "post",
+                data: data,
+                success: (res) => {
+
+                }
+            });
+        }
+        function radioNbuy_onChange() {
+            if (radioNbuyYes.checked) {
+                divNbuyFormContainer.show();
+                $(selectEducationCenters).addClass("required");
+                $(selectEducationCategories).addClass("required");
+            } else {
+                divNbuyFormContainer.hide();
+                $(selectEducationCenters).removeClass("required");
+                $(selectEducationCategories).removeClass("required");
+            }
+        }
+
+        /* functions */
+        function setStoredData(stored) {
+            inputName.val(stored.name);
+            inputSurname.val(stored.surname);
+            inputEmail.val(stored.email);
+            inputPhone.val(stored.phone);
+            if (stored.isNbuy != null) {
+                radioNbuyYes.checked = stored.isNbuy;
+            }
+        }
+    </script>
 </body>
 </html>
