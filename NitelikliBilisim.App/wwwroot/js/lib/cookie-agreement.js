@@ -21,8 +21,6 @@
                 surname: "",
                 email: "",
                 phone: "",
-                age: "",
-                gender: "",
                 isNbuy: ""
             }));
         }
@@ -37,10 +35,6 @@
                 stored.email = registerForm.email;
             if (registerForm.phone)
                 stored.phone = registerForm.phone;
-            if (registerForm.age)
-                stored.age = registerForm.age;
-            if (registerForm.gender)
-                stored.gender = registerForm.gender;
             if (registerForm.isNbuy)
                 stored.isNbuy = registerForm.isNbuy;
             localStorage.setItem("register", JSON.stringify(stored));

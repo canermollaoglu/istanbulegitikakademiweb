@@ -10,7 +10,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Models;
+using NitelikliBilisim.App.Models.Account;
 using NitelikliBilisim.App.Utility;
+using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Services;
@@ -24,22 +26,29 @@ namespace NitelikliBilisim.App.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UnitOfWork _unitOfWork;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, UnitOfWork unitOfWork)
         {
             this._userManager = userManager;
             this._signInManager = signInManager;
+            _unitOfWork = unitOfWork;
         }
 
         [Route("kayit-ol")]
         public IActionResult Register()
         {
-            var model = EnumSupport.ToKeyValuePair<EducationCenter>();
+            var model = new RegisterGetVm
+            {
+                EducationCenters  = EnumSupport.ToKeyValuePair<EducationCenter>(),
+                EducationCategories = _unitOfWork.EducationCategory.Get(x => x.BaseCategoryId == null, x => x.OrderBy(o => o.Name))
+            };
+
             return View(model);
         }
 
         [HttpPost, Route("kayit-ol")]
-        public async Task<IActionResult> Register(RegisterViewModel model)
+        public async Task<IActionResult> Register(RegisterPostVm model)
         {
             if (!ModelState.IsValid)
             {

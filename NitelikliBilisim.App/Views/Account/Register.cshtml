@@ -1,5 +1,4 @@
-﻿@*@model NitelikliBilisim.Core.ViewModels.Account.RegisterViewModel*@
-@model Dictionary<int, string>
+﻿@model NitelikliBilisim.App.Models.Account.RegisterGetVm
 
 @{
     ViewBag.Title = "Kaydol";
@@ -77,34 +76,45 @@
                         <div class="form-group">
                             <input type="text" name="telephone" class="form-control" placeholder="Telefon" id="input-phone">
                         </div>
-                        <div class="form-group">
-                            <input type="text" name="age" class="form-control" placeholder="Yaş" id="input-age">
-                        </div>
+                        @*<div class="form-group">
+                                <input type="text" name="age" class="form-control" placeholder="Yaş" id="input-age">
+                            </div>
 
-                        <div class="form-group radio_input">
-                            <label><input type="radio" value="Male" checked name="gender" class="icheck" id="radio-gender-male">Erkek</label>
-                            <label><input type="radio" value="Female" name="gender" class="icheck" id="radio-gender-female">Kadın</label>
-                        </div>
+                            <div class="form-group radio_input">
+                                <label><input type="radio" value="Male" checked name="gender" class="icheck" id="radio-gender-male">Erkek</label>
+                                <label><input type="radio" value="Female" name="gender" class="icheck" id="radio-gender-female">Kadın</label>
+                            </div>*@
                     </div>
 
                     @* ADIM 2 *@
                     <div class="step">
                         <h3 class="main_question"><strong>2/3</strong>Eğitim Bilgileri</h3>
 
-                        <label>NBUY eğitimi alıyor musunuz?</label>
-                        <div class="form-group radio_input">
-                            <label><input type="radio" checked name="isNbuy" class="icheck" id="radio-nbuy-yes">Evet</label>
-                            <label><input type="radio" name="isNbuy" class="icheck" id="radio-nbuy-no">Hayır</label>
-                        </div>
+                        <label>NBUY eğitimi aldınız mı ya da bitirdiniz mi?</label>
+                        <div style=""></div>
+                        <input type="radio" checked name="isnbuy" value="1" id="radio-nbuy-yes">Evet
+                        <input type="radio" name="isnbuy" value="2" id="radio-nbuy-no">Hayır
 
                         <div id="div-nbuy-form-container">
                             <div class="form-group select">
                                 <div class="styled-select">
-                                    <select class="required" name="education_apply" id="education_apply">
-                                        <option value="" selected="">Eğitimi hangi kurumdan alıyorsunuz?</option>
-                                        @foreach (var item in Model)
+                                    <select class="required" id="select-education-centers">
+                                        <option value="0" selected="">Eğitimi hangi kurumdan alıyorsunuz?</option>
+                                        @foreach (var item in Model.EducationCenters)
                                         {
                                             <option value="@item.Key">@item.Value</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group select">
+                                <div class="styled-select">
+                                    <select class="required" id="select-education-categories">
+                                        <option value="" selected="">Ne eğitimi alıyorsunuz?</option>
+                                        @foreach (var item in Model.EducationCategories)
+                                        {
+                                            <option value="@item.Id">@item.Name</option>
                                         }
                                     </select>
                                 </div>
@@ -188,20 +198,25 @@
         var inputSurname = $("#input-surname");
         var inputEmail = $("#input-email");
         var inputPhone = $("#input-phone");
-        var inputAge = $("#input-age");
-        var selectEducationPlace = document.getElementById("education_apply");
-        var radioGenderMale = document.getElementById("radio-gender-male");
+        //var inputAge = $("#input-age");
+        var selectEducationCenters = document.getElementById("select-education-centers");
+        var selectEducationCategories = document.getElementById("select-education-categories");
+        //var radioGenderMale = document.getElementById("radio-gender-male");
         var radioNbuyYes = document.getElementById("radio-nbuy-yes");
+        var radioNbuyNo = document.getElementById("radio-nbuy-no");
         var inputDateWhenBegun = $("#input-date-when-begun");
         var inputUsername = $("#input-username");
         var inputPassword = $("#input-password");
         var inputConfirmPassword = $("#input-confirm-password");
         var btnSubmit = $("#btn-submit");
+        var divNbuyFormContainer = $("#div-nbuy-form-container");
 
         /* assignments */
         $(document).ready(document_onLoad);
         window.onbeforeunload = window_onBeforeUnload;
         btnSubmit.on("click", btnSubmit_onClick);
+        radioNbuyYes.onchange = radioNbuy_onChange;
+        radioNbuyNo.onchange = radioNbuy_onChange;
 
         /* events */
         function document_onLoad() {
@@ -217,8 +232,6 @@
                     surname: inputSurname.val(),
                     email: inputEmail.val(),
                     phone: inputPhone.val(),
-                    age: inputAge.val(),
-                    gender: radioGenderMale.checked,
                     isNbuy: radioNbuyYes.checked
                 });
             }
@@ -247,6 +260,17 @@
                 }
             });
         }
+        function radioNbuy_onChange() {
+            if (radioNbuyYes.checked) {
+                divNbuyFormContainer.show();
+                $(selectEducationCenters).addClass("required");
+                $(selectEducationCategories).addClass("required");
+            } else {
+                divNbuyFormContainer.hide();
+                $(selectEducationCenters).removeClass("required");
+                $(selectEducationCategories).removeClass("required");
+            }
+        }
 
         /* functions */
         function setStoredData(stored) {
@@ -255,9 +279,6 @@
             inputEmail.val(stored.email);
             inputPhone.val(stored.phone);
             inputAge.val(stored.age);
-            if (stored.gender != null) {
-                radioGenderMale.checked = stored.gender;
-            }
             if (stored.isNbuy != null) {
                 radioNbuyYes.checked = stored.isNbuy;
             }
