@@ -39,6 +39,8 @@ namespace NitelikliBilisim.App.Models.Account
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
+        public string Phone { get; set; }
+
         [Required(ErrorMessage = "Şifre tekrar alanı gereklidir.")]
         [DataType(DataType.Password)]
         [Display(Name = "Şifre Tekrar")]
@@ -47,7 +49,7 @@ namespace NitelikliBilisim.App.Models.Account
 
         public bool IsNbuyStudent { get; set; }
         public int EducationCenter { get; set; }
-        public Guid? CategoryId { get; set; }
+        public Guid? EducationCategory { get; set; }
         public DateTime? StartedAt { get; set; }
     }
 }

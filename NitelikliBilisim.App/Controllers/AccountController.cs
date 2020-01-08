@@ -64,7 +64,8 @@ namespace NitelikliBilisim.App.Controllers
                 Name = model.Name,
                 UserName = model.UserName,
                 Surname = model.Surname,
-                Email = model.Email
+                Email = model.Email,
+                PhoneNumber = model.Phone
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);

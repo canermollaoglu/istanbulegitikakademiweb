@@ -247,7 +247,8 @@
                 UserName: inputUsername.val(),
                 IsNbuyStudent: radioNbuyYes.checked,
                 StartedAt: inputDateWhenBegun.val(),
-                EducationCenter: selectEducationPlace.options[selectEducationPlace.selectedIndex].value
+                EducationCenter: selectEducationCenters.options[selectEducationCenters.selectedIndex].value,
+                EducationCategory: selectEducationCategories.options[selectEducationCategories.selectedIndex].value
             };
             var tokenVerifier = new SecuritySupport.TokenVerifier();
             data = tokenVerifier.addToken("wrapped", data);
@@ -278,7 +279,6 @@
             inputSurname.val(stored.surname);
             inputEmail.val(stored.email);
             inputPhone.val(stored.phone);
-            inputAge.val(stored.age);
             if (stored.isNbuy != null) {
                 radioNbuyYes.checked = stored.isNbuy;
             }
