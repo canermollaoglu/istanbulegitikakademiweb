@@ -75,6 +75,16 @@ namespace NitelikliBilisim.App.Controllers
                     _userManager.Users.Count() == 1
                         ? IdentityRoleList.Admin.ToString()
                         : IdentityRoleList.User.ToString());
+                if (model.IsNbuyStudent)
+                {
+                    var studentEducationInformation = new StudentEducationInfo
+                    {
+                        CustomerId = user.Id,
+                        StartedAt = model.StartedAt.Value,
+                        EducationCenter = (EducationCenter)model.EducationCenter
+                    };
+                    _unitOfWork.StudentEducationInfo.Insert(studentEducationInformation);
+                }
                 if (result.Succeeded)
                 {
                     //TODO mail gönder

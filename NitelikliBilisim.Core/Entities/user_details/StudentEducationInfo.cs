@@ -3,12 +3,12 @@ using NitelikliBilisim.Core.Enums;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace NitelikliBilisim.Core.Entities.user_details
+namespace NitelikliBilisim.Core.Entities
 {
-    [Table("StudentEducationInformations")]
-    public class StudentEducationInformation : BaseEntity<Guid>
+    [Table("StudentEducationInfos")]
+    public class StudentEducationInfo : BaseEntity<Guid>
     {
-        public StudentEducationInformation()
+        public StudentEducationInfo()
         {
             Id = Guid.NewGuid();
         }
