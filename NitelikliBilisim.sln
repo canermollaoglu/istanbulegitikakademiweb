@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29201.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NitelikliBilisim.App", "NitelikliBilisim.App\NitelikliBilisim.App.csproj", "{E2FD8A2E-C372-4881-8BD5-0124ED5B00E9}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "App", "App", "{D1B31095-F5D1-4376-B9C8-AE36424A6A28}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Apps", "Apps", "{D1B31095-F5D1-4376-B9C8-AE36424A6A28}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{A4B3C5F1-FCD4-4CC3-B5EB-DD6160F9586F}"
 EndProject
@@ -19,7 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Commons", "Commons", "{A32C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NitelikliBilisim.Encryption", "NitelikliBilisim.Encryption\NitelikliBilisim.Encryption.csproj", "{492C2CA8-5838-4D04-B28F-D67E434AC225}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NitelikliBilisim.Support", "NitelikliBilisim.Support\NitelikliBilisim.Support.csproj", "{111ECE42-74EB-42B4-A02A-13A4D9EFA7F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NitelikliBilisim.Support", "NitelikliBilisim.Support\NitelikliBilisim.Support.csproj", "{111ECE42-74EB-42B4-A02A-13A4D9EFA7F0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
