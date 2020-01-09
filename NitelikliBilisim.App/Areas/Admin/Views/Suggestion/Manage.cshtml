@@ -1,0 +1,219 @@
+﻿@model NitelikliBilisim.Core.ViewModels.areas.admin.suggestion.ManageGetVm
+@{
+    ViewData["Title"] = "Manage";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+
+@section styles{
+    <link href="~/assets/css/area-admin/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-list"></i> <strong>Öneri Kategori Aralıkları</strong>
+    </div>
+    <div class="card-body">
+        <div class="row" style="margin-bottom:1%;">
+            <div class="col-md-12">
+                <form id="form-add-suggestion">
+                    @Html.AntiForgeryToken()
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label>Kategori</label>
+                            <select id="select-categories" class="form-control">
+                                @foreach (var item in Model.Categories)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label>Minimum</label>
+                            <input type="text" value="" class="form-control" id="input-min" placeholder="Minimum" />
+                        </div>
+                        <div class="col-md-4">
+                            <label>Maksimum</label>
+                            <input type="text" value="" class="form-control" id="input-max" placeholder="Maksimum" />
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 1%;">
+                        <div class="offset-md-10 col-md-2">
+                            <button id="btn-add" type="button" class="btn_1 form-control" style="cursor:pointer;">Ekle</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Kategori</th>
+                                <th>Min.</th>
+                                <th>Max.</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>Kategori</th>
+                                <th>Min.</th>
+                                <th>Max.</th>
+                            </tr>
+                        </tfoot>
+                        <tbody id="tbody-suggestions">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer small text-muted">Veri tarihi: @DateTime.Now</div>
+</div>
+@section postScripts{
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+    <script src="~/assets/js/area-admin/jquery.dataTables.js"></script>
+    <script src="~/assets/js/area-admin/dataTables.bootstrap4.js"></script>
+    <script src="~/js/sup/alert-sup.js"></script>
+    <script src="~/js/lib/security-support.js"></script>
+    <script>
+        /* fields */
+        var confirmModalBuilder = new AlertSupport.ConfirmModalBuilder();
+        var resultAlert = new AlertSupport.ResultAlert();
+
+        /* elements */
+        var btnAdd = $("#btn-add");
+        var tbodySuggestions = $("#tbody-suggestions");
+
+        /* assignments */
+        $(document).ready(document_onLoad);
+        btnAdd.on("click", btnAdd_onClick);
+
+        /* events */
+        function document_onLoad() {
+            $("#select-categories").select2();
+            getSuggestions();
+        }
+        function btnAdd_onClick() {
+            var selectCategories = document.getElementById("select-categories");
+            btnAdd.off("click");
+            var data = {
+                MinRange: inputMin.val(),
+                MaxRange: inputMax.val(),
+                CategoryId: selectCategories.options[selectCategories.selectedIndex].value
+            };
+            var tokenVerifier = new SecuritySupport.TokenVerifier();
+            data = tokenVerifier.addToken("form-add-suggestion", data);
+            $.ajax({
+                url: "/admin/add-suggestion",
+                method: "post",
+                data: data,
+                success: (res) => {
+                    if (res.isSuccess) {
+                        $("#form-add-suggestion")[0].reset();
+                        resultAlert.display({
+                            success: true,
+                            message: "Kayıt işlemi başarılı"
+                        });
+                        btnAdd.on("click", btnAdd_onClick);
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors
+                        });
+                        btnAdd.on("click", btnAdd_onClick);
+                    }
+                }
+            });
+        }
+        function btnConfirmationModalTrigger_onClick() {
+            var url = this.getAttribute("data-url");
+            confirmModalBuilder.setUrl(url);
+            confirmModalBuilder.display();
+        }
+        function confirm_onClick() {
+            var url = this.getAttribute("data-url");
+            $.ajax({
+                url: url,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        getSuggestions();
+                        resultAlert.display({
+                            success: true,
+                            message: "Kayıt başarıyla silinmiştir"
+                        });
+                        refreshBaseParts();
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors,
+                            message: "Hataları düzeltiniz"
+                        });
+                    }
+                }
+            });
+        }
+
+        /* functions */
+        function getSuggestions() {
+            $.ajax({
+                url: `/admin/get-suggestions`,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        createTable(res.data.suggestions);
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors
+                        });
+                    }
+                }
+            });
+        }
+        function createTable(data) {
+            tbodySuggestions.html("");
+            var content = "";
+            if (data.length != 0)
+                for (var i = 0; i < data.length; i++) {
+                    var element = data[i];
+                    content +=
+                        `<tr>` +
+                        `<td>${element.order}</td>` +
+                        `<td>[<i>${element.basePartTitle}</i>] ${element.title}</td>` +
+                        `<td>${element.duration} dk.</td>` +
+                        `<td>` +
+                        `<div class="btn-group">` +
+                        `<a href="/admin/egitim-parca-guncelle/${element.id}" class="btn btn-warning"><i class="fa fa-edit"></i></a>` +
+                        `<button class="btn btn-danger btn-confirmation-modal-trigger" data-url="/admin/delete-suggestion/${element.id}"><i class="fa fa-trash"></i></button>` +
+                        `</div>` +
+                        `</td>` +
+                        `</tr>`;
+                }
+            else
+                content = `<tr><td colspan="5"><div class="alert alert-info"><strong>Bilgi:</strong> Eğitimin henüz parçası yoktur. Yukarıdan ekleyebilirsiniz</div></td></tr>`;
+            tbodySuggestions.append(content);
+
+            var deleteButtons = $(".btn-confirmation-modal-trigger");
+            for (var i = 0; i < deleteButtons.length; i++) {
+                var btn = deleteButtons[i];
+                btn.onclick = btnConfirmationModalTrigger_onClick;
+            }
+
+            confirmModalBuilder.buildModal({
+                title: "Emin misiniz?",
+                bodyText: "Seçmiş olduğunuz eğitim parçası silinecektir.",
+                cancelText: "Hayır, iptal et",
+                confirmText: "Evet, eminim",
+                onConfirmClick: confirm_onClick
+            });
+        }
+    </script>
+}
