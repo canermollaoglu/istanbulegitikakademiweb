@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NitelikliBilisim.Core.Entities
 {
+    [Table("SuggestionByCategory")]
     public class Suggestion : BaseEntity<Guid>
     {
         public Suggestion()

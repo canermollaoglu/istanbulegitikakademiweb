@@ -95,5 +95,6 @@ namespace NitelikliBilisim.Data
         public DbSet<Educator> Educators { get; set; }
         public DbSet<EducatorSocialMedia> EducatorSocialMedias { get; set; }
         public DbSet<StudentEducationInfo> StudentEducationInfos { get; set; }
+        public DbSet<Suggestion> Suggestions { get; set; }
     }
 }

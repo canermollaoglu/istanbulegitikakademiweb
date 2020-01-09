@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Models;
+using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.ViewModels.areas.admin.suggestion;
 
@@ -45,10 +47,26 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         }
 
         [Route("admin/add-suggestion")]
-        public IActionResult AddSuggestion()
+        public IActionResult AddSuggestion(AddPostVm data)
         {
+            if (!ModelState.IsValid)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = ModelStateUtil.GetErrors(ModelState)
+                });
 
-            return Json("");
+            _unitOfWork.Suggestion.Insert(new Suggestion
+            {
+                CategoryId = data.CategoryId.Value,
+                RangeMin = data.MinRange.Value,
+                RangeMax = data.MaxRange.Value
+            });
+
+            return Json(new ResponseModel
+            {
+                isSuccess = true
+            });
         }
 
         [Route("admin/delete-suggestion/{suggestionId}")]
