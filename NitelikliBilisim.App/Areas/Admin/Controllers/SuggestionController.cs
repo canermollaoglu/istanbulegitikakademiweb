@@ -35,14 +35,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/get-suggestions")]
         public IActionResult GetSuggestions()
         {
-            var model = _unitOfWork.Suggestion.Get(null, x => x.OrderBy(o => o.RangeMin));
+            var model = _unitOfWork.Suggestion.GetSuggestionsVm();
+
             return Json(new ResponseModel
             {
                 isSuccess = true,
-                data = new
-                {
-                    suggestions = model
-                }
+                data = model
             });
         }
 
@@ -72,8 +70,18 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/delete-suggestion/{suggestionId}")]
         public IActionResult DeleteSuggestion(Guid? suggestionId)
         {
+            if (suggestionId == null)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Bir hata oluştu" }
+                });
 
-            return Json("");
+            _unitOfWork.Suggestion.Delete(suggestionId.Value);
+            return Json(new ResponseModel
+            {
+                isSuccess = true
+            });
         }
     }
 }

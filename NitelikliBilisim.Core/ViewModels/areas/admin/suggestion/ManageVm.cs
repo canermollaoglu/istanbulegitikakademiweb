@@ -20,4 +20,17 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.suggestion
         [Required(ErrorMessage = "Kategori seçimi zorunludur")]
         public Guid? CategoryId { get; set; }
     }
+
+    public class GetSuggestionsVm
+    {
+        public List<_Suggestion> Suggestions { get; set; }
+    }
+
+    public class _Suggestion
+    {
+        public Guid Id { get; set; }
+        public string CategoryName { get; set; }
+        public byte Min { get; set; }
+        public byte Max { get; set; }
+    }
 }

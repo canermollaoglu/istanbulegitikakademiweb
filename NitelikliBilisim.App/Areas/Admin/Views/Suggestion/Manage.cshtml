@@ -58,6 +58,7 @@
                                 <th>Kategori</th>
                                 <th>Min.</th>
                                 <th>Max.</th>
+                                <th>İşlem</th>
                             </tr>
                         </thead>
                         <tfoot>
@@ -65,6 +66,7 @@
                                 <th>Kategori</th>
                                 <th>Min.</th>
                                 <th>Max.</th>
+                                <th>İşlem</th>
                             </tr>
                         </tfoot>
                         <tbody id="tbody-suggestions">
@@ -90,6 +92,8 @@
         /* elements */
         var btnAdd = $("#btn-add");
         var tbodySuggestions = $("#tbody-suggestions");
+        var inputMin = $("#input-min");
+        var inputMax = $("#input-max");
 
         /* assignments */
         $(document).ready(document_onLoad);
@@ -116,6 +120,7 @@
                 data: data,
                 success: (res) => {
                     if (res.isSuccess) {
+                        getSuggestions();
                         $("#form-add-suggestion")[0].reset();
                         resultAlert.display({
                             success: true,
@@ -186,19 +191,19 @@
                     var element = data[i];
                     content +=
                         `<tr>` +
-                        `<td>${element.order}</td>` +
-                        `<td>[<i>${element.basePartTitle}</i>] ${element.title}</td>` +
-                        `<td>${element.duration} dk.</td>` +
+                        `<td>${element.categoryName}</td>` +
+                        `<td>${element.min}</td>` +
+                        `<td>${element.max}</td>` +
                         `<td>` +
                         `<div class="btn-group">` +
-                        `<a href="/admin/egitim-parca-guncelle/${element.id}" class="btn btn-warning"><i class="fa fa-edit"></i></a>` +
+                        `<a href="/admin/oneri-kategori-guncelle/${element.id}" class="btn btn-warning"><i class="fa fa-edit"></i></a>` +
                         `<button class="btn btn-danger btn-confirmation-modal-trigger" data-url="/admin/delete-suggestion/${element.id}"><i class="fa fa-trash"></i></button>` +
                         `</div>` +
                         `</td>` +
                         `</tr>`;
                 }
             else
-                content = `<tr><td colspan="5"><div class="alert alert-info"><strong>Bilgi:</strong> Eğitimin henüz parçası yoktur. Yukarıdan ekleyebilirsiniz</div></td></tr>`;
+                content = `<tr><td colspan="5"><div class="alert alert-info"><strong>Bilgi:</strong> Henüz eğitim öneri kategorisi yoktur</div></td></tr>`;
             tbodySuggestions.append(content);
 
             var deleteButtons = $(".btn-confirmation-modal-trigger");
