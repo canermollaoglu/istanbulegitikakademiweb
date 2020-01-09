@@ -20,7 +20,7 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.Education
         public AddGetVm CreateAddGetVm()
         {
             var tags = _unitOfWork.EducationTag.Get(null, x => x.OrderBy(o => o.Name));
-            var categories = _unitOfWork.EducationCategory.Get(null, x => x.OrderBy(o => o.Name));
+            var categories = _unitOfWork.EducationCategory.Get(x => x.BaseCategoryId != null, x => x.OrderBy(o => o.Name));
             var levels = EnumSupport.ToKeyValuePair<EducationLevel>();
             return new AddGetVm
             {

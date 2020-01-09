@@ -33,10 +33,16 @@
                             </select>
                         </div>
                         <div class="col-md-4">
+                            <label>Eğitimler</label>
+                            <select id="select-educations" multiple class="form-control">
+
+                            </select>
+                        </div>
+                        <div class="col-md-2">
                             <label>Minimum</label>
                             <input type="text" value="" class="form-control" id="input-min" placeholder="Minimum" />
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-2">
                             <label>Maksimum</label>
                             <input type="text" value="" class="form-control" id="input-max" placeholder="Maksimum" />
                         </div>
@@ -94,18 +100,21 @@
         var tbodySuggestions = $("#tbody-suggestions");
         var inputMin = $("#input-min");
         var inputMax = $("#input-max");
+        var selectCategories = document.getElementById("select-categories");
+        var selectEducations = $("#select-educations");
 
         /* assignments */
         $(document).ready(document_onLoad);
         btnAdd.on("click", btnAdd_onClick);
+        selectCategories.onchange = selectCategories_onChange;
 
         /* events */
         function document_onLoad() {
             $("#select-categories").select2();
+            selectEducations.select2();
             getSuggestions();
         }
         function btnAdd_onClick() {
-            var selectCategories = document.getElementById("select-categories");
             btnAdd.off("click");
             var data = {
                 MinRange: inputMin.val(),
@@ -162,6 +171,23 @@
                             message: "Hataları düzeltiniz"
                         });
                     }
+                }
+            });
+        }
+        function selectCategories_onChange() {
+            var categoryId = selectCategories.options[selectCategories.selectedIndex].value;
+            selectEducations.html("");
+            $.ajax({
+                url: `/admin/get-educations-for-suggestion/${categoryId}`,
+                method: "get",
+                success: (res) => {
+                    var data = res.data;
+                    var options = "";
+                    for (var i = 0; i < data.length; i++) {
+                        var item = data[i];
+                        options += `<option value="${item.id}">${item.name}</option>`;
+                    }
+                    selectEducations.append(options);
                 }
             });
         }

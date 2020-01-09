@@ -24,7 +24,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/oneri-kategori-yonetimi")]
         public IActionResult Manage()
         {
-            var categories = _unitOfWork.EducationCategory.Get(x => x.BaseCategoryId == null && x.CategoryType == CategoryType.NBUY, x => x.OrderBy(o => o.Name));
+            var categories = _unitOfWork.EducationCategory.GetDeepestCategories(CategoryType.NBUY);
 
             var model = new ManageGetVm
             {
@@ -81,6 +81,24 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             return Json(new ResponseModel
             {
                 isSuccess = true
+            });
+        }
+
+        [Route("admin/get-educations-for-suggestion/{categoryId}")]
+        public IActionResult GetEducations(Guid? categoryId)
+        {
+            if (!categoryId.HasValue)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false
+                });
+
+            var data = _unitOfWork.Education.Get(x => x.CategoryId == categoryId.Value, x => x.OrderBy(o => o.Name));
+
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = data
             });
         }
     }
