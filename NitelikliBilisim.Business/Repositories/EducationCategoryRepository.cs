@@ -34,5 +34,12 @@ namespace NitelikliBilisim.Business.Repositories
 
             return deepestCategories;
         }
+        public override Guid Insert(EducationCategory entity, bool isSaveLater = false)
+        {
+            if (_context.EducationCategories.Any(x => x.Name == entity.Name))
+                return default;
+
+            return base.Insert(entity, isSaveLater);
+        }
     }
 }

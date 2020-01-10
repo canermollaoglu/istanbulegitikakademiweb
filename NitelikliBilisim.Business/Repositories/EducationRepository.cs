@@ -144,6 +144,8 @@ namespace NitelikliBilisim.Business.Repositories
         {
             if (tagIds == null || tagIds.Count == 0)
                 return null;
+            if (_context.Educations.Any(x => x.Name == entity.Name))
+                return null;
 
             using (var transaction = _context.Database.BeginTransaction())
             {
@@ -380,6 +382,10 @@ namespace NitelikliBilisim.Business.Repositories
             model.TotalPartCount = totalPartCount;
 
             return model;
+        }
+        public bool IsUnique(string name)
+        {
+            return !_context.Educations.Any(x => x.Name == name);
         }
     }
 }
