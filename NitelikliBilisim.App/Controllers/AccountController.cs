@@ -75,13 +75,21 @@ namespace NitelikliBilisim.App.Controllers
                     _userManager.Users.Count() == 1
                         ? IdentityRoleList.Admin.ToString()
                         : IdentityRoleList.User.ToString());
+                var customer = new Customer
+                {
+                    Id = user.Id,
+                    CustomerType = CustomerType.Individual,
+                    IsNbuyStudent = model.IsNbuyStudent
+                };
+                _unitOfWork.Customer.Insert(customer);
                 if (model.IsNbuyStudent)
                 {
                     var studentEducationInformation = new StudentEducationInfo
                     {
                         CustomerId = user.Id,
                         StartedAt = model.StartedAt.Value,
-                        EducationCenter = (EducationCenter)model.EducationCenter
+                        EducationCenter = (EducationCenter)model.EducationCenter,
+                        CategoryId = model.EducationCategory
                     };
                     _unitOfWork.StudentEducationInfo.Insert(studentEducationInformation);
                 }

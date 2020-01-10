@@ -15,6 +15,7 @@ namespace NitelikliBilisim.Core.Entities
 
         public EducationCenter EducationCenter { get; set; }
         public DateTime StartedAt { get; set; }
+        public Guid? CategoryId { get; set; }
 
         [ForeignKey("Customer")]
         public string CustomerId { get; set; }
