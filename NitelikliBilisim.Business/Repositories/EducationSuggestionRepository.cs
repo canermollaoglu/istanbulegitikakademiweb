@@ -130,13 +130,22 @@ namespace NitelikliBilisim.Business.Repositories
                 if (isNbuy)
                 {
                     var studentEducationInfo = _context.StudentEducationInfos.FirstOrDefault(x => x.CustomerId == userId);
-                    var suggestedEducation = _context.Suggestions.FirstOrDefault(x => x.CategoryId == studentEducationInfo.CategoryId);
-                    var educationIds = JsonConvert.DeserializeObject<List<Guid>>(suggestedEducation.SuggestableEducations);
+                    var daysPassed = DateTime.Now.Subtract(studentEducationInfo.StartedAt).Days;
 
+                    if (daysPassed > 100)
+                        daysPassed = 100;
+
+                    var suggestedEducation = _context.Suggestions.FirstOrDefault(x => x.CategoryId == studentEducationInfo.CategoryId && (daysPassed > x.RangeMin && daysPassed <= x.RangeMax));
+                    if (suggestedEducation == null)
+                        suggestedEducation = _context.Suggestions.FirstOrDefault(x => x.CategoryId == studentEducationInfo.CategoryId);
+
+                    var educationIds = JsonConvert.DeserializeObject<List<Guid>>(suggestedEducation.SuggestableEducations);
+                    var data = query.ToList();
                     var count = 1;
-                    foreach (var item in query.ToList())
+                    foreach (var item in data)
                     {
                         if (educationIds.Contains(item.Id))
+                        {
                             model.Add(new EducationVm
                             {
                                 Base = new EducationBaseVm
@@ -154,13 +163,15 @@ namespace NitelikliBilisim.Business.Repositories
                                     Description = item.Description
                                 },
                                 Medias = new List<EducationMediaVm>
-                            {
+                                {
                             new EducationMediaVm { EducationId = item.Id, FileUrl = item.PreviewPhotoUrl, MediaType = EducationMediaType.PreviewPhoto }
-                            }
+                                }
                             });
+                            count++;
+                        }
+
                         if (count >= 5)
                             break;
-                        count++;
                     }
                 }
                 else
