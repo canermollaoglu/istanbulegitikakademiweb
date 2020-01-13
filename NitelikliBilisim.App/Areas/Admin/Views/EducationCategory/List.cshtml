@@ -43,7 +43,16 @@
                                     baseCategory = item.BaseCategory.Name;
                                 }
                             }
-                            <td>@item.Name (@baseCategory)</td>
+                            <td>
+                                @if (baseCategory == "Ana Kategori")
+                                {
+                                    <b style="color:#662d91;">[@baseCategory] @item.Name</b>
+                                }
+                                else
+                                {
+                                    <p><i>[@baseCategory]</i> @item.Name</p>
+                                }
+                            </td>
                             <td>@item.Description</td>
                             <td>
                                 <div class="btn-group">

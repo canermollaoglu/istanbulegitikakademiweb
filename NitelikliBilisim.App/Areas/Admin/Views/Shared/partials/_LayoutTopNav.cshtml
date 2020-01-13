@@ -5,7 +5,7 @@
 </style>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-default fixed-top" id="mainNav">
-    <a class="navbar-brand" href="index.html"><img src="img/logo.png" data-retina="true" alt="" width="163" height="36"></a>
+    <a class="navbar-brand" href="/admin/panel"><img src="img/logo.png" data-retina="true" alt="" width="163" height="36"></a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -80,7 +80,7 @@
             </li>
         </ul>
         <ul class="navbar-nav ml-auto">
-            <li class="nav-item dropdown">
+            @*<li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle mr-lg-2" id="messagesDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fa fa-fw fa-envelope"></i>
                     <span class="d-lg-none">
@@ -162,18 +162,18 @@
                     <a class="dropdown-item small" href="#">View all alerts</a>
                 </div>
             </li>
-                <li class="nav-item">
-                    <form class="form-inline my-2 my-lg-0 mr-lg-2">
-                        <div class="input-group">
-                                <input class="form-control search-top" type="text" placeholder="Search for...">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-primary" type="button">
-                                        <i class="fa fa-search"></i>
-                                    </button>
-                                </span>
-                        </div>
-                    </form>
-                </li>
+            <li class="nav-item">
+                <form class="form-inline my-2 my-lg-0 mr-lg-2">
+                    <div class="input-group">
+                        <input class="form-control search-top" type="text" placeholder="Search for...">
+                        <span class="input-group-btn">
+                            <button class="btn btn-primary" type="button">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </span>
+                    </div>
+                </form>
+            </li>*@
             <li class="nav-item">
                 <a class="nav-link" data-toggle="modal" data-target="#exampleModal">
                     <i class="fa fa-fw fa-sign-out"></i>Çıkış Yap
@@ -183,13 +183,13 @@
     </div>
 </nav>
 
-    <script>
-        var elements = document.getElementById('navbarResponsive').getElementsByTagName("a");
+<script>
+    var elements = document.getElementById('navbarResponsive').getElementsByTagName("a");
 
-        for (var i = 0; i < elements.length; i++) {
-            if (window.location.href.includes(elements[i].getAttribute("href"))) {
-                elements[i].parentElement.classList.add("active");
-                break;
-            }
+    for (var i = 0; i < elements.length; i++) {
+        if (window.location.href.includes(elements[i].getAttribute("href"))) {
+            elements[i].parentElement.classList.add("active");
+            break;
         }
-    </script>
+    }
+</script>

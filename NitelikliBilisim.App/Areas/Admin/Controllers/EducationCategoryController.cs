@@ -26,7 +26,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/kategori-ekle")]
         public IActionResult Add()
         {
-            var data = _unitOfWork.EducationCategory.Get(null, q => q.OrderBy(o => o.Name));
+            var data = _unitOfWork.EducationCategory.Get(x => x.BaseCategoryId == null, q => q.OrderBy(o => o.Name));
             var model = new AddGetVm
             {
                 Categories = data,

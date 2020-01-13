@@ -58,6 +58,7 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.Education
                 Days = data.Days.Value,
                 HoursPerDay = data.HoursPerDay.Value,
                 Description = data.Description,
+                Description2 = data.Description2,
                 Level = (EducationLevel)data.EducationLevel,
                 Name = data.Name,
                 NewPrice = data.Price,
