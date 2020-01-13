@@ -24,7 +24,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/oneri-kategori-yonetimi")]
         public IActionResult Manage()
         {
-            var categories = _unitOfWork.EducationCategory.GetDeepestCategories(CategoryType.NBUY);
+            //var categories = _unitOfWork.EducationCategory.GetDeepestCategories(CategoryType.NBUY);
+            var categories = _unitOfWork.EducationCategory.Get(x => x.BaseCategoryId == null, x => x.OrderBy(o => o.Name));
 
             var model = new ManageGetVm
             {
@@ -59,7 +60,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 CategoryId = data.CategoryId.Value,
                 RangeMin = data.MinRange.Value,
                 RangeMax = data.MaxRange.Value
-            });
+            }, data.SuggestableEducations);
 
             return Json(new ResponseModel
             {
@@ -87,13 +88,14 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/get-educations-for-suggestion/{categoryId}")]
         public IActionResult GetEducations(Guid? categoryId)
         {
-            if (!categoryId.HasValue)
-                return Json(new ResponseModel
-                {
-                    isSuccess = false
-                });
+            //if (!categoryId.HasValue)
+            //    return Json(new ResponseModel
+            //    {
+            //        isSuccess = false
+            //    });
 
-            var data = _unitOfWork.Education.Get(x => x.CategoryId == categoryId.Value, x => x.OrderBy(o => o.Name));
+            //var data = _unitOfWork.Education.Get(x => x.CategoryId == categoryId.Value, x => x.OrderBy(o => o.Name));
+            var data = _unitOfWork.Education.Get(null, x => x.OrderBy(o => o.Name));
 
             return Json(new ResponseModel
             {

@@ -120,7 +120,8 @@
             var data = {
                 MinRange: inputMin.val(),
                 MaxRange: inputMax.val(),
-                CategoryId: selectCategories.options[selectCategories.selectedIndex].value
+                CategoryId: selectCategories.options[selectCategories.selectedIndex].value,
+                SuggestableEducations: selectEducations.val()
             };
             var tokenVerifier = new SecuritySupport.TokenVerifier();
             data = tokenVerifier.addToken("form-add-suggestion", data);

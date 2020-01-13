@@ -41,5 +41,7 @@ namespace NitelikliBilisim.Business.Repositories
 
             return base.Insert(entity, isSaveLater);
         }
+
+
     }
 }
