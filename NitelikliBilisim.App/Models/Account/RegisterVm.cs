@@ -51,5 +51,6 @@ namespace NitelikliBilisim.App.Models.Account
         public int EducationCenter { get; set; }
         public Guid? EducationCategory { get; set; }
         public DateTime? StartedAt { get; set; }
+        public bool AcceptedTerms { get; set; }
     }
 }

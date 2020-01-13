@@ -18,8 +18,8 @@
                 </a>
                 <ul class="sidenav-second-level collapse show" id="collapseYonetim">
                     <li>
-                        <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseKategoriler" data-parent="#exampleAccordion">Kategoriler</a>
-                        <ul class="sidenav-third-level collapse" id="collapseKategoriler">
+                        <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseCategories" data-parent="#exampleAccordion">Kategoriler</a>
+                        <ul class="sidenav-third-level collapse" id="collapseCategories">
                             <li>
                                 <a href="@Url.Action("List", "EducationCategory")">Listele</a>
                             </li>
@@ -29,13 +29,32 @@
                         </ul>
                     </li>
                     <li>
-                        <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseEgitimler" data-parent="#exampleAccordion">Eğitimler</a>
-                        <ul class="sidenav-third-level collapse" id="collapseEgitimler">
+                        <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseTags" data-parent="#exampleAccordion">Etiketler</a>
+                        <ul class="sidenav-third-level collapse" id="collapseTags">
+                            <li>
+                                <a href="@Url.Action("List", "EducationTag")">Listele</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("Add", "EducationTag")">Ekle</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseEducations" data-parent="#exampleAccordion">Eğitimler</a>
+                        <ul class="sidenav-third-level collapse" id="collapseEducations">
                             <li>
                                 <a href="@Url.Action("List", "Education")">Listele</a>
                             </li>
                             <li>
                                 <a href="@Url.Action("Add", "Education")">Ekle</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseSuggestions" data-parent="#exampleAccordion">Öneri Yönetimi</a>
+                        <ul class="sidenav-third-level collapse" id="collapseSuggestions">
+                            <li>
+                                <a href="@Url.Action("Manage", "Suggestion")">Yönet</a>
                             </li>
                         </ul>
                     </li>

@@ -31,9 +31,10 @@ function btnSave_onClick() {
         success: (res) => {
             var resultAlert = new AlertSupport.ResultAlert();
             if (res.isSuccess) {
+                $("#form-add-category")[0].reset();
                 resultAlert.display({
                     success: true,
-                    message: "İşlem başarılı. Anasayfaya gitmek için {link}",
+                    message: "İşlem başarılı. Listeye gitmek için {link}",
                     redirectElement: {
                         content: "tıklayınız",
                         link: "/admin/etiketler"

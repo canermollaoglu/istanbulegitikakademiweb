@@ -56,8 +56,8 @@
                         <div id="intro">
                             <figure><img src="~/assets/img/wizard_intro_icon.svg" alt=""></figure>
                             <h1>Kayıt Formu</h1>
-                            <p>Exerci tibique eum cu, paulo appellantur et mei, ea partem urbanitas vim. His ei iusto nonumes atomorum. Mentitum pericula in nec. In eos habemus tibique. </p>
-                            <p><strong>Mel erant legere iuvaret ea. At eum doctus voluptatibus, has id veritus constituam.</strong></p>
+                            <p>İş dünyasında, proje geliştirme deneyimi elde ederek bir adım öne geçmek için atılacak ilk adımı atmak üzeresiniz. </p>
+                            <p><strong>Yalnızca 2 dakikanınızı ayırarak kayıt olun ve fark atın!</strong></p>
                         </div>
                     </div>
 
@@ -140,7 +140,7 @@
                             <input type="password" name="confirmPassword" class="form-control" placeholder="Şifre onayla" id="input-confirm-password">
                         </div>
                         <div class="form-group terms">
-                            <input name="terms" type="checkbox" class="icheck required" value="yes">
+                            <input name="terms" type="checkbox" class="icheck required" value="yes" id="chk-terms-and-conditions">
                             <label> <a href="#" data-toggle="modal" data-target="#terms-txt">Kullanım Şartlarını</a> okudum ve kabul ediyorum</label>
                         </div>
                     </div>
@@ -208,6 +208,7 @@
         var inputUsername = $("#input-username");
         var inputPassword = $("#input-password");
         var inputConfirmPassword = $("#input-confirm-password");
+        var chkTermsAndConditions = document.getElementById("chk-terms-and-conditions");
         var btnSubmit = $("#btn-submit");
         var divNbuyFormContainer = $("#div-nbuy-form-container");
 
@@ -248,7 +249,8 @@
                 IsNbuyStudent: radioNbuyYes.checked,
                 StartedAt: inputDateWhenBegun.val(),
                 EducationCenter: selectEducationCenters.options[selectEducationCenters.selectedIndex].value,
-                EducationCategory: selectEducationCategories.options[selectEducationCategories.selectedIndex].value
+                EducationCategory: selectEducationCategories.options[selectEducationCategories.selectedIndex].value,
+                AcceptedTerms: chkTermsAndConditions.checked
             };
             var tokenVerifier = new SecuritySupport.TokenVerifier();
             data = tokenVerifier.addToken("wrapped", data);
@@ -257,7 +259,9 @@
                 method: "post",
                 data: data,
                 success: (res) => {
-
+                    if (res.isSuccess) {
+                        location.href = "/giris-yap";
+                    }
                 }
             });
         }

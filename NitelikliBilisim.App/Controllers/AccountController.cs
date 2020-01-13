@@ -50,14 +50,12 @@ namespace NitelikliBilisim.App.Controllers
         [HttpPost, Route("kayit-ol")]
         public async Task<IActionResult> Register(RegisterPostVm model)
         {
-            if (!ModelState.IsValid)
-            {
+            if (!model.AcceptedTerms || !ModelState.IsValid)
                 return Json(new ResponseModel
                 {
                     isSuccess = false,
                     errors = ModelStateUtil.GetErrors(ModelState)
                 });
-            }
 
             var user = new ApplicationUser()
             {

@@ -33,7 +33,7 @@
                             </select>
                         </div>
                         <div class="col-md-4">
-                            <label>Eğitimler</label>
+                            <label>Önerilecek Eğitimler</label>
                             <select id="select-educations" multiple class="form-control">
 
                             </select>
@@ -113,6 +113,7 @@
             $("#select-categories").select2();
             selectEducations.select2();
             getSuggestions();
+            selectCategories.onchange();
         }
         function btnAdd_onClick() {
             btnAdd.off("click");
