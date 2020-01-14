@@ -80,6 +80,17 @@ namespace NitelikliBilisim.Business.Repositories
                 EducationId = x.Key,
                 Count = x.Count()
             }).ToList();
+            var educatorCount = educations.Join(_context.Bridge_EducationEducators, l => l.Id, r => r.Id, (x, y) => new
+            {
+                EducationId = x.Id,
+                EducatorId = y.Id2
+            })
+            .GroupBy(x => x.EducationId)
+            .Select(x => new _EducationSub
+            {
+                EducationId = x.Key,
+                Count = x.Count()
+            }).ToList();
 
             var categories = educations.Join(_context.Bridge_EducationTags, l => l.Id, r => r.Id2, (x, y) => new
             {
@@ -136,6 +147,7 @@ namespace NitelikliBilisim.Business.Repositories
                 Medias = mediaCount,
                 Parts = partCount,
                 Gains = gainCount,
+                Educators = educatorCount,
                 EducationCategories = educationCategories
             };
         }

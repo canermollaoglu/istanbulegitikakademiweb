@@ -57,6 +57,8 @@ namespace NitelikliBilisim.Data
 
             builder.Entity<Bridge_EducationTag>()
                 .HasKey(x => new { x.Id, x.Id2 });
+            builder.Entity<Bridge_EducationEducator>()
+                .HasKey(x => new { x.Id, x.Id2 });
             builder.Entity<WishlistItem>()
                 .HasKey(x => new { x.Id, x.Id2 });
 
@@ -96,5 +98,6 @@ namespace NitelikliBilisim.Data
         public DbSet<EducatorSocialMedia> EducatorSocialMedias { get; set; }
         public DbSet<StudentEducationInfo> StudentEducationInfos { get; set; }
         public DbSet<Suggestion> Suggestions { get; set; }
+        public DbSet<Bridge_EducationEducator> Bridge_EducationEducators { get; set; }
     }
 }

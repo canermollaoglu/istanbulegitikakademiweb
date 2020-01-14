@@ -121,5 +121,25 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 isSuccess = true
             });
         }
+
+        [Route("admin/egitmen-ata/{educationId}")]
+        public IActionResult ManageAssignEducators(Guid? educationId)
+        {
+            if (educationId == null)
+                return Redirect("/admin/egitimler");
+
+            var model = _vmCreator.CreateManageAssignEducatorsVm(educationId.Value);
+
+            return View(model);
+        }
+        [Route("admin/assign-educators")]
+        public IActionResult AssignEducators(Core.ViewModels.areas.admin.educator.ManageAssignEducatorsPostVm data)
+        {
+            _unitOfWork.Bridge_EducationEducator.Insert(data);
+            return Json(new ResponseModel
+            {
+                isSuccess = true
+            });
+        }
     }
 }
