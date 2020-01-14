@@ -56,8 +56,8 @@
                         <div id="intro">
                             <figure><img src="~/assets/img/wizard_intro_icon.svg" alt=""></figure>
                             <h1>Kayıt Formu</h1>
-                            <p>İş dünyasında, proje geliştirme deneyimi elde ederek bir adım öne geçmek için atılacak ilk adımı atmak üzeresiniz. </p>
-                            <p><strong>Yalnızca 2 dakikanınızı ayırarak kayıt olun ve fark atın!</strong></p>
+                            <p>İş dünyasında, proje geliştirme deneyimi elde ederek bir adım öne geçmek için ilk adımı atmak üzeresiniz. </p>
+                            <p><strong>Yalnızca 2 dakikanınızı ayırarak kayıt olun ve fark yaratın!</strong></p>
                         </div>
                     </div>
 
@@ -90,7 +90,7 @@
                     <div class="step">
                         <h3 class="main_question"><strong>2/3</strong>Eğitim Bilgileri</h3>
 
-                        <label>NBUY eğitimi aldınız mı ya da bitirdiniz mi?</label>
+                        <label>"Nitelikli Bilişim Uzmanı Yetiştirme" programını tamamladınız ya da devam ediyor musunuz?</label>
                         <div style=""></div>
                         <input type="radio" checked name="isnbuy" value="1" id="radio-nbuy-yes">Evet
                         <input type="radio" name="isnbuy" value="2" id="radio-nbuy-no">Hayır
@@ -99,7 +99,7 @@
                             <div class="form-group select">
                                 <div class="styled-select">
                                     <select class="required" id="select-education-centers">
-                                        <option value="0" selected="">Eğitimi hangi kurumdan alıyorsunuz?</option>
+                                        <option value="0" selected="">Eğitim kurumu seçiniz</option>
                                         @foreach (var item in Model.EducationCenters)
                                         {
                                             <option value="@item.Key">@item.Value</option>
@@ -111,7 +111,7 @@
                             <div class="form-group select">
                                 <div class="styled-select">
                                     <select class="required" id="select-education-categories">
-                                        <option value="" selected="">Ne eğitimi alıyorsunuz?</option>
+                                        <option value="" selected="">Eğitim programı seçiniz</option>
                                         @foreach (var item in Model.EducationCategories)
                                         {
                                             <option value="@item.Id">@item.Name</option>
@@ -121,7 +121,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label>Eğitim ne zaman başladı?</label>
+                                <label>Eğitim başlangıç tarihi</label>
                                 <input type="date" value="" class="form-control" id="input-date-when-begun" />
                             </div>
                         </div>

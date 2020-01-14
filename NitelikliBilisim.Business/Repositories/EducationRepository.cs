@@ -153,14 +153,12 @@ namespace NitelikliBilisim.Business.Repositories
                 {
                     entity.IsActive = false;
                     var educationId = base.Insert(entity);
-                    var tag = entity.Name.FormatForTag();
 
-                    if (!_context.EducationTags.Any(x => x.Name == tag))
-                        _context.EducationTags.Add(new EducationTag
-                        {
-                            Name = tag,
-                            Description = $"{entity.Name} isimli eğitimin otomatik oluşturulmuş etiketi"
-                        });
+                    foreach (var item in medias)
+                        item.EducationId = educationId;
+
+                    _context.EducationMedias.AddRange(medias);
+                    //_context.SaveChanges();
 
                     var bridge = new List<Bridge_EducationTag>();
                     foreach (var tagId in tagIds)
@@ -169,11 +167,25 @@ namespace NitelikliBilisim.Business.Repositories
                             Id = tagId,
                             Id2 = educationId
                         });
-                    foreach (var item in medias)
-                        item.EducationId = educationId;
-
-                    _context.EducationMedias.AddRange(medias);
+                    var tag = entity.Name.FormatForTag();
+                    EducationTag autoTag = null;
+                    if (!_context.EducationTags.Any(x => x.Name == tag))
+                    {
+                        autoTag = new EducationTag
+                        {
+                            Name = tag,
+                            Description = $"{entity.Name} isimli eğitimin otomatik oluşturulmuş etiketi"
+                        };
+                        _context.EducationTags.Add(autoTag);
+                    }
+                    if (autoTag != null)
+                        bridge.Add(new Bridge_EducationTag
+                        {
+                            Id = autoTag.Id,
+                            Id2 = educationId
+                        });
                     _context.Bridge_EducationTags.AddRange(bridge);
+
                     _context.SaveChanges();
                     transaction.Commit();
                     return educationId;
