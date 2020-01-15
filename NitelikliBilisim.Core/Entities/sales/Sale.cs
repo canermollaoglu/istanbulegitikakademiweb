@@ -26,7 +26,7 @@ namespace NitelikliBilisim.Core.Entities
         public bool IsCash { get; set; }
         public byte PaymentCount { get; set; }
 
-        [ForeignKey("Customer"), MaxLength(128)]
+        [ForeignKey("Customer"), MaxLength(450)]
         public string CustomerId { get; set; }
         public virtual Customer Customer { get; set; }
     }

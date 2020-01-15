@@ -59,6 +59,8 @@ namespace NitelikliBilisim.Data
                 .HasKey(x => new { x.Id, x.Id2 });
             builder.Entity<Bridge_EducationEducator>()
                 .HasKey(x => new { x.Id, x.Id2 });
+            builder.Entity<Bridge_GroupStudent>()
+                .HasKey(x => new { x.Id, x.Id2 });
             builder.Entity<WishlistItem>()
                 .HasKey(x => new { x.Id, x.Id2 });
 
