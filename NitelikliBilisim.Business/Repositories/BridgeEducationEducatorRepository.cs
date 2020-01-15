@@ -1,4 +1,6 @@
-﻿using NitelikliBilisim.Core.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.areas.admin.educator;
 using NitelikliBilisim.Data;
 using System;
@@ -30,6 +32,28 @@ namespace NitelikliBilisim.Business.Repositories
             }
             _context.Bridge_EducationEducators.AddRange(bridgeEducationEducators);
             _context.SaveChanges();
+        }
+
+        public List<EducatorVm> GetAssignedEducators(Guid educationId)
+        {
+            var educatorIds = _context.Bridge_EducationEducators.Where(x => x.Id == educationId)
+                .Select(x => x.Id2)
+                .ToList();
+
+            if (educatorIds.Count == 0)
+                return new List<EducatorVm>();
+
+            var model = _context.Educators.Where(x => educatorIds.Contains(x.Id))
+                .Include(x => x.User)
+                .Select(x => new EducatorVm
+                {
+                    EducatorId = x.Id,
+                    Name = x.User.Name,
+                    Surname = x.User.Surname,
+                    Title = x.Title
+                }).ToList();
+
+            return model;
         }
     }
 }

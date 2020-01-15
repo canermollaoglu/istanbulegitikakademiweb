@@ -127,7 +127,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         {
             if (educationId == null)
                 return Redirect("/admin/egitimler");
-
             var model = _vmCreator.CreateManageAssignEducatorsVm(educationId.Value);
 
             return View(model);
@@ -139,6 +138,22 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             return Json(new ResponseModel
             {
                 isSuccess = true
+            });
+        }
+
+        [Route("admin/get-assigned-educators/{educationId}")]
+        public IActionResult GetEducators(Guid? educationId)
+        {
+            if (!educationId.HasValue)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false
+                });
+
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = _unitOfWork.Bridge_EducationEducator.GetAssignedEducators(educationId.Value)
             });
         }
     }
