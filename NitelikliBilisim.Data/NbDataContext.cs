@@ -91,7 +91,6 @@ namespace NitelikliBilisim.Data
         public DbSet<EducationPromotionCode> EducationPromotionCodes { get; set; }
         public DbSet<Sale> Sales { get; set; }
         public DbSet<SaleAddress> SaleAddresses { get; set; }
-        public DbSet<SaleDetail> SaleDetails { get; set; }
         public DbSet<WishlistItem> Wishlist { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Educator> Educators { get; set; }
@@ -99,5 +98,7 @@ namespace NitelikliBilisim.Data
         public DbSet<StudentEducationInfo> StudentEducationInfos { get; set; }
         public DbSet<Suggestion> Suggestions { get; set; }
         public DbSet<Bridge_EducationEducator> Bridge_EducationEducators { get; set; }
+        public DbSet<EducationGroup> EducationGroups { get; set; }
+        public DbSet<Bridge_GroupStudent> Bridge_GroupStudents { get; set; }
     }
 }
