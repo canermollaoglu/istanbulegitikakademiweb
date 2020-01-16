@@ -16,6 +16,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Net;
+using Microsoft.Extensions.Hosting;
 
 namespace NitelikliBilisim.App
 {
@@ -60,11 +61,11 @@ namespace NitelikliBilisim.App
             services.AddMvc(options =>
             {
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            }).SetCompatibilityVersion(CompatibilityVersion.Latest);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             var cultureInfo = new CultureInfo("tr-TR") { NumberFormat = { NumberDecimalSeparator = "." } };
 
@@ -72,11 +73,9 @@ namespace NitelikliBilisim.App
             CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
             app.UseDeveloperExceptionPage();
-            app.UseDatabaseErrorPage();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
             }
             else
             {
@@ -95,12 +94,21 @@ namespace NitelikliBilisim.App
 
             app.UseCookiePolicy();
 
-            app.UseMvc(routes =>
+            //app.UseMvc(routes =>
+            //{
+            //    routes.MapRoute("areas", "{area}/{controller=Manage}/{action=Index}/{id?}");
+            //    routes.MapRoute(
+            //        name: "default",
+            //        template: "{controller=Home}/{action=Index}/{id?}");
+            //});
+
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute("areas", "{area}/{controller=Manage}/{action=Index}/{id?}");
-                routes.MapRoute(
+                endpoints.MapControllerRoute("areas", "{area}/{controller=Manage}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
             });
         }
     }
