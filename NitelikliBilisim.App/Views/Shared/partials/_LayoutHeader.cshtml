@@ -11,10 +11,20 @@
         <a href="/">LOGO</a>
     </div>
     <ul id="top_menu">
-        <li><a href="/giris-yap" class="login">GİRİŞ YAP</a></li>
+        @if (!User.Identity.IsAuthenticated)
+        {
+            <li><a href="/giris-yap" class="login">GİRİŞ YAP</a></li>
+        }
         <li><a href="#0" class="search-overlay-menu-btn">Arama</a></li>
-        <li class="hidden_tablet"><a href="#0">BİZ KİMİZ?</a></li>
-        <li class="hidden_tablet"><a href="/kayit-ol" class="btn_1 rounded">KAYDOL</a></li>
+        <li class="hidden_tablet"><a href="/biz-kimiz">BİZ KİMİZ?</a></li>
+        @if (!User.Identity.IsAuthenticated)
+        {
+            <li class="hidden_tablet"><a href="/kayit-ol" class="btn_1 rounded">KAYDOL</a></li>
+        }
+        else
+        {
+            <li><a href="/cikis-yap" class="btn_1">Çıkış Yap</a></li>
+        }
         <li>
             <div class="hamburger hamburger--spin">
                 <div class="hamburger-box">

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
@@ -9,10 +10,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Models;
+using NitelikliBilisim.App.Models.Account;
+using NitelikliBilisim.App.Utility;
+using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Services;
 using NitelikliBilisim.Core.ViewModels.Account;
+using NitelikliBilisim.Enums;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -21,33 +26,44 @@ namespace NitelikliBilisim.App.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UnitOfWork _unitOfWork;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, UnitOfWork unitOfWork)
         {
             this._userManager = userManager;
             this._signInManager = signInManager;
+            _unitOfWork = unitOfWork;
         }
 
         [Route("kayit-ol")]
         public IActionResult Register()
         {
-            return View();
+            var model = new RegisterGetVm
+            {
+                EducationCenters  = EnumSupport.ToKeyValuePair<EducationCenter>(),
+                EducationCategories = _unitOfWork.EducationCategory.Get(x => x.BaseCategoryId == null, x => x.OrderBy(o => o.Name))
+            };
+
+            return View(model);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Register(RegisterViewModel model)
+        [HttpPost, Route("kayit-ol")]
+        public async Task<IActionResult> Register(RegisterPostVm model)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
+            if (!model.AcceptedTerms || !ModelState.IsValid)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = ModelStateUtil.GetErrors(ModelState)
+                });
 
             var user = new ApplicationUser()
             {
                 Name = model.Name,
                 UserName = model.UserName,
                 Surname = model.Surname,
-                Email = model.Email
+                Email = model.Email,
+                PhoneNumber = model.Phone
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
@@ -57,33 +73,55 @@ namespace NitelikliBilisim.App.Controllers
                     _userManager.Users.Count() == 1
                         ? IdentityRoleList.Admin.ToString()
                         : IdentityRoleList.User.ToString());
+                var customer = new Customer
+                {
+                    Id = user.Id,
+                    CustomerType = CustomerType.Individual,
+                    IsNbuyStudent = model.IsNbuyStudent
+                };
+                _unitOfWork.Customer.Insert(customer);
+                if (model.IsNbuyStudent)
+                {
+                    var studentEducationInformation = new StudentEducationInfo
+                    {
+                        CustomerId = user.Id,
+                        StartedAt = model.StartedAt.Value,
+                        EducationCenter = (EducationCenter)model.EducationCenter,
+                        CategoryId = model.EducationCategory
+                    };
+                    _unitOfWork.StudentEducationInfo.Insert(studentEducationInformation);
+                }
                 if (result.Succeeded)
                 {
-                    //TODO mail gönder, 
-                    return RedirectToAction("Index", "Home");
+                    //TODO mail gönder
                 }
-
-                var messages = string.Join(", ", result.Errors.Select(x => x.Description));
-                ModelState.AddModelError(string.Empty, messages);
             }
             else
             {
-                var messages = string.Join(", ", result.Errors.Select(x => x.Description));
-                ModelState.AddModelError(string.Empty, messages);
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Kullanıcı oluşturulurken bir hata oluştu" }
+                });
             }
 
-            return View(model);
+            return Json(new ResponseModel
+            {
+                isSuccess = true
+            });
         }
 
         [Route("giris-yap")]
         public async Task<IActionResult> Login(string returnUrl = null)
         {
             //return Redirect("/yakinda");
+            if (HttpContext.User.Identity.IsAuthenticated)
+                return Redirect("/");
             ViewBag.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             return View(new LoginViewModel() { ReturnUrl = returnUrl });
         }
 
-        [HttpPost]
+        [HttpPost, Route("giris-yap")]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (!ModelState.IsValid)
@@ -223,9 +261,9 @@ namespace NitelikliBilisim.App.Controllers
             {
                 ModelState.AddModelError(string.Empty, error.Description);
             }
-            return View(nameof(ExternalLogin),model);
+            return View(nameof(ExternalLogin), model);
         }
-        [Authorize]
+        [Authorize, Route("cikis-yap")]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();

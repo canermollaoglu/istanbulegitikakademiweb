@@ -1,0 +1,144 @@
+﻿@model NitelikliBilisim.Core.ViewModels.areas.admin.educator.ManageAssignEducatorsGetVm
+@{
+    ViewData["Title"] = "Eğitmen Ata";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+
+@section styles{
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="~/assets/css/area-admin/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-list"></i> <strong>@Model.EducationName</strong> Eğitiminin Eğitmenleri
+    </div>
+    <div class="card-body">
+        <div class="row" style="margin-bottom:1%;">
+            <div class="col-md-12">
+                <form id="form-assign-educators">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" value="@Model.EducationId" id="_education-id" />
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Eğitmenleri seçiniz</label>
+                                <select id="select-educators" multiple class="form-control">
+                                    @foreach (var item in Model.Educators)
+                                    {
+                                        <option value="@item.Id">@item.User.Name @item.User.Surname</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button id="btn-add" type="button" class="btn_1" style="cursor:pointer;"><i class="fa fa-plus"></i> Eğitmenleri Gruba Ata</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Ünvan</th>
+                                <th>İsim</th>
+                                <th>Soyisim</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>Ünvan</th>
+                                <th>İsim</th>
+                                <th>Soyisim</th>
+                            </tr>
+                        </tfoot>
+                        <tbody id="tbody-educators">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer small text-muted">Veri tarihi: @DateTime.Now</div>
+</div>
+@section postScripts{
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+    <script src="~/assets/js/area-admin/jquery.dataTables.js"></script>
+    <script src="~/assets/js/area-admin/dataTables.bootstrap4.js"></script>
+    <script src="~/js/sup/alert-sup.js"></script>
+    <script src="~/js/lib/security-support.js"></script>
+    <script>
+        /* fields */
+        var _educationId = $("#_education-id").val();
+
+        /* elements */
+        var selectEducators = $("#select-educators");
+        var btnAdd = $("#btn-add");
+        var tbodyEducators = $("#tbody-educators");
+
+        /* assignments */
+        $(document).ready(document_onLoad);
+        btnAdd.on("click", btnAdd_onClick);
+
+        /* events */
+        function document_onLoad() {
+            selectEducators.select2();
+            getAssignedEducators();
+        }
+        function btnAdd_onClick() {
+            btnAdd.off("click");
+            var data = {
+                EducationId: _educationId,
+                Educators: $("#select-educators").val()
+            };
+            var tokenVerifier = new SecuritySupport.TokenVerifier();
+            data = tokenVerifier.addToken("form-assign-educators", data);
+
+            $.ajax({
+                url: `/admin/assign-educators`,
+                method: "post",
+                data: data,
+                success: (res) => {
+                    getAssignedEducators();
+                }
+            });
+        }
+
+        /* functions */
+        function getAssignedEducators() {
+            $.ajax({
+                url: `/admin/get-assigned-educators/${_educationId}`,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        createTable(res.data);
+                    }
+                }
+            });
+        }
+        function createTable(data) {
+            tbodyEducators.html("");
+
+            var appended = "";
+            for (var i = 0; i < data.length; i++) {
+                var item = data[i];
+                appended += `<tr>` +
+                    `<td>${item.title}</td>` +
+                    `<td>${item.name}</td>` +
+                    `<td>${item.surname}</td>` +
+                    `</tr>`;
+            }
+            tbodyEducators.append(appended);
+        }
+    </script>
+}

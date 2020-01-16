@@ -12,6 +12,7 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education
         public List<_EducationSub> Medias { get; set; }
         public List<_EducationSub> Parts { get; set; }
         public List<_EducationSub> Gains { get; set; }
+        public List<_EducationSub> Educators { get; set; }
         public List<_EducationCategory> EducationCategories { get; set; }
     }
 

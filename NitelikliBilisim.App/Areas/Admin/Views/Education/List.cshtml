@@ -24,9 +24,10 @@
                         <th>Etiketler</th>
                         <th>Gün / Saat</th>
                         <th>Seviye</th>
-                        <th>Medyalar</th>
-                        <th>Parçalar</th>
+                        <th>Medyalar/Parçalar/Kazanımlar/Eğitmenler</th>
+                        @*<th>Parçalar</th>
                         <th>Kazanımlar</th>
+                        <th>Eğitmenler</th>*@
                     </tr>
                 </thead>
                 <tfoot>
@@ -36,9 +37,10 @@
                         <th>Etiketler</th>
                         <th>Gün / Saat</th>
                         <th>Seviye</th>
-                        <th>Medyalar</th>
-                        <th>Parçalar</th>
+                        <th>Medyalar/Parçalar/Kazanımlar/Eğitmenler</th>
+                        @*<th>Parçalar</th>
                         <th>Kazanımlar</th>
+                        <th>Eğitmenler</th>*@
                     </tr>
                     @*<tr>
                             <th colspan="8">
@@ -51,33 +53,31 @@
                     {
                         <text>
                             @{
-                                @*var isValidEducation = false;*@
-                                var educationMedias = Model.Medias.FirstOrDefault(x => x.EducationId == item.Id);
-                                var mediaCount = educationMedias != null ? educationMedias.Count : 0;
-                                var media = $"<a href=\"/admin/egitim-medya-yonetimi/{item.Id}\" class=\"btn btn-primary\"/><i class=\"fa fa-file-photo-o\"></i> {mediaCount}</a>";
-                                var educationParts = Model.Parts.FirstOrDefault(x => x.EducationId == item.Id);
-                                var partCount = educationParts != null ? educationParts.Count : 0;
-                                var part = $"<a href=\"/admin/egitim-parca-yonetimi/{item.Id}\" class=\"btn btn-secondary\"/><i class=\"fa fa-list-ul\"></i> {partCount}</a>";
-                                var educationGains = Model.Gains.FirstOrDefault(x => x.EducationId == item.Id);
-                                var gainCount = educationGains != null ? educationGains.Count : 0;
-                                var gain = $"<a href=\"/admin/egitim-kazanim-yonetimi/{item.Id}\" class=\"btn btn-info\"/><i class=\"fa fa-gift\"></i> {gainCount}</a>";
-                                var categories = Model.EducationCategories.FirstOrDefault(x => x.EducationId == item.Id);
-                                var concattedCategories = categories.ConcattedCategories;
+                            var educationMedias = Model.Medias.FirstOrDefault(x => x.EducationId == item.Id);
+                            var mediaCount = educationMedias != null ? educationMedias.Count : 0;
+                            var media = $"<a href=\"/admin/egitim-medya-yonetimi/{item.Id}\" class=\"btn btn-primary\"/><i class=\"fa fa-file-photo-o\"></i> {mediaCount}</a>";
+                            var educationParts = Model.Parts.FirstOrDefault(x => x.EducationId == item.Id);
+                            var partCount = educationParts != null ? educationParts.Count : 0;
+                            var part = $"<a href=\"/admin/egitim-parca-yonetimi/{item.Id}\" class=\"btn btn-secondary\"/><i class=\"fa fa-list-ul\"></i> {partCount}</a>";
+                            var educationGains = Model.Gains.FirstOrDefault(x => x.EducationId == item.Id);
+                            var gainCount = educationGains != null ? educationGains.Count : 0;
+                            var gain = $"<a href=\"/admin/egitim-kazanim-yonetimi/{item.Id}\" class=\"btn btn-info\"/><i class=\"fa fa-gift\"></i> {gainCount}</a>";
+                            var educators = Model.Educators.FirstOrDefault(x => x.EducationId == item.Id);
+                            var educatorCount = educators != null ? educators.Count : 0;
+                            var educator = $"<a href=\"/admin/egitmen-ata/{item.Id}\" class=\"btn btn-success\"><i class=\"fa fa-users\"></i> {educatorCount}</a>";
 
-                                @*if (partCount > 0 && mediaCount > 0 && gainCount > 0 && concattedCategories != null)
-                                {
-                                    isValidEducation = true;
-                                }*@
+                            var categories = Model.EducationCategories.FirstOrDefault(x => x.EducationId == item.Id);
+                            var concattedCategories = categories.ConcattedCategories;
 
-                                if (concattedCategories == null)
-                                {
-                                    concattedCategories = "-";
-                                }
+                            if (concattedCategories == null)
+                            {
+                                concattedCategories = "-";
+                            }
 
-                                var validEducation = item.IsActive ?
-                                        $"<i class=\"fa fa-unlock text-success\" style=\"padding:25%;font-size:200%;text-align:center;vertical-align:middle;\"></i>"
-                                        :
-                                        $"<i class=\"fa fa-lock text-danger\" style=\"padding:25%;font-size:200%;text-align:center;vertical-align:middle;\"></i>";
+                            var validEducation = item.IsActive ?
+                                    $"<i class=\"fa fa-unlock text-success\" style=\"padding:25%;font-size:200%;text-align:center;vertical-align:middle;\"></i>"
+                                    :
+                                    $"<i class=\"fa fa-lock text-danger\" style=\"padding:25%;font-size:200%;text-align:center;vertical-align:middle;\"></i>";
                             }
                         </text>
                         <tr>
@@ -86,9 +86,22 @@
                             <td>@Html.Raw(concattedCategories)</td>
                             <td>@item.Days gün / @item.HoursPerDay saat</td>
                             <td>@item.Level.ToString()</td>
-                            <td>@Html.Raw(media)</td>
-                            <td>@Html.Raw(part)</td>
-                            <td>@Html.Raw(gain)</td>
+                            <td>
+                                <div class="row">
+                                    <div class="offset-md-2 col-md-8">
+                                        <div class="btn-group">
+                                            @Html.Raw(media)
+                                            @Html.Raw(part)
+                                            @Html.Raw(gain)
+                                            @Html.Raw(educator)
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            @*<td>@Html.Raw(media)</td>
+                                <td>@Html.Raw(part)</td>
+                                <td>@Html.Raw(gain)</td>
+                                <td>@Html.Raw(educator)</td>*@
                         </tr>
                     }
                 </tbody>

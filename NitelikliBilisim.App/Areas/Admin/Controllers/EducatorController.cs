@@ -100,7 +100,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 var newEducator = new Educator
                 {
                     Id = newUser.Id,
-                    Title = "?",
+                    Title = data.Title,
                     Biography = "?"
                 };
                 _unitOfWork.Educator.Insert(newEducator);
