@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "NitelikliBilisim.Consumer": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}
