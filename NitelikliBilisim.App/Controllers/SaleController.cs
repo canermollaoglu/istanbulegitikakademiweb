@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.VmCreator;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.ViewModels.Cart;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -28,6 +29,12 @@ namespace NitelikliBilisim.App.Controllers
         [HttpPost, IgnoreAntiforgeryToken, Route("get-cart-items")]
         public IActionResult GetCartItems(GetCartItemsData data)
         {
+            if (data == null || data.Items == null)
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    data = new List<CartItem>()
+                });
             var model = _vmCreator.GetCartItems(data.Items);
             return Json(new ResponseModel
             {

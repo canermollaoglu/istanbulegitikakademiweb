@@ -84,7 +84,7 @@
                         </div>
                         <div class="add_bottom_30">Lorem ipsum dolor sit amet, sed vide <strong>moderatius</strong> ad. Ex eius soleat sanctus pro, enim conceptam in quo, <a href="#0">brute convenire</a> appellantur an mei.</div>
                         <a href="cart-2.html" class="btn_1 full-width">Ödeme Yap</a>
-                        <a href="courses-grid-sidebar.html" class="btn_1 full-width outline"><i class="icon-right"></i> Alışverişe Devam Et</a>
+                        <a href="/" class="btn_1 full-width outline"><i class="icon-right"></i> Alışverişe Devam Et</a>
                     </div>
                 </aside>
             </div>
@@ -109,6 +109,11 @@
         function document_onLoad() {
             getCartItems();
         }
+        function btnDeleteItem_onClick() {
+            var educationId = this.getAttribute("data-education-id");
+            _cart.removeFromCart(educationId);
+            getCartItems();
+        }
 
         /* functions */
         function getCartItems() {
@@ -130,6 +135,10 @@
         function appendCartItems(data) {
             tbodyCartItems.html("");
 
+            if (data.length === 0) {
+                tbodyCartItems.append(`<tr><td colspan="3">Sepetiniz boş</td></tr>`);
+            }
+
             var appended = "";
             for (var i = 0; i < data.length; i++) {
                 var item = data[i];
@@ -144,11 +153,17 @@
                     `<strong>${item.priceText}</strong>` +
                     `</td>` +
                     `<td class="options" style="width:5%; text-align:center;">` +
-                    `<a href="#"><i class="icon-trash"></i></a>` +
+                    `<a type="button" class="btn-delete-item" data-education-id="${item.educationId}"><i class="icon-trash"></i></a>` +
                     `</td>` +
                     `<tr>`;
             }
             tbodyCartItems.append(appended);
+
+            var deleteButtons = document.getElementsByClassName("btn-delete-item");
+            for (var i = 0; i < deleteButtons.length; i++) {
+                var btn = deleteButtons[i];
+                btn.onclick = btnDeleteItem_onClick;
+            }
         }
     </script>
 }

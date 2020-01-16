@@ -21,6 +21,16 @@
             }
         }
 
+        Cart.prototype.removeFromCart = function (educationId) {
+            this.ensureStorageCreated();
+            var deserialized = JSON.parse(localStorage.getItem("cart"));
+            var index = deserialized.indexOf(educationId);
+            if (index > -1) {
+                deserialized.splice(index, 1);
+                localStorage.setItem("cart", JSON.stringify(deserialized));
+            }
+        }
+
         Cart.prototype.getItems = function () {
             this.ensureStorageCreated();
             return JSON.parse(localStorage.getItem("cart"));
