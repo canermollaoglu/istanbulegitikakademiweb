@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace NitelikliBilisim.MessageQueue
+namespace NitelikliBilisim.Publisher
 {
     public class Startup
     {
