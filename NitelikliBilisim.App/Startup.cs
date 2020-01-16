@@ -58,10 +58,8 @@ namespace NitelikliBilisim.App
             services.AddScoped<UnitOfWork>();
 
             services.AddApplicationServices(this.Configuration);
-            services.AddMvc(options =>
-            {
-                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-            }).SetCompatibilityVersion(CompatibilityVersion.Latest);
+
+            services.AddControllers(options => { options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()); });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
