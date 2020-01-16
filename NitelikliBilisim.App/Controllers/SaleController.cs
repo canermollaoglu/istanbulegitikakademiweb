@@ -8,6 +8,7 @@ namespace NitelikliBilisim.App.Controllers
 {
     public class SaleController : Controller
     {
+        [Route("sepet")]
         public IActionResult Cart()
         {
             return View();
