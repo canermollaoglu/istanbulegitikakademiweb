@@ -14,9 +14,21 @@ namespace NitelikliBilisim.App.Controllers
             return View();
         }
 
+        [HttpPost, IgnoreAntiforgeryToken, Route("get-cart-items")]
+        public IActionResult GetCartItems(GetCartItemsData data)
+        {
+
+            return Json("");
+        }
+
         public IActionResult Payment()
         {
             return View();
         }
+    }
+
+    public class GetCartItemsData
+    {
+        public List<Guid> Items { get; set; }
     }
 }

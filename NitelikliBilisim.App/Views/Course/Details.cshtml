@@ -17,6 +17,7 @@
     <section id="hero_in" class="courses">
         <div class="wrapper">
             <div class="container">
+                <input type="hidden" value="@Model.Base.Id" id="_education-id" />
                 <h1 class="fadeInUp"><span></span>@Model.Base.Name</h1>
             </div>
         </div>
@@ -323,7 +324,7 @@
                         <div class="price">
                             @Model.Base.PriceText@*<span class="original_price"><em>$49</em>60% discount price</span>*@
                         </div>
-                        <a href="cart-1.html" class="btn_1 full-width">Satın Al</a>
+                        <button id="btn-buy" type="button" class="btn_1 full-width">Satın Al</button>
                         <a href="#0" class="btn_1 full-width outline"><i class="icon_heart"></i> İstek Listesine Ekle</a>
                         <div id="list_feat">
                             <h3>İçerikler</h3>
@@ -341,7 +342,19 @@
     </div>
 </main>
 @section postScripts{
+    <script src="~/js/sup/cart.js"></script>
     <script>
+        var _educationId = $("#_education-id").val();
 
+        var btnBuy = $("#btn-buy");
+
+        btnBuy.on("click", btnBuy_onClick);
+
+        function btnBuy_onClick() {
+            var cart = new CartSupport.Cart();
+            cart.addToCart(_educationId);
+
+            location.href = "/sepet";
+        }
     </script>
 }

@@ -32,11 +32,9 @@
                         <a href="#0" class="bs-wizard-dot"></a>
                     </div>
                 </div>
-                <!-- End bs-wizard -->
             </div>
         </div>
     </section>
-    <!--/hero_in-->
 
     <div class="bg_color_1">
         <div class="container margin_60_35">
@@ -95,10 +93,8 @@
                                 <button type="button" class="btn_1 outline">Sepeti Güncelle</button>
                             </div>
                         </div>
-                        <!-- /cart-options -->
                     </div>
                 </div>
-                <!-- /col -->
 
                 <aside class="col-lg-4" id="sidebar">
                     <div class="box_detail">
@@ -111,9 +107,38 @@
                     </div>
                 </aside>
             </div>
-            <!-- /row -->
         </div>
-        <!-- /container -->
     </div>
-    <!-- /bg_color_1 -->
 </main>
+
+@section postScripts{
+    <script src="~/js/lib/security-support.js"></script>
+    <script src="~/js/sup/cart.js"></script>
+    <script>
+        /* fields */
+        var _cart = new CartSupport.Cart();
+        /* elements */
+
+        /* assignments */
+        $(document).ready(document_onLoad);
+        /* events */
+        function document_onLoad() {
+            getCartItems();
+        }
+        /* functions */
+        function getCartItems() {
+            var items = _cart.getItems();
+            var data = {
+                Items: items
+            };
+            $.ajax({
+                url: "/get-cart-items",
+                method: "post",
+                data: data,
+                success: (res) => {
+
+                }
+            });
+        }
+    </script>
+}
