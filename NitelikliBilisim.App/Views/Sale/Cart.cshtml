@@ -48,9 +48,6 @@
                                         Ürün
                                     </th>
                                     <th>
-                                        İndirim
-                                    </th>
-                                    <th>
                                         Ücret
                                     </th>
                                     <th>
@@ -58,24 +55,8 @@
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <div class="thumb_cart">
-                                            <img src="http://via.placeholder.com/150x150/ccc/fff/thumb_cart_1.jpg" alt="Image">
-                                        </div>
-                                        <span class="item_cart">Persius delenit has cu</span>
-                                    </td>
-                                    <td>
-                                        0%
-                                    </td>
-                                    <td>
-                                        <strong>24,71$</strong>
-                                    </td>
-                                    <td class="options" style="width:5%; text-align:center;">
-                                        <a href="#"><i class="icon-trash"></i></a>
-                                    </td>
-                                </tr>
+                            <tbody id="tbody-cart-items">
+                                
                             </tbody>
                         </table>
                         <div class="cart-options clearfix">
@@ -117,14 +98,18 @@
     <script>
         /* fields */
         var _cart = new CartSupport.Cart();
+
         /* elements */
+        var tbodyCartItems = $("#tbody-cart-items");
 
         /* assignments */
         $(document).ready(document_onLoad);
+
         /* events */
         function document_onLoad() {
             getCartItems();
         }
+
         /* functions */
         function getCartItems() {
             var items = _cart.getItems();
@@ -136,9 +121,52 @@
                 method: "post",
                 data: data,
                 success: (res) => {
-
+                    if (res.isSuccess) {
+                        appendCartItems(res.data);
+                    }
                 }
             });
         }
+        function appendCartItems(data) {
+            tbodyCartItems.html("");
+
+            var appended = "";
+            for (var i = 0; i < data.length; i++) {
+                var item = data[i];
+                appended += `<tr>` +
+                    `<td>` +
+                    `<div class="thumb_cart">` +
+                    `<img src="${item.previewPhoto}" alt="Image" />` +
+                    `</div>` +
+                    `<span class="item_cart">${item.educationName}</span>` +
+                    `</td>` +
+                    `<td>` +
+                    `<strong>${item.priceText}</strong>` +
+                    `</td>` +
+                    `<td class="options" style="width:5%; text-align:center;">` +
+                    `<a href="#"><i class="icon-trash"></i></a>` +
+                    `</td>` +
+                    `<tr>`;
+            }
+            tbodyCartItems.append(appended);
+        }
     </script>
 }
+
+@*<tr>
+    <td>
+        <div class="thumb_cart">
+            <img src="http://via.placeholder.com/150x150/ccc/fff/thumb_cart_1.jpg" alt="Image">
+        </div>
+        <span class="item_cart">Persius delenit has cu</span>
+    </td>
+    <td>
+        0%
+    </td>
+    <td>
+        <strong>24,71$</strong>
+    </td>
+    <td class="options" style="width:5%; text-align:center;">
+        <a href="#"><i class="icon-trash"></i></a>
+    </td>
+</tr>*@

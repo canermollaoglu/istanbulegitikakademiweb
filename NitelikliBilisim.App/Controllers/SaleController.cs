@@ -3,11 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using NitelikliBilisim.App.Models;
+using NitelikliBilisim.App.VmCreator;
+using NitelikliBilisim.Business.UoW;
 
 namespace NitelikliBilisim.App.Controllers
 {
     public class SaleController : Controller
     {
+        private readonly UnitOfWork _unitOfWork;
+        private readonly SaleVmCreator _vmCreator;
+        public SaleController(UnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+            _vmCreator = new SaleVmCreator(_unitOfWork);
+        }
+
         [Route("sepet")]
         public IActionResult Cart()
         {
@@ -17,8 +28,12 @@ namespace NitelikliBilisim.App.Controllers
         [HttpPost, IgnoreAntiforgeryToken, Route("get-cart-items")]
         public IActionResult GetCartItems(GetCartItemsData data)
         {
-
-            return Json("");
+            var model = _vmCreator.GetCartItems(data.Items);
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = model
+            });
         }
 
         public IActionResult Payment()
