@@ -8,6 +8,8 @@ services:
       context: .
       dockerfile: ./NitelikliBilisim.Publisher/Dockerfile
     restart: always
+    depends_on:
+      - "rabbitmq"
 
   nb_consumer:
     image: nb_consumer

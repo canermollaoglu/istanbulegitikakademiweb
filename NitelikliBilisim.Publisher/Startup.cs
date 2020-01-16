@@ -41,7 +41,7 @@ namespace NitelikliBilisim.Publisher
             app.UseRouting();
 
             app.UseAuthorization();
-
+            Console.WriteLine(DateTime.Now);
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
