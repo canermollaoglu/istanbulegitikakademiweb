@@ -1,25 +1,30 @@
-version: '3.4'
+version: '3.7'
 
 services:
+
   nb_publisher:
-    build: ./NitelikliBilisim.Publisher
+    image: nb_publisher
+    build:
+      context: .
+      dockerfile: ./NitelikliBilisim.Publisher/Dockerfile
     restart: always
+
   nb_consumer:
-    build: ./NitelikliBilisim.Consumer
+    image: nb_consumer
+    build:
+      context: .
+      dockerfile: ./NitelikliBilisim.Consumer/Dockerfile
     restart: always
     depends_on:
       - "nb_publisher"
       - "rabbitmq"
 
-  rabbitmq: # login guest:guest
+  rabbitmq:
     image: rabbitmq:3-management
-    hostname: "rabbitmq"
-    labels:
-      NAME: "rabbitmq"
+    container_name: myrabbitmq
     ports:
-    - "4369:4369"
-    - "5671:5671"
-    - "5672:5672"
-    - "25672:25672"
-    - "15671:15671"
-    - "15672:15672"
+      - "15672:15672"
+      - "5672:5672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
