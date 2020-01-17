@@ -56,7 +56,6 @@
                                 </tr>
                             </thead>
                             <tbody id="tbody-cart-items">
-                                
                             </tbody>
                         </table>
                         <div class="cart-options clearfix">
@@ -94,7 +93,7 @@
 
 @section postScripts{
     <script src="~/js/lib/security-support.js"></script>
-    <script src="~/js/sup/cart.js"></script>
+    @*<script src="~/js/sup/cart.js"></script>*@
     <script>
         /* fields */
         var _cart = new CartSupport.Cart();
@@ -113,6 +112,7 @@
             var educationId = this.getAttribute("data-education-id");
             _cart.removeFromCart(educationId);
             getCartItems();
+            __layoutHeaderCart.html(`<i class="icon-cart"></i> (${__cart.getItemCount()})`);
         }
 
         /* functions */
@@ -169,19 +169,19 @@
 }
 
 @*<tr>
-    <td>
-        <div class="thumb_cart">
-            <img src="http://via.placeholder.com/150x150/ccc/fff/thumb_cart_1.jpg" alt="Image">
-        </div>
-        <span class="item_cart">Persius delenit has cu</span>
-    </td>
-    <td>
-        0%
-    </td>
-    <td>
-        <strong>24,71$</strong>
-    </td>
-    <td class="options" style="width:5%; text-align:center;">
-        <a href="#"><i class="icon-trash"></i></a>
-    </td>
-</tr>*@
+        <td>
+            <div class="thumb_cart">
+                <img src="http://via.placeholder.com/150x150/ccc/fff/thumb_cart_1.jpg" alt="Image">
+            </div>
+            <span class="item_cart">Persius delenit has cu</span>
+        </td>
+        <td>
+            0%
+        </td>
+        <td>
+            <strong>24,71$</strong>
+        </td>
+        <td class="options" style="width:5%; text-align:center;">
+            <a href="#"><i class="icon-trash"></i></a>
+        </td>
+    </tr>*@

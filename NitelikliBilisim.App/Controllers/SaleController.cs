@@ -43,6 +43,7 @@ namespace NitelikliBilisim.App.Controllers
             });
         }
 
+        [Route("odeme")]
         public IActionResult Payment()
         {
             return View();
