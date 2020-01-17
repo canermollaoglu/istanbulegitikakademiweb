@@ -7,6 +7,7 @@ namespace NitelikliBilisim.Notification
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
+            
         }
     }
 }
