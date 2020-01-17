@@ -1,0 +1,187 @@
+﻿
+@{
+    ViewData["Title"] = "Cart";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<main>
+    <section id="hero_in" class="cart_section">
+        <div class="wrapper">
+            <div class="container">
+                <div class="bs-wizard clearfix">
+                    <div class="bs-wizard-step active">
+                        <div class="text-center bs-wizard-stepnum">Sepetiniz</div>
+                        <div class="progress">
+                            <div class="progress-bar"></div>
+                        </div>
+                        <a href="#0" class="bs-wizard-dot"></a>
+                    </div>
+
+                    <div class="bs-wizard-step disabled">
+                        <div class="text-center bs-wizard-stepnum">Ödeme</div>
+                        <div class="progress">
+                            <div class="progress-bar"></div>
+                        </div>
+                        <a href="#0" class="bs-wizard-dot"></a>
+                    </div>
+
+                    <div class="bs-wizard-step disabled">
+                        <div class="text-center bs-wizard-stepnum">Tamamla!</div>
+                        <div class="progress">
+                            <div class="progress-bar"></div>
+                        </div>
+                        <a href="#0" class="bs-wizard-dot"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="bg_color_1">
+        <div class="container margin_60_35">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="box_cart">
+                        <table class="table table-striped cart-list">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Ürün
+                                    </th>
+                                    <th>
+                                        Ücret
+                                    </th>
+                                    <th>
+                                        Eylem
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-cart-items">
+                                
+                            </tbody>
+                        </table>
+                        <div class="cart-options clearfix">
+                            <div class="float-left">
+                                <div class="apply-coupon">
+                                    <div class="form-group">
+                                        <input type="text" name="coupon-code" value="" placeholder="Kupon Kodunuz" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <button type="button" class="btn_1 outline">Kuponu Uygula</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="float-right fix_mobile">
+                                <button type="button" class="btn_1 outline">Sepeti Güncelle</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="col-lg-4" id="sidebar">
+                    <div class="box_detail">
+                        <div id="total_cart">
+                            Toplam <span class="float-right">69.00$</span>
+                        </div>
+                        <div class="add_bottom_30">Lorem ipsum dolor sit amet, sed vide <strong>moderatius</strong> ad. Ex eius soleat sanctus pro, enim conceptam in quo, <a href="#0">brute convenire</a> appellantur an mei.</div>
+                        <a href="cart-2.html" class="btn_1 full-width">Ödeme Yap</a>
+                        <a href="/" class="btn_1 full-width outline"><i class="icon-right"></i> Alışverişe Devam Et</a>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </div>
+</main>
+
+@section postScripts{
+    <script src="~/js/lib/security-support.js"></script>
+    <script src="~/js/sup/cart.js"></script>
+    <script>
+        /* fields */
+        var _cart = new CartSupport.Cart();
+
+        /* elements */
+        var tbodyCartItems = $("#tbody-cart-items");
+
+        /* assignments */
+        $(document).ready(document_onLoad);
+
+        /* events */
+        function document_onLoad() {
+            getCartItems();
+        }
+        function btnDeleteItem_onClick() {
+            var educationId = this.getAttribute("data-education-id");
+            _cart.removeFromCart(educationId);
+            getCartItems();
+        }
+
+        /* functions */
+        function getCartItems() {
+            var items = _cart.getItems();
+            var data = {
+                Items: items
+            };
+            $.ajax({
+                url: "/get-cart-items",
+                method: "post",
+                data: data,
+                success: (res) => {
+                    if (res.isSuccess) {
+                        appendCartItems(res.data);
+                    }
+                }
+            });
+        }
+        function appendCartItems(data) {
+            tbodyCartItems.html("");
+
+            if (data.length === 0) {
+                tbodyCartItems.append(`<tr><td colspan="3">Sepetiniz boş</td></tr>`);
+            }
+
+            var appended = "";
+            for (var i = 0; i < data.length; i++) {
+                var item = data[i];
+                appended += `<tr>` +
+                    `<td>` +
+                    `<div class="thumb_cart">` +
+                    `<img src="${item.previewPhoto}" alt="Image" />` +
+                    `</div>` +
+                    `<span class="item_cart">${item.educationName}</span>` +
+                    `</td>` +
+                    `<td>` +
+                    `<strong>${item.priceText}</strong>` +
+                    `</td>` +
+                    `<td class="options" style="width:5%; text-align:center;">` +
+                    `<a type="button" class="btn-delete-item" data-education-id="${item.educationId}"><i class="icon-trash"></i></a>` +
+                    `</td>` +
+                    `<tr>`;
+            }
+            tbodyCartItems.append(appended);
+
+            var deleteButtons = document.getElementsByClassName("btn-delete-item");
+            for (var i = 0; i < deleteButtons.length; i++) {
+                var btn = deleteButtons[i];
+                btn.onclick = btnDeleteItem_onClick;
+            }
+        }
+    </script>
+}
+
+@*<tr>
+    <td>
+        <div class="thumb_cart">
+            <img src="http://via.placeholder.com/150x150/ccc/fff/thumb_cart_1.jpg" alt="Image">
+        </div>
+        <span class="item_cart">Persius delenit has cu</span>
+    </td>
+    <td>
+        0%
+    </td>
+    <td>
+        <strong>24,71$</strong>
+    </td>
+    <td class="options" style="width:5%; text-align:center;">
+        <a href="#"><i class="icon-trash"></i></a>
+    </td>
+</tr>*@

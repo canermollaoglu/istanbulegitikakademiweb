@@ -9,7 +9,7 @@
         #hero_in.courses:before {
             background: url(@Model.Medias.Where(x => x.MediaType == NitelikliBilisim.Core.Enums.EducationMediaType.Banner).FirstOrDefault().FileUrl) center center no-repeat;
         }
-   
+
     </style>
 }
 
@@ -17,6 +17,7 @@
     <section id="hero_in" class="courses">
         <div class="wrapper">
             <div class="container">
+                <input type="hidden" value="@Model.Base.Id" id="_education-id" />
                 <h1 class="fadeInUp"><span></span>@Model.Base.Name</h1>
             </div>
         </div>
@@ -43,9 +44,9 @@
                         <h5>Ne öğreneceksiniz?</h5>
                         <ul class="list_ok">
                             @*<li>
-                    <h6>Suas summo id sed erat erant oporteat</h6>
-                    <p>Ut unum diceret eos, mel cu velit principes, ut quo inani dolorem mediocritatem. Mea in justo posidonium necessitatibus.</p>
-                </li>*@
+                                    <h6>Suas summo id sed erat erant oporteat</h6>
+                                    <p>Ut unum diceret eos, mel cu velit principes, ut quo inani dolorem mediocritatem. Mea in justo posidonium necessitatibus.</p>
+                                </li>*@
                             @foreach (var item in Model.Gains)
                             {
                                 <li>@item.Gain</li>
@@ -57,23 +58,23 @@
                             <p>@Model.Base.Description2</p>
                         }
                         @*<div class="row">
-                <div class="col-lg-6">
-                    <ul class="bullets">
-                        <li>Dolorem mediocritatem</li>
-                        <li>Mea appareat</li>
-                        <li>Prima causae</li>
-                        <li>Singulis indoctum</li>
-                    </ul>
-                </div>
-                <div class="col-lg-6">
-                    <ul class="bullets">
-                        <li>Timeam inimicus</li>
-                        <li>Oportere democritum</li>
-                        <li>Cetero inermis</li>
-                        <li>Pertinacia eum</li>
-                    </ul>
-                </div>
-            </div>*@
+                                <div class="col-lg-6">
+                                    <ul class="bullets">
+                                        <li>Dolorem mediocritatem</li>
+                                        <li>Mea appareat</li>
+                                        <li>Prima causae</li>
+                                        <li>Singulis indoctum</li>
+                                    </ul>
+                                </div>
+                                <div class="col-lg-6">
+                                    <ul class="bullets">
+                                        <li>Timeam inimicus</li>
+                                        <li>Oportere democritum</li>
+                                        <li>Cetero inermis</li>
+                                        <li>Pertinacia eum</li>
+                                    </ul>
+                                </div>
+                            </div>*@
                     </section>
 
                     <section id="lessons">
@@ -121,6 +122,7 @@
                         </div>
                     </section>
 
+                    @* EĞİTMENLER *@
                     <section id="teachers">
                         <div class="intro_title">
                             <h2>Teachers</h2>
@@ -268,47 +270,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- /review-box -->
-                            <div class="review-box clearfix">
-                                <figure class="rev-thumb">
-                                    <img src="http://via.placeholder.com/150x150/ccc/fff/avatar2.jpg" alt="">
-                                </figure>
-                                <div class="rev-content">
-                                    <div class="rating">
-                                        <i class="icon-star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i>
-                                    </div>
-                                    <div class="rev-info">
-                                        Ahsan – April 01, 2016:
-                                    </div>
-                                    <div class="rev-text">
-                                        <p>
-                                            Sed eget turpis a pede tempor malesuada. Vivamus quis mi at leo pulvinar hendrerit. Cum sociis natoque penatibus et magnis dis
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- /review-box -->
-                            <div class="review-box clearfix">
-                                <figure class="rev-thumb">
-                                    <img src="http://via.placeholder.com/150x150/ccc/fff/avatar3.jpg" alt="">
-                                </figure>
-                                <div class="rev-content">
-                                    <div class="rating">
-                                        <i class="icon-star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i>
-                                    </div>
-                                    <div class="rev-info">
-                                        Sara – March 31, 2016:
-                                    </div>
-                                    <div class="rev-text">
-                                        <p>
-                                            Sed eget turpis a pede tempor malesuada. Vivamus quis mi at leo pulvinar hendrerit. Cum sociis natoque penatibus et magnis dis
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- /review-box -->
                         </div>
-                        <!-- /review-container -->
                     </section>
                 </div>
 
@@ -316,13 +278,13 @@
                 <aside class="col-lg-4" id="sidebar">
                     <div class="box_detail">
                         <figure>
-                            
+
                             <a href="https://www.youtube.com/watch?v=LDgd_gUcqCw" class="video"><i class="arrow_triangle-right"></i><img src="http://via.placeholder.com/800x533/ccc/fff/course_1.jpg" alt="" class="img-fluid"><span>View course preview</span></a>
                         </figure>
                         <div class="price">
                             @Model.Base.PriceText@*<span class="original_price"><em>$49</em>60% discount price</span>*@
                         </div>
-                        <a href="cart-1.html" class="btn_1 full-width">Satın Al</a>
+                        <button id="btn-buy" type="button" class="btn_1 full-width">Satın Al</button>
                         <a href="#0" class="btn_1 full-width outline"><i class="icon_heart"></i> İstek Listesine Ekle</a>
                         <div id="list_feat">
                             <h3>İçerikler</h3>
@@ -339,3 +301,20 @@
         </div>
     </div>
 </main>
+@section postScripts{
+    <script src="~/js/sup/cart.js"></script>
+    <script>
+        var _educationId = $("#_education-id").val();
+
+        var btnBuy = $("#btn-buy");
+
+        btnBuy.on("click", btnBuy_onClick);
+
+        function btnBuy_onClick() {
+            var cart = new CartSupport.Cart();
+            cart.addToCart(_educationId);
+
+            location.href = "/sepet";
+        }
+    </script>
+}
