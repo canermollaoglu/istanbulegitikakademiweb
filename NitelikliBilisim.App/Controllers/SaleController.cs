@@ -46,6 +46,9 @@ namespace NitelikliBilisim.App.Controllers
         [Route("odeme")]
         public IActionResult Payment()
         {
+            if (!User.Identity.IsAuthenticated)
+                return Redirect("/giris-yap?returnUrl=/odeme");
+
             return View();
         }
     }
