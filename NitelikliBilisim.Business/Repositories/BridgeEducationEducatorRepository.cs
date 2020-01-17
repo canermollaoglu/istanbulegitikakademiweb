@@ -48,6 +48,7 @@ namespace NitelikliBilisim.Business.Repositories
                 .Select(x => new EducatorVm
                 {
                     EducatorId = x.Id,
+                    ProfilePhoto = x.User.AvatarPath,
                     Name = x.User.Name,
                     Surname = x.User.Surname,
                     Title = x.Title
