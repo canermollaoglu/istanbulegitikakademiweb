@@ -10,7 +10,7 @@ namespace NitelikliBilisim.Core.Services
     public class EmailService : IMessageService
     {
         public MessageStates MessageState { get; private set; }
-        const string ServiceBusConnectionString = "Endpoint=sb://niteliklibus.servicebus.windows.net/;SharedAccessKeyName=emailgonder;SharedAccessKey=ds+L/BgTpX1ookhAjdaWHoMaXfUZTU6Ox0FuEZbxLf8=;EntityPath=email_notify";
+        const string ServiceBusConnectionString = "Endpoint=sb://niteliklibus.servicebus.windows.net/;SharedAccessKeyName=gonder;SharedAccessKey=/RWJTMDvhg80ttMer7ULlJFOjunH5GeWnqHwMaGYXKo=";
         const string QueueName = "email_notify";
         private IQueueClient _queueClient;
 
@@ -19,7 +19,10 @@ namespace NitelikliBilisim.Core.Services
             try
             {
                 _queueClient = new QueueClient(ServiceBusConnectionString, QueueName);
-                var message = new Message(Encoding.UTF8.GetBytes(messageBody));
+                var message = new Message(Encoding.UTF8.GetBytes(messageBody))
+                {
+                    SessionId = Guid.NewGuid().ToString()
+                };
                 await _queueClient.SendAsync(message);
                 MessageState = MessageStates.Delivered;
             }

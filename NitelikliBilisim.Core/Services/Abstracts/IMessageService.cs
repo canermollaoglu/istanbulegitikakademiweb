@@ -1,6 +1,5 @@
-using System.Threading.Tasks;
-using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Enums;
+using System.Threading.Tasks;
 
 namespace NitelikliBilisim.Core.Services.Abstracts
 {

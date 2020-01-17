@@ -59,7 +59,8 @@ namespace NitelikliBilisim.App
 
             services.AddApplicationServices(this.Configuration);
 
-            services.AddControllers(options => { options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()); });
+            //services.AddControllers(options => { options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()); });
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -88,6 +89,8 @@ namespace NitelikliBilisim.App
                 FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"node_modules")),
                 RequestPath = new PathString("/vendor")
             });
+
+            app.UseRouting();
             app.UseAuthentication();
 
             app.UseCookiePolicy();
@@ -102,11 +105,10 @@ namespace NitelikliBilisim.App
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute("areas", "{area}/{controller=Manage}/{action=Index}/{id?}");
+                endpoints.MapControllers();
+                endpoints.MapAreaControllerRoute("admin","admin", "admin/{controller=Manage}/{action=Index}/{id?}");
                 endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
-                endpoints.MapRazorPages();
+                    "default", "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

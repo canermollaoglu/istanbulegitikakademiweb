@@ -1,4 +1,5 @@
 ﻿using System;
+using NitelikliBilisim.Notification.Services;
 
 namespace NitelikliBilisim.Notification
 {
@@ -7,7 +8,10 @@ namespace NitelikliBilisim.Notification
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
-            
+            var emailconsumer = new EmailConsumer();
+
+            emailconsumer.MainAsync().Wait();
+            Console.ReadKey();
         }
     }
 }
