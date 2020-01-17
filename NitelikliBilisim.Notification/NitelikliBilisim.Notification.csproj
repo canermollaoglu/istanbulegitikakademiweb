@@ -21,4 +21,10 @@
     <ProjectReference Include="..\NitelikliBilisim.Core\NitelikliBilisim.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Settings.job">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

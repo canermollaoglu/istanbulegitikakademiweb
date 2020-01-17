@@ -23,11 +23,9 @@ namespace NitelikliBilisim.App.Controllers
     {
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly UnitOfWork _unitOfWork;
-        private readonly IMessageService _emailService;
-        public HomeController(UnitOfWork unitOfWork, RoleManager<ApplicationRole> roleManager, IMessageService emailService)
+        public HomeController(UnitOfWork unitOfWork, RoleManager<ApplicationRole> roleManager)
         {
             _roleManager = roleManager;
-            _emailService = emailService;
             CheckRoles().Wait();
             _unitOfWork = unitOfWork;
         }
@@ -43,27 +41,6 @@ namespace NitelikliBilisim.App.Controllers
                 var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
                 model.SuggestedEducations = _unitOfWork.Suggestion.SuggestEducationsForHomeIndex(true, userId);
             }
-
-            #region  test Email Service
-            List<MessageStates> states = new List<MessageStates>();
-            for (int i = 1; i <= 10; i++)
-            {
-                // Create a new message to send to the queue.
-
-                var message = new EmailMessage()
-                {
-                    Subject = $"Subject {i}",
-                    Body = $"Message {DateTime.Now:F}",
-                    Cc = new[] { "mesutoztrk@msn.com" },
-                    Contacts = new[] { "mesut.ozturk@wissenakademie.com" }
-                };
-
-                string messageBody = JsonConvert.SerializeObject(message);
-                await _emailService.SendAsync(messageBody);
-                states.Add(_emailService.MessageState);
-            }
-
-            #endregion
 
             return View(model);
         }
