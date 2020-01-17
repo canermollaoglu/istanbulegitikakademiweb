@@ -21,7 +21,8 @@ namespace NitelikliBilisim.Core.Services
                 _queueClient = new QueueClient(ServiceBusConnectionString, QueueName);
                 var message = new Message(Encoding.UTF8.GetBytes(messageBody))
                 {
-                    SessionId = Guid.NewGuid().ToString()
+                    SessionId = Guid.NewGuid().ToString(),
+                    MessageId = Guid.NewGuid().ToString()
                 };
                 await _queueClient.SendAsync(message);
                 MessageState = MessageStates.Delivered;

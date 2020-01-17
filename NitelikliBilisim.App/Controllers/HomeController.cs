@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Services.Abstracts;
@@ -47,7 +49,16 @@ namespace NitelikliBilisim.App.Controllers
             for (int i = 1; i <= 10; i++)
             {
                 // Create a new message to send to the queue.
-                string messageBody = $"Message {DateTime.Now:F}";
+
+                var message = new EmailMessage()
+                {
+                    Subject = $"Subject {i}",
+                    Body = $"Message {DateTime.Now:F}",
+                    Cc = new[] { "mesutoztrk@msn.com" },
+                    Contacts = new[] { "mesut.ozturk@wissenakademie.com" }
+                };
+
+                string messageBody = JsonConvert.SerializeObject(message);
                 await _emailService.SendAsync(messageBody);
                 states.Add(_emailService.MessageState);
             }
