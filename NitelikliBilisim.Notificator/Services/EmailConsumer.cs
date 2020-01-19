@@ -17,6 +17,12 @@ namespace NitelikliBilisim.Notificator.Services
         const string QueueName = "email_notify";
         private IQueueClient _queueClient;
         private EmailSender _emailSender;
+        private readonly ILogger<EmailConsumer> _emailLogger;
+
+        public EmailConsumer(ILogger<EmailConsumer> emailLogger)
+        {
+            _emailLogger = emailLogger;
+        }
 
         public Task MainAsync()
         {
@@ -49,8 +55,9 @@ namespace NitelikliBilisim.Notificator.Services
         public async Task ProcessMessagesAsync(Message message, CancellationToken token)
         {
             // Process the message
-            Console.WriteLine(
-                $"Received message: SequenceNumber:{message.SystemProperties.SequenceNumber} Body:{Encoding.UTF8.GetString(message.Body)}");
+            
+            _emailLogger.LogInformation($"Received message: SequenceNumber:{message.SystemProperties.SequenceNumber} Body:{Encoding.UTF8.GetString(message.Body)}");
+            _emailLogger.LogInformation("Email Sent: {time}", DateTimeOffset.Now);
 
             var emailMessage = JsonConvert.DeserializeObject<EmailMessage>(Encoding.UTF8.GetString(message.Body));
 
@@ -65,7 +72,7 @@ namespace NitelikliBilisim.Notificator.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                _emailLogger.LogError($"Error: {ex.Message} {DateTimeOffset.Now}", DateTimeOffset.Now);
                 await _queueClient.ScheduleMessageAsync(message, DateTimeOffset.Now.AddMinutes(5));
             }
 

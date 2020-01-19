@@ -12,20 +12,22 @@ namespace NitelikliBilisim.Notificator
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
+        private readonly ILogger<EmailConsumer> _emailLogger;
         private Task _executingTask;
         private CancellationTokenSource _cts;
 
-        public Worker(ILogger<Worker> logger)
+        public Worker(ILogger<Worker> logger, ILogger<EmailConsumer> emailLogger)
         {
             _logger = logger;
+            _emailLogger = emailLogger;
         }
 
         public override Task StartAsync(CancellationToken cancellationToken)
         {
             _logger.LogWarning("Worker service started.");
 
-            var emailConsumer = new EmailConsumer();
-            emailConsumer.MainAsync().Wait();
+            var emailConsumer = new EmailConsumer(_emailLogger);
+            emailConsumer.MainAsync().Wait(cancellationToken);
 
             _cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             _executingTask = ExecuteAsync(_cts.Token);
@@ -38,7 +40,7 @@ namespace NitelikliBilisim.Notificator
             while (!stoppingToken.IsCancellationRequested)
             {
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                await Task.Delay(1000, stoppingToken);
+                await Task.Delay(100000, stoppingToken);
 
             }
         }
