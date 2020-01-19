@@ -45,13 +45,15 @@ namespace NitelikliBilisim.App.Controllers
             }
 
             #region  test Email Service
-            List<MessageStates> states = new List<MessageStates>();
             for (int i = 1; i <= 10; i++)
             {
                 // Create a new message to send to the queue.
-                string messageBody = $"Message {DateTime.Now:F}";
-                await _emailService.SendAsync(messageBody);
-                states.Add(_emailService.MessageState);
+                var email = new EmailMessage(){
+                    Subject = $"Subject {i}",
+                    Body =$"Message Body {DateTime.Now:F}",
+                    Contacts =  new []{"mesut.ozturk@wissenakademie.com"}
+                };
+              await _emailService.SendAsync(JsonConvert.SerializeObject(email));
             }
 
             #endregion

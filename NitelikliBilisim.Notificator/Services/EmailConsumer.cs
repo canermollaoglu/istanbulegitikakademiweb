@@ -11,10 +11,13 @@ namespace NitelikliBilisim.Notificator.Services
 {
     public class EmailConsumer : ISubscriber
     {
-        const string ServiceBusConnectionString = "Endpoint=sb://niteliklibus.servicebus.windows.net/;SharedAccessKeyName=oku;SharedAccessKey=5q3yIUkHyMxWMBS00ZdbBdija+5JRLmDA1O8NbJFAJ8=";
+        const string ServiceBusConnectionString =
+            "Endpoint=sb://niteliklibus.servicebus.windows.net/;SharedAccessKeyName=oku;SharedAccessKey=5q3yIUkHyMxWMBS00ZdbBdija+5JRLmDA1O8NbJFAJ8=";
+
         const string QueueName = "email_notify";
         private IQueueClient _queueClient;
         private EmailSender _emailSender;
+
         public Task MainAsync()
         {
             _queueClient = new QueueClient(ServiceBusConnectionString, QueueName);
@@ -46,10 +49,13 @@ namespace NitelikliBilisim.Notificator.Services
         public async Task ProcessMessagesAsync(Message message, CancellationToken token)
         {
             // Process the message
-            Console.WriteLine($"Received message: SequenceNumber:{message.SystemProperties.SequenceNumber} Body:{Encoding.UTF8.GetString(message.Body)}");
+            Console.WriteLine(
+                $"Received message: SequenceNumber:{message.SystemProperties.SequenceNumber} Body:{Encoding.UTF8.GetString(message.Body)}");
 
             var emailMessage = JsonConvert.DeserializeObject<EmailMessage>(Encoding.UTF8.GetString(message.Body));
 
+            if (emailMessage == null) 
+                return;
             try
             {
                 await _emailSender.SendAsync(emailMessage);
@@ -62,6 +68,7 @@ namespace NitelikliBilisim.Notificator.Services
                 Console.WriteLine(ex);
                 await _queueClient.ScheduleMessageAsync(message, DateTimeOffset.Now.AddMinutes(5));
             }
+
             // Note: Use the cancellationToken passed as necessary to determine if the queueClient has already been closed.
             // If queueClient has already been Closed, you may chose to not call CompleteAsync() or AbandonAsync() etc. calls 
             // to avoid unnecessary exceptions.
