@@ -57,7 +57,6 @@ namespace NitelikliBilisim.Notificator.Services
             // Process the message
             
             _emailLogger.LogInformation($"Received message: SequenceNumber:{message.SystemProperties.SequenceNumber} Body:{Encoding.UTF8.GetString(message.Body)}");
-            _emailLogger.LogInformation("Email Sent: {time}", DateTimeOffset.Now);
 
             var emailMessage = JsonConvert.DeserializeObject<EmailMessage>(Encoding.UTF8.GetString(message.Body));
 
@@ -69,11 +68,12 @@ namespace NitelikliBilisim.Notificator.Services
                 // Complete the message so that it is not received again.
                 // This can be done only if the queueClient is created in ReceiveMode.PeekLock mode (which is default).
                 await _queueClient.CompleteAsync(message.SystemProperties.LockToken);
+                _emailLogger.LogInformation("Email Sent: {time}", DateTimeOffset.Now);
             }
             catch (Exception ex)
             {
                 _emailLogger.LogError($"Error: {ex.Message} {DateTimeOffset.Now}", DateTimeOffset.Now);
-                await _queueClient.ScheduleMessageAsync(message, DateTimeOffset.Now.AddMinutes(5));
+                //await _queueClient.ScheduleMessageAsync(message, DateTimeOffset.Now.AddMinutes(5));
             }
 
             // Note: Use the cancellationToken passed as necessary to determine if the queueClient has already been closed.

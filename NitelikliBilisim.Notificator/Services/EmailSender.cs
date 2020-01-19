@@ -15,9 +15,9 @@ namespace NitelikliBilisim.Notificator.Services
         public int SmtpPort { get; set; }
         public EmailSender()
         {
-            this.SenderMail = "site@wissenakademie.com";
-            this.Password = "*+Wissen2018*+";
-            this.Smtp = "smtp.office365.com";
+            this.SenderMail = "noreply@niteliklibilisim.com.tr";
+            this.Password = "zexgtuuxppulprjc";
+            this.Smtp = "smtp.yandex.com";
             this.SmtpPort = 587;
         }
         public async Task SendAsync(EmailMessage message)
