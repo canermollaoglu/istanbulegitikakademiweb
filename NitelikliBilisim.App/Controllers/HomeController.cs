@@ -23,9 +23,11 @@ namespace NitelikliBilisim.App.Controllers
     {
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly UnitOfWork _unitOfWork;
-        public HomeController(UnitOfWork unitOfWork, RoleManager<ApplicationRole> roleManager)
+        private readonly IMessageService _emailService;
+        public HomeController(UnitOfWork unitOfWork, RoleManager<ApplicationRole> roleManager, IMessageService emailService)
         {
             _roleManager = roleManager;
+            _emailService = emailService;
             CheckRoles().Wait();
             _unitOfWork = unitOfWork;
         }
@@ -42,8 +44,21 @@ namespace NitelikliBilisim.App.Controllers
                 model.SuggestedEducations = _unitOfWork.Suggestion.SuggestEducationsForHomeIndex(true, userId);
             }
 
+            #region  test Email Service
+            List<MessageStates> states = new List<MessageStates>();
+            for (int i = 1; i <= 10; i++)
+            {
+                // Create a new message to send to the queue.
+                string messageBody = $"Message {DateTime.Now:F}";
+                await _emailService.SendAsync(messageBody);
+                states.Add(_emailService.MessageState);
+            }
+
+            #endregion
+
             return View(model);
         }
+
 
         [Route("yakinda")]
         public IActionResult ComingSoon()
