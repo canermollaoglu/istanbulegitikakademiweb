@@ -2,15 +2,19 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
+using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Data;
 
 namespace NitelikliBilisim.App.Controllers
@@ -40,6 +44,7 @@ namespace NitelikliBilisim.App.Controllers
 
             return View(model);
         }
+
 
         [Route("yakinda")]
         public IActionResult ComingSoon()

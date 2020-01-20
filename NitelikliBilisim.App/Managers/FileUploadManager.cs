@@ -12,10 +12,10 @@ namespace NitelikliBilisim.App.Managers
     {
         // fields
         private List<string> _validExtensions;
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
         // ctors
-        public FileUploadManager(IHostingEnvironment hostingEnvironment, params string[] extensions)
+        public FileUploadManager(IWebHostEnvironment hostingEnvironment, params string[] extensions)
         {
             _hostingEnvironment = hostingEnvironment;
             _validExtensions = extensions.ToList();

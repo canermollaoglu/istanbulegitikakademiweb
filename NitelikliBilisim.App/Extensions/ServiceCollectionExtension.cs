@@ -10,8 +10,8 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using AspNet.Security.OAuth.GitHub;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Facebook;
-using Microsoft.AspNetCore.Authentication.Google;
+//using Microsoft.AspNetCore.Authentication.Facebook;
+//using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using NitelikliBilisim.Core.Services;
@@ -65,65 +65,65 @@ namespace NitelikliBilisim.App.Extensions
 
             #region OAuth
 
-            services.AddAuthentication()
-                .AddGoogle(options =>
-                {
-                    var googleAuthNSection = configuration.GetSection("Google");
-                    options.ClientId = googleAuthNSection["ClientId"];
-                    options.ClientSecret = googleAuthNSection["ClientSecret"];
-                    options.AuthorizationEndpoint = GoogleDefaults.AuthorizationEndpoint;
-                    options.CallbackPath = new PathString("/signin-google-token");
-                    options.Scope.Add("openid");
-                    options.Scope.Add("profile");
-                    options.Scope.Add("email");
-                    options.SaveTokens = true;
-                    options.Events.OnCreatingTicket = ctx =>
-                    {
-                        var tokens = ctx.Properties.GetTokens().ToList();
-                        ctx.Identity.AddClaim(new Claim("photo", ctx.User.Value<string>("picture")));
-                        tokens.Add(new AuthenticationToken()
-                        { Name = "TicketCreated", Value = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture) });
-                        ctx.Properties.StoreTokens(tokens);
-                        return Task.CompletedTask;
-                    };
-                })
-                .AddFacebook(options =>
-                {
-                    var facebookAuthSection = configuration.GetSection("Facebook");
-                    options.AppId = facebookAuthSection["AppId"];
-                    options.AppSecret = facebookAuthSection["AppSecret"];
-                    options.CallbackPath = new PathString("/signin-facebook");
-                    options.AuthorizationEndpoint = FacebookDefaults.AuthorizationEndpoint;
-                    options.Fields.Add("picture");
-                    options.Events.OnCreatingTicket = ctx =>
-                    {
-                        var tokens = ctx.Properties.GetTokens().ToList();
-                        var profileImg = ctx.User["picture"]["data"].Value<string>("url");
-                        //ctx.Identity.AddClaim(new Claim("photo", profileImg));
+            //services.AddAuthentication()
+            //    .AddGoogle(options =>
+            //    {
+            //        var googleAuthNSection = configuration.GetSection("Google");
+            //        options.ClientId = googleAuthNSection["ClientId"];
+            //        options.ClientSecret = googleAuthNSection["ClientSecret"];
+            //        options.AuthorizationEndpoint = GoogleDefaults.AuthorizationEndpoint;
+            //        options.CallbackPath = new PathString("/signin-google-token");
+            //        options.Scope.Add("openid");
+            //        options.Scope.Add("profile");
+            //        options.Scope.Add("email");
+            //        options.SaveTokens = true;
+            //        options.Events.OnCreatingTicket = ctx =>
+            //        {
+            //            var tokens = ctx.Properties.GetTokens().ToList();
+            //            ctx.Identity.AddClaim(new Claim("photo", ctx.User.Value<string>("picture")));
+            //            tokens.Add(new AuthenticationToken()
+            //            { Name = "TicketCreated", Value = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture) });
+            //            ctx.Properties.StoreTokens(tokens);
+            //            return Task.CompletedTask;
+            //        };
+            //    })
+            //    .AddFacebook(options =>
+            //    {
+            //        var facebookAuthSection = configuration.GetSection("Facebook");
+            //        options.AppId = facebookAuthSection["AppId"];
+            //        options.AppSecret = facebookAuthSection["AppSecret"];
+            //        options.CallbackPath = new PathString("/signin-facebook");
+            //        options.AuthorizationEndpoint = FacebookDefaults.AuthorizationEndpoint;
+            //        options.Fields.Add("picture");
+            //        options.Events.OnCreatingTicket = ctx =>
+            //        {
+            //            var tokens = ctx.Properties.GetTokens().ToList();
+            //            var profileImg = ctx.User["picture"]["data"].Value<string>("url");
+            //            //ctx.Identity.AddClaim(new Claim("photo", profileImg));
 
-                        tokens.Add(new AuthenticationToken()
-                        { Name = "TicketCreated", Value = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture) });
-                        ctx.Properties.StoreTokens(tokens);
-                        return Task.CompletedTask;
-                    };
-                })
-                .AddGitHub(options =>
-                {
-                    var githubAuthNSection = configuration.GetSection("GitHub");
-                    options.ClientId = githubAuthNSection["ClientId"];
-                    options.ClientSecret = githubAuthNSection["ClientSecret"];
-                    options.AuthorizationEndpoint = GitHubAuthenticationDefaults.AuthorizationEndpoint;
-                    options.Scope.Add("user:email");
-                    options.Events.OnCreatingTicket = ctx =>
-                    {
-                        var tokens = ctx.Properties.GetTokens().ToList();
-                        ctx.Identity.AddClaim(new Claim("photo", ctx.User.Value<string>("avatar_url")));
-                        tokens.Add(new AuthenticationToken()
-                        { Name = "TicketCreated", Value = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture) });
-                        ctx.Properties.StoreTokens(tokens);
-                        return Task.CompletedTask;
-                    };
-                });
+            //            tokens.Add(new AuthenticationToken()
+            //            { Name = "TicketCreated", Value = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture) });
+            //            ctx.Properties.StoreTokens(tokens);
+            //            return Task.CompletedTask;
+            //        };
+            //    })
+            //    .AddGitHub(options =>
+            //    {
+            //        var githubAuthNSection = configuration.GetSection("GitHub");
+            //        options.ClientId = githubAuthNSection["ClientId"];
+            //        options.ClientSecret = githubAuthNSection["ClientSecret"];
+            //        options.AuthorizationEndpoint = GitHubAuthenticationDefaults.AuthorizationEndpoint;
+            //        options.Scope.Add("user:email");
+            //        options.Events.OnCreatingTicket = ctx =>
+            //        {
+            //            var tokens = ctx.Properties.GetTokens().ToList();
+            //            ctx.Identity.AddClaim(new Claim("photo", ctx.User.Value<string>("avatar_url")));
+            //            tokens.Add(new AuthenticationToken()
+            //            { Name = "TicketCreated", Value = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture) });
+            //            ctx.Properties.StoreTokens(tokens);
+            //            return Task.CompletedTask;
+            //        };
+            //    });
 
             #endregion
 
