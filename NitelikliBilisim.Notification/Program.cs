@@ -11,7 +11,7 @@ namespace NitelikliBilisim.Notification
             var emailconsumer = new EmailConsumer();
 
             emailconsumer.MainAsync().Wait();
-            //Console.ReadKey();
+            Console.ReadKey();
         }
     }
 }
