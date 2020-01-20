@@ -222,7 +222,6 @@ namespace NitelikliBilisim.Business.Repositories
                 categories.Add(new EducationTag
                 {
                     Id = item.Category.Id,
-                    BaseTagId = item.Category.BaseTagId,
                     Description = item.Category.Description,
                     Name = item.Category.Name
                 });
