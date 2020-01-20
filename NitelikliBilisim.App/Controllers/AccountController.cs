@@ -133,7 +133,7 @@ namespace NitelikliBilisim.App.Controllers
                 await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, true);
             if (result.Succeeded)
             {
-                return Redirect(model.ReturnUrl);
+                return Redirect(model.ReturnUrl ?? "/");
             }
 
             ModelState.AddModelError(string.Empty, "Böyle bir kullanıcı bulunmamaktadır!");
