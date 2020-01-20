@@ -45,6 +45,7 @@ namespace NitelikliBilisim.App.Controllers
             return View(model);
         }
 
+
         [Route("yakinda")]
         public IActionResult ComingSoon()
         {

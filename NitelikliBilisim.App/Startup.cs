@@ -60,6 +60,7 @@ namespace NitelikliBilisim.App
             services.AddApplicationServices(this.Configuration);
 
             //services.AddControllers(options => { options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()); });
+            services.AddMvc();
             services.AddControllers();
         }
 
@@ -106,7 +107,7 @@ namespace NitelikliBilisim.App
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapAreaControllerRoute("admin","admin", "admin/{controller=Manage}/{action=Index}/{id?}");
+                endpoints.MapAreaControllerRoute("admin", "admin", "admin/{controller=Manage}/{action=Index}/{id?}");
                 endpoints.MapControllerRoute(
                     "default", "{controller=Home}/{action=Index}/{id?}");
             });

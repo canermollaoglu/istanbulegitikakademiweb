@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using Microsoft.Azure.ServiceBus;
 
-namespace NitelikliBilisim.Notification.Services
+namespace NitelikliBilisim.Notificator.Services
 {
-    public  interface ISubscriber
+    public interface ISubscriber
     {
         Task MainAsync();
         void RegisterOnMessageHandlerAndReceiveMessages();

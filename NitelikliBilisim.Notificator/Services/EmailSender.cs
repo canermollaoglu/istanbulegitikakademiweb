@@ -1,11 +1,11 @@
-﻿using NitelikliBilisim.Core.ComplexTypes;
-using System.Linq;
+﻿using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
+using NitelikliBilisim.Core.ComplexTypes;
 
-namespace NitelikliBilisim.Notification.Services
+namespace NitelikliBilisim.Notificator.Services
 {
     public class EmailSender
     {
@@ -15,9 +15,9 @@ namespace NitelikliBilisim.Notification.Services
         public int SmtpPort { get; set; }
         public EmailSender()
         {
-            this.SenderMail = "site@wissenakademie.com";
-            this.Password = "*+Wissen2018*+";
-            this.Smtp = "smtp.office365.com";
+            this.SenderMail = "noreply@niteliklibilisim.com.tr";
+            this.Password = "zexgtuuxppulprjc";
+            this.Smtp = "smtp.yandex.com";
             this.SmtpPort = 587;
         }
         public async Task SendAsync(EmailMessage message)
