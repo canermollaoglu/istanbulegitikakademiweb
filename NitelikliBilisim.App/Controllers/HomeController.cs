@@ -30,7 +30,7 @@ namespace NitelikliBilisim.App.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             var model = new HomeIndexModel();
             var isLoggedIn = HttpContext.User.Identity.IsAuthenticated;

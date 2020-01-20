@@ -22,12 +22,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
     [Area("Admin")]
     public class EducatorController : Controller
     {
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly FileUploadManager _fileManager;
         private readonly UnitOfWork _unitOfWork;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly EducatorVmCreator _vmCreator;
-        public EducatorController(IHostingEnvironment hostingEnvironment, UnitOfWork unitOfWork, UserManager<ApplicationUser> userManager)
+        public EducatorController(IWebHostEnvironment hostingEnvironment, UnitOfWork unitOfWork, UserManager<ApplicationUser> userManager)
         {
             _hostingEnvironment = hostingEnvironment;
             _unitOfWork = unitOfWork;
