@@ -73,7 +73,7 @@
                         <ul>
                             <li><i class="icon_clock_alt"></i> 1h 30min</li>
                             <li><i class="icon_like"></i> 890</li>
-                            <li><a href="course-detail.html">Kayıt Ol</a></li>
+                            <li><a role="button" data-education-id="@item.Base.Id" class="btn-buy" style="cursor:pointer;">Kayıt Ol</a></li>
                         </ul>
                     </div>
                 </div>
@@ -279,9 +279,17 @@
 </main>
 
 @section postScripts{
+    <script src="~/js/sup/cart.js"></script>
     <script>
         var btnIndexSearch = $("#btn-index-search");
         var inputIndexSearch = $("#input-index-search");
+
+        $(document).ready(() => {
+            var btnBuys = document.getElementsByClassName("btn-buy");
+            for (var i = 0; i < btnBuys.length; i++) {
+                btnBuys[i].onclick = btnBuy_onClick;
+            }
+        });
 
         btnIndexSearch.on("click", (e) => {
             e.preventDefault();
@@ -293,5 +301,13 @@
 
             location.href = `/arama-sonuclari/${searchText}`;
         });
+
+        function btnBuy_onClick() {
+            var educationId = this.getAttribute("data-education-id");
+            var cart = new CartSupport.Cart();
+            cart.addToCart(educationId);
+
+            location.href = "/sepet";
+        }
     </script>
 }

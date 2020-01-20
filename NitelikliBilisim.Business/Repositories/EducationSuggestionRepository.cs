@@ -125,7 +125,10 @@ namespace NitelikliBilisim.Business.Repositories
             }
             else
             {
-                var isNbuy = _context.Customers.FirstOrDefault(x => x.Id == userId).IsNbuyStudent;
+                var customer = _context.Customers.FirstOrDefault(x => x.Id == userId);
+                var isNbuy = false;
+                if (customer != null)
+                    isNbuy = customer.IsNbuyStudent;
 
                 if (isNbuy)
                 {

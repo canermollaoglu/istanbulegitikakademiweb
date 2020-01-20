@@ -22,9 +22,9 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly EducationVmCreator _vmCreator;
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly FileUploadManager _fileUploadManager;
-        public EducationController(UnitOfWork unitOfWork, IHostingEnvironment hostingEnvironment)
+        public EducationController(UnitOfWork unitOfWork, IWebHostEnvironment hostingEnvironment)
         {
             _unitOfWork = unitOfWork;
             _vmCreator = new EducationVmCreator(_unitOfWork);

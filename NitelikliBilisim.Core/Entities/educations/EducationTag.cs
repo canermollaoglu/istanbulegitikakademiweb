@@ -17,9 +17,5 @@ namespace NitelikliBilisim.Core.Entities
         public string Name { get; set; }
         [MaxLength(512)]
         public string Description { get; set; }
-
-        public Guid? BaseTagId { get; set; }
-        [ForeignKey("BaseTagId")]
-        public virtual EducationTag BaseTag { get; set; }
     }
 }

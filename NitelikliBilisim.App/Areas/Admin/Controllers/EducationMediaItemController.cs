@@ -23,7 +23,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         private readonly UnitOfWork _unitOfWork;
         private readonly EducationMediaItemVmCreator _vmCreator;
         private readonly FileUploadManager _fileUploadManager;
-        public EducationMediaItemController(IHostingEnvironment hostingEnvironment, UnitOfWork unitOfWork)
+        public EducationMediaItemController(IWebHostEnvironment hostingEnvironment, UnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
             _vmCreator = new EducationMediaItemVmCreator(_unitOfWork);

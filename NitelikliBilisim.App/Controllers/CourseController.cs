@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.ViewModels.Main.Course;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -20,7 +21,14 @@ namespace NitelikliBilisim.App.Controllers
         [Route("kurs-detayi/{courseId}")]
         public IActionResult Details(Guid? courseId)
         {
-            var model = _unitOfWork.Education.GetEducation(courseId.Value);
+            var educationDetails = _unitOfWork.Education.GetEducation(courseId.Value);
+            var educators = _unitOfWork.Bridge_EducationEducator.GetAssignedEducators(courseId.Value);
+
+            var model = new CourseDetailsVm
+            {
+                Details = educationDetails,
+                Educators = educators
+            };
             return View(model);
         }
     }

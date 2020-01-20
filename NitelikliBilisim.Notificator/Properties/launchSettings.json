@@ -1,0 +1,10 @@
+﻿{
+  "profiles": {
+    "NitelikliBilisim.Notificator": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

@@ -36,14 +36,14 @@
                     @foreach (var item in Model)
                     {
                         <tr>
-                            @{
+                            @*@{
                                 var baseTag = "Ana Etiket";
                                 if (item.BaseTag != null)
                                 {
                                     baseTag = item.BaseTag.Name;
                                 }
-                            }
-                            <td>@item.Name (@baseTag)</td>
+                            }*@
+                            <td>@item.Name</td>
                             <td>@item.Description</td>
                             <td>
                                 <div class="btn-group">
