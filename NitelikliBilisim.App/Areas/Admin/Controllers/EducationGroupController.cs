@@ -13,5 +13,10 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         {
             return View();
         }
+
+        public IActionResult Add()
+        {
+            return View();
+        }
     }
 }
