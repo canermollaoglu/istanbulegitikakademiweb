@@ -27,11 +27,13 @@
 
     <script src="~/js/layout/layout-search.js"></script>
     <script src="~/js/lib/cookie-agreement.js"></script>
+    <script src="~/js/sup/cart.js"></script>
     <script>
         var __cookieBar = $("#cookie-bar");
         var __envoy = new StorageSupport.Envoy();
         var __searcher = new AppWide.Searcher();
         var __btnCookieAgree = $("#btn-cookie-agree");
+        var __cart = new CartSupport.Cart();
 
         __btnCookieAgree.on("click", () => {
             __envoy.createRegisterForm();
@@ -43,6 +45,9 @@
         if (__envoy.isStorageExists("register")) {
             __cookieBar.hide();
         }
+
+        var __layoutHeaderCart = $("#layout-header-cart");
+        __layoutHeaderCart.html(`<i class="icon-cart"></i> (${__cart.getItemCount()})`);
 
     </script>
     @RenderSection("postScripts", required: false)

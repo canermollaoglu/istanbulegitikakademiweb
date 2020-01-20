@@ -36,6 +36,12 @@
             return JSON.parse(localStorage.getItem("cart"));
         }
 
+        Cart.prototype.getItemCount = function () {
+            this.ensureStorageCreated();
+            var items = JSON.parse(localStorage.getItem("cart"));
+            return items.length;
+        }
+
         return Cart;
     }());
     CartSupport.Cart = Cart;

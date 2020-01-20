@@ -52,6 +52,7 @@
                 <div class="divider"><span>ya da</span></div>
                 <div asp-validation-summary="All" class="text-danger"></div>
                 @Html.AntiForgeryToken()
+            <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
                 <div class="form-group">
                     <span class="input">
                         <input class="input_field" type="text" autocomplete="off" name="UserName">
