@@ -14,6 +14,24 @@ using System.Text;
 
 namespace NitelikliBilisim.Business.Repositories
 {
+    public class Query_1
+    {
+        public SubQuery_1 Education { get; set; }
+    }
+    public class SubQuery_1
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public string CategoryName { get; set; }
+        public byte Days { get; set; }
+        public byte HoursPerDay { get; set; }
+        public string Description { get; set; }
+        public string Description2 { get; set; }
+        public decimal? Price { get; set; }
+        public EducationLevel Level { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public string PreviewPhotoUrl { get; set; }
+    }
     public class EducationSuggestionRepository : BaseRepository<Suggestion, Guid>
     {
         public EducationSuggestionRepository(NbDataContext context) : base(context)
@@ -70,9 +88,9 @@ namespace NitelikliBilisim.Business.Repositories
                         CreatedDate = education.CreatedDate
                     }
                 })
-                .Join(_context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Education.Id, r => r.EducationId, (education, media) => new
+                .Join(_context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Education.Id, r => r.EducationId, (education, media) => new Query_1
                 {
-                    Education = new
+                    Education = new SubQuery_1
                     {
                         Id = education.Education.Id,
                         Name = education.Education.Name,
@@ -91,14 +109,77 @@ namespace NitelikliBilisim.Business.Repositories
 
             var model = new List<EducationVm>();
 
-            if (!isLoggedIn)
+            if (isLoggedIn)
             {
-                var data = query
-                .OrderByDescending(o => o.CreatedDate)
-                .Take(5)
-                .ToList();
+                var customer = _context.Customers.FirstOrDefault(x => x.Id == userId);
+                var isNbuy = false;
+                if (customer != null)
+                    isNbuy = customer.IsNbuyStudent;
 
-                foreach (var item in data)
+                model = isNbuy ? CustomSuggestions(query, userId) : DefaultSuggestions(query);
+            }
+            else
+                model = DefaultSuggestions(query);
+
+            return model;
+        }
+
+        private List<EducationVm> DefaultSuggestions(IQueryable<SubQuery_1> query)
+        {
+            var model = new List<EducationVm>();
+            var data = query
+                        .OrderByDescending(o => o.CreatedDate)
+                        .Take(5)
+                        .ToList();
+
+            foreach (var item in data)
+            {
+                model.Add(new EducationVm
+                {
+                    Base = new EducationBaseVm
+                    {
+                        Id = item.Id,
+                        Name = item.Name,
+                        CategoryName = item.CategoryName,
+                        DaysNumeric = item.Days,
+                        HoursPerDayNumeric = item.HoursPerDay,
+                        DaysText = item.Days.ToString(),
+                        HoursPerDayText = item.HoursPerDay.ToString(),
+                        Level = EnumSupport.GetDescription(item.Level),
+                        PriceNumeric = item.Price.GetValueOrDefault(0),
+                        PriceText = item.Price.GetValueOrDefault(0).ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
+                        Description = item.Description
+                    },
+                    Medias = new List<EducationMediaVm>
+                            {
+                            new EducationMediaVm { EducationId = item.Id, FileUrl = item.PreviewPhotoUrl, MediaType = EducationMediaType.PreviewPhoto }
+                            }
+                });
+            }
+            return model;
+        }
+        private List<EducationVm> CustomSuggestions(IQueryable<SubQuery_1> query, string userId)
+        {
+            var studentEducationInfo = _context.StudentEducationInfos.FirstOrDefault(x => x.CustomerId == userId);
+            var daysPassed = DateTime.Now.Subtract(studentEducationInfo.StartedAt).Days;
+
+            if (daysPassed > 100)
+                daysPassed = 100;
+
+            var suggestedEducation = _context.Suggestions.FirstOrDefault(x => x.CategoryId == studentEducationInfo.CategoryId && (daysPassed > x.RangeMin && daysPassed <= x.RangeMax));
+            if (suggestedEducation == null)
+                suggestedEducation = _context.Suggestions.FirstOrDefault(x => x.CategoryId == studentEducationInfo.CategoryId);
+
+            if (suggestedEducation == null)
+                return DefaultSuggestions(query);
+
+            var educationIds = JsonConvert.DeserializeObject<List<Guid>>(suggestedEducation.SuggestableEducations);
+            var data = query.ToList();
+            var count = 1;
+            var model = new List<EducationVm>();
+            foreach (var item in data)
+            {
+                if (educationIds.Contains(item.Id))
                 {
                     model.Add(new EducationVm
                     {
@@ -117,98 +198,15 @@ namespace NitelikliBilisim.Business.Repositories
                             Description = item.Description
                         },
                         Medias = new List<EducationMediaVm>
-                        {
-                            new EducationMediaVm { EducationId = item.Id, FileUrl = item.PreviewPhotoUrl, MediaType = EducationMediaType.PreviewPhoto }
-                        }
-                    });
-                }
-            }
-            else
-            {
-                var customer = _context.Customers.FirstOrDefault(x => x.Id == userId);
-                var isNbuy = false;
-                if (customer != null)
-                    isNbuy = customer.IsNbuyStudent;
-
-                if (isNbuy)
-                {
-                    var studentEducationInfo = _context.StudentEducationInfos.FirstOrDefault(x => x.CustomerId == userId);
-                    var daysPassed = DateTime.Now.Subtract(studentEducationInfo.StartedAt).Days;
-
-                    if (daysPassed > 100)
-                        daysPassed = 100;
-
-                    var suggestedEducation = _context.Suggestions.FirstOrDefault(x => x.CategoryId == studentEducationInfo.CategoryId && (daysPassed > x.RangeMin && daysPassed <= x.RangeMax));
-                    if (suggestedEducation == null)
-                        suggestedEducation = _context.Suggestions.FirstOrDefault(x => x.CategoryId == studentEducationInfo.CategoryId);
-
-                    var educationIds = JsonConvert.DeserializeObject<List<Guid>>(suggestedEducation.SuggestableEducations);
-                    var data = query.ToList();
-                    var count = 1;
-                    foreach (var item in data)
-                    {
-                        if (educationIds.Contains(item.Id))
-                        {
-                            model.Add(new EducationVm
-                            {
-                                Base = new EducationBaseVm
-                                {
-                                    Id = item.Id,
-                                    Name = item.Name,
-                                    CategoryName = item.CategoryName,
-                                    DaysNumeric = item.Days,
-                                    HoursPerDayNumeric = item.HoursPerDay,
-                                    DaysText = item.Days.ToString(),
-                                    HoursPerDayText = item.HoursPerDay.ToString(),
-                                    Level = EnumSupport.GetDescription(item.Level),
-                                    PriceNumeric = item.Price.GetValueOrDefault(0),
-                                    PriceText = item.Price.GetValueOrDefault(0).ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
-                                    Description = item.Description
-                                },
-                                Medias = new List<EducationMediaVm>
                                 {
                             new EducationMediaVm { EducationId = item.Id, FileUrl = item.PreviewPhotoUrl, MediaType = EducationMediaType.PreviewPhoto }
                                 }
-                            });
-                            count++;
-                        }
-
-                        if (count >= 5)
-                            break;
-                    }
+                    });
+                    count++;
                 }
-                else
-                {
-                    var data = query
-                        .OrderByDescending(o => o.CreatedDate)
-                        .Take(5)
-                        .ToList();
 
-                    foreach (var item in data)
-                    {
-                        model.Add(new EducationVm
-                        {
-                            Base = new EducationBaseVm
-                            {
-                                Id = item.Id,
-                                Name = item.Name,
-                                CategoryName = item.CategoryName,
-                                DaysNumeric = item.Days,
-                                HoursPerDayNumeric = item.HoursPerDay,
-                                DaysText = item.Days.ToString(),
-                                HoursPerDayText = item.HoursPerDay.ToString(),
-                                Level = EnumSupport.GetDescription(item.Level),
-                                PriceNumeric = item.Price.GetValueOrDefault(0),
-                                PriceText = item.Price.GetValueOrDefault(0).ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
-                                Description = item.Description
-                            },
-                            Medias = new List<EducationMediaVm>
-                            {
-                            new EducationMediaVm { EducationId = item.Id, FileUrl = item.PreviewPhotoUrl, MediaType = EducationMediaType.PreviewPhoto }
-                            }
-                        });
-                    }
-                }
+                if (count >= 5)
+                    break;
             }
 
             return model;
