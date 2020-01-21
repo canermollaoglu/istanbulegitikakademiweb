@@ -16,5 +16,7 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.educator
         public string Phone { get; set; }
         public string Email { get; set; }
         public int SocialMediaCount { get; set; }
+        public string Name { get; set; }
+        public string Surname { get; set; }
     }
 }
