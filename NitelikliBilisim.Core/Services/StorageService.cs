@@ -1,13 +1,15 @@
 ﻿using Microsoft.WindowsAzure.Storage;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.WindowsAzure.Storage.File;
 
 
 namespace NitelikliBilisim.Core.Services
 {
     public interface IStorageService
     {
-        Task<bool> UploadFile(Stream fileStream, string fileName, string folderName);
+        Task<string> UploadFile(Stream fileStream, string fileName, string folderName);
+        Task<string> DownloadFile(string fileName, string folderName);
     }
     public class StorageService : IStorageService
     {
@@ -20,25 +22,39 @@ namespace NitelikliBilisim.Core.Services
             _storageAccount = CloudStorageAccount.Parse(AccessKey);
         }
 
-        public async Task<bool> UploadFile(Stream fileStream, string fileName, string folderName)
+        public async Task<string> UploadFile(Stream fileStream, string fileName, string folderName)
         {
-            var ext = Path.GetExtension(fileName);
-            fileName = StringHelper.GenerateUniqueCode() + StringHelper.UrlFormatConverter(fileName) + ext;
+            //var ext = Path.GetExtension(fileName);
+            fileName = StringHelper.GenerateUniqueCode() + StringHelper.UrlFormatConverter(fileName);
             fileStream.Position = 0;
             var fileClient = _storageAccount.CreateCloudFileClient();
             var share = fileClient.GetShareReference(ReferanceName);
-
             var rootDir = share.GetRootDirectoryReference();
-
             var fileDir = rootDir.GetDirectoryReference(folderName);
+
             if (fileDir.CreateIfNotExistsAsync().Result)
             {
                 var cfile = fileDir.GetFileReference(fileName);
                 await cfile.UploadFromStreamAsync(fileStream);
-                return true;
+                return fileName;
             }
 
-            return false;
+            return null;
+        }
+
+        public async Task<string> DownloadFile(string fileName, string folderName)
+        {
+            var fileClient = _storageAccount.CreateCloudFileClient();
+            var share = fileClient.GetShareReference(ReferanceName);
+            var rootDir = share.GetRootDirectoryReference();
+            var fileDir = rootDir.GetDirectoryReference(folderName);
+            var cfile = fileDir.GetFileReference(fileName);
+
+            var isExists = await cfile.ExistsAsync();
+
+            if (isExists) return cfile.Uri.AbsoluteUri;
+
+            throw new FileNotFoundException("Dosya bulunamadı");
         }
     }
 }
