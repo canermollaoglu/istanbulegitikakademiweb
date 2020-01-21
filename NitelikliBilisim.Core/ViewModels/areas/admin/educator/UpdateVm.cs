@@ -1,8 +1,5 @@
-﻿using NitelikliBilisim.Core.Entities;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace NitelikliBilisim.Core.ViewModels.areas.admin.educator
 {
