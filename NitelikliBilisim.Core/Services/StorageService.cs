@@ -33,14 +33,18 @@ namespace NitelikliBilisim.Core.Services
             var rootDir = share.GetRootDirectoryReference();
             var fileDir = rootDir.GetDirectoryReference(folderName);
 
-            if (fileDir.CreateIfNotExistsAsync().Result)
+            await fileDir.CreateIfNotExistsAsync();
+
+            try
             {
                 var cfile = fileDir.GetFileReference(fileName);
                 await cfile.UploadFromStreamAsync(fileStream);
-                return fileName;
+                return $"{folderName}/{fileName}";
             }
-
-            return null;
+            catch 
+            {
+                throw;
+            }
         }
 
         public async Task<string> DownloadFile(string fileName, string folderName)
