@@ -1,22 +1,14 @@
 ﻿using Microsoft.WindowsAzure.Storage;
 using System.IO;
 using System.Threading.Tasks;
-using Microsoft.WindowsAzure.Storage.File;
-
+using NitelikliBilisim.Core.Services.Abstracts;
 
 namespace NitelikliBilisim.Core.Services
 {
-    public interface IStorageService
-    {
-        Task<string> UploadFile(Stream fileStream, string fileName, string folderName);
-        Task<string> DownloadFile(string fileName, string folderName);
-        Task<bool> DeleteFile(string fileName, string folderName);
-    }
     public class StorageService : IStorageService
     {
         private const string ReferanceName = "nbuploads";
         private const string AccessKey = "DefaultEndpointsProtocol=https;AccountName=niteliklidatastore;AccountKey=KxpcLymDmly4Gv0UG3LhUgr1olSbsSlfJ3cOy2jAPm2DZ94rTJ6GfXZFhiUGrX+FsFFeTr91jf1gcWIg/JbZ3g==;EndpointSuffix=core.windows.net";
-
         private const string SasToken =
             "?sv=2019-02-02&ss=bfqt&srt=sco&sp=rwdlacup&se=2030-01-21T16:45:36Z&st=2020-01-21T08:45:36Z&spr=https&sig=ySGn3tG3eFja1a6DDNqhtgq2gyoqwBElsLdQ7kmpf5k%3D";
         private readonly CloudStorageAccount _storageAccount;

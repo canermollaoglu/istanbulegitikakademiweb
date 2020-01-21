@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Areas.Admin.VmCreator.Educator;
@@ -14,9 +8,13 @@ using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
-using NitelikliBilisim.Core.Services;
+using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels.areas.admin.educator;
 using NitelikliBilisim.Support.Text;
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
