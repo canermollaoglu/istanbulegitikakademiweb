@@ -14,6 +14,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             return View();
         }
 
+        [Route("admin/grup-olustur")]
         public IActionResult Add()
         {
             return View();

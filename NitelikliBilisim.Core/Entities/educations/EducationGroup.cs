@@ -15,6 +15,7 @@ namespace NitelikliBilisim.Core.Entities
             Id = Guid.NewGuid();
         }
 
+        [MaxLength(128)]
         public string GroupName { get; set; }
         public DateTime StartDate { get; set; }
         [MaxLength(128)]
