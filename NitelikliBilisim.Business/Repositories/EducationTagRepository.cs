@@ -1,9 +1,7 @@
 ﻿using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Data;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace NitelikliBilisim.Business.Repositories
 {
@@ -15,7 +13,7 @@ namespace NitelikliBilisim.Business.Repositories
 
         public override Guid Insert(EducationTag entity, bool isSaveLater = false)
         {
-            if (_context.EducationTags.Any(x => x.Name == entity.Name))
+            if (Context.EducationTags.Any(x => x.Name == entity.Name))
                 return default;
 
             return base.Insert(entity, isSaveLater);

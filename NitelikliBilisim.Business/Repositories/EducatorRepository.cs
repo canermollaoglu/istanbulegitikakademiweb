@@ -1,10 +1,8 @@
 ﻿using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.ViewModels.areas.admin.educator;
 using NitelikliBilisim.Data;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace NitelikliBilisim.Business.Repositories
 {
@@ -16,15 +14,15 @@ namespace NitelikliBilisim.Business.Repositories
 
         public List<_Educator> GetEducators()
         {
-            var model = _context.Users
-                .Join(_context.Educators, l => l.Id, r => r.Id, (x, y) => new _Educator
+            var model = Context.Users
+                .Join(Context.Educators, l => l.Id, r => r.Id, (x, y) => new _Educator
                 {
                     Id = x.Id,
                     FullName = x.Name + " " + x.Surname,
                     Title = y.Title,
                     Phone = x.PhoneNumber,
                     Email = x.Email,
-                    SocialMediaCount = _context.EducatorSocialMedias.Count(z => z.EducatorId == x.Id)
+                    SocialMediaCount = Context.EducatorSocialMedias.Count(z => z.EducatorId == x.Id)
                 }).ToList();
             return model;
         }

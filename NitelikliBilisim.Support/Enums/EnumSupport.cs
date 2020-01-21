@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 
-namespace NitelikliBilisim.Enums
+namespace NitelikliBilisim.Support.Enums
 {
     public static class EnumSupport
     {

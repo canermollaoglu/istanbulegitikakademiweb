@@ -1,5 +1,3 @@
-using System;
-
 namespace NitelikliBilisim.App.Models
 {
     public class ErrorViewModel

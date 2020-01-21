@@ -17,7 +17,7 @@ using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Services;
 using NitelikliBilisim.Core.ViewModels.Account;
-using NitelikliBilisim.Enums;
+using NitelikliBilisim.Support.Enums;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -85,7 +85,7 @@ namespace NitelikliBilisim.App.Controllers
                     var studentEducationInformation = new StudentEducationInfo
                     {
                         CustomerId = user.Id,
-                        StartedAt = model.StartedAt.Value,
+                        StartedAt = model.StartedAt.GetValueOrDefault(),
                         EducationCenter = (EducationCenter)model.EducationCenter,
                         CategoryId = model.EducationCategory
                     };
