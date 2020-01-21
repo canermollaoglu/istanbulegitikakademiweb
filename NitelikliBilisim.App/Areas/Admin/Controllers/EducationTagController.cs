@@ -44,6 +44,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             var tags = _unitOfWork.EducationTag.Get(null, q => q.OrderBy(o => o.Name));
             var model = new UpdateGetVm
             {
+                Id = tagId.Value,
                 Tag = tag,
                 Tags = tags
             };
