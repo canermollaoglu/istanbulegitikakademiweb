@@ -1,8 +1,7 @@
 ﻿using Microsoft.WindowsAzure.Storage;
+using NitelikliBilisim.Core.Services.Abstracts;
 using System.IO;
 using System.Threading.Tasks;
-using NitelikliBilisim.Core.Services.Abstracts;
-using NitelikliBilisim.Core.ViewModels.Cart;
 
 namespace NitelikliBilisim.Core.Services
 {
