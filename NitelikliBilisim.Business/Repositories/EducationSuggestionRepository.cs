@@ -5,12 +5,11 @@ using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.areas.admin.suggestion;
 using NitelikliBilisim.Data;
-using NitelikliBilisim.Enums;
+using NitelikliBilisim.Support.Enums;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 
 namespace NitelikliBilisim.Business.Repositories
 {
@@ -41,7 +40,7 @@ namespace NitelikliBilisim.Business.Repositories
 
         public GetSuggestionsVm GetSuggestionsVm()
         {
-            var data = _context.Suggestions
+            var data = Context.Suggestions
                 .Include(x => x.Category)
                 .Select(x => new _Suggestion
                 {
@@ -71,8 +70,8 @@ namespace NitelikliBilisim.Business.Repositories
 
         public List<EducationVm> SuggestEducationsForHomeIndex(bool isLoggedIn, string userId)
         {
-            var query = _context.Educations.Where(x => x.IsActive)
-                .Join(_context.EducationCategories, l => l.CategoryId, r => r.Id, (education, category) => new
+            var query = Context.Educations.Where(x => x.IsActive)
+                .Join(Context.EducationCategories, l => l.CategoryId, r => r.Id, (education, category) => new
                 {
                     Education = new
                     {
@@ -88,7 +87,7 @@ namespace NitelikliBilisim.Business.Repositories
                         CreatedDate = education.CreatedDate
                     }
                 })
-                .Join(_context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Education.Id, r => r.EducationId, (education, media) => new Query_1
+                .Join(Context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Education.Id, r => r.EducationId, (education, media) => new Query_1
                 {
                     Education = new SubQuery_1
                     {
@@ -107,11 +106,11 @@ namespace NitelikliBilisim.Business.Repositories
                 })
                 .Select(x => x.Education);
 
-            var model = new List<EducationVm>();
+            List<EducationVm> model;
 
             if (isLoggedIn)
             {
-                var customer = _context.Customers.FirstOrDefault(x => x.Id == userId);
+                var customer = Context.Customers.FirstOrDefault(x => x.Id == userId);
                 var isNbuy = false;
                 if (customer != null)
                     isNbuy = customer.IsNbuyStudent;
@@ -160,15 +159,15 @@ namespace NitelikliBilisim.Business.Repositories
         }
         private List<EducationVm> CustomSuggestions(IQueryable<SubQuery_1> query, string userId)
         {
-            var studentEducationInfo = _context.StudentEducationInfos.FirstOrDefault(x => x.CustomerId == userId);
+            var studentEducationInfo = Context.StudentEducationInfos.First(x => x.CustomerId == userId);
             var daysPassed = DateTime.Now.Subtract(studentEducationInfo.StartedAt).Days;
 
             if (daysPassed > 100)
                 daysPassed = 100;
 
-            var suggestedEducation = _context.Suggestions.FirstOrDefault(x => x.CategoryId == studentEducationInfo.CategoryId && (daysPassed > x.RangeMin && daysPassed <= x.RangeMax));
+            var suggestedEducation = Context.Suggestions.FirstOrDefault(x => x.CategoryId == studentEducationInfo.CategoryId && (daysPassed > x.RangeMin && daysPassed <= x.RangeMax));
             if (suggestedEducation == null)
-                suggestedEducation = _context.Suggestions.FirstOrDefault(x => x.CategoryId == studentEducationInfo.CategoryId);
+                suggestedEducation = Context.Suggestions.FirstOrDefault(x => x.CategoryId == studentEducationInfo.CategoryId);
 
             if (suggestedEducation == null)
                 return DefaultSuggestions(query);

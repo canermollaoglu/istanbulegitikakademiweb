@@ -10,7 +10,7 @@ using NitelikliBilisim.Business.Debugging;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
-using NitelikliBilisim.Enums;
+using NitelikliBilisim.Support.Enums;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
