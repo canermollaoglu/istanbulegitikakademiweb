@@ -7,6 +7,7 @@ namespace NitelikliBilisim.Core.Services.Abstracts
     {
         Task<string> UploadFile(Stream fileStream, string fileName, string folderName);
         Task<string> DownloadFile(string fileName, string folderName);
+        Task<MemoryStream> DownloadFileStream(string fileName, string folderName);
         Task<bool> DeleteFile(string fileName, string folderName);
     }
 }

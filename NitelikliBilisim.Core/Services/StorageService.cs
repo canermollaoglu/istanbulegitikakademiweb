@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using NitelikliBilisim.Core.Services.Abstracts;
+using NitelikliBilisim.Core.ViewModels.Cart;
 
 namespace NitelikliBilisim.Core.Services
 {
@@ -47,6 +48,27 @@ namespace NitelikliBilisim.Core.Services
             var isExists = await cfile.ExistsAsync();
 
             if (isExists) return cfile.Uri.AbsoluteUri + SasToken;
+
+            throw new FileNotFoundException("Dosya bulunamadı");
+        }
+
+        public async Task<MemoryStream> DownloadFileStream(string fileName, string folderName)
+        {
+            var fileClient = _storageAccount.CreateCloudFileClient();
+            var share = fileClient.GetShareReference(ReferanceName);
+            var rootDir = share.GetRootDirectoryReference();
+            var fileDir = rootDir.GetDirectoryReference(folderName);
+            var cfile = fileDir.GetFileReference(fileName);
+
+            var isExists = await cfile.ExistsAsync();
+
+            if (isExists)
+            {
+                var memoryStream = new MemoryStream();
+                await cfile.DownloadToStreamAsync(memoryStream, null, null, null);
+                memoryStream.Position = 0;
+                return memoryStream;
+            }
 
             throw new FileNotFoundException("Dosya bulunamadı");
         }
