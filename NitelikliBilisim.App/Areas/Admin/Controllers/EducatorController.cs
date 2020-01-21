@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -13,6 +14,7 @@ using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Services;
 using NitelikliBilisim.Core.ViewModels.areas.admin.educator;
 using NitelikliBilisim.Support.Text;
 
@@ -27,13 +29,16 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         private readonly UnitOfWork _unitOfWork;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly EducatorVmCreator _vmCreator;
-        public EducatorController(IWebHostEnvironment hostingEnvironment, UnitOfWork unitOfWork, UserManager<ApplicationUser> userManager)
+        private readonly IStorageService _storage;
+
+        public EducatorController(IWebHostEnvironment hostingEnvironment, UnitOfWork unitOfWork, UserManager<ApplicationUser> userManager, IStorageService storage)
         {
             _hostingEnvironment = hostingEnvironment;
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _fileManager = new FileUploadManager(_hostingEnvironment, "jpg", "jpeg");
             _vmCreator = new EducatorVmCreator(_unitOfWork);
+            _storage = storage;
         }
         [Route("admin/egitmen-ekle")]
         public IActionResult Add()
@@ -57,8 +62,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
             try
             {
-                var dbPath = _fileManager.Upload("/uploads/educator-photos/", data.ProfilePhoto.Base64Content, data.ProfilePhoto.Extension, "profile-photo", $"{data.Name} {data.Surname}");
-
+                //var dbPath = _fileManager.Upload("/uploads/educator-photos/", data.ProfilePhoto.Base64Content, data.ProfilePhoto.Extension, "profile-photo", $"{data.Name} {data.Surname}");
+                var stream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.ProfilePhoto.Base64Content));
+                var fileName = $"{data.Name} {data.Surname}".FormatForTag();
+                var test = await _storage.UploadFile(stream, $"{fileName}.{data.ProfilePhoto.Extension}", "educator-photos");
+                var dbPath = "";
                 var userName = TextHelper.ConcatForUserName(data.Name, data.Surname);
 
                 var count = _userManager.Users.Where(x => x.UserName.StartsWith(userName)).Count();
