@@ -1,6 +1,8 @@
 ﻿using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
+using NitelikliBilisim.Core.ViewModels.search;
 using NitelikliBilisim.Data;
+using NitelikliBilisim.Support.Text;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +36,52 @@ namespace NitelikliBilisim.Business.Repositories
 
             return deepestCategories;
         }
+
+        public List<SearchedEducationCategoryVm> GetSearchedEducationCategories(string searchText)
+        {
+            searchText = searchText.FormatForTag();
+
+            var tags = _context.Bridge_EducationTags
+                .Join(_context.EducationTags, l => l.Id, r => r.Id, (x, y) => new
+                {
+                    TagId = x.Id,
+                    EducationId = x.Id2,
+                    TagName = y.Name
+                })
+                .ToList();
+
+            var educationIds = tags
+                .Where(x => x.TagName.Contains(searchText))
+                .Select(x => x.EducationId)
+                .ToList();
+
+            var educations = _context.Educations
+                .Where(x => educationIds.Contains(x.Id) && x.IsActive)
+                .Join(_context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Id, r => r.EducationId, (x, y) => new
+                {
+                    Education = x,
+                    EducationPreviewMedia = y
+                })
+                .Join(_context.EducationCategories, l => l.Education.CategoryId, r => r.Id, (x, y) => new
+                {
+                    Education = x.Education,
+                    EducationPreviewMedia = x.EducationPreviewMedia,
+                    CategoryName = y.Name
+                });
+
+            var model = educations
+                .GroupBy(x => x.Education.Category.Name)
+                .Select(x => new SearchedEducationCategoryVm()
+                {
+                    name = x.Key,
+                    count = x.Count()
+                })
+                .OrderByDescending(x => x.count)
+                .ToList();
+
+            return model;
+        }
+
         public override Guid Insert(EducationCategory entity, bool isSaveLater = false)
         {
             if (_context.EducationCategories.Any(x => x.Name == entity.Name))

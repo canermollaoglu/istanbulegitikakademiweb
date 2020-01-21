@@ -1,9 +1,10 @@
 ﻿@model NitelikliBilisim.Core.ViewModels.SearchResultsGetVm
 @{
-    ViewData["Title"] = "Aram Sonuçları";
+    ViewData["Title"] = "Arama Sonuçları";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @section styles{
+    <link href="~/assets/css/grey.css" rel="stylesheet">
     <style>
         a [role="button"] {
             cursor: pointer;
@@ -62,13 +63,65 @@
         </div>
     </div>
 
-    <div class="container margin_60_35" id="div-education-container">
-        @if (Model.ShowAs == "grid")
-        {
-            <div class="row" id="div-education-container-row">
+    <div class="container margin_60_35">
+        <div class="row" style="transform: none;">
+            <aside class="col-lg-3" id="sidebar" style="position: relative; overflow: visible; box-sizing: border-box; min-height: 1px;">
+                <div class="theiaStickySidebar" style="padding-top: 0px; padding-bottom: 1px; position: static; transform: none; top: 0px; left: 83px;">
+                    <div id="filters_col">
+                        <a data-toggle="collapse" href="#collapseFilters" aria-expanded="false" aria-controls="collapseFilters" id="filters_col_bt">Filtreleme </a>
+                        <div class="collapse show" id="collapseFilters">
+                            <div class="filter_type">
+                                <h6>Kategori</h6>
+                                <ul id="category-list"></ul>
+                            </div>
+                            <div class="filter_type">
+                                <h6>Değerlendirme</h6>
+                                <ul id="rating-list">
+                                    <li>
+                                        <label class="">
+                                            <div class="icheckbox_square-grey" style="position: relative;"><input name="filter" type="checkbox" class="icheck" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>
+                                            <span class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i> <small>(145)</small></span>
+                                        </label>
+                                    </li>
+                                    <li>
+                                        <label class="">
+                                            <div class="icheckbox_square-grey" style="position: relative;"><input name="filter" type="checkbox" class="icheck" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>
+                                            <span class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i> <small>(25)</small></span>
+                                        </label>
+                                    </li>
+                                    <li>
+                                        <label class="">
+                                            <div class="icheckbox_square-grey" style="position: relative;"><input name="filter" type="checkbox" class="icheck" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>
+                                            <span class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(68)</small></span>
+                                        </label>
+                                    </li>
+                                    <li>
+                                        <label class="">
+                                            <div class="icheckbox_square-grey" style="position: relative;"><input name="filter" type="checkbox" class="icheck" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>
+                                            <span class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(34)</small></span>
+                                        </label>
+                                    </li>
+                                    <li>
+                                        <label class="">
+                                            <div class="icheckbox_square-grey" style="position: relative;"><input name="filter" type="checkbox" class="icheck" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>
+                                            <span class="rating"><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(10)</small></span>
+                                        </label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div><div class="resize-sensor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; z-index: -1; visibility: hidden;"><div class="resize-sensor-expand" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; overflow: hidden; z-index: -1; visibility: hidden;"><div style="position: absolute; left: 0px; top: 0px; transition: all 0s ease 0s; width: 250px; height: 1998px;"></div></div><div class="resize-sensor-shrink" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; overflow: hidden; z-index: -1; visibility: hidden;"><div style="position: absolute; left: 0; top: 0; transition: 0s; width: 200%; height: 200%"></div></div></div>
+                </div>
+            </aside>
+            <div class="col-lg-9" id="div-education-container">
+                @if (Model.ShowAs == "grid")
+                {
+                    <div class="row" id="div-education-container-row">
 
+                    </div>
+                }
             </div>
-        }
+        </div>
     </div>
 
     <partial name="partials/search/_SearchResultsPreFooter" />
@@ -81,6 +134,7 @@
         var _searchText = $("#_search-text");
         var _page = $("#_page");
         var _showAs = $("#_show-as");
+        var _hasFilter = false;
 
         /* elements */
         var divEducationContainer = $("#div-education-container");
@@ -97,9 +151,13 @@
         /* events */
         function document_onLoad() {
             getSearchResults(false);
+            prepareFilterBox();
         }
         function btnLoadMore_onClick() {
-            getSearchResults(true);
+            if (_hasFilter)
+                getFilteredResults(true);
+            else
+                getSearchResults(true);
         }
         function btnShowAsGrid_onClick() {
             location.href = `/arama-sonuclari/${_searchText.val()}?showAs=grid`;
@@ -109,23 +167,37 @@
         }
 
         /* functions */
-        function getSearchResults(isLoadMore) {
+        function getSearchResults(isLoadMore, filter) {
             var pBtnContainer = document.getElementById("p-btn-container");
             if (pBtnContainer)
                 pBtnContainer.remove();
 
+            if (filter != null && !isLoadMore)
+                _page.val(0);
+
             $.ajax({
-                url: `/search-for-courses/${_searchText.val()}/page/${_page.val()}`,
-                method: "get",
+                url: `/search-for-courses`,
+                method: "post",
+                data: {
+                    searchText: _searchText.val(),
+                    page: _page.val(),
+                    filter: filter
+                },
                 success: (res) => {
                     var data = res.data.model;
                     var showAs = _showAs.val();
 
                     if (res.data.model.length != 0) {
                         if (showAs === "grid") {
+                            if(!isLoadMore)
+                                divEducationContainerRow.html("");
+
                             var boxes = prepareCourseBoxesAsGrid(data);
                             divEducationContainerRow.append(boxes);
                         } else {
+                            if(!isLoadMore)
+                                divEducationContainer.html("");
+
                             var boxes = prepareCourseBoxesAsList(data);
                             divEducationContainer.append(boxes);
                         }
@@ -145,6 +217,27 @@
                     _page.val(parseInt(_page.val()) + 1);
                 }
             });
+        }
+        function getFilteredResults(isLoadMore) {
+            var filterOptions = {
+                categories: [],
+                ratings: []
+            };
+
+            _hasFilter = $("input[name='filter']:checked").length > 0;
+
+            $.each($("input[name='filter']:checked"), function(){
+                filterOptions.categories.push($(this).val());
+            });
+
+            if (!isLoadMore) {
+                if(_showAs.val() === "grid")
+                    divEducationContainerRow.html(`<div class="alert alert-info">Yükleniyor...</div>`);
+                else
+                    divEducationContainer.html(`<div class="alert alert-info">Yükleniyor...</div>`);
+            }
+
+            getSearchResults(isLoadMore, filterOptions)
         }
         function prepareCourseBoxesAsGrid(data) {
             var boxes = "";
@@ -219,6 +312,44 @@
             }
 
             return boxes;
+        }
+        function prepareFilterBox(chosen) {
+            var categoryList = $("#category-list");
+
+            $.ajax({
+                url: `/get-searched-categories/`,
+                method: "post",
+                data: {
+                    searchText: _searchText.val(),
+                    chosen: chosen
+                },
+                success: (res) => {
+                    categoryList.empty();
+
+                    var data = res.data;
+
+                    for (var i = 0; i < data.length; i++) {
+                        var item = data[i];
+                        categoryList.append(`
+                            <li>
+                                <label>
+                                    <input type="checkbox" name="filter" value="${item.name}" class="icheck" style="position: absolute; opacity: 0;">
+                                    ${item.name} <small>(${item.count})</small>
+                                </label>
+                            </li>
+                        `);
+                    }
+
+                    $('.icheck').iCheck({
+		                checkboxClass: 'icheckbox_square-grey',
+		                radioClass: 'iradio_square-grey'
+                    });
+
+                    $('.icheck').on('ifToggled', function () {
+                        getFilteredResults(false);
+                    });
+                }
+            });
         }
     </script>
 }

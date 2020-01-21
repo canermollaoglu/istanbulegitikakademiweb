@@ -5,6 +5,7 @@ using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education;
+using NitelikliBilisim.Core.ViewModels.search;
 using NitelikliBilisim.Data;
 using NitelikliBilisim.Enums;
 using NitelikliBilisim.Support.Text;
@@ -92,7 +93,7 @@ namespace NitelikliBilisim.Business.Repositories
                 Count = x.Count()
             }).ToList();
 
-            var categories = educations.Join(_context.Bridge_EducationTags, l => l.Id, r => r.Id2, (x, y) => new
+            var fetchedCategories = educations.Join(_context.Bridge_EducationTags, l => l.Id, r => r.Id2, (x, y) => new
             {
                 EducationId = x.Id,
                 CategoryId = y.Id
@@ -100,8 +101,8 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 EducationId = x.EducationId,
                 Category = y
-            })
-            .GroupBy(g => g.EducationId)
+            }).ToList();
+            var categories = fetchedCategories.GroupBy(g => g.EducationId)
             .Select(x => new
             {
                 EducationId = x.Key,
@@ -270,7 +271,7 @@ namespace NitelikliBilisim.Business.Repositories
             return base.Update(entity, isSaveLater);
         }
 
-        public List<EducationVm> GetInfiniteScrollSearchResults(string searchText, int page = 0)
+        public List<EducationVm> GetInfiniteScrollSearchResults(string searchText, int page = 0, FilterOptionsVm filter = null)
         {
             var shownResults = 5;
             searchText = searchText.FormatForTag();
@@ -289,8 +290,16 @@ namespace NitelikliBilisim.Business.Repositories
                 .Select(x => x.EducationId)
                 .ToList();
 
-            var educations = _context.Educations
-                .Where(x => educationIds.Contains(x.Id) && x.IsActive)
+            var educations = _context.Educations.Include(x => x.Category)
+                .Where(x => educationIds.Contains(x.Id) && x.IsActive);
+
+            if (filter.categories != null)
+            {
+                var categoryIds = _context.EducationCategories.Where(x => filter.categories.Contains(x.Name)).Select(x => x.Id).ToList();
+                educations = educations.Where(x => categoryIds.Contains(x.CategoryId)); // TODO: Değerlendirme de burada bir şart olacak.
+            }
+
+            var educationsList = educations
                 .Join(_context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Id, r => r.EducationId, (x, y) => new
                 {
                     Education = x,
@@ -307,7 +316,7 @@ namespace NitelikliBilisim.Business.Repositories
                 .Take(shownResults)
                 .ToList();
 
-            var data = educations.Select(x => new EducationVm
+            var data = educationsList.Select(x => new EducationVm
             {
                 Base = new EducationBaseVm
                 {
