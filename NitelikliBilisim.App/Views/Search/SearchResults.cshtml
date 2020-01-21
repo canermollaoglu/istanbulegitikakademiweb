@@ -134,6 +134,7 @@
         var _searchText = $("#_search-text");
         var _page = $("#_page");
         var _showAs = $("#_show-as");
+        var _hasFilter = false;
 
         /* elements */
         var divEducationContainer = $("#div-education-container");
@@ -153,16 +154,16 @@
             prepareFilterBox();
         }
         function btnLoadMore_onClick() {
-            getSearchResults(true);
+            if (_hasFilter)
+                getFilteredResults(true);
+            else
+                getSearchResults(true);
         }
         function btnShowAsGrid_onClick() {
             location.href = `/arama-sonuclari/${_searchText.val()}?showAs=grid`;
         }
         function btnShowAsList_onClick() {
             location.href = `/arama-sonuclari/${_searchText.val()}?showAs=list`;
-        }
-        function filterOptions_onClick() {
-            getFilteredResults();
         }
 
         /* functions */
@@ -188,9 +189,15 @@
 
                     if (res.data.model.length != 0) {
                         if (showAs === "grid") {
+                            if(!isLoadMore)
+                                divEducationContainerRow.html("");
+
                             var boxes = prepareCourseBoxesAsGrid(data);
                             divEducationContainerRow.append(boxes);
                         } else {
+                            if(!isLoadMore)
+                                divEducationContainer.html("");
+
                             var boxes = prepareCourseBoxesAsList(data);
                             divEducationContainer.append(boxes);
                         }
@@ -211,19 +218,26 @@
                 }
             });
         }
-        function getFilteredResults() {
+        function getFilteredResults(isLoadMore) {
             var filterOptions = {
                 categories: [],
                 ratings: []
             };
 
+            _hasFilter = $("input[name='filter']:checked").length > 0;
+
             $.each($("input[name='filter']:checked"), function(){
                 filterOptions.categories.push($(this).val());
             });
 
-            divEducationContainerRow.html("");
+            if (!isLoadMore) {
+                if(_showAs.val() === "grid")
+                    divEducationContainerRow.html(`<div class="alert alert-info">Yükleniyor...</div>`);
+                else
+                    divEducationContainer.html(`<div class="alert alert-info">Yükleniyor...</div>`);
+            }
 
-            getSearchResults(false, filterOptions)
+            getSearchResults(isLoadMore, filterOptions)
         }
         function prepareCourseBoxesAsGrid(data) {
             var boxes = "";
@@ -263,6 +277,7 @@
         function prepareCourseBoxesAsList(data) {
             var boxes = "";
             for (var i = 0; i < data.length; i++) {
+                var item = data[i];
                 boxes += `<div class="box_list wow">` +
                     `<div class="row no-gutters">` +
                     `<div class="col-lg-5">` +
@@ -331,7 +346,7 @@
                     });
 
                     $('.icheck').on('ifToggled', function () {
-                        getFilteredResults();
+                        getFilteredResults(false);
                     });
                 }
             });
