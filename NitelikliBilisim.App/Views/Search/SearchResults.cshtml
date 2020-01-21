@@ -78,33 +78,33 @@
                                 <h6>Değerlendirme</h6>
                                 <ul id="rating-list">
                                     <li>
-                                        <label class="">
-                                            <div class="icheckbox_square-grey" style="position: relative;"><input name="filter" type="checkbox" class="icheck" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>
-                                            <span class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i> <small>(145)</small></span>
+                                        <label>
+                                            <input type="checkbox" name="rat-filter" value="5" class="icheck" style="position: absolute; opacity: 0;">
+                                            <span class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i> <small>(0)</small></span>
                                         </label>
                                     </li>
                                     <li>
-                                        <label class="">
-                                            <div class="icheckbox_square-grey" style="position: relative;"><input name="filter" type="checkbox" class="icheck" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>
-                                            <span class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i> <small>(25)</small></span>
+                                        <label>
+                                            <input type="checkbox" name="rat-filter" value="4" class="icheck" style="position: absolute; opacity: 0;">
+                                            <span class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i> <small>(0)</small></span>
                                         </label>
                                     </li>
                                     <li>
-                                        <label class="">
-                                            <div class="icheckbox_square-grey" style="position: relative;"><input name="filter" type="checkbox" class="icheck" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>
-                                            <span class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(68)</small></span>
+                                        <label>
+                                            <input type="checkbox" name="rat-filter" value="3" class="icheck" style="position: absolute; opacity: 0;">
+                                            <span class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(0)</small></span>
                                         </label>
                                     </li>
                                     <li>
-                                        <label class="">
-                                            <div class="icheckbox_square-grey" style="position: relative;"><input name="filter" type="checkbox" class="icheck" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>
-                                            <span class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(34)</small></span>
+                                        <label>
+                                            <input type="checkbox" name="rat-filter" value="2" class="icheck" style="position: absolute; opacity: 0;">
+                                            <span class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(0)</small></span>
                                         </label>
                                     </li>
                                     <li>
-                                        <label class="">
-                                            <div class="icheckbox_square-grey" style="position: relative;"><input name="filter" type="checkbox" class="icheck" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>
-                                            <span class="rating"><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(10)</small></span>
+                                        <label>
+                                            <input type="checkbox" name="rat-filter" value="1" class="icheck" style="position: absolute; opacity: 0;">
+                                            <span class="rating"><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(0)</small></span>
                                         </label>
                                     </li>
                                 </ul>
@@ -224,10 +224,14 @@
                 ratings: []
             };
 
-            _hasFilter = $("input[name='filter']:checked").length > 0;
+            _hasFilter = $("input[name*='-filter']:checked").length > 0;
 
-            $.each($("input[name='filter']:checked"), function(){
+            $.each($("input[name='cat-filter']:checked"), function(){
                 filterOptions.categories.push($(this).val());
+            });
+
+            $.each($("input[name='rat-filter']:checked"), function(){
+                filterOptions.ratings.push($(this).val());
             });
 
             if (!isLoadMore) {
@@ -333,7 +337,7 @@
                         categoryList.append(`
                             <li>
                                 <label>
-                                    <input type="checkbox" name="filter" value="${item.name}" class="icheck" style="position: absolute; opacity: 0;">
+                                    <input type="checkbox" name="cat-filter" value="${item.name}" class="icheck" style="position: absolute; opacity: 0;">
                                     ${item.name} <small>(${item.count})</small>
                                 </label>
                             </li>
