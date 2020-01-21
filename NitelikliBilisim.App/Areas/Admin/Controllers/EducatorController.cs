@@ -65,8 +65,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 //var dbPath = _fileManager.Upload("/uploads/educator-photos/", data.ProfilePhoto.Base64Content, data.ProfilePhoto.Extension, "profile-photo", $"{data.Name} {data.Surname}");
                 var stream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.ProfilePhoto.Base64Content));
                 var fileName = $"{data.Name} {data.Surname}".FormatForTag();
-                var test = await _storage.UploadFile(stream, $"{fileName}.{data.ProfilePhoto.Extension}", "educator-photos");
-                var dbPath = "";
+                var dbPath = await _storage.UploadFile(stream, $"{fileName}.{data.ProfilePhoto.Extension}", "educator-photos");
                 var userName = TextHelper.ConcatForUserName(data.Name, data.Surname);
 
                 var count = _userManager.Users.Where(x => x.UserName.StartsWith(userName)).Count();
