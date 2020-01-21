@@ -93,7 +93,7 @@ namespace NitelikliBilisim.Business.Repositories
                 Count = x.Count()
             }).ToList();
 
-            var categories = educations.Join(_context.Bridge_EducationTags, l => l.Id, r => r.Id2, (x, y) => new
+            var fetchedCategories = educations.Join(_context.Bridge_EducationTags, l => l.Id, r => r.Id2, (x, y) => new
             {
                 EducationId = x.Id,
                 CategoryId = y.Id
@@ -101,8 +101,8 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 EducationId = x.EducationId,
                 Category = y
-            }).AsEnumerable()
-            .GroupBy(g => g.EducationId)
+            }).ToList();
+            var categories = fetchedCategories.GroupBy(g => g.EducationId)
             .Select(x => new
             {
                 EducationId = x.Key,

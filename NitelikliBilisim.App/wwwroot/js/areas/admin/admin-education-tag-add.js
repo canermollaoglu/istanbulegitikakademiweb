@@ -14,11 +14,11 @@ function document_onLoad() {
 }
 function btnSave_onClick() {
     btnSave.off("click");
-    var baseCategoryId = selectBaseCategories.options[selectBaseCategories.selectedIndex].value;
+    //var baseCategoryId = selectBaseCategories.options[selectBaseCategories.selectedIndex].value;
     var data = {
         Name: inputName.value,
-        Description: inputDescription.value,
-        BaseTagId: baseCategoryId
+        Description: inputDescription.value
+        //BaseTagId: baseCategoryId
     }
 
     var tokenVerfier = new SecuritySupport.TokenVerifier();

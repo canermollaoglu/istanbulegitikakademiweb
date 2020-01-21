@@ -26,8 +26,8 @@
                         <th>Seviye</th>
                         <th>Medyalar/Parçalar/Kazanımlar/Eğitmenler</th>
                         @*<th>Parçalar</th>
-                        <th>Kazanımlar</th>
-                        <th>Eğitmenler</th>*@
+                            <th>Kazanımlar</th>
+                            <th>Eğitmenler</th>*@
                     </tr>
                 </thead>
                 <tfoot>
@@ -39,8 +39,8 @@
                         <th>Seviye</th>
                         <th>Medyalar/Parçalar/Kazanımlar/Eğitmenler</th>
                         @*<th>Parçalar</th>
-                        <th>Kazanımlar</th>
-                        <th>Eğitmenler</th>*@
+                            <th>Kazanımlar</th>
+                            <th>Eğitmenler</th>*@
                     </tr>
                     @*<tr>
                             <th colspan="8">
@@ -67,7 +67,7 @@
                             var educator = $"<a href=\"/admin/egitmen-ata/{item.Id}\" class=\"btn btn-success\"><i class=\"fa fa-users\"></i> {educatorCount}</a>";
 
                             var categories = Model.EducationCategories.FirstOrDefault(x => x.EducationId == item.Id);
-                            var concattedCategories = categories.ConcattedCategories;
+                            var concattedCategories = categories != null ? categories.ConcattedCategories : null;
 
                             if (concattedCategories == null)
                             {

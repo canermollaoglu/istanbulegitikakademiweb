@@ -14,12 +14,12 @@ function document_onLoad() {
 }
 function btnSave_onClick() {
     btnSave.off("click");
-    var baseCategoryId = selectBaseCategories.options[selectBaseCategories.selectedIndex].value;
+    //var baseCategoryId = selectBaseCategories.options[selectBaseCategories.selectedIndex].value;
     var data = {
         CategoryId: $("#_category-id").val(),
         Name: inputName.value,
-        Description: inputDescription.value,
-        BaseCategoryId: baseCategoryId
+        Description: inputDescription.value
+        //BaseCategoryId: baseCategoryId
     }
 
     var tokenVerfier = new SecuritySupport.TokenVerifier();
