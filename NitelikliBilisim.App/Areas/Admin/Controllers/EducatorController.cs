@@ -136,13 +136,47 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 data = educators
             });
         }
-
+        [Route("admin/egitmen-guncelle/{educatorId}")]
         public IActionResult Update(Guid? educatorId)
         {
             if (!educatorId.HasValue)
                 return Redirect("/admin/egitmenler");
-
-            return View();
+            var educator = _unitOfWork.Educator.Get(x => x.Id == educatorId.ToString(), null, x => x.User).First();
+            var model = new UpdateGetVm
+            {
+                Id = Guid.Parse(educator.Id),
+                Title = educator.Title,
+                Name = educator.User.Name,
+                Surname = educator.User.Surname,
+                Phone = educator.User.PhoneNumber,
+                Email = educator.User.Email
+            };
+            return View(model);
+        }
+        [HttpPost, Route("admin/egitmen-guncelle")]
+        public IActionResult Update(UpdatePostNewVm data)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelStateUtil.GetErrors(ModelState);
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = errors
+                });
+            }
+            var educator = _unitOfWork.Educator.Get(x => x.Id == data.EducatorId.ToString(), null, x => x.User).First();
+            educator.Title = data.Title;
+            educator.User.Name = data.Name;
+            educator.User.Surname = data.Surname;
+            educator.User.PhoneNumber = data.Phone;
+            educator.User.Email = data.Email;
+            _unitOfWork.Educator.Update(educator);
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                message = "Eğitmen başarıyla güncellenmiştir"
+            });
         }
     }
 }
