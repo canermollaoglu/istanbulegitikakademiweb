@@ -24,8 +24,9 @@ namespace NitelikliBilisim.Core.Services
 
         public async Task<string> UploadFile(Stream fileStream, string fileName, string folderName)
         {
-            //var ext = Path.GetExtension(fileName);
-            fileName = StringHelper.GenerateUniqueCode() + StringHelper.UrlFormatConverter(fileName);
+            var ext = Path.GetExtension(fileName);
+            fileName = Path.GetFileNameWithoutExtension(fileName);
+            fileName = StringHelper.UrlFormatConverter(fileName) + StringHelper.GenerateUniqueCode() + ext;
             fileStream.Position = 0;
             var fileClient = _storageAccount.CreateCloudFileClient();
             var share = fileClient.GetShareReference(ReferanceName);
