@@ -5,7 +5,7 @@ namespace NitelikliBilisim.Core.Services
 {
     public  class StringHelper
     {
-        private static char[] _validCharacters = { '\'', '\"', '!', '^', '+', '#', '$', '%', '&', '/', '{', '}', '(', ')', '[', ']', '=', '?', '*', '\\', '-', '_', '~', ',', ';', '´', '.', ':', '|', '<', '>', '@', '€', '¨', ' ' };
+        private static readonly char[] ValidCharacters = { '\'', '\"', '!', '^', '+', '#', '$', '%', '&', '/', '{', '}', '(', ')', '[', ']', '=', '?', '*', '\\', '-', '_', '~', ',', ';', '´', '.', ':', '|', '<', '>', '@', '€', '¨', ' ' };
         public static string GenerateUniqueCode()
         {
             string base64String = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
@@ -49,7 +49,7 @@ namespace NitelikliBilisim.Core.Services
         }
         public static string ClearHiddenCharacters(string text)
         {
-            return new string(text.Where(x => char.IsLetter(x) || char.IsNumber(x) || _validCharacters.Contains(x)).ToArray());
+            return new string(text.Where(x => char.IsLetter(x) || char.IsNumber(x) || ValidCharacters.Contains(x)).ToArray());
         }
     }
 }

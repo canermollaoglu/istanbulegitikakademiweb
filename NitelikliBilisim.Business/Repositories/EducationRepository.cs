@@ -7,14 +7,13 @@ using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education;
 using NitelikliBilisim.Core.ViewModels.search;
 using NitelikliBilisim.Data;
-using NitelikliBilisim.Enums;
+using NitelikliBilisim.Support.Enums;
 using NitelikliBilisim.Support.Text;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace NitelikliBilisim.Business.Repositories
 {
@@ -26,7 +25,7 @@ namespace NitelikliBilisim.Business.Repositories
 
         public PagedEntity<Education> GetPagedEntity(int page = 0, Expression<Func<Education, bool>> filter = null, int shownRecords = 15)
         {
-            IQueryable<Education> dbSet = base._table;
+            IQueryable<Education> dbSet = base.Table;
             if (filter != null)
                 dbSet = dbSet.Where(filter);
 
@@ -43,12 +42,12 @@ namespace NitelikliBilisim.Business.Repositories
 
         public ListGetVm GetPagedEducations(int page = 0, int shownRecords = 15)
         {
-            var educations = _table
+            var educations = Table
                 .OrderBy(o => o.Name)
                 .Skip(page * shownRecords)
                 .Take(shownRecords);
 
-            var mediaCount = educations.Join(_context.EducationMedias, l => l.Id, r => r.EducationId, (x, y) => new
+            var mediaCount = educations.Join(Context.EducationMedias, l => l.Id, r => r.EducationId, (x, y) => new
             {
                 EducationId = x.Id,
                 MediaId = y.Id
@@ -59,7 +58,7 @@ namespace NitelikliBilisim.Business.Repositories
                 EducationId = x.Key,
                 Count = x.Count()
             }).ToList();
-            var partCount = educations.Join(_context.EducationParts, l => l.Id, r => r.EducationId, (x, y) => new
+            var partCount = educations.Join(Context.EducationParts, l => l.Id, r => r.EducationId, (x, y) => new
             {
                 EducationId = x.Id,
                 PartId = y.Id
@@ -70,7 +69,7 @@ namespace NitelikliBilisim.Business.Repositories
                 EducationId = x.Key,
                 Count = x.Count()
             }).ToList();
-            var gainCount = educations.Join(_context.EducationGains, l => l.Id, r => r.EducationId, (x, y) => new
+            var gainCount = educations.Join(Context.EducationGains, l => l.Id, r => r.EducationId, (x, y) => new
             {
                 EducationId = x.Id,
                 GainId = y.Id
@@ -81,7 +80,7 @@ namespace NitelikliBilisim.Business.Repositories
                 EducationId = x.Key,
                 Count = x.Count()
             }).ToList();
-            var educatorCount = educations.Join(_context.Bridge_EducationEducators, l => l.Id, r => r.Id, (x, y) => new
+            var educatorCount = educations.Join(Context.Bridge_EducationEducators, l => l.Id, r => r.Id, (x, y) => new
             {
                 EducationId = x.Id,
                 EducatorId = y.Id2
@@ -93,11 +92,11 @@ namespace NitelikliBilisim.Business.Repositories
                 Count = x.Count()
             }).ToList();
 
-            var fetchedCategories = educations.Join(_context.Bridge_EducationTags, l => l.Id, r => r.Id2, (x, y) => new
+            var fetchedCategories = educations.Join(Context.Bridge_EducationTags, l => l.Id, r => r.Id2, (x, y) => new
             {
                 EducationId = x.Id,
                 CategoryId = y.Id
-            }).Join(_context.EducationTags, l => l.CategoryId, r => r.Id, (x, y) => new
+            }).Join(Context.EducationTags, l => l.CategoryId, r => r.Id, (x, y) => new
             {
                 EducationId = x.EducationId,
                 Category = y
@@ -157,10 +156,10 @@ namespace NitelikliBilisim.Business.Repositories
         {
             if (tagIds == null || tagIds.Count == 0)
                 return null;
-            if (_context.Educations.Any(x => x.Name == entity.Name))
+            if (Context.Educations.Any(x => x.Name == entity.Name))
                 return null;
 
-            using (var transaction = _context.Database.BeginTransaction())
+            using (var transaction = Context.Database.BeginTransaction())
             {
                 try
                 {
@@ -170,7 +169,7 @@ namespace NitelikliBilisim.Business.Repositories
                     foreach (var item in medias)
                         item.EducationId = educationId;
 
-                    _context.EducationMedias.AddRange(medias);
+                    Context.EducationMedias.AddRange(medias);
                     //_context.SaveChanges();
 
                     var bridge = new List<Bridge_EducationTag>();
@@ -182,14 +181,14 @@ namespace NitelikliBilisim.Business.Repositories
                         });
                     var tag = entity.Name.FormatForTag();
                     EducationTag autoTag = null;
-                    if (!_context.EducationTags.Any(x => x.Name == tag))
+                    if (!Context.EducationTags.Any(x => x.Name == tag))
                     {
                         autoTag = new EducationTag
                         {
                             Name = tag,
                             Description = $"{entity.Name} isimli eğitimin otomatik oluşturulmuş etiketi"
                         };
-                        _context.EducationTags.Add(autoTag);
+                        Context.EducationTags.Add(autoTag);
                     }
                     if (autoTag != null)
                         bridge.Add(new Bridge_EducationTag
@@ -197,9 +196,9 @@ namespace NitelikliBilisim.Business.Repositories
                             Id = autoTag.Id,
                             Id2 = educationId
                         });
-                    _context.Bridge_EducationTags.AddRange(bridge);
+                    Context.Bridge_EducationTags.AddRange(bridge);
 
-                    _context.SaveChanges();
+                    Context.SaveChanges();
                     transaction.Commit();
                     return educationId;
                 }
@@ -213,8 +212,8 @@ namespace NitelikliBilisim.Business.Repositories
 
         public List<EducationTag> GetTags(Guid educationId)
         {
-            var data = _context.Bridge_EducationTags.Where(x => x.Id2 == educationId)
-                .Join(_context.EducationTags, l => l.Id, r => r.Id, (x, y) => new
+            var data = Context.Bridge_EducationTags.Where(x => x.Id2 == educationId)
+                .Join(Context.EducationTags, l => l.Id, r => r.Id, (x, y) => new
                 {
                     Category = y
                 }).ToList();
@@ -232,31 +231,31 @@ namespace NitelikliBilisim.Business.Repositories
 
         public bool CheckEducationState(Guid educationId)
         {
-            var mediaCount = _context.EducationMedias.Count(x => x.EducationId == educationId &&
+            var mediaCount = Context.EducationMedias.Count(x => x.EducationId == educationId &&
             (x.MediaType == Core.Enums.EducationMediaType.Banner ||
             x.MediaType == Core.Enums.EducationMediaType.PreviewPhoto ||
             x.MediaType == Core.Enums.EducationMediaType.PreviewVideo));
 
-            var partCount = _context.EducationParts.Count(x => x.EducationId == educationId);
+            var partCount = Context.EducationParts.Count(x => x.EducationId == educationId);
 
-            var gainCount = _context.EducationGains.Count(x => x.EducationId == educationId);
+            var gainCount = Context.EducationGains.Count(x => x.EducationId == educationId);
 
-            var categoryCount = _context.Bridge_EducationTags.Count(x => x.Id2 == educationId);
+            var categoryCount = Context.Bridge_EducationTags.Count(x => x.Id2 == educationId);
 
-            var education = _context.Educations.First(x => x.Id == educationId);
+            var education = Context.Educations.First(x => x.Id == educationId);
 
             education.IsActive = mediaCount >= 2 && partCount > 0 && gainCount > 0 && categoryCount > 0;
 
-            _context.SaveChanges();
+            Context.SaveChanges();
 
             return education.IsActive;
         }
 
         public int Update(Education entity, List<Guid> categoryIds, bool isSaveLater = false)
         {
-            var currentCategories = _context.Bridge_EducationTags.Where(x => x.Id2 == entity.Id).ToList();
+            var currentCategories = Context.Bridge_EducationTags.Where(x => x.Id2 == entity.Id).ToList();
 
-            _context.Bridge_EducationTags.RemoveRange(currentCategories);
+            Context.Bridge_EducationTags.RemoveRange(currentCategories);
 
             var newItems = new List<Bridge_EducationTag>();
             foreach (var categoryId in categoryIds)
@@ -266,7 +265,7 @@ namespace NitelikliBilisim.Business.Repositories
                     Id2 = entity.Id
                 });
 
-            _context.Bridge_EducationTags.AddRange(newItems);
+            Context.Bridge_EducationTags.AddRange(newItems);
 
             return base.Update(entity, isSaveLater);
         }
@@ -276,8 +275,8 @@ namespace NitelikliBilisim.Business.Repositories
             var shownResults = 5;
             searchText = searchText.FormatForTag();
 
-            var tags = _context.Bridge_EducationTags
-                .Join(_context.EducationTags, l => l.Id, r => r.Id, (x, y) => new
+            var tags = Context.Bridge_EducationTags
+                .Join(Context.EducationTags, l => l.Id, r => r.Id, (x, y) => new
                 {
                     TagId = x.Id,
                     EducationId = x.Id2,
@@ -290,22 +289,22 @@ namespace NitelikliBilisim.Business.Repositories
                 .Select(x => x.EducationId)
                 .ToList();
 
-            var educations = _context.Educations.Include(x => x.Category)
+            var educations = Context.Educations.Include(x => x.Category)
                 .Where(x => educationIds.Contains(x.Id) && x.IsActive);
 
             if (filter.categories != null)
             {
-                var categoryIds = _context.EducationCategories.Where(x => filter.categories.Contains(x.Name)).Select(x => x.Id).ToList();
+                var categoryIds = Context.EducationCategories.Where(x => filter.categories.Contains(x.Name)).Select(x => x.Id).ToList();
                 educations = educations.Where(x => categoryIds.Contains(x.CategoryId)); // TODO: Değerlendirme de burada bir şart olacak.
             }
 
             var educationsList = educations
-                .Join(_context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Id, r => r.EducationId, (x, y) => new
+                .Join(Context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Id, r => r.EducationId, (x, y) => new
                 {
                     Education = x,
                     EducationPreviewMedia = y
                 })
-                .Join(_context.EducationCategories, l => l.Education.CategoryId, r => r.Id, (x, y) => new
+                .Join(Context.EducationCategories, l => l.Education.CategoryId, r => r.Id, (x, y) => new
                 {
                     Education = x.Education,
                     EducationPreviewMedia = x.EducationPreviewMedia,
@@ -339,14 +338,14 @@ namespace NitelikliBilisim.Business.Repositories
 
         public EducationVm GetEducation(Guid id)
         {
-            var education = _context.Educations.FirstOrDefault(x => x.Id == id);
+            var education = Context.Educations.First(x => x.Id == id);
             var model = new EducationVm
             {
                 Base = new EducationBaseVm
                 {
                     Id = education.Id,
                     Name = education.Name,
-                    CategoryName = _context.EducationCategories.FirstOrDefault(x => x.Id == education.CategoryId).Name,
+                    CategoryName = Context.EducationCategories.First(x => x.Id == education.CategoryId).Name,
                     DaysNumeric = education.Days,
                     DaysText = education.Days.ToString(),
                     HoursPerDayNumeric = education.HoursPerDay,
@@ -357,13 +356,13 @@ namespace NitelikliBilisim.Business.Repositories
                     Level = EnumSupport.GetDescription(education.Level),
                     PriceText = education.NewPrice.GetValueOrDefault(0).ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"))
                 },
-                Gains = _context.EducationGains.Where(x => x.EducationId == id)
+                Gains = Context.EducationGains.Where(x => x.EducationId == id)
                 .Select(x => new EducationGainVm
                 {
                     EducationId = id,
                     Gain = x.Gain
                 }).ToList(),
-                Medias = _context.EducationMedias.Where(x => x.EducationId == id)
+                Medias = Context.EducationMedias.Where(x => x.EducationId == id)
                 .Select(x => new EducationMediaVm
                 {
                     EducationId = id,
@@ -372,7 +371,7 @@ namespace NitelikliBilisim.Business.Repositories
                 }).ToList()
             };
 
-            var parts = _context.EducationParts.Where(x => x.EducationId == id)
+            var parts = Context.EducationParts.Where(x => x.EducationId == id)
                 .OrderBy(o => o.Order)
                 .ToList();
 
@@ -417,7 +416,7 @@ namespace NitelikliBilisim.Business.Repositories
         }
         public bool IsUnique(string name)
         {
-            return !_context.Educations.Any(x => x.Name == name);
+            return !Context.Educations.Any(x => x.Name == name);
         }
     }
 }

@@ -6,7 +6,6 @@ using NitelikliBilisim.Support.Text;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace NitelikliBilisim.Business.Repositories
 {
@@ -18,7 +17,7 @@ namespace NitelikliBilisim.Business.Repositories
 
         public List<EducationCategory> GetDeepestCategories(CategoryType? categoryType = null)
         {
-            var query = _context.EducationCategories
+            var query = Context.EducationCategories
                 .Where(x => x.BaseCategoryId != null);
             if (categoryType != null)
                 query = query.Where(x => x.CategoryType == categoryType);
@@ -41,8 +40,8 @@ namespace NitelikliBilisim.Business.Repositories
         {
             searchText = searchText.FormatForTag();
 
-            var tags = _context.Bridge_EducationTags
-                .Join(_context.EducationTags, l => l.Id, r => r.Id, (x, y) => new
+            var tags = Context.Bridge_EducationTags
+                .Join(Context.EducationTags, l => l.Id, r => r.Id, (x, y) => new
                 {
                     TagId = x.Id,
                     EducationId = x.Id2,
@@ -55,14 +54,14 @@ namespace NitelikliBilisim.Business.Repositories
                 .Select(x => x.EducationId)
                 .ToList();
 
-            var educations = _context.Educations
+            var educations = Context.Educations
                 .Where(x => educationIds.Contains(x.Id) && x.IsActive)
-                .Join(_context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Id, r => r.EducationId, (x, y) => new
+                .Join(Context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Id, r => r.EducationId, (x, y) => new
                 {
                     Education = x,
                     EducationPreviewMedia = y
                 })
-                .Join(_context.EducationCategories, l => l.Education.CategoryId, r => r.Id, (x, y) => new
+                .Join(Context.EducationCategories, l => l.Education.CategoryId, r => r.Id, (x, y) => new
                 {
                     Education = x.Education,
                     EducationPreviewMedia = x.EducationPreviewMedia,
@@ -84,7 +83,7 @@ namespace NitelikliBilisim.Business.Repositories
 
         public override Guid Insert(EducationCategory entity, bool isSaveLater = false)
         {
-            if (_context.EducationCategories.Any(x => x.Name == entity.Name))
+            if (Context.EducationCategories.Any(x => x.Name == entity.Name))
                 return default;
 
             return base.Insert(entity, isSaveLater);
