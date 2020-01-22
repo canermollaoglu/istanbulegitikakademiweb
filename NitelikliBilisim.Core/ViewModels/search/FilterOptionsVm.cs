@@ -1,15 +1,21 @@
-﻿namespace NitelikliBilisim.Core.ViewModels.search
+﻿using NitelikliBilisim.Core.Enums;
+using System.Collections.Generic;
+
+namespace NitelikliBilisim.Core.ViewModels.search
 {
     public class FilterOptionsVm
     {
-        public string[] categories { get; set; }
-        public int[] ratings { get; set; }
+        public Dictionary<string, int> categories { get; set; } = new Dictionary<string, int>();
+        public Dictionary<string, int> locations { get; set; } = new Dictionary<string, int>();
+        public Dictionary<string, int> levels { get; set; } = new Dictionary<string, int>();
+        public Dictionary<string, int> stars { get; set; } = new Dictionary<string, int>();
     }
 
-    public class SearchedEducationCategoryVm
+    public class FiltersVm
     {
-        public string name { get; set; }
-        public int count { get; set; }
-        public bool isChecked { get; set; } = false;
+        public string[] categories { get; set; }
+        public string[] locations { get; set; }
+        public EducationLevel[] levels { get; set; }
+        public int[] ratings { get; set; }
     }
 }
