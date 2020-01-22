@@ -35,7 +35,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             return View(model);
         }
 
-        [Route("admin/get-assigned-educators-for-group-add/{educationId}")]
+        [Route("admin/get-assigned-educators-for-group-add/{educationId?}")]
         public IActionResult GetEducatorsOfEducation(Guid? educationId)
         {
             if (!educationId.HasValue)
@@ -49,6 +49,20 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             {
                 isSuccess = true,
                 data = model
+            });
+        }
+
+        public IActionResult Add(AddPostVm data)
+        {
+            if (!ModelState.IsValid)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false
+                });
+
+            return Json(new ResponseModel
+            {
+                isSuccess = true
             });
         }
     }
