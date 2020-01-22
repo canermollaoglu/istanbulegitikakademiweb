@@ -36,51 +36,6 @@ namespace NitelikliBilisim.Business.Repositories
             return deepestCategories;
         }
 
-        public List<SearchedEducationCategoryVm> GetSearchedEducationCategories(string searchText)
-        {
-            searchText = searchText.FormatForTag();
-
-            var tags = Context.Bridge_EducationTags
-                .Join(Context.EducationTags, l => l.Id, r => r.Id, (x, y) => new
-                {
-                    TagId = x.Id,
-                    EducationId = x.Id2,
-                    TagName = y.Name
-                })
-                .ToList();
-
-            var educationIds = tags
-                .Where(x => x.TagName.Contains(searchText))
-                .Select(x => x.EducationId)
-                .ToList();
-
-            var educations = Context.Educations
-                .Where(x => educationIds.Contains(x.Id) && x.IsActive)
-                .Join(Context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Id, r => r.EducationId, (x, y) => new
-                {
-                    Education = x,
-                    EducationPreviewMedia = y
-                })
-                .Join(Context.EducationCategories, l => l.Education.CategoryId, r => r.Id, (x, y) => new
-                {
-                    Education = x.Education,
-                    EducationPreviewMedia = x.EducationPreviewMedia,
-                    CategoryName = y.Name
-                });
-
-            var model = educations
-                .GroupBy(x => x.Education.Category.Name)
-                .Select(x => new SearchedEducationCategoryVm()
-                {
-                    name = x.Key,
-                    count = x.Count()
-                })
-                .OrderByDescending(x => x.count)
-                .ToList();
-
-            return model;
-        }
-
         public override Guid Insert(EducationCategory entity, bool isSaveLater = false)
         {
             if (Context.EducationCategories.Any(x => x.Name == entity.Name))

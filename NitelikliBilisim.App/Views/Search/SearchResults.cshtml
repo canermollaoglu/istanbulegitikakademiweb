@@ -5,6 +5,7 @@
 }
 @section styles{
     <link href="~/assets/css/grey.css" rel="stylesheet">
+    <link href="~/assets/css/search/search-results.css" rel="stylesheet" />
     <style>
         a [role="button"] {
             cursor: pointer;
@@ -64,7 +65,8 @@
     </div>
 
     <div class="container margin_60_35">
-        <div class="row" style="transform: none;">
+        <div class="row" style="transform: none;
+">
             <aside class="col-lg-3" id="sidebar" style="position: relative; overflow: visible; box-sizing: border-box; min-height: 1px;">
                 <div class="theiaStickySidebar" style="padding-top: 0px; padding-bottom: 1px; position: static; transform: none; top: 0px; left: 83px;">
                     <div id="filters_col">
@@ -80,6 +82,10 @@
                             <div class="filter_type">
                                 <h6>Kategori</h6>
                                 <ul id="category-list"></ul>
+                            </div>
+                            <div class="filter_type">
+                                <h6>Seviye</h6>
+                                <ul id="level-list"></ul>
                             </div>
                             <div class="filter_type">
                                 <h6>Değerlendirme</h6>
@@ -150,6 +156,7 @@
         var btnShowAsGrid = $("#btn-show-as-grid");
         var btnShowAsList = $("#btn-show-as-list");
         var btnSearch = $("#btn-search");
+        var inputSearch = $("#input-search");
         var selectOrder = $("select[name='orderby']");
 
         /* assignments */
@@ -158,6 +165,7 @@
         btnShowAsList.on("click", btnShowAsList_onClick);
         btnSearch.on("click", btnSearch_onClick);
         selectOrder.on("change", selectOrder_onChange);
+        inputSearch.bind('keyup', inputSearch_onSubmit);
 
         /* events */
         function document_onLoad() {
@@ -177,7 +185,6 @@
             location.href = `/arama-sonuclari/${_searchText.val()}?showAs=list`;
         }
         function btnSearch_onClick() {
-            var inputSearch = $("#input-search");
             var searchText = inputSearch.val();
 
             if (searchText == "")
@@ -192,6 +199,11 @@
                 getFilteredResults(false, order);
             else
                 getSearchResults(false, null, order);
+        }
+        function inputSearch_onSubmit(e) {
+            if (e.keyCode === 13) {
+                btnSearch_onClick();
+            }
         }
 
         /* functions */
@@ -218,13 +230,13 @@
 
                     if (res.data.model.length != 0) {
                         if (showAs === "grid") {
-                            if(!isLoadMore)
+                            if (!isLoadMore)
                                 divEducationContainerRow.html("");
 
                             var boxes = prepareCourseBoxesAsGrid(data);
                             divEducationContainerRow.append(boxes);
                         } else {
-                            if(!isLoadMore)
+                            if (!isLoadMore)
                                 divEducationContainer.html("");
 
                             var boxes = prepareCourseBoxesAsList(data);
@@ -250,21 +262,26 @@
         function getFilteredResults(isLoadMore, order) {
             var filterOptions = {
                 categories: [],
+                levels: [],
                 ratings: []
             };
 
             _hasFilter = $("input[name*='-filter']:checked").length > 0;
 
-            $.each($("input[name='cat-filter']:checked"), function(){
+            $.each($("input[name='cat-filter']:checked"), function () {
                 filterOptions.categories.push($(this).val());
             });
 
-            $.each($("input[name='rat-filter']:checked"), function(){
+            $.each($("input[name='lev-filter']:checked"), function () {
+                filterOptions.levels.push($(this).val());
+            });
+
+            $.each($("input[name='rat-filter']:checked"), function () {
                 filterOptions.ratings.push($(this).val());
             });
 
             if (!isLoadMore) {
-                if(_showAs.val() === "grid")
+                if (_showAs.val() === "grid")
                     divEducationContainerRow.html(`<div class="alert alert-info">Yükleniyor...</div>`);
                 else
                     divEducationContainer.html(`<div class="alert alert-info">Yükleniyor...</div>`);
@@ -288,11 +305,14 @@
                     `<div class="price">${item.base.priceText}</div>` +
                     `<div class="preview"><span><a href="/kurs-detayi/${item.base.id}">Detaylar</a></span></div>` +
                     `</figure>` +
-
                     `<div class="wrapper">` +
                     `<small>${item.base.categoryName}</small>` +
                     `<h3>${item.base.name}</h3>` +
-                    `<p>${item.base.description}</p>` +
+                    `<a href="/kurs-detayi/${item.base.id}">` +
+                    `<div class="desc-div">` +
+                    `</div>` +
+                    `</a>` +
+                    `<p class="desc-p">${item.base.description}</p>` +
                     `<div class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(145)</small></div>` +
                     `</div>` +
 
@@ -346,36 +366,62 @@
 
             return boxes;
         }
-        function prepareFilterBox(chosen) {
+        function prepareFilterBox() {
             var categoryList = $("#category-list");
+            var levelList = $("#level-list");
 
             $.ajax({
-                url: `/get-searched-categories/`,
+                url: `/get-filter-options/`,
                 method: "post",
                 data: {
-                    searchText: _searchText.val(),
-                    chosen: chosen
+                    searchText: _searchText.val()
                 },
                 success: (res) => {
                     categoryList.empty();
 
                     var data = res.data;
 
-                    for (var i = 0; i < data.length; i++) {
-                        var item = data[i];
+                    Object.keys(data.categories).forEach(key => {
                         categoryList.append(`
-                            <li>
-                                <label>
-                                    <input type="checkbox" name="cat-filter" value="${item.name}" class="icheck" style="position: absolute; opacity: 0;">
-                                    ${item.name} <small>(${item.count})</small>
-                                </label>
-                            </li>
-                        `);
-                    }
+                                <li>
+                                    <label>
+                                        <input type="checkbox" name="cat-filter" value="${key}" class="icheck" style="position: absolute; opacity: 0;">
+                                        ${key} <small>(${data.categories[key]})</small>
+                                    </label>
+                                </li>
+                            `);
+                    })
+
+                    console.log(data.levels)
+
+                    Object.keys(data.levels).forEach(key => {
+                        var level;
+
+                        switch (key) {
+                            case "Beginner":
+                                level = "Başlangıç";
+                                break;
+                            case "Intermediate":
+                                level = "Orta";
+                                break;
+                            case "Advanced":
+                                level = "İleri";
+                                break;
+                        }
+
+                        levelList.append(`
+                                <li>
+                                    <label>
+                                        <input type="checkbox" name="lev-filter" value="${key}" class="icheck" style="position: absolute; opacity: 0;">
+                                        ${level} <small>(${data.levels[key]})</small>
+                                    </label>
+                                </li>
+                            `);
+                    })
 
                     $('.icheck').iCheck({
-		                checkboxClass: 'icheckbox_square-grey',
-		                radioClass: 'iradio_square-grey'
+                        checkboxClass: 'icheckbox_square-grey',
+                        radioClass: 'iradio_square-grey'
                     });
 
                     $('.icheck').on('ifToggled', function () {
