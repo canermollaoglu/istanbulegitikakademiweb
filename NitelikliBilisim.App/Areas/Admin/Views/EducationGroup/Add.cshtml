@@ -1,4 +1,5 @@
-﻿@model List<NitelikliBilisim.Core.Entities.Education>
+﻿@model NitelikliBilisim.Core.ViewModels.areas.admin.education_groups.AddGetVm
+@using NitelikliBilisim.Support.Enums
 @{
     ViewData["Title"] = "Grup Aç";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -20,11 +21,23 @@
             <div class="col-md-12">
                 <form id="form-add-group">
                     @Html.AntiForgeryToken()
+                    <div class="row">
+                        <div class="col-md-6">
+                            <select class="form-control" id="select-hosts">
+                                <option value="">Kursun yapılacağı yeri seçiniz...</option>
+                                @foreach (var item in Model.Hosts)
+                                {
+                                    <option value="@item.Id">@item.HostName (@EnumSupport.GetDescription(item.City)</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
                     <div class="row" style="margin-bottom:1%;">
                         <div class="col-md-6">
                             <label>Eğitimler</label>
                             <select class="form-control" id="select-educations">
-                                @foreach (var item in Model)
+                                <option value="">Eğitim seçiniz...</option>
+                                @foreach (var item in Model.Educations)
                                 {
                                     <option value="@item.Id">@item.Name</option>
                                 }
@@ -32,12 +45,12 @@
                         </div>
                         <div class="col-md-6">
                             <label>Eğitmenler</label>
-                            <select class="form-control" id="select-educators">
-
+                            <select class="form-control" id="select-educators" disabled>
+                                <option value="">Eğitmen seçiniz...</option>
                             </select>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" style="margin-bottom: 1%;">
                         <div class="col-md-6">
                             <label>Grup Adı</label>
                             <input class="form-control" type="text" value="" id="input-name" />
@@ -47,11 +60,15 @@
                             <input class="form-control" type="date" value="" id="input-start-date" />
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <button id="btn-save" class="btn_1">Kaydet</button>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
-    <div class="card-footer small text-muted">Veri tarihi: @DateTime.Now</div>
 </div>
 @section postScripts{
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
@@ -63,12 +80,46 @@
         /* elements */
         var selectEducations = document.getElementById("select-educations");
         var selectEducators = document.getElementById("select-educators");
+        var btnSave = $("#btn-save");
+
         /* assignments */
         $(document).ready(document_onLoad);
+        selectEducations.onchange = selectEducations_onChange;
+        btnSave.on("click", btnSave_onClick);
+
         /* events */
         function document_onLoad() {
             $(selectEducations).select2();
             $(selectEducators).select2();
+        }
+        function selectEducations_onChange() {
+            $(selectEducators).prop("disabled", false);
+            var educationId = selectEducations.options[selectEducations.selectedIndex].value;
+            $.ajax({
+                url: `/admin/get-assigned-educators-for-group-add/${educationId}`,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        getEducators(res.data);
+                    }
+                }
+            });
+        }
+        function btnSave_onClick() {
+
+        }
+
+        /* functions */
+        function getEducators(data) {
+            var jquerySelectEducators = $(selectEducators);
+            jquerySelectEducators.html(`<option value="">Eğitmen seçiniz...</option>`);
+            var appended = "";
+            for (var i = 0; i < data.length; i++) {
+                var item = data[i];
+                appended += `<option value="${item.educatorId}">${item.name} ${item.surname}</option>`;
+            }
+
+            $(selectEducators).append(appended);
         }
     </script>
 }

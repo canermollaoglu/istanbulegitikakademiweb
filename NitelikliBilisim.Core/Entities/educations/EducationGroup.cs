@@ -23,5 +23,8 @@ namespace NitelikliBilisim.Core.Entities
         [ForeignKey("Education")]
         public Guid EducationId { get; set; }
         public virtual Education Education { get; set; }
+        [ForeignKey("Host")]
+        public Guid HostId { get; set; }
+        public virtual EducationHost Host { get; set; }
     }
 }

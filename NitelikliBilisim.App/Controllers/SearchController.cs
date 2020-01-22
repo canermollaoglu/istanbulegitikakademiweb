@@ -45,7 +45,7 @@ namespace NitelikliBilisim.App.Controllers
 
         [HttpPost]
         [Route("search-for-courses")]
-        public IActionResult SearchEducation(string searchText, int page = 0, OrderCriteria order = OrderCriteria.Latest, FilterOptionsVm filter = null)
+        public IActionResult SearchEducation(string searchText, int page = 0, OrderCriteria order = OrderCriteria.Latest, FiltersVm filter = null)
         {
             var model = _unitOfWork.Education.GetInfiniteScrollSearchResults(searchText, page, order, filter);
             return Json(new ResponseModel
@@ -58,16 +58,10 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [HttpPost]
-        [Route("get-searched-categories")]
-        public IActionResult GetSearchedCategories(string searchText, string[] chosen)
+        [Route("get-filter-options")]
+        public IActionResult GetFilterOptions(string searchText)
         {
-            var model = _unitOfWork.EducationCategory.GetSearchedEducationCategories(searchText);
-
-            foreach (var item in model)
-            {
-                if (chosen.Contains(item.name))
-                    item.isChecked = true;
-            }
+            var model = _unitOfWork.Education.GetEducationFilterOptions(searchText);
 
             return Json(new ResponseModel
             {

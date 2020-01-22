@@ -270,7 +270,7 @@ namespace NitelikliBilisim.Business.Repositories
             return base.Update(entity, isSaveLater);
         }
 
-        public List<EducationVm> GetInfiniteScrollSearchResults(string searchText, int page = 0, OrderCriteria order = OrderCriteria.Latest, FilterOptionsVm filter = null)
+        public List<EducationVm> GetInfiniteScrollSearchResults(string searchText, int page = 0, OrderCriteria order = OrderCriteria.Latest, FiltersVm filter = null)
         {
             var shownResults = 5;
             searchText = searchText.FormatForTag();
@@ -295,8 +295,11 @@ namespace NitelikliBilisim.Business.Repositories
             if (filter.categories != null)
             {
                 var categoryIds = Context.EducationCategories.Where(x => filter.categories.Contains(x.Name)).Select(x => x.Id).ToList();
-                educations = educations.Where(x => categoryIds.Contains(x.CategoryId)); // TODO: Değerlendirme de burada bir şart olacak.
+                educations = educations.Where(x => categoryIds.Contains(x.CategoryId));
             }
+
+            if (filter.levels != null)
+                educations = educations.Where(x => filter.levels.Contains(x.Level));
 
             switch (order)
             {
@@ -423,6 +426,60 @@ namespace NitelikliBilisim.Business.Repositories
 
             return model;
         }
+
+        public FilterOptionsVm GetEducationFilterOptions(string searchText)
+        {
+            searchText = searchText.FormatForTag();
+
+            var tags = Context.Bridge_EducationTags
+                .Join(Context.EducationTags, l => l.Id, r => r.Id, (x, y) => new
+                {
+                    TagId = x.Id,
+                    EducationId = x.Id2,
+                    TagName = y.Name
+                })
+                .ToList();
+
+            var educationIds = tags
+                .Where(x => x.TagName.Contains(searchText))
+                .Select(x => x.EducationId)
+                .ToList();
+
+            var educations = Context.Educations
+                .Where(x => educationIds.Contains(x.Id) && x.IsActive)
+                .Join(Context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Id, r => r.EducationId, (x, y) => new
+                {
+                    Education = x,
+                    EducationPreviewMedia = y
+                })
+                .Join(Context.EducationCategories, l => l.Education.CategoryId, r => r.Id, (x, y) => new
+                {
+                    Education = x.Education,
+                    EducationPreviewMedia = x.EducationPreviewMedia,
+                    CategoryName = y.Name
+                });
+
+            var filterOptions = new FilterOptionsVm();
+
+            filterOptions.categories = educations
+                .GroupBy(x => x.Education.Category.Name)
+                .Select(x => new KeyValuePair<string, int>(x.Key, x.Count()))
+                .ToList()
+                .OrderByDescending(x => x.Value)
+                .ToDictionary(x => x.Key, x => x.Value);
+
+            filterOptions.levels = educations
+                .GroupBy(x => x.Education.Level)
+                .Select(x => new KeyValuePair<EducationLevel, int>(x.Key, x.Count()))
+                .ToList()
+                .OrderByDescending(x => x.Value)
+                .ToDictionary(x => x.Key.ToString(), x => x.Value);
+
+            // TODO: locations ve stars
+
+            return filterOptions;
+        }
+
         public bool IsUnique(string name)
         {
             return !Context.Educations.Any(x => x.Name == name);
