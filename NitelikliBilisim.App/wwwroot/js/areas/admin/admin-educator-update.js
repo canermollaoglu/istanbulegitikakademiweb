@@ -38,7 +38,6 @@ function btnSave_onClick() {
             Extension: file.extension
         }
     }
-    console.log(data)
     var tokenVerifier = new SecuritySupport.TokenVerifier();
     data = tokenVerifier.addToken("form-update-educator", data);
     btnSave.on("click", btnSave_onClick);
@@ -48,7 +47,6 @@ function btnSave_onClick() {
         method: "post",
         data: data,
         success: (res) => {
-            console.log(data)
             var resultAlert = new AlertSupport.ResultAlert();
             if (res.isSuccess) {
                 resultAlert.display({
