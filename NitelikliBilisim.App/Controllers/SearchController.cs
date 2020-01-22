@@ -45,9 +45,9 @@ namespace NitelikliBilisim.App.Controllers
 
         [HttpPost]
         [Route("search-for-courses")]
-        public IActionResult SearchEducation(string searchText, int page = 0, FilterOptionsVm filter = null)
+        public IActionResult SearchEducation(string searchText, int page = 0, OrderCriteria order = OrderCriteria.Latest, FilterOptionsVm filter = null)
         {
-            var model = _unitOfWork.Education.GetInfiniteScrollSearchResults(searchText, page, filter);
+            var model = _unitOfWork.Education.GetInfiniteScrollSearchResults(searchText, page, order, filter);
             return Json(new ResponseModel
             {
                 data = new
