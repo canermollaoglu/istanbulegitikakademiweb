@@ -61,6 +61,10 @@ namespace NitelikliBilisim.App
 
             //services.AddControllers(options => { options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()); });
             services.AddMvc();
+
+#if DEBUG
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();
+#endif
             services.AddControllers();
         }
 

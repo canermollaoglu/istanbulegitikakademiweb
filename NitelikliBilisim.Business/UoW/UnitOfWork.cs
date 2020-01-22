@@ -20,6 +20,7 @@ namespace NitelikliBilisim.Business.UoW
         private CustomerRepository _customerRepository;
         private BridgeEducationEducatorRepository _bridgeEducationEducatorRepository;
         private EducationGroupRepository _educationGroupRepository;
+        private EducationHostRepository _educationHostRepository;
         public UnitOfWork(NbDataContext context)
         {
             _context = context;
@@ -118,6 +119,13 @@ namespace NitelikliBilisim.Business.UoW
             get
             {
                 return _educationGroupRepository ?? (_educationGroupRepository = new EducationGroupRepository(_context));
+            }
+        }
+        public EducationHostRepository EductionHost
+        {
+            get
+            {
+                return _educationHostRepository ?? (_educationHostRepository = new EducationHostRepository(_context));
             }
         }
     }
