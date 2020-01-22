@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Areas.Admin.Models.Education;
 using NitelikliBilisim.App.Areas.Admin.VmCreator.Education;
@@ -13,6 +8,8 @@ using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
+using System;
+using System.Collections.Generic;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
@@ -70,10 +67,10 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 Name = data.Name,
                 Description = data.Description,
                 Description2 = data.Description2,
-                Level = (EducationLevel)data.EducationLevel.Value,
-                NewPrice = data.Price.Value,
-                Days = data.Days.Value,
-                HoursPerDay = data.HoursPerDay.Value,
+                Level = (EducationLevel)data.EducationLevel.GetValueOrDefault(),
+                NewPrice = data.Price.GetValueOrDefault(),
+                Days = data.Days.GetValueOrDefault(),
+                HoursPerDay = data.HoursPerDay.GetValueOrDefault(),
                 CategoryId = data.CategoryId
             };
 
