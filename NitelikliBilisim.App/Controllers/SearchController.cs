@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.ViewModels;
-using NitelikliBilisim.Enums;
+using NitelikliBilisim.Core.ViewModels.search;
+using NitelikliBilisim.Support.Enums;
+using System.Linq;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -29,16 +30,42 @@ namespace NitelikliBilisim.App.Controllers
             return View(model);
         }
 
-        [Route("search-for-courses/{searchText}/page/{page}")]
-        public IActionResult SearchEducation(string searchText, int page = 0)
+        //[Route("search-for-courses/{searchText}/page/{page}")]
+        //public IActionResult SearchEducation(string searchText, int page = 0, FilterOptionsVm filter = null)
+        //{
+        //    var model = _unitOfWork.Education.GetInfiniteScrollSearchResults(searchText, page, filter);
+        //    return Json(new ResponseModel
+        //    {
+        //        data = new
+        //        {
+        //            model = model
+        //        }
+        //    });
+        //}
+
+        [HttpPost]
+        [Route("search-for-courses")]
+        public IActionResult SearchEducation(string searchText, int page = 0, OrderCriteria order = OrderCriteria.Latest, FiltersVm filter = null)
         {
-            var model = _unitOfWork.Education.GetInfiniteScrollSearchResults(searchText, page);
+            var model = _unitOfWork.Education.GetInfiniteScrollSearchResults(searchText, page, order, filter);
             return Json(new ResponseModel
             {
                 data = new
                 {
                     model = model
                 }
+            });
+        }
+
+        [HttpPost]
+        [Route("get-filter-options")]
+        public IActionResult GetFilterOptions(string searchText)
+        {
+            var model = _unitOfWork.Education.GetEducationFilterOptions(searchText);
+
+            return Json(new ResponseModel
+            {
+                data = model
             });
         }
     }

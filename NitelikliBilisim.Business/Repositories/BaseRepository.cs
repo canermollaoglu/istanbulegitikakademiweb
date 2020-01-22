@@ -11,23 +11,23 @@ namespace NitelikliBilisim.Business.Repositories
 {
     public class BaseRepository<TEntity, TKey> : IRepository<TEntity, TKey> where TEntity : class, IEntity<TKey>
     {
-        protected readonly NbDataContext _context;
-        protected DbSet<TEntity> _table { get; }
+        protected readonly NbDataContext Context;
+        protected DbSet<TEntity> Table { get; }
 
         public BaseRepository(NbDataContext context)
         {
-            _context = context;
-            _table = _context.Set<TEntity>();
+            Context = context;
+            Table = Context.Set<TEntity>();
         }
 
         public TEntity GetById(TKey id)
         {
-            return _table.Find(id);
+            return Table.Find(id);
         }
 
         public virtual TKey Insert(TEntity entity, bool isSaveLater = false)
         {
-            _table.Add(entity);
+            Table.Add(entity);
             if (!isSaveLater)
                 Save();
             return entity.Id;
@@ -35,30 +35,30 @@ namespace NitelikliBilisim.Business.Repositories
 
         public virtual int Update(TEntity entity, bool isSaveLater = false)
         {
-            _table.Update(entity);
+            Table.Update(entity);
             return isSaveLater ? 0 : Save();
         }
 
         public int Delete(TKey id, bool isSaveLater = false)
         {
-            var entity = _table.Find(id);
-            _table.Remove(entity);
+            var entity = Table.Find(id);
+            Table.Remove(entity);
             return isSaveLater ? 0 : Save();
         }
         public int Delete(TEntity entity, bool isSaveLater = false)
         {
-            _table.Remove(entity);
+            Table.Remove(entity);
             return isSaveLater ? 0 : Save();
         }
 
         public int Save()
         {
-            _context.EnsureAutoHistory();
-            return _context.SaveChanges();
+            Context.EnsureAutoHistory();
+            return Context.SaveChanges();
         }
         public IQueryable<TEntity> Get(Expression<Func<TEntity, bool>> predicate = null)
         {
-            return predicate == null ? _table : _table.Where(predicate);
+            return predicate == null ? Table : Table.Where(predicate);
         }
 
         public List<TEntity> Get(
@@ -66,7 +66,7 @@ namespace NitelikliBilisim.Business.Repositories
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> order = null,
             params Expression<Func<TEntity, object>>[] includes)
         {
-            IQueryable<TEntity> query = _table;
+            IQueryable<TEntity> query = Table;
 
             if (filter != null)
                 query = query.Where(filter);

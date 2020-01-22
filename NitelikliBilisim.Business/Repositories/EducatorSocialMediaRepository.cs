@@ -1,9 +1,7 @@
 ﻿using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Data;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace NitelikliBilisim.Business.Repositories
 {
@@ -45,8 +43,8 @@ namespace NitelikliBilisim.Business.Repositories
                     Link = twitter
                 });
 
-            _context.AddRange(list);
-            _context.SaveChanges();
+            Context.AddRange(list);
+            Context.SaveChanges();
         }
     }
 }

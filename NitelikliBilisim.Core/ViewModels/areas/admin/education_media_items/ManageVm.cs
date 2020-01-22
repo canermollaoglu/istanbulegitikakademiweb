@@ -1,8 +1,6 @@
-﻿using NitelikliBilisim.Core.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_media_items
 {

@@ -16,7 +16,7 @@ function btnSave_onClick() {
     btnSave.off("click");
     //var baseCategoryId = selectBaseCategories.options[selectBaseCategories.selectedIndex].value;
     var data = {
-        CategoryId: $("#_category-id").val(),
+        TagId: $("#_tag-id").val(),
         Name: inputName.value,
         Description: inputDescription.value
         //BaseCategoryId: baseCategoryId
@@ -24,6 +24,7 @@ function btnSave_onClick() {
 
     var tokenVerfier = new SecuritySupport.TokenVerifier();
     data = tokenVerfier.addToken("form-add-category", data);
+    btnSave.on("click", btnSave_onClick);
 
     $.ajax({
         url: "/admin/etiket-guncelle",
@@ -51,8 +52,6 @@ function btnSave_onClick() {
                     }
                 });
             }
-
-            btnSave.on("click", btnSave_onClick);
         }
     });
 }

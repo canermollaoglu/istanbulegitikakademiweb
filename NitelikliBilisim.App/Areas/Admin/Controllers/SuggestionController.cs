@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
-using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.ViewModels.areas.admin.suggestion;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
@@ -54,13 +52,27 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     isSuccess = false,
                     errors = ModelStateUtil.GetErrors(ModelState)
                 });
+            var suggestion = _unitOfWork.Suggestion.Get(x => x.CategoryId == data.CategoryId.Value, null).OrderByDescending(x => x.UpdatedDate).FirstOrDefault();
 
-            _unitOfWork.Suggestion.Insert(new Suggestion
+            if (suggestion != null)
             {
-                CategoryId = data.CategoryId.Value,
-                RangeMin = data.MinRange.Value,
-                RangeMax = data.MaxRange.Value
-            }, data.SuggestableEducations);
+                _unitOfWork.Suggestion.Insert(new Suggestion
+                {
+                    CategoryId = data.CategoryId.Value,
+                    RangeMin = Convert.ToByte(suggestion.RangeMax + 1),
+                    RangeMax = data.MaxRange.Value
+                }, data.SuggestableEducations);
+
+            }
+            else
+            {
+                _unitOfWork.Suggestion.Insert(new Suggestion
+                {
+                    CategoryId = data.CategoryId.Value,
+                    RangeMin = data.MinRange.Value,
+                    RangeMax = data.MaxRange.Value
+                }, data.SuggestableEducations);
+            }
 
             return Json(new ResponseModel
             {
