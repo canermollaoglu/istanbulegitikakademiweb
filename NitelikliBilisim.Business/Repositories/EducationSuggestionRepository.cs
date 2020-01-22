@@ -48,7 +48,7 @@ namespace NitelikliBilisim.Business.Repositories
                     CategoryName = x.Category.Name,
                     Min = x.RangeMin,
                     Max = x.RangeMax
-                }).ToList();
+                }).OrderBy(x => x.CategoryName).ThenBy(x => x.Min).ToList();
 
             var model = new GetSuggestionsVm
             {

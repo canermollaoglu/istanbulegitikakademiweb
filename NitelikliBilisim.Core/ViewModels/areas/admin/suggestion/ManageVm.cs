@@ -14,7 +14,7 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.suggestion
     {
         [Required(ErrorMessage = "Minimum boş geçilemez")]
         public byte? MinRange { get; set; }
-        [Required(ErrorMessage = "Maksimum boş geçilemez")]
+        [Range(2,255), Required(ErrorMessage = "Maksimum boş geçilemez")]
         public byte? MaxRange { get; set; }
         [Required(ErrorMessage = "Kategori seçimi zorunludur")]
         public Guid? CategoryId { get; set; }
