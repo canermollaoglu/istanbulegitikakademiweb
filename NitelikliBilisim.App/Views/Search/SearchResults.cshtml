@@ -150,12 +150,14 @@
         var btnShowAsGrid = $("#btn-show-as-grid");
         var btnShowAsList = $("#btn-show-as-list");
         var btnSearch = $("#btn-search");
+        var selectOrder = $("select[name='orderby']");
 
         /* assignments */
         $(document).ready(document_onLoad);
         btnShowAsGrid.on("click", btnShowAsGrid_onClick);
         btnShowAsList.on("click", btnShowAsList_onClick);
         btnSearch.on("click", btnSearch_onClick);
+        selectOrder.on("change", selectOrder_onChange);
 
         /* events */
         function document_onLoad() {
@@ -183,14 +185,22 @@
             else
                 location.href = `/arama-sonuclari/${searchText}`
         }
+        function selectOrder_onChange() {
+            var order = $(this).val();
+
+            if (_hasFilter)
+                getFilteredResults(false, order);
+            else
+                getSearchResults(false, null, order);
+        }
 
         /* functions */
-        function getSearchResults(isLoadMore, filter) {
+        function getSearchResults(isLoadMore, filter, order) {
             var pBtnContainer = document.getElementById("p-btn-container");
             if (pBtnContainer)
                 pBtnContainer.remove();
 
-            if (filter != null && !isLoadMore)
+            if ((filter != null || order != null) && !isLoadMore)
                 _page.val(0);
 
             $.ajax({
@@ -199,6 +209,7 @@
                 data: {
                     searchText: _searchText.val(),
                     page: _page.val(),
+                    order: order,
                     filter: filter
                 },
                 success: (res) => {
@@ -236,7 +247,7 @@
                 }
             });
         }
-        function getFilteredResults(isLoadMore) {
+        function getFilteredResults(isLoadMore, order) {
             var filterOptions = {
                 categories: [],
                 ratings: []
@@ -259,7 +270,7 @@
                     divEducationContainer.html(`<div class="alert alert-info">Yükleniyor...</div>`);
             }
 
-            getSearchResults(isLoadMore, filterOptions)
+            getSearchResults(isLoadMore, filterOptions, order)
         }
         function prepareCourseBoxesAsGrid(data) {
             var boxes = "";

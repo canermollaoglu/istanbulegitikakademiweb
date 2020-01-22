@@ -270,7 +270,7 @@ namespace NitelikliBilisim.Business.Repositories
             return base.Update(entity, isSaveLater);
         }
 
-        public List<EducationVm> GetInfiniteScrollSearchResults(string searchText, int page = 0, FilterOptionsVm filter = null)
+        public List<EducationVm> GetInfiniteScrollSearchResults(string searchText, int page = 0, OrderCriteria order = OrderCriteria.Latest, FilterOptionsVm filter = null)
         {
             var shownResults = 5;
             searchText = searchText.FormatForTag();
@@ -298,6 +298,16 @@ namespace NitelikliBilisim.Business.Repositories
                 educations = educations.Where(x => categoryIds.Contains(x.CategoryId)); // TODO: Değerlendirme de burada bir şart olacak.
             }
 
+            switch (order)
+            {
+                case OrderCriteria.Latest:
+                    educations = educations.OrderByDescending(x => x.CreatedDate);
+                    break;
+                case OrderCriteria.Popular:
+                    educations = educations.OrderByDescending(x => x.Level); // TODO: Şimdilik popülerliğe göre sıralanamadığı için seviyesine göre sıralandı.
+                    break;
+            }
+
             var educationsList = educations
                 .Join(Context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Id, r => r.EducationId, (x, y) => new
                 {
@@ -310,7 +320,6 @@ namespace NitelikliBilisim.Business.Repositories
                     EducationPreviewMedia = x.EducationPreviewMedia,
                     CategoryName = y.Name
                 })
-                .OrderByDescending(o => o.Education.CreatedDate)
                 .Skip(page * shownResults)
                 .Take(shownResults)
                 .ToList();
