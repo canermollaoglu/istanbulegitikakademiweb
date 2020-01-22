@@ -1,4 +1,4 @@
-﻿
+﻿@model List<NitelikliBilisim.Core.Entities.Education>
 @{
     ViewData["Title"] = "Grup Aç";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -20,7 +20,33 @@
             <div class="col-md-12">
                 <form id="form-add-group">
                     @Html.AntiForgeryToken()
+                    <div class="row" style="margin-bottom:1%;">
+                        <div class="col-md-6">
+                            <label>Eğitimler</label>
+                            <select class="form-control" id="select-educations">
+                                @foreach (var item in Model)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label>Eğitmenler</label>
+                            <select class="form-control" id="select-educators">
 
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Grup Adı</label>
+                            <input class="form-control" type="text" value="" id="input-name" />
+                        </div>
+                        <div class="col-md-6">
+                            <label>Açılış Zamanı</label>
+                            <input class="form-control" type="date" value="" id="input-start-date" />
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
@@ -31,5 +57,18 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
     <script src="~/js/sup/alert-sup.js"></script>
     <script src="~/js/lib/security-support.js"></script>
-    <script src="~/js/areas/admin/admin-education-part-manage.js"></script>
+    <script>
+        /* fields */
+
+        /* elements */
+        var selectEducations = document.getElementById("select-educations");
+        var selectEducators = document.getElementById("select-educators");
+        /* assignments */
+        $(document).ready(document_onLoad);
+        /* events */
+        function document_onLoad() {
+            $(selectEducations).select2();
+            $(selectEducators).select2();
+        }
+    </script>
 }
