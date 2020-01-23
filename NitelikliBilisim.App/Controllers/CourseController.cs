@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ViewModels.Main.Course;
+using System;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -21,8 +17,8 @@ namespace NitelikliBilisim.App.Controllers
         [Route("kurs-detayi/{courseId}")]
         public IActionResult Details(Guid? courseId)
         {
-            var educationDetails = _unitOfWork.Education.GetEducation(courseId.Value);
-            var educators = _unitOfWork.Bridge_EducationEducator.GetAssignedEducators(courseId.Value);
+            var educationDetails = _unitOfWork.Education.GetEducation(courseId.GetValueOrDefault());
+            var educators = _unitOfWork.Bridge_EducationEducator.GetAssignedEducators(courseId.GetValueOrDefault());
 
             var model = new CourseDetailsVm
             {

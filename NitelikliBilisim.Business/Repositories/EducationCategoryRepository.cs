@@ -1,10 +1,11 @@
 ﻿using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
+using NitelikliBilisim.Core.ViewModels.search;
 using NitelikliBilisim.Data;
+using NitelikliBilisim.Support.Text;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace NitelikliBilisim.Business.Repositories
 {
@@ -16,7 +17,7 @@ namespace NitelikliBilisim.Business.Repositories
 
         public List<EducationCategory> GetDeepestCategories(CategoryType? categoryType = null)
         {
-            var query = _context.EducationCategories
+            var query = Context.EducationCategories
                 .Where(x => x.BaseCategoryId != null);
             if (categoryType != null)
                 query = query.Where(x => x.CategoryType == categoryType);
@@ -34,14 +35,13 @@ namespace NitelikliBilisim.Business.Repositories
 
             return deepestCategories;
         }
+
         public override Guid Insert(EducationCategory entity, bool isSaveLater = false)
         {
-            if (_context.EducationCategories.Any(x => x.Name == entity.Name))
+            if (Context.EducationCategories.Any(x => x.Name == entity.Name))
                 return default;
 
             return base.Insert(entity, isSaveLater);
         }
-
-
     }
 }

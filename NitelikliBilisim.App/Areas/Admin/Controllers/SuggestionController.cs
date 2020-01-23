@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
-using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.ViewModels.areas.admin.suggestion;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
@@ -54,18 +53,67 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     isSuccess = false,
                     errors = ModelStateUtil.GetErrors(ModelState)
                 });
-
-            _unitOfWork.Suggestion.Insert(new Suggestion
+            var suggestion = _unitOfWork.Suggestion.Get(x => x.CategoryId == data.CategoryId.Value, null).OrderByDescending(x => x.UpdatedDate).FirstOrDefault();
+            if ((suggestion.RangeMax > data.MaxRange))
             {
-                CategoryId = data.CategoryId.Value,
-                RangeMin = data.MinRange.Value,
-                RangeMax = data.MaxRange.Value
-            }, data.SuggestableEducations);
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> {$"Kategori'nin En son girilen Maksimum gün değerinden KÜÇÜK bir sayı girmeye çalıştınız" }
+                });
+            }
+            else
+            {
+                if (suggestion != null)
+                {
+                    _unitOfWork.Suggestion.Insert(new Suggestion
+                    {
+                        CategoryId = data.CategoryId.Value,
+                        RangeMin = Convert.ToByte(suggestion.RangeMax + 1),
+                        RangeMax = data.MaxRange.Value
+                    }, data.SuggestableEducations);
+
+                }
+                else
+                {
+                    _unitOfWork.Suggestion.Insert(new Suggestion
+                    {
+                        CategoryId = data.CategoryId.Value,
+                        RangeMin = data.MinRange.Value,
+                        RangeMax = data.MaxRange.Value
+                    }, data.SuggestableEducations);
+                }
+            }
+           
 
             return Json(new ResponseModel
             {
                 isSuccess = true
             });
+        }
+
+        [Route("admin/oneri-kategori-guncelle/{suggestionId}")]
+        public IActionResult Update (Guid? suggestionId)
+        {
+            if (suggestionId == null)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Bir hata oluştu" }
+                });
+            var suggestion = _unitOfWork.Suggestion.GetById(suggestionId.Value);
+            var categories = _unitOfWork.EducationCategory.Get(x => x.BaseCategoryId == null, x => x.OrderBy(o => o.Name));
+            var data = _unitOfWork.Education.Get(null, x => x.OrderBy(o => o.Name));
+
+            var model = new UpdateGetVm
+            {
+                CategoryId = suggestion.CategoryId,
+                MinRange = suggestion.RangeMin,
+                MaxRange = suggestion.RangeMax,
+                SuggestableEducations = JsonConvert.DeserializeObject<List<Guid>>(suggestion.SuggestableEducations),
+                Categories = categories
+            };
+            return View(model);
         }
 
         [Route("admin/delete-suggestion/{suggestionId}")]
@@ -88,11 +136,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/get-educations-for-suggestion/{categoryId}")]
         public IActionResult GetEducations(Guid? categoryId)
         {
-            //if (!categoryId.HasValue)
-            //    return Json(new ResponseModel
-            //    {
-            //        isSuccess = false
-            //    });
+            if (!categoryId.HasValue)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false
+                });
 
             //var data = _unitOfWork.Education.Get(x => x.CategoryId == categoryId.Value, x => x.OrderBy(o => o.Name));
             var data = _unitOfWork.Education.Get(null, x => x.OrderBy(o => o.Name));

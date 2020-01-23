@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.VmCreator;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ViewModels.Cart;
+using System;
+using System.Collections.Generic;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -35,6 +33,7 @@ namespace NitelikliBilisim.App.Controllers
                     isSuccess = true,
                     data = new List<CartItem>()
                 });
+
             var model = _vmCreator.GetCartItems(data.Items);
             return Json(new ResponseModel
             {

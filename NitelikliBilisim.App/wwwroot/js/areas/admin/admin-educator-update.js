@@ -21,10 +21,12 @@ function btnSave_onClick() {
     btnSave.off("click");
     var file = fileManager.getFile();
     var data = {
+        EducatorId: $("#_educator-id").val(),
         Name: $("#input-name").val(),
         Surname: $("#input-surname").val(),
         Phone: $("#input-phone").val(),
         Email: $("#input-email").val(),
+        Title: $("#input-title").val(),
         SocialMedia: {
             Facebook: $("#input-facebook").val(),
             Linkedin: $("#input-linkedin").val(),
@@ -38,13 +40,14 @@ function btnSave_onClick() {
     }
     var tokenVerifier = new SecuritySupport.TokenVerifier();
     data = tokenVerifier.addToken("form-update-educator", data);
+    btnSave.on("click", btnSave_onClick);
+
     $.ajax({
-        url: "",
+        url: "/admin/egitmen-guncelle",
         method: "post",
         data: data,
         success: (res) => {
             var resultAlert = new AlertSupport.ResultAlert();
-            btnSave.on("click", btnSave_onClick);
             if (res.isSuccess) {
                 resultAlert.display({
                     success: true,

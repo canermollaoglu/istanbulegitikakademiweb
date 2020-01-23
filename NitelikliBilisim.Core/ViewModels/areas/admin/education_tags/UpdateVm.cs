@@ -5,6 +5,7 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_tags
 {
     public class UpdateGetVm : AddGetVm
     {
+        public Guid Id { get; set; }
         public EducationTag Tag { get; set; }
         public EducationTag BaseTag { get; set; }
     }

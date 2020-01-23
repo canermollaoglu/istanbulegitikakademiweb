@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Managers
 {
@@ -74,7 +73,7 @@ namespace NitelikliBilisim.App.Managers
             if (File.Exists(path))
                 File.Delete(path);
         }
-        private byte[] ConvertBase64StringToByteArray(string base64File)
+        public byte[] ConvertBase64StringToByteArray(string base64File)
         {
             int index = base64File.IndexOf(',');
 

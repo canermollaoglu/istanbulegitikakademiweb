@@ -15,6 +15,7 @@ namespace NitelikliBilisim.Core.Entities
             Id = Guid.NewGuid();
         }
 
+        [MaxLength(128)]
         public string GroupName { get; set; }
         public DateTime StartDate { get; set; }
         [MaxLength(128)]
@@ -22,5 +23,9 @@ namespace NitelikliBilisim.Core.Entities
         [ForeignKey("Education")]
         public Guid EducationId { get; set; }
         public virtual Education Education { get; set; }
+        [ForeignKey("Host")]
+        public Guid HostId { get; set; }
+        public virtual EducationHost Host { get; set; }
+        public bool IsGroupOpenForAssignment { get; set; }
     }
 }

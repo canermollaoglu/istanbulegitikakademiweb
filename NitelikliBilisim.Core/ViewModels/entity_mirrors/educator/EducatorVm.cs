@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace NitelikliBilisim.Core.ViewModels
+﻿namespace NitelikliBilisim.Core.ViewModels
 {
     public class EducatorVm
     {

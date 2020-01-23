@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Areas.Admin.VmCreator.Educator;
@@ -13,8 +8,13 @@ using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels.areas.admin.educator;
 using NitelikliBilisim.Support.Text;
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
@@ -27,13 +27,16 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         private readonly UnitOfWork _unitOfWork;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly EducatorVmCreator _vmCreator;
-        public EducatorController(IWebHostEnvironment hostingEnvironment, UnitOfWork unitOfWork, UserManager<ApplicationUser> userManager)
+        private readonly IStorageService _storageService;
+
+        public EducatorController(IWebHostEnvironment hostingEnvironment, UnitOfWork unitOfWork, UserManager<ApplicationUser> userManager, IStorageService storageService)
         {
             _hostingEnvironment = hostingEnvironment;
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _fileManager = new FileUploadManager(_hostingEnvironment, "jpg", "jpeg");
             _vmCreator = new EducatorVmCreator(_unitOfWork);
+            _storageService = storageService;
         }
         [Route("admin/egitmen-ekle")]
         public IActionResult Add()
@@ -57,11 +60,13 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
             try
             {
-                var dbPath = _fileManager.Upload("/uploads/educator-photos/", data.ProfilePhoto.Base64Content, data.ProfilePhoto.Extension, "profile-photo", $"{data.Name} {data.Surname}");
-
+                //var dbPath = _fileManager.Upload("/uploads/educator-photos/", data.ProfilePhoto.Base64Content, data.ProfilePhoto.Extension, "profile-photo", $"{data.Name} {data.Surname}");
+                var stream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.ProfilePhoto.Base64Content));
+                var fileName = $"{data.Name} {data.Surname}".FormatForTag();
+                var dbPath = await _storageService.UploadFile(stream, $"{fileName}.{data.ProfilePhoto.Extension}", "educator-photos");
                 var userName = TextHelper.ConcatForUserName(data.Name, data.Surname);
 
-                var count = _userManager.Users.Where(x => x.UserName.StartsWith(userName)).Count();
+                var count = _userManager.Users.Count(x => x.UserName.StartsWith(userName));
                 var countText = count > 0 ? count.ToString() : "";
                 var newUser = new ApplicationUser
                 {
@@ -136,13 +141,47 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 data = educators
             });
         }
-
+        [Route("admin/egitmen-guncelle/{educatorId}")]
         public IActionResult Update(Guid? educatorId)
         {
             if (!educatorId.HasValue)
                 return Redirect("/admin/egitmenler");
-
-            return View();
+            var educator = _unitOfWork.Educator.Get(x => x.Id == educatorId.ToString(), null, x => x.User).First();
+            var model = new UpdateGetVm
+            {
+                Id = Guid.Parse(educator.Id),
+                Title = educator.Title,
+                Name = educator.User.Name,
+                Surname = educator.User.Surname,
+                Phone = educator.User.PhoneNumber,
+                Email = educator.User.Email
+            };
+            return View(model);
+        }
+        [HttpPost, Route("admin/egitmen-guncelle")]
+        public IActionResult Update(UpdatePostNewVm data)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelStateUtil.GetErrors(ModelState);
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = errors
+                });
+            }
+            var educator = _unitOfWork.Educator.Get(x => x.Id == data.EducatorId.ToString(), null, x => x.User).First();
+            educator.Title = data.Title;
+            educator.User.Name = data.Name;
+            educator.User.Surname = data.Surname;
+            educator.User.PhoneNumber = data.Phone;
+            educator.User.Email = data.Email;
+            _unitOfWork.Educator.Update(educator);
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                message = "Eğitmen başarıyla güncellenmiştir"
+            });
         }
     }
 }

@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.VmCreator
 {
@@ -25,7 +24,7 @@ namespace NitelikliBilisim.App.VmCreator
             {
                 EducationId = x.Id,
                 EducationName = x.Name,
-                PreviewPhoto = _unitOfWork.EducationMedia.Get(y => y.EducationId == x.Id && y.MediaType == EducationMediaType.PreviewPhoto).FirstOrDefault().FileUrl,
+                PreviewPhoto = _unitOfWork.EducationMedia.Get(y => y.EducationId == x.Id && y.MediaType == EducationMediaType.PreviewPhoto).First().FileUrl,
                 PriceNumeric = x.NewPrice.GetValueOrDefault(0),
                 PriceText = x.NewPrice.GetValueOrDefault(0).ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"))
             }).ToList();
