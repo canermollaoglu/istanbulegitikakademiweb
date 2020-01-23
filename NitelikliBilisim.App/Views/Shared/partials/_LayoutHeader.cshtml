@@ -4,12 +4,12 @@
 @inject UserManager<ApplicationUser> UserManager
 
 <header class="header fadeInDown">
-    <!--<div id="logo">
-        <a href="index.html"><img src="img/logo.png" width="149" height="42" data-retina="true" alt=""></a>
-    </div>-->
     <div id="logo">
-        <a href="/">LOGO</a>
+        <a href="index.html"><img src="~/assets/img/nb_logo_sm.png" width="149" height="42" data-retina="true" alt=""></a>
     </div>
+    @*<div id="logo">
+        <a href="/">LOGO</a>
+    </div>*@
     <ul id="top_menu">
         @if (!User.Identity.IsAuthenticated)
         {
@@ -17,7 +17,7 @@
         }
         <li><a href="#0" class="search-overlay-menu-btn">Arama</a></li>
         <li class="hidden_tablet"><a href="/biz-kimiz">BİZ KİMİZ?</a></li>
-        <li><a href="/sepet" class="btn_1" id="layout-header-cart"><i class="icon-cart"></i> (0)</a></li>
+        <li><a href="/sepet" style="background-color:#ef8d6f !important" class="btn_1 rounded" id="layout-header-cart"><i class="icon-cart"></i> (0)</a></li>
         @if (!User.Identity.IsAuthenticated)
         {
             <li class="hidden_tablet"><a href="/kayit-ol" class="btn_1 rounded">KAYDOL</a></li>
