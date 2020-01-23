@@ -143,6 +143,7 @@
         var selectHosts = document.getElementById("select-hosts");
         var dayCheckboxes = document.getElementsByClassName("form-check-input");
         var inputStartDate = $("#input-start-date");
+        var inputName = $("#input-name");
         var btnSave = $("#btn-save");
 
         /* assignments */
@@ -194,7 +195,26 @@
             }
         }
         function btnSave_onClick() {
+            btnSave.off("click");
 
+            var tokenVerifier = new SecuritySupport.TokenVerifier();
+            var data = tokenVerifier.addToken("form-add-group", {
+                Name: inputName.val(),
+                StartDate: inputStartDate.val(),
+                EducationId: selectEducations.options[selectEducations.selectedIndex].value,
+                EducatorId: selectEducators.options[selectEducators.selectedIndex].value,
+                HostId: selectHosts.options[selectHosts.selectedIndex].value,
+                LessonDays: lessonDays
+            });
+
+            $.ajax({
+                url: "",
+                method: "post",
+                data: data,
+                success: (res) => {
+
+                }
+            });
         }
 
         /* functions */

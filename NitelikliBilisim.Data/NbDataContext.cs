@@ -102,5 +102,6 @@ namespace NitelikliBilisim.Data
         public DbSet<Bridge_EducationEducator> Bridge_EducationEducators { get; set; }
         public DbSet<EducationGroup> EducationGroups { get; set; }
         public DbSet<Bridge_GroupStudent> Bridge_GroupStudents { get; set; }
+        public DbSet<GroupLessonDays> GroupLessonDays { get; set; }
     }
 }

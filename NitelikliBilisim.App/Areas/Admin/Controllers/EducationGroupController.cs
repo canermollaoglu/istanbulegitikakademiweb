@@ -48,6 +48,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             });
         }
 
+        [HttpPost, Route("admin/grup-olustur")]
         public IActionResult Add(AddPostVm data)
         {
             if (!ModelState.IsValid)
