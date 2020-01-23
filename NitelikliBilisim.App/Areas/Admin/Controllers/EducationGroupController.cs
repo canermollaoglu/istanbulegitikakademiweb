@@ -50,7 +50,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             });
         }
 
-        [HttpPost, Route("admin/grup-olustur")]
+        [HttpPost, Route("admin/add-group")]
         public IActionResult Add(AddPostVm data)
         {
             if (!ModelState.IsValid || data.LessonDays == null || data.LessonDays.Count == 0)
@@ -67,7 +67,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 EducationId = data.EducationId.Value,
                 EducatorId = data.EducatorId,
                 HostId = data.HostId.Value,
-                StartDate = data.StartDate.Value
+                StartDate = data.StartDate.Value,
+                Quota = data.Quota.Value
             }, days: data.LessonDays);
 
             if (isSuccess)

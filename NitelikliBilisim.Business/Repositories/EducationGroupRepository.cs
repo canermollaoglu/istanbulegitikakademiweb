@@ -3,6 +3,7 @@ using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Data;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace NitelikliBilisim.Business.Repositories
@@ -51,6 +52,16 @@ namespace NitelikliBilisim.Business.Repositories
                 return null;
 
             return JsonConvert.SerializeObject(days);
+        }
+
+        private EducationGroup GetLastAvailableGroup(Guid educationId)
+        {
+            var group = _context.EducationGroups
+                .Where(x => x.EducationId == educationId && x.IsGroupOpenForAssignment)
+                .OrderBy(o => o.StartDate)
+                .FirstOrDefault();
+
+            return group;
         }
     }
 }

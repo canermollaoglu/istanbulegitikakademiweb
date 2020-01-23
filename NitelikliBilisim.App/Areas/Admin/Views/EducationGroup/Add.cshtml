@@ -126,7 +126,7 @@
                     <!-- /Ders günleri seçimi -->
                     <div class="row">
                         <div class="offset-md-10 col-md-2">
-                            <button id="btn-save" class="btn_1 form-control">Kaydet</button>
+                            <button id="btn-save" type="button" class="btn_1 form-control">Kaydet</button>
                         </div>
                     </div>
                 </form>
@@ -216,7 +216,7 @@
             });
 
             $.ajax({
-                url: "",
+                url: "/admin/add-group",
                 method: "post",
                 data: data,
                 success: (res) => {
