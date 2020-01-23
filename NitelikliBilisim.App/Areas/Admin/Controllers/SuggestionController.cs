@@ -53,7 +53,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     isSuccess = false,
                     errors = ModelStateUtil.GetErrors(ModelState)
                 });
-            var suggestion = _unitOfWork.Suggestion.Get(x => x.CategoryId == data.CategoryId.Value, null).OrderByDescending(x => x.UpdatedDate).FirstOrDefault();
+            var suggestion = _unitOfWork.Suggestion.Get(x => x.CategoryId == data.CategoryId.Value, null).OrderByDescending(x => x.UpdatedDate).First();
             if ((suggestion.RangeMax > data.MaxRange))
             {
                 return Json(new ResponseModel
@@ -62,29 +62,27 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     errors = new List<string> {$"Kategori'nin En son girilen Maksimum gün değerinden KÜÇÜK bir sayı girmeye çalıştınız" }
                 });
             }
+
+            if (suggestion != null) //todo: Bu if her zaman true çıkmaz mı?
+            {
+                _unitOfWork.Suggestion.Insert(new Suggestion
+                {
+                    CategoryId = data.CategoryId.Value,
+                    RangeMin = Convert.ToByte(suggestion.RangeMax + 1),
+                    RangeMax = data.MaxRange.Value
+                }, data.SuggestableEducations);
+
+            }
             else
             {
-                if (suggestion != null)
+                _unitOfWork.Suggestion.Insert(new Suggestion
                 {
-                    _unitOfWork.Suggestion.Insert(new Suggestion
-                    {
-                        CategoryId = data.CategoryId.Value,
-                        RangeMin = Convert.ToByte(suggestion.RangeMax + 1),
-                        RangeMax = data.MaxRange.Value
-                    }, data.SuggestableEducations);
-
-                }
-                else
-                {
-                    _unitOfWork.Suggestion.Insert(new Suggestion
-                    {
-                        CategoryId = data.CategoryId.Value,
-                        RangeMin = data.MinRange.Value,
-                        RangeMax = data.MaxRange.Value
-                    }, data.SuggestableEducations);
-                }
+                    CategoryId = data.CategoryId.Value,
+                    RangeMin = data.MinRange.Value,
+                    RangeMax = data.MaxRange.Value
+                }, data.SuggestableEducations);
             }
-           
+
 
             return Json(new ResponseModel
             {
