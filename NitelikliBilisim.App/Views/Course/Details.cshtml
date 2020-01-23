@@ -42,9 +42,32 @@
                     <section id="description">
                         <div class="box_highlight">
                             <ul class="additional_info">
-                                <li><i class="pe-7s-timer"></i>Course Duration<strong>3 Years</strong></li>
-                                <li><i class="pe-7s-date"></i>Course Start<strong>10 Sept. 2017</strong></li>
-                                <li><i class="pe-7s-wallet"></i>Course Fee<strong>2900 USD</strong></li>
+                                <li><i class="pe-7s-timer"></i>Kurs Süresi<strong>@Model.Details.Base.DaysText gün / @Model.Details.Base.HoursPerDayText saat</strong></li>
+                                <li>
+                                    <i class="pe-7s-date"></i>Başlangıç Tarihi<strong>
+                                        @if (Model.Group != null)
+                                        {
+                                            <text>@Model.Group.StartDate.ToString("dd.MM.yyyy")</text>
+                                        }
+                                        else
+                                        {
+                                            <text>-</text>
+                                        }
+                                    </strong>
+                                </li>
+                                <li>
+                                    <i class="fa-users"></i>Kontenjan<strong>
+                                        @if(Model.Group != null)
+                                        {
+                                            <text>@Model.Group.Quota</text>
+                                        }
+                                        else
+                                        {
+                                            <text>-</text>
+                                        }
+                                    </strong>
+                                    <i class="fa-user"></i>Course Fee<strong>2900 USD</strong>
+                                </li>
                             </ul>
                         </div>
 

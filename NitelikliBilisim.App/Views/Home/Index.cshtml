@@ -8,17 +8,23 @@
     <section class="hero_single version_2">
         <div class="wrapper">
             <div class="container">
-                <h3>HANGİ KONUDA PROJE EKSİĞİN VAR?</h3>
-                <p>Uygulama olmadan, teorik bilgi ne işe yarar ki!</p>
-                <p>Aldığın teorik eğitimi proje yazarak pekiştir, sertifikanı al, aranan BT uzmanı ol.</p>
-                <form>
-                    <div id="custom-search-input">
-                        <div class="input-group">
-                            <input type="text" class=" search-query" placeholder="Örnek: Windows Form Uygulamaları..." id="input-index-search">
-                            <input type="submit" class="btn_search" value="Eğitim Bul" id="btn-index-search">
+                <div class="row containerRow col-sm-12">
+                    <h3><span style="font-weight: 100 !important">HANGİ KONUDA</span> <b style="color:#fc4912">PROJE EKSİĞİN VAR?</b></h3>
+                    <p>Uygulama olmadan, teorik bilgi ne işe yarar ki!</p><br />
+                     <div class="main_title_Search">
+                          <span><em></em></span>
+                     </div>
+                    <p>Aldığın teorik eğitimi proje yazarak pekiştir, sertifikanı al, aranan BT uzmanı ol.</p>
+                    <form>
+                        <div id="custom-search-input">
+                            <div class="input-group rounded">
+                                <input type="text" style="margin: 0 -35px !important; padding-right:130px; border: 2px solid #2d2f33;" class="search-query" placeholder="Örnek: Windows Form Uygulamaları..." id="input-index-search">
+                                <input type="submit" style="        border-radius: 33px !important
+" class="btn_search rounded" value="Eğitim Bul" id="btn-index-search">
+                            </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </section>
@@ -48,7 +54,7 @@
         <div class="main_title_2">
             <span><em></em></span>
             <h2>Nitelikli Bilişim Populer Eğitimler</h2>
-            <p>NBUY eğitimi alan öğrenciler tarafından en çok tercih edilen proje eğitimleri</p>
+            <p>NBUY eğitimi alan öğrenciler tarafından en çok <br />tercih edilen proje eğitimleri</p>
         </div>
         <div id="reccomended" class="owl-carousel owl-theme">
             @foreach (var item in Model.SuggestedEducations)

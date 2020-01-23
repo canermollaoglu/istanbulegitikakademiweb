@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace NitelikliBilisim.Core.ViewModels.Main.Course
 {
@@ -6,5 +7,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Course
     {
         public EducationVm Details { get; set; }
         public List<EducatorVm> Educators { get; set; }
+        public GroupVm Group { get; set; }
     }
 }
