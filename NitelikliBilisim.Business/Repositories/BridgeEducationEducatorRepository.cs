@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Services;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.areas.admin.educator;
 using NitelikliBilisim.Data;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace NitelikliBilisim.Business.Repositories
@@ -52,6 +54,14 @@ namespace NitelikliBilisim.Business.Repositories
                     Surname = x.User.Surname,
                     Title = x.Title
                 }).ToList();
+
+            var storage = new StorageService();
+            foreach (var item in model)
+            {
+                var folder = Path.GetDirectoryName(item.ProfilePhoto);
+                var fileName = Path.GetFileName(item.ProfilePhoto);
+                item.ProfilePhoto = storage.DownloadFile(fileName, folder).Result;
+            }
 
             return model;
         }
