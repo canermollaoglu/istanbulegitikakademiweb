@@ -45,7 +45,7 @@ namespace NitelikliBilisim.Business.Repositories
                 }
             }
         }
-        public EducationGroup GetLastAvailableGroup(Guid educationId)
+        public EducationGroup GetFirstAvailableGroup(Guid educationId)
         {
             var group = _context.EducationGroups
                 .Where(x => x.EducationId == educationId && x.IsGroupOpenForAssignment)

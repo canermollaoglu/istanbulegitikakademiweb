@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.Main.Course;
 using System;
 
@@ -19,15 +20,22 @@ namespace NitelikliBilisim.App.Controllers
         {
             var educationDetails = _unitOfWork.Education.GetEducation(courseId.GetValueOrDefault());
             var educators = _unitOfWork.Bridge_EducationEducator.GetAssignedEducators(courseId.GetValueOrDefault());
-            var lastAvailableGroup = _unitOfWork.EducationGroup.GetLastAvailableGroup(courseId.Value);
-            DateTime? startDate = null;
-            if (lastAvailableGroup != null)
-                startDate = lastAvailableGroup.StartDate;
+            var firstAvailableGroup = _unitOfWork.EducationGroup.GetFirstAvailableGroup(courseId.Value);
+            GroupVm group = null;
+            if (firstAvailableGroup != null)
+            {
+                group = new GroupVm
+                {
+                    GroupId = firstAvailableGroup.Id,
+                    StartDate = firstAvailableGroup.StartDate,
+                    Quota = firstAvailableGroup.Quota
+                };
+            }
             var model = new CourseDetailsVm
             {
                 Details = educationDetails,
                 Educators = educators,
-                StartDate = startDate
+                Group = group
             };
             return View(model);
         }

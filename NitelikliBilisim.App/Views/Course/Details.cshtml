@@ -45,9 +45,9 @@
                                 <li><i class="pe-7s-timer"></i>Kurs Süresi<strong>@Model.Details.Base.DaysText gün / @Model.Details.Base.HoursPerDayText saat</strong></li>
                                 <li>
                                     <i class="pe-7s-date"></i>Başlangıç Tarihi<strong>
-                                        @if (Model.StartDate.HasValue)
+                                        @if (Model.Group != null)
                                         {
-                                            <text>@Model.StartDate.Value.ToString("dd.MM.yyyy")</text>
+                                            <text>@Model.Group.StartDate.ToString("dd.MM.yyyy")</text>
                                         }
                                         else
                                         {
@@ -56,7 +56,16 @@
                                     </strong>
                                 </li>
                                 <li>
-                                    <i class="fa-users"></i>Course Fee<strong>2900 USD</strong>
+                                    <i class="fa-users"></i>Kontenjan<strong>
+                                        @if(Model.Group != null)
+                                        {
+                                            <text>@Model.Group.Quota</text>
+                                        }
+                                        else
+                                        {
+                                            <text>-</text>
+                                        }
+                                    </strong>
                                     <i class="fa-user"></i>Course Fee<strong>2900 USD</strong>
                                 </li>
                             </ul>
