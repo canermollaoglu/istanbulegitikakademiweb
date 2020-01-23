@@ -51,5 +51,25 @@ namespace NitelikliBilisim.Core.Services
         {
             return new string(text.Where(x => char.IsLetter(x) || char.IsNumber(x) || ValidCharacters.Contains(x)).ToArray());
         }
+        public static string Capitalize(string text)
+        {
+            if (string.IsNullOrEmpty(text)) return "";
+
+            var words = text.Split(' ');
+
+            for (int i = 0; i < words.Length; i++)
+            {
+                var item = words[i];
+
+                var capitalized = item[0].ToString().ToUpper();
+
+                if (item.Length > 1)
+                    capitalized += item.Substring(1, item.Length - 1);
+
+                words[i] = capitalized;
+            }
+
+            return string.Join(' ', words);
+        }
     }
 }

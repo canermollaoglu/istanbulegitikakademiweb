@@ -2,6 +2,7 @@
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Enums;
+using NitelikliBilisim.Core.Services;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Support.Enums;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace NitelikliBilisim.App.Controllers
 
             var model = new SearchResultsGetVm
             {
-                SearchText = categoryName,
+                SearchText = StringHelper.Capitalize(categoryName),
                 OrderCriterias = EnumSupport.ToKeyValuePair<OrderCriteria>(),
                 ShowAs = showAs
             };

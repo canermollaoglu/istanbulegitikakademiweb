@@ -1,6 +1,6 @@
 ﻿@model NitelikliBilisim.Core.ViewModels.SearchResultsGetVm
 @{
-    ViewData["Title"] = string.IsNullOrEmpty(Model.SearchText) ? "TÜM EĞİTİMLER" : Model.SearchText.ToUpper() + " EĞİTİMLERİ";
+    ViewData["Title"] = string.IsNullOrEmpty(Model.SearchText) ? "Tüm Eğitimler" : Model.SearchText + " Eğitimleri";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @section styles{
@@ -186,7 +186,7 @@
                             divEducationContainer.append(boxes);
                         }
 
-                        if (data.length > 4) {
+                        if (data.length > 2) {
                             divEducationContainer.append(btnLoadMoreText);
                             var btnLoadMore = $("#btn-load-more");
                             btnLoadMore.on("click", btnLoadMore_onClick);
