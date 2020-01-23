@@ -58,12 +58,6 @@ namespace NitelikliBilisim.Business.UoW
 
         public EducationHostRepository EductionHost => _educationHostRepository ??= new EducationHostRepository(_context);
 
-        public GroupLessonDayRepository GroupLessonDay
-        {
-            get
-            {
-                return _groupLessonDayRepository ?? (_groupLessonDayRepository = new GroupLessonDayRepository(_context));
-            }
-        }
+        public GroupLessonDayRepository GroupLessonDay => _groupLessonDayRepository ??= new GroupLessonDayRepository(_context);
     }
 }
