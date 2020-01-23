@@ -45,6 +45,15 @@ namespace NitelikliBilisim.Business.Repositories
                 }
             }
         }
+        public EducationGroup GetLastAvailableGroup(Guid educationId)
+        {
+            var group = _context.EducationGroups
+                .Where(x => x.EducationId == educationId && x.IsGroupOpenForAssignment)
+                .OrderBy(o => o.StartDate)
+                .FirstOrDefault();
+
+            return group;
+        }
 
         private string SerializeDays(List<int> days)
         {
@@ -54,14 +63,5 @@ namespace NitelikliBilisim.Business.Repositories
             return JsonConvert.SerializeObject(days);
         }
 
-        private EducationGroup GetLastAvailableGroup(Guid educationId)
-        {
-            var group = _context.EducationGroups
-                .Where(x => x.EducationId == educationId && x.IsGroupOpenForAssignment)
-                .OrderBy(o => o.StartDate)
-                .FirstOrDefault();
-
-            return group;
-        }
     }
 }
