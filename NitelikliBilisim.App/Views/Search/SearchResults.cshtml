@@ -193,7 +193,7 @@
                 location.href = `/arama-sonuclari/${searchText}`
         }
         function selectOrder_onChange() {
-            var order = $(this).val();
+            var order = $(this).children("option:selected").val();
 
             if (_hasFilter)
                 getFilteredResults(false, order);
@@ -391,8 +391,6 @@
                                 </li>
                             `);
                     })
-
-                    console.log(data.levels)
 
                     Object.keys(data.levels).forEach(key => {
                         var level;

@@ -350,16 +350,16 @@ namespace NitelikliBilisim.Business.Repositories
 
         public List<EducationVm> GetEducationsByCategory(string category, int page = 0, OrderCriteria order = OrderCriteria.Latest)
         {
-            var shownResults = 5;
+            var shownResults = 3;
 
-            var educations = Context.Educations.AsQueryable();
+            var educations = Context.Educations.Where(x => x.IsActive);
 
             if (!string.IsNullOrEmpty(category))
             {
                 var categoryId = Context.EducationCategories.FirstOrDefault(x => x.Name.ToLower() == category.ToLower())?.Id;
 
                 if(categoryId != null)
-                    educations = educations.Where(x => x.CategoryId == categoryId.Value && x.IsActive);
+                    educations = educations.Where(x => x.CategoryId == categoryId.Value);
             }
 
             switch (order)
