@@ -123,6 +123,7 @@
                 CategoryId: selectCategories.options[selectCategories.selectedIndex].value,
                 SuggestableEducations: selectEducations.val()
             };
+            console.log(data)
             var tokenVerifier = new SecuritySupport.TokenVerifier();
             data = tokenVerifier.addToken("form-add-suggestion", data);
             $.ajax({
