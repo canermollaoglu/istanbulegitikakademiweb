@@ -106,17 +106,7 @@
 
         /* events */
         function document_onLoad() {
-            if (_searchText.val() == "") {
-                var uri = window.location.toString();
-                var n = uri.lastIndexOf('/');
-                var result = uri.substring(n + 1);
-
-                if (result != "tum-egitimler" && result.length > 0) {
-                    var clean_uri = uri.substring(0, n);
-                    window.history.replaceState({}, document.title, clean_uri);
-                }
-            }
-            
+            clearUri();
             getSearchResults(false);
         }
         function btnLoadMore_onClick() {
@@ -137,12 +127,13 @@
                 location.href = `/arama-sonuclari/${searchText}`
         }
         function selectOrder_onChange() {
-            var order = $(this).val();
-
-            if (_hasFilter)
-                getFilteredResults(false, order);
-            else
-                getSearchResults(false, null, order);
+            var order = $(this).children("option:selected").val();
+            getSearchResults(false, null, order);
+        }
+        function inputSearch_onSubmit(e) {
+            if (e.keyCode === 13) {
+                btnSearch_onClick();
+            }
         }
         function inputSearch_onSubmit(e) {
             if (e.keyCode === 13) {
@@ -151,6 +142,18 @@
         }
 
         /* functions */
+        function clearUri() {
+            if (_searchText.val() == "") {
+                var uri = window.location.toString();
+                var n = uri.lastIndexOf('/');
+                var result = uri.substring(n + 1);
+
+                if (result != "tum-egitimler" && result.length > 0) {
+                    var clean_uri = uri.substring(0, n);
+                    window.history.replaceState({}, document.title, clean_uri);
+                }
+            }
+        }
         function getSearchResults(isLoadMore, order) {
             var pBtnContainer = document.getElementById("p-btn-container");
             if (pBtnContainer)
