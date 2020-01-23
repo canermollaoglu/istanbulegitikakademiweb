@@ -15,11 +15,6 @@ namespace NitelikliBilisim.Business.Repositories
             _context = context;
         }
 
-        public override Guid Insert(GroupLessonDays entity, bool isSaveLater = false)
-        {
-            return base.Insert(entity, isSaveLater);
-        }
-
         public bool Insert(GroupLessonDays entity, List<int> days)
         {
             if (days == null || days.Count == 0)

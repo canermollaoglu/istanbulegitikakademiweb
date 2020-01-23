@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Models;
+using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_groups;
 using System;
 using System.Linq;
@@ -51,16 +53,33 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [HttpPost, Route("admin/grup-olustur")]
         public IActionResult Add(AddPostVm data)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || data.LessonDays == null || data.LessonDays.Count == 0)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = ModelStateUtil.GetErrors(ModelState)
+                });
+
+            var isSuccess = _unitOfWork.EducationGroup.Insert(entity: new EducationGroup
+            {
+                IsGroupOpenForAssignment = true,
+                GroupName = data.Name,
+                EducationId = data.EducationId.Value,
+                EducatorId = data.EducatorId,
+                HostId = data.HostId.Value,
+                StartDate = data.StartDate.Value
+            }, days: data.LessonDays);
+
+            if (isSuccess)
+                return Json(new ResponseModel
+                {
+                    isSuccess = true
+                });
+            else
                 return Json(new ResponseModel
                 {
                     isSuccess = false
                 });
-
-            return Json(new ResponseModel
-            {
-                isSuccess = true
-            });
         }
     }
 }

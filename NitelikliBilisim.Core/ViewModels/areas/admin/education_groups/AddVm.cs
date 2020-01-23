@@ -1,6 +1,7 @@
 ﻿using NitelikliBilisim.Core.Entities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_groups
@@ -13,11 +14,18 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_groups
 
     public class AddPostVm
     {
+        [Required]
         public string Name { get; set; }
-        public DateTime StartDate { get; set; }
-        public Guid EducationId { get; set; }
-        public Guid EducatorId { get; set; }
-        public Guid HostId { get; set; }
+        [Required]
+        public DateTime? StartDate { get; set; }
+        [Required]
+        public Guid? EducationId { get; set; }
+        [Required]
+        public string EducatorId { get; set; }
+        [Required]
+        public Guid? HostId { get; set; }
+        [Required]
+        public byte? Quota { get; set; }
         public List<int> LessonDays { get; set; }
     }
 
