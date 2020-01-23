@@ -71,6 +71,7 @@
     <None Include="wwwroot\assets\css\all_icons.min.css" />
     <None Include="wwwroot\assets\css\bootstrap.min.css" />
     <None Include="wwwroot\assets\css\style.css" />
+    <None Include="wwwroot\assets\css\style_overwritten.css" />
     <None Include="wwwroot\assets\css\vendors.css" />
     <None Include="wwwroot\assets\css\vendors.unminified.css" />
   </ItemGroup>

@@ -3,7 +3,6 @@ using NitelikliBilisim.Core.ViewModels.areas.admin.education_parts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Areas.Admin.VmCreator.EducationParts
 {
@@ -47,7 +46,7 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.EducationParts
                     Order = item.Order,
                     Duration = item.Duration,
                     BasePartId = item.BasePartId,
-                    BasePartTitle = item.BasePartId != null ? parts.FirstOrDefault(x => x.Id == item.BasePartId).Title : "Üst Başlık"
+                    BasePartTitle = item.BasePartId != null ? parts.First(x => x.Id == item.BasePartId).Title : "Üst Başlık"
                 });
 
             return new GetEducationPartsVm

@@ -34,9 +34,15 @@
                                     <option value="">Kursun yapılacağı yeri seçiniz...</option>
                                     @foreach (var item in Model.Hosts)
                                     {
-                                        <option value="@item.Id">@item.HostName (@EnumSupport.GetDescription(item.City)</option>
+                                        <option value="@item.Id">@item.HostName (@EnumSupport.GetDescription(item.City))</option>
                                     }
                                 </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Kontenjan</label>
+                                <input type="text" class="form-control" value="15" id="input-quota" />
                             </div>
                         </div>
                     </div>
@@ -120,7 +126,7 @@
                     <!-- /Ders günleri seçimi -->
                     <div class="row">
                         <div class="offset-md-10 col-md-2">
-                            <button id="btn-save" class="btn_1 form-control">Kaydet</button>
+                            <button id="btn-save" type="button" class="btn_1 form-control">Kaydet</button>
                         </div>
                     </div>
                 </form>
@@ -144,6 +150,7 @@
         var dayCheckboxes = document.getElementsByClassName("form-check-input");
         var inputStartDate = $("#input-start-date");
         var inputName = $("#input-name");
+        var inputQuota = $("#input-quota");
         var btnSave = $("#btn-save");
 
         /* assignments */
@@ -204,15 +211,20 @@
                 EducationId: selectEducations.options[selectEducations.selectedIndex].value,
                 EducatorId: selectEducators.options[selectEducators.selectedIndex].value,
                 HostId: selectHosts.options[selectHosts.selectedIndex].value,
-                LessonDays: lessonDays
+                LessonDays: lessonDays,
+                Quota: inputQuota.val()
             });
 
             $.ajax({
-                url: "",
+                url: "/admin/add-group",
                 method: "post",
                 data: data,
                 success: (res) => {
-
+                    if (res.isSuccess) {
+                        console.log(1);
+                    } else {
+                        console.log(0);
+                    }
                 }
             });
         }
