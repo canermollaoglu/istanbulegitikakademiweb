@@ -19,11 +19,15 @@ namespace NitelikliBilisim.App.Controllers
         {
             var educationDetails = _unitOfWork.Education.GetEducation(courseId.GetValueOrDefault());
             var educators = _unitOfWork.Bridge_EducationEducator.GetAssignedEducators(courseId.GetValueOrDefault());
-
+            var lastAvailableGroup = _unitOfWork.EducationGroup.GetLastAvailableGroup(courseId.Value);
+            DateTime? startDate = null;
+            if (lastAvailableGroup != null)
+                startDate = lastAvailableGroup.StartDate;
             var model = new CourseDetailsVm
             {
                 Details = educationDetails,
-                Educators = educators
+                Educators = educators,
+                StartDate = startDate
             };
             return View(model);
         }
