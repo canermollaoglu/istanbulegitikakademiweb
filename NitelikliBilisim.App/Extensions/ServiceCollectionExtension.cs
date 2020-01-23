@@ -26,6 +26,7 @@ namespace NitelikliBilisim.App.Extensions
         {
             #region Dependency Injections
             services.AddSingleton<IMessageService, EmailService>();
+            services.AddScoped<IStorageService, StorageService>();
             #endregion
 
             #region IdentityConfig

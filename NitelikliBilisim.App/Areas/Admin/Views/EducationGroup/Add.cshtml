@@ -8,6 +8,11 @@
 @section styles{
     <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        .form-check-label {
+            cursor: pointer;
+        }
+    </style>
 }
 @section alerts{
     <partial name="partials/_Alert" />
@@ -21,48 +26,107 @@
             <div class="col-md-12">
                 <form id="form-add-group">
                     @Html.AntiForgeryToken()
-                    <div class="row">
+                    <div class="row" style="margin-bottom: 1%;">
                         <div class="col-md-6">
-                            <select class="form-control" id="select-hosts">
-                                <option value="">Kursun yapılacağı yeri seçiniz...</option>
-                                @foreach (var item in Model.Hosts)
-                                {
-                                    <option value="@item.Id">@item.HostName (@EnumSupport.GetDescription(item.City)</option>
-                                }
-                            </select>
+                            <div class="form-group">
+                                <label>Yer</label>
+                                <select class="form-control" id="select-hosts">
+                                    <option value="">Kursun yapılacağı yeri seçiniz...</option>
+                                    @foreach (var item in Model.Hosts)
+                                    {
+                                        <option value="@item.Id">@item.HostName (@EnumSupport.GetDescription(item.City))</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Kontenjan</label>
+                                <input type="text" class="form-control" value="15" id="input-quota" />
+                            </div>
                         </div>
                     </div>
                     <div class="row" style="margin-bottom:1%;">
                         <div class="col-md-6">
-                            <label>Eğitimler</label>
-                            <select class="form-control" id="select-educations">
-                                <option value="">Eğitim seçiniz...</option>
-                                @foreach (var item in Model.Educations)
-                                {
-                                    <option value="@item.Id">@item.Name</option>
-                                }
-                            </select>
+                            <div class="form-group">
+                                <label>Eğitimler</label>
+                                <select class="form-control" id="select-educations">
+                                    <option value="">Eğitim seçiniz...</option>
+                                    @foreach (var item in Model.Educations)
+                                    {
+                                        <option value="@item.Id">@item.Name</option>
+                                    }
+                                </select>
+                            </div>
                         </div>
                         <div class="col-md-6">
-                            <label>Eğitmenler</label>
-                            <select class="form-control" id="select-educators" disabled>
-                                <option value="">Eğitmen seçiniz...</option>
-                            </select>
+                            <div class="form-group">
+                                <label>Eğitmenler</label>
+                                <select class="form-control" id="select-educators" disabled>
+                                    <option value="">Eğitmen seçiniz...</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                     <div class="row" style="margin-bottom: 1%;">
                         <div class="col-md-6">
-                            <label>Grup Adı</label>
-                            <input class="form-control" type="text" value="" id="input-name" />
+                            <div class="form-group">
+                                <label>Grup Adı</label>
+                                <input class="form-control" type="text" value="" id="input-name" />
+                            </div>
                         </div>
                         <div class="col-md-6">
-                            <label>Açılış Zamanı</label>
-                            <input class="form-control" type="date" value="" id="input-start-date" />
+                            <div class="form-group">
+                                <label>Açılış Zamanı</label>
+                                <input class="form-control" type="date" value="" id="input-start-date" />
+                            </div>
                         </div>
                     </div>
+                    <!-- Ders günleri seçimi -->
+                    <div class="row" style="margin-bottom: 1%;">
+                        <div class="col-md-12">
+                            <button class="btn btn-light" style="cursor:default;">Ders işlenecek günler:</button>
+                            <div class="form-check-inline">
+                                <label class="form-check-label">
+                                    <input type="checkbox" class="form-check-input" value="1">Pazartesi
+                                </label>
+                            </div>
+                            <div class="form-check-inline">
+                                <label class="form-check-label">
+                                    <input type="checkbox" class="form-check-input" value="2">Salı
+                                </label>
+                            </div>
+                            <div class="form-check-inline">
+                                <label class="form-check-label">
+                                    <input type="checkbox" class="form-check-input" value="3">Çarşamba
+                                </label>
+                            </div>
+                            <div class="form-check-inline">
+                                <label class="form-check-label">
+                                    <input type="checkbox" class="form-check-input" value="4">Perşembe
+                                </label>
+                            </div>
+                            <div class="form-check-inline">
+                                <label class="form-check-label">
+                                    <input type="checkbox" class="form-check-input" value="5">Cuma
+                                </label>
+                            </div>
+                            <div class="form-check-inline">
+                                <label class="form-check-label">
+                                    <input type="checkbox" class="form-check-input" value="6">Cumartesi
+                                </label>
+                            </div>
+                            <div class="form-check-inline">
+                                <label class="form-check-label">
+                                    <input type="checkbox" class="form-check-input" value="0">Pazar
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /Ders günleri seçimi -->
                     <div class="row">
-                        <div class="col-md-6">
-                            <button id="btn-save" class="btn_1">Kaydet</button>
+                        <div class="offset-md-10 col-md-2">
+                            <button id="btn-save" type="button" class="btn_1 form-control">Kaydet</button>
                         </div>
                     </div>
                 </form>
@@ -74,12 +138,19 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
     <script src="~/js/sup/alert-sup.js"></script>
     <script src="~/js/lib/security-support.js"></script>
+    <script src="~/js/sup/datetime-support.js"></script>
     <script>
         /* fields */
+        var lessonDays = [];
 
         /* elements */
         var selectEducations = document.getElementById("select-educations");
         var selectEducators = document.getElementById("select-educators");
+        var selectHosts = document.getElementById("select-hosts");
+        var dayCheckboxes = document.getElementsByClassName("form-check-input");
+        var inputStartDate = $("#input-start-date");
+        var inputName = $("#input-name");
+        var inputQuota = $("#input-quota");
         var btnSave = $("#btn-save");
 
         /* assignments */
@@ -91,9 +162,18 @@
         function document_onLoad() {
             $(selectEducations).select2();
             $(selectEducators).select2();
+            $(selectHosts).select2();
+
+            var dateManager = new DateTimeSupport.Manager();
+            inputStartDate.val(dateManager.getToday());
+
+            for (var i = 0; i < dayCheckboxes.length; i++) {
+                var item = dayCheckboxes[i];
+                item.onchange = dayCheckbox_onChange;
+            }
         }
         function selectEducations_onChange() {
-            $(selectEducators).prop("disabled", false);
+
             var educationId = selectEducations.options[selectEducations.selectedIndex].value;
             $.ajax({
                 url: `/admin/get-assigned-educators-for-group-add/${educationId}`,
@@ -101,12 +181,52 @@
                 success: (res) => {
                     if (res.isSuccess) {
                         getEducators(res.data);
+                        $(selectEducators).prop("disabled", false);
+                        if (!res.data.length)
+                            $(selectEducators).prop("disabled", true);
+                    } else {
+                        var jquerySelectEducators = $(selectEducators);
+                        jquerySelectEducators.html(`<option value="">Eğitmen seçiniz...</option>`);
+                        $(selectEducators).prop("disabled", true);
                     }
                 }
             });
         }
-        function btnSave_onClick() {
+        function dayCheckbox_onChange() {
+            lessonDays = [];
 
+            for (var i = 0; i < dayCheckboxes.length; i++) {
+                var item = dayCheckboxes[i];
+                if (item.checked)
+                    lessonDays.push(parseInt(item.value));
+            }
+        }
+        function btnSave_onClick() {
+            btnSave.off("click");
+
+            var tokenVerifier = new SecuritySupport.TokenVerifier();
+            var data = tokenVerifier.addToken("form-add-group", {
+                Name: inputName.val(),
+                StartDate: inputStartDate.val(),
+                EducationId: selectEducations.options[selectEducations.selectedIndex].value,
+                EducatorId: selectEducators.options[selectEducators.selectedIndex].value,
+                HostId: selectHosts.options[selectHosts.selectedIndex].value,
+                LessonDays: lessonDays,
+                Quota: inputQuota.val()
+            });
+
+            $.ajax({
+                url: "/admin/add-group",
+                method: "post",
+                data: data,
+                success: (res) => {
+                    if (res.isSuccess) {
+                        console.log(1);
+                    } else {
+                        console.log(0);
+                    }
+                }
+            });
         }
 
         /* functions */
@@ -120,6 +240,9 @@
             }
 
             $(selectEducators).append(appended);
+        }
+        function validateData() {
+            // ?
         }
     </script>
 }
