@@ -1,7 +1,12 @@
 ﻿
 @{
-    ViewData["Title"] = "Payment";
+    ViewData["Title"] = "Ödeme";
     Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    <link href="~/assets/css/grey.css" rel="stylesheet">
+    <link href="~/assets/css/sale/payment.css" rel="stylesheet" />
 }
 
 <main>
@@ -10,7 +15,7 @@
             <div class="container">
                 <div class="bs-wizard clearfix">
                     <div class="bs-wizard-step">
-                        <div class="text-center bs-wizard-stepnum">Your cart</div>
+                        <div class="text-center bs-wizard-stepnum">Sepetiniz</div>
                         <div class="progress">
                             <div class="progress-bar"></div>
                         </div>
@@ -18,7 +23,7 @@
                     </div>
 
                     <div class="bs-wizard-step active">
-                        <div class="text-center bs-wizard-stepnum">Payment</div>
+                        <div class="text-center bs-wizard-stepnum">Ödeme</div>
                         <div class="progress">
                             <div class="progress-bar"></div>
                         </div>
@@ -26,7 +31,7 @@
                     </div>
 
                     <div class="bs-wizard-step disabled">
-                        <div class="text-center bs-wizard-stepnum">Finish!</div>
+                        <div class="text-center bs-wizard-stepnum">Tamamla!</div>
                         <div class="progress">
                             <div class="progress-bar"></div>
                         </div>
@@ -47,76 +52,73 @@
                 <div class="col-lg-8">
                     <div class="box_cart">
                         @*<div class="message">
-                            <p>Exisitng Customer? <a href="#0">Click here to login</a></p>
-                        </div>*@
+                                <p>Exisitng Customer? <a href="#0">Click here to login</a></p>
+                            </div>*@
                         @*<div class="form_title">
-                            <h3><strong>1</strong>Your Details</h3>
-                            <p>
-                                Mussum ipsum cacilds, vidis litro abertis.
-                            </p>
-                        </div>*@
+                                <h3><strong>1</strong>Your Details</h3>
+                                <p>
+                                    Mussum ipsum cacilds, vidis litro abertis.
+                                </p>
+                            </div>*@
                         @*<div class="step">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <span class="input">
-                                        <input class="input_field" type="text">
-                                        <label class="input_label">
-                                            <span class="input__label-content">First name</span>
-                                        </label>
-                                    </span>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <span class="input">
+                                            <input class="input_field" type="text">
+                                            <label class="input_label">
+                                                <span class="input__label-content">First name</span>
+                                            </label>
+                                        </span>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <span class="input">
+                                            <input class="input_field" type="text">
+                                            <label class="input_label">
+                                                <span class="input__label-content">Last name</span>
+                                            </label>
+                                        </span>
+                                    </div>
                                 </div>
-                                <div class="col-sm-6">
-                                    <span class="input">
-                                        <input class="input_field" type="text">
-                                        <label class="input_label">
-                                            <span class="input__label-content">Last name</span>
-                                        </label>
-                                    </span>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <span class="input">
+                                            <input class="input_field" type="email">
+                                            <label class="input_label">
+                                                <span class="input__label-content">Email</span>
+                                            </label>
+                                        </span>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <span class="input">
+                                            <input class="input_field" type="email">
+                                            <label class="input_label">
+                                                <span class="input__label-content">Confirm email</span>
+                                            </label>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <span class="input">
+                                            <input class="input_field" type="text">
+                                            <label class="input_label">
+                                                <span class="input__label-content">Telephone</span>
+                                            </label>
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <span class="input">
-                                        <input class="input_field" type="email">
-                                        <label class="input_label">
-                                            <span class="input__label-content">Email</span>
-                                        </label>
-                                    </span>
-                                </div>
-                                <div class="col-sm-6">
-                                    <span class="input">
-                                        <input class="input_field" type="email">
-                                        <label class="input_label">
-                                            <span class="input__label-content">Confirm email</span>
-                                        </label>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <span class="input">
-                                        <input class="input_field" type="text">
-                                        <label class="input_label">
-                                            <span class="input__label-content">Telephone</span>
-                                        </label>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <hr>*@
+                            <hr>*@
                         <!--End step -->
 
                         <div class="form_title">
-                            <h3><strong>1</strong>Payment Information</h3>
-                            <p>
-                                Mussum ipsum cacilds, vidis litro abertis.
-                            </p>
+                            <h3><strong>1</strong>Ödeme Bilgileri</h3>
                         </div>
                         <div class="step">
                             <span class="input">
                                 <input class="input_field" type="text">
                                 <label class="input_label">
-                                    <span class="input__label-content">Name on card</span>
+                                    <span class="input__label-content">Kartın Üzerindeki Ad Soyad</span>
                                 </label>
                             </span>
                             <div class="row">
@@ -124,31 +126,31 @@
                                     <span class="input">
                                         <input class="input_field" type="text">
                                         <label class="input_label">
-                                            <span class="input__label-content">Card number</span>
+                                            <span class="input__label-content">Kart Numarası</span>
                                         </label>
                                     </span>
                                 </div>
                                 <div class="col-md-6 col-sm-6">
-                                    <img src="img/payments.png" alt="Cards" class="cards">
+                                    <img src="~/assets/img/payments.png" alt="Kartlar" class="cards">
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6 add_top_30">
-                                    <label>Expiration date</label>
+                                    <label>Son Kullanma Tarihi</label>
                                     <div class="row">
                                         <div class="col-md-6">
                                             <span class="input">
-                                                <input class="input_field" type="text">
+                                                <input required class="input_field" type="number" maxlength="2" min="1" max="12">
                                                 <label class="input_label">
-                                                    <span class="input__label-content">MM</span>
+                                                    <span class="input__label-content">Ay</span>
                                                 </label>
                                             </span>
                                         </div>
                                         <div class="col-md-6">
                                             <span class="input">
-                                                <input class="input_field" type="text">
+                                                <input required class="input_field" maxlength="4" type="number" min="@DateTime.Now.Year" max="@(DateTime.Now.Year + 20)">
                                                 <label class="input_label">
-                                                    <span class="input__label-content">Year</span>
+                                                    <span class="input__label-content">Yıl</span>
                                                 </label>
                                             </span>
                                         </div>
@@ -156,11 +158,11 @@
                                 </div>
                                 <div class="col-md-6 add_top_30">
                                     <div class="form-group">
-                                        <label>Security code</label>
+                                        <label>Güvenlik Kodu (CCV)</label>
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <span class="input">
-                                                    <input class="input_field" type="text">
+                                                    <input class="input_field" maxlength="3" type="text">
                                                     <label class="input_label">
                                                         <span class="input__label-content">CCV</span>
                                                     </label>
@@ -171,75 +173,57 @@
                                 </div>
                             </div>
                             <!--End row -->
-
-                            <h5>Or checkout with Paypal</h5>
-                            <p>
-                                Lorem ipsum dolor sit amet, vim id accusata sensibus, id ridens quaeque qui. Ne qui vocent ornatus molestie, reque fierent dissentiunt mel ea.
-                            </p>
-                            <p>
-                                <img src="img/paypal_bt.png" alt="Image">
-                            </p>
+                            @*<h5>Or checkout with Paypal</h5> O da olur bir gün...
+                                <p>
+                                    Lorem ipsum dolor sit amet, vim id accusata sensibus, id ridens quaeque qui. Ne qui vocent ornatus molestie, reque fierent dissentiunt mel ea.
+                                </p>
+                                <p>
+                                    <img src="img/paypal_bt.png" alt="Image">
+                                </p>*@
                         </div>
                         <hr>
                         <!--End step -->
 
                         <div class="form_title">
-                            <h3><strong>2</strong>Billing Address</h3>
-                            <p>
-                                Mussum ipsum cacilds, vidis litro abertis.
-                            </p>
+                            <h3><strong>2</strong>Fatura Bilgileri</h3>
                         </div>
                         <div class="step">
                             <div class="row">
                                 <div class="col-md-6 col-sm-6">
+                                    <div class="form-group select">
+                                        <div class="styled-select">
+                                            <select class="required">
+                                                <option value="0" selected="">İl</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-6">
+                                    <div class="form-group select">
+                                        <div class="styled-select">
+                                            <select class="required">
+                                                <option value="0" selected="">İlçe</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
                                     <span class="input">
                                         <input class="input_field" type="text">
                                         <label class="input_label">
-                                            <span class="input__label-content">Country</span>
+                                            <span class="input__label-content">Adres</span>
                                         </label>
                                     </span>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-6 col-sm-6">
+                                <div class="col-md-12">
                                     <span class="input">
                                         <input class="input_field" type="text">
                                         <label class="input_label">
-                                            <span class="input__label-content">Street line 1</span>
-                                        </label>
-                                    </span>
-                                </div>
-                                <div class="col-md-6 col-sm-6">
-                                    <span class="input">
-                                        <input class="input_field" type="text">
-                                        <label class="input_label">
-                                            <span class="input__label-content">Street line 2</span>
-                                        </label>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <span class="input">
-                                        <input class="input_field" type="text">
-                                        <label class="input_label">
-                                            <span class="input__label-content">City</span>
-                                        </label>
-                                    </span>
-                                </div>
-                                <div class="col-md-3">
-                                    <span class="input">
-                                        <input class="input_field" type="text">
-                                        <label class="input_label">
-                                            <span class="input__label-content">State</span>
-                                        </label>
-                                    </span>
-                                </div>
-                                <div class="col-md-3">
-                                    <span class="input">
-                                        <input class="input_field" type="text">
-                                        <label class="input_label">
-                                            <span class="input__label-content">Postal code</span>
+                                            <span class="input__label-content">Telefon</span>
                                         </label>
                                     </span>
                                 </div>
@@ -248,22 +232,86 @@
                         </div>
                         <hr>
                         <!--End step -->
-                        <div id="policy">
-                            <h5>Cancellation policy</h5>
-                            <p class="nomargin">Lorem ipsum dolor sit amet, vix <a href="#0">cu justo blandit deleniti</a>, discere omittantur consectetuer per eu. Percipit repudiare similique ad sed, vix ad decore nullam ornatus.</p>
+
+                        <div class="form_title">
+                            <h3><strong>3</strong>Sözleşme ve Formlar</h3>
                         </div>
+                        <div class="step">
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12">
+                                    <h6>Cayma Hakkı</h6>
+                                    <div class="policy-box">
+                                        <p>
+                                            @* TODO: Burası partial yapılabilir. *@
+                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent nunc ligula, cursus non erat non, vehicula blandit odio. Aliquam mi dui, efficitur non commodo ut, placerat ac odio. Praesent rutrum lacus velit. Duis vehicula a odio at mattis. Vivamus tincidunt sem nisi, et elementum nibh ullamcorper non. Maecenas dapibus diam orci, in mollis tellus maximus a. Aliquam mollis, est eget molestie semper, turpis nulla faucibus mauris, sit amet efficitur nisi ante a eros. Duis laoreet in nibh ut sollicitudin. Sed ut bibendum erat. Ut rhoncus arcu non turpis finibus congue. Aliquam sed commodo neque, tempus gravida tellus.
+
+                                            Vivamus rhoncus ex rhoncus, gravida quam eu, congue tellus. Fusce sed risus facilisis, varius nulla nec, ullamcorper libero. Integer a sapien odio. Suspendisse dignissim elementum interdum. Pellentesque egestas ligula leo, vel faucibus felis lacinia vel. Vestibulum luctus non ex in euismod. Cras mattis nibh et tellus mattis placerat. Donec id vestibulum est, id cursus nisi. Proin nec egestas felis, et luctus libero. Nunc eget sem dignissim, viverra lorem quis, aliquet turpis. Aliquam erat volutpat. Nullam sit amet auctor quam, ac vestibulum libero. Nunc luctus sagittis dapibus. In malesuada commodo quam, ut ultrices augue faucibus non.
+
+                                            Nunc dignissim blandit hendrerit. Mauris eu placerat est. Sed porttitor nunc quis purus viverra eleifend. Vivamus malesuada, leo in maximus dictum, lacus libero mollis mi, vitae fermentum erat urna et elit. Phasellus dapibus ullamcorper placerat. Sed tempus lacus eu elit aliquam porta. Pellentesque auctor, tellus eget eleifend scelerisque, ex justo vulputate neque, quis elementum turpis dolor et neque. Curabitur at rutrum nibh.
+
+                                            Aliquam dignissim tellus ut justo fermentum, eget euismod ligula condimentum. Mauris hendrerit lorem rhoncus tempor dictum. Nam ut metus vel mi congue tincidunt. Nunc molestie odio turpis, non interdum enim luctus et. Maecenas a ante vitae quam pretium molestie ac venenatis urna. Donec ornare sem neque, id volutpat sem euismod vel. Donec eu risus ex. Morbi pulvinar enim dui, a pellentesque magna congue sit amet. Phasellus non molestie libero, eget vestibulum dui. Pellentesque faucibus euismod lorem sit amet vehicula. Fusce dignissim volutpat dolor, a rutrum ipsum efficitur vel. Aliquam posuere sapien mauris, sed convallis risus imperdiet id. Morbi semper ut nisi non malesuada. Vestibulum maximus imperdiet varius. Maecenas ultricies, sem eget sagittis fringilla, nunc nisi molestie mi, nec placerat ipsum ex ut orci. Etiam eget ante libero.
+
+                                            Quisque luctus varius tellus nec porttitor. Fusce sodales facilisis lacus sed laoreet. Donec vel varius felis, id rutrum nunc. Proin pulvinar quis metus at dapibus. Quisque non tellus eu elit iaculis mattis vitae sed justo. Quisque dignissim tortor non quam tincidunt sodales. Aenean et magna auctor, faucibus purus sed, porttitor quam. Etiam vehicula, purus et blandit vestibulum, erat velit varius lectus, id vehicula odio massa id nulla. Suspendisse consequat sapien eu est suscipit luctus. Ut fringilla ultrices sollicitudin. Integer viverra augue lacus, id mattis sapien congue ornare.
+
+                                            Duis in nibh pharetra turpis rutrum tempor nec ac erat. Suspendisse auctor tempus mollis. Ut bibendum commodo mauris eget suscipit. Quisque blandit metus in ex euismod vehicula. Curabitur ornare commodo risus at rhoncus. Quisque finibus vel dolor eget interdum. Duis facilisis justo tincidunt suscipit tincidunt. Cras consequat placerat lectus a facilisis. Aliquam at tellus facilisis justo lobortis euismod vel in dui. Sed ornare nulla non arcu consectetur, eget venenatis risus efficitur. Aenean suscipit bibendum arcu, a luctus elit aliquam a.
+
+                                            In aliquet interdum libero, non tempor felis consequat sed. Integer risus purus, pharetra sit amet felis et, convallis dapibus ante. Cras convallis blandit mauris, et dignissim elit. Etiam non lobortis tellus. Nullam gravida lorem quis mauris vestibulum, eu fringilla quam tempor. Sed dapibus nibh in risus feugiat elementum. Nulla scelerisque ante vitae tincidunt placerat.
+
+                                            In quis augue lorem. Duis vel dui sit amet dui dapibus laoreet. Maecenas vitae gravida mauris. Proin lacinia, massa nec lacinia rutrum, sem massa egestas dolor, eget condimentum metus libero ac leo. Nullam at erat eget ligula egestas porttitor. Sed quis ligula eget arcu cursus fermentum. Quisque sapien magna, fringilla nec congue id, consectetur sit amet elit. Curabitur velit tortor, posuere ac ligula ut, tincidunt sagittis diam. Nam nec molestie lacus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nam nec vulputate mi. Phasellus malesuada facilisis ullamcorper. Nullam mattis, metus non fringilla ullamcorper, augue risus egestas metus, ut ultricies nunc dolor a sapien.
+
+                                            Sed lobortis purus eu nulla porttitor, ac cursus diam aliquam. Nullam aliquet arcu est, vel porta diam aliquam et. Nulla condimentum nulla id fringilla dictum. In hac habitasse platea dictumst. Nulla facilisi. Fusce vel efficitur neque. Maecenas ullamcorper aliquet pulvinar.
+
+                                            Aliquam efficitur ut velit a fermentum. Donec vitae fringilla neque. Fusce mattis lorem est, ac feugiat mauris tristique nec. Aenean tincidunt mattis nunc, at sagittis augue cursus nec. Quisque venenatis diam non faucibus mattis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Fusce vitae bibendum lacus. Donec dapibus elit non lectus ultricies tincidunt. Aenean suscipit nibh nibh, sed lobortis metus mattis vel.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12">
+                                    <h6><a href="#" data-toggle="modal" data-target="#obf-modal">Ön Bilgilendirme Formu <i class="icon-link-ext"></i></a></h6>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12">
+                                    <h6><a href="#" data-toggle="modal" data-target="#mss-modal">Mesafeli Satış Sözleşmesi <i class="icon-link-ext"></i></a></h6>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <!--End step -->
                     </div>
                 </div>
                 <!-- /col -->
 
                 <aside class="col-lg-4" id="sidebar">
                     <div class="box_detail">
-                        <div id="total_cart">
-                            Total <span class="float-right">69.00$</span>
+                        <div>
+                            <h5>Sipariş Özeti</h5>
+                            <p>MVC ile Proje Geliştirme (300 saat)</p>
                         </div>
-                        <div class="add_bottom_30">Lorem ipsum dolor sit amet, sed vide <strong>moderatius</strong> ad. Ex eius soleat sanctus pro, enim conceptam in quo, <a href="#0">brute convenire</a> appellantur an mei.</div>
-                        <a href="cart-3.html" class="btn_1 full-width">Checkout</a>
-                        <a href="courses-grid-sidebar.html" class="btn_1 full-width outline"><i class="icon-right"></i> Continue Shopping</a>
+                        <div id="total_cart">
+                            Toplam Tutar <span class="float-right">1200.00₺</span>
+                        </div>
+                        <div class="add_bottom_30">
+                            <label>
+                                <input type="checkbox" class="icheck" style="        position: absolute;
+        opacity: 0;
+">
+                                <span><a href="#" data-toggle="modal" data-target="#obf-modal">Ön Bilgilendirme Formu</a>'nu okudum ve kabul ediyorum.</span>
+                            </label>
+                            <label>
+                                <input type="checkbox" class="icheck" style="position: absolute; opacity: 0;">
+                                <span><a href="#" data-toggle="modal" data-target="#mss-modal">Mesafeli Satış Sözleşmesi</a>'ni okudum ve kabul ediyorum.</span>
+                            </label>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <a href="courses-grid-sidebar.html" class="btn_1 full-width outline"><i class="icon-right"></i> Alışverişe devam et</a>
+                            </div>
+                            <div class="col-md-12">
+                                <a href="cart-3.html" class="btn_1 full-width">Satın Al</a>
+                            </div>
+                        </div>
                     </div>
                 </aside>
             </div>
@@ -273,3 +321,48 @@
     </div>
     <!-- /bg_color_1 -->
 </main>
+
+<!-- Modal obf -->
+<div class="modal fade" id="obf-modal" tabindex="-1" role="dialog" aria-labelledby="obfLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="obfLabel">Ön Bilgilendirme Formu</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Lorem ipsum dolor sit amet, in porro albucius qui, in <strong>nec quod novum accumsan</strong>, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus.</p>
+                <p>Lorem ipsum dolor sit amet, in porro albucius qui, in nec quod novum accumsan, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus. Lorem ipsum dolor sit amet, <strong>in porro albucius qui</strong>, in nec quod novum accumsan, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus.</p>
+                <p>Lorem ipsum dolor sit amet, in porro albucius qui, in nec quod novum accumsan, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn_1" data-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<!-- Modal terms -->
+<div class="modal fade" id="mss-modal" tabindex="-1" role="dialog" aria-labelledby="mssLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="mssLabel">Mesafeli Satış Sözleşmesi</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Lorem ipsum dolor sit amet, in porro albucius qui, in <strong>nec quod novum accumsan</strong>, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus.</p>
+                <p>Lorem ipsum dolor sit amet, in porro albucius qui, in nec quod novum accumsan, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus. Lorem ipsum dolor sit amet, <strong>in porro albucius qui</strong>, in nec quod novum accumsan, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus.</p>
+                <p>Lorem ipsum dolor sit amet, in porro albucius qui, in nec quod novum accumsan, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn_1" data-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
