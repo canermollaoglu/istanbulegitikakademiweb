@@ -348,6 +348,67 @@ namespace NitelikliBilisim.Business.Repositories
             return data;
         }
 
+        public List<EducationVm> GetEducationsByCategory(string category, int page = 0, OrderCriteria order = OrderCriteria.Latest)
+        {
+            var shownResults = 5;
+
+            var educations = Context.Educations.AsQueryable();
+
+            if (!string.IsNullOrEmpty(category))
+            {
+                var categoryId = Context.EducationCategories.FirstOrDefault(x => x.Name.ToLower() == category.ToLower())?.Id;
+
+                if(categoryId != null)
+                    educations = educations.Where(x => x.CategoryId == categoryId.Value && x.IsActive);
+            }
+
+            switch (order)
+            {
+                case OrderCriteria.Latest:
+                    educations = educations.OrderByDescending(x => x.CreatedDate);
+                    break;
+                case OrderCriteria.Popular:
+                    educations = educations.OrderByDescending(x => x.Level); // TODO: Şimdilik popülerliğe göre sıralanamadığı için seviyesine göre sıralandı.
+                    break;
+            }
+
+            var educationsList = educations
+                .Join(Context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Id, r => r.EducationId, (x, y) => new
+                {
+                    Education = x,
+                    EducationPreviewMedia = y
+                })
+                .Join(Context.EducationCategories, l => l.Education.CategoryId, r => r.Id, (x, y) => new
+                {
+                    Education = x.Education,
+                    EducationPreviewMedia = x.EducationPreviewMedia,
+                    CategoryName = y.Name
+                })
+                .Skip(page * shownResults)
+                .Take(shownResults)
+                .ToList();
+
+            var data = educationsList.Select(x => new EducationVm
+            {
+                Base = new EducationBaseVm
+                {
+                    Id = x.Education.Id,
+                    Name = x.Education.Name,
+                    Description = x.Education.Description,
+                    CategoryName = x.CategoryName,
+                    Level = EnumSupport.GetDescription(x.Education.Level),
+                    PriceText = x.Education.NewPrice.Value.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
+                    HoursPerDayText = x.Education.HoursPerDay.ToString(),
+                    DaysText = x.Education.Days.ToString(),
+                    DaysNumeric = x.Education.Days,
+                    HoursPerDayNumeric = x.Education.HoursPerDay
+                },
+                Medias = new List<EducationMediaVm> { new EducationMediaVm { EducationId = x.Education.Id, FileUrl = x.EducationPreviewMedia.FileUrl } }
+            }).ToList();
+
+            return data;
+        }
+
         public EducationVm GetEducation(Guid id)
         {
             var education = Context.Educations.First(x => x.Id == id);

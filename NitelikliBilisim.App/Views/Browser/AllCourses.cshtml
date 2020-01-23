@@ -1,0 +1,283 @@
+﻿@model NitelikliBilisim.Core.ViewModels.SearchResultsGetVm
+@{
+    ViewData["Title"] = string.IsNullOrEmpty(Model.SearchText) ? "TÜM EĞİTİMLER" : Model.SearchText.ToUpper() + " EĞİTİMLERİ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section styles{
+    <link href="~/assets/css/grey.css" rel="stylesheet">
+    <link href="~/assets/css/search/search-results.css" rel="stylesheet" />
+    <style>
+        a [role="button"] {
+            cursor: pointer;
+        }
+    </style>
+}
+<main>
+    <section id="hero_in" class="courses">
+        <div class="wrapper">
+            <div class="container">
+                <h1 class="fadeInUp"><span></span>@(string.IsNullOrEmpty(Model.SearchText) ? "TÜM EĞİTİMLER" : Model.SearchText.ToUpper() + " EĞİTİMLERİ")</h1>
+            </div>
+        </div>
+    </section>
+
+    <input type="hidden" value="@Model.SearchText" id="_search-text" />
+    <input type="hidden" value="0" id="_page" />
+    <input type="hidden" value="@Model.ShowAs" id="_show-as" />
+
+    <div class="filters_listing sticky_horizontal">
+        <div class="container">
+            <ul class="clearfix">
+                <li>
+                    <div class="switch-field">
+                        <input type="radio" id="all" name="listing_filter" value="all" checked>
+                        <label for="all">All</label>
+                        <input type="radio" id="popular" name="listing_filter" value="popular">
+                        <label for="popular">Popular</label>
+                        <input type="radio" id="latest" name="listing_filter" value="latest">
+                        <label for="latest">Latest</label>
+                    </div>
+                </li>
+                <li>
+                    <div class="layout_view">
+                        @if (Model.ShowAs == "grid")
+                        {
+                            <a role="button" class="active" id="btn-show-as-grid"><i class="icon-th"></i></a>
+                            <a role="button" id="btn-show-as-list"><i class="icon-th-list"></i></a>
+                        }
+                        else
+                        {
+                            <a role="button" id="btn-show-as-grid"><i class="icon-th"></i></a>
+                            <a role="button" class="active" id="btn-show-as-list"><i class="icon-th-list"></i></a>
+                        }
+                    </div>
+                </li>
+                <li style="min-width: 150px;">
+                    <select name="orderby" class="selectbox">
+                        @foreach (var item in Model.OrderCriterias)
+                        {
+                            <option value="@item.Key">@item.Value</option>
+                        }
+                    </select>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="container margin_60_35">
+        <div class="row" style="transform: none;">
+            <div class="col-lg-12" id="div-education-container">
+                @if (Model.ShowAs == "grid")
+                {
+                    <div class="row" id="div-education-container-row">
+
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <partial name="partials/search/_SearchResultsPreFooter" />
+
+</main>
+
+@section postScripts{
+    <script>
+        /* fields */
+        var _searchText = $("#_search-text");
+        var _page = $("#_page");
+        var _showAs = $("#_show-as");
+
+        /* elements */
+        var divEducationContainer = $("#div-education-container");
+        var divEducationContainerRow = $("#div-education-container-row");
+        var btnLoadMoreText = `<p class="text-center add_top_60" id="p-btn-container"><button id="btn-load-more" class="btn_1">Daha Fazla Yükle</button></p>`;
+        var btnShowAsGrid = $("#btn-show-as-grid");
+        var btnShowAsList = $("#btn-show-as-list");
+        var btnSearch = $("#btn-search");
+        var inputSearch = $("#input-search");
+        var selectOrder = $("select[name='orderby']");
+
+        /* assignments */
+        $(document).ready(document_onLoad);
+        btnShowAsGrid.on("click", btnShowAsGrid_onClick);
+        btnShowAsList.on("click", btnShowAsList_onClick);
+        selectOrder.on("change", selectOrder_onChange);
+
+        /* events */
+        function document_onLoad() {
+            if (_searchText.val() == "") {
+                var uri = window.location.toString();
+                var n = uri.lastIndexOf('/');
+                var result = uri.substring(n + 1);
+
+                if (result != "tum-egitimler" && result.length > 0) {
+                    var clean_uri = uri.substring(0, n);
+                    window.history.replaceState({}, document.title, clean_uri);
+                }
+            }
+            
+            getSearchResults(false);
+        }
+        function btnLoadMore_onClick() {
+            getSearchResults(true);
+        }
+        function btnShowAsGrid_onClick() {
+            location.href = `/tum-egitimler/${_searchText.val()}?showAs=grid`;
+        }
+        function btnShowAsList_onClick() {
+            location.href = `/tum-egitimler/${_searchText.val()}?showAs=list`;
+        }
+        function btnSearch_onClick() {
+            var searchText = inputSearch.val();
+
+            if (searchText == "")
+                inputSearch.addClass("is-invalid");
+            else
+                location.href = `/arama-sonuclari/${searchText}`
+        }
+        function selectOrder_onChange() {
+            var order = $(this).val();
+
+            if (_hasFilter)
+                getFilteredResults(false, order);
+            else
+                getSearchResults(false, null, order);
+        }
+        function inputSearch_onSubmit(e) {
+            if (e.keyCode === 13) {
+                btnSearch_onClick();
+            }
+        }
+
+        /* functions */
+        function getSearchResults(isLoadMore, order) {
+            var pBtnContainer = document.getElementById("p-btn-container");
+            if (pBtnContainer)
+                pBtnContainer.remove();
+
+            if (order != null && !isLoadMore)
+                _page.val(0);
+
+            $.ajax({
+                url: `/get-all-courses`,
+                method: "post",
+                data: {
+                    category: _searchText.val(),
+                    page: _page.val(),
+                    order: order
+                },
+                success: (res) => {
+                    var data = res.data.model;
+                    var showAs = _showAs.val();
+
+                    if (res.data.model.length != 0) {
+                        if (showAs === "grid") {
+                            if (!isLoadMore)
+                                divEducationContainerRow.html("");
+
+                            var boxes = prepareCourseBoxesAsGrid(data);
+                            divEducationContainerRow.append(boxes);
+                        } else {
+                            if (!isLoadMore)
+                                divEducationContainer.html("");
+
+                            var boxes = prepareCourseBoxesAsList(data);
+                            divEducationContainer.append(boxes);
+                        }
+
+                        if (data.length > 4) {
+                            divEducationContainer.append(btnLoadMoreText);
+                            var btnLoadMore = $("#btn-load-more");
+                            btnLoadMore.on("click", btnLoadMore_onClick);
+                        }
+                    } else {
+                        if (!isLoadMore) {
+                            divEducationContainer.html("");
+                            divEducationContainer.append(`<div class="alert alert-info">Ne yazık ki gösterilecek sonuç yok</div>`);
+                        }
+                    }
+
+                    _page.val(parseInt(_page.val()) + 1);
+                }
+            });
+        }
+        function prepareCourseBoxesAsGrid(data) {
+            var boxes = "";
+            for (var i = 0; i < data.length; i++) {
+                var item = data[i];
+                boxes +=
+                    `<div class="col-xl-4 col-lg-6 col-md-6">` +
+                    `<div class="box_grid wow">` +
+                    `<figure class="block-reveal">` +
+                    `<div class="block-horizzontal"></div>` +
+                    `<a href="#0" class="wish_bt"></a>` +
+
+                    `<a href="/kurs-detayi/${item.base.id}"><img src="${item.medias[0].fileUrl}" class="img-fluid" alt=""></a>` +
+
+                    `<div class="price">${item.base.priceText}</div>` +
+                    `<div class="preview"><span><a href="/kurs-detayi/${item.base.id}">Detaylar</a></span></div>` +
+                    `</figure>` +
+                    `<div class="wrapper">` +
+                    `<small>${item.base.categoryName}</small>` +
+                    `<h3>${item.base.name}</h3>` +
+                    `<a href="/kurs-detayi/${item.base.id}">` +
+                    `<div class="desc-div">` +
+                    `</div>` +
+                    `</a>` +
+                    `<p class="desc-p">${item.base.description}</p>` +
+                    `<div class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(145)</small></div>` +
+                    `</div>` +
+
+                    `<ul>` +
+                    `<li><i class="icon_clock_alt"></i> ${item.base.daysText} gün (${item.base.hoursPerDayNumeric * item.base.daysNumeric} saat)</li>` +
+                    `<li><i class="icon_like"></i> 890</li>` +
+                    `<li><a href="course-detail.html">Kayıt Ol</a></li>` +
+                    `</ul>` +
+                    `</div>` +
+                    `</div>`;
+            }
+
+            return boxes;
+        }
+        function prepareCourseBoxesAsList(data) {
+            var boxes = "";
+            for (var i = 0; i < data.length; i++) {
+                var item = data[i];
+                boxes += `<div class="box_list wow">` +
+                    `<div class="row no-gutters">` +
+                    `<div class="col-lg-5">` +
+                    `<figure class="block-reveal">` +
+                    `<div class="block-horizzontal"></div>` +
+
+                    `<a href="/kurs-detayi/${item.base.id}"><img src="${item.medias[0].fileUrl}" class="img-fluid" alt=""></a>` +
+
+                    `<div class="preview"><span><a href="/kurs-detayi/${item.base.id}">Detaylar</a></span></div>` +
+                    `</figure>` +
+                    `</div>` +
+                    `<div class="col-lg-7">` +
+                    `<div class="wrapper">` +
+                    `<a href="#0" class="wish_bt"></a>` +
+
+                    `<div class="price">${item.base.priceText}</div>` +
+
+                    `<small>${item.base.categoryName}</small>` +
+                    `<h3>${item.base.name}</h3>` +
+                    `<p>${item.base.description}</p>` +
+                    `<div class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(145)</small></div>` +
+                    `</div>` +
+
+                    `<ul>` +
+                    `<li><i class="icon_clock_alt"></i> ${item.base.daysText} gün (${item.base.hoursPerDayNumeric * item.base.daysNumeric} saat)</li>` +
+                    `<li><i class="icon_like"></i> 890</li>` +
+                    `<li><a href="course-detail.html">Kayıt Ol</a></li>` +
+                    `</ul>` +
+                    `</div>` +
+                    `</div>` +
+                    `</div>`;
+            }
+
+            return boxes;
+        }
+    </script>
+}
