@@ -84,6 +84,7 @@
 </main>
 
 @section postScripts{
+    <script src="~/js/sup/cart.js"></script>
     <script>
         /* fields */
         var _searchText = $("#_search-text");
@@ -99,7 +100,7 @@
         var btnSearch = $("#btn-search");
         var inputSearch = $("#input-search");
         var listingFilters = $("input[name='listing_filter']");
-        var selectOrder = $("select[name='orderby']");        
+        var selectOrder = $("select[name='orderby']");   
 
         /* assignments */
         $(document).ready(document_onLoad);
@@ -131,9 +132,16 @@
                 location.href = `/arama-sonuclari/${searchText}`
         }
         function listingFilters_onClick() {
-            console.log($(this).val())
             var order = $(this).val();
             getSearchResults(false, order);
+        }
+        function buyBtns_onClick() {
+            var educationId = $(this).data("id");
+
+            var cart = new CartSupport.Cart();
+            cart.addToCart(educationId);
+
+            location.href = "/sepet";
         }
         function selectOrder_onChange() {
             var order = $(this).children("option:selected").val();
@@ -210,6 +218,8 @@
                         }
                     }
 
+                    $("a[name='btn-buy']").on("click", buyBtns_onClick);
+
                     _page.val(parseInt(_page.val()) + 1);
                 }
             });
@@ -244,7 +254,7 @@
                     `<ul>` +
                     `<li><i class="icon_clock_alt"></i> ${item.base.daysText} gün (${item.base.hoursPerDayNumeric * item.base.daysNumeric} saat)</li>` +
                     `<li><i class="icon_like"></i> 890</li>` +
-                    `<li><a href="/sepet">Kayıt Ol</a></li>` +
+                    `<li><a name="btn-buy" data-id="${item.base.id}" href="javascript:void(0)">Kayıt Ol</a></li>` +
                     `</ul>` +
                     `</div>` +
                     `</div>`;
@@ -282,7 +292,7 @@
                     `<ul>` +
                     `<li><i class="icon_clock_alt"></i> ${item.base.daysText} gün (${item.base.hoursPerDayNumeric * item.base.daysNumeric} saat)</li>` +
                     `<li><i class="icon_like"></i> 890</li>` +
-                    `<li><a href="/sepet">Kayıt Ol</a></li>` +
+                    `<li><a name="btn-buy" data-id="${item.base.id}" href="javascript:void(0)">Kayıt Ol</a></li>` +
                     `</ul>` +
                     `</div>` +
                     `</div>` +
