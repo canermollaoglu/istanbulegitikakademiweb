@@ -16,11 +16,11 @@
             <li><a href="/giris-yap" class="login">GİRİŞ YAP</a></li>
         }
         <li><a href="#0" class="search-overlay-menu-btn">Arama</a></li>
-        <li class="hidden_tablet"><a href="/biz-kimiz">BİZ KİMİZ?</a></li>
-        <li><a href="/sepet" style="background-color:#ef8d6f !important" class="btn_1 rounded" id="layout-header-cart"><i class="icon-cart"></i> (0)</a></li>
+        <li class="hidden_mobile"><a href="/biz-kimiz">BİZ KİMİZ?</a></li>
+        <li><a href="/sepet" style="background-color:#ef8d6f !important" class="btn_1 rounded" id="layout-header-cart"><i class="hidden_mobile pe-7s-cart"></i> (0)</a></li>
         @if (!User.Identity.IsAuthenticated)
         {
-            <li class="hidden_tablet"><a href="/kayit-ol" class="btn_1 rounded">KAYDOL</a></li>
+            <li class="hidden_mobile"><a href="/kayit-ol" class="btn_1 rounded">KAYDOL</a></li>
         }
         else
         {
