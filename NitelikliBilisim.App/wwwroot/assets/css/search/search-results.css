@@ -1,5 +1,5 @@
 ﻿.desc-div {
-    height: 120px;
+    height: 72px;
     position: relative;
     background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%); /* FF3.6-15 */
     background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(255,255,255,0) 100%); /* Chrome10-25,Safari5.1-6 */
@@ -8,8 +8,25 @@
 }
 
 .desc-p {
-    margin-top: -120px;
+    margin-top: -72px;
     margin-bottom: 0;
-    height: 120px;
+    height: 72px;
     overflow: hidden;
+}
+
+.desc-table {
+    width: 100%
+}
+
+.desc-table td {
+    width: 50%;
+    padding: 4px 25px;
+}
+
+.desc-table td:first-child {
+    border-right: 1px solid #ededed;
+}
+
+hr, ul {
+    margin: 0;
 }
