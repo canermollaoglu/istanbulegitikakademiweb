@@ -283,3 +283,26 @@ ul.additional_info li strong {
         background: #fc4912 !important;
         color: #fff !important;
     }
+
+.modal-content {
+    margin-top: 100px !important;
+}
+.modal-body {
+    text-align: justify !important;
+    overflow: auto !important;
+    height: 320px !important;
+}
+.modal-content {
+    position: relative !important;
+    display: -ms-flexbox !important;
+    display: flex !important;
+    -ms-flex-direction: column !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    pointer-events: auto !important;
+    background-color: #fff !important;
+    background-clip: padding-box !important;
+    border: 1px solid rgba(0,0,0,.2) !important;
+    border-radius: .3rem !important;
+    outline: 0 !important;
+}

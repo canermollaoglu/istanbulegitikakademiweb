@@ -8,8 +8,8 @@
         <a href="/"><img src="~/assets/img/nb_logo_sm.png" width="149" height="42" data-retina="true" alt=""></a>
     </div>
     @*<div id="logo">
-        <a href="/">LOGO</a>
-    </div>*@
+            <a href="/">LOGO</a>
+        </div>*@
     <ul id="top_menu">
         @if (!User.Identity.IsAuthenticated)
         {
@@ -42,6 +42,27 @@
     <div class="container">
         <nav class="version_2">
             <div class="row">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <div class="col-md-3">
+                        <h3>Kullanıcı</h3>
+                        <ul>
+                            <li><a href="/giris-yap">Profil</a></li>
+                            <li><a href="/sepet">Sepet</a></li>
+                            <li><a href="/sepet">Satın Alma Geçmişi</a></li>
+                        </ul>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-md-3">
+                        <h3>Kullanıcı</h3>
+                        <ul>
+                            <li><a href="/giris-yap">Giriş yap</a></li>
+                        </ul>
+                    </div>
+                }
+
                 <div class="col-md-3">
                     <h3>NBuy Projeleri</h3>
                     <ul>
@@ -54,46 +75,25 @@
                     </ul>
                 </div>
                 <div class="col-md-3">
-                    <h3>Courses</h3>
+                    <h3></h3>
                     <ul>
-                        <li><a href="courses-grid.html">Courses grid</a></li>
-                        <li><a href="courses-grid-sidebar.html">Courses grid sidebar</a></li>
-                        <li><a href="courses-list.html">Courses list</a></li>
-                        <li><a href="courses-list-sidebar.html">Courses list sidebar</a></li>
-                        <li><a href="course-detail.html">Course detail</a></li>
-                        <li><a href="course-detail-2.html">Course detail (working form)</a></li>
-                        <li><a href="admission.html">Admission wizard</a></li>
-                        <li><a href="teacher-detail.html">Teacher detail</a></li>
+                        @*<li><a href="#0">Menu 1</a><span class="badge_info">New</span></li>
+                            <li><a href="about.html">About</a></li>
+                            <li><a href="blog.html">Blog</a></li>
+                            <li><a href="login.html">Login</a></li>
+                            <li><a href="register.html">Register</a></li>
+                            <li><a href="contacts.html">Contacts</a></li>
+                            <li><a href="404.html">404 page</a></li>
+                            <li><a href="agenda-calendar.html">Agenda Calendar</a></li>
+                            <li><a href="faq.html">Faq</a></li>
+                            <li><a href="help.html">Help</a></li>*@
                     </ul>
                 </div>
                 <div class="col-md-3">
-                    <h3>Pages</h3>
+                    <h3>Sözleşme Metinleri</h3>
                     <ul>
-                        <li><a href="#0">Menu 1</a><span class="badge_info">New</span></li>
-                        <li><a href="about.html">About</a></li>
-                        <li><a href="blog.html">Blog</a></li>
-                        <li><a href="login.html">Login</a></li>
-                        <li><a href="register.html">Register</a></li>
-                        <li><a href="contacts.html">Contacts</a></li>
-                        <li><a href="404.html">404 page</a></li>
-                        <li><a href="agenda-calendar.html">Agenda Calendar</a></li>
-                        <li><a href="faq.html">Faq</a></li>
-                        <li><a href="help.html">Help</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-3">
-                    <h3>Extra pages</h3>
-                    <ul>
-                        <li><a href="media-gallery.html">Media gallery</a></li>
-                        <li><a href="cart-1.html">Cart page 1</a></li>
-                        <li><a href="cart-2.html">Cart page 2</a></li>
-                        <li><a href="cart-3.html">Cart page 3</a></li>
-                        <li><a href="pricing-tables.html">Responsive pricing tables</a></li>
-                        <li><a href="coming_soon/index.html">Coming soon</a></li>
-                        <li><a href="icon-pack-1.html">Icon pack 1</a></li>
-                        <li><a href="icon-pack-2.html">Icon pack 2</a></li>
-                        <li><a href="icon-pack-3.html">Icon pack 3</a></li>
-                        <li><a href="icon-pack-4.html">Icon pack 4</a></li>
+                        <li> <span><a href="#" data-toggle="modal" data-target="#obf-modal">Ön Bilgilendirme Formu</a>'nu okudum ve kabul ediyorum.</span></li>
+                        <li> <span><a href="#" data-toggle="modal" data-target="#mss-modal">Mesafeli Satış Sözleşmesi</a>'ni okudum ve kabul ediyorum.</span></li>
                     </ul>
                 </div>
             </div>
@@ -109,6 +109,51 @@
         </div>
     </div>
 </div>
+
+<!-- Modal obf -->
+<div class="modal fade" id="obf-modal" tabindex="-1" role="dialog" aria-labelledby="obfLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="obfLabel">Ön Bilgilendirme Formu</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Lorem ipsum dolor sit amet, in porro albucius qui, in <strong>nec quod novum accumsan</strong>, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus.</p>
+                <p>Lorem ipsum dolor sit amet, in porro albucius qui, in nec quod novum accumsan, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus. Lorem ipsum dolor sit amet, <strong>in porro albucius qui</strong>, in nec quod novum accumsan, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus.</p>
+                <p>Lorem ipsum dolor sit amet, in porro albucius qui, in nec quod novum accumsan, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn_1" data-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<!-- Modal terms -->
+<div class="modal fade" id="mss-modal" tabindex="-1" role="dialog" aria-labelledby="mssLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="mssLabel">Mesafeli Satış Sözleşmesi</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Lorem ipsum dolor sit amet, in porro albucius qui, in <strong>nec quod novum accumsan</strong>, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus.</p>
+                <p>Lorem ipsum dolor sit amet, in porro albucius qui, in nec quod novum accumsan, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus. Lorem ipsum dolor sit amet, <strong>in porro albucius qui</strong>, in nec quod novum accumsan, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus.</p>
+                <p>Lorem ipsum dolor sit amet, in porro albucius qui, in nec quod novum accumsan, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn_1" data-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
 <!-- /main_menu 2-->
 
 <div class="search-overlay-menu">
