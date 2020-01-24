@@ -1,7 +1,9 @@
 ﻿@model NitelikliBilisim.App.Models.HomeIndexModel
+@using NitelikliBilisim.Core.Services
 @{
     ViewData["Title"] = "Nitelikli Bilişim";
-    Layout = "/Views/Shared/_Layout.cshtml";
+ Layout = "/Views/Shared/_Layout.cshtml";
+ var storage = new StorageService();
 }
 
 <main>
@@ -11,9 +13,9 @@
                 <div class="row containerRow col-sm-12">
                     <h3><span style="font-weight: 100 !important">HANGİ KONUDA</span> <b style="color:#fc4912">PROJE EKSİĞİN VAR?</b></h3>
                     <p>Uygulama olmadan, teorik bilgi ne işe yarar ki!</p><br />
-                     <div class="main_title_Search">
-                          <span><em></em></span>
-                     </div>
+                    <div class="main_title_Search">
+                        <span><em></em></span>
+                    </div>
                     <p>Aldığın teorik eğitimi proje yazarak pekiştir, sertifikanı al, aranan BT uzmanı ol.</p>
                     <form>
                         <div id="custom-search-input">
@@ -65,7 +67,18 @@
                             <a href="#0" class="wish_bt"></a>
                             <a href="/kurs-detayi/@item.Base.Id">
                                 <div class="preview"><span>Detaylar</span></div>
-                                <img src="@item.Medias[0].FileUrl" class="img-fluid" />
+                                @{
+                                    var filePath = "";
+                                    try
+                                    {
+                                        filePath = await storage.DownloadFile(System.IO.Path.GetFileName(item.Medias[0].FileUrl), "media-items");
+                                    }
+                                    catch
+                                    {
+
+                                    }
+                                }
+                                <img src="@filePath" class="img-fluid" />
                             </a>
                             <div class="price">@item.Base.PriceText</div>
 

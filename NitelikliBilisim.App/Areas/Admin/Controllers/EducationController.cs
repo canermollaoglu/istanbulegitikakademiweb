@@ -8,8 +8,13 @@ using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
+using NitelikliBilisim.Core.Services;
+using NitelikliBilisim.Core.Services.Abstracts;
+using NitelikliBilisim.Support.Text;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
@@ -20,13 +25,15 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         private readonly UnitOfWork _unitOfWork;
         private readonly EducationVmCreator _vmCreator;
         private readonly IWebHostEnvironment _hostingEnvironment;
-        private readonly FileUploadManager _fileUploadManager;
-        public EducationController(UnitOfWork unitOfWork, IWebHostEnvironment hostingEnvironment)
+        private readonly FileUploadManager _fileManager;
+        private readonly IStorageService _storage;
+        public EducationController(UnitOfWork unitOfWork, IWebHostEnvironment hostingEnvironment, IStorageService storage)
         {
             _unitOfWork = unitOfWork;
             _vmCreator = new EducationVmCreator(_unitOfWork);
             _hostingEnvironment = hostingEnvironment;
-            _fileUploadManager = new FileUploadManager(hostingEnvironment, "mp4", "jpg", "jpeg", "png");
+            _fileManager = new FileUploadManager(hostingEnvironment, "mp4", "jpg", "jpeg", "png");
+            _storage = storage;
         }
         [Route("admin/egitim-ekle")]
         public IActionResult Add()
@@ -36,7 +43,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         }
 
         [HttpPost, Route("admin/egitim-ekle")]
-        public IActionResult Add(AddPostVm data)
+        public async Task<IActionResult> Add(AddPostVm data)
         {
             if (!ModelState.IsValid)
             {
@@ -48,14 +55,20 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 });
             }
 
-            var bannerPath = _fileUploadManager.Upload($"/uploads/media-items/", data.BannerFile.Base64Content, data.BannerFile.Extension, "banner", data.Name);
+            //var bannerPath = _fileUploadManager.Upload($"/uploads/media-items/", data.BannerFile.Base64Content, data.BannerFile.Extension, "banner", data.Name);
+            var bannerStream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.BannerFile.Base64Content));
+            var bannerFileName = $"{data.Name.FormatForTag()}-banner";
+            var bannerPath = await _storage.UploadFile(bannerStream, $"{bannerFileName}.{data.BannerFile.Extension.ToLower()}", "media-items");
             var banner = new EducationMedia
             {
                 FileUrl = bannerPath,
                 MediaType = EducationMediaType.Banner
             };
 
-            var previewPath = _fileUploadManager.Upload($"/uploads/media-items/", data.PreviewFile.Base64Content, data.PreviewFile.Extension, "preview", data.Name);
+            //var previewPath = _fileManager.Upload($"/uploads/media-items/", data.PreviewFile.Base64Content, data.PreviewFile.Extension, "preview", data.Name);
+            var previewStream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.PreviewFile.Base64Content));
+            var previewFileName = $"{data.Name.FormatForTag()}-preview";
+            var previewPath = await _storage.UploadFile(previewStream, $"{previewFileName}.{data.PreviewFile.Extension.ToLower()}", "media-items");
             var preview = new EducationMedia
             {
                 FileUrl = previewPath,
