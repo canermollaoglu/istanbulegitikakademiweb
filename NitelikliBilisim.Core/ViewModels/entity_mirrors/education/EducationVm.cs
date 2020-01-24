@@ -27,6 +27,7 @@ namespace NitelikliBilisim.Core.ViewModels
         public byte HoursPerDayNumeric { get; set; }
         public string HoursPerDayText { get; set; }
         public string Level { get; set; }
+        public string StartDateText { get; set; }
     }
     public class EducationMediaVm
     {
