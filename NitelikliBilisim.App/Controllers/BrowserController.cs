@@ -18,17 +18,16 @@ namespace NitelikliBilisim.App.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        [Route("tum-egitimler/{categoryName?}")]
-        public IActionResult AllCourses(string categoryName, string showAs = "grid")
+        [Route("tum-egitimler/{categoryUrl?}")]
+        public IActionResult AllCourses(string categoryUrl, string showAs = "grid")
         {
-            var category = _unitOfWork.EducationCategory.Get(x => x.Name.ToLower() == categoryName).FirstOrDefault();
+            var categoryNames = _unitOfWork.EducationCategory.Get().Select(x => x.Name).ToList();
 
-            if (category == null)
-                categoryName = "";
+            var category = categoryNames.FirstOrDefault(x=> StringHelper.UrlFormatConverter(x) == categoryUrl) ?? "";
 
             var model = new SearchResultsGetVm
             {
-                SearchText = StringHelper.Capitalize(categoryName),
+                SearchText = category,
                 OrderCriterias = EnumSupport.ToKeyValuePair<OrderCriteria>(),
                 ShowAs = showAs
             };

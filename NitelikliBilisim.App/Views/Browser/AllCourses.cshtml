@@ -30,12 +30,14 @@
             <ul class="clearfix">
                 <li>
                     <div class="switch-field">
-                        <input type="radio" id="all" name="listing_filter" value="all" checked>
-                        <label for="all">All</label>
-                        <input type="radio" id="popular" name="listing_filter" value="popular">
-                        <label for="popular">Popular</label>
-                        <input type="radio" id="latest" name="listing_filter" value="latest">
-                        <label for="latest">Latest</label>
+                        <input type="radio" id="criteria-all" name="listing_filter" value="1010" checked>
+                        <label for="criteria-all">Tümü</label>
+                        @for (var i = 0; i < Model.OrderCriterias.Count; i++)
+                        {
+                            var item = Model.OrderCriterias.ElementAt(i);
+                            <input type="radio" id="criteria-@i" name="listing_filter" value="@item.Key">
+                            <label for="criteria-@i">@item.Value</label>
+                        }
                     </div>
                 </li>
                 <li>
@@ -96,12 +98,14 @@
         var btnShowAsList = $("#btn-show-as-list");
         var btnSearch = $("#btn-search");
         var inputSearch = $("#input-search");
-        var selectOrder = $("select[name='orderby']");
+        var listingFilters = $("input[name='listing_filter']");
+        var selectOrder = $("select[name='orderby']");        
 
         /* assignments */
         $(document).ready(document_onLoad);
         btnShowAsGrid.on("click", btnShowAsGrid_onClick);
         btnShowAsList.on("click", btnShowAsList_onClick);
+        listingFilters.on("click", listingFilters_onClick);
         selectOrder.on("change", selectOrder_onChange);
 
         /* events */
@@ -126,9 +130,14 @@
             else
                 location.href = `/arama-sonuclari/${searchText}`
         }
+        function listingFilters_onClick() {
+            console.log($(this).val())
+            var order = $(this).val();
+            getSearchResults(false, order);
+        }
         function selectOrder_onChange() {
             var order = $(this).children("option:selected").val();
-            getSearchResults(false, null, order);
+            getSearchResults(false, order);
         }
         function inputSearch_onSubmit(e) {
             if (e.keyCode === 13) {
