@@ -6,10 +6,11 @@ using NitelikliBilisim.Core.Services;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Support.Enums;
 using System.Linq;
+using NitelikliBilisim.App.Controllers.Base;
 
 namespace NitelikliBilisim.App.Controllers
 {
-    public class BrowserController : Controller
+    public class BrowserController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
 

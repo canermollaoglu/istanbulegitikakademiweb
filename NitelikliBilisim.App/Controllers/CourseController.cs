@@ -3,11 +3,12 @@ using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.Main.Course;
 using System;
+using NitelikliBilisim.App.Controllers.Base;
 
 namespace NitelikliBilisim.App.Controllers
 {
     //[Authorize]
-    public class CourseController : Controller
+    public class CourseController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
         public CourseController(UnitOfWork unitOfWork)

@@ -3,10 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.Core.Entities;
 using System.Linq;
 using System.Threading.Tasks;
+using NitelikliBilisim.App.Controllers.Base;
 
 namespace NitelikliBilisim.App.Controllers
 {
-    public class SecretController : Controller
+    public class SecretController : BaseController
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
