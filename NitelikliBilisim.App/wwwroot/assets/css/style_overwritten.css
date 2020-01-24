@@ -269,3 +269,17 @@ a.social_bt.linkedin {
 ul.additional_info li strong {
     color: #0d2f6d !important;
 }
+#cookie-bar .cb-enable {
+    background: #fff !important;
+}
+    #cookie-bar .cb-enable:hover {
+        background: #fc4912 !important;
+        color: #fff !important;
+    }
+#cookie-bar .cb-policy {
+    background: #fff !important;
+}
+    #cookie-bar .cb-policy:hover {
+        background: #fc4912 !important;
+        color: #fff !important;
+    }
