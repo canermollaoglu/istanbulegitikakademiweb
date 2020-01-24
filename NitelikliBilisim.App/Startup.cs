@@ -17,6 +17,7 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using Microsoft.Extensions.Hosting;
+using NitelikliBilisim.App.Filters;
 
 namespace NitelikliBilisim.App
 {
@@ -56,6 +57,7 @@ namespace NitelikliBilisim.App
                 .AddDefaultTokenProviders();
 
             services.AddScoped<UnitOfWork>();
+            services.AddScoped<ComingSoonActionFilter>();
 
             services.AddApplicationServices(this.Configuration);
 
@@ -63,7 +65,12 @@ namespace NitelikliBilisim.App
             services.AddMvc();
 
 #if DEBUG
-            services.AddControllersWithViews().AddRazorRuntimeCompilation();
+            services.AddControllersWithViews();
+#else
+            services.AddControllersWithViews(options =>
+            {
+                options.Filters.Add(new ComingSoonActionFilter());
+            });
 #endif
             services.AddControllers();
         }
