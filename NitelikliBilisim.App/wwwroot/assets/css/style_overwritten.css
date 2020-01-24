@@ -4,8 +4,11 @@
 }
 
 /* Login */
+.input_field {
+    margin: 21px 0px -3px 4px !important;
+}
 
-#login figure, #register figure {
+    #login figure, #register figure {
     background: #2d2f33 !important;
 }
 .input_label::after {
