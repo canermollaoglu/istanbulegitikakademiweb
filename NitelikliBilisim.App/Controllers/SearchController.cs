@@ -1,16 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.search;
 using NitelikliBilisim.Support.Enums;
-using System.Linq;
 
 namespace NitelikliBilisim.App.Controllers
 {
     //[Authorize]
-    public class SearchController : Controller
+    public class SearchController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
         public SearchController(UnitOfWork unitOfWork)
