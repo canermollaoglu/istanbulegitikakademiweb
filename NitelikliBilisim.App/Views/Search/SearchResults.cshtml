@@ -316,14 +316,12 @@
             for (var i = 0; i < data.length; i++) {
                 var item = data[i];
                 boxes +=
-                    `<div class="col-xl-4 col-lg-6 col-md-6">` +
+                    `<div class="col-xl-6 col-lg-6 col-md-6">` +
                     `<div class="box_grid wow">` +
                     `<figure class="block-reveal">` +
                     `<div class="block-horizzontal"></div>` +
                     `<a href="#0" class="wish_bt"></a>` +
-
                     `<a href="/kurs-detayi/${item.base.id}"><img src="${item.medias[0].fileUrl}" class="img-fluid" alt=""></a>` +
-
                     `<div class="price">${item.base.priceText}</div>` +
                     `<div class="preview"><span><a href="/kurs-detayi/${item.base.id}">Detaylar</a></span></div>` +
                     `</figure>` +
@@ -335,12 +333,20 @@
                     `</div>` +
                     `</a>` +
                     `<p class="desc-p">${item.base.description}</p>` +
-                    `<div class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(145)</small></div>` +
+                    `<h6>Tarih</h6>` +
+                    `<i class="ti-calendar"></i> <b>${item.base.startDateText}</b>` +
                     `</div>` +
-
+                    `<hr>` +
+                    `<table class="desc-table"><tr>` +
+                    `<td><h6>Kontenjan</h6><i class="icon-users"></i> <small>(0)</small></td>` +
+                    `<td><h6>Mevcut</h6><i class="icon-user"></i> <small>(0)</small></td>` +
+                    `</tr></table>` +
+                    `<ul>` +
+                    `<li><div class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(145)</small></div></li>` +
+                    `<li><i class="icon_like"></i> 890</li>` +
+                    `</ul>` +
                     `<ul>` +
                     `<li><i class="icon_clock_alt"></i> ${item.base.daysText} gün (${item.base.hoursPerDayNumeric * item.base.daysNumeric} saat)</li>` +
-                    `<li><i class="icon_like"></i> 890</li>` +
                     `<li><a name="btn-buy" data-id="${item.base.id}" href="javascript:void(0)">Kayıt Ol</a></li>` +
                     `</ul>` +
                     `</div>` +

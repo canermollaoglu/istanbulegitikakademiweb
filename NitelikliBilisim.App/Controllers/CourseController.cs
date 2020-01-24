@@ -21,7 +21,7 @@ namespace NitelikliBilisim.App.Controllers
         {
             var educationDetails = _unitOfWork.Education.GetEducation(courseId.GetValueOrDefault());
             var educators = _unitOfWork.Bridge_EducationEducator.GetAssignedEducators(courseId.GetValueOrDefault());
-            var firstAvailableGroup = _unitOfWork.EducationGroup.GetFirstAvailableGroup(courseId.Value);
+            var firstAvailableGroup = _unitOfWork.EducationGroup.GetFirstAvailableGroup(courseId.GetValueOrDefault());
             GroupVm group = null;
             if (firstAvailableGroup != null)
             {

@@ -263,7 +263,7 @@ namespace NitelikliBilisim.App.Controllers
             }
             return View(nameof(ExternalLogin), model);
         }
-        [Authorize, Route("cikis-yap")]
+        [Route("cikis-yap")]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();

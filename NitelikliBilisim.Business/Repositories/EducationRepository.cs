@@ -292,6 +292,8 @@ namespace NitelikliBilisim.Business.Repositories
             var educations = Context.Educations.Include(x => x.Category)
                 .Where(x => educationIds.Contains(x.Id) && x.IsActive);
 
+            var educationGroupRepository = new EducationGroupRepository(Context);
+
             if (filter.categories != null)
             {
                 var categoryIds = Context.EducationCategories.Where(x => filter.categories.Contains(x.Name)).Select(x => x.Id).ToList();
@@ -340,7 +342,9 @@ namespace NitelikliBilisim.Business.Repositories
                     HoursPerDayText = x.Education.HoursPerDay.ToString(),
                     DaysText = x.Education.Days.ToString(),
                     DaysNumeric = x.Education.Days,
-                    HoursPerDayNumeric = x.Education.HoursPerDay
+                    HoursPerDayNumeric = x.Education.HoursPerDay,
+                    StartDateText = educationGroupRepository.GetFirstAvailableGroup(x.Education.Id)?.StartDate
+                        .ToString("dd MMMM yyyy", CultureInfo.CreateSpecificCulture("tr-TR")) ?? "Açılan grup yok"
                 },
                 Medias = new List<EducationMediaVm> { new EducationMediaVm { EducationId = x.Education.Id, FileUrl = x.EducationPreviewMedia.FileUrl } }
             }).ToList();
@@ -372,6 +376,8 @@ namespace NitelikliBilisim.Business.Repositories
                     break;
             }
 
+            var educationGroupRepository = new EducationGroupRepository(Context);
+
             var educationsList = educations
                 .Join(Context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Id, r => r.EducationId, (x, y) => new
                 {
@@ -401,7 +407,9 @@ namespace NitelikliBilisim.Business.Repositories
                     HoursPerDayText = x.Education.HoursPerDay.ToString(),
                     DaysText = x.Education.Days.ToString(),
                     DaysNumeric = x.Education.Days,
-                    HoursPerDayNumeric = x.Education.HoursPerDay
+                    HoursPerDayNumeric = x.Education.HoursPerDay,
+                    StartDateText = educationGroupRepository.GetFirstAvailableGroup(x.Education.Id)?.StartDate
+                        .ToString("dd MMMM yyyy", CultureInfo.CreateSpecificCulture("tr-TR")) ?? "Açılan grup yok"
                 },
                 Medias = new List<EducationMediaVm> { new EducationMediaVm { EducationId = x.Education.Id, FileUrl = x.EducationPreviewMedia.FileUrl } }
             }).ToList();
