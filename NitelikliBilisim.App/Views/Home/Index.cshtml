@@ -1,9 +1,9 @@
 ﻿@model NitelikliBilisim.App.Models.HomeIndexModel
-@using NitelikliBilisim.Core.Services
+@using NitelikliBilisim.Core.Services.Abstracts
+@inject IStorageService StorageService
 @{
     ViewData["Title"] = "Nitelikli Bilişim";
     Layout = "/Views/Shared/_Layout.cshtml";
-    var storage = new StorageService();
 }
 @section styles{
     <link href="~/assets/css/search/search-results.css" rel="stylesheet" />
@@ -73,7 +73,7 @@
                                     var filePath = "";
                                     try
                                     {
-                                        filePath = await storage.DownloadFile(System.IO.Path.GetFileName(item.Medias[0].FileUrl), "media-items");
+                                        filePath = await StorageService.DownloadFile(System.IO.Path.GetFileName(item.Medias[0].FileUrl), "media-items");
                                     }
                                     catch
                                     {
