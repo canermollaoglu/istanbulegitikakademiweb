@@ -540,14 +540,16 @@ header.header.sticky {
     padding: 15px 15px 0 15px;
   }
 }
-header.header.sticky_menu_active {
+
+/*header.header.sticky_menu_active {
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     background: #480048;
-    /*background: -webkit-linear-gradient(left, #31576f, #48c0b5);*/
+    background: -webkit-linear-gradient(left, #31576f, #48c0b5);
     background: -webkit-linear-gradient(left, #FF5E53, #F4B546);
     background: linear-gradient(to right, #FF5E53, #F4B546);
     padding: 15px 20px;
 }
+ */
 @media (max-width: 767px) {
     header.header.sticky_menu_active {
         padding: 15px 15px 0 15px;

@@ -30,12 +30,14 @@
             <ul class="clearfix">
                 <li>
                     <div class="switch-field">
-                        <input type="radio" id="all" name="listing_filter" value="all" checked>
-                        <label for="all">All</label>
-                        <input type="radio" id="popular" name="listing_filter" value="popular">
-                        <label for="popular">Popular</label>
-                        <input type="radio" id="latest" name="listing_filter" value="latest">
-                        <label for="latest">Latest</label>
+                        <input type="radio" id="criteria-all" name="listing_filter" value="1010" checked>
+                        <label for="criteria-all">Tümü</label>
+                        @for (var i = 0; i < Model.OrderCriterias.Count; i++)
+                        {
+                            var item = Model.OrderCriterias.ElementAt(i);
+                            <input type="radio" id="criteria-@i" name="listing_filter" value="@item.Key">
+                            <label for="criteria-@i">@item.Value</label>
+                        }
                     </div>
                 </li>
                 <li>
@@ -157,6 +159,7 @@
         var btnShowAsList = $("#btn-show-as-list");
         var btnSearch = $("#btn-search");
         var inputSearch = $("#input-search");
+        var listingFilters = $("input[name='listing_filter']");
         var selectOrder = $("select[name='orderby']");
 
         /* assignments */
@@ -164,6 +167,7 @@
         btnShowAsGrid.on("click", btnShowAsGrid_onClick);
         btnShowAsList.on("click", btnShowAsList_onClick);
         btnSearch.on("click", btnSearch_onClick);
+        listingFilters.on("click", listingFilters_onClick);
         selectOrder.on("change", selectOrder_onChange);
         inputSearch.bind('keyup', inputSearch_onSubmit);
 
@@ -191,6 +195,22 @@
                 inputSearch.addClass("is-invalid");
             else
                 location.href = `/arama-sonuclari/${searchText}`
+        }
+        function listingFilters_onClick() {
+            var order = $(this).val();
+
+            if (_hasFilter)
+                getFilteredResults(false, order);
+            else
+                getSearchResults(false, null, order);
+        }
+        function buyBtns_onClick() {
+            var educationId = $(this).data("id");
+
+            var cart = new CartSupport.Cart();
+            cart.addToCart(educationId);
+
+            location.href = "/sepet";
         }
         function selectOrder_onChange() {
             var order = $(this).children("option:selected").val();
@@ -256,6 +276,8 @@
                     }
 
                     _page.val(parseInt(_page.val()) + 1);
+
+                    $("a[name='btn-buy']").on("click", buyBtns_onClick);
                 }
             });
         }
@@ -319,7 +341,7 @@
                     `<ul>` +
                     `<li><i class="icon_clock_alt"></i> ${item.base.daysText} gün (${item.base.hoursPerDayNumeric * item.base.daysNumeric} saat)</li>` +
                     `<li><i class="icon_like"></i> 890</li>` +
-                    `<li><a href="course-detail.html">Kayıt Ol</a></li>` +
+                    `<li><a name="btn-buy" data-id="${item.base.id}" href="javascript:void(0)">Kayıt Ol</a></li>` +
                     `</ul>` +
                     `</div>` +
                     `</div>`;
@@ -357,7 +379,7 @@
                     `<ul>` +
                     `<li><i class="icon_clock_alt"></i> ${item.base.daysText} gün (${item.base.hoursPerDayNumeric * item.base.daysNumeric} saat)</li>` +
                     `<li><i class="icon_like"></i> 890</li>` +
-                    `<li><a href="course-detail.html">Kayıt Ol</a></li>` +
+                    `<li><a name="btn-buy" data-id="${item.base.id}" href="javascript:void(0)">Kayıt Ol</a></li>` +
                     `</ul>` +
                     `</div>` +
                     `</div>` +

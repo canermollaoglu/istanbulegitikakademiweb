@@ -5,10 +5,11 @@ using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ViewModels.Cart;
 using System;
 using System.Collections.Generic;
+using NitelikliBilisim.App.Controllers.Base;
 
 namespace NitelikliBilisim.App.Controllers
 {
-    public class SaleController : Controller
+    public class SaleController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly SaleVmCreator _vmCreator;

@@ -18,9 +18,9 @@ namespace NitelikliBilisim.Core.Services
             string sonuc = name.ToLower();
             sonuc = ClearHiddenCharacters(sonuc);
             sonuc = sonuc.Replace("'", "");
-            sonuc = sonuc.Replace(" ", "_");
-            sonuc = sonuc.Replace("  ", "_");
-            sonuc = sonuc.Replace("   ", "_");
+            sonuc = sonuc.Replace(" ", "-");
+            sonuc = sonuc.Replace("  ", "-");
+            sonuc = sonuc.Replace("   ", "-");
             sonuc = sonuc.Replace("<", "");
             sonuc = sonuc.Replace(">", "");
             sonuc = sonuc.Replace("&", "");
@@ -40,10 +40,10 @@ namespace NitelikliBilisim.Core.Services
             sonuc = sonuc.Replace("Ç", "C");
             sonuc = sonuc.Replace("Ğ", "G");
             sonuc = sonuc.Replace("|", "");
-            sonuc = sonuc.Replace(".", "_");
-            sonuc = sonuc.Replace("?", "_");
-            sonuc = sonuc.Replace(";", "_");
-            sonuc = sonuc.Replace("#", "_sharp");
+            sonuc = sonuc.Replace(".", "-");
+            sonuc = sonuc.Replace("?", "-");
+            sonuc = sonuc.Replace(";", "-");
+            sonuc = sonuc.Replace("#", "-sharp");
 
             return sonuc;
         }
