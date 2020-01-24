@@ -1,26 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <LangVersion>Latest</LangVersion>
     <!--<AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>-->
-    <UserSecretsId>258b2244-2b2d-4c23-8ae1-1c546e10ad30</UserSecretsId>
-    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
 
   <ItemGroup>
-    <PackageReference Include="AspNet.Security.OAuth.GitHub" Version="2.1.0" />
-    <PackageReference Include="AspNet.Security.OAuth.LinkedIn" Version="2.1.0" />
+    <PackageReference Include="AspNet.Security.OAuth.GitHub" Version="3.0.0" />
+    <PackageReference Include="AspNet.Security.OAuth.LinkedIn" Version="3.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
-    <PackageReference Include="DevExtreme.AspNet.Data" Version="2.4.4" />
-    <PackageReference Include="Microsoft.AspNetCore.App">
-      <PrivateAssets Condition="'%(PackageReference.Version)' == ''">all</PrivateAssets>
-      <Publish Condition="'%(PackageReference.Version)' == ''">true</Publish>
+    <PackageReference Include="DevExtreme.AspNet.Data" Version="2.5.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="3.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.9.2" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.9.10" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.0" />
   </ItemGroup>
 
 
@@ -37,7 +37,6 @@
     <Folder Include="Areas\Admin\Views\Shared\partials\categories\" />
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="wwwroot\assets\font\area-admin\" />
-    <Folder Include="wwwroot\assets\img\" />
     <Folder Include="wwwroot\coming-soon\" />
     <Folder Include="wwwroot\uploads\educator-photos\" />
     <Folder Include="wwwroot\uploads\media-items\" />
@@ -72,6 +71,7 @@
     <None Include="wwwroot\assets\css\all_icons.min.css" />
     <None Include="wwwroot\assets\css\bootstrap.min.css" />
     <None Include="wwwroot\assets\css\style.css" />
+    <None Include="wwwroot\assets\css\style_overwritten.css" />
     <None Include="wwwroot\assets\css\vendors.css" />
     <None Include="wwwroot\assets\css\vendors.unminified.css" />
   </ItemGroup>

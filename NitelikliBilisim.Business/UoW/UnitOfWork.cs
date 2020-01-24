@@ -15,6 +15,13 @@ namespace NitelikliBilisim.Business.UoW
         private EducationGainRepository _educationGain;
         private EducatorRepository _educator;
         private EducatorSocialMediaRepository _educatorSocialMedia;
+        private StudentEducationInfoRepository _studentEducationInfo;
+        private EducationSuggestionRepository _suggestionRepository;
+        private CustomerRepository _customerRepository;
+        private BridgeEducationEducatorRepository _bridgeEducationEducatorRepository;
+        private EducationGroupRepository _educationGroupRepository;
+        private EducationHostRepository _educationHostRepository;
+        private GroupLessonDayRepository _groupLessonDayRepository;
         public UnitOfWork(NbDataContext context)
         {
             _context = context;
@@ -24,61 +31,33 @@ namespace NitelikliBilisim.Business.UoW
             _context.EnsureAutoHistory();
             return _context.SaveChanges();
         }
-        public EducationCategoryRepository EducationCategory
-        {
-            get
-            {
-                return _educationCategoryRepository ?? (_educationCategoryRepository = new EducationCategoryRepository(_context));
-            }
-        }
-        public EducationTagRepository EducationTag
-        {
-            get
-            {
-                return _educationTagRepository ?? (_educationTagRepository = new EducationTagRepository(_context));
-            }
-        }
-        public EducationRepository Education
-        {
-            get
-            {
-                return _education ?? (_education = new EducationRepository(_context));
-            }
-        }
-        public EducationMediaItemRepository EducationMedia
-        {
-            get
-            {
-                return _educationMediaItem ?? (_educationMediaItem = new EducationMediaItemRepository(_context));
-            }
-        }
-        public EducationPartRepository EducationPart
-        {
-            get
-            {
-                return _educationPart ?? (_educationPart = new EducationPartRepository(_context));
-            }
-        }
-        public EducationGainRepository EducationGain
-        {
-            get
-            {
-                return _educationGain ?? (_educationGain = new EducationGainRepository(_context));
-            }
-        }
-        public EducatorRepository Educator
-        {
-            get
-            {
-                return _educator ?? (_educator = new EducatorRepository(_context));
-            }
-        }
-        public EducatorSocialMediaRepository EducatorSocialMedia
-        {
-            get
-            {
-                return _educatorSocialMedia ?? (_educatorSocialMedia = new EducatorSocialMediaRepository(_context));
-            }
-        }
+        public EducationCategoryRepository EducationCategory => _educationCategoryRepository ??= new EducationCategoryRepository(_context);
+
+        public EducationTagRepository EducationTag => _educationTagRepository ??= new EducationTagRepository(_context);
+
+        public EducationRepository Education => _education ??= new EducationRepository(_context);
+
+        public EducationMediaItemRepository EducationMedia => _educationMediaItem ??= new EducationMediaItemRepository(_context);
+
+        public EducationPartRepository EducationPart => _educationPart ??= new EducationPartRepository(_context);
+
+        public EducationGainRepository EducationGain => _educationGain ??= new EducationGainRepository(_context);
+
+        public EducatorRepository Educator => _educator ??= new EducatorRepository(_context);
+
+        public EducatorSocialMediaRepository EducatorSocialMedia => _educatorSocialMedia ??= new EducatorSocialMediaRepository(_context);
+
+        public StudentEducationInfoRepository StudentEducationInfo => _studentEducationInfo ??= new StudentEducationInfoRepository(_context);
+
+        public EducationSuggestionRepository Suggestion => _suggestionRepository ??= new EducationSuggestionRepository(_context);
+
+        public CustomerRepository Customer => _customerRepository ??= new CustomerRepository(_context);
+
+        public BridgeEducationEducatorRepository Bridge_EducationEducator => _bridgeEducationEducatorRepository ??= new BridgeEducationEducatorRepository(_context);
+        public EducationGroupRepository EducationGroup => _educationGroupRepository ??= new EducationGroupRepository(_context);
+
+        public EducationHostRepository EductionHost => _educationHostRepository ??= new EducationHostRepository(_context);
+
+        public GroupLessonDayRepository GroupLessonDay => _groupLessonDayRepository ??= new GroupLessonDayRepository(_context);
     }
 }

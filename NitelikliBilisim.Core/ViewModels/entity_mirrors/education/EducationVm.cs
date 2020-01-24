@@ -1,6 +1,6 @@
-﻿using System;
+﻿using NitelikliBilisim.Core.Enums;
+using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace NitelikliBilisim.Core.ViewModels
 {
@@ -10,6 +10,8 @@ namespace NitelikliBilisim.Core.ViewModels
         public List<EducationMediaVm> Medias { get; set; }
         public List<EducationPartVm> Parts { get; set; }
         public List<EducationGainVm> Gains { get; set; }
+        public int TotalPartCount { get; set; }
+        public int TotalDuration { get; set; }
     }
     public class EducationBaseVm
     {
@@ -25,18 +27,23 @@ namespace NitelikliBilisim.Core.ViewModels
         public byte HoursPerDayNumeric { get; set; }
         public string HoursPerDayText { get; set; }
         public string Level { get; set; }
+        public string StartDateText { get; set; }
     }
     public class EducationMediaVm
     {
         public Guid EducationId { get; set; }
         public string FileUrl { get; set; }
+        public EducationMediaType MediaType { get; set; }
     }
     public class EducationPartVm
     {
+        public Guid Id { get; set; }
         public Guid EducationId { get; set; }
+        public Guid? BasePartId { get; set; }
         public string Title { get; set; }
-        public byte Duration { get; set; }
+        public int Duration { get; set; }
         public byte Order { get; set; }
+        public List<EducationPartVm> SubParts { get; set; }
     }
     public class EducationGainVm
     {

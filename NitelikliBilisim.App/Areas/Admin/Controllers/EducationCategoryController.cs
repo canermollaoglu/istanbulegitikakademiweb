@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Areas.Admin.Models.Category;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
@@ -10,11 +6,14 @@ using NitelikliBilisim.Business.Debugging;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
-using NitelikliBilisim.Enums;
+using NitelikliBilisim.Support.Enums;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Area("Admin")]
     public class EducationCategoryController : Controller
     {
@@ -26,7 +25,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/kategori-ekle")]
         public IActionResult Add()
         {
-            var data = _unitOfWork.EducationCategory.Get(null, q => q.OrderBy(o => o.Name));
+            var data = _unitOfWork.EducationCategory.Get(x => x.BaseCategoryId == null, q => q.OrderBy(o => o.Name));
             var model = new AddGetVm
             {
                 Categories = data,

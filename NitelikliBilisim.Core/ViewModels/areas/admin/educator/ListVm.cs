@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace NitelikliBilisim.Core.ViewModels.areas.admin.educator
+﻿namespace NitelikliBilisim.Core.ViewModels.areas.admin.educator
 {
     public class ListVm
     {
@@ -16,5 +12,7 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.educator
         public string Phone { get; set; }
         public string Email { get; set; }
         public int SocialMediaCount { get; set; }
+        public string Name { get; set; }
+        public string Surname { get; set; }
     }
 }

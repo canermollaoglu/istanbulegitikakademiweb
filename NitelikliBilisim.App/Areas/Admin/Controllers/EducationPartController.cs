@@ -1,16 +1,16 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Areas.Admin.VmCreator.EducationParts;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_parts;
 using System;
 using System.Collections.Generic;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Area("Admin")]
     public class EducationPartController : Controller
     {
@@ -51,6 +51,25 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             });
         }
 
+        [Route("admin/get-base-parts/{educationId}")]
+        public IActionResult GetEducationBaseParts(Guid? educationId)
+        {
+            if (educationId == null)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Eğitimin parçalarını getirirken bir hata oluştu" }
+                });
+
+            var model = _vmCreator.CreateBaseParts(educationId.Value);
+
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = model
+            });
+        }
+
         [HttpPost, Route("admin/add-education-part")]
         public IActionResult AddPart(AddPartVm data)
         {
@@ -64,12 +83,20 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 });
             }
 
-            _unitOfWork.EducationPart.Insert(new Core.Entities.EducationPart
+            if (data.BasePartId.HasValue && !_unitOfWork.EducationPart.IsBasePart(data.BasePartId.Value))
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Seçilmiş olan parça üst başlık olamaz. Bu parça zaten başka bir üst başlığa ait." }
+                });
+
+            _unitOfWork.EducationPart.Insert(new EducationPart
             {
                 Title = data.Title,
                 EducationId = data.EducationId,
                 Order = data.Order.GetValueOrDefault(0),
-                Duration = data.Duration.GetValueOrDefault(0)
+                Duration = data.Duration.GetValueOrDefault(0),
+                BasePartId = data.BasePartId
             });
 
             _unitOfWork.Education.CheckEducationState(data.EducationId);
@@ -88,6 +115,13 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 {
                     isSuccess = false,
                     errors = new List<string> { "Eğitimin parçasını silerken bir hata oluştu" }
+                });
+
+            if (_unitOfWork.EducationPart.HasSubParts(partId.Value))
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Silinmek istenilen parçaya ait parçalar vardır. Öncelikle alt başlıklıkları siliniz." }
                 });
 
             var educationId = _unitOfWork.EducationPart.GetById(partId.Value).EducationId;

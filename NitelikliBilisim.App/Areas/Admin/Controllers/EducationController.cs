@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Areas.Admin.Models.Education;
 using NitelikliBilisim.App.Areas.Admin.VmCreator.Education;
@@ -13,18 +8,20 @@ using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
+using System;
+using System.Collections.Generic;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Area("Admin")]
     public class EducationController : Controller
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly EducationVmCreator _vmCreator;
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly FileUploadManager _fileUploadManager;
-        public EducationController(UnitOfWork unitOfWork, IHostingEnvironment hostingEnvironment)
+        public EducationController(UnitOfWork unitOfWork, IWebHostEnvironment hostingEnvironment)
         {
             _unitOfWork = unitOfWork;
             _vmCreator = new EducationVmCreator(_unitOfWork);
@@ -69,10 +66,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             {
                 Name = data.Name,
                 Description = data.Description,
-                Level = (EducationLevel)data.EducationLevel.Value,
-                NewPrice = data.Price.Value,
-                Days = data.Days.Value,
-                HoursPerDay = data.HoursPerDay.Value,
+                Description2 = data.Description2,
+                Level = (EducationLevel)data.EducationLevel.GetValueOrDefault(),
+                NewPrice = data.Price.GetValueOrDefault(),
+                Days = data.Days.GetValueOrDefault(),
+                HoursPerDay = data.HoursPerDay.GetValueOrDefault(),
                 CategoryId = data.CategoryId
             };
 
@@ -118,6 +116,41 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             return Json(new ResponseModel
             {
                 isSuccess = true
+            });
+        }
+
+        [Route("admin/egitmen-ata/{educationId}")]
+        public IActionResult ManageAssignEducators(Guid? educationId)
+        {
+            if (educationId == null)
+                return Redirect("/admin/egitimler");
+            var model = _vmCreator.CreateManageAssignEducatorsVm(educationId.Value);
+
+            return View(model);
+        }
+        [Route("admin/assign-educators")]
+        public IActionResult AssignEducators(Core.ViewModels.areas.admin.educator.ManageAssignEducatorsPostVm data)
+        {
+            _unitOfWork.Bridge_EducationEducator.Insert(data);
+            return Json(new ResponseModel
+            {
+                isSuccess = true
+            });
+        }
+
+        [Route("admin/get-assigned-educators/{educationId}")]
+        public IActionResult GetEducators(Guid? educationId)
+        {
+            if (!educationId.HasValue)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false
+                });
+
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = _unitOfWork.Bridge_EducationEducator.GetAssignedEducators(educationId.Value)
             });
         }
     }

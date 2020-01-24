@@ -2,12 +2,11 @@
 {
     public class BreadCrumbItem
     {
-        private readonly string _title;
         private string _url;
         private readonly string[] _routeParams;
         public BreadCrumbItem(string title, string url, params string[] routeParams)
         {
-            _title = title;
+            Title = title;
             _url = url;
             _routeParams = routeParams;
         }
@@ -26,6 +25,6 @@
                 return _url;
             }
         }
-        public string Title => _title;
+        public string Title { get; }
     }
 }

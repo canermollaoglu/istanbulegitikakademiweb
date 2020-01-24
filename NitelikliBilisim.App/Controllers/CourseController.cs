@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.ViewModels;
+using NitelikliBilisim.Core.ViewModels.Main.Course;
+using System;
+using NitelikliBilisim.App.Controllers.Base;
 
 namespace NitelikliBilisim.App.Controllers
 {
-    [Authorize]
-    public class CourseController : Controller
+    //[Authorize]
+    public class CourseController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
         public CourseController(UnitOfWork unitOfWork)
@@ -20,7 +19,25 @@ namespace NitelikliBilisim.App.Controllers
         [Route("kurs-detayi/{courseId}")]
         public IActionResult Details(Guid? courseId)
         {
-            var model = _unitOfWork.Education.GetEducation(courseId.Value);
+            var educationDetails = _unitOfWork.Education.GetEducation(courseId.GetValueOrDefault());
+            var educators = _unitOfWork.Bridge_EducationEducator.GetAssignedEducators(courseId.GetValueOrDefault());
+            var firstAvailableGroup = _unitOfWork.EducationGroup.GetFirstAvailableGroup(courseId.Value);
+            GroupVm group = null;
+            if (firstAvailableGroup != null)
+            {
+                group = new GroupVm
+                {
+                    GroupId = firstAvailableGroup.Id,
+                    StartDate = firstAvailableGroup.StartDate,
+                    Quota = firstAvailableGroup.Quota
+                };
+            }
+            var model = new CourseDetailsVm
+            {
+                Details = educationDetails,
+                Educators = educators,
+                Group = group
+            };
             return View(model);
         }
     }

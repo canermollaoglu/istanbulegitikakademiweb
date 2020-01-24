@@ -48,7 +48,7 @@ function btnSave_onClick() {
     var data = {
         Name: $("#input-name").val(),
         Description: $("#input-description").val(),
-        Description: $("#input-description2").val(),
+        Description2: $("#input-description2").val(),
         Price: $("#input-price").val(),
         Days: $("#input-days").val(),
         HoursPerDay: $("#input-hours-per-day").val(),

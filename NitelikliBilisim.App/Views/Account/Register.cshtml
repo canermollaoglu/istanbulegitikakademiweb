@@ -1,9 +1,8 @@
-﻿@model NitelikliBilisim.Core.ViewModels.Account.RegisterViewModel
+﻿@model NitelikliBilisim.App.Models.Account.RegisterGetVm
 
 @{
     ViewBag.Title = "Kaydol";
 }
-
 <!DOCTYPE html>
 <html lang="tr">
 
@@ -11,110 +10,286 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Nitelikli Bilişim eğitim platformu">
-    <meta name="author" content="wissentech">
-    <title>Nitelikli Bilişim | Kaydol</title>
+    <meta name="description" content="Udema a modern educational site template">
+    <meta name="author" content="Ansonika">
+    <title>@ViewBag.Title</title>
 
     <!-- Favicons-->
-    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="~/assets/img/favicon.ico" type="image/x-icon">
     <link rel="apple-touch-icon" type="image/x-icon" href="img/apple-touch-icon-57x57-precomposed.png">
     <link rel="apple-touch-icon" type="image/x-icon" sizes="72x72" href="img/apple-touch-icon-72x72-precomposed.png">
     <link rel="apple-touch-icon" type="image/x-icon" sizes="114x114" href="img/apple-touch-icon-114x114-precomposed.png">
     <link rel="apple-touch-icon" type="image/x-icon" sizes="144x144" href="img/apple-touch-icon-144x144-precomposed.png">
 
-    <!-- BASE CSS -->
-    <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/assets/css/style.css" rel="stylesheet">
-    <link href="/assets/css/vendors.css" rel="stylesheet">
-    <link href="/assets/css/all_icons.min.css" rel="stylesheet">
 
-    <!-- YOUR CUSTOM CSS -->
-    <link href="/css/custom.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800" rel="stylesheet">
 
+    <link href="~/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/assets/css/style.css" rel="stylesheet">
+    <link href="~/assets/css/style_overwritten.css" rel="stylesheet" />
+    <link href="~/assets/css/vendors.css" rel="stylesheet">
+    <link href="~/assets/css/all_icons.min.css" rel="stylesheet">
+
+    <link href="~/assets/css/grey.css" rel="stylesheet" />
+    <link href="~/assets/css/wizard.css" rel="stylesheet" />
 </head>
 
-<body id="register_bg">
-
-    <nav id="menu" class="fake_menu"></nav>
+<body id="admission_bg">
 
     <div id="preloader">
         <div data-loader="circle-side"></div>
     </div>
-    <!-- End Preload -->
 
-    <div id="login">
-        <aside>
-            <figure>
-                <a href="index.html"><img src="/img/logo.png" width="149" height="42" data-retina="true" alt=""></a>
-            </figure>
-            <form autocomplete="off" asp-controller="account" asp-action="register" method="post">
-                <div class="form-group">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <span class="input">
-                        <input class="input_field" type="text" name="UserName">
-                        <label class="input_label">
-                            <span class="input__label-content">Kullanıcı Adı</span>
-                        </label>
-                    </span>
-                    <span class="text-danger" asp-validation-for="UserName"></span>
+    <div id="form_container" class="clearfix">
+        <figure>
+            <a href="/"><img src="~/assets/img/nb_logo_sm.png" width="149" height="42" data-retina="true" alt=""></a>
+        </figure>
+        <div id="wizard_container">
+            <div id="top-wizard">
+                <div id="progressbar"></div>
+            </div>
 
-                    <span class="input">
-                        <input class="input_field" type="text" name="Name">
-                        <label class="input_label">
-                            <span class="input__label-content">İsim</span>
-                        </label>
-                    </span>
-                    <span class="text-danger" asp-validation-for="Name"></span>
+            <form name="example-1" id="wrapped" method="POST">
+                <input id="website" name="website" type="text" value="">
 
-                    <span class="input">
-                        <input class="input_field" type="text" name="Surname">
-                        <label class="input_label">
-                            <span class="input__label-content">Soyisim</span>
-                        </label>
-                    </span>
-                    <span class="text-danger" asp-validation-for="Surname"></span>
+                <div id="middle-wizard">
+                    <div class="step">
+                        <div id="intro">
+                            <figure><img src="~/assets/img/wizard_intro_icon.svg" alt=""></figure>
+                            <h1>Kayıt Formu</h1>
+                            <p>İş dünyasında, proje geliştirme deneyimi elde ederek bir adım öne geçmek için ilk adımı atmak üzeresiniz. </p>
+                            <p><strong>Yalnızca 2 dakikanınızı ayırarak kayıt olun ve fark yaratın!</strong></p>
+                        </div>
+                    </div>
 
-                    <span class="input">
-                        <input class="input_field" type="email" name="Email">
-                        <label class="input_label">
-                            <span class="input__label-content">E-Posta</span>
-                        </label>
-                    </span>
-                    <span class="text-danger" asp-validation-for="Email"></span>
+                    @* ADIM 1 *@
+                    <div class="step">
+                        <h3 class="main_question"><strong>1/3</strong>Lütfen detayları doldurunuz</h3>
+                        <div class="form-group">
+                            <input type="text" name="firstname" class="form-control required" placeholder="İsim" id="input-name">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="lastname" class="form-control required" placeholder="Soyisim" id="input-surname">
+                        </div>
+                        <div class="form-group">
+                            <input type="email" name="email" class="form-control required" placeholder="E-Posta" id="input-email">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="telephone" class="form-control" placeholder="Telefon" id="input-phone">
+                        </div>
+                        @*<div class="form-group">
+                                <input type="text" name="age" class="form-control" placeholder="Yaş" id="input-age">
+                            </div>
 
-                    <span class="input">
-                        <input class="input_field" type="password" id="password1" name="Password">
-                        <label class="input_label">
-                            <span class="input__label-content">Şifre</span>
-                        </label>
-                    </span>
-                    <span class="text-danger" asp-validation-for="Password"></span>
+                            <div class="form-group radio_input">
+                                <label><input type="radio" value="Male" checked name="gender" class="icheck" id="radio-gender-male">Erkek</label>
+                                <label><input type="radio" value="Female" name="gender" class="icheck" id="radio-gender-female">Kadın</label>
+                            </div>*@
+                    </div>
 
-                    <span class="input">
-                        <input class="input_field" type="password" id="password2" name="ConfirmPassword">
-                        <label class="input_label">
-                            <span class="input__label-content">Şifre Onay</span>
-                        </label>
-                    </span>
-                    <span class="text-danger" asp-validation-for="ConfirmPassword"></span>
+                    @* ADIM 2 *@
+                    <div class="step">
+                        <h3 class="main_question"><strong>2/3</strong>Eğitim Bilgileri</h3>
 
-                    <div id="pass-info" class="clearfix"></div>
+                        <label>"Nitelikli Bilişim Uzmanı Yetiştirme" programını tamamladınız ya da devam ediyor musunuz?</label>
+                        <div style=""></div>
+                        <input type="radio" checked name="isnbuy" value="1" id="radio-nbuy-yes">Evet
+                        <input type="radio" name="isnbuy" value="2" id="radio-nbuy-no">Hayır
+
+                        <div id="div-nbuy-form-container">
+                            <div class="form-group select">
+                                <div class="styled-select">
+                                    <select class="required" id="select-education-centers">
+                                        <option value="0" selected="">Eğitim kurumu seçiniz</option>
+                                        @foreach (var item in Model.EducationCenters)
+                                        {
+                                            <option value="@item.Key">@item.Value</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group select">
+                                <div class="styled-select">
+                                    <select class="required" id="select-education-categories">
+                                        <option value="" selected="">Eğitim programı seçiniz</option>
+                                        @foreach (var item in Model.EducationCategories)
+                                        {
+                                            <option value="@item.Id">@item.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Eğitim başlangıç tarihi</label>
+                                <input type="date" value="" class="form-control" id="input-date-when-begun" />
+                            </div>
+                        </div>
+                    </div>
+
+                    @* SON ADIM *@
+                    <div class="submit step">
+                        <h3 class="main_question"><strong>3/3</strong>Hesap Bilgileri</h3>
+                        <div class="form-group">
+                            <input type="text" name="username" class="form-control required" placeholder="Kullanıcı adı" id="input-username">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" name="password" class="form-control required" placeholder="Şifre" id="input-password">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" name="confirmPassword" class="form-control required" placeholder="Şifre onayla" id="input-confirm-password">
+                        </div>
+                        <div class="form-group terms">
+                            <label>
+                                <input name="terms" type="checkbox" class="icheck required" value="yes" id="chk-terms-and-conditions">
+                                <span> <a href="#" data-toggle="modal" data-target="#terms-txt">Kullanım Şartlarını</a> okudum ve kabul ediyorum</span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
-                <button type="submit" class="btn_1 rounded full-width add_top_30">Kayıt Ol</button>
-                <div class="text-center add_top_10">Zaten hesabınız var mı? <strong><a href="/account/login">Giriş yap</a></strong></div>
+
+                <div id="bottom-wizard">
+                    <button type="button" name="backward" class="backward">Geri </button>
+                    <button type="button" name="forward" class="forward">İleri</button>
+                    <button type="button" name="process" class="submit" id="btn-submit">Kayıt</button>
+                </div>
+
             </form>
-            <div class="copy">© @DateTime.Now.Year Nitelikli Bilişim</div>
-        </aside>
+        </div>
+
     </div>
-    <!-- /login -->
-    <!-- COMMON SCRIPTS -->
-    <script src="~/assets/js/jquery-3.4.1.min.js"></script>
-    <script src="/assets/js/common_scripts.js"></script>
-    <script src="/assets/js/main.js"></script>
-    <script src="/assets/js/validate.js"></script>
 
-    <!-- SPECIFIC SCRIPTS -->
-    <script src="~/assets/js/pw_strenght.js"></script>
+    @* TERMS & CONDITIONS *@
+    <div class="modal fade" id="terms-txt" tabindex="-1" role="dialog" aria-labelledby="termsLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="termsLabel">Kullanım Şartları</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Lorem ipsum dolor sit amet, in porro albucius qui, in <strong>nec quod novum accumsan</strong>, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus.</p>
+                    <p>Lorem ipsum dolor sit amet, in porro albucius qui, in nec quod novum accumsan, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus. Lorem ipsum dolor sit amet, <strong>in porro albucius qui</strong>, in nec quod novum accumsan, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus.</p>
+                    <p>Lorem ipsum dolor sit amet, in porro albucius qui, in nec quod novum accumsan, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn_1" data-dismiss="modal">Kapat</button>
+                </div>
+            </div>
 
+        </div>
+
+    </div>
+    <script src="~/assets/js/jquery-2.2.4.min.js"></script>
+    <script src="~/assets/js/common_scripts.js"></script>
+    <script src="~/assets/js/main.js"></script>
+    <script src="~/assets/js/validate.js"></script>
+
+    <script src="~/assets/js/jquery-ui-1.8.22.min.js"></script>
+    <script src="~/assets/js/jquery.wizard.js"></script>
+    <script src="~/assets/js/jquery.validate.js"></script>
+    <script src="~/assets/js/admission_func.js"></script>
+    <script src="~/js/lib/cookie-agreement.js"></script>
+    <script src="~/js/lib/security-support.js"></script>
+    <script>
+        /* fields */
+        var __envoy = new StorageSupport.Envoy();
+
+        /* elements */
+        var inputName = $("#input-name");
+        var inputSurname = $("#input-surname");
+        var inputEmail = $("#input-email");
+        var inputPhone = $("#input-phone");
+        //var inputAge = $("#input-age");
+        var selectEducationCenters = document.getElementById("select-education-centers");
+        var selectEducationCategories = document.getElementById("select-education-categories");
+        //var radioGenderMale = document.getElementById("radio-gender-male");
+        var radioNbuyYes = document.getElementById("radio-nbuy-yes");
+        var radioNbuyNo = document.getElementById("radio-nbuy-no");
+        var inputDateWhenBegun = $("#input-date-when-begun");
+        var inputUsername = $("#input-username");
+        var inputPassword = $("#input-password");
+        var inputConfirmPassword = $("#input-confirm-password");
+        var chkTermsAndConditions = document.getElementById("chk-terms-and-conditions");
+        var btnSubmit = $("#btn-submit");
+        var divNbuyFormContainer = $("#div-nbuy-form-container");
+
+        /* assignments */
+        $(document).ready(document_onLoad);
+        window.onbeforeunload = window_onBeforeUnload;
+        btnSubmit.on("click", btnSubmit_onClick);
+        radioNbuyYes.onchange = radioNbuy_onChange;
+        radioNbuyNo.onchange = radioNbuy_onChange;
+
+        /* events */
+        function document_onLoad() {
+            if (__envoy.isStorageExists("register")) {
+                var stored = __envoy.getRegisterForm();
+                setStoredData(stored);
+            }
+        }
+        function window_onBeforeUnload() {
+            if (__envoy.isStorageExists("register")) {
+                __envoy.setRegisterForm({
+                    name: inputName.val(),
+                    surname: inputSurname.val(),
+                    email: inputEmail.val(),
+                    phone: inputPhone.val(),
+                    isNbuy: radioNbuyYes.checked
+                });
+            }
+        }
+        function btnSubmit_onClick() {
+            var data = {
+                Name: inputName.val(),
+                Surname: inputSurname.val(),
+                Email: inputEmail.val(),
+                Phone: inputPhone.val(),
+                Password: inputPassword.val(),
+                ConfirmPassword: inputConfirmPassword.val(),
+                UserName: inputUsername.val(),
+                IsNbuyStudent: radioNbuyYes.checked,
+                StartedAt: inputDateWhenBegun.val(),
+                EducationCenter: selectEducationCenters.options[selectEducationCenters.selectedIndex].value,
+                EducationCategory: selectEducationCategories.options[selectEducationCategories.selectedIndex].value,
+                AcceptedTerms: chkTermsAndConditions.checked
+            };
+            var tokenVerifier = new SecuritySupport.TokenVerifier();
+            data = tokenVerifier.addToken("wrapped", data);
+            $.ajax({
+                url: "kayit-ol",
+                method: "post",
+                data: data,
+                success: (res) => {
+                    if (res.isSuccess) {
+                        location.href = "/giris-yap";
+                    }
+                }
+            });
+        }
+        function radioNbuy_onChange() {
+            if (radioNbuyYes.checked) {
+                divNbuyFormContainer.show();
+                $(selectEducationCenters).addClass("required");
+                $(selectEducationCategories).addClass("required");
+            } else {
+                divNbuyFormContainer.hide();
+                $(selectEducationCenters).removeClass("required");
+                $(selectEducationCategories).removeClass("required");
+            }
+        }
+
+        /* functions */
+        function setStoredData(stored) {
+            inputName.val(stored.name);
+            inputSurname.val(stored.surname);
+            inputEmail.val(stored.email);
+            inputPhone.val(stored.phone);
+            if (stored.isNbuy != null) {
+                radioNbuyYes.checked = stored.isNbuy;
+            }
+        }
+    </script>
 </body>
 </html>

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Managers
 {
@@ -12,10 +11,10 @@ namespace NitelikliBilisim.App.Managers
     {
         // fields
         private List<string> _validExtensions;
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
         // ctors
-        public FileUploadManager(IHostingEnvironment hostingEnvironment, params string[] extensions)
+        public FileUploadManager(IWebHostEnvironment hostingEnvironment, params string[] extensions)
         {
             _hostingEnvironment = hostingEnvironment;
             _validExtensions = extensions.ToList();
@@ -62,6 +61,7 @@ namespace NitelikliBilisim.App.Managers
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return null;
             }
 
@@ -73,7 +73,7 @@ namespace NitelikliBilisim.App.Managers
             if (File.Exists(path))
                 File.Delete(path);
         }
-        private byte[] ConvertBase64StringToByteArray(string base64File)
+        public byte[] ConvertBase64StringToByteArray(string base64File)
         {
             int index = base64File.IndexOf(',');
 

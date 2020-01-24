@@ -23,7 +23,7 @@
                     <input type="text" class="form-control" placeholder="Etiket İsmi" id="input-name">
                 </div>
             </div>
-            <div class="col-md-6">
+            @*<div class="col-md-6">
                 <div class="form-group">
                     <label>Üst Etiket Seçiniz</label>
                     <select id="select-base-categories" class="form-control">
@@ -34,7 +34,7 @@
                         }
                     </select>
                 </div>
-            </div>
+            </div>*@
         </div>
         <div class="row">
             <div class="col-md-12">
@@ -52,63 +52,5 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
     <script src="~/js/sup/alert-sup.js"></script>
     <script src="~/js/lib/security-support.js"></script>
-    <script>
-        /* elements */
-        var selectBaseCategories = document.getElementById("select-base-categories");
-        var inputName = document.getElementById("input-name");
-        var inputDescription = document.getElementById("input-description");
-        var btnSave = $("#btn-save");
-
-        /* assignments */
-        $(document).ready(document_onLoad);
-        btnSave.on("click", btnSave_onClick);
-
-        /* events */
-        function document_onLoad() {
-            $(selectBaseCategories).select2();
-        }
-        function btnSave_onClick() {
-            btnSave.off("click");
-            var baseCategoryId = selectBaseCategories.options[selectBaseCategories.selectedIndex].value;
-            var data = {
-                Name: inputName.value,
-                Description: inputDescription.value,
-                BaseTagId: baseCategoryId
-            }
-
-            var tokenVerfier = new SecuritySupport.TokenVerifier();
-            data = tokenVerfier.addToken("form-add-category", data);
-
-            $.ajax({
-                url: "/admin/etiket-ekle",
-                method: "post",
-                data: data,
-                success: (res) => {
-                    var resultAlert = new AlertSupport.ResultAlert();
-                    if (res.isSuccess) {
-                        resultAlert.display({
-                            success: true,
-                            message: "İşlem başarılı. Anasayfaya gitmek için {link}",
-                            redirectElement: {
-                                content: "tıklayınız",
-                                link: "/admin/etiketler"
-                            }
-                        });
-                    } else {
-                        resultAlert.display({
-                            success: false,
-                            errors: res.errors,
-                            message: "Sayfayı yenilemek için {link}",
-                            redirectElement: {
-                                content: "tıklayınız",
-                                link: location.href
-                            }
-                        });
-                    }
-
-                    btnSave.on("click", btnSave_onClick);
-                }
-            });
-        }
-    </script>
+    <script src="~/js/areas/admin/admin-education-tag-add.js"></script>
 }

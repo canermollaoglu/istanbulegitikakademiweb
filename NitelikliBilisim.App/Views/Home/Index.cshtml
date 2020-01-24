@@ -1,4 +1,4 @@
-﻿
+﻿@model NitelikliBilisim.App.Models.HomeIndexModel
 @{
     ViewData["Title"] = "Nitelikli Bilişim";
     Layout = "/Views/Shared/_Layout.cshtml";
@@ -8,17 +8,23 @@
     <section class="hero_single version_2">
         <div class="wrapper">
             <div class="container">
-                <h3>HANGİ KONUDA PROJE EKSİĞİN VAR?</h3>
-                <p>Uygulama olmadan, teorik bilgi ne işe yarar ki!</p>
-                <p>Aldığın teorik eğitimi proje yazarak pekiştir, sertifikanı al, aranan BT uzmanı ol.</p>
-                <form>
-                    <div id="custom-search-input">
-                        <div class="input-group">
-                            <input type="text" class=" search-query" placeholder="Örnek: Windonws Form Uygulamaları..." id="input-index-search">
-                            <input type="submit" class="btn_search" value="Eğitim Bul" id="btn-index-search">
+                <div class="row containerRow col-sm-12">
+                    <h3><span style="font-weight: 100 !important">HANGİ KONUDA</span> <b style="color:#fc4912">PROJE EKSİĞİN VAR?</b></h3>
+                    <p>Uygulama olmadan, teorik bilgi ne işe yarar ki!</p><br />
+                     <div class="main_title_Search">
+                          <span><em></em></span>
+                     </div>
+                    <p>Aldığın teorik eğitimi proje yazarak pekiştir, sertifikanı al, aranan BT uzmanı ol.</p>
+                    <form>
+                        <div id="custom-search-input">
+                            <div class="input-group rounded">
+                                <input type="text" style="margin: 0 -35px !important; padding-right:130px; border: 2px solid #2d2f33;" class="search-query" placeholder="Örnek: Windows Form Uygulamaları..." id="input-index-search">
+                                <input type="submit" style="        border-radius: 33px !important
+" class="btn_search rounded" value="Eğitim Bul" id="btn-index-search">
+                            </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </section>
@@ -47,165 +53,41 @@
     <div class="container-fluid margin_120_0">
         <div class="main_title_2">
             <span><em></em></span>
-            <h2>Nitelikli Bilişim Populer Eğitimler</h2>
-            <p>NBUY eğitimi alan öğrenciler tarafından en çok tercih edilen proje eğitimleri</p>
+            <h2>Nitelikli Bilişim Popüler Eğitimler</h2>
+            <p>NBUY eğitimi alan öğrenciler tarafından en çok <br />tercih edilen proje eğitimleri</p>
         </div>
         <div id="reccomended" class="owl-carousel owl-theme">
-            <div class="item">
-                <div class="box_grid">
-                    <figure>
-                        <a href="#0" class="wish_bt"></a>
-                        <a href="course-detail.html">
-                            <div class="preview"><span>Preview course</span></div>
-                            @*<img src="img/courses/course__list_1.jpg" class="img-fluid" alt="">*@
-                            <img src="~/assets/img/course__list_1.jpg" class="img-fluid" />
-                        </a>
-                        <div class="price">$39</div>
+            @foreach (var item in Model.SuggestedEducations)
+            {
+                <div class="item">
+                    <div class="box_grid">
+                        <figure>
+                            <a href="#0" class="wish_bt"></a>
+                            <a href="/kurs-detayi/@item.Base.Id">
+                                <div class="preview"><span>Detaylar</span></div>
+                                <img src="@item.Medias[0].FileUrl" class="img-fluid" />
+                            </a>
+                            <div class="price">@item.Base.PriceText</div>
 
-                    </figure>
-                    <div class="wrapper">
-                        <small>Category</small>
-                        <h3>Persius delenit has cu</h3>
-                        <p>Id placerat tacimates definitionem sea, prima quidam vim no. Duo nobis persecuti cu.</p>
-                        <div class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(145)</small></div>
+                        </figure>
+                        <div class="wrapper">
+                            <small>@item.Base.CategoryName</small>
+                            <h3>@item.Base.Name</h3>
+                            <p>@item.Base.Description</p>
+                            <div class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(145)</small></div>
+                        </div>
+                        <ul>
+                            <li><i class="icon_clock_alt"></i> 1h 30min</li>
+                            <li><i class="icon_like"></i> 890</li>
+                            <li><a role="button" data-education-id="@item.Base.Id" class="btn-buy" style="cursor:pointer;">Kayıt Ol</a></li>
+                        </ul>
                     </div>
-                    <ul>
-                        <li><i class="icon_clock_alt"></i> 1h 30min</li>
-                        <li><i class="icon_like"></i> 890</li>
-                        <li><a href="course-detail.html">Enroll now</a></li>
-                    </ul>
                 </div>
-            </div>
-            <!-- /item -->
-            <div class="item">
-                <div class="box_grid">
-                    <figure>
-                        <a href="#0" class="wish_bt"></a>
-                        <a href="course-detail.html">
-                            @*<img src="img/courses/course__list_2.jpg" class="img-fluid" alt="">*@
-                            <img src="~/assets/img/course__list_2.jpg" class="img-fluid" />
-                        </a>
-                        <div class="price">$45</div>
-                        <div class="preview"><span>Preview course</span></div>
-                    </figure>
-                    <div class="wrapper">
-                        <small>Category</small>
-                        <h3>Persius delenit has cu</h3>
-                        <p>Id placerat tacimates definitionem sea, prima quidam vim no. Duo nobis persecuti cu.</p>
-                        <div class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(145)</small></div>
-                    </div>
-                    <ul>
-                        <li><i class="icon_clock_alt"></i> 1h 30min</li>
-                        <li><i class="icon_like"></i> 890</li>
-                        <li><a href="course-detail.html">Enroll now</a></li>
-                    </ul>
-                </div>
-            </div>
-            <!-- /item -->
-            <div class="item">
-                <div class="box_grid">
-                    <figure>
-                        <a href="#0" class="wish_bt"></a>
-                        <a href="course-detail.html">
-                            @*<img src="img/courses/course__list_3.jpg" class="img-fluid" alt="">*@
-                            <img src="~/assets/img/course__list_3.jpg" class="img-fluid" />
-                        </a>
-                        <div class="price">$54</div>
-                        <div class="preview"><span>Preview course</span></div>
-                    </figure>
-                    <div class="wrapper">
-                        <small>Category</small>
-                        <h3>Persius delenit has cu</h3>
-                        <p>Id placerat tacimates definitionem sea, prima quidam vim no. Duo nobis persecuti cu.</p>
-                        <div class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(145)</small></div>
-                    </div>
-                    <ul>
-                        <li><i class="icon_clock_alt"></i> 1h 30min</li>
-                        <li><i class="icon_like"></i> 890</li>
-                        <li><a href="course-detail.html">Enroll now</a></li>
-                    </ul>
-                </div>
-            </div>
-            <!-- /item -->
-            <div class="item">
-                <div class="box_grid">
-                    <figure>
-                        <a href="#0" class="wish_bt"></a>
-                        <a href="course-detail.html">
-                            @*<img src="img/courses/course__list_4.jpg" class="img-fluid" alt="">*@
-                            <img src="~/assets/img/course__list_4.jpg" class="img-fluid" />
-                        </a>
-                        <div class="price">$27</div>
-                        <div class="preview"><span>Preview course</span></div>
-                    </figure>
-                    <div class="wrapper">
-                        <small>Category</small>
-                        <h3>Persius delenit has cu</h3>
-                        <p>Id placerat tacimates definitionem sea, prima quidam vim no. Duo nobis persecuti cu.</p>
-                        <div class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(145)</small></div>
-                    </div>
-                    <ul>
-                        <li><i class="icon_clock_alt"></i> 1h 30min</li>
-                        <li><i class="icon_like"></i> 890</li>
-                        <li><a href="course-detail.html">Enroll now</a></li>
-                    </ul>
-                </div>
-            </div>
-            <!-- /item -->
-            <div class="item">
-                <div class="box_grid">
-                    <figure>
-                        <a href="#0" class="wish_bt"></a>
-                        <a href="course-detail.html">
-                            @*<img src="img/courses/course__list_5.jpg" class="img-fluid" alt="">*@
-                            <img src="~/assets/img/course__list_5.jpg" class="img-fluid" />
-                        </a>
-                        <div class="price">$35</div>
-                        <div class="preview"><span>Preview course</span></div>
-                    </figure>
-                    <div class="wrapper">
-                        <small>Category</small>
-                        <h3>Persius delenit has cu</h3>
-                        <p>Id placerat tacimates definitionem sea, prima quidam vim no. Duo nobis persecuti cu.</p>
-                        <div class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(145)</small></div>
-                    </div>
-                    <ul>
-                        <li><i class="icon_clock_alt"></i> 1h 30min</li>
-                        <li><i class="icon_like"></i> 890</li>
-                        <li><a href="course-detail.html">Enroll now</a></li>
-                    </ul>
-                </div>
-            </div>
-            <!-- /item -->
-            <div class="item">
-                <div class="box_grid">
-                    <figure>
-                        <a href="#0" class="wish_bt"></a>
-                        <a href="course-detail.html">
-                            @*<img src="img/courses/course__list_5.jpg" class="img-fluid" alt="">*@
-                            <img src="~/assets/img/course__list_5.jpg" class="img-fluid" />
-                        </a>
-                        <div class="price">$54</div>
-                        <div class="preview"><span>Preview course</span></div>
-                    </figure>
-                    <div class="wrapper">
-                        <small>Category</small>
-                        <h3>Persius delenit has cu</h3>
-                        <p>Id placerat tacimates definitionem sea, prima quidam vim no. Duo nobis persecuti cu.</p>
-                        <div class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(145)</small></div>
-                    </div>
-                    <ul>
-                        <li><i class="icon_clock_alt"></i> 1h 30min</li>
-                        <li><i class="icon_like"></i> 890</li>
-                        <li><a href="course-detail.html">Enroll now</a></li>
-                    </ul>
-                </div>
-            </div>
-            <!-- /item -->
+            }
         </div>
         <!-- /carousel -->
         <div class="container">
-            <p class="btn_home_align"><a href="courses-grid.html" class="btn_1 rounded">Tüm proje eğitimleri</a></p>
+            <p class="btn_home_align"><a href="/tum-egitimler" class="btn_1 rounded">Tüm proje eğitimleri</a></p>
         </div>
         <!-- /container -->
         <hr>
@@ -220,13 +102,13 @@
         </div>
         <div class="row">
             <div class="col-lg-4 col-md-6 wow" data-wow-offset="150">
-                <a href="#0" class="grid_item">
+                <a href="/tum-egitimler/web-ve-mobil-programlama" class="grid_item">
                     <figure class="block-reveal">
                         <div class="block-horizzontal"></div>
                         @*<img src="img/categories/course_1.jpg" class="img-fluid" alt="">*@
                         <img src="~/assets/img/course_1.jpg" class="img-fluid" />
                         <div class="info">
-                            <small><i class="ti-layers"></i>15 Programmes</small>
+                            <small><i class="ti-layers"></i>15 Eğitim</small>
                             <h3>Web ve Mobil Programlama</h3>
                         </div>
                     </figure>
@@ -234,13 +116,13 @@
             </div>
             <!-- /grid_item -->
             <div class="col-lg-4 col-md-6 wow" data-wow-offset="150">
-                <a href="#0" class="grid_item">
+                <a href="/tum-egitimler/sistem-ve-ag-yonetimi" class="grid_item">
                     <figure class="block-reveal">
                         <div class="block-horizzontal"></div>
                         @*<img src="img/categories/course_1.jpg" class="img-fluid" alt="">*@
                         <img src="~/assets/img/course_1.jpg" class="img-fluid" />
                         <div class="info">
-                            <small><i class="ti-layers"></i>23 Programmes</small>
+                            <small><i class="ti-layers"></i>23 Eğitim</small>
                             <h3>Sistem ve Ağ Yönetimi</h3>
                         </div>
                     </figure>
@@ -248,13 +130,13 @@
             </div>
             <!-- /grid_item -->
             <div class="col-lg-4 col-md-6 wow" data-wow-offset="150">
-                <a href="#0" class="grid_item">
+                <a href="/tum-egitimler/siber-guvenlik" class="grid_item">
                     <figure class="block-reveal">
                         <div class="block-horizzontal"></div>
                         @*<img src="img/categories/course_1.jpg" class="img-fluid" alt="">*@
                         <img src="~/assets/img/course_1.jpg" class="img-fluid" />
                         <div class="info">
-                            <small><i class="ti-layers"></i>23 Programmes</small>
+                            <small><i class="ti-layers"></i>23 Eğitim</small>
                             <h3>Siber Güvenlik</h3>
                         </div>
                     </figure>
@@ -262,13 +144,13 @@
             </div>
             <!-- /grid_item -->
             <div class="col-lg-4 col-md-6 wow" data-wow-offset="150">
-                <a href="#0" class="grid_item">
+                <a href="/tum-egitimler/bulut-bilisim" class="grid_item">
                     <figure class="block-reveal">
                         <div class="block-horizzontal"></div>
                         @*<img src="img/categories/course_1.jpg" class="img-fluid" alt="">*@
                         <img src="~/assets/img/course_1.jpg" class="img-fluid" />
                         <div class="info">
-                            <small><i class="ti-layers"></i>23 Programmes</small>
+                            <small><i class="ti-layers"></i>23 Eğitim</small>
                             <h3>Bulut Bilişim</h3>
                         </div>
                     </figure>
@@ -276,13 +158,13 @@
             </div>
             <!-- /grid_item -->
             <div class="col-lg-4 col-md-6 wow" data-wow-offset="150">
-                <a href="#0" class="grid_item">
+                <a href="/tum-egitimler/oyun-programlama" class="grid_item">
                     <figure class="block-reveal">
                         <div class="block-horizzontal"></div>
                         @*<img src="img/categories/course_1.jpg" class="img-fluid" alt="">*@
                         <img src="~/assets/img/course_1.jpg" class="img-fluid" />
                         <div class="info">
-                            <small><i class="ti-layers"></i>23 Programmes</small>
+                            <small><i class="ti-layers"></i>23 Eğitim</small>
                             <h3>Oyun Programlama</h3>
                         </div>
                     </figure>
@@ -290,13 +172,13 @@
             </div>
             <!-- /grid_item -->
             <div class="col-lg-4 col-md-6 wow" data-wow-offset="150">
-                <a href="#0" class="grid_item">
+                <a href="/tum-egitimler/kurumsal-kaynak-planlama" class="grid_item">
                     <figure class="block-reveal">
                         <div class="block-horizzontal"></div>
                         @*<img src="img/categories/course_1.jpg" class="img-fluid" alt="">*@
                         <img src="~/assets/img/course_1.jpg" class="img-fluid" />
                         <div class="info">
-                            <small><i class="ti-layers"></i>23 Programmes</small>
+                            <small><i class="ti-layers"></i>23 Eğitim</small>
                             <h3>Kurumsal Kaynak Planlama</h3>
                         </div>
                     </figure>
@@ -403,9 +285,17 @@
 </main>
 
 @section postScripts{
+    <script src="~/js/sup/cart.js"></script>
     <script>
         var btnIndexSearch = $("#btn-index-search");
         var inputIndexSearch = $("#input-index-search");
+
+        $(document).ready(() => {
+            var btnBuys = document.getElementsByClassName("btn-buy");
+            for (var i = 0; i < btnBuys.length; i++) {
+                btnBuys[i].onclick = btnBuy_onClick;
+            }
+        });
 
         btnIndexSearch.on("click", (e) => {
             e.preventDefault();
@@ -417,5 +307,13 @@
 
             location.href = `/arama-sonuclari/${searchText}`;
         });
+
+        function btnBuy_onClick() {
+            var educationId = this.getAttribute("data-education-id");
+            var cart = new CartSupport.Cart();
+            cart.addToCart(educationId);
+
+            location.href = "/sepet";
+        }
     </script>
 }

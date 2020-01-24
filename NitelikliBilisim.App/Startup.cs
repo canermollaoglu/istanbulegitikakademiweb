@@ -16,6 +16,8 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Net;
+using Microsoft.Extensions.Hosting;
+using NitelikliBilisim.App.Filters;
 
 namespace NitelikliBilisim.App
 {
@@ -55,16 +57,26 @@ namespace NitelikliBilisim.App
                 .AddDefaultTokenProviders();
 
             services.AddScoped<UnitOfWork>();
+            services.AddScoped<ComingSoonActionFilter>();
 
             services.AddApplicationServices(this.Configuration);
-            services.AddMvc(options =>
+
+            //services.AddControllers(options => { options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()); });
+            services.AddMvc();
+
+#if DEBUG
+            services.AddControllersWithViews();
+#else
+            services.AddControllersWithViews(options =>
             {
-                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+                options.Filters.Add(new ComingSoonActionFilter());
+            });
+#endif
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             var cultureInfo = new CultureInfo("tr-TR") { NumberFormat = { NumberDecimalSeparator = "." } };
 
@@ -72,11 +84,9 @@ namespace NitelikliBilisim.App
             CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
             app.UseDeveloperExceptionPage();
-            app.UseDatabaseErrorPage();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
             }
             else
             {
@@ -84,23 +94,33 @@ namespace NitelikliBilisim.App
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseStaticFiles(new StaticFileOptions()
             {
                 FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"node_modules")),
                 RequestPath = new PathString("/vendor")
             });
+
+            app.UseRouting();
             app.UseAuthentication();
 
             app.UseCookiePolicy();
 
-            app.UseMvc(routes =>
+            //app.UseMvc(routes =>
+            //{
+            //    routes.MapRoute("areas", "{area}/{controller=Manage}/{action=Index}/{id?}");
+            //    routes.MapRoute(
+            //        name: "default",
+            //        template: "{controller=Home}/{action=Index}/{id?}");
+            //});
+
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute("areas", "{area}/{controller=Manage}/{action=Index}/{id?}");
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllers();
+                endpoints.MapAreaControllerRoute("admin", "admin", "admin/{controller=Manage}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute(
+                    "default", "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

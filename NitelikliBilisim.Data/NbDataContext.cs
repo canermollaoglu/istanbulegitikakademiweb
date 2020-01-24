@@ -57,6 +57,10 @@ namespace NitelikliBilisim.Data
 
             builder.Entity<Bridge_EducationTag>()
                 .HasKey(x => new { x.Id, x.Id2 });
+            builder.Entity<Bridge_EducationEducator>()
+                .HasKey(x => new { x.Id, x.Id2 });
+            builder.Entity<Bridge_GroupStudent>()
+                .HasKey(x => new { x.Id, x.Id2 });
             builder.Entity<WishlistItem>()
                 .HasKey(x => new { x.Id, x.Id2 });
 
@@ -78,10 +82,10 @@ namespace NitelikliBilisim.Data
         }
 
         public DbSet<AutoHistory> DataHistories { get; set; }
-        public DbSet<Bridge_EducationTag> Bridge_EducationTags { get; set; }
         public DbSet<Education> Educations { get; set; }
         public DbSet<EducationCategory> EducationCategories { get; set; }
         public DbSet<EducationTag> EducationTags { get; set; }
+        public DbSet<Bridge_EducationTag> Bridge_EducationTags { get; set; }
         public DbSet<EducationComment> EducationComments { get; set; }
         public DbSet<EducationMedia> EducationMedias { get; set; }
         public DbSet<EducationPart> EducationParts { get; set; }
@@ -89,10 +93,15 @@ namespace NitelikliBilisim.Data
         public DbSet<EducationPromotionCode> EducationPromotionCodes { get; set; }
         public DbSet<Sale> Sales { get; set; }
         public DbSet<SaleAddress> SaleAddresses { get; set; }
-        public DbSet<SaleDetail> SaleDetails { get; set; }
         public DbSet<WishlistItem> Wishlist { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Educator> Educators { get; set; }
         public DbSet<EducatorSocialMedia> EducatorSocialMedias { get; set; }
+        public DbSet<StudentEducationInfo> StudentEducationInfos { get; set; }
+        public DbSet<Suggestion> Suggestions { get; set; }
+        public DbSet<Bridge_EducationEducator> Bridge_EducationEducators { get; set; }
+        public DbSet<EducationGroup> EducationGroups { get; set; }
+        public DbSet<Bridge_GroupStudent> Bridge_GroupStudents { get; set; }
+        public DbSet<GroupLessonDays> GroupLessonDays { get; set; }
     }
 }
