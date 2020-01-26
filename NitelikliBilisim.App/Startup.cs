@@ -23,12 +23,15 @@ namespace NitelikliBilisim.App
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
+            CurrentEnvironment = env;
         }
 
         public IConfiguration Configuration { get; }
+
+        private IWebHostEnvironment CurrentEnvironment { get; set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -64,14 +67,17 @@ namespace NitelikliBilisim.App
             //services.AddControllers(options => { options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()); });
             services.AddMvc();
 
-#if DEBUG
-            services.AddControllersWithViews();
-#else
-            services.AddControllersWithViews(options =>
+            if (CurrentEnvironment.IsDevelopment())
             {
-                options.Filters.Add(new ComingSoonActionFilter());
-            });
-#endif
+                services.AddControllersWithViews();
+            }
+            else
+            {
+                services.AddControllersWithViews(options =>
+                {
+                    options.Filters.Add(new ComingSoonActionFilter());
+                });
+            }
             services.AddControllers();
         }
 
