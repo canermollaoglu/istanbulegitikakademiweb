@@ -44,7 +44,7 @@ namespace NitelikliBilisim.App
 
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {
-                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_";
                 options.User.RequireUniqueEmail = true;
                 options.Password.RequireUppercase = false;
             })
