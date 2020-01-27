@@ -120,6 +120,12 @@ namespace NitelikliBilisim.Business.Repositories
             else
                 model = DefaultSuggestions(query);
 
+            var educationGroupRepository = new EducationGroupRepository(Context);
+
+            foreach (var item in model)
+                item.Base.StartDateText = educationGroupRepository.GetFirstAvailableGroup(item.Base.Id)?.StartDate
+                        .ToString("dd MMMM yyyy", CultureInfo.CreateSpecificCulture("tr-TR")) ?? "Açılan grup yok";
+
             return model;
         }
 
