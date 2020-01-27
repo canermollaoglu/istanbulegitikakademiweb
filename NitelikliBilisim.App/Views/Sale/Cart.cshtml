@@ -79,7 +79,7 @@
                 <aside class="col-lg-4" id="sidebar">
                     <div class="box_detail">
                         <div id="total_cart">
-                            Toplam <span class="float-right">69.00$</span>
+                            Toplam <span class="float-right" id="txt-total"></span>
                         </div>
                         <div class="add_bottom_30">Lorem ipsum dolor sit amet, sed vide <strong>moderatius</strong> ad. Ex eius soleat sanctus pro, enim conceptam in quo, <a href="#0">brute convenire</a> appellantur an mei.</div>
                         <a href="/odeme" class="btn_1 full-width">Ödeme Yap</a>
@@ -100,6 +100,7 @@
 
         /* elements */
         var tbodyCartItems = $("#tbody-cart-items");
+        var txtTotal = $("#txt-total");
 
         /* assignments */
         $(document).ready(document_onLoad);
@@ -127,7 +128,8 @@
                 data: data,
                 success: (res) => {
                     if (res.isSuccess) {
-                        appendCartItems(res.data);
+                        appendCartItems(res.data.items);
+                        txtTotal.text(res.data.total);
                     }
                 }
             });
