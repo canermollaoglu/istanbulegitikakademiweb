@@ -22,7 +22,7 @@
     <form id="form-update-education">
         @Html.AntiForgeryToken()
         <input type="hidden" value="@Model.Education.Id" id="_education-id" />
-        <input type="hidden" value="@Model.Education.CategoryId" id="_categories-id"/>
+        <input type="hidden" value="@Model.Education.CategoryId" id="_categories-id" />
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
@@ -118,6 +118,28 @@
                             }
                         }
                     </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Banner (jpeg)</label>
+                    <div class="file-upload-container" id="file-upload-container-for-banner">
+                        <img class="img-after-preview" id="img-after-preview-for-banner" />
+                        <p><i class="fa fa-file"></i> Resim yüklemek için tıklayınız...</p>
+                        <input type="file" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Ön İzleme (jpeg ya da mp4)</label>
+                    <div class="file-upload-container" id="file-upload-container-for-preview">
+                        <img class="img-after-preview" id="img-after-preview-for-preview" />
+                        <p><i class="fa fa-file"></i> Resim yüklemek için tıklayınız...</p>
+                        <input type="file" />
+                    </div>
                 </div>
             </div>
         </div>

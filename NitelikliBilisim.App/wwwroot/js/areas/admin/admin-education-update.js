@@ -2,6 +2,9 @@
 var selectCategories = $("#select-categories");
 var selectLevels = document.getElementById("select-levels");
 var btnSave = $("#btn-save");
+var fileManager1 = null;
+var fileManager2 = null;
+
 /* assignments */
 $(document).ready(document_onLoad);
 btnSave.on("click", btnSave_onClick);
@@ -10,6 +13,19 @@ btnSave.on("click", btnSave_onClick);
 function document_onLoad() {
     selectCategories.select2();
     $(selectLevels).select2();
+    fileManager1 = new UploadSupport.FileUploader();
+    fileManager2 = new UploadSupport.FileUploader();
+    fileManager1.set({
+        container: "file-upload-container-for-banner",
+        preview: "img-after-preview-for-banner",
+        validExtensions: ["jpg", "jpeg"],
+        style: { content: "Resim Yükle" }
+    });
+    fileManager2.set({
+        container: "file-upload-container-for-preview",
+        preview: "img-after-preview-for-preview",
+        validExtensions: ["jpg", "jpeg", "mp4"]
+    });
 }
 function btnSave_onClick() {
     btnSave.off("click");
@@ -27,6 +43,8 @@ function btnSave_onClick() {
 
     var isActive = document.getElementById("input-is-active").checked;
 
+    var bannerFile = fileManager1.getFile();
+    var previewFile = fileManager2.getFile();
     var data = {
         EducationId: $("#_education-id").val(),
         Name: $("#input-name").val(),
@@ -38,6 +56,14 @@ function btnSave_onClick() {
         EducationLevel: selectLevels.options[selectLevels.selectedIndex].value,
         CategoryId: $("#_categories-id").val(),
         TagIds: tagIds,
+        BannerFile: {
+            Base64Content: bannerFile.base64content,
+            Extension: bannerFile.extension
+        },
+        PreviewFile: {
+            Base64Content: previewFile.base64content,
+            Extension: previewFile.extension
+        },
         IsActive: !isActive,
     };
     var tokenVerifier = new SecuritySupport.TokenVerifier();

@@ -16,5 +16,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Models.Education
     {
         public Guid EducationId { get; set; }
         public bool IsActive { get; set; }
+        public _PostedFileUpdate BannerFile { get; set; }
+        public _PostedFileUpdate PreviewFile { get; set; }
     }
 }

@@ -47,4 +47,9 @@ namespace NitelikliBilisim.App.Areas.Admin.Models.Education
         [Required(ErrorMessage = "Dosya uzantısı boş olamaz")]
         public string Extension { get; set; }
     }
+    public class _PostedFileUpdate
+    {
+        public string Base64Content { get; set; }
+        public string Extension { get; set; }
+    }
 }
