@@ -1,5 +1,6 @@
 ﻿using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Enums;
+using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_media_items;
 using NitelikliBilisim.Support.Enums;
 using System;
@@ -10,9 +11,11 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.EducationMediaItems
     public class EducationMediaItemVmCreator
     {
         private readonly UnitOfWork _unitOfWork;
-        public EducationMediaItemVmCreator(UnitOfWork unitOfWork)
+        private readonly IStorageService _storageService; 
+        public EducationMediaItemVmCreator(UnitOfWork unitOfWork, IStorageService storageService)
         {
             _unitOfWork = unitOfWork;
+            _storageService = storageService;
         }
 
         public ManageVm CreateManageVm(Guid educationId)
@@ -32,13 +35,24 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.EducationMediaItems
 
             var educationMediaItems = new List<_EducationMediaItem>();
             foreach (var item in medias)
-                educationMediaItems.Add(new _EducationMediaItem
+            {
+                var media = new _EducationMediaItem
                 {
                     Id = item.Id,
                     EducationId = item.EducationId,
-                    MediaItemType = EnumSupport.GetDescription(item.MediaType),
-                    FileUrl = item.FileUrl
-                });
+                    MediaItemType = EnumSupport.GetDescription(item.MediaType)
+                };
+
+                try
+                {
+                    media.FileUrl = _storageService.DownloadFile(System.IO.Path.GetFileName(item.FileUrl), "media-items").Result;
+                }
+                catch
+                {
+                }
+
+                educationMediaItems.Add(media);
+            }
 
             return new GetEducationMediaItemsVm
             {
