@@ -1,9 +1,13 @@
 ﻿@model NitelikliBilisim.App.Models.HomeIndexModel
+@using NitelikliBilisim.Core.Services.Abstracts
+@inject IStorageService StorageService
 @{
     ViewData["Title"] = "Nitelikli Bilişim";
     Layout = "/Views/Shared/_Layout.cshtml";
 }
-
+@section styles{
+    <link href="~/assets/css/search/search-results.css" rel="stylesheet" />
+}
 <main>
     <section class="hero_single version_2">
         <div class="wrapper">
@@ -11,9 +15,9 @@
                 <div class="row containerRow col-sm-12">
                     <h3><span style="font-weight: 100 !important">HANGİ KONUDA</span> <b style="color:#fc4912">PROJE EKSİĞİN VAR?</b></h3>
                     <p>Uygulama olmadan, teorik bilgi ne işe yarar ki!</p><br />
-                     <div class="main_title_Search">
-                          <span><em></em></span>
-                     </div>
+                    <div class="main_title_Search">
+                        <span><em></em></span>
+                    </div>
                     <p>Aldığın teorik eğitimi proje yazarak pekiştir, sertifikanı al, aranan BT uzmanı ol.</p>
                     <form>
                         <div id="custom-search-input">
@@ -65,7 +69,18 @@
                             <a href="#0" class="wish_bt"></a>
                             <a href="/kurs-detayi/@item.Base.Id">
                                 <div class="preview"><span>Detaylar</span></div>
-                                <img src="@item.Medias[0].FileUrl" class="img-fluid" />
+                                @{
+                                    var filePath = "";
+                                    try
+                                    {
+                                        filePath = await StorageService.DownloadFile(System.IO.Path.GetFileName(item.Medias[0].FileUrl), "media-items");
+                                    }
+                                    catch
+                                    {
+
+                                    }
+                                }
+                                <img src="@filePath" class="img-fluid" />
                             </a>
                             <div class="price">@item.Base.PriceText</div>
 
@@ -73,12 +88,26 @@
                         <div class="wrapper">
                             <small>@item.Base.CategoryName</small>
                             <h3>@item.Base.Name</h3>
-                            <p>@item.Base.Description</p>
-                            <div class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(145)</small></div>
+                            <a href="/kurs-detayi/@item.Base.Id">
+                                <div class="desc-div"></div>
+                            </a>
+                            <p class="desc-p">@item.Base.Description</p>
+                            <h6>Tarih</h6>
+                            <i class="ti-calendar"></i> <b>@item.Base.StartDateText</b>
                         </div>
+                        <hr />
+                        <table class="desc-table">
+                            <tr>
+                                <td><h6>Kontenjan</h6><i class="icon-users"></i> <small>(0)</small></td>
+                                <td><h6>Mevcut</h6><i class="icon-user"></i> <small>(0)</small></td>
+                            </tr>
+                        </table>
                         <ul>
-                            <li><i class="icon_clock_alt"></i> 1h 30min</li>
+                            <li><div class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(145)</small></div></li>
                             <li><i class="icon_like"></i> 890</li>
+                        </ul>
+                        <ul>
+                            <li><i class="icon_clock_alt"></i> @item.Base.DaysText gün (@(item.Base.HoursPerDayNumeric * item.Base.DaysNumeric) saat)</li>
                             <li><a role="button" data-education-id="@item.Base.Id" class="btn-buy" style="cursor:pointer;">Kayıt Ol</a></li>
                         </ul>
                     </div>

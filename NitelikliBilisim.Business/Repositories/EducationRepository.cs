@@ -251,21 +251,22 @@ namespace NitelikliBilisim.Business.Repositories
             return education.IsActive;
         }
 
-        public int Update(Education entity, List<Guid> categoryIds, bool isSaveLater = false)
+        public int Update(Education entity, List<Guid> tagIds, bool isSaveLater = false)
         {
             var currentCategories = Context.Bridge_EducationTags.Where(x => x.Id2 == entity.Id).ToList();
 
             Context.Bridge_EducationTags.RemoveRange(currentCategories);
 
             var newItems = new List<Bridge_EducationTag>();
-            foreach (var categoryId in categoryIds)
+            foreach (var tagId in tagIds)
                 newItems.Add(new Bridge_EducationTag
                 {
-                    Id = categoryId,
+                    Id = tagId,
                     Id2 = entity.Id
                 });
 
             Context.Bridge_EducationTags.AddRange(newItems);
+            Context.SaveChanges();
 
             return base.Update(entity, isSaveLater);
         }
@@ -376,6 +377,8 @@ namespace NitelikliBilisim.Business.Repositories
                     break;
             }
 
+            var educationGroupRepository = new EducationGroupRepository(Context);
+
             var educationsList = educations
                 .Join(Context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Id, r => r.EducationId, (x, y) => new
                 {
@@ -405,7 +408,9 @@ namespace NitelikliBilisim.Business.Repositories
                     HoursPerDayText = x.Education.HoursPerDay.ToString(),
                     DaysText = x.Education.Days.ToString(),
                     DaysNumeric = x.Education.Days,
-                    HoursPerDayNumeric = x.Education.HoursPerDay
+                    HoursPerDayNumeric = x.Education.HoursPerDay,
+                    StartDateText = educationGroupRepository.GetFirstAvailableGroup(x.Education.Id)?.StartDate
+                        .ToString("dd MMMM yyyy", CultureInfo.CreateSpecificCulture("tr-TR")) ?? "Açılan grup yok"
                 },
                 Medias = new List<EducationMediaVm> { new EducationMediaVm { EducationId = x.Education.Id, FileUrl = x.EducationPreviewMedia.FileUrl } }
             }).ToList();

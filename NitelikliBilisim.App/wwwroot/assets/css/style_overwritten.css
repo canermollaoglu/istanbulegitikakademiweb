@@ -283,3 +283,59 @@ ul.additional_info li strong {
         background: #fc4912 !important;
         color: #fff !important;
     }
+
+.modal-content {
+    margin-top: 100px !important;
+}
+.modal-body {
+    text-align: justify !important;
+    overflow: auto !important;
+    height: 320px !important;
+}
+.modal-content {
+    position: relative !important;
+    display: -ms-flexbox !important;
+    display: flex !important;
+    -ms-flex-direction: column !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    pointer-events: auto !important;
+    background-color: #fff !important;
+    background-clip: padding-box !important;
+    border: 1px solid rgba(0,0,0,.2) !important;
+    border-radius: .3rem !important;
+    outline: 0 !important;
+}
+/*Kilit css*/
+@media (max-width: 767px) {
+  ul#top_menu li a.login:before {
+    content: "\7e" !important;
+  }
+}
+
+/*Phone screen*/
+@media (max-width: 767px) {
+    .hidden_mobile {
+        display: none !important;
+    }
+    ul#top_menu li a.btn_1 {
+        display: contents !important;
+    }
+    ul#top_menu {
+        margin: 1px -18px -5px 0px !important;
+    }
+    .icon-cart:before {
+        content: '\ede5' !important;
+        font-size: 1.5rem !important;
+        margin-left: -5px !important;
+    }
+    header {
+        padding: 17px 22px !important;
+    }
+    .containerRow {
+        display: list-item !important;
+        margin-left: -22px !important;
+        margin-top: 90px !important;
+        text-align: left;
+    }
+}

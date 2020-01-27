@@ -32,10 +32,26 @@ namespace NitelikliBilisim.App.Controllers
                 return Json(new ResponseModel
                 {
                     isSuccess = true,
-                    data = new List<CartItem>()
+                    data = new
+                    {
+                        items = new List<CartItem>(),
+                        total = 0m.ToString("C")
+                    }
                 });
 
-            var model = _vmCreator.GetCartItems(data.Items);
+            var cartItems = _vmCreator.GetCartItems(data.Items);
+
+            var sum = 0m;
+
+            if (cartItems.Count > 0)
+                cartItems.ForEach(x => sum += x.PriceNumeric);
+
+            var model = new
+            {
+                items = cartItems,
+                total = sum.ToString("C")
+            };
+
             return Json(new ResponseModel
             {
                 isSuccess = true,
