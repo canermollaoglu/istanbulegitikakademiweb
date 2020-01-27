@@ -1,4 +1,6 @@
 ﻿@model NitelikliBilisim.App.Models.HomeIndexModel
+@using NitelikliBilisim.Core.Services.Abstracts
+@inject IStorageService StorageService
 @{
     ViewData["Title"] = "Nitelikli Bilişim";
     Layout = "/Views/Shared/_Layout.cshtml";
@@ -61,31 +63,42 @@
         <div id="reccomended" class="owl-carousel owl-theme">
             @foreach (var item in Model.SuggestedEducations)
             {
-            <div class="item">
-                <div class="box_grid">
-                    <figure>
-                        <a href="#0" class="wish_bt"></a>
-                        <a href="/kurs-detayi/@item.Base.Id">
-                            <div class="preview"><span>Detaylar</span></div>
-                            <img src="@item.Medias[0].FileUrl" class="img-fluid" />
-                        </a>
-                        <div class="price">@item.Base.PriceText</div>
+                <div class="item">
+                    <div class="box_grid">
+                        <figure>
+                            <a href="#0" class="wish_bt"></a>
+                            <a href="/kurs-detayi/@item.Base.Id">
+                                <div class="preview"><span>Detaylar</span></div>
+                                @{
+                                    var filePath = "";
+                                    try
+                                    {
+                                        filePath = await StorageService.DownloadFile(System.IO.Path.GetFileName(item.Medias[0].FileUrl), "media-items");
+                                    }
+                                    catch
+                                    {
 
-                    </figure>
-                    <div class="wrapper">
-                        <small>@item.Base.CategoryName</small>
-                        <h3>@item.Base.Name</h3>
-                        <a href="/kurs-detayi/@item.Base.Id"><div class="desc-div"></div></a>
-                        <p class="desc-p">@item.Base.Description</p>
-                        <div class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(145)</small></div>
+                                    }
+                                }
+                                <img src="@filePath" class="img-fluid" />
+                            </a>
+                            <div class="price">@item.Base.PriceText</div>
+
+                        </figure>
+                        <div class="wrapper">
+                            <small>@item.Base.CategoryName</small>
+                            <h3>@item.Base.Name</h3>
+                            <a href="/kurs-detayi/@item.Base.Id"><div class="desc-div"></div></a>
+                            <p class="desc-p">@item.Base.Description</p>
+                            <div class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(145)</small></div>
+                        </div>
+                        <ul>
+                            <li><i class="icon_clock_alt"></i> 1h 30min</li>
+                            <li><i class="icon_like"></i> 890</li>
+                            <li><a role="button" data-education-id="@item.Base.Id" class="btn-buy" style="cursor:pointer;">Kayıt Ol</a></li>
+                        </ul>
                     </div>
-                    <ul>
-                        <li><i class="icon_clock_alt"></i> 1h 30min</li>
-                        <li><i class="icon_like"></i> 890</li>
-                        <li><a role="button" data-education-id="@item.Base.Id" class="btn-buy" style="cursor:pointer;">Kayıt Ol</a></li>
-                    </ul>
                 </div>
-            </div>
             }
         </div>
         <!-- /carousel -->
