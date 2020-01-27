@@ -67,16 +67,16 @@ namespace NitelikliBilisim.App
             //services.AddControllers(options => { options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()); });
             services.AddMvc();
 
-            if (CurrentEnvironment.IsDevelopment())
-            {
-                services.AddControllersWithViews();
-            }
-            else
+            if (CurrentEnvironment.IsProduction())
             {
                 services.AddControllersWithViews(options =>
                 {
                     options.Filters.Add(new ComingSoonActionFilter());
                 });
+            }
+            else
+            {
+                services.AddControllersWithViews();
             }
             services.AddControllers();
         }
