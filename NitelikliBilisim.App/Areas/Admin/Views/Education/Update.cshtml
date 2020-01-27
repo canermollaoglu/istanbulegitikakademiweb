@@ -22,6 +22,7 @@
     <form id="form-update-education">
         @Html.AntiForgeryToken()
         <input type="hidden" value="@Model.Education.Id" id="_education-id" />
+        <input type="hidden" value="@Model.Education.CategoryId" id="_categories-id"/>
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">

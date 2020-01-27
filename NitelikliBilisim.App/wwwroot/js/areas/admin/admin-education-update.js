@@ -2,7 +2,6 @@
 var selectCategories = $("#select-categories");
 var selectLevels = document.getElementById("select-levels");
 var btnSave = $("#btn-save");
-
 /* assignments */
 $(document).ready(document_onLoad);
 btnSave.on("click", btnSave_onClick);
@@ -15,8 +14,8 @@ function document_onLoad() {
 function btnSave_onClick() {
     btnSave.off("click");
     var resultAlert = new AlertSupport.ResultAlert();
-    var categoryIds = selectCategories.val();
-    if (categoryIds.length == 0) {
+    var tagIds = selectCategories.val();
+    if (tagIds.length == 0) {
         resultAlert.display({
             success: false,
             errors: ["Eğitim en az bir kategoriye ait olmalıdır"],
@@ -37,8 +36,9 @@ function btnSave_onClick() {
         Days: $("#input-days").val(),
         HoursPerDay: $("#input-hours-per-day").val(),
         EducationLevel: selectLevels.options[selectLevels.selectedIndex].value,
-        CategoryIds: categoryIds,
-        IsActive: !isActive
+        CategoryId: $("#_categories-id").val(),
+        TagIds: tagIds,
+        IsActive: !isActive,
     };
     var tokenVerifier = new SecuritySupport.TokenVerifier();
     data = tokenVerifier.addToken("form-update-education", data);
