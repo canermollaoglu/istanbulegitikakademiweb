@@ -5,11 +5,15 @@ using NitelikliBilisim.App.Managers;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
+using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_media_items;
 using NitelikliBilisim.Support.Enums;
+using NitelikliBilisim.Support.Text;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
@@ -19,12 +23,14 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly EducationMediaItemVmCreator _vmCreator;
-        private readonly FileUploadManager _fileUploadManager;
-        public EducationMediaItemController(IWebHostEnvironment hostingEnvironment, UnitOfWork unitOfWork)
+        private readonly FileUploadManager _fileManager;
+        private readonly IStorageService _storage;
+        public EducationMediaItemController(IWebHostEnvironment hostingEnvironment, UnitOfWork unitOfWork, IStorageService storage)
         {
             _unitOfWork = unitOfWork;
-            _vmCreator = new EducationMediaItemVmCreator(_unitOfWork);
-            _fileUploadManager = new FileUploadManager(hostingEnvironment, "jpg", "jpeg", "mp4");
+            _fileManager = new FileUploadManager(hostingEnvironment, "jpg", "jpeg", "png");
+            _storage = storage;
+            _vmCreator = new EducationMediaItemVmCreator(_unitOfWork, _storage);
         }
         [Route("admin/egitim-medya-yonetimi/{educationId}")]
         public IActionResult Manage(Guid? educationId)
@@ -54,7 +60,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             });
         }
         [HttpPost, Route("admin/add-education-media-item")]
-        public IActionResult AddMediaItem(AddMediaItemVm data)
+        public async System.Threading.Tasks.Task<IActionResult> AddMediaItem(AddMediaItemVm data)
         {
             if (!ModelState.IsValid)
             {
@@ -69,12 +75,15 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             {
                 var education = _unitOfWork.Education.GetById(data.EducationId);
 
-                var filePath = _fileUploadManager.Upload("/uploads/media-items/", data.PostedFile.Base64Content, data.PostedFile.Extension, EnumSupport.GetDescription((EducationMediaType)data.MediaItemType).ToLower(), education.Name);
-                _unitOfWork.EducationMedia.Insert(new Core.Entities.EducationMedia
+                var mediaStream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.PostedFile.Base64Content));
+                var mediaFileName = $"{education.Name.FormatForTag()}-{EnumSupport.GetDescription((EducationMediaType)data.MediaItemType).ToLower()}";
+                var mediaPath = await _storage.UploadFile(mediaStream, $"{mediaFileName}.{data.PostedFile.Extension.ToLower()}", "media-items");
+              
+                _unitOfWork.EducationMedia.Insert(new EducationMedia
                 {
                     EducationId = data.EducationId,
                     MediaType = (EducationMediaType)data.MediaItemType,
-                    FileUrl = filePath
+                    FileUrl = mediaPath
                 });
 
                 _unitOfWork.Education.CheckEducationState(data.EducationId);
@@ -112,7 +121,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     isSuccess = false,
                     errors = new List<string> { "Eğitimin medyasını silerken bir hata oluştu" }
                 });
-            _fileUploadManager.Delete(mediaItem.FileUrl);
+            _fileManager.Delete(mediaItem.FileUrl);
             _unitOfWork.EducationMedia.Delete(mediaItemId.Value);
 
             _unitOfWork.Education.CheckEducationState(mediaItem.EducationId);
