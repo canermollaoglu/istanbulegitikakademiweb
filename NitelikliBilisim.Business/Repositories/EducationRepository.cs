@@ -388,7 +388,9 @@ namespace NitelikliBilisim.Business.Repositories
 
             var educationGroupRepository = new EducationGroupRepository(Context);
 
-            var educationsList = preList.AsQueryable()
+            var query = string.IsNullOrEmpty(category) ? educations : preList.AsQueryable();
+
+            var educationsList = query
                 .Join(Context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Id, r => r.EducationId, (x, y) => new
                 {
                     Education = x,
