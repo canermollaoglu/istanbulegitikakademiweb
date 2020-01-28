@@ -89,7 +89,7 @@
                                 <h6>Seviye</h6>
                                 <ul id="level-list"></ul>
                             </div>
-                            <div class="filter_type">
+                            @*<div class="filter_type">
                                 <h6>Değerlendirme</h6>
                                 <ul id="rating-list">
                                     <li>
@@ -123,7 +123,7 @@
                                         </label>
                                     </li>
                                 </ul>
-                            </div>
+                            </div>*@
                         </div>
                     </div><div class="resize-sensor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; z-index: -1; visibility: hidden;"><div class="resize-sensor-expand" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; overflow: hidden; z-index: -1; visibility: hidden;"><div style="position: absolute; left: 0px; top: 0px; transition: all 0s ease 0s; width: 250px; height: 1998px;"></div></div><div class="resize-sensor-shrink" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; overflow: hidden; z-index: -1; visibility: hidden;"><div style="position: absolute; left: 0; top: 0; transition: 0s; width: 200%; height: 200%"></div></div></div>
                 </div>
@@ -333,18 +333,12 @@
                     `</div>` +
                     `</a>` +
                     `<p class="desc-p">${item.base.description}</p>` +
-                    `<h6>Tarih</h6>` +
-                    `<i class="ti-calendar"></i> <b>${item.base.startDateText}</b>` +
                     `</div>` +
-                    `<hr>` +
-                    `<table class="desc-table"><tr>` +
-                    `<td><h6>Kontenjan</h6><i class="icon-users"></i> <small>(0)</small></td>` +
-                    `<td><h6>Mevcut</h6><i class="icon-user"></i> <small>(0)</small></td>` +
-                    `</tr></table>` +
-                    `<ul>` +
-                    `<li><div class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(145)</small></div></li>` +
-                    `<li><i class="icon_like"></i> 890</li>` +
-                    `</ul>` +
+                    //`<hr>` +
+                    //`<ul>` +
+                    //`<li><div class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(145)</small></div></li>` +
+                    //`<li><i class="icon_like"></i> 890</li>` +
+                    //`</ul>` +
                     `<ul>` +
                     `<li><i class="icon_clock_alt"></i> ${item.base.daysText} gün (${item.base.hoursPerDayNumeric * item.base.daysNumeric} saat)</li>` +
                     `<li><a name="btn-buy" data-id="${item.base.id}" href="javascript:void(0)">Kayıt Ol</a></li>` +
@@ -379,12 +373,12 @@
                     `<small>${item.base.categoryName}</small>` +
                     `<h3>${item.base.name}</h3>` +
                     `<p>${item.base.description}</p>` +
-                    `<div class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(145)</small></div>` +
-                    `</div>` +
+                    //`<div class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(145)</small></div>` +
+                    //`</div>` +
 
                     `<ul>` +
                     `<li><i class="icon_clock_alt"></i> ${item.base.daysText} gün (${item.base.hoursPerDayNumeric * item.base.daysNumeric} saat)</li>` +
-                    `<li><i class="icon_like"></i> 890</li>` +
+                    //`<li><i class="icon_like"></i> 890</li>` +
                     `<li><a name="btn-buy" data-id="${item.base.id}" href="javascript:void(0)">Kayıt Ol</a></li>` +
                     `</ul>` +
                     `</div>` +
