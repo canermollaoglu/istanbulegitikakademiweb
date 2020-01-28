@@ -7,6 +7,7 @@ using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_parts;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
@@ -139,7 +140,53 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/egitim-parca-guncelle/{partId}")]
         public IActionResult UpdatePart(Guid? partId)
         {
-            return View();
+            if (partId == null)
+                return Redirect("/admin/egitimler");
+
+            var part = _unitOfWork.EducationPart.GetById(partId.Value);
+            var baseParts = _unitOfWork.EducationPart.Get(x => x.EducationId == part.EducationId && x.BasePartId == null).Select(x => new _EducationPart
+            {
+                Id = x.Id,
+                EducationId = x.EducationId,
+                Title = x.Title
+            }).ToList();
+           
+            var model = new UpdateGetVm
+            {
+                Id = partId.Value,
+                Order = part.Order,
+                Title =part.Title,
+                EducationId= part.EducationId,
+                Duration= part.Duration,
+                BasePartId = part.BasePartId,
+                BaseParts = baseParts
+            };
+            return View(model);
+        }
+
+        [HttpPost, Route("admin/egitim-parca-guncelle")]
+        public IActionResult Update(UpdatePostVm data)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelStateUtil.GetErrors(ModelState);
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = errors
+                });
+            }
+            var part = _unitOfWork.EducationPart.GetById(data.PartId);
+            part.BasePartId = data.BasePartId;
+            part.Order= data.Order.Value;
+            part.Title = data.Title;
+            part.Duration = data.Duration.Value;
+            _unitOfWork.EducationPart.Update(part);
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                message = "Eğitim Parça başarıyla güncellenmiştir"
+            });
         }
     }
 }
