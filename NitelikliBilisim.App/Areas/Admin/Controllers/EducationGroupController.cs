@@ -17,6 +17,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         {
             _unitOfWork = unitOfWork;
         }
+        [Route("admin/gruplar")]
         public IActionResult List()
         {
             var model = _unitOfWork.EducationGroup.GetListVm();

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NitelikliBilisim.Data;
 
 namespace NitelikliBilisim.Data.Migrations
 {
     [DbContext(typeof(NbDataContext))]
-    partial class NbDataContextModelSnapshot : ModelSnapshot
+    [Migration("20200128080555_Invoices")]
+    partial class Invoices
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -331,7 +333,7 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("nvarchar(128)")
                         .HasMaxLength(128);
 
-                    b.Property<Guid?>("InvoiceDetailsId")
+                    b.Property<Guid>("SaleId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("UpdatedDate")
@@ -1018,45 +1020,6 @@ namespace NitelikliBilisim.Data.Migrations
                     b.ToTable("InvoiceAddresses");
                 });
 
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.InvoiceDetail", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
-
-                    b.Property<Guid>("EducationId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("InvoiceId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsUsedAsTicket")
-                        .HasColumnType("bit");
-
-                    b.Property<decimal>("PriceAtCurrentDate")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("InvoiceId");
-
-                    b.ToTable("InvoiceDetails");
-                });
-
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.StudentEducationInfo", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1382,15 +1345,6 @@ namespace NitelikliBilisim.Data.Migrations
                     b.HasOne("NitelikliBilisim.Core.Entities.Invoice", "Sale")
                         .WithMany()
                         .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.InvoiceDetail", b =>
-                {
-                    b.HasOne("NitelikliBilisim.Core.Entities.Invoice", "Invoice")
-                        .WithMany()
-                        .HasForeignKey("InvoiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
