@@ -1,6 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.ViewModels.areas.admin.education_groups;
 using NitelikliBilisim.Data;
+using NitelikliBilisim.Support.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,5 +66,36 @@ namespace NitelikliBilisim.Business.Repositories
             return JsonConvert.SerializeObject(days);
         }
 
+        public ListGetVm GetListVm()
+        {
+            var groups = _context.EducationGroups.Include(x => x.Education).Include(x => x.Host)
+                .Select(x => new
+                {
+                    Id = x.Id,
+                    GroupName = x.GroupName,
+                    StartDate = x.StartDate,
+                    HostLocation = x.Host.City,
+                    EducationName = x.Education.Name
+                }).ToList();
+
+            var data = new List<_Group>();
+            foreach (var item in groups)
+            {
+                var hostLocation = EnumSupport.GetDescription(item.HostLocation);
+                data.Add(new _Group
+                {
+                    GroupId = item.Id,
+                    GroupName = item.GroupName,
+                    EducationName = item.EducationName,
+                    Location = hostLocation,
+                    StartDate = item.StartDate
+                });
+            }
+
+            return new ListGetVm
+            {
+                Groups = data
+            };
+        }
     }
 }

@@ -19,7 +19,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         }
         public IActionResult List()
         {
-            return View();
+            var model = _unitOfWork.EducationGroup.GetListVm();
+            return View(model);
         }
 
         [Route("admin/grup-olustur")]

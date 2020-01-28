@@ -28,5 +28,6 @@ namespace NitelikliBilisim.Core.Entities
         public virtual EducationHost Host { get; set; }
         public bool IsGroupOpenForAssignment { get; set; }
         public byte Quota { get; set; }
+        public decimal ExtraPrice { get; set; }
     }
 }
