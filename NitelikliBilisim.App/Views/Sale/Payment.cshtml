@@ -138,21 +138,31 @@
                                 <div class="col-md-6 add_top_30">
                                     <label>Son Kullanma Tarihi</label>
                                     <div class="row">
-                                        <div class="col-md-6">
-                                            <span class="input">
-                                                <input required class="input_field" type="number" maxlength="2" min="1" max="12">
-                                                <label class="input_label">
-                                                    <span class="input__label-content">Ay</span>
-                                                </label>
-                                            </span>
+                                        <div class="col-md-6 col-sm-6">
+                                            <div class="form-group select">
+                                                <div class="styled-select">
+                                                    <select class="required">
+                                                        <option value="" disabled selected>Ay</option>
+                                                        @for (int i = 1; i <= 12; i++)
+                                                        {
+                                                            <option value="@i.ToString("00")">@i.ToString("00")</option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <span class="input">
-                                                <input required class="input_field" maxlength="4" type="number" min="@DateTime.Now.Year" max="@(DateTime.Now.Year + 20)">
-                                                <label class="input_label">
-                                                    <span class="input__label-content">Yıl</span>
-                                                </label>
-                                            </span>
+                                        <div class="col-md-6 col-sm-6">
+                                            <div class="form-group select">
+                                                <div class="styled-select">
+                                                    <select class="required">
+                                                        <option value="" disabled selected>Yıl</option>
+                                                        @for (int i = @DateTime.Now.Year % 100; i <= (DateTime.Now.Year + 20) % 100; i++)
+                                                        {
+                                                            <option value="@i.ToString("00");">@i.ToString("00")</option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -287,16 +297,14 @@
                     <div class="box_detail">
                         <div>
                             <h5>Sipariş Özeti</h5>
-                            <p>MVC ile Proje Geliştirme (300 saat)</p>
+                            <table id="tbody-cart-items"></table>
                         </div>
                         <div id="total_cart">
-                            Toplam Tutar <span class="float-right">1200.00₺</span>
+                            Toplam <span class="float-right" id="txt-total"></span>
                         </div>
                         <div class="add_bottom_30">
                             <label>
-                                <input type="checkbox" class="icheck" style="        position: absolute;
-        opacity: 0;
-">
+                                <input type="checkbox" class="icheck" style="position: absolute; opacity: 0;">
                                 <span><a href="#" data-toggle="modal" data-target="#obf-modal">Ön Bilgilendirme Formu</a>'nu okudum ve kabul ediyorum.</span>
                             </label>
                             <label>
@@ -306,7 +314,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <a href="courses-grid-sidebar.html" class="btn_1 full-width outline"><i class="icon-right"></i> Alışverişe devam et</a>
+                                <a href="/tum-egitimler" class="btn_1 full-width outline"><i class="icon-right"></i> Alışverişe devam et</a>
                             </div>
                             <div class="col-md-12">
                                 <a href="cart-3.html" class="btn_1 full-width">Satın Al</a>
@@ -364,3 +372,69 @@
     <!-- /.modal-dialog -->
 </div>
 <!-- /.modal -->
+
+@section postScripts{
+    <script src="~/js/lib/security-support.js"></script>
+    <script>
+        /* fields */
+        var _cart = new CartSupport.Cart();
+
+        /* elements */
+        var tbodyCartItems = $("#tbody-cart-items");
+        var txtTotal = $("#txt-total");
+
+        /* assignments */
+        $(document).ready(document_onLoad);
+
+        /* events */
+        function document_onLoad() {
+            getCartItems();
+        }
+
+        /* functions */
+        function getCartItems() {
+            var items = _cart.getItems();
+            var data = {
+                Items: items
+            };
+            $.ajax({
+                url: "/get-cart-items",
+                method: "post",
+                data: data,
+                success: (res) => {
+                    if (res.isSuccess) {
+                        appendCartItems(res.data.items);
+                        txtTotal.text(res.data.total);
+                    }
+                }
+            });
+        }
+        function appendCartItems(data) {
+            tbodyCartItems.html("");
+
+            if (data.length === 0) {
+                tbodyCartItems.append(`<tr><td colspan="3">Sepetiniz boş</td></tr>`);
+            }
+
+            var appended = "";
+            for (var i = 0; i < data.length; i++) {
+                var item = data[i];
+                appended += `<tr>` +
+                    `<td>` +
+                    `<span class="item_cart">${item.educationName}</span>` +
+                    `</td>` +
+                    `<td>` +
+                    `<strong>${item.priceText}</strong>` +
+                    `</td>` +
+                    `<tr>`;
+            }
+            tbodyCartItems.append(appended);
+
+            var deleteButtons = document.getElementsByClassName("btn-delete-item");
+            for (var i = 0; i < deleteButtons.length; i++) {
+                var btn = deleteButtons[i];
+                btn.onclick = btnDeleteItem_onClick;
+            }
+        }
+    </script>
+}
