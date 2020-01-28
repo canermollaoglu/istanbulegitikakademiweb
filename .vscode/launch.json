@@ -9,7 +9,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/NitelikliBilisim.App/bin/Debug/netcoreapp2.2/NitelikliBilisim.App.dll",
+            "program": "${workspaceFolder}/NitelikliBilisim.App/bin/Debug/netcoreapp3.1/NitelikliBilisim.App.dll",
             "args": [],
             "cwd": "${workspaceFolder}/NitelikliBilisim.App",
             "stopAtEntry": false,
