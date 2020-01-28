@@ -238,6 +238,41 @@
                                     </span>
                                 </div>
                             </div>
+                            <div class="row">
+                                <h6>Fatura Tipi</h6>
+                                <div class="col-md-12">
+                                    <div class="form-group radio_input">
+                                        <label>
+                                            <input type="radio" value="individual" checked="" name="customer-type" class="icheck" style="position: absolute; opacity: 0;">Bireysel
+                                        </label>
+                                        <label class="">
+                                            <input type="radio" value="corporate" name="customer-type" class="icheck" style="position: absolute; opacity: 0;">Kurumsal
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" id="corporate-field" style="display: none">
+                                <div class="col-md-6 col-md-offset-3">
+                                    <span class="input">
+                                        <input class="input_field" type="text" id="input-company-name">
+                                        <label class="input_label">
+                                            <span class="input__label-content">Firma Adı</span>
+                                        </label>
+                                    </span>
+                                    <span class="input">
+                                        <input class="input_field" type="text" id="input-tax-no">
+                                        <label class="input_label">
+                                            <span class="input__label-content">Vergi No</span>
+                                        </label>
+                                    </span>
+                                    <span class="input">
+                                        <input class="input_field" type="text" id="input-tax-office">
+                                        <label class="input_label">
+                                            <span class="input__label-content">Vergi Dairesi</span>
+                                        </label>
+                                    </span>
+                                </div>
+                            </div>
                             <!--End row -->
                         </div>
                         <hr>
@@ -396,6 +431,8 @@
         var mastercard = $("#mastercard");
         var confirmButton = $('#confirm-purchase');
         var visa = $("#visa");
+        var customerType = $("input[name='customer-type']");
+        var corporateField = $("#corporate-field");
 
         /* assignments */
         $(document).ready(document_onLoad);
@@ -409,6 +446,17 @@
             cardNumber.payform('formatCardNumber');
             cvc.payform('formatCardCVC');
             telephone.mask("(000) 000 0000");
+            $('.icheck').on('ifToggled', function () {
+                customerType_onChange();
+            });
+        }
+        function customerType_onChange() {
+            var type = $("input[name='customer-type']:checked").val();
+
+            if (type == "individual")
+                corporateField.hide();
+            else if (type == "corporate")
+                corporateField.show();
         }
         function selectProvinces_onChange() {
             getDistricts($(this).val());
