@@ -5,7 +5,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
     //[Authorize]
     [Area("admin")]
-    public class HomeController : Controller
+    public class HomeController : TempSecurityController
     {
         [Route("admin/panel")]
         public IActionResult Index()

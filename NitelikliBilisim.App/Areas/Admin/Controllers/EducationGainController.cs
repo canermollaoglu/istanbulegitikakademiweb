@@ -11,7 +11,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
     //[Authorize]
     [Area("Admin")]
-    public class EducationGainController : Controller
+    public class EducationGainController : TempSecurityController
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly EducationGainVmCreator _vmCreator;

@@ -12,7 +12,7 @@ using System.Linq;
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class SuggestionController : Controller
+    public class SuggestionController : TempSecurityController
     {
         private readonly UnitOfWork _unitOfWork;
         public SuggestionController(UnitOfWork unitOfWork)

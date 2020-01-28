@@ -13,7 +13,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
     //[Authorize]
     [Area("Admin")]
-    public class EducationTagController : Controller
+    public class EducationTagController : TempSecurityController
     {
         private readonly UnitOfWork _unitOfWork;
         public EducationTagController(UnitOfWork unitOfWork)
