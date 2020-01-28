@@ -16,6 +16,7 @@ function document_onLoad() {
     $("#select-base-parts").select2();
     getEducationParts();
 }
+
 function btnAdd_onClick() {
     var selectBaseParts = document.getElementById("select-base-parts");
     btnAdd.off("click");

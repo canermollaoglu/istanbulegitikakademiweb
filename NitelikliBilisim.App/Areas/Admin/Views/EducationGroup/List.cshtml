@@ -1,0 +1,64 @@
+﻿@model NitelikliBilisim.Core.ViewModels.areas.admin.education_groups.ListGetVm
+@{
+    ViewData["Title"] = "List";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    <link href="~/assets/css/area-admin/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-table"></i> Eğitim Grupları
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Grup İsmi</th>
+                        <th>Eğitim İsmi</th>
+                        <th>Başlangıç Tarihi</th>
+                        <th>Konum</th>
+                        <th>İşlem</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>Grup İsmi</th>
+                        <th>Eğitim İsmi</th>
+                        <th>Başlangıç Tarihi</th>
+                        <th>Konum</th>
+                        <th>İşlem</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    @foreach (var item in Model.Groups)
+                    {
+                        <tr>
+                            <td>@item.GroupName</td>
+                            <td>@item.EducationName</td>
+                            <td>@item.StartDate.ToShortDateString()</td>
+                            <td>@item.Location</td>
+                            <td>
+                                <a href="/admin/grup-ertele/@item.GroupId" class="btn btn-warning"><i class="fa fa-clock-o"></i></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer small text-muted">Veri tarihi: @DateTime.Now</div>
+</div>
+
+@section postScripts{
+    <script src="~/assets/js/area-admin/jquery.dataTables.js"></script>
+    <script src="~/assets/js/area-admin/dataTables.bootstrap4.js"></script>
+    <script src="~/js/sup/alert-sup.js"></script>
+
+}

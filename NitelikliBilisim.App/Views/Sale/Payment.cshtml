@@ -116,15 +116,15 @@
                         </div>
                         <div class="step">
                             <span class="input">
-                                <input class="input_field" type="text">
+                                <input class="input_field" type="text" id="input-owner">
                                 <label class="input_label">
                                     <span class="input__label-content">Kartın Üzerindeki Ad Soyad</span>
                                 </label>
                             </span>
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-6" id="card-number-field">
                                     <span class="input">
-                                        <input class="input_field" type="text">
+                                        <input class="input_field" type="text" id="card-number">
                                         <label class="input_label">
                                             <span class="input__label-content">Kart Numarası</span>
                                         </label>
@@ -138,33 +138,43 @@
                                 <div class="col-md-6 add_top_30">
                                     <label>Son Kullanma Tarihi</label>
                                     <div class="row">
-                                        <div class="col-md-6">
-                                            <span class="input">
-                                                <input required class="input_field" type="number" maxlength="2" min="1" max="12">
-                                                <label class="input_label">
-                                                    <span class="input__label-content">Ay</span>
-                                                </label>
-                                            </span>
+                                        <div class="col-md-6 col-sm-6">
+                                            <div class="form-group select">
+                                                <div class="styled-select">
+                                                    <select class="required">
+                                                        <option value="" disabled selected>Ay</option>
+                                                        @for (int i = 1; i <= 12; i++)
+                                                        {
+                                                            <option value="@i.ToString("00")">@i.ToString("00")</option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <span class="input">
-                                                <input required class="input_field" maxlength="4" type="number" min="@DateTime.Now.Year" max="@(DateTime.Now.Year + 20)">
-                                                <label class="input_label">
-                                                    <span class="input__label-content">Yıl</span>
-                                                </label>
-                                            </span>
+                                        <div class="col-md-6 col-sm-6">
+                                            <div class="form-group select">
+                                                <div class="styled-select">
+                                                    <select class="required">
+                                                        <option value="" disabled selected>Yıl</option>
+                                                        @for (int i = @DateTime.Now.Year % 100; i <= (DateTime.Now.Year + 20) % 100; i++)
+                                                        {
+                                                            <option value="@i.ToString("00");">@i.ToString("00")</option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6 add_top_30">
                                     <div class="form-group">
-                                        <label>Güvenlik Kodu (CCV)</label>
+                                        <label>Güvenlik Kodu (CVC) <i class="icon-info-circled" data-toggle="tooltip" data-placement="top" data-html="true" title="<p>Kartınızın arka yüzündeki 3 haneli güvenlik numarasıdır.<img style='width: 50px; float: right' src='/assets/img/ccv-info.png'/></p>"></i></label>
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <span class="input">
-                                                    <input class="input_field" maxlength="3" type="text">
+                                                    <input class="input_field" maxlength="3" type="text" id="cvc">
                                                     <label class="input_label">
-                                                        <span class="input__label-content">CCV</span>
+                                                        <span class="input__label-content">CVC</span>
                                                     </label>
                                                 </span>
                                             </div>
@@ -192,8 +202,8 @@
                                 <div class="col-md-6 col-sm-6">
                                     <div class="form-group select">
                                         <div class="styled-select">
-                                            <select class="required">
-                                                <option value="0" selected="">İl</option>
+                                            <select class="required" id="select-provinces">
+                                                <option value="" selected="">İl</option>
                                             </select>
                                         </div>
                                     </div>
@@ -201,8 +211,8 @@
                                 <div class="col-md-6 col-sm-6">
                                     <div class="form-group select">
                                         <div class="styled-select">
-                                            <select class="required">
-                                                <option value="0" selected="">İlçe</option>
+                                            <select class="required" id="select-districts">
+                                                <option value="" selected="">İlçe</option>
                                             </select>
                                         </div>
                                     </div>
@@ -221,7 +231,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <span class="input">
-                                        <input class="input_field" type="text">
+                                        <input class="input_field" type="text" id="input-telephone">
                                         <label class="input_label">
                                             <span class="input__label-content">Telefon</span>
                                         </label>
@@ -287,16 +297,14 @@
                     <div class="box_detail">
                         <div>
                             <h5>Sipariş Özeti</h5>
-                            <p>MVC ile Proje Geliştirme (300 saat)</p>
+                            <table id="tbody-cart-items"></table>
                         </div>
                         <div id="total_cart">
-                            Toplam Tutar <span class="float-right">1200.00₺</span>
+                            Toplam <span class="float-right" id="txt-total"></span>
                         </div>
                         <div class="add_bottom_30">
                             <label>
-                                <input type="checkbox" class="icheck" style="        position: absolute;
-        opacity: 0;
-">
+                                <input type="checkbox" class="icheck" style="position: absolute; opacity: 0;">
                                 <span><a href="#" data-toggle="modal" data-target="#obf-modal">Ön Bilgilendirme Formu</a>'nu okudum ve kabul ediyorum.</span>
                             </label>
                             <label>
@@ -306,7 +314,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <a href="courses-grid-sidebar.html" class="btn_1 full-width outline"><i class="icon-right"></i> Alışverişe devam et</a>
+                                <a href="/tum-egitimler" class="btn_1 full-width outline"><i class="icon-right"></i> Alışverişe devam et</a>
                             </div>
                             <div class="col-md-12">
                                 <a href="cart-3.html" class="btn_1 full-width">Satın Al</a>
@@ -353,9 +361,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             </div>
             <div class="modal-body">
-                <p>Lorem ipsum dolor sit amet, in porro albucius qui, in <strong>nec quod novum accumsan</strong>, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus.</p>
-                <p>Lorem ipsum dolor sit amet, in porro albucius qui, in nec quod novum accumsan, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus. Lorem ipsum dolor sit amet, <strong>in porro albucius qui</strong>, in nec quod novum accumsan, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus.</p>
-                <p>Lorem ipsum dolor sit amet, in porro albucius qui, in nec quod novum accumsan, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus.</p>
+                <partial name="partials/_MesafeliSatisSozlesmesi" />
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn_1" data-dismiss="modal">Kapat</button>
@@ -366,3 +372,158 @@
     <!-- /.modal-dialog -->
 </div>
 <!-- /.modal -->
+
+@section postScripts{
+    <script src="~/js/lib/security-support.js"></script>
+    <script src="~/assets/js/jquery.payform.min.js"></script>
+    <script src="~/assets/js/jquery.mask.min.js"></script>
+
+    <script>
+        /* fields */
+        var _cart = new CartSupport.Cart();
+        var provinces = {};
+
+        /* elements */
+        var tbodyCartItems = $("#tbody-cart-items");
+        var txtTotal = $("#txt-total");
+        var selectProvinces = $("#select-provinces");
+        var selectDistricts = $("#select-districts");
+        var owner = $('#input-owner');
+        var telephone = $('#input-telephone');
+        var cardNumber = $('#card-number');
+        var cardNumberField = $('#card-number-field');
+        var cvc = $("#cvc");
+        var mastercard = $("#mastercard");
+        var confirmButton = $('#confirm-purchase');
+        var visa = $("#visa");
+
+        /* assignments */
+        $(document).ready(document_onLoad);
+        selectProvinces.on("change", selectProvinces_onChange);
+        cardNumber.on("keyup", cardNumber_onKeyUp);
+
+        /* events */
+        function document_onLoad() {
+            getCartItems();
+            getProvinces();
+            cardNumber.payform('formatCardNumber');
+            cvc.payform('formatCardCVC');
+            telephone.mask("(000) 000 0000");
+        }
+        function selectProvinces_onChange() {
+            getDistricts($(this).val());
+        }
+        function cardNumber_onKeyUp() {
+            visa.removeClass('transparent');
+            mastercard.removeClass('transparent');
+
+            if ($.payform.validateCardNumber(cardNumber.val()) == false) {
+                cardNumberField.addClass('has-error');
+            } else {
+                cardNumberField.removeClass('has-error');
+                cardNumberField.addClass('has-success');
+            }
+
+            if ($.payform.parseCardType(cardNumber.val()) == 'visa') {
+                mastercard.addClass('transparent');
+            } else if ($.payform.parseCardType(cardNumber.val()) == 'mastercard') {
+                visa.addClass('transparent');
+            }
+        }
+
+        /* functions */
+        function getCartItems() {
+            var items = _cart.getItems();
+            var data = {
+                Items: items
+            };
+            $.ajax({
+                url: "/get-cart-items",
+                method: "post",
+                data: data,
+                success: (res) => {
+                    if (res.isSuccess) {
+                        appendCartItems(res.data.items);
+                        txtTotal.text(res.data.total);
+                    }
+                }
+            });
+        }
+        function appendCartItems(data) {
+            tbodyCartItems.html("");
+
+            if (data.length === 0) {
+                tbodyCartItems.append(`<tr><td colspan="3">Sepetiniz boş</td></tr>`);
+            }
+
+            var appended = "";
+            for (var i = 0; i < data.length; i++) {
+                var item = data[i];
+                appended += `<tr>` +
+                    `<td style="width:100%">` +
+                    `<span class="item_cart">${item.educationName}</span>` +
+                    `</td>` +
+                    `<td style="white-space: nowrap">` +
+                    `<b>${item.priceText}</b>` +
+                    `</td>` +
+                    `<tr>`;
+            }
+            tbodyCartItems.append(appended);
+
+            var deleteButtons = document.getElementsByClassName("btn-delete-item");
+            for (var i = 0; i < deleteButtons.length; i++) {
+                var btn = deleteButtons[i];
+                btn.onclick = btnDeleteItem_onClick;
+            }
+        }
+        function getProvinces() {
+            return $.ajax({
+                url: "/data/cities.json",
+                method: 'GET',
+                dataType: 'json',
+                success: function (res) {
+                    provinces = res.data.sort(sortByTrAlphabet);
+                    $.each(provinces, function (index, value) {
+                        var name = correctTrChars(value.name)
+                        selectProvinces.append(new Option(name, value._id));
+                    });
+                }
+            });
+        }
+        function getDistricts(provinceId) {
+            var data = provinces.find(s => s._id == provinceId).towns;
+            selectDistricts.empty();
+            $.each(data, function (index, value) {
+                var name = correctTrChars(value.name)
+                selectDistricts.append(new Option(name, value._id));
+            });
+        }
+        function sortByTrAlphabet(a, b) {
+            var atitle = a.name;
+            var btitle = b.name;
+            var alfabe = "0123456789AaBbCcÇçDdEeFfGgĞğHhIıİiJjKkLlMmNnOoÖöPpQqRrSsŞşTtUuÜüVvWwXxYyZz";
+            if (atitle.length === 0 || btitle.length === 0) {
+                return atitle.length - btitle.length;
+            }
+            for (var i = 0; i < atitle.length && i < btitle.length; i++) {
+                var ai = alfabe.indexOf(atitle[i].toUpperCase());
+                var bi = alfabe.indexOf(btitle[i].toUpperCase());
+                if (ai !== bi) {
+                    return ai - bi;
+                }
+            }
+        }
+        function correctTrChars(text) {
+            if (text == null) {
+                return;
+            }
+            return text.replace(/&#199;/g, "Ç")
+                .replace(/&#214;/g, "Ö")
+                .replace(/&#220;/g, "Ü")
+                .replace(/&#231;/g, "ç")
+                .replace(/&#246;/g, "ö")
+                .replace(/&#304;/g, "İ")
+                .replace(/&#252;/g, "ü");
+        }
+    </script>
+}

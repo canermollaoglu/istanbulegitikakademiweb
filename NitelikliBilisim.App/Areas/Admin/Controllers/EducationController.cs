@@ -14,6 +14,7 @@ using NitelikliBilisim.Support.Text;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
@@ -115,7 +116,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             return View(model);
         }
         [HttpPost, Route("admin/egitim-guncelle")]
-        public IActionResult Update(UpdatePostVm data)
+        public async Task<IActionResult> Update(UpdatePostVm data)
         {
             if (!ModelState.IsValid || data.TagIds.Count == 0)
                 return Json(new ResponseModel
@@ -124,7 +125,48 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     errors = ModelStateUtil.GetErrors(ModelState)
                 });
 
-            _vmCreator.SendVmToUpdate(data);
+            if(data.BannerFile.Base64Content != null){
+                var oldBanner = _unitOfWork.EducationMedia.Get().FirstOrDefault(x => x.EducationId == data.EducationId && x.MediaType == EducationMediaType.Banner);
+                if (oldBanner != null)
+                {
+                    var oldBannerPath = oldBanner.FileUrl;
+                    _fileManager.Delete(oldBannerPath);
+
+                    _unitOfWork.EducationMedia.Delete(oldBanner);
+                }
+
+                var bannerStream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.BannerFile.Base64Content));
+                var bannerFileName = $"{data.Name.FormatForTag()}-banner";
+                var bannerPath = await _storage.UploadFile(bannerStream, $"{bannerFileName}.{data.BannerFile.Extension.ToLower()}", "media-items");
+                var banner = new EducationMedia
+                {
+                    EducationId = data.EducationId,
+                    FileUrl = bannerPath,
+                    MediaType = EducationMediaType.Banner
+                };
+                _unitOfWork.EducationMedia.Insert(banner);
+            }
+
+            if (data.PreviewFile.Base64Content != null){
+                var oldPreview = _unitOfWork.EducationMedia.Get().First(x => x.EducationId == data.EducationId && x.MediaType == EducationMediaType.PreviewPhoto);
+
+                var oldPreviewPath = oldPreview.FileUrl;
+                _fileManager.Delete(oldPreviewPath);
+
+                _unitOfWork.EducationMedia.Delete(oldPreview);
+
+                var previewStream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.PreviewFile.Base64Content));
+                var previewFileName = $"{data.Name.FormatForTag()}-preview";
+                var previewPath = await _storage.UploadFile(previewStream, $"{previewFileName}.{data.PreviewFile.Extension.ToLower()}", "media-items");
+                var preview = new EducationMedia
+                {
+                    FileUrl = previewPath,
+                    MediaType = data.PreviewFile.Extension == "mp4" ? EducationMediaType.PreviewVideo : EducationMediaType.PreviewPhoto
+                };
+                _unitOfWork.EducationMedia.Insert(preview);
+            }
+
+            _vmCreator.SendVmToUpdate(data );
 
             return Json(new ResponseModel
             {
