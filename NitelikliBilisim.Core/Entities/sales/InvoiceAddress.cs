@@ -5,11 +5,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NitelikliBilisim.Core.Entities
 {
-    [Table("SaleAddresses")]
-    public class SaleAddress : BaseEntity<Guid>
+    [Table("InvoiceAddresses")]
+    public class InvoiceAddress : BaseEntity<Guid>
     {
         [ForeignKey("Id")]
-        public virtual Sale Sale { get; set; }
+        public virtual Invoice Sale { get; set; }
         
         [MaxLength(32)]
         public string City { get; set; }

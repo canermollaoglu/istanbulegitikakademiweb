@@ -8,10 +8,10 @@ using System.Text;
 
 namespace NitelikliBilisim.Core.Entities
 {
-    [Table("Sales")]
-    public class Sale : BaseEntity<Guid>
+    [Table("Invoices")]
+    public class Invoice : BaseEntity<Guid>
     {
-        public Sale()
+        public Invoice()
         {
             Id = Guid.NewGuid();
         }
@@ -19,9 +19,7 @@ namespace NitelikliBilisim.Core.Entities
         public CustomerType BillingType { get; set; }
         public string TaxNo { get; set; }
         public string TaxOffice { get; set; }
-        public Guid EducationId { get; set; }
-        public decimal Paid { get; set; }
-        public decimal PriceAtCurrentDate { get; set; }
+        public decimal TotalPaid { get; set; }
         public decimal Earning { get; set; }
         public bool IsCash { get; set; }
         public byte PaymentCount { get; set; }
