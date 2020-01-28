@@ -129,7 +129,17 @@
                         @*<img src="img/categories/course_1.jpg" class="img-fluid" alt="">*@
                         <img src="~/assets/img/course_1.jpg" class="img-fluid" />
                         <div class="info">
-                            <small><i class="ti-layers"></i>15 Eğitim</small>
+                            <small>
+                                <i class="ti-layers"></i>
+                                @if (Model.EducationCountByCategory.ContainsKey("Web ve Mobil Programlama"))
+                                {
+                                    <text>@Model.EducationCountByCategory["Web ve Mobil Programlama"]</text>
+                                }
+                                else
+                                {
+                                    <text>0 Eğitim</text>
+                                }
+                            </small>
                             <h3>Web ve Mobil Programlama</h3>
                         </div>
                     </figure>
@@ -143,7 +153,17 @@
                         @*<img src="img/categories/course_1.jpg" class="img-fluid" alt="">*@
                         <img src="~/assets/img/course_1.jpg" class="img-fluid" />
                         <div class="info">
-                            <small><i class="ti-layers"></i>23 Eğitim</small>
+                            <small>
+                                <i class="ti-layers"></i>
+                                @if (Model.EducationCountByCategory.ContainsKey("Sistem ve Ağ Yönetimi"))
+                                {
+                                    <text>@Model.EducationCountByCategory["Sistem ve Ağ Yönetimi"]</text>
+                                }
+                                else
+                                {
+                                    <text>0 Eğitim</text>
+                                }
+                            </small>
                             <h3>Sistem ve Ağ Yönetimi</h3>
                         </div>
                     </figure>
@@ -157,7 +177,17 @@
                         @*<img src="img/categories/course_1.jpg" class="img-fluid" alt="">*@
                         <img src="~/assets/img/course_1.jpg" class="img-fluid" />
                         <div class="info">
-                            <small><i class="ti-layers"></i>23 Eğitim</small>
+                            <small>
+                                <i class="ti-layers"></i>
+                                @if (Model.EducationCountByCategory.ContainsKey("Siber Güvenlik"))
+                                {
+                                    <text>@Model.EducationCountByCategory["Siber Güvenlik"]</text>
+                                }
+                                else
+                                {
+                                    <text>0 Eğitim</text>
+                                }
+                            </small>
                             <h3>Siber Güvenlik</h3>
                         </div>
                     </figure>
@@ -171,7 +201,17 @@
                         @*<img src="img/categories/course_1.jpg" class="img-fluid" alt="">*@
                         <img src="~/assets/img/course_1.jpg" class="img-fluid" />
                         <div class="info">
-                            <small><i class="ti-layers"></i>23 Eğitim</small>
+                            <small>
+                                <i class="ti-layers"></i>
+                                @if (Model.EducationCountByCategory.ContainsKey("Bulut Bilişim"))
+                                {
+                                    <text>@Model.EducationCountByCategory["Bulut Bilişim"]</text>
+                                }
+                                else
+                                {
+                                    <text>0 Eğitim</text>
+                                }
+                            </small>
                             <h3>Bulut Bilişim</h3>
                         </div>
                     </figure>
@@ -185,7 +225,17 @@
                         @*<img src="img/categories/course_1.jpg" class="img-fluid" alt="">*@
                         <img src="~/assets/img/course_1.jpg" class="img-fluid" />
                         <div class="info">
-                            <small><i class="ti-layers"></i>23 Eğitim</small>
+                            <small>
+                                <i class="ti-layers"></i>
+                                @if (Model.EducationCountByCategory.ContainsKey("Oyun Programlama"))
+                                {
+                                    <text>@Model.EducationCountByCategory["Oyun Programlama"]</text>
+                                }
+                                else
+                                {
+                                    <text>0 Eğitim</text>
+                                }
+                            </small>
                             <h3>Oyun Programlama</h3>
                         </div>
                     </figure>
@@ -199,7 +249,17 @@
                         @*<img src="img/categories/course_1.jpg" class="img-fluid" alt="">*@
                         <img src="~/assets/img/course_1.jpg" class="img-fluid" />
                         <div class="info">
-                            <small><i class="ti-layers"></i>23 Eğitim</small>
+                            <small>
+                                <i class="ti-layers"></i>
+                                @if (Model.EducationCountByCategory.ContainsKey("Kurumsal Kaynak Planlama"))
+                                {
+                                    <text>@Model.EducationCountByCategory["Kurumsal Kaynak Planlama"]</text>
+                                }
+                                else
+                                {
+                                    <text>0 Eğitim</text>
+                                }
+                            </small>
                             <h3>Kurumsal Kaynak Planlama</h3>
                         </div>
                     </figure>
