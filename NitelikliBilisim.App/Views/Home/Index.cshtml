@@ -93,11 +93,11 @@
                             </a>
                             <p class="desc-p">@item.Base.Description</p>
                         </div>
-                        <hr />
+                        @*<hr />
                         <ul>
                             <li><div class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(145)</small></div></li>
                             <li><i class="icon_like"></i> 890</li>
-                        </ul>
+                        </ul>*@
                         <ul>
                             <li><i class="icon_clock_alt"></i> @item.Base.DaysText gün (@(item.Base.HoursPerDayNumeric * item.Base.DaysNumeric) saat)</li>
                             <li><a role="button" data-education-id="@item.Base.Id" class="btn-buy" style="cursor:pointer;">Kayıt Ol</a></li>
@@ -129,7 +129,17 @@
                         @*<img src="img/categories/course_1.jpg" class="img-fluid" alt="">*@
                         <img src="~/assets/img/course_1.jpg" class="img-fluid" />
                         <div class="info">
-                            <small><i class="ti-layers"></i>15 Eğitim</small>
+                            <small>
+                                <i class="ti-layers"></i>
+                                @if (Model.EducationCountByCategory.ContainsKey("Web ve Mobil Programlama"))
+                                {
+                                    <text>@Model.EducationCountByCategory["Web ve Mobil Programlama"] Eğitim</text>
+                                }
+                                else
+                                {
+                                    <text>0 Eğitim</text>
+                                }
+                            </small>
                             <h3>Web ve Mobil Programlama</h3>
                         </div>
                     </figure>
@@ -143,7 +153,17 @@
                         @*<img src="img/categories/course_1.jpg" class="img-fluid" alt="">*@
                         <img src="~/assets/img/course_1.jpg" class="img-fluid" />
                         <div class="info">
-                            <small><i class="ti-layers"></i>23 Eğitim</small>
+                            <small>
+                                <i class="ti-layers"></i>
+                                @if (Model.EducationCountByCategory.ContainsKey("Sistem ve Ağ Yönetimi"))
+                                {
+                                    <text>@Model.EducationCountByCategory["Sistem ve Ağ Yönetimi"] Eğitim</text>
+                                }
+                                else
+                                {
+                                    <text>0 Eğitim</text>
+                                }
+                            </small>
                             <h3>Sistem ve Ağ Yönetimi</h3>
                         </div>
                     </figure>
@@ -157,7 +177,17 @@
                         @*<img src="img/categories/course_1.jpg" class="img-fluid" alt="">*@
                         <img src="~/assets/img/course_1.jpg" class="img-fluid" />
                         <div class="info">
-                            <small><i class="ti-layers"></i>23 Eğitim</small>
+                            <small>
+                                <i class="ti-layers"></i>
+                                @if (Model.EducationCountByCategory.ContainsKey("Siber Güvenlik"))
+                                {
+                                    <text>@Model.EducationCountByCategory["Siber Güvenlik"] Eğitim</text>
+                                }
+                                else
+                                {
+                                    <text>0 Eğitim</text>
+                                }
+                            </small>
                             <h3>Siber Güvenlik</h3>
                         </div>
                     </figure>
@@ -171,7 +201,17 @@
                         @*<img src="img/categories/course_1.jpg" class="img-fluid" alt="">*@
                         <img src="~/assets/img/course_1.jpg" class="img-fluid" />
                         <div class="info">
-                            <small><i class="ti-layers"></i>23 Eğitim</small>
+                            <small>
+                                <i class="ti-layers"></i>
+                                @if (Model.EducationCountByCategory.ContainsKey("Bulut Bilişim"))
+                                {
+                                    <text>@Model.EducationCountByCategory["Bulut Bilişim"] Eğitim</text>
+                                }
+                                else
+                                {
+                                    <text>0 Eğitim</text>
+                                }
+                            </small>
                             <h3>Bulut Bilişim</h3>
                         </div>
                     </figure>
@@ -185,7 +225,17 @@
                         @*<img src="img/categories/course_1.jpg" class="img-fluid" alt="">*@
                         <img src="~/assets/img/course_1.jpg" class="img-fluid" />
                         <div class="info">
-                            <small><i class="ti-layers"></i>23 Eğitim</small>
+                            <small>
+                                <i class="ti-layers"></i>
+                                @if (Model.EducationCountByCategory.ContainsKey("Oyun Programlama"))
+                                {
+                                    <text>@Model.EducationCountByCategory["Oyun Programlama"] Eğitim</text>
+                                }
+                                else
+                                {
+                                    <text>0 Eğitim</text>
+                                }
+                            </small>
                             <h3>Oyun Programlama</h3>
                         </div>
                     </figure>
@@ -199,7 +249,17 @@
                         @*<img src="img/categories/course_1.jpg" class="img-fluid" alt="">*@
                         <img src="~/assets/img/course_1.jpg" class="img-fluid" />
                         <div class="info">
-                            <small><i class="ti-layers"></i>23 Eğitim</small>
+                            <small>
+                                <i class="ti-layers"></i>
+                                @if (Model.EducationCountByCategory.ContainsKey("Kurumsal Kaynak Planlama"))
+                                {
+                                    <text>@Model.EducationCountByCategory["Kurumsal Kaynak Planlama"] Eğitim</text>
+                                }
+                                else
+                                {
+                                    <text>0 Eğitim</text>
+                                }
+                            </small>
                             <h3>Kurumsal Kaynak Planlama</h3>
                         </div>
                     </figure>

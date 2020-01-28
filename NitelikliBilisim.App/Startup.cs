@@ -96,8 +96,8 @@ namespace NitelikliBilisim.App
             });
 
             app.UseRouting();
-            app.UseAuthorization();
             app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseCookiePolicy();
 
