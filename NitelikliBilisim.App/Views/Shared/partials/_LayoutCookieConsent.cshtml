@@ -1,3 +1,28 @@
 ﻿<div id="cookie-bar" class="fixed bottom">
-    <p>Kullanıcı deneyimini iyileştirmek için çerez kullanıyoruz.<a id="btn-cookie-agree" role="button" class="cb-enable">Kabul Ediyorum</a><a id="btn-cookie-privacy-policy" role="button" class="cb-policy">Çerez Politikası</a></p>
+    <p>
+        Kullanıcı deneyimini iyileştirmek için çerez kullanıyoruz.
+        <a id="btn-cookie-agree" role="button" class="cb-enable">Kabul Ediyorum</a>
+        <a id="btn-cookie-privacy-policy" href="#" data-toggle="modal" data-target="#cookie-policy-modal" role="button" class="cb-policy">Çerez Politikası</a>
+    </p>
 </div>
+
+<!-- Modal terms -->
+<div class="modal fade" id="cookie-policy-modal" tabindex="-1" role="dialog" aria-labelledby="cpLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="cpLabel">Çerez Politikası</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <partial name="partials/_CerezPolitikasi" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn_1" data-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
