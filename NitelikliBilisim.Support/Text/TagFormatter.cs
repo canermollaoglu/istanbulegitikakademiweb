@@ -26,6 +26,7 @@ namespace NitelikliBilisim.Support.Text
                 .Replace("'", "")
                 .Replace("^", "")
                 .Replace("#", "sharp")
+                .Replace("c++", "cpp")
                 .Replace("+", "")
                 .Replace("$", "")
                 .Replace("%", "")
