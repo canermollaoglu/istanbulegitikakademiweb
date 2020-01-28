@@ -70,7 +70,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 Name = data.Name,
                 Description = data.Description,
                 BaseCategoryId = data.BaseCategoryId,
-                CategoryType = (CategoryType)data.CategoryType
+                CategoryType = (CategoryType)data.CategoryType,
+                IsCurrent = true
             });
             return Json(new ResponseModel
             {

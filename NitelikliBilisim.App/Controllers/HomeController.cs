@@ -26,6 +26,7 @@ namespace NitelikliBilisim.App.Controllers
         public IActionResult Index()
         {
             var model = new HomeIndexModel();
+            model.EducationCountByCategory = _unitOfWork.EducationCategory.GetEducationCountForCategories();
             var isLoggedIn = HttpContext.User.Identity.IsAuthenticated;
             if (!isLoggedIn)
                 model.SuggestedEducations = _unitOfWork.Suggestion.SuggestEducationsForHomeIndex(false, null);

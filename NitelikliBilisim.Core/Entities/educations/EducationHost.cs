@@ -19,5 +19,9 @@ namespace NitelikliBilisim.Core.Entities
         public string Address { get; set; }
         [MaxLength(256)]
         public string HostName { get; set; }
+        [MaxLength(128)]
+        public string Latitude { get; set; }
+        [MaxLength(128)]
+        public string Longitude { get; set; }
     }
 }
