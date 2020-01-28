@@ -116,15 +116,15 @@
                         </div>
                         <div class="step">
                             <span class="input">
-                                <input class="input_field" type="text">
+                                <input class="input_field" type="text" id="input-owner">
                                 <label class="input_label">
                                     <span class="input__label-content">Kartın Üzerindeki Ad Soyad</span>
                                 </label>
                             </span>
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-6" id="card-number-field">
                                     <span class="input">
-                                        <input class="input_field" type="text">
+                                        <input class="input_field" type="text" id="card-number">
                                         <label class="input_label">
                                             <span class="input__label-content">Kart Numarası</span>
                                         </label>
@@ -168,13 +168,13 @@
                                 </div>
                                 <div class="col-md-6 add_top_30">
                                     <div class="form-group">
-                                        <label>Güvenlik Kodu (CCV) <i class="icon-info-circled" data-toggle="tooltip" data-placement="top" data-html="true" title="<p>Kartınızın arka yüzündeki 3 haneli güvenlik numarasıdır.<img style='width: 50px; float: right' src='/assets/img/ccv-info.png'/></p>"></i></label>
+                                        <label>Güvenlik Kodu (CVC) <i class="icon-info-circled" data-toggle="tooltip" data-placement="top" data-html="true" title="<p>Kartınızın arka yüzündeki 3 haneli güvenlik numarasıdır.<img style='width: 50px; float: right' src='/assets/img/ccv-info.png'/></p>"></i></label>
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <span class="input">
-                                                    <input class="input_field" maxlength="3" type="text">
+                                                    <input class="input_field" maxlength="3" type="text" id="cvc">
                                                     <label class="input_label">
-                                                        <span class="input__label-content">CCV</span>
+                                                        <span class="input__label-content">CVC</span>
                                                     </label>
                                                 </span>
                                             </div>
@@ -202,8 +202,8 @@
                                 <div class="col-md-6 col-sm-6">
                                     <div class="form-group select">
                                         <div class="styled-select">
-                                            <select class="required">
-                                                <option value="0" selected="">İl</option>
+                                            <select class="required" id="select-provinces">
+                                                <option value="" selected="">İl</option>
                                             </select>
                                         </div>
                                     </div>
@@ -211,8 +211,8 @@
                                 <div class="col-md-6 col-sm-6">
                                     <div class="form-group select">
                                         <div class="styled-select">
-                                            <select class="required">
-                                                <option value="0" selected="">İlçe</option>
+                                            <select class="required" id="select-districts">
+                                                <option value="" selected="">İlçe</option>
                                             </select>
                                         </div>
                                     </div>
@@ -231,7 +231,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <span class="input">
-                                        <input class="input_field" type="text">
+                                        <input class="input_field" type="text" id="input-telephone">
                                         <label class="input_label">
                                             <span class="input__label-content">Telefon</span>
                                         </label>
@@ -375,20 +375,60 @@
 
 @section postScripts{
     <script src="~/js/lib/security-support.js"></script>
+    <script src="~/assets/js/jquery.payform.min.js"></script>
+    <script src="~/assets/js/jquery.mask.min.js"></script>
+
     <script>
         /* fields */
         var _cart = new CartSupport.Cart();
+        var provinces = {};
 
         /* elements */
         var tbodyCartItems = $("#tbody-cart-items");
         var txtTotal = $("#txt-total");
+        var selectProvinces = $("#select-provinces");
+        var selectDistricts = $("#select-districts");
+        var owner = $('#input-owner');
+        var telephone = $('#input-telephone');
+        var cardNumber = $('#card-number');
+        var cardNumberField = $('#card-number-field');
+        var cvc = $("#cvc");
+        var mastercard = $("#mastercard");
+        var confirmButton = $('#confirm-purchase');
+        var visa = $("#visa");
 
         /* assignments */
         $(document).ready(document_onLoad);
+        selectProvinces.on("change", selectProvinces_onChange);
+        cardNumber.on("keyup", cardNumber_onKeyUp);
 
         /* events */
         function document_onLoad() {
             getCartItems();
+            getProvinces();
+            cardNumber.payform('formatCardNumber');
+            cvc.payform('formatCardCVC');
+            telephone.mask("(000) 000 0000");
+        }
+        function selectProvinces_onChange() {
+            getDistricts($(this).val());
+        }
+        function cardNumber_onKeyUp() {
+            visa.removeClass('transparent');
+            mastercard.removeClass('transparent');
+
+            if ($.payform.validateCardNumber(cardNumber.val()) == false) {
+                cardNumberField.addClass('has-error');
+            } else {
+                cardNumberField.removeClass('has-error');
+                cardNumberField.addClass('has-success');
+            }
+
+            if ($.payform.parseCardType(cardNumber.val()) == 'visa') {
+                mastercard.addClass('transparent');
+            } else if ($.payform.parseCardType(cardNumber.val()) == 'mastercard') {
+                visa.addClass('transparent');
+            }
         }
 
         /* functions */
@@ -420,11 +460,11 @@
             for (var i = 0; i < data.length; i++) {
                 var item = data[i];
                 appended += `<tr>` +
-                    `<td>` +
+                    `<td style="width:100%">` +
                     `<span class="item_cart">${item.educationName}</span>` +
                     `</td>` +
-                    `<td>` +
-                    `<strong>${item.priceText}</strong>` +
+                    `<td style="white-space: nowrap">` +
+                    `<b>${item.priceText}</b>` +
                     `</td>` +
                     `<tr>`;
             }
@@ -435,6 +475,55 @@
                 var btn = deleteButtons[i];
                 btn.onclick = btnDeleteItem_onClick;
             }
+        }
+        function getProvinces() {
+            return $.ajax({
+                url: "/data/cities.json",
+                method: 'GET',
+                dataType: 'json',
+                success: function (res) {
+                    provinces = res.data.sort(sortByTrAlphabet);
+                    $.each(provinces, function (index, value) {
+                        var name = correctTrChars(value.name)
+                        selectProvinces.append(new Option(name, value._id));
+                    });
+                }
+            });
+        }
+        function getDistricts(provinceId) {
+            var data = provinces.find(s => s._id == provinceId).towns;
+            selectDistricts.empty();
+            $.each(data, function (index, value) {
+                var name = correctTrChars(value.name)
+                selectDistricts.append(new Option(name, value._id));
+            });
+        }
+        function sortByTrAlphabet(a, b) {
+            var atitle = a.name;
+            var btitle = b.name;
+            var alfabe = "0123456789AaBbCcÇçDdEeFfGgĞğHhIıİiJjKkLlMmNnOoÖöPpQqRrSsŞşTtUuÜüVvWwXxYyZz";
+            if (atitle.length === 0 || btitle.length === 0) {
+                return atitle.length - btitle.length;
+            }
+            for (var i = 0; i < atitle.length && i < btitle.length; i++) {
+                var ai = alfabe.indexOf(atitle[i].toUpperCase());
+                var bi = alfabe.indexOf(btitle[i].toUpperCase());
+                if (ai !== bi) {
+                    return ai - bi;
+                }
+            }
+        }
+        function correctTrChars(text) {
+            if (text == null) {
+                return;
+            }
+            return text.replace(/&#199;/g, "Ç")
+                .replace(/&#214;/g, "Ö")
+                .replace(/&#220;/g, "Ü")
+                .replace(/&#231;/g, "ç")
+                .replace(/&#246;/g, "ö")
+                .replace(/&#304;/g, "İ")
+                .replace(/&#252;/g, "ü");
         }
     </script>
 }
