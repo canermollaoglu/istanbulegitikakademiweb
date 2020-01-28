@@ -53,6 +53,7 @@
                                 <th>Ünvan</th>
                                 <th>İsim</th>
                                 <th>Soyisim</th>
+                                <th>İşlem</th>
                             </tr>
                         </thead>
                         <tfoot>
@@ -60,6 +61,7 @@
                                 <th>Ünvan</th>
                                 <th>İsim</th>
                                 <th>Soyisim</th>
+                                <th>İşlem</th>
                             </tr>
                         </tfoot>
                         <tbody id="tbody-educators">
@@ -79,6 +81,8 @@
     <script src="~/js/lib/security-support.js"></script>
     <script>
         /* fields */
+        var confirmModalBuilder = new AlertSupport.ConfirmModalBuilder();
+        var resultAlert = new AlertSupport.ResultAlert();
         var _educationId = $("#_education-id").val();
 
         /* elements */
@@ -110,10 +114,39 @@
                 data: data,
                 success: (res) => {
                     getAssignedEducators();
+                    $("#form-add-education-parts")[0].reset();
                 }
             });
         }
 
+        function btnConfirmationModalTrigger_onClick() {
+            var url = this.getAttribute("data-url");
+            confirmModalBuilder.setUrl(url);
+            confirmModalBuilder.display();
+        }
+
+        function confirm_onClick() {
+            var url = this.getAttribute("data-url");
+            $.ajax({
+                url: url,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        getEducationParts();
+                        resultAlert.display({
+                            success: true,
+                            message: "Kayıt başarıyla silinmiştir"
+                        });
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors,
+                            message: "Hataları düzeltiniz"
+                        });
+                    }
+                }
+            });
+        }
         /* functions */
         function getAssignedEducators() {
             $.ajax({
@@ -128,7 +161,6 @@
         }
         function createTable(data) {
             tbodyEducators.html("");
-
             var appended = "";
             for (var i = 0; i < data.length; i++) {
                 var item = data[i];
@@ -136,9 +168,29 @@
                     `<td>${item.title}</td>` +
                     `<td>${item.name}</td>` +
                     `<td>${item.surname}</td>` +
+                    `<td>` +
+                    `<div class="btn-group">` +
+                    `<button class="btn btn-danger btn-confirmation-modal-trigger" data-url="/admin/delete-egitmen-ata?educationId=${_educationId}&educatorId=${item.educatorId}"><i class="fa fa-trash"></i></button>` +
+                    `</div>` +
+                    `</td>` +
                     `</tr>`;
             }
+            
             tbodyEducators.append(appended);
+
+            var deleteButtons = $(".btn-confirmation-modal-trigger");
+            for (var i = 0; i < deleteButtons.length; i++) {
+                var btn = deleteButtons[i];
+                btn.onclick = btnConfirmationModalTrigger_onClick;
+            }
+
+            confirmModalBuilder.buildModal({
+                title: "Emin misiniz?",
+                bodyText: "Seçmiş olduğunuz eğitmen ata silinecektir.",
+                cancelText: "Hayır, iptal et",
+                confirmText: "Evet, eminim",
+                onConfirmClick: confirm_onClick
+            });
         }
     </script>
 }

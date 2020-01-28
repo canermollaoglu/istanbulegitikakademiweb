@@ -418,10 +418,10 @@
             mastercard.removeClass('transparent');
 
             if ($.payform.validateCardNumber(cardNumber.val()) == false) {
-                cardNumberField.addClass('has-error');
+                cardNumber.addClass('has-error');
             } else {
                 cardNumberField.removeClass('has-error');
-                cardNumberField.addClass('has-success');
+                cardNumber.addClass('has-success');
             }
 
             if ($.payform.parseCardType(cardNumber.val()) == 'visa') {

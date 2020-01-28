@@ -65,5 +65,10 @@ namespace NitelikliBilisim.Business.Repositories
 
             return model;
         }
+
+        //public void Delete(Bridge_EducationEducator educationEducator)
+        //{
+            
+        //}
     }
 }
