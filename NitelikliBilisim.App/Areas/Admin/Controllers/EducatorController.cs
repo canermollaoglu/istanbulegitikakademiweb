@@ -20,7 +20,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
     //[Authorize]
     [Area("Admin")]
-    public class EducatorController : Controller
+    public class EducatorController : TempSecurityController
     {
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly FileUploadManager _fileManager;

@@ -21,7 +21,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
     //[Authorize]
     [Area("Admin")]
-    public class EducationController : Controller
+    public class EducationController : TempSecurityController
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly EducationVmCreator _vmCreator;
@@ -206,6 +206,27 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             {
                 isSuccess = true,
                 data = _unitOfWork.Bridge_EducationEducator.GetAssignedEducators(educationId.Value)
+            });
+        }
+        [Route("admin/delete-egitmen-ata")]
+        public IActionResult DeleteGain(Guid? educationId, Guid educatorId)
+        {
+            if (educationId == null)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Eğitmen atama silerken bir hata oluştu" }
+                });
+
+            var educator = _unitOfWork.Bridge_EducationEducator.GetAssignedEducators(educationId.Value).First(x => x.EducatorId == educatorId.ToString());
+
+            //_unitOfWork.Bridge_EducationEducator.Delete(educatorId);
+
+            //_unitOfWork.Education.CheckEducationState(educationId.Value);
+
+            return Json(new ResponseModel
+            {
+                isSuccess = true
             });
         }
     }

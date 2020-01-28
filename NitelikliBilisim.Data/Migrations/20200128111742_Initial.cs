@@ -1,10 +1,9 @@
 ﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace NitelikliBilisim.Data.Migrations
 {
-    public partial class InitialDatabaseMigration : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -55,7 +54,7 @@ namespace NitelikliBilisim.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     RowId = table.Column<string>(maxLength: 50, nullable: false),
                     TableName = table.Column<string>(maxLength: 128, nullable: false),
                     Changed = table.Column<string>(nullable: true),
@@ -94,6 +93,24 @@ namespace NitelikliBilisim.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "EducationHosts",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    CreatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    UpdatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    UpdatedDate = table.Column<DateTime>(nullable: true),
+                    City = table.Column<int>(nullable: false),
+                    Address = table.Column<string>(maxLength: 2048, nullable: true),
+                    HostName = table.Column<string>(maxLength: 256, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EducationHosts", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "EducationPromotionCodes",
                 columns: table => new
                 {
@@ -123,36 +140,11 @@ namespace NitelikliBilisim.Data.Migrations
                     UpdatedUser = table.Column<string>(maxLength: 128, nullable: true),
                     UpdatedDate = table.Column<DateTime>(nullable: true),
                     Name = table.Column<string>(maxLength: 128, nullable: true),
-                    Description = table.Column<string>(maxLength: 512, nullable: true),
-                    BaseTagId = table.Column<Guid>(nullable: true)
+                    Description = table.Column<string>(maxLength: 512, nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_EducationTags", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_EducationTags_EducationTags_BaseTagId",
-                        column: x => x.BaseTagId,
-                        principalTable: "EducationTags",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Sales",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    CreatedUser = table.Column<string>(maxLength: 128, nullable: true),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    UpdatedUser = table.Column<string>(maxLength: 128, nullable: true),
-                    UpdatedDate = table.Column<DateTime>(nullable: true),
-                    BillingType = table.Column<int>(nullable: false),
-                    TaxNo = table.Column<string>(nullable: true),
-                    TaxOffice = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Sales", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -160,7 +152,7 @@ namespace NitelikliBilisim.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     RoleId = table.Column<string>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -181,7 +173,7 @@ namespace NitelikliBilisim.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -271,8 +263,7 @@ namespace NitelikliBilisim.Data.Migrations
                     UpdatedUser = table.Column<string>(maxLength: 128, nullable: true),
                     UpdatedDate = table.Column<DateTime>(nullable: true),
                     CustomerType = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(maxLength: 128, nullable: true),
-                    Surname = table.Column<string>(maxLength: 32, nullable: true)
+                    IsNbuyStudent = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -340,7 +331,7 @@ namespace NitelikliBilisim.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SaleAddresses",
+                name: "SuggestionByCategory",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
@@ -348,20 +339,74 @@ namespace NitelikliBilisim.Data.Migrations
                     CreatedDate = table.Column<DateTime>(nullable: false),
                     UpdatedUser = table.Column<string>(maxLength: 128, nullable: true),
                     UpdatedDate = table.Column<DateTime>(nullable: true),
-                    City = table.Column<string>(maxLength: 32, nullable: true),
-                    County = table.Column<string>(maxLength: 32, nullable: true),
-                    Address = table.Column<string>(maxLength: 256, nullable: true),
-                    PostalCode = table.Column<string>(maxLength: 8, nullable: true)
+                    RangeMin = table.Column<byte>(nullable: false),
+                    RangeMax = table.Column<byte>(nullable: false),
+                    SuggestableEducations = table.Column<string>(maxLength: 1024, nullable: true),
+                    CategoryId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SaleAddresses", x => x.Id);
+                    table.PrimaryKey("PK_SuggestionByCategory", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SaleAddresses_Sales_Id",
-                        column: x => x.Id,
-                        principalTable: "Sales",
+                        name: "FK_SuggestionByCategory_EducationCategories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "EducationCategories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Invoices",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    CreatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    UpdatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    UpdatedDate = table.Column<DateTime>(nullable: true),
+                    BillingType = table.Column<int>(nullable: false),
+                    TaxNo = table.Column<string>(nullable: true),
+                    TaxOffice = table.Column<string>(nullable: true),
+                    TotalPaid = table.Column<decimal>(nullable: false),
+                    Earning = table.Column<decimal>(nullable: false),
+                    IsCash = table.Column<bool>(nullable: false),
+                    PaymentCount = table.Column<byte>(nullable: false),
+                    CustomerId = table.Column<string>(maxLength: 450, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Invoices", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Invoices_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "StudentEducationInfos",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    CreatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    UpdatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    UpdatedDate = table.Column<DateTime>(nullable: true),
+                    EducationCenter = table.Column<int>(nullable: false),
+                    StartedAt = table.Column<DateTime>(nullable: false),
+                    CategoryId = table.Column<Guid>(nullable: true),
+                    CustomerId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StudentEducationInfos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_StudentEducationInfos_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -369,7 +414,7 @@ namespace NitelikliBilisim.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     CreatedUser = table.Column<string>(maxLength: 128, nullable: true),
                     CreatedDate = table.Column<DateTime>(nullable: false),
                     UpdatedUser = table.Column<string>(maxLength: 128, nullable: true),
@@ -387,6 +432,34 @@ namespace NitelikliBilisim.Data.Migrations
                         principalTable: "Educators",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Bridge_EducationEducators",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Id2 = table.Column<string>(nullable: false),
+                    CreatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    UpdatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    UpdatedDate = table.Column<DateTime>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Bridge_EducationEducators", x => new { x.Id, x.Id2 });
+                    table.ForeignKey(
+                        name: "FK_Bridge_EducationEducators_Educations_Id",
+                        column: x => x.Id,
+                        principalTable: "Educations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Bridge_EducationEducators_Educators_Id2",
+                        column: x => x.Id2,
+                        principalTable: "Educators",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -477,6 +550,41 @@ namespace NitelikliBilisim.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "EducationGroups",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    CreatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    UpdatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    UpdatedDate = table.Column<DateTime>(nullable: true),
+                    GroupName = table.Column<string>(maxLength: 128, nullable: true),
+                    StartDate = table.Column<DateTime>(nullable: false),
+                    EducatorId = table.Column<string>(maxLength: 128, nullable: true),
+                    EducationId = table.Column<Guid>(nullable: false),
+                    HostId = table.Column<Guid>(nullable: false),
+                    IsGroupOpenForAssignment = table.Column<bool>(nullable: false),
+                    Quota = table.Column<byte>(nullable: false),
+                    ExtraPrice = table.Column<decimal>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EducationGroups", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EducationGroups_Educations_EducationId",
+                        column: x => x.EducationId,
+                        principalTable: "Educations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EducationGroups_EducationHosts_HostId",
+                        column: x => x.HostId,
+                        principalTable: "EducationHosts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "EducationMediaItems",
                 columns: table => new
                 {
@@ -533,43 +641,6 @@ namespace NitelikliBilisim.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SaleDetails",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    CreatedUser = table.Column<string>(maxLength: 128, nullable: true),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    UpdatedUser = table.Column<string>(maxLength: 128, nullable: true),
-                    UpdatedDate = table.Column<DateTime>(nullable: true),
-                    Price = table.Column<decimal>(nullable: false),
-                    SaleId = table.Column<Guid>(nullable: false),
-                    EducationId = table.Column<Guid>(nullable: false),
-                    PromotionCodeId = table.Column<Guid>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SaleDetails", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_SaleDetails_Educations_EducationId",
-                        column: x => x.EducationId,
-                        principalTable: "Educations",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_SaleDetails_EducationPromotionCodes_PromotionCodeId",
-                        column: x => x.PromotionCodeId,
-                        principalTable: "EducationPromotionCodes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_SaleDetails_Sales_SaleId",
-                        column: x => x.SaleId,
-                        principalTable: "Sales",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Wishlist",
                 columns: table => new
                 {
@@ -593,6 +664,108 @@ namespace NitelikliBilisim.Data.Migrations
                         name: "FK_Wishlist_Educations_Id2",
                         column: x => x.Id2,
                         principalTable: "Educations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "InvoiceAddresses",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    CreatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    UpdatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    UpdatedDate = table.Column<DateTime>(nullable: true),
+                    City = table.Column<string>(maxLength: 32, nullable: true),
+                    County = table.Column<string>(maxLength: 32, nullable: true),
+                    Address = table.Column<string>(maxLength: 256, nullable: true),
+                    PostalCode = table.Column<string>(maxLength: 8, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InvoiceAddresses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_InvoiceAddresses_Invoices_Id",
+                        column: x => x.Id,
+                        principalTable: "Invoices",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "InvoiceDetails",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    CreatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    UpdatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    UpdatedDate = table.Column<DateTime>(nullable: true),
+                    EducationId = table.Column<Guid>(nullable: false),
+                    PriceAtCurrentDate = table.Column<decimal>(nullable: false),
+                    IsUsedAsTicket = table.Column<bool>(nullable: false),
+                    InvoiceId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InvoiceDetails", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_InvoiceDetails_Invoices_InvoiceId",
+                        column: x => x.InvoiceId,
+                        principalTable: "Invoices",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Bridge_GroupStudents",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Id2 = table.Column<string>(nullable: false),
+                    CreatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    UpdatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    UpdatedDate = table.Column<DateTime>(nullable: true),
+                    InvoiceDetailsId = table.Column<Guid>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Bridge_GroupStudents", x => new { x.Id, x.Id2 });
+                    table.ForeignKey(
+                        name: "FK_Bridge_GroupStudents_EducationGroups_Id",
+                        column: x => x.Id,
+                        principalTable: "EducationGroups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Bridge_GroupStudents_Customers_Id2",
+                        column: x => x.Id2,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GroupLessonDays",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    CreatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    UpdatedUser = table.Column<string>(maxLength: 128, nullable: true),
+                    UpdatedDate = table.Column<DateTime>(nullable: true),
+                    DaysJson = table.Column<string>(maxLength: 128, nullable: true),
+                    GroupId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GroupLessonDays", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_GroupLessonDays_EducationGroups_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "EducationGroups",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -637,8 +810,18 @@ namespace NitelikliBilisim.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Bridge_EducationEducators_Id2",
+                table: "Bridge_EducationEducators",
+                column: "Id2");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Bridge_EducationTags_Id2",
                 table: "Bridge_EducationTags",
+                column: "Id2");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Bridge_GroupStudents_Id2",
+                table: "Bridge_GroupStudents",
                 column: "Id2");
 
             migrationBuilder.CreateIndex(
@@ -662,6 +845,16 @@ namespace NitelikliBilisim.Data.Migrations
                 column: "EducationId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_EducationGroups_EducationId",
+                table: "EducationGroups",
+                column: "EducationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EducationGroups_HostId",
+                table: "EducationGroups",
+                column: "HostId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_EducationMediaItems_EducationId",
                 table: "EducationMediaItems",
                 column: "EducationId");
@@ -682,29 +875,34 @@ namespace NitelikliBilisim.Data.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EducationTags_BaseTagId",
-                table: "EducationTags",
-                column: "BaseTagId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_EducatorSocialMedias_EducatorId",
                 table: "EducatorSocialMedias",
                 column: "EducatorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SaleDetails_EducationId",
-                table: "SaleDetails",
-                column: "EducationId");
+                name: "IX_GroupLessonDays_GroupId",
+                table: "GroupLessonDays",
+                column: "GroupId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SaleDetails_PromotionCodeId",
-                table: "SaleDetails",
-                column: "PromotionCodeId");
+                name: "IX_InvoiceDetails_InvoiceId",
+                table: "InvoiceDetails",
+                column: "InvoiceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SaleDetails_SaleId",
-                table: "SaleDetails",
-                column: "SaleId");
+                name: "IX_Invoices_CustomerId",
+                table: "Invoices",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StudentEducationInfos_CustomerId",
+                table: "StudentEducationInfos",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SuggestionByCategory_CategoryId",
+                table: "SuggestionByCategory",
+                column: "CategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Wishlist_Id2",
@@ -730,10 +928,13 @@ namespace NitelikliBilisim.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Bridge_EducationEducators");
+
+            migrationBuilder.DropTable(
                 name: "Bridge_EducationTags");
 
             migrationBuilder.DropTable(
-                name: "Customers");
+                name: "Bridge_GroupStudents");
 
             migrationBuilder.DropTable(
                 name: "DataHistories");
@@ -751,13 +952,25 @@ namespace NitelikliBilisim.Data.Migrations
                 name: "EducationParts");
 
             migrationBuilder.DropTable(
+                name: "EducationPromotionCodes");
+
+            migrationBuilder.DropTable(
                 name: "EducatorSocialMedias");
 
             migrationBuilder.DropTable(
-                name: "SaleAddresses");
+                name: "GroupLessonDays");
 
             migrationBuilder.DropTable(
-                name: "SaleDetails");
+                name: "InvoiceAddresses");
+
+            migrationBuilder.DropTable(
+                name: "InvoiceDetails");
+
+            migrationBuilder.DropTable(
+                name: "StudentEducationInfos");
+
+            migrationBuilder.DropTable(
+                name: "SuggestionByCategory");
 
             migrationBuilder.DropTable(
                 name: "Wishlist");
@@ -772,19 +985,25 @@ namespace NitelikliBilisim.Data.Migrations
                 name: "Educators");
 
             migrationBuilder.DropTable(
-                name: "EducationPromotionCodes");
+                name: "EducationGroups");
 
             migrationBuilder.DropTable(
-                name: "Sales");
+                name: "Invoices");
 
             migrationBuilder.DropTable(
                 name: "Educations");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "EducationHosts");
+
+            migrationBuilder.DropTable(
+                name: "Customers");
 
             migrationBuilder.DropTable(
                 name: "EducationCategories");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
         }
     }
 }
