@@ -359,12 +359,21 @@ namespace NitelikliBilisim.Business.Repositories
 
             var educations = Context.Educations.Where(x => x.IsActive);
 
+            var preList = new List<Education>();
+
             if (!string.IsNullOrEmpty(category))
             {
-                var categoryId = Context.EducationCategories.FirstOrDefault(x => x.Name.ToLower() == category.ToLower())?.Id;
+                var baseCategoryId = Context.EducationCategories.FirstOrDefault(x => x.Name.ToLower() == category.ToLower())?.Id;
 
-                if(categoryId != null)
-                    educations = educations.Where(x => x.CategoryId == categoryId.Value);
+                if(baseCategoryId != null)
+                {
+                    preList.AddRange(educations.Where(x => x.CategoryId == baseCategoryId));
+
+                    var subCategories = Context.EducationCategories.Where(x => x.BaseCategoryId == baseCategoryId).Select(x => x.Id).ToList();
+
+                    foreach (var item in subCategories)
+                        preList.AddRange(educations.Where(x => x.CategoryId == item));
+                }
             }
 
             switch (order)
@@ -379,7 +388,7 @@ namespace NitelikliBilisim.Business.Repositories
 
             var educationGroupRepository = new EducationGroupRepository(Context);
 
-            var educationsList = educations
+            var educationsList = preList.AsQueryable()
                 .Join(Context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Id, r => r.EducationId, (x, y) => new
                 {
                     Education = x,

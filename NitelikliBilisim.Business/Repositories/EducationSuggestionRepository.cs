@@ -77,7 +77,7 @@ namespace NitelikliBilisim.Business.Repositories
                     {
                         Id = education.Id,
                         Name = education.Name,
-                        CategoryName = category.Name,
+                        CategoryName = category.BaseCategoryId != null ? category.BaseCategory.Name : category.Name,
                         Days = education.Days,
                         HoursPerDay = education.HoursPerDay,
                         Description = education.Description,

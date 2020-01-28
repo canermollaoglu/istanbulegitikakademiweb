@@ -326,24 +326,33 @@ ul.additional_info li strong {
     .hidden_mobile {
         display: none !important;
     }
+
     ul#top_menu li a.btn_1 {
         display: contents !important;
     }
+
     ul#top_menu {
         margin: 1px -18px -5px 0px !important;
     }
+
     .icon-cart:before {
         content: '\ede5' !important;
         font-size: 1.5rem !important;
         margin-left: -5px !important;
     }
+
     header {
         padding: 17px 22px !important;
     }
+
     .containerRow {
         display: list-item !important;
         margin-left: -22px !important;
         margin-top: 90px !important;
         text-align: left;
+    }
+
+    ul.list_ok li:before  {
+        color: #fc4912 !important;
     }
 }
