@@ -93,7 +93,7 @@ namespace NitelikliBilisim.Business.Repositories
                     {
                         Id = education.Education.Id,
                         Name = education.Education.Name,
-                        CategoryName = education.Education.Name,
+                        CategoryName = education.Education.CategoryName,
                         Days = education.Education.Days,
                         HoursPerDay = education.Education.HoursPerDay,
                         Description = education.Education.Description,
