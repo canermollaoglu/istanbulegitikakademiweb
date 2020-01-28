@@ -88,45 +88,50 @@
                     </div>
 
                     @* ADIM 2 *@
-                    <div class="step">
-                        <h3 class="main_question"><strong>2/3</strong>Eğitim Bilgileri</h3>
+                <div class="step">
+                    <h3 class="main_question"><strong>2/3</strong>Eğitim Bilgileri</h3>
 
-                        <label>"Nitelikli Bilişim Uzmanı Yetiştirme" programını tamamladınız ya da devam ediyor musunuz?</label>
-                        <div style=""></div>
-                        <input type="radio" checked name="isnbuy" value="1" id="radio-nbuy-yes">Evet
-                        <input type="radio" name="isnbuy" value="2" id="radio-nbuy-no">Hayır
-
-                        <div id="div-nbuy-form-container">
-                            <div class="form-group select">
-                                <div class="styled-select">
-                                    <select class="required" id="select-education-centers">
-                                        <option value="0" selected="">Eğitim kurumu seçiniz</option>
-                                        @foreach (var item in Model.EducationCenters)
-                                        {
-                                            <option value="@item.Key">@item.Value</option>
-                                        }
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="form-group select">
-                                <div class="styled-select">
-                                    <select class="required" id="select-education-categories">
-                                        <option value="" selected="">Eğitim programı seçiniz</option>
-                                        @foreach (var item in Model.EducationCategories)
-                                        {
-                                            <option value="@item.Id">@item.Name</option>
-                                        }
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Eğitim başlangıç tarihi</label>
-                                <input type="date" value="" class="form-control" id="input-date-when-begun" />
+                    <label>"Nitelikli Bilişim Uzmanı Yetiştirme" programını tamamladınız ya da devam ediyor musunuz?</label>
+                    <div style=""></div>
+                    <div class="form-group radio_input">
+                        <label>
+                            <input type="radio" value="1" checked="" name="isnbuy" class="icheck"  id="radio-nbuy-yes" style="position: absolute; opacity: 0;">Evet
+                        </label>
+                        <label class="">
+                            <input type="radio" value="2" name="isnbuy" class="icheck" id="radio-nbuy-no" style="position: absolute; opacity: 0;">Hayır
+                        </label>
+                    </div>
+                    <div id="div-nbuy-form-container">
+                        <div class="form-group select">
+                            <div class="styled-select">
+                                <select class="required" id="select-education-centers">
+                                    <option value="0" selected="">Eğitim kurumu seçiniz</option>
+                                    @foreach (var item in Model.EducationCenters)
+                                    {
+                                        <option value="@item.Key">@item.Value</option>
+                                    }
+                                </select>
                             </div>
                         </div>
+
+                        <div class="form-group select">
+                            <div class="styled-select">
+                                <select class="required" id="select-education-categories">
+                                    <option value="" selected="">Eğitim programı seçiniz</option>
+                                    @foreach (var item in Model.EducationCategories)
+                                    {
+                                        <option value="@item.Id">@item.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Eğitim başlangıç tarihi</label>
+                            <input type="date" value="" class="form-control" id="input-date-when-begun" />
+                        </div>
                     </div>
+                </div>
 
                     @* SON ADIM *@
                     <div class="submit step">
@@ -219,8 +224,8 @@
         $(document).ready(document_onLoad);
         window.onbeforeunload = window_onBeforeUnload;
         btnSubmit.on("click", btnSubmit_onClick);
-        radioNbuyYes.onchange = radioNbuy_onChange;
-        radioNbuyNo.onchange = radioNbuy_onChange;
+        //radioNbuyYes.onchange = radioNbuy_onChange;
+        //radioNbuyNo.onchange = radioNbuy_onChange;
 
         /* events */
         function document_onLoad() {
@@ -228,6 +233,9 @@
                 var stored = __envoy.getRegisterForm();
                 setStoredData(stored);
             }
+            $('.icheck').on('ifToggled', function () {
+                radioNbuy_onChange();
+            });
         }
         function window_onBeforeUnload() {
             if (__envoy.isStorageExists("register")) {
