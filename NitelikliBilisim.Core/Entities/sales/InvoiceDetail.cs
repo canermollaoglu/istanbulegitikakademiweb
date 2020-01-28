@@ -1,8 +1,6 @@
 ﻿using NitelikliBilisim.Core.Abstracts;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace NitelikliBilisim.Core.Entities
 {
@@ -16,6 +14,7 @@ namespace NitelikliBilisim.Core.Entities
 
         public Guid EducationId { get; set; }
         public decimal PriceAtCurrentDate { get; set; }
+        public bool IsUsedAsTicket { get; set; }
 
         [ForeignKey("Invoice")]
         public Guid InvoiceId { get; set; }
