@@ -8,6 +8,14 @@
     margin: 21px 0px -3px 4px !important;
 }
 
+    .input_field .has-error {
+        background-color: blanchedalmond;
+    }
+
+    .input_field .has-success {
+        background-color: blanchedalmond;
+    }
+
     #login figure, #register figure {
     background: #2d2f33 !important;
 }
