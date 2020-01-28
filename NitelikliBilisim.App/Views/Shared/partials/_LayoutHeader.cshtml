@@ -5,11 +5,9 @@
 
 <header class="header fadeInDown">
     <div id="logo">
-        <a href="/"><img src="~/assets/img/nb_logo_sm.png" width="149" height="42" data-retina="true" alt=""></a>
+        <a href="/"><img style="transform:scale(1.3)" src="~/assets/img/nb_logo_sm.png" width="149" height="42" data-retina="true" alt=""></a>
     </div>
-    @*<div id="logo">
-            <a href="/">LOGO</a>
-        </div>*@
+
     <ul id="top_menu">
         @if (!User.Identity.IsAuthenticated)
         {
