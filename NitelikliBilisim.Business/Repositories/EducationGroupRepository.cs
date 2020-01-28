@@ -43,6 +43,7 @@ namespace NitelikliBilisim.Business.Repositories
                 }
                 catch (Exception ex)
                 {
+                    Console.WriteLine(ex.Message);
                     transation.Rollback();
                     return false;
                 }

@@ -73,7 +73,7 @@
                                     var filePath = "";
                                     try
                                     {
-                                        filePath = await StorageService.DownloadFile(System.IO.Path.GetFileName(item.Medias[0].FileUrl), "media-items");
+                                        filePath = StorageService.DownloadFile(System.IO.Path.GetFileName(item.Medias[0].FileUrl), "media-items").Result;
                                     }
                                     catch
                                     {
