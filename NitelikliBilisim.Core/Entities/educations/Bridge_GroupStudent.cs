@@ -12,6 +12,6 @@ namespace NitelikliBilisim.Core.Entities
         [ForeignKey("Id2")]
         public virtual Customer Customer { get; set; }
 
-        public Guid InvoiceDetailsId { get; set; }
+        public Guid? InvoiceDetailsId { get; set; }
     }
 }
