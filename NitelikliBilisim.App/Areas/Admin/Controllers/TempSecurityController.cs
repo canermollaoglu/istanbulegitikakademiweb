@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    [Authorize]
+    [Area("admin"), Authorize]
     public class TempSecurityController : Controller
     {
 

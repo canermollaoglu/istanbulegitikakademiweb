@@ -10,7 +10,7 @@ using System.Linq;
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class EducationGroupController : Controller
+    public class EducationGroupController : TempSecurityController
     {
         private readonly UnitOfWork _unitOfWork;
         public EducationGroupController(UnitOfWork unitOfWork)

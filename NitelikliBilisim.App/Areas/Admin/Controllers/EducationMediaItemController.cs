@@ -19,7 +19,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
     //[Authorize]
     [Area("Admin")]
-    public class EducationMediaItemController : Controller
+    public class EducationMediaItemController : TempSecurityController
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly EducationMediaItemVmCreator _vmCreator;
