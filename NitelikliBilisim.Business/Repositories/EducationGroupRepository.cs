@@ -52,6 +52,7 @@ namespace NitelikliBilisim.Business.Repositories
         public EducationGroup GetFirstAvailableGroup(Guid educationId)
         {
             var group = _context.EducationGroups
+                .Include(x => x.Host)
                 .Where(x => x.EducationId == educationId && x.IsGroupOpenForAssignment)
                 .OrderBy(o => o.StartDate)
                 .FirstOrDefault();
