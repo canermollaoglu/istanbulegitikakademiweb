@@ -1,12 +1,17 @@
 ﻿.policy-box {
     overflow: auto;
-    height: 360px;
+    height: 120px;
     width: 100%;
     margin-bottom: 20px;
     padding: 20px;
     border: #f1f1f1 solid 1px;
     text-align: justify;
+    transition: 0.3s;
 }
+
+    .policy-box:hover{
+        height: 360px;
+    }
 
     .policy-box::-webkit-scrollbar, .modal-body::-webkit-scrollbar {
         width: 10px;
