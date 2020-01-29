@@ -66,9 +66,11 @@ namespace NitelikliBilisim.Business.Repositories
             return model;
         }
 
-        //public void Delete(Bridge_EducationEducator educationEducator)
-        //{
-            
-        //}
+        public void Delete(Guid educationId, Guid educatorId)
+        {
+           var educationEducator = _context.Bridge_EducationEducators.First(x => x.Id == educationId && x.Id2 == educatorId.ToString());
+            _context.Bridge_EducationEducators.Remove(educationEducator);
+            _context.SaveChanges();
+        }
     }
 }

@@ -132,10 +132,13 @@
                 method: "get",
                 success: (res) => {
                     if (res.isSuccess) {
-                        getEducationParts();
                         resultAlert.display({
                             success: true,
-                            message: "Kayıt başarıyla silinmiştir"
+                            message: "Kayıt başarıyla silinmiştir",
+                            redirectElement: {
+                                content: "tıklayınız",
+                                link: location.href
+                            }
                         });
                     } else {
                         resultAlert.display({
