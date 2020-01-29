@@ -16,6 +16,35 @@ a {
     border: 2px solid #2d2f33 !important;
 }
 
-.course-summary-list li {
-
+.group-selector-container {
+    margin-top: 0.5%;
+    margin-bottom: 3%;
 }
+
+#select-groups {
+    display: block;
+    width: 100%;
+    padding: 1%;
+    border-radius: 15px;
+    -webkit-appearance: none;
+}
+
+    #select-groups:active {
+        display: block;
+        width: 100%;
+        padding: 1%;
+        border-radius: 15px;
+        -webkit-appearance: none;
+    }
+
+    #select-groups:focus {
+        border: none;
+    }
+
+.course-summary-list {
+    font-size: 110%;
+}
+
+    .course-summary-list li i {
+        color: #fc4912;
+    }
