@@ -124,7 +124,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     errors = ModelStateUtil.GetErrors(ModelState)
                 });
 
-            _vmCreator.SendVmToUpdate(data );
+            _vmCreator.SendVmToUpdate(data);
 
             return Json(new ResponseModel
             {
@@ -167,7 +167,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             });
         }
         [Route("admin/delete-egitmen-ata")]
-        public IActionResult DeleteGain(Guid? educationId, Guid educatorId)
+        public IActionResult DeleteEducator(Guid? educationId, Guid educatorId)
         {
             if (educationId == null)
                 return Json(new ResponseModel
@@ -176,12 +176,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     errors = new List<string> { "Eğitmen atama silerken bir hata oluştu" }
                 });
 
-            var educator = _unitOfWork.Bridge_EducationEducator.GetAssignedEducators(educationId.Value).First(x => x.EducatorId == educatorId.ToString());
-
-            //_unitOfWork.Bridge_EducationEducator.Delete(educatorId);
-
-            //_unitOfWork.Education.CheckEducationState(educationId.Value);
-
+            _unitOfWork.Bridge_EducationEducator.Delete(educationId.Value, educatorId);
             return Json(new ResponseModel
             {
                 isSuccess = true

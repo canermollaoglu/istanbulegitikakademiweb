@@ -121,6 +121,7 @@
 
         function btnConfirmationModalTrigger_onClick() {
             var url = this.getAttribute("data-url");
+            console.log(url)
             confirmModalBuilder.setUrl(url);
             confirmModalBuilder.display();
         }
@@ -131,11 +132,15 @@
                 url: url,
                 method: "get",
                 success: (res) => {
+                    console.log(res)
                     if (res.isSuccess) {
-                        getEducationParts();
                         resultAlert.display({
                             success: true,
-                            message: "Kayıt başarıyla silinmiştir"
+                            message: "Kayıt başarıyla silinmiştir",
+                            redirectElement: {
+                                content: "tıklayınız",
+                                link: location.href
+                            }
                         });
                     } else {
                         resultAlert.display({
