@@ -261,21 +261,49 @@
                             <ul class="course-summary-list">
                                 <li><i class="icon-calendar-circled"></i>@Model.Group.StartDate.ToLongDateString()</li>
                                 <li><i class="icon-hourglass"></i>@Model.Details.Base.DaysText gün (@hours saat)</li>
-                                <li><p></p></li>
+                                @*<li><p></p></li>*@
                                 <li><i class=" icon-location-2"></i>@Model.Group.Host.Address</li>
-                                <li><p></p></li>
+                                @*<li><p></p></li>*@
                                 <li><i class="icon-user"></i>Katılımcı: 0</li>
                                 <li><i class="icon-users-2"></i>Kontenjan: @Model.Group.Quota</li>
                             </ul>
                         </div>
                     </div>
                 </aside>
+
             </div>
         </div>
     </div>
+
+    <section id="bottom-details">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <span>@Model.Group.StartDate.ToLongDateString() </span><span>@Model.Group.Host.HostName (@Model.Group.Host.City)</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p style="font-size:1.3em">@Model.Details.Base.Name</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <p style="font-size:1.3em">@Model.Details.Base.PriceText</p>
+                </div>
+                <div class="col-md-3">
+                    <button class="btn_1 rounded">Katıl</button>
+                </div>
+            </div>
+        </div>
+    </section>
 </main>
+
+
 @section postScripts{
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBwbBlZQaeP0fYu7xTiviCCWGAK3onN-iE&callback=initMap">
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBwbBlZQaeP0fYu7xTiviCCWGAK3onN-iE&callback=initMap"></script>
     <script src="~/js/sup/cart.js"></script>
     <script src="~/js/pages/course-details.js"></script>
     <script>
