@@ -7,16 +7,20 @@ using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Support.Enums;
 using System.Linq;
 using NitelikliBilisim.App.Controllers.Base;
+using NitelikliBilisim.Core.Services.Abstracts;
+using System.IO;
 
 namespace NitelikliBilisim.App.Controllers
 {
     public class BrowserController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
+        private readonly IStorageService _storageService;
 
-        public BrowserController(UnitOfWork unitOfWork)
+        public BrowserController(UnitOfWork unitOfWork, IStorageService storageService)
         {
             _unitOfWork = unitOfWork;
+            _storageService = storageService;
         }
 
         [Route("tum-egitimler/{categoryUrl?}")]
@@ -40,6 +44,15 @@ namespace NitelikliBilisim.App.Controllers
         public IActionResult GetAllCourses(string category, int page = 0, OrderCriteria order = OrderCriteria.Latest)
         {
             var model = _unitOfWork.Education.GetEducationsByCategory(category, page, order);
+            foreach (var item in model)
+            {
+                for (int i = 0; i < item.Medias.Count; i++)
+                {
+                    var folder = Path.GetDirectoryName(item.Medias[i].FileUrl);
+                    var fileName = Path.GetFileName(item.Medias[i].FileUrl);
+                    item.Medias[i].FileUrl = _storageService.DownloadFile(fileName, folder).Result;
+                }
+            }
             return Json(new ResponseModel
             {
                 data = new
