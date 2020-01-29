@@ -4,6 +4,7 @@ using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.Main.Course;
 using System;
 using NitelikliBilisim.App.Controllers.Base;
+using NitelikliBilisim.Support.Enums;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -29,7 +30,15 @@ namespace NitelikliBilisim.App.Controllers
                 {
                     GroupId = firstAvailableGroup.Id,
                     StartDate = firstAvailableGroup.StartDate,
-                    Quota = firstAvailableGroup.Quota
+                    Quota = firstAvailableGroup.Quota,
+                    Host = new HostVm
+                    {
+                        Address = firstAvailableGroup.Host.Address,
+                        City = EnumSupport.GetDescription(firstAvailableGroup.Host.City),
+                        HostName = firstAvailableGroup.Host.HostName,
+                        Latitude = firstAvailableGroup.Host.Latitude,
+                        Longitude = firstAvailableGroup.Host.Longitude
+                    }
                 };
             }
             var model = new CourseDetailsVm

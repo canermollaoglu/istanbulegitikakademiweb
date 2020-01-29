@@ -231,10 +231,10 @@ namespace NitelikliBilisim.Business.Repositories
 
         public bool CheckEducationState(Guid educationId)
         {
-            var mediaCount = Context.EducationMedias.Count(x => x.EducationId == educationId &&
-            (x.MediaType == Core.Enums.EducationMediaType.Banner ||
-            x.MediaType == Core.Enums.EducationMediaType.PreviewPhoto ||
-            x.MediaType == Core.Enums.EducationMediaType.PreviewVideo));
+            var hasBanner = Context.EducationMedias.Count(x => x.EducationId == educationId && x.MediaType == Core.Enums.EducationMediaType.Banner) > 0;
+            var hasPreview = Context.EducationMedias.Count(x => x.EducationId == educationId &&
+                (x.MediaType == Core.Enums.EducationMediaType.PreviewPhoto ||
+                x.MediaType == Core.Enums.EducationMediaType.PreviewVideo)) > 0;
 
             var partCount = Context.EducationParts.Count(x => x.EducationId == educationId);
 
@@ -244,7 +244,7 @@ namespace NitelikliBilisim.Business.Repositories
 
             var education = Context.Educations.First(x => x.Id == educationId);
 
-            education.IsActive = mediaCount >= 2 && partCount > 0 && gainCount > 0 && categoryCount > 0;
+            education.IsActive = hasBanner && hasPreview && partCount > 0 && gainCount > 0 && categoryCount > 0;
 
             Context.SaveChanges();
 
@@ -359,12 +359,21 @@ namespace NitelikliBilisim.Business.Repositories
 
             var educations = Context.Educations.Where(x => x.IsActive);
 
+            var preList = new List<Education>();
+
             if (!string.IsNullOrEmpty(category))
             {
-                var categoryId = Context.EducationCategories.FirstOrDefault(x => x.Name.ToLower() == category.ToLower())?.Id;
+                var baseCategoryId = Context.EducationCategories.FirstOrDefault(x => x.Name.ToLower() == category.ToLower())?.Id;
 
-                if(categoryId != null)
-                    educations = educations.Where(x => x.CategoryId == categoryId.Value);
+                if(baseCategoryId != null)
+                {
+                    preList.AddRange(educations.Where(x => x.CategoryId == baseCategoryId));
+
+                    var subCategories = Context.EducationCategories.Where(x => x.BaseCategoryId == baseCategoryId).Select(x => x.Id).ToList();
+
+                    foreach (var item in subCategories)
+                        preList.AddRange(educations.Where(x => x.CategoryId == item));
+                }
             }
 
             switch (order)
@@ -379,7 +388,9 @@ namespace NitelikliBilisim.Business.Repositories
 
             var educationGroupRepository = new EducationGroupRepository(Context);
 
-            var educationsList = educations
+            var query = string.IsNullOrEmpty(category) ? educations : preList.AsQueryable();
+
+            var educationsList = query
                 .Join(Context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Id, r => r.EducationId, (x, y) => new
                 {
                     Education = x,

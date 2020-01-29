@@ -9,5 +9,6 @@ namespace NitelikliBilisim.Core.ViewModels
         public Guid GroupId { get; set; }
         public DateTime StartDate { get; set; }
         public byte Quota { get; set; }
+        public HostVm Host { get; set; }
     }
 }

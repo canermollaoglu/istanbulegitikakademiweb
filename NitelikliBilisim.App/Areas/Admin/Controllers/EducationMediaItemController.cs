@@ -14,6 +14,7 @@ using NitelikliBilisim.Support.Text;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
@@ -60,7 +61,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             });
         }
         [HttpPost, Route("admin/add-education-media-item")]
-        public async System.Threading.Tasks.Task<IActionResult> AddMediaItem(AddMediaItemVm data)
+        public async Task<IActionResult> AddMediaItem(AddMediaItemVm data)
         {
             if (!ModelState.IsValid)
             {
@@ -121,6 +122,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     isSuccess = false,
                     errors = new List<string> { "Eğitimin medyasını silerken bir hata oluştu" }
                 });
+                
             _fileManager.Delete(mediaItem.FileUrl);
             _unitOfWork.EducationMedia.Delete(mediaItemId.Value);
 

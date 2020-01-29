@@ -2,3 +2,9 @@
     background-color: #44ACA8;
     background-color: rgba(68, 172, 169, 0.8);
 }
+
+.img-fluid {
+    max-width: 400px;
+    max-height: 225px;
+    object-fit: cover;
+}
