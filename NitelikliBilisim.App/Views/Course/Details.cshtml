@@ -18,6 +18,74 @@
             font-size: 0.875rem !important;
             font-family: "Poppins", Helvetica, sans-serif !important;
         }
+        #custom-search-input .search-query{
+             height: 29px !important;
+             border-radius: 46px !important;
+             margin: 0 -35px !important;
+             padding-right: 130px !important;
+             border: 2px solid #2d2f33 !important; 
+        }
+
+        @@media(max-width: 767px) {
+            ul.list_ok li:before {
+                color: #fc4912 !important;
+            }
+
+            a {
+                color: #2d2f33 !important;
+                font-size: 0.875rem !important;
+                font-family: "Poppins", Helvetica, sans-serif !important;
+            }
+
+            search-query_mobile {
+                height: 29px !important;
+                border-radius: 46px !important;
+                margin: 0 -35px !important;
+                padding-right: 130px !important;
+                border: 2px solid #2d2f33 !important;
+            }
+
+            #custom-search-input {
+                height: 29px !important;
+                width: fit-content !important;
+                border-radius: 46px !important;
+                margin: 0 -35px !important;
+                padding-right: 130px;
+                border: 2px solid #2d2f33;
+                display: contents;
+            }
+
+                #custom-search-input input[type='submit'] {
+                    border-radius: 33px !important;
+                    right: -23px !important;
+                    height: 12px !important;
+                    margin-top: 12px !important;
+                    margin-right: -36px;
+                }
+                #custom-search-input .search-query {
+                    height: 29px !important;
+                    border-radius: 46px !important;
+                    margin: 5px -35px 5px 5px !important;
+                    padding-right: 130px !important;
+                    border: 2px solid #2d2f33 !important;
+                }
+            .rounded {
+                border-radius: .25rem !important;
+                margin-bottom: -38px !important;
+            }
+            .h2, h2 {
+                font-size: 1rem;
+            }
+
+            body {
+                background: #f8f8f8;
+                font-size: 0.875rem;
+                /* line-height: 1.6; */
+                font-family: "Poppins", Helvetica, sans-serif;
+                color: #555;
+            }
+        }
+        
     </style>
 }
 
@@ -54,9 +122,12 @@
                         <form>
                             <div id="custom-search-input">
                                 <div class="input-group rounded">
-                                    <input type="text" style=" height: 29px !important; border-radius: 46px !important; margin: 0 -35px !important; padding-right: 130px; border: 2px solid #2d2f33; " class="search-query" placeholder="Eğitim Grupları" id="input-index-search">
-                                    <input type="submit" style="border-radius: 33px !important; right: 45px !important; height: 12px !important;
-" class="btn_search rounded" value="" id="btn-index-search">
+                                    <input type="text" class="search-query" placeholder="Eğitim Grupları" id="input-index-search">
+                                    <input type="submit" style="
+        border-radius: 33px !important;
+        right: 45px !important;
+        height: 12px !important;
+    " class="btn_search rounded" value="" id="btn-index-search">
                                 </div>
                             </div>
                         </form><br /> <br />
