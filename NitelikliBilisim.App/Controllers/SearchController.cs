@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Models;
@@ -49,7 +50,7 @@ namespace NitelikliBilisim.App.Controllers
 
         [HttpPost]
         [Route("search-for-courses")]
-        public IActionResult SearchEducation(string searchText, int page = 0, OrderCriteria order = OrderCriteria.Latest, FiltersVm filter = null)
+        public async Task<IActionResult> SearchEducationAsync(string searchText, int page = 0, OrderCriteria order = OrderCriteria.Latest, FiltersVm filter = null)
         {
             var model = _unitOfWork.Education.GetInfiniteScrollSearchResults(searchText, page, order, filter);
             foreach (var item in model)
@@ -58,7 +59,7 @@ namespace NitelikliBilisim.App.Controllers
                 {
                     var folder = Path.GetDirectoryName(item.Medias[i].FileUrl);
                     var fileName = Path.GetFileName(item.Medias[i].FileUrl);
-                    item.Medias[i].FileUrl = _storageService.DownloadFile(fileName, folder).Result;
+                    item.Medias[i].FileUrl = await _storageService.DownloadFile(fileName, folder);
                 }
             }
             return Json(new ResponseModel

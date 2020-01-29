@@ -9,6 +9,7 @@ using System.Linq;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.Core.Services.Abstracts;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -41,7 +42,7 @@ namespace NitelikliBilisim.App.Controllers
 
         [HttpPost]
         [Route("get-all-courses")]
-        public IActionResult GetAllCourses(string category, int page = 0, OrderCriteria order = OrderCriteria.Latest)
+        public async Task<IActionResult> GetAllCoursesAsync(string category, int page = 0, OrderCriteria order = OrderCriteria.Latest)
         {
             var model = _unitOfWork.Education.GetEducationsByCategory(category, page, order);
             foreach (var item in model)
@@ -50,7 +51,7 @@ namespace NitelikliBilisim.App.Controllers
                 {
                     var folder = Path.GetDirectoryName(item.Medias[i].FileUrl);
                     var fileName = Path.GetFileName(item.Medias[i].FileUrl);
-                    item.Medias[i].FileUrl = _storageService.DownloadFile(fileName, folder).Result;
+                    item.Medias[i].FileUrl = await _storageService.DownloadFile(fileName, folder);
                 }
             }
             return Json(new ResponseModel
