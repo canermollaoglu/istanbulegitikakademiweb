@@ -123,14 +123,6 @@
         function btnShowAsList_onClick() {
             location.href = `/tum-egitimler/${_searchText.val()}?showAs=list`;
         }
-        function btnSearch_onClick() {
-            var searchText = inputSearch.val();
-
-            if (searchText == "")
-                inputSearch.addClass("is-invalid");
-            else
-                location.href = `/arama-sonuclari/${searchText}`
-        }
         function listingFilters_onClick() {
             var order = $(this).val();
             getSearchResults(false, order);
@@ -146,16 +138,6 @@
         function selectOrder_onChange() {
             var order = $(this).children("option:selected").val();
             getSearchResults(false, order);
-        }
-        function inputSearch_onSubmit(e) {
-            if (e.keyCode === 13) {
-                btnSearch_onClick();
-            }
-        }
-        function inputSearch_onSubmit(e) {
-            if (e.keyCode === 13) {
-                btnSearch_onClick();
-            }
         }
 
         /* functions */

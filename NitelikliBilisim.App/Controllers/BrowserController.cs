@@ -24,7 +24,7 @@ namespace NitelikliBilisim.App.Controllers
         {
             var categoryNames = _unitOfWork.EducationCategory.Get().Select(x => x.Name).ToList();
 
-            var category = categoryNames.FirstOrDefault(x=> StringHelper.UrlFormatConverter(x) == categoryUrl) ?? "";
+            var category = categoryNames.FirstOrDefault(x => StringHelper.UrlFormatConverter(x) == categoryUrl) ?? "";
 
             var model = new SearchResultsGetVm
             {

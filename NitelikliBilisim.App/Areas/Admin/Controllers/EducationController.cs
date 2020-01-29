@@ -115,7 +115,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             return View(model);
         }
         [HttpPost, Route("admin/egitim-guncelle")]
-        public async Task<IActionResult> Update(UpdatePostVm data)
+        public IActionResult Update(UpdatePostVm data)
         {
             if (!ModelState.IsValid || data.TagIds.Count == 0)
                 return Json(new ResponseModel

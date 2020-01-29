@@ -3,8 +3,11 @@
     background-color: rgba(68, 172, 169, 0.8);
 }
 
-.img-fluid{
-    max-width: 355px;
-    max-height: 200px;
-    object-fit:cover;
+.img-fluid {
+    max-width: 400px;
+    max-height: 225px;
+    object-fit: cover;
+}
+.sitelogo {
+    transform: scale(1.25);
 }
