@@ -26,21 +26,9 @@ namespace NitelikliBilisim.Business.Debugging
             Debug.WriteLine($"{indicator}\n{message}\n{indicator}");
         }
 
-        public static int TimesInvoked
-        {
-            get
-            {
-                return _timesInvoked;
-            }
-        }
+        public static int TimesInvoked => _timesInvoked;
 
-        public static double TimePassed
-        {
-            get
-            {
-                return _timePassed;
-            }
-        }
+        public static double TimePassed => _timePassed;
 
         private static string _createIndicator(int len)
         {
