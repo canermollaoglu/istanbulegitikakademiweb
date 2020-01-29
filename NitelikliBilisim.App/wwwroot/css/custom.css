@@ -8,3 +8,6 @@
     max-height: 225px;
     object-fit: cover;
 }
+.sitelogo {
+    transform: scale(1.25);
+}
