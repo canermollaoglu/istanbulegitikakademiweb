@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.IO;
+using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Enums;
+using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.search;
 using NitelikliBilisim.Support.Enums;
@@ -13,9 +15,11 @@ namespace NitelikliBilisim.App.Controllers
     public class SearchController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
-        public SearchController(UnitOfWork unitOfWork)
+        private readonly IStorageService _storageService;
+        public SearchController(UnitOfWork unitOfWork, IStorageService storageService)
         {
             _unitOfWork = unitOfWork;
+            _storageService = storageService;
         }
 
         [Route("arama-sonuclari/{searchText}")]
@@ -48,6 +52,15 @@ namespace NitelikliBilisim.App.Controllers
         public IActionResult SearchEducation(string searchText, int page = 0, OrderCriteria order = OrderCriteria.Latest, FiltersVm filter = null)
         {
             var model = _unitOfWork.Education.GetInfiniteScrollSearchResults(searchText, page, order, filter);
+            foreach (var item in model)
+            {
+                for (int i = 0; i < item.Medias.Count; i++)
+                {
+                    var folder = Path.GetDirectoryName(item.Medias[i].FileUrl);
+                    var fileName = Path.GetFileName(item.Medias[i].FileUrl);
+                    item.Medias[i].FileUrl = _storageService.DownloadFile(fileName, folder).Result;
+                }
+            }
             return Json(new ResponseModel
             {
                 data = new
