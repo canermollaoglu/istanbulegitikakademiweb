@@ -121,7 +121,6 @@
 
         function btnConfirmationModalTrigger_onClick() {
             var url = this.getAttribute("data-url");
-            console.log(url)
             confirmModalBuilder.setUrl(url);
             confirmModalBuilder.display();
         }
@@ -132,7 +131,6 @@
                 url: url,
                 method: "get",
                 success: (res) => {
-                    console.log(res)
                     if (res.isSuccess) {
                         resultAlert.display({
                             success: true,
