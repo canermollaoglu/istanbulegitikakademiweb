@@ -1,0 +1,21 @@
+﻿ul.list_ok li:before {
+    color: #fc4912 !important;
+}
+
+a {
+    color: #2d2f33 !important;
+    font-size: 0.875rem !important;
+    font-family: "Poppins", Helvetica, sans-serif !important;
+}
+
+#custom-search-input .search-query {
+    height: 29px !important;
+    border-radius: 46px !important;
+    margin: 0 -35px !important;
+    padding-right: 130px !important;
+    border: 2px solid #2d2f33 !important;
+}
+
+.course-summary-list li {
+
+}
