@@ -1012,7 +1012,7 @@ ul#top_menu {
   -moz-animation-delay: 1.1s;
 }
 .follow_us h5 {
-  color: #fff;
+  color: #2d2f33;
 }
 .follow_us ul li {
   display: inline-block;
@@ -1021,7 +1021,7 @@ ul#top_menu {
   font-size: 1.25rem;
 }
 .follow_us ul li:first-child {
-  color: #fff;
+  color: #2d2f33;
   text-transform: uppercase;
   font-weight: 500;
   letter-spacing: 2px;
@@ -3838,13 +3838,16 @@ section#reviews {
 
 /*-------- 2.5 Login/register/admission--------*/
 #login_bg, #register_bg, #admission_bg {
-  background: url(/assets/img/slide_3.jpg) center center no-repeat fixed;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
+  background: url(/assets/img/nbloginregister.png) center center no-repeat fixed;
+  -webkit-background-size: contain;
+  -moz-background-size: contain;
+  -o-background-size: contain;
+  background-size: contain;
   min-height: 100vh;
   width: 100%;
+}
+#login_bg {
+  background-position: 400px 0;
 }
 
 #register_bg {
