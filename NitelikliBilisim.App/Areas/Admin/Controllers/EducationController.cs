@@ -8,7 +8,6 @@ using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
-using NitelikliBilisim.Core.Services;
 using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Support.Text;
 using System;
