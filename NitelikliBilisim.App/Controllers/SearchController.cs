@@ -37,9 +37,9 @@ namespace NitelikliBilisim.App.Controllers
 
         [HttpPost]
         [Route("search-for-courses")]
-        public async Task<IActionResult> SearchEducationAsync(string searchText, int page = 0, OrderCriteria order = OrderCriteria.Latest, FiltersVm filter = null)
+        public async Task<IActionResult> SearchEducation(string searchText, int page = 0, OrderCriteria order = OrderCriteria.Latest, FiltersVm filter = null)
         {
-            var model = _unitOfWork.Education.GetInfiniteScrollSearchResults(searchText, page, order, filter);
+            var model = _unitOfWork.Education.GetInfiniteScrollSearchResults("", searchText, page, order, filter);
             foreach (var item in model)
             {
                 for (int i = 0; i < item.Medias.Count; i++)

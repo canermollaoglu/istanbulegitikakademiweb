@@ -43,8 +43,8 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetCourses(string categoryName, string searchText, int page = 0, OrderCriteria order = OrderCriteria.Latest, FiltersVm filter = null)
         [Route("get-courses")]
+        public async Task<IActionResult> GetCourses(string categoryName, string searchText, int page = 0, OrderCriteria order = OrderCriteria.Latest, FiltersVm filter = null)
         {
             var model = new List<EducationVm>();
 
