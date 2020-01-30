@@ -294,7 +294,7 @@
                     <p style="font-size:1.3em">@Model.Details.Base.PriceText</p>
                 </div>
                 <div class="col-md-3">
-                    <button class="btn_1 rounded">Katıl</button>
+                    <button class="btn_1 rounded" id="btn-buy2">Katıl</button>
                 </div>
             </div>
         </div>
@@ -310,8 +310,10 @@
         var _educationId = $("#_education-id").val();
 
         var btnBuy = $("#btn-buy");
+        var btnBuy2 = $("#btn-buy2");
 
         btnBuy.on("click", btnBuy_onClick);
+        btnBuy2.on("click", btnBuy_onClick);
 
         function btnBuy_onClick() {
             var cart = new CartSupport.Cart();
