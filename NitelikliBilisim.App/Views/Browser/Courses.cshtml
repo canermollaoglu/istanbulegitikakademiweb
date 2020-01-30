@@ -466,6 +466,10 @@
             });
         }
         function prepareLevelFilter(data) {
+            var chosenLevels = [];
+            $("input[name='lev-filter']:checked").each(function () {
+                chosenLevels.push($(this).val());
+            });
             levelList.html("");
             Object.keys(data).forEach(key => {
                 var text = "";
@@ -481,10 +485,12 @@
                         break;
                 }
 
+                var checked = chosenLevels.includes(key) ? "checked" : "";
+
                 levelList.append(`
                         <li>
                             <label class="filter">
-                                <input type="checkbox" name="lev-filter" value="${key}" class="icheck" style="position: absolute; opacity: 0;">
+                                <input type="checkbox" name="lev-filter" ${checked} value="${key}" class="icheck" style="position: absolute; opacity: 0;">
                                 <small>${text} (${data[key]})</small>
                             </label>
                         </li>
@@ -492,6 +498,8 @@
             })
 
             iCheckAll();
+
+            chosenLevels = [];
         }
         function iCheckAll() {
             $('.icheck').iCheck({
