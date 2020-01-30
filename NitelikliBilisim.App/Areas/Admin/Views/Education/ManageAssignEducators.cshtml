@@ -113,8 +113,25 @@
                 method: "post",
                 data: data,
                 success: (res) => {
-                    getAssignedEducators();
-                    $("#form-add-education-parts")[0].reset();
+                    if (res.isSuccess) {
+                        getAssignedEducators();
+                        $("#form-assign-educators")[0].reset();
+                        resultAlert.display({
+                            success: true,
+                            message: "Kayıt işlemi başarılı",
+                            redirectElement: {
+                                content: "tıklayınız",
+                                link: location.href
+                            }
+                        });
+                        btnAdd.on("click", btnAdd_onClick);
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors
+                        });
+                        btnAdd.on("click", btnAdd_onClick);
+                    }
                 }
             });
         }
