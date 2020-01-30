@@ -8,6 +8,11 @@
     max-height: 225px;
     object-fit: cover;
 }
+
 .sitelogo {
     transform: scale(1.25);
+}
+
+.main_title_2 p {
+    font-size: 1.4rem;
 }

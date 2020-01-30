@@ -10,83 +10,15 @@
         #hero_in.courses:before {
             background: url(@Model.Details.Medias.Where(x => x.MediaType == NitelikliBilisim.Core.Enums.EducationMediaType.Banner).FirstOrDefault().FileUrl) center center no-repeat;
         }
-        ul.list_ok li:before {
-            color: #fc4912 !important;
-        }
-        a {
-            color: #2d2f33 !important;
-            font-size: 0.875rem !important;
-            font-family: "Poppins", Helvetica, sans-serif !important;
-        }
-        #custom-search-input .search-query{
-             height: 29px !important;
-             border-radius: 46px !important;
-             margin: 0 -35px !important;
-             padding-right: 130px !important;
-             border: 2px solid #2d2f33 !important; 
-        }
-
-        @@media(max-width: 767px) {
-            ul.list_ok li:before {
-                color: #fc4912 !important;
-            }
-
-            a {
-                color: #2d2f33 !important;
-                font-size: 0.875rem !important;
-                font-family: "Poppins", Helvetica, sans-serif !important;
-            }
-
-            search-query_mobile {
-                height: 29px !important;
-                border-radius: 46px !important;
-                margin: 0 -35px !important;
-                padding-right: 130px !important;
-                border: 2px solid #2d2f33 !important;
-            }
-
-            #custom-search-input {
-                height: 29px !important;
-                width: fit-content !important;
-                border-radius: 46px !important;
-                margin: 0 -35px !important;
-                padding-right: 130px;
-                border: 2px solid #2d2f33;
-                display: contents;
-            }
-
-                #custom-search-input input[type='submit'] {
-                    border-radius: 33px !important;
-                    right: -23px !important;
-                    height: 12px !important;
-                    margin-top: 12px !important;
-                    margin-right: -36px;
-                }
-                #custom-search-input .search-query {
-                    height: 29px !important;
-                    border-radius: 46px !important;
-                    margin: 5px -35px 5px 5px !important;
-                    padding-right: 130px !important;
-                    border: 2px solid #2d2f33 !important;
-                }
-            .rounded {
-                border-radius: .25rem !important;
-                margin-bottom: -38px !important;
-            }
-            .h2, h2 {
-                font-size: 1rem;
-            }
-
-            body {
-                background: #f8f8f8;
-                font-size: 0.875rem;
-                /* line-height: 1.6; */
-                font-family: "Poppins", Helvetica, sans-serif;
-                color: #555;
-            }
-        }
-        
     </style>
+
+    <link href="~/css/pages/course/desktop-details.css" rel="stylesheet" />
+    <link href="~/css/pages/course/mobile-details.css" rel="stylesheet" />
+    <link href="~/css/pages/course/temp-details.css" rel="stylesheet" />
+}
+
+@{
+    var hours = Model.Details.Base.DaysNumeric * Model.Details.Base.HoursPerDayNumeric;
 }
 
 <main>
@@ -94,6 +26,8 @@
         <div class="wrapper">
             <div class="container" style="display: none !important">
                 <input type="hidden" value="@Model.Details.Base.Id" id="_education-id" />
+                <input type="hidden" value="@Model.Group.Host.Latitude" id="_host-latitude" />
+                <input type="hidden" value="@Model.Group.Host.Longitude" id="_host-longitude" />
                 <h1 class="fadeInUp"><span></span>@Model.Details.Base.Name</h1>
             </div>
         </div>
@@ -119,26 +53,17 @@
                         <div>
                             <span>Bu eğitim için birden fazla eğitim grubu vardır. Lütfen size uygun olan grubu seçiniz.</span>
                         </div>
-                        <form>
-                            <div id="custom-search-input">
-                                <div class="input-group rounded">
-                                    <input type="text" class="search-query" placeholder="Eğitim Grupları" id="input-index-search">
-                                    <input type="submit" style="
-        border-radius: 33px !important;
-        right: 45px !important;
-        height: 12px !important;
-    " class="btn_search rounded" value="" id="btn-index-search">
-                                </div>
-                            </div>
-                        </form><br /> <br />
-                        <h2><span></span>@Model.Details.Base.Name</h2>
+                        <div class="group-selector-container">
+                            <select id="select-groups">
+                                <option value="0">İstanbul (Wissen Akademie)</option>
+                                <option value="1">İstanbul (Bahçeşehir Üniversitesi)</option>
+                                <option value="2">Ankara (Wissen Akademie)</option>
+                            </select>
+                        </div>
+                        <h3><span></span>@Model.Details.Base.Name</h3>
                         <p>@Model.Details.Base.Description</p>
                         <h5>Ne öğreneceksiniz?</h5>
                         <ul class="list_ok">
-                            @*<li>
-                        <h6>Suas summo id sed erat erant oporteat</h6>
-                        <p>Ut unum diceret eos, mel cu velit principes, ut quo inani dolorem mediocritatem. Mea in justo posidonium necessitatibus.</p>
-                    </li>*@
                             @foreach (var item in Model.Details.Gains)
                             {
                                 <li>@item.Gain</li>
@@ -149,34 +74,20 @@
                         {
                             <p>@Model.Details.Base.Description2</p>
                         }
-                        @*<div class="row">
-                    <div class="col-lg-6">
-                        <ul class="bullets">
-                            <li>Dolorem mediocritatem</li>
-                            <li>Mea appareat</li>
-                            <li>Prima causae</li>
-                            <li>Singulis indoctum</li>
-                        </ul>
-                    </div>
-                    <div class="col-lg-6">
-                        <ul class="bullets">
-                            <li>Timeam inimicus</li>
-                            <li>Oportere democritum</li>
-                            <li>Cetero inermis</li>
-                            <li>Pertinacia eum</li>
-                        </ul>
-                    </div>
-                </div>*@
-
                     </section>
 
+                    @* EĞİTİM PARÇALARI *@
                     <section id="lessons">
                         <div class="intro_title">
-                            <h2>Dersler</h2>
-                            <ul>
-                                <li>@Model.Details.TotalPartCount parça</li>
-                                <li>@Model.Details.TotalDuration dk.</li>
-                            </ul>
+                            <div class="row">
+                                <div class="col-md-9 col-sm-6"><h5>Dersler</h5></div>
+                                <div class="col-md-3 col-sm-6">
+                                    <ul>
+                                        <li>@Model.Details.Base.DaysText gün</li>
+                                        <li>@hours saat</li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                         <div id="accordion_lessons" role="tablist" class="add_bottom_45">
                             @{
@@ -218,7 +129,7 @@
                     @* EĞİTMENLER *@
                     <section id="teachers">
                         <div class="intro_title">
-                            <h2>Eğitmenler</h2>
+                            <h5>Eğitmenler</h5>
                         </div>
                         <p>Bu dersi veren, alanında uzman eğitmenlerimizi tanıyın!</p>
                         <div class="row add_top_20 add_bottom_30">
@@ -242,137 +153,167 @@
 
                     @* YORUMLAR *@
                     @*  <section id="reviews">
-                <h2>Yorumlar</h2>
-                <div class="reviews-container">
-                    <div class="row">
-                        <div class="col-lg-3">
-                            <div id="review_summary">
-                                <strong>4.7</strong>
-                                <div class="rating">
-                                    <i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i>
-                                </div>
-                                <small> 4 reviews</small>
-                            </div>
-                        </div>
-                        <div class="col-lg-9">
-                            <div class="row">
-                                <div class="col-lg-10 col-9">
-                                    <div class="progress">
-                                        <div class="progress-bar" role="progressbar" style="width: 90%" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
+                            <h2>Yorumlar</h2>
+                            <div class="reviews-container">
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <div id="review_summary">
+                                            <strong>4.7</strong>
+                                            <div class="rating">
+                                                <i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i>
+                                            </div>
+                                            <small> 4 reviews</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-9">
+                                        <div class="row">
+                                            <div class="col-lg-10 col-9">
+                                                <div class="progress">
+                                                    <div class="progress-bar" role="progressbar" style="width: 90%" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2 col-3"><small><strong>5 yıldız</strong></small></div>
+                                        </div>
+                                        <!-- /row -->
+                                        <div class="row">
+                                            <div class="col-lg-10 col-9">
+                                                <div class="progress">
+                                                    <div class="progress-bar" role="progressbar" style="width: 95%" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2 col-3"><small><strong>4 yıldız</strong></small></div>
+                                        </div>
+                                        <!-- /row -->
+                                        <div class="row">
+                                            <div class="col-lg-10 col-9">
+                                                <div class="progress">
+                                                    <div class="progress-bar" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2 col-3"><small><strong>3 yıldız</strong></small></div>
+                                        </div>
+                                        <!-- /row -->
+                                        <div class="row">
+                                            <div class="col-lg-10 col-9">
+                                                <div class="progress">
+                                                    <div class="progress-bar" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2 col-3"><small><strong>2 yıldız</strong></small></div>
+                                        </div>
+                                        <!-- /row -->
+                                        <div class="row">
+                                            <div class="col-lg-10 col-9">
+                                                <div class="progress">
+                                                    <div class="progress-bar" role="progressbar" style="width: 0" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2 col-3"><small><strong>1 yıldız</strong></small></div>
+                                        </div>
+                                        <!-- /row -->
                                     </div>
                                 </div>
-                                <div class="col-lg-2 col-3"><small><strong>5 yıldız</strong></small></div>
+                                <!-- /row -->
                             </div>
-                            <!-- /row -->
-                            <div class="row">
-                                <div class="col-lg-10 col-9">
-                                    <div class="progress">
-                                        <div class="progress-bar" role="progressbar" style="width: 95%" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-2 col-3"><small><strong>4 yıldız</strong></small></div>
-                            </div>
-                            <!-- /row -->
-                            <div class="row">
-                                <div class="col-lg-10 col-9">
-                                    <div class="progress">
-                                        <div class="progress-bar" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-2 col-3"><small><strong>3 yıldız</strong></small></div>
-                            </div>
-                            <!-- /row -->
-                            <div class="row">
-                                <div class="col-lg-10 col-9">
-                                    <div class="progress">
-                                        <div class="progress-bar" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-2 col-3"><small><strong>2 yıldız</strong></small></div>
-                            </div>
-                            <!-- /row -->
-                            <div class="row">
-                                <div class="col-lg-10 col-9">
-                                    <div class="progress">
-                                        <div class="progress-bar" role="progressbar" style="width: 0" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-2 col-3"><small><strong>1 yıldız</strong></small></div>
-                            </div>
-                            <!-- /row -->
-                        </div>
-                    </div>
-                    <!-- /row -->
-                </div>
 
-                <hr>
+                            <hr>
 
-                <div class="reviews-container">
+                            <div class="reviews-container">
 
-                    <div class="review-box clearfix">
-                        <figure class="rev-thumb">
-                            <img src="http://via.placeholder.com/150x150/ccc/fff/avatar1.jpg" alt="">
-                        </figure>
-                        <div class="rev-content">
-                            <div class="rating">
-                                <i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i>
+                                <div class="review-box clearfix">
+                                    <figure class="rev-thumb">
+                                        <img src="http://via.placeholder.com/150x150/ccc/fff/avatar1.jpg" alt="">
+                                    </figure>
+                                    <div class="rev-content">
+                                        <div class="rating">
+                                            <i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i>
+                                        </div>
+                                        <div class="rev-info">
+                                            Admin – April 03, 2016:
+                                        </div>
+                                        <div class="rev-text">
+                                            <p>
+                                                Sed eget turpis a pede tempor malesuada. Vivamus quis mi at leo pulvinar hendrerit. Cum sociis natoque penatibus et magnis dis
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="rev-info">
-                                Admin – April 03, 2016:
-                            </div>
-                            <div class="rev-text">
-                                <p>
-                                    Sed eget turpis a pede tempor malesuada. Vivamus quis mi at leo pulvinar hendrerit. Cum sociis natoque penatibus et magnis dis
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+                        </section>
                     *@
                 </div>
 
                 @* SAĞ TARAFTAKİ KURS DETAYLARI *@
                 <aside class="col-lg-4" id="sidebar">
                     <div class="box_detail">
-                        <figure style="width:237.97px !important; height:212px !important">
+                        <div class="map-container">
+                            <div id="map">
 
-                         <img style="width:237.97px !important; height:212px !important" src="~/assets/img/mainback/Screenshot_2.png">
-                        </figure>
-                      @*  <div class="price">
-                            @Model.Details.Base.PriceText@*<span class="original_price"><em>$49</em>60% discount price</span>
-                        </div>*@
+                            </div>
+                        </div>
+                        @*  <div class="price">
+                                @Model.Details.Base.PriceText@*<span class="original_price"><em>$49</em>60% discount price</span>
+                            </div>*@
                         @*<button id="btn-buy" type="button" class="btn_1 full-width">Sepete Ekle</button>
-                        <a href="#0" class="btn_1 full-width outline"><i class="icon_heart"></i> İstek Listesine Ekle</a>*@
+                            <a href="#0" class="btn_1 full-width outline"><i class="icon_heart"></i> İstek Listesine Ekle</a>*@
                         <div id="list_feat">
                             <h3></h3>
-                            <ul>
-                                <li><i style="font-size:15px !important; color: #fc4912 !important;" class="icon-calendar-circled"></i>26 Mart 2020 Perşembe</li>
-                                <li style="padding: 0px 30px !important;">3 gün 20 saat</li>
-                                <li><i style="color: #fc4912 !important;" class=" icon-location-2"></i>Barbaros Blv. Yıldız İş Hanı No:9, <span style="padding: 0px 30px !important;">34353 Beşiktaş/İstanbul</span></li><br />
-                                <li><i style="color: #fc4912 !important;" class="icon-user"></i>Mevcut 7</li>
-                                <li><i style="color: #fc4912 !important;" class="icon-users-2"></i>Kontenjan 15</li>
+                            <ul class="course-summary-list">
+                                <li><i class="icon-calendar-circled"></i>@Model.Group.StartDate.ToLongDateString()</li>
+                                <li><i class="icon-hourglass"></i>@Model.Details.Base.DaysText gün (@hours saat)</li>
+                                @*<li><p></p></li>*@
+                                <li><i class=" icon-location-2"></i>@Model.Group.Host.Address</li>
+                                @*<li><p></p></li>*@
+                                <li><i class="icon-user"></i>Katılımcı: 0</li>
+                                <li><i class="icon-users-2"></i>Kontenjan: @Model.Group.Quota</li>
                             </ul>
                         </div>
                     </div>
                 </aside>
-                @*<aside class="col-lg-4" id="sidebar">
-            <div>
-                <img style="width:300px !important; height:400px !important;" src="~/assets/img/mainback/maps.png" />
-            </div>
-        </aside>*@
+
             </div>
         </div>
     </div>
+
+    <section id="bottom-details">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <span>@Model.Group.StartDate.ToLongDateString() </span><span>@Model.Group.Host.HostName (@Model.Group.Host.City)</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p style="font-size:1.3em">@Model.Details.Base.Name</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <p style="font-size:1.3em">@Model.Details.Base.PriceText</p>
+                </div>
+                <div class="col-md-3">
+                    <button class="btn_1 rounded" id="btn-buy2">Katıl</button>
+                </div>
+            </div>
+        </div>
+    </section>
 </main>
+
+
 @section postScripts{
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBwbBlZQaeP0fYu7xTiviCCWGAK3onN-iE&callback=initMap"></script>
     <script src="~/js/sup/cart.js"></script>
+    <script src="~/js/pages/course-details.js"></script>
     <script>
         var _educationId = $("#_education-id").val();
 
         var btnBuy = $("#btn-buy");
+        var btnBuy2 = $("#btn-buy2");
 
         btnBuy.on("click", btnBuy_onClick);
+        btnBuy2.on("click", btnBuy_onClick);
 
         function btnBuy_onClick() {
             var cart = new CartSupport.Cart();

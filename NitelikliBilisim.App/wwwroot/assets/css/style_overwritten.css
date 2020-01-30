@@ -211,14 +211,15 @@ a.social_bt.linkedin {
     color: #fff !important;
 }
 #main_menu nav.version_2 h3 {
-    color: #fff !important;
+    color: #ff3000 !important;
+    font-weight: 800;
 }
 #main_menu nav.version_2 li a {
-    color: #fff !important;
+    color: #2d2f33 !important;
 }
 #main_menu {
     background: linear-gradient(to right, #343538, #842408);
-    background: #88898b !important;
+    background: #f5f5f5 !important;
 }
 #hero_in.courses .wrapper {
     background: url("../img/mainback/mainback.jpg") center center no-repeat fixed !important;
@@ -353,7 +354,6 @@ ul.additional_info li strong {
     /*ul.list_ok li:before {
         color: #fc4912 !important;
     }
-
     a {
         color: #2d2f33 !important;
         font-size: 0.875rem !important;
@@ -366,4 +366,8 @@ ul.additional_info li strong {
         padding-right: 130px !important;
         border: 2px solid #2d2f33 !important;
     }*/
+}
+
+.follow_us a, .follow_us i {
+    color: #ff3000 !important;
 }

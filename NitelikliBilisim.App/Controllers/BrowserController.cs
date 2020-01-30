@@ -7,6 +7,9 @@ using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Support.Enums;
 using System.Linq;
 using NitelikliBilisim.App.Controllers.Base;
+using NitelikliBilisim.Core.Services.Abstracts;
+using System.IO;
+using System.Threading.Tasks;
 using NitelikliBilisim.Core.ViewModels.search;
 using System.Collections.Generic;
 
@@ -15,10 +18,12 @@ namespace NitelikliBilisim.App.Controllers
     public class BrowserController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
+        private readonly IStorageService _storageService;
 
-        public BrowserController(UnitOfWork unitOfWork)
+        public BrowserController(UnitOfWork unitOfWork, IStorageService storageService)
         {
             _unitOfWork = unitOfWork;
+            _storageService = storageService;
         }
 
         [Route("egitimler/{categoryUrl?}")]
@@ -38,16 +43,22 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> GetCourses(string categoryName, string searchText, int page = 0, OrderCriteria order = OrderCriteria.Latest, FiltersVm filter = null)
         [Route("get-courses")]
-        public IActionResult GetCourses(string categoryName, string searchText, int page = 0, OrderCriteria order = OrderCriteria.Latest, FiltersVm filter = null)
         {
             var model = new List<EducationVm>();
 
             model = _unitOfWork.Education.GetInfiniteScrollSearchResults(categoryName, searchText, page, order, filter);
 
-            if (!string.IsNullOrEmpty(categoryName))
-                filter.categories = model.Select(x => x.Base.CategoryName).ToArray();
-
+            foreach (var item in model)
+            {
+                for (int i = 0; i < item.Medias.Count; i++)
+                {
+                    var folder = Path.GetDirectoryName(item.Medias[i].FileUrl);
+                    var fileName = Path.GetFileName(item.Medias[i].FileUrl);
+                    item.Medias[i].FileUrl = await _storageService.DownloadFile(fileName, folder);
+                }
+            }
             return Json(new ResponseModel
             {
                 data = new
