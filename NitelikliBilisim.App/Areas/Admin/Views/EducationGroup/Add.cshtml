@@ -139,6 +139,7 @@
     <script src="~/js/sup/alert-sup.js"></script>
     <script src="~/js/lib/security-support.js"></script>
     <script src="~/js/sup/datetime-support.js"></script>
+    <script src="~/js/sup/alert-sup.js"></script>
     <script>
         /* fields */
         var lessonDays = [];
@@ -214,18 +215,30 @@
                 LessonDays: lessonDays,
                 Quota: inputQuota.val()
             });
-
+            var resultAlert = new AlertSupport.ResultAlert();
             $.ajax({
                 url: "/admin/add-group",
                 method: "post",
                 data: data,
                 success: (res) => {
                     if (res.isSuccess) {
-                        console.log(1);
+                        resultAlert.display({
+                            success: true,
+                            message: "Kayıt işlemi başarılı! Listeye gitmek için {link}",
+                            redirectElement: {
+                                content: "tıklayınız",
+                                link: "/admin/gruplar"
+                            }
+                        });
                     } else {
-                        console.log(0);
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors,
+                            message: "İşlem başarısız"
+                        });
                     }
-                }
+                },
+                complete: () => { btnSave.on("click", btnSave_onClick); }
             });
         }
 
