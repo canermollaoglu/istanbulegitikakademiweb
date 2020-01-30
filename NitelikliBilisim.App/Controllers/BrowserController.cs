@@ -7,6 +7,8 @@ using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Support.Enums;
 using System.Linq;
 using NitelikliBilisim.App.Controllers.Base;
+using NitelikliBilisim.Core.ViewModels.search;
+using System.Collections.Generic;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -19,16 +21,16 @@ namespace NitelikliBilisim.App.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        [Route("tum-egitimler/{categoryUrl?}")]
-        public IActionResult AllCourses(string categoryUrl, string showAs = "grid")
+        [Route("egitimler/{categoryUrl?}")]
+        public IActionResult Courses(string categoryUrl, string s, string showAs = "grid")
         {
-            var categoryNames = _unitOfWork.EducationCategory.Get().Select(x => x.Name).ToList();
-
-            var category = categoryNames.FirstOrDefault(x => StringHelper.UrlFormatConverter(x) == categoryUrl) ?? "";
+            var categoryNames = _unitOfWork.EducationCategory.Get(x => x.IsCurrent && x.BaseCategoryId == null).Select(x => x.Name).ToList();
+            var categoryName = categoryNames.FirstOrDefault(x => StringHelper.UrlFormatConverter(x) == categoryUrl) ?? "";
 
             var model = new SearchResultsGetVm
             {
-                SearchText = category,
+                CategoryName = categoryName,
+                SearchText = s,
                 OrderCriterias = EnumSupport.ToKeyValuePair<OrderCriteria>(),
                 ShowAs = showAs
             };
@@ -36,15 +38,22 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [HttpPost]
-        [Route("get-all-courses")]
-        public IActionResult GetAllCourses(string category, int page = 0, OrderCriteria order = OrderCriteria.Latest)
+        [Route("get-courses")]
+        public IActionResult GetCourses(string categoryName, string searchText, int page = 0, OrderCriteria order = OrderCriteria.Latest, FiltersVm filter = null)
         {
-            var model = _unitOfWork.Education.GetEducationsByCategory(category, page, order);
+            var model = new List<EducationVm>();
+
+            model = _unitOfWork.Education.GetInfiniteScrollSearchResults(categoryName, searchText, page, order, filter);
+
+            if (!string.IsNullOrEmpty(categoryName))
+                filter.categories = model.Select(x => x.Base.CategoryName).ToArray();
+
             return Json(new ResponseModel
             {
                 data = new
                 {
-                    model = model
+                    model = model,
+                    filter = filter
                 }
             });
         }

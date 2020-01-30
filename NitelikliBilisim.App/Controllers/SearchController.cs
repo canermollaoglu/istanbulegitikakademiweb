@@ -30,24 +30,11 @@ namespace NitelikliBilisim.App.Controllers
             return View(model);
         }
 
-        //[Route("search-for-courses/{searchText}/page/{page}")]
-        //public IActionResult SearchEducation(string searchText, int page = 0, FilterOptionsVm filter = null)
-        //{
-        //    var model = _unitOfWork.Education.GetInfiniteScrollSearchResults(searchText, page, filter);
-        //    return Json(new ResponseModel
-        //    {
-        //        data = new
-        //        {
-        //            model = model
-        //        }
-        //    });
-        //}
-
         [HttpPost]
         [Route("search-for-courses")]
         public IActionResult SearchEducation(string searchText, int page = 0, OrderCriteria order = OrderCriteria.Latest, FiltersVm filter = null)
         {
-            var model = _unitOfWork.Education.GetInfiniteScrollSearchResults(searchText, page, order, filter);
+            var model = _unitOfWork.Education.GetInfiniteScrollSearchResults("", searchText, page, order, filter);
             return Json(new ResponseModel
             {
                 data = new
