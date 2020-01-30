@@ -9,6 +9,10 @@
     </div>
 
     <ul id="top_menu">
+        @if(User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+        {
+            <li><a href="/admin/panel" class="btn_1">Admin Panel</a></li>
+        }
         @if (!User.Identity.IsAuthenticated)
         {
             <li><a href="/giris-yap" class="login">GİRİŞ YAP</a></li>
