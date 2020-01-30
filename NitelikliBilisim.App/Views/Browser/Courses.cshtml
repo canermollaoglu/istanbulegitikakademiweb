@@ -244,7 +244,6 @@
             if (_searchText.val() == "" && _categoryName.val() == "") {
                 var n = uri.lastIndexOf('/');
                 var result = uri.substring(n + 1);
-                console.log(_categoryName.val())
                 if (result != "egitimler" && result.length > 0) {
                     var clean_uri = uri.substring(0, n);
                     window.history.replaceState({}, document.title, clean_uri);
@@ -505,6 +504,7 @@
                     var ul = $("ul").find(`[data-cat-name="${$(this).val()}"]`);
                     var state = $(this).parent('[class*="icheckbox"]').hasClass('checked') ? 'uncheck' : 'check';
                     ul.find('input[name="cat-filter"]').iCheck(state);
+                    _categoryName.val("");
                 }
                 else
                     getFilteredResults(false);

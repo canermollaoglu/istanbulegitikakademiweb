@@ -46,8 +46,6 @@ namespace NitelikliBilisim.App.Controllers
         [Route("get-courses")]
         public async Task<IActionResult> GetCourses(string categoryName, string searchText, int page = 0, OrderCriteria order = OrderCriteria.Latest, FiltersVm filter = null)
         {
-            var model = new List<EducationVm>();
-
             model = _unitOfWork.Education.GetInfiniteScrollSearchResults(categoryName, searchText, page, order, filter);
 
             foreach (var item in model)
