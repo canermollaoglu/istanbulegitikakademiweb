@@ -17,7 +17,7 @@
                 if (!searchText || searchText === "")
                     return;
 
-                location.href = `/arama-sonuclari/${searchText}`;
+                location.href = `/egitimler?s=${searchText}`;
             });
         }
 
