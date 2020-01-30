@@ -38,3 +38,7 @@ hr, ul {
 .filter_type ul .sub-cat {
     margin-left: 20px;
 }
+
+.filter {
+    cursor: pointer;
+}

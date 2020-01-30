@@ -157,6 +157,8 @@
         var inputSearch = $("#input-search");
         var listingFilters = $("input[name='listing_filter']");
         var selectOrder = $("select[name='orderby']");   
+        var categoryList = $("#category-list");
+        var levelList = $("#level-list");
 
         /* assignments */
         $(document).ready(document_onLoad);
@@ -265,7 +267,7 @@
                 url: url,
                 method: "post",
                 data: {
-                    categoryName: "",
+                    categoryName: _categoryName.val(),
                     searchText: _searchText.val(),
                     page: _page.val(),
                     order: order,
@@ -302,11 +304,15 @@
                         }
                     }
 
+                    prepareLevelFilter(res.data.filterOptions.levels)
+
                     $("a[name='btn-buy']").on("click", buyBtns_onClick);
 
                     _page.val(parseInt(_page.val()) + 1);
                 }
             });
+
+
         }
         function getFilteredResults(isLoadMore, order) {
             var filterOptions = {
@@ -416,9 +422,6 @@
             return boxes;
         }
         function prepareFilterBox() {
-            var categoryList = $("#category-list");
-            var levelList = $("#level-list");
-
             $.ajax({
                 url: `/get-filter-options/`,
                 method: "post",
@@ -438,7 +441,7 @@
 
                             categoryList.append(`
                                 <li>
-                                    <label>
+                                    <label class="filter">
                                         <input type="checkbox" name="base-cat-filter" value="${item.categoryName}" class="icheck ${chosen}" style="position: absolute; opacity: 0;">
                                         <small>${item.categoryName} (${item.count})</small>
                                     </label>
@@ -450,7 +453,7 @@
                             var ul = $("ul").find(`[data-cat-name="${item.baseCategoryName}"]`);
                             ul.append(`
                                 <li>
-                                    <label>
+                                    <label class="filter">
                                         <input type="checkbox" name="cat-filter" value="${item.categoryName}" class="icheck" style="position: absolute; opacity: 0;">
                                         <small>${item.categoryName} (${item.count})</small>
                                     </label>
@@ -459,49 +462,55 @@
                         }
                     }
 
-                    Object.keys(data.levels).forEach(key => {
-                        var level;
-
-                        switch (key) {
-                            case "Beginner":
-                                level = "Başlangıç";
-                                break;
-                            case "Intermediate":
-                                level = "Orta";
-                                break;
-                            case "Advanced":
-                                level = "İleri";
-                                break;
-                        }
-
-                        levelList.append(`
-                                <li>
-                                    <label>
-                                        <input type="checkbox" name="lev-filter" value="${key}" class="icheck" style="position: absolute; opacity: 0;">
-                                        <small>${level} (${data.levels[key]})</small>
-                                    </label>
-                                </li>
-                            `);
-                    })
-
-                    $('.icheck').iCheck({
-                        checkboxClass: 'icheckbox_square-grey',
-                        radioClass: 'iradio_square-grey'
-                    });
-
-                    $('.icheck').on('ifToggled', function () {
-                        if ($(this).attr('name') == 'base-cat-filter') {
-                            var ul = $("ul").find(`[data-cat-name="${$(this).val()}"]`);
-                            var state = $(this).parent('[class*="icheckbox"]').hasClass('checked') ? 'uncheck' : 'check';
-                            ul.find('input[name="cat-filter"]').iCheck(state);
-                        }
-                        else
-                            getFilteredResults(false);
-                    });
-
-                    $('.chosen').iCheck('check');
+                    iCheckAll();
                 }
             });
+        }
+        function prepareLevelFilter(data) {
+            levelList.html("");
+            Object.keys(data).forEach(key => {
+                var text = "";
+                switch (key) {
+                    case "Beginner":
+                        text = "Başlangıç";
+                        break;
+                    case "Intermediate":
+                        text = "Orta";
+                        break;
+                    case "Advanced":
+                        text = "İleri";
+                        break;
+                }
+
+                levelList.append(`
+                        <li>
+                            <label class="filter">
+                                <input type="checkbox" name="lev-filter" value="${key}" class="icheck" style="position: absolute; opacity: 0;">
+                                <small>${text} (${data[key]})</small>
+                            </label>
+                        </li>
+                    `);
+            })
+
+            iCheckAll();
+        }
+        function iCheckAll() {
+            $('.icheck').iCheck({
+                checkboxClass: 'icheckbox_square-grey',
+                radioClass: 'iradio_square-grey'
+            });
+
+            $('.icheck').on('ifToggled', function () {
+                if ($(this).attr('name') == 'base-cat-filter') {
+                    var ul = $("ul").find(`[data-cat-name="${$(this).val()}"]`);
+                    var state = $(this).parent('[class*="icheckbox"]').hasClass('checked') ? 'uncheck' : 'check';
+                    ul.find('input[name="cat-filter"]').iCheck(state);
+                }
+                else
+                    getFilteredResults(false);
+            });
+
+            $('.chosen').iCheck('check');
         }
         function slugify(text) {
             var trMap = {

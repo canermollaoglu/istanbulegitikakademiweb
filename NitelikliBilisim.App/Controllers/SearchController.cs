@@ -60,9 +60,9 @@ namespace NitelikliBilisim.App.Controllers
 
         [HttpPost]
         [Route("get-filter-options")]
-        public IActionResult GetFilterOptions(string searchText)
+        public IActionResult GetFilterOptions(string categoryName, string searchText)
         {
-            var model = _unitOfWork.Education.GetEducationFilterOptions(searchText);
+            var model = _unitOfWork.Education.GetEducationFilterOptions(categoryName, searchText);
 
             return Json(new ResponseModel
             {

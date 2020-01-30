@@ -542,7 +542,7 @@ namespace NitelikliBilisim.Business.Repositories
             return model;
         }
 
-        public FilterOptionsVm GetEducationFilterOptions(string searchText)
+        public FilterOptionsVm GetEducationFilterOptions(string categoryName, string searchText, FiltersVm filter = null)
         {
             var educationIds = new List<Guid>();
 
@@ -563,6 +563,36 @@ namespace NitelikliBilisim.Business.Repositories
                     .Where(x => x.TagName.Contains(searchText))
                     .Select(x => x.EducationId)
                     .ToList();
+            }
+            else if (filter?.categories?.Length > 0)
+            {
+                educationIds = Context.Educations.Where(x => filter.categories.Contains(x.Category.Name)).Select(x => x.Id).ToList();
+            }
+            else if (!string.IsNullOrEmpty(categoryName))
+            {
+                var educationCategories = Context.EducationCategories.Select(x => new {
+                    Id = x.Id,
+                    BaseCategoryId = x.BaseCategoryId,
+                    Name = x.Name,
+                });
+
+                var baseCategoryId = educationCategories.FirstOrDefault(x => x.Name.ToLower() == categoryName.ToLower())?.Id;
+
+                if (baseCategoryId != null)
+                {
+                    var educationsByCategory = Context.Educations.Join(educationCategories, e => e.CategoryId, c => c.Id, (e, c) => new
+                    {
+                        EducationId = e.Id,
+                        CategoryId = c.Id
+                    });
+
+                    educationIds.AddRange(educationsByCategory.Where(x => x.CategoryId == baseCategoryId).Select(x => x.EducationId));
+
+                    var subCategories = educationCategories.Where(x => x.BaseCategoryId == baseCategoryId).Select(x => x.Id).ToList();
+
+                    foreach (var item in subCategories)
+                        educationIds.AddRange(educationsByCategory.Where(x => x.CategoryId == item).Select(x => x.EducationId));
+                }
             }
             else
                 educationIds = Context.Educations.Select(x => x.Id).ToList();       

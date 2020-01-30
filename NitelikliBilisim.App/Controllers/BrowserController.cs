@@ -59,12 +59,15 @@ namespace NitelikliBilisim.App.Controllers
                     item.Medias[i].FileUrl = await _storageService.DownloadFile(fileName, folder);
                 }
             }
+
+            var filterOptions = _unitOfWork.Education.GetEducationFilterOptions(categoryName, searchText, filter);
+
             return Json(new ResponseModel
             {
                 data = new
                 {
                     model = model,
-                    filter = filter
+                    filterOptions = filterOptions
                 }
             });
         }
