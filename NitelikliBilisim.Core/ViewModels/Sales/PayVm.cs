@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace NitelikliBilisim.Core.ViewModels.Sales
 {
@@ -9,6 +6,10 @@ namespace NitelikliBilisim.Core.ViewModels.Sales
     {
         [Required]
         public _CardInfo CardInfo { get; set; }
+        [Required]
+        public _InvoiceInfo InvoiceInfo { get; set; }
+        public _CorporateInvoiceInfo CorporateInvoiceInfo { get; set; }
+        public bool IsDistantSalesAgreementConfirmed { get; set; }
     }
 
     public class _CardInfo
@@ -25,5 +26,31 @@ namespace NitelikliBilisim.Core.ViewModels.Sales
 
         [Required, MaxLength(2)]
         public string CVC { get; set; }
+    }
+    public class _InvoiceInfo
+    {
+        [Required, MaxLength(32)]
+        public string City { get; set; }
+
+        [Required, MaxLength(32)]
+        public string Town { get; set; }
+
+        [Required, MaxLength(256)]
+        public string Address { get; set; }
+
+        [Required, MaxLength(16)]
+        public string Phone { get; set; }
+        public bool IsIndividual { get; set; }
+    }
+    public class _CorporateInvoiceInfo
+    {
+        [MaxLength(256)]
+        public string CompanyName { get; set; }
+
+        [MaxLength(256)]
+        public string TaxNo { get; set; }
+
+        [MaxLength(256)]
+        public string TaxOffice { get; set; }
     }
 }
