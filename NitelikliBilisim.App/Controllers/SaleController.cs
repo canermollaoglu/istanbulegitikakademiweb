@@ -6,6 +6,7 @@ using NitelikliBilisim.Core.ViewModels.Cart;
 using System;
 using System.Collections.Generic;
 using NitelikliBilisim.App.Controllers.Base;
+using System.Globalization;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -31,11 +32,11 @@ namespace NitelikliBilisim.App.Controllers
             if (data == null || data.Items == null)
                 return Json(new ResponseModel
                 {
-                    isSuccess = true,
+                    isSuccess = false,
                     data = new
                     {
                         items = new List<CartItem>(),
-                        total = 0m.ToString("C")
+                        total = 0m.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"))
                     }
                 });
 
@@ -49,7 +50,7 @@ namespace NitelikliBilisim.App.Controllers
             var model = new
             {
                 items = cartItems,
-                total = sum.ToString("C")
+                total = sum.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"))
             };
 
             return Json(new ResponseModel
@@ -66,6 +67,16 @@ namespace NitelikliBilisim.App.Controllers
                 return Redirect("/giris-yap?returnUrl=/odeme");
 
             return View();
+        }
+
+        [HttpPost, Route("pay")]
+        public IActionResult Pay()
+        {
+
+            return Json(new ResponseModel
+            {
+                isSuccess = true
+            });
         }
     }
 
