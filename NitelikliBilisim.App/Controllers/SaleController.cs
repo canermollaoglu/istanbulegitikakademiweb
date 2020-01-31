@@ -75,15 +75,18 @@ namespace NitelikliBilisim.App.Controllers
         [HttpPost, ValidateAntiForgeryToken, Route("pay")]
         public IActionResult Pay(PayPostVm data)
         {
+            if (!data.IsDistantSalesAgreementConfirmed)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Mesafeli Satış sözleşmesini onaylayınız" }
+                });
             if (!ModelState.IsValid)
-            {
-                var response = new ResponseModel
+                return Json(new ResponseModel
                 {
                     isSuccess = false,
                     errors = ModelStateUtil.GetErrors(ModelState).ToList()
-                };
-                return Json(response);
-            }
+                });
 
             return Json(new ResponseModel
             {
