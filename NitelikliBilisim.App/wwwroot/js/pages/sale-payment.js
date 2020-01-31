@@ -28,7 +28,6 @@ var btnBuy = $("#btn-buy");
 $(document).ready(document_onLoad);
 $(selectProvinces).on("change", selectProvinces_onChange);
 btnBuy.on("click", btnBuy_onClick);
-$(chkConfirmDistantSalesAgreement).on("change", chkConfirmDistantSalesAgreement_onChange);
 
 /* events */
 function document_onLoad() {
@@ -37,8 +36,11 @@ function document_onLoad() {
     inputCardNumber.payform('formatCardNumber');
     inputCvc.payform('formatCardCVC');
     inputPhone.mask("(000) 000 0000");
-    $('.icheck').on('ifToggled', function () {
+    $("input[name='customer-type']").on('ifToggled', function () {
         customerType_onChange();
+    });
+    $("#chk-confirm-distant-sales").on('ifToggled', function () {
+        chkConfirmDistantSalesAgreement_onChange();
     });
 }
 function customerType_onChange() {
