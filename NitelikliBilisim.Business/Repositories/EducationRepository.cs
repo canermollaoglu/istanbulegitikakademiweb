@@ -564,10 +564,6 @@ namespace NitelikliBilisim.Business.Repositories
                     .Select(x => x.EducationId)
                     .ToList();
             }
-            else if (filter?.categories?.Length > 0)
-            {
-                educationIds = Context.Educations.Where(x => filter.categories.Contains(x.Category.Name)).Select(x => x.Id).ToList();
-            }
             else if (!string.IsNullOrEmpty(categoryName))
             {
                 var educationCategories = Context.EducationCategories.Select(x => new {
@@ -595,7 +591,10 @@ namespace NitelikliBilisim.Business.Repositories
                 }
             }
             else
-                educationIds = Context.Educations.Select(x => x.Id).ToList();       
+                educationIds = Context.Educations.Select(x => x.Id).ToList();
+
+            if (filter?.categories?.Length > 0)
+                educationIds = Context.Educations.Where(x => filter.categories.Contains(x.Category.Name)).Select(x => x.Id).ToList();
 
             var educations = Context.Educations
                 .Where(x => educationIds.Contains(x.Id) && x.IsActive)
