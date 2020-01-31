@@ -371,3 +371,8 @@ ul.additional_info li strong {
 .follow_us a, .follow_us i {
     color: #ff3000 !important;
 }
+
+.preview-img{
+    min-width: 100% !important;
+    max-height: 180px !important;
+}
