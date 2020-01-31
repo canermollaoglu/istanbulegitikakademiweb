@@ -25,7 +25,7 @@ namespace NitelikliBilisim.Core.ViewModels.Sales
         [Required, MaxLength(2)]
         public string YearOnCard { get; set; }
 
-        [Required, MaxLength(2)]
+        [Required, MinLength(3), MaxLength(3)]
         public string CVC { get; set; }
     }
     public class _InvoiceInfo

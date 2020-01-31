@@ -9,6 +9,7 @@ using NitelikliBilisim.App.Controllers.Base;
 using System.Globalization;
 using NitelikliBilisim.Core.ViewModels.Sales;
 using NitelikliBilisim.App.Utility;
+using System.Linq;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -71,17 +72,18 @@ namespace NitelikliBilisim.App.Controllers
             return View();
         }
 
-        [HttpPost, Route("pay")]
+        [HttpPost, ValidateAntiForgeryToken, Route("pay")]
         public IActionResult Pay(PayPostVm data)
         {
             if (!ModelState.IsValid)
-                return Json(new ResponseModel
+            {
+                var response = new ResponseModel
                 {
                     isSuccess = false,
-                    errors = ModelStateUtil.GetErrors(ModelState)
-                });
-
-
+                    errors = ModelStateUtil.GetErrors(ModelState).ToList()
+                };
+                return Json(response);
+            }
 
             return Json(new ResponseModel
             {

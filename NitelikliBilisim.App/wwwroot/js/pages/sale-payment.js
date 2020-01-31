@@ -5,15 +5,20 @@ var provinces = {};
 /* elements */
 var tbodyCartItems = $("#tbody-cart-items");
 var txtTotal = $("#txt-total");
-var selectProvinces = $("#select-provinces");
-var selectDistricts = $("#select-districts");
-var selectMonths = $("#select-months");
-var selectYears = $("#select-years");
+var selectProvinces = document.getElementById("select-provinces");
+var selectDistricts = document.getElementById("select-districts");
+var selectMonths = document.getElementById("select-months");
+var selectYears = document.getElementById("select-years");
 var inputOwner = $('#input-owner');
+var inputAddress = $("#input-address");
 var inputPhone = $('#input-phone');
 var inputCardNumber = $('#input-card-number');
 var divCardNumber = $('#div-card-number');
 var inputCvc = $("#input-cvc");
+var inputCompanyName = $("#input-company-name");
+var inputTaxNo = $("#input-tax-no");
+var inputTaxOffice = $("#input-tax-office");
+var isDistantSalesAgreementConfirmed = document.getElementById("_is-distant-sales-agreement-confirmed").value;
 var chkConfirmDistantSalesAgreement = document.getElementById("chk-confirm-distant-sales");
 var chkCustomerTypeIndividual = document.getElementById("chk-customer-type-individual");
 var divCorporateField = $("#div-corporate-field");
@@ -21,8 +26,9 @@ var btnBuy = $("#btn-buy");
 
 /* assignments */
 $(document).ready(document_onLoad);
-selectProvinces.on("change", selectProvinces_onChange);
+$(selectProvinces).on("change", selectProvinces_onChange);
 btnBuy.on("click", btnBuy_onClick);
+$(chkConfirmDistantSalesAgreement).on("change", chkConfirmDistantSalesAgreement_onChange);
 
 /* events */
 function document_onLoad() {
@@ -46,19 +52,38 @@ function customerType_onChange() {
 function selectProvinces_onChange() {
     getDistricts($(this).val());
 }
+function chkConfirmDistantSalesAgreement_onChange() {
+    isDistantSalesAgreementConfirmed = chkConfirmDistantSalesAgreement.checked;
+}
+
 function btnBuy_onClick() {
     btnBuy.off("click");
+    var corporateInvoiceInfo = null;
+    if (!chkCustomerTypeIndividual.checked)
+        corporateInvoiceInfo = {
+            CompanyName: inputCompanyName.val(),
+            TaxNo: inputTaxNo.val(),
+            TaxOffice: inputTaxOffice.val()
+        };
+
     var tokenVerifier = new SecuritySupport.TokenVerifier();
-    var corporateInvoiceInfo = {};
     var data = tokenVerifier.addToken("form-buy", {
         CardInfo: {
-
+            NameOnCard: inputOwner.val(),
+            NumberOnCard: inputCardNumber.val(),
+            MonthOnCard: selectMonths.options[selectMonths.selectedIndex].value,
+            YearOnCard: selectYears.options[selectYears.selectedIndex].value,
+            CVC: inputCvc.val()
         },
         InvoiceInfo: {
-
+            City: selectProvinces.options[selectProvinces.selectedIndex].value,
+            Town: selectDistricts.options[selectDistricts.selectedIndex].value,
+            Address: inputAddress.val(),
+            Phone: inputPhone.val(),
+            IsIndividual: chkCustomerTypeIndividual.checked
         },
         CorporateInvoiceInfo: corporateInvoiceInfo,
-        IsDistantSalesAgreementConfirmed: true
+        IsDistantSalesAgreementConfirmed: isDistantSalesAgreementConfirmed
     });
 
     $.ajax({
@@ -66,7 +91,7 @@ function btnBuy_onClick() {
         method: "post",
         data: data,
         success: (res) => {
-
+            console.log(res);
         },
         complete: () => { btnBuy.on("click", btnBuy_onClick); }
     });
@@ -133,10 +158,10 @@ function getProvinces() {
 }
 function getDistricts(provinceId) {
     var data = provinces.find(s => s._id == provinceId).towns;
-    selectDistricts.empty();
+    $(selectDistricts).empty();
     $.each(data, function (index, value) {
         var name = correctTrChars(value.name)
-        selectDistricts.append(new Option(name, value._id));
+        $(selectDistricts).append(new Option(name, value._id));
     });
 }
 function sortByTrAlphabet(a, b) {
