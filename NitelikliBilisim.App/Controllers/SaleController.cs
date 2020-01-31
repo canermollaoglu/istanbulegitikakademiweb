@@ -75,6 +75,12 @@ namespace NitelikliBilisim.App.Controllers
         [HttpPost, ValidateAntiForgeryToken, Route("pay")]
         public IActionResult Pay(PayPostVm data)
         {
+            if (!HttpContext.User.Identity.IsAuthenticated || data.CartItems == null || data.CartItems.Count == 0)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Sepette ürün bulunmamaktadır" }
+                });
             if (!data.IsDistantSalesAgreementConfirmed)
                 return Json(new ResponseModel
                 {
@@ -85,7 +91,13 @@ namespace NitelikliBilisim.App.Controllers
                 return Json(new ResponseModel
                 {
                     isSuccess = false,
-                    errors = ModelStateUtil.GetErrors(ModelState).ToList()
+                    errors = ModelStateUtil.GetErrors(ModelState)
+                });
+            if (!data.InvoiceInfo.IsIndividual && data.CorporateInvoiceInfo == null)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "?" }
                 });
 
             return Json(new ResponseModel

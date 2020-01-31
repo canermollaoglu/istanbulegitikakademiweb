@@ -43,6 +43,7 @@ function document_onLoad() {
     inputCardNumber.payform('formatCardNumber');
     inputCvc.payform('formatCardCVC');
     inputPhone.mask("(000) 000 0000");
+    isIndividual = true;
 }
 function customerType_onChange() {
     var type = $("input[name='customer-type']:checked").val();
@@ -74,6 +75,7 @@ function btnBuy_onClick() {
         };
 
     var tokenVerifier = new SecuritySupport.TokenVerifier();
+    var cart = new CartSupport.Cart();
     var data = tokenVerifier.addToken("form-buy", {
         CardInfo: {
             NameOnCard: inputOwner.val(),
@@ -90,9 +92,10 @@ function btnBuy_onClick() {
             IsIndividual: isIndividual
         },
         CorporateInvoiceInfo: corporateInvoiceInfo,
-        IsDistantSalesAgreementConfirmed: isDistantSalesAgreementConfirmed
+        IsDistantSalesAgreementConfirmed: isDistantSalesAgreementConfirmed,
+        CartItems: cart.getItems()
     });
-
+    console.log(data);
     $.ajax({
         url: "/pay",
         method: "post",
