@@ -113,6 +113,19 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             return View(model);
         }
 
+        [Route("admin/get-category-list")]
+        public JsonResult GetList()
+        {
+            var performer = new Performer();
+            var model = _unitOfWork.EducationCategory.Get(null, order => order.OrderBy(o => o.Name), x => x.BaseCategory);
+            performer.Watch("List");
+
+            return Json(new ResponseModel(){ 
+                isSuccess = true,
+                data = model
+            });
+        }
+
         [Route("admin/kategori-sil")]
         public IActionResult Delete(Guid? categoryId)
         {
