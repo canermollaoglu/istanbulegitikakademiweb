@@ -513,6 +513,7 @@
                     var state = $(this).parent('[class*="icheckbox"]').hasClass('checked') ? 'uncheck' : 'check';
                     ul.find('input[name="cat-filter"]').iCheck(state);
                     _categoryName.val("");
+                    $(this).removeClass("chosen");
                 }
                 else
                     getFilteredResults(false);
