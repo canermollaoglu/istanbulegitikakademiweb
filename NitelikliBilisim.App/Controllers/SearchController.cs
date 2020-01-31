@@ -35,24 +35,11 @@ namespace NitelikliBilisim.App.Controllers
             return View(model);
         }
 
-        //[Route("search-for-courses/{searchText}/page/{page}")]
-        //public IActionResult SearchEducation(string searchText, int page = 0, FilterOptionsVm filter = null)
-        //{
-        //    var model = _unitOfWork.Education.GetInfiniteScrollSearchResults(searchText, page, filter);
-        //    return Json(new ResponseModel
-        //    {
-        //        data = new
-        //        {
-        //            model = model
-        //        }
-        //    });
-        //}
-
         [HttpPost]
         [Route("search-for-courses")]
-        public async Task<IActionResult> SearchEducationAsync(string searchText, int page = 0, OrderCriteria order = OrderCriteria.Latest, FiltersVm filter = null)
+        public async Task<IActionResult> SearchEducation(string searchText, int page = 0, OrderCriteria order = OrderCriteria.Latest, FiltersVm filter = null)
         {
-            var model = _unitOfWork.Education.GetInfiniteScrollSearchResults(searchText, page, order, filter);
+            var model = _unitOfWork.Education.GetInfiniteScrollSearchResults("", searchText, page, order, filter);
             foreach (var item in model)
             {
                 for (int i = 0; i < item.Medias.Count; i++)
@@ -73,9 +60,9 @@ namespace NitelikliBilisim.App.Controllers
 
         [HttpPost]
         [Route("get-filter-options")]
-        public IActionResult GetFilterOptions(string searchText)
+        public IActionResult GetFilterOptions(string categoryName, string searchText)
         {
-            var model = _unitOfWork.Education.GetEducationFilterOptions(searchText);
+            var model = _unitOfWork.Education.GetEducationFilterOptions(categoryName, searchText);
 
             return Json(new ResponseModel
             {

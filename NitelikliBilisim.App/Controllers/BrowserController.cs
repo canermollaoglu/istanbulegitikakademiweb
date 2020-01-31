@@ -10,6 +10,8 @@ using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.Core.Services.Abstracts;
 using System.IO;
 using System.Threading.Tasks;
+using NitelikliBilisim.Core.ViewModels.search;
+using System.Collections.Generic;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -24,16 +26,16 @@ namespace NitelikliBilisim.App.Controllers
             _storageService = storageService;
         }
 
-        [Route("tum-egitimler/{categoryUrl?}")]
-        public IActionResult AllCourses(string categoryUrl, string showAs = "grid")
+        [Route("egitimler/{categoryUrl?}")]
+        public IActionResult Courses(string categoryUrl, string s, string showAs = "grid")
         {
-            var categoryNames = _unitOfWork.EducationCategory.Get().Select(x => x.Name).ToList();
-
-            var category = categoryNames.FirstOrDefault(x => StringHelper.UrlFormatConverter(x) == categoryUrl) ?? "";
+            var categoryNames = _unitOfWork.EducationCategory.Get(x => x.IsCurrent && x.BaseCategoryId == null).Select(x => x.Name).ToList();
+            var categoryName = categoryNames.FirstOrDefault(x => StringHelper.UrlFormatConverter(x) == categoryUrl) ?? "";
 
             var model = new SearchResultsGetVm
             {
-                SearchText = category,
+                CategoryName = categoryName,
+                SearchText = s,
                 OrderCriterias = EnumSupport.ToKeyValuePair<OrderCriteria>(),
                 ShowAs = showAs
             };
@@ -41,10 +43,11 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [HttpPost]
-        [Route("get-all-courses")]
-        public async Task<IActionResult> GetAllCoursesAsync(string category, int page = 0, OrderCriteria order = OrderCriteria.Latest)
+        [Route("get-courses")]
+        public async Task<IActionResult> GetCourses(string categoryName, string searchText, int page = 0, OrderCriteria order = OrderCriteria.Latest, FiltersVm filter = null)
         {
-            var model = _unitOfWork.Education.GetEducationsByCategory(category, page, order);
+            var model = _unitOfWork.Education.GetInfiniteScrollSearchResults(categoryName, searchText, page, order, filter);
+
             foreach (var item in model)
             {
                 for (int i = 0; i < item.Medias.Count; i++)
@@ -54,11 +57,15 @@ namespace NitelikliBilisim.App.Controllers
                     item.Medias[i].FileUrl = await _storageService.DownloadFile(fileName, folder);
                 }
             }
+
+            var filterOptions = _unitOfWork.Education.GetEducationFilterOptions(categoryName, searchText, filter);
+
             return Json(new ResponseModel
             {
                 data = new
                 {
-                    model = model
+                    model = model,
+                    filterOptions = filterOptions
                 }
             });
         }

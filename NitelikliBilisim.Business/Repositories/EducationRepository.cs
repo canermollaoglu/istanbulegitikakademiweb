@@ -271,29 +271,63 @@ namespace NitelikliBilisim.Business.Repositories
             return base.Update(entity, isSaveLater);
         }
 
-        public List<EducationVm> GetInfiniteScrollSearchResults(string searchText, int page = 0, OrderCriteria order = OrderCriteria.Latest, FiltersVm filter = null)
+        public List<EducationVm> GetInfiniteScrollSearchResults(string categoryName, string searchText = "", int page = 0, OrderCriteria order = OrderCriteria.Latest, FiltersVm filter = null)
         {
-            var shownResults = 5;
-            searchText = searchText.FormatForTag();
+            var shownResults = 4;
+            var educationIds = new List<Guid>();
 
-            var tags = Context.Bridge_EducationTags
-                .Join(Context.EducationTags, l => l.Id, r => r.Id, (x, y) => new
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                searchText = searchText.FormatForTag();
+
+                var tags = Context.Bridge_EducationTags
+                    .Join(Context.EducationTags, l => l.Id, r => r.Id, (x, y) => new
+                    {
+                        TagId = x.Id,
+                        EducationId = x.Id2,
+                        TagName = y.Name
+                    })
+                    .ToList();
+
+                educationIds = tags
+                    .Where(x => x.TagName.Contains(searchText))
+                    .Select(x => x.EducationId)
+                    .ToList();
+            }
+            else if(!string.IsNullOrEmpty(categoryName))
+            {
+                var educationCategories = Context.EducationCategories.Select(x => new {
+                    Id = x.Id,
+                    BaseCategoryId = x.BaseCategoryId,
+                    Name = x.Name,
+                });
+
+                var baseCategoryId = educationCategories.FirstOrDefault(x => x.Name.ToLower() == categoryName.ToLower())?.Id;
+
+                if (baseCategoryId != null)
                 {
-                    TagId = x.Id,
-                    EducationId = x.Id2,
-                    TagName = y.Name
-                })
-                .ToList();
+                    var educationsByCategory = Context.Educations.Join(educationCategories, e => e.CategoryId, c => c.Id, (e, c) => new
+                    {
+                        EducationId = e.Id,
+                        CategoryId = c.Id
+                    });
 
-            var educationIds = tags
-                .Where(x => x.TagName.Contains(searchText))
-                .Select(x => x.EducationId)
-                .ToList();
+                    educationIds.AddRange(educationsByCategory.Where(x => x.CategoryId == baseCategoryId).Select(x => x.EducationId));
+
+                    var subCategories = educationCategories.Where(x => x.BaseCategoryId == baseCategoryId).Select(x => x.Id).ToList();
+
+                    foreach (var item in subCategories)
+                        educationIds.AddRange(educationsByCategory.Where(x => x.CategoryId == item).Select(x => x.EducationId));
+                }
+            }
+            else
+                educationIds = Context.Educations.Select(x => x.Id).ToList();
+                
 
             var educations = Context.Educations.Include(x => x.Category)
                 .Where(x => educationIds.Contains(x.Id) && x.IsActive);
 
-            var educationGroupRepository = new EducationGroupRepository(Context);
+            //var educationGroupRepository = new EducationGroupRepository(Context);
 
             if (filter.categories != null)
             {
@@ -344,8 +378,8 @@ namespace NitelikliBilisim.Business.Repositories
                     DaysText = x.Education.Days.ToString(),
                     DaysNumeric = x.Education.Days,
                     HoursPerDayNumeric = x.Education.HoursPerDay,
-                    StartDateText = educationGroupRepository.GetFirstAvailableGroup(x.Education.Id)?.StartDate
-                        .ToString("dd MMMM yyyy", CultureInfo.CreateSpecificCulture("tr-TR")) ?? "Açılan grup yok"
+                    //StartDateText = educationGroupRepository.GetFirstAvailableGroup(x.Education.Id)?.StartDate
+                    //    .ToString("dd MMMM yyyy", CultureInfo.CreateSpecificCulture("tr-TR")) ?? "Açılan grup yok"
                 },
                 Medias = new List<EducationMediaVm> { new EducationMediaVm { EducationId = x.Education.Id, FileUrl = x.EducationPreviewMedia.FileUrl } }
             }).ToList();
@@ -508,11 +542,15 @@ namespace NitelikliBilisim.Business.Repositories
             return model;
         }
 
-        public FilterOptionsVm GetEducationFilterOptions(string searchText)
+        public FilterOptionsVm GetEducationFilterOptions(string categoryName, string searchText, FiltersVm filter = null)
         {
-            searchText = searchText.FormatForTag();
+            var educationIds = new List<Guid>();
 
-            var tags = Context.Bridge_EducationTags
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                searchText = searchText.FormatForTag();
+
+                var tags = Context.Bridge_EducationTags
                 .Join(Context.EducationTags, l => l.Id, r => r.Id, (x, y) => new
                 {
                     TagId = x.Id,
@@ -521,36 +559,83 @@ namespace NitelikliBilisim.Business.Repositories
                 })
                 .ToList();
 
-            var educationIds = tags
-                .Where(x => x.TagName.Contains(searchText))
-                .Select(x => x.EducationId)
-                .ToList();
+                educationIds = tags
+                    .Where(x => x.TagName.Contains(searchText))
+                    .Select(x => x.EducationId)
+                    .ToList();
+            }
+            else if (!string.IsNullOrEmpty(categoryName))
+            {
+                var educationCategories = Context.EducationCategories.Select(x => new {
+                    Id = x.Id,
+                    BaseCategoryId = x.BaseCategoryId,
+                    Name = x.Name,
+                });
+
+                var baseCategoryId = educationCategories.FirstOrDefault(x => x.Name.ToLower() == categoryName.ToLower())?.Id;
+
+                if (baseCategoryId != null)
+                {
+                    var educationsByCategory = Context.Educations.Join(educationCategories, e => e.CategoryId, c => c.Id, (e, c) => new
+                    {
+                        EducationId = e.Id,
+                        CategoryId = c.Id
+                    });
+
+                    educationIds.AddRange(educationsByCategory.Where(x => x.CategoryId == baseCategoryId).Select(x => x.EducationId));
+
+                    var subCategories = educationCategories.Where(x => x.BaseCategoryId == baseCategoryId).Select(x => x.Id).ToList();
+
+                    foreach (var item in subCategories)
+                        educationIds.AddRange(educationsByCategory.Where(x => x.CategoryId == item).Select(x => x.EducationId));
+                }
+            }
+            else
+                educationIds = Context.Educations.Select(x => x.Id).ToList();
+
+            if (filter?.categories?.Length > 0)
+                educationIds = Context.Educations.Where(x => filter.categories.Contains(x.Category.Name)).Select(x => x.Id).ToList();
 
             var educations = Context.Educations
                 .Where(x => educationIds.Contains(x.Id) && x.IsActive)
-                .Join(Context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Id, r => r.EducationId, (x, y) => new
-                {
-                    Education = x,
-                    EducationPreviewMedia = y
+                .Select(x=>new { 
+                    Level = x.Level,
+                    CategoryName = x.Name,
+                    CategoryId = x.CategoryId
                 })
-                .Join(Context.EducationCategories, l => l.Education.CategoryId, r => r.Id, (x, y) => new
+                .Join(Context.EducationCategories, l => l.CategoryId, r => r.Id, (x, y) => new
                 {
-                    Education = x.Education,
-                    EducationPreviewMedia = x.EducationPreviewMedia,
-                    CategoryName = y.Name
+                    Level = x.Level,
+                    CategoryName = y.Name,
+                    BaseCategoryName = y.BaseCategoryId.HasValue ? y.BaseCategory.Name : ""
                 });
 
             var filterOptions = new FilterOptionsVm();
 
-            filterOptions.categories = educations
-                .GroupBy(x => x.Education.Category.Name)
-                .Select(x => new KeyValuePair<string, int>(x.Key, x.Count()))
+            filterOptions.categories = educations.AsEnumerable()
+                .GroupBy(x => x.CategoryName)
+                .Select(x => new CategoryOptionVm() { 
+                    BaseCategoryName = x.FirstOrDefault().BaseCategoryName,
+                    CategoryName = x.Key,
+                    Count = x.Count()
+                })
                 .ToList()
-                .OrderByDescending(x => x.Value)
-                .ToDictionary(x => x.Key, x => x.Value);
+                .OrderBy(x => x.BaseCategoryName)
+                .ThenByDescending(x => x.Count)
+                .ToList();
+
+            var baseCategories = filterOptions.categories.GroupBy(x => x.BaseCategoryName)
+                .Select(x => new CategoryOptionVm()
+                {
+                    BaseCategoryName = "",
+                    CategoryName = x.Key,
+                    Count = x.Sum(y => y.Count)
+                }).ToList();
+
+            filterOptions.categories.InsertRange(0, baseCategories);
 
             filterOptions.levels = educations
-                .GroupBy(x => x.Education.Level)
+                .GroupBy(x => x.Level)
                 .Select(x => new KeyValuePair<EducationLevel, int>(x.Key, x.Count()))
                 .ToList()
                 .OrderByDescending(x => x.Value)

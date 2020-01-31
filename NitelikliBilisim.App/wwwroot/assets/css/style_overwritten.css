@@ -199,7 +199,7 @@ footer ul.links li a:hover:after {
 }
 
 .filters_listing {
-    background: #fc4912 !important;
+    background: #2d2f33 !important;
 }
 a.social_bt.facebook {
     color: #fff !important;
@@ -354,7 +354,6 @@ ul.additional_info li strong {
     /*ul.list_ok li:before {
         color: #fc4912 !important;
     }
-
     a {
         color: #2d2f33 !important;
         font-size: 0.875rem !important;
