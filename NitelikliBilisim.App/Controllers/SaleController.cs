@@ -100,6 +100,8 @@ namespace NitelikliBilisim.App.Controllers
                     errors = new List<string> { "?" }
                 });
 
+
+
             return Json(new ResponseModel
             {
                 isSuccess = true

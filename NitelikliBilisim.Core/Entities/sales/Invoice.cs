@@ -15,10 +15,13 @@ namespace NitelikliBilisim.Core.Entities
         }
 
         public CustomerType BillingType { get; set; }
+
+        [MaxLength(128)]
+        public string CompanyName { get; set; }
+        [MaxLength(32)]
         public string TaxNo { get; set; }
+        [MaxLength(32)]
         public string TaxOffice { get; set; }
-        public decimal TotalPaid { get; set; }
-        public decimal Earning { get; set; }
         public bool IsCash { get; set; }
         public byte PaymentCount { get; set; }
 
