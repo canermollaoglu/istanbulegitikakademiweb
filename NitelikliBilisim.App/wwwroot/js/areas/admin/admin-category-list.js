@@ -52,6 +52,17 @@ function createGrid() {
     $("#category-grid").dxDataGrid({
         dataSource: `get-category-list`,
         showBorders: true,
+        showColumnLines: true,
+        showRowLines: true,
+        filterRow: {
+            visible: true,
+            applyFilter: "auto"
+        },
+        searchPanel: {
+            visible: true,
+            width: 240,
+            placeholder: "Search..."
+        },
         paging: {
             pageSize: 10
         },
@@ -77,6 +88,7 @@ function createGrid() {
             },
             {
                 headerCellTemplate: $('<i style="color: black; font-weight: bold">İşlem</i>'),
+                allowSearch: false,
                 cellTemplate: function (container, options) {
                     var current = options.data;
                     $(`<a class="btn btn-warning" href="/admin/kategori-guncelle/${current.id}">Güncelle</a>`)
