@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace NitelikliBilisim.Core.ViewModels.Sales
 {
@@ -11,6 +13,7 @@ namespace NitelikliBilisim.Core.ViewModels.Sales
         public _CorporateInvoiceInfo CorporateInvoiceInfo { get; set; }
         [Required]
         public bool IsDistantSalesAgreementConfirmed { get; set; }
+        public List<Guid> CartItems { get; set; }
     }
 
     public class _CardInfo
