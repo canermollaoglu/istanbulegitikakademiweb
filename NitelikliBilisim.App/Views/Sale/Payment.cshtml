@@ -45,189 +45,193 @@
         var isLoggedIn = User.Identity.IsAuthenticated;
     }
 
-<form id="form-buy">
-    @Html.AntiForgeryToken()
     <div class="bg_color_1">
         <div class="container margin_60_35">
             <div class="row">
+
                 <div class="col-lg-8">
-                    <div class="box_cart">
-                        <div class="form_title">
-                            <h3><strong>1</strong>Ödeme Bilgileri</h3>
-                        </div>
-                        <div class="step">
-                            <span class="input">
-                                <input class="input_field" type="text" id="input-owner">
-                                <label class="input_label">
-                                    <span class="input__label-content">Kartın Üzerindeki Ad Soyad</span>
-                                </label>
-                            </span>
-                            <div class="row">
-                                <div class="col-md-6" id="div-card-number">
-                                    <span class="input">
-                                        <input class="input_field" type="text" id="input-card-number">
-                                        <label class="input_label">
-                                            <span class="input__label-content">Kart Numarası</span>
-                                        </label>
-                                    </span>
-                                </div>
-                                <div class="col-md-6 col-sm-6">
-                                    <img src="~/assets/img/payments.png" alt="Kartlar" class="cards">
-                                </div>
+                    <form id="form-buy">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" value="" id="_is-distant-sales-agreement-confirmed" />
+                        <input type="hidden" value="" id="_is-individual" />
+                        <div class="box_cart">
+                            <div class="form_title">
+                                <h3><strong>1</strong>Ödeme Bilgileri</h3>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6 add_top_30">
-                                    <label>Son Kullanma Tarihi</label>
-                                    <div class="row">
-                                        <div class="col-md-6 col-sm-6">
-                                            <div class="form-group select">
-                                                <div class="styled-select">
-                                                    <select class="required" id="select-months">
-                                                        <option value="" disabled selected>Ay</option>
-                                                        @for (int i = 1; i <= 12; i++)
-                                                        {
-                                                            <option value="@i.ToString("00")">@i.ToString("00")</option>
-                                                        }
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 col-sm-6">
-                                            <div class="form-group select">
-                                                <div class="styled-select">
-                                                    <select class="required" id="select-years">
-                                                        <option value="" disabled selected>Yıl</option>
-                                                        @for (int i = @DateTime.Now.Year % 100; i <= (DateTime.Now.Year + 20) % 100; i++)
-                                                        {
-                                                            <option value="@i.ToString("00");">@i.ToString("00")</option>
-                                                        }
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
+                            <div class="step">
+                                <span class="input">
+                                    <input class="input_field" type="text" id="input-owner">
+                                    <label class="input_label">
+                                        <span class="input__label-content">Kartın Üzerindeki Ad Soyad</span>
+                                    </label>
+                                </span>
+                                <div class="row">
+                                    <div class="col-md-6" id="div-card-number">
+                                        <span class="input">
+                                            <input class="input_field" type="text" id="input-card-number">
+                                            <label class="input_label">
+                                                <span class="input__label-content">Kart Numarası</span>
+                                            </label>
+                                        </span>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6">
+                                        <img src="~/assets/img/payments.png" alt="Kartlar" class="cards">
                                     </div>
                                 </div>
-                                <div class="col-md-6 add_top_30">
-                                    <div class="form-group">
-                                        <label>Güvenlik Kodu (CVC) <i class="icon-info-circled" data-toggle="tooltip" data-placement="top" data-html="true" title="<p>Kartınızın arka yüzündeki 3 haneli güvenlik numarasıdır.<img style='width: 50px; float: right' src='/assets/img/ccv-info.png'/></p>"></i></label>
+                                <div class="row">
+                                    <div class="col-md-6 add_top_30">
+                                        <label>Son Kullanma Tarihi</label>
                                         <div class="row">
-                                            <div class="col-md-4">
-                                                <span class="input">
-                                                    <input class="input_field" maxlength="3" type="text" id="input-cvc">
-                                                    <label class="input_label">
-                                                        <span class="input__label-content">CVC</span>
-                                                    </label>
-                                                </span>
+                                            <div class="col-md-6 col-sm-6">
+                                                <div class="form-group select">
+                                                    <div class="styled-select">
+                                                        <select class="required" id="select-months">
+                                                            <option value="" disabled selected>Ay</option>
+                                                            @for (int i = 1; i <= 12; i++)
+                                                            {
+                                                                <option value="@i.ToString("00")">@i.ToString("00")</option>
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-sm-6">
+                                                <div class="form-group select">
+                                                    <div class="styled-select">
+                                                        <select class="required" id="select-years">
+                                                            <option value="" disabled selected>Yıl</option>
+                                                            @for (int i = @DateTime.Now.Year % 100; i <= (DateTime.Now.Year + 20) % 100; i++)
+                                                            {
+                                                                <option value="@i.ToString("00")">@i.ToString("00")</option>
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 add_top_30">
+                                        <div class="form-group">
+                                            <label>Güvenlik Kodu (CVC) <i class="icon-info-circled" data-toggle="tooltip" data-placement="top" data-html="true" title="<p>Kartınızın arka yüzündeki 3 haneli güvenlik numarasıdır.<img style='width: 50px; float: right' src='/assets/img/ccv-info.png'/></p>"></i></label>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <span class="input">
+                                                        <input class="input_field" maxlength="3" type="text" id="input-cvc">
+                                                        <label class="input_label">
+                                                            <span class="input__label-content">CVC</span>
+                                                        </label>
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <hr>
+                            <hr>
 
-                        <div class="form_title">
-                            <h3><strong>2</strong>Fatura Bilgileri</h3>
-                        </div>
-                        <div class="step">
-                            <div class="row">
-                                <div class="col-md-6 col-sm-6">
-                                    <div class="form-group select">
-                                        <div class="styled-select">
-                                            <select class="required" id="select-provinces">
-                                                <option value="" selected="">İl</option>
-                                            </select>
+                            <div class="form_title">
+                                <h3><strong>2</strong>Fatura Bilgileri</h3>
+                            </div>
+                            <div class="step">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6">
+                                        <div class="form-group select">
+                                            <div class="styled-select">
+                                                <select class="required" id="select-provinces">
+                                                    <option value="" selected="">İl</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6">
+                                        <div class="form-group select">
+                                            <div class="styled-select">
+                                                <select class="required" id="select-districts">
+                                                    <option value="" selected="">İlçe</option>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6 col-sm-6">
-                                    <div class="form-group select">
-                                        <div class="styled-select">
-                                            <select class="required" id="select-districts">
-                                                <option value="" selected="">İlçe</option>
-                                            </select>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <span class="input">
+                                            <input class="input_field" type="text" id="input-address">
+                                            <label class="input_label">
+                                                <span class="input__label-content">Adres</span>
+                                            </label>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <span class="input">
+                                            <input class="input_field" type="text" id="input-phone">
+                                            <label class="input_label">
+                                                <span class="input__label-content">Telefon</span>
+                                            </label>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <h6>Fatura Tipi</h6>
+                                    <div class="col-md-12">
+                                        <div class="form-group radio_input">
+                                            <label>
+                                                <input type="radio" value="individual" checked="" name="customer-type" class="icheck" style="position: absolute; opacity: 0;" id="chk-customer-type-individual">Bireysel
+                                            </label>
+                                            <label class="">
+                                                <input type="radio" value="corporate" name="customer-type" class="icheck" style="position: absolute; opacity: 0;">Kurumsal
+                                            </label>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <span class="input">
-                                        <input class="input_field" type="text" id="input-address">
-                                        <label class="input_label">
-                                            <span class="input__label-content">Adres</span>
-                                        </label>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <span class="input">
-                                        <input class="input_field" type="text" id="input-phone">
-                                        <label class="input_label">
-                                            <span class="input__label-content">Telefon</span>
-                                        </label>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <h6>Fatura Tipi</h6>
-                                <div class="col-md-12">
-                                    <div class="form-group radio_input">
-                                        <label>
-                                            <input type="radio" value="individual" checked="" name="customer-type" class="icheck" style="position: absolute; opacity: 0;" id="chk-customer-type-individual">Bireysel
-                                        </label>
-                                        <label class="">
-                                            <input type="radio" value="corporate" name="customer-type" class="icheck" style="position: absolute; opacity: 0;">Kurumsal
-                                        </label>
+                                <div class="row" id="div-corporate-field" style="display: none">
+                                    <div class="col-md-6 col-md-offset-3">
+                                        <span class="input">
+                                            <input class="input_field" type="text" id="input-company-name">
+                                            <label class="input_label">
+                                                <span class="input__label-content">Firma Adı</span>
+                                            </label>
+                                        </span>
+                                        <span class="input">
+                                            <input class="input_field" type="text" id="input-tax-no">
+                                            <label class="input_label">
+                                                <span class="input__label-content">Vergi No</span>
+                                            </label>
+                                        </span>
+                                        <span class="input">
+                                            <input class="input_field" type="text" id="input-tax-office">
+                                            <label class="input_label">
+                                                <span class="input__label-content">Vergi Dairesi</span>
+                                            </label>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row" id="div-corporate-field" style="display: none">
-                                <div class="col-md-6 col-md-offset-3">
-                                    <span class="input">
-                                        <input class="input_field" type="text" id="input-company-name">
-                                        <label class="input_label">
-                                            <span class="input__label-content">Firma Adı</span>
-                                        </label>
-                                    </span>
-                                    <span class="input">
-                                        <input class="input_field" type="text" id="input-tax-no">
-                                        <label class="input_label">
-                                            <span class="input__label-content">Vergi No</span>
-                                        </label>
-                                    </span>
-                                    <span class="input">
-                                        <input class="input_field" type="text" id="input-tax-office">
-                                        <label class="input_label">
-                                            <span class="input__label-content">Vergi Dairesi</span>
-                                        </label>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <hr>
+                            <hr>
 
-                        <div class="form_title">
-                            <h3><strong>3</strong>Sözleşme ve Formlar</h3>
-                        </div>
-                        <div class="step">
-                            <div class="row">
-                                <div class="col-md-12 col-sm-12">
-                                    <h6>Cayma Hakkı</h6>
-                                    <div class="policy-box">
-                                        <partial name="partials/_CaymaHakki" />
+                            <div class="form_title">
+                                <h3><strong>3</strong>Sözleşme ve Formlar</h3>
+                            </div>
+                            <div class="step">
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12">
+                                        <h6>Cayma Hakkı</h6>
+                                        <div class="policy-box">
+                                            <partial name="partials/_CaymaHakki" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12">
+                                        <h6><a href="#" data-toggle="modal" data-target="#mss-modal">Mesafeli Satış Sözleşmesi <i class="icon-link-ext"></i></a></h6>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-12 col-sm-12">
-                                    <h6><a href="#" data-toggle="modal" data-target="#mss-modal">Mesafeli Satış Sözleşmesi <i class="icon-link-ext"></i></a></h6>
-                                </div>
-                            </div>
+                            <hr>
                         </div>
-                        <hr>
-                    </div>
+                    </form>
                 </div>
 
                 <aside class="col-lg-4" id="sidebar">
@@ -250,9 +254,9 @@
                             </label>
                         </div>
                         <div class="row">
-                            <div class="col-md-12">
-                                <a href="/tum-egitimler" class="btn_1 full-width outline"><i class="icon-right"></i> Alışverişe devam et</a>
-                            </div>
+                            @*<div class="col-md-12">
+                                    <a href="/tum-egitimler" class="btn_1 full-width outline"><i class="icon-right"></i> Alışverişe devam et</a>
+                                </div>*@
                             <div class="col-md-12">
                                 <button role="button" class="btn_1 full-width" id="btn-buy">Satın Al</button>
                             </div>
@@ -262,7 +266,6 @@
             </div>
         </div>
     </div>
-</form>
 </main>
 
 <div class="modal fade" id="obf-modal" tabindex="-1" role="dialog" aria-labelledby="obfLabel" aria-hidden="true">
@@ -309,5 +312,6 @@
     <script src="~/js/lib/security-support.js"></script>
     <script src="~/assets/js/jquery.payform.min.js"></script>
     <script src="~/assets/js/jquery.mask.min.js"></script>
+    <script src="~/js/sup/cart.js"></script>
     <script src="~/js/pages/sale-payment.js"></script>
 }

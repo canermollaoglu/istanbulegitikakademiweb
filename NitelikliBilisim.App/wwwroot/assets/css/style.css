@@ -5891,18 +5891,18 @@ ul.bullets li:before {
   -ms-transition: all 0.3s ease-in-out 0s;
   transition: all 0.3s ease-in-out 0s;
 }
-.search-overlay-menu form button {
-  background: transparent;
-  border: medium none;
-  font-size: 32px;
-  font-size: 2rem;
-  position: absolute;
-  right: 0;
-  top: 15px;
-  color: #c6c6c6;
-  outline: none;
-  cursor: pointer;
-}
+    .search-overlay-menu form button {
+        background: #191919 !important;
+        border: medium none;
+        font-size: 32px;
+        font-size: 2rem;
+        position: absolute;
+        right: 0;
+        top: 15px;
+        color: #c6c6c6;
+        outline: none;
+        cursor: pointer;
+    }
 @media (max-width: 767px) {
   .search-overlay-menu form button {
     font-size: 24px;

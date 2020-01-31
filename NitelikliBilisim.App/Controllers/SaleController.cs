@@ -9,6 +9,7 @@ using NitelikliBilisim.App.Controllers.Base;
 using System.Globalization;
 using NitelikliBilisim.Core.ViewModels.Sales;
 using NitelikliBilisim.App.Utility;
+using System.Linq;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -71,17 +72,33 @@ namespace NitelikliBilisim.App.Controllers
             return View();
         }
 
-        [HttpPost, Route("pay")]
+        [HttpPost, ValidateAntiForgeryToken, Route("pay")]
         public IActionResult Pay(PayPostVm data)
         {
+            if (!HttpContext.User.Identity.IsAuthenticated || data.CartItems == null || data.CartItems.Count == 0)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Sepette ürün bulunmamaktadır" }
+                });
+            if (!data.IsDistantSalesAgreementConfirmed)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Mesafeli Satış sözleşmesini onaylayınız" }
+                });
             if (!ModelState.IsValid)
                 return Json(new ResponseModel
                 {
                     isSuccess = false,
                     errors = ModelStateUtil.GetErrors(ModelState)
                 });
-
-
+            if (!data.InvoiceInfo.IsIndividual && data.CorporateInvoiceInfo == null)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "?" }
+                });
 
             return Json(new ResponseModel
             {
