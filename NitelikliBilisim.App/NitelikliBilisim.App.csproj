@@ -12,6 +12,7 @@
     <PackageReference Include="AspNet.Security.OAuth.LinkedIn" Version="3.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="DevExtreme.AspNet.Data" Version="2.5.1" />
+    <PackageReference Include="Iyzipay" Version="2.1.33" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="3.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.1">

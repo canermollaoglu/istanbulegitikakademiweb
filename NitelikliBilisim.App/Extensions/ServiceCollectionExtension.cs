@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using NitelikliBilisim.Core.Services;
 using NitelikliBilisim.Core.Services.Abstracts;
+using Iyzipay;
 
 namespace NitelikliBilisim.App.Extensions
 {
