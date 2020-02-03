@@ -19,7 +19,7 @@ namespace NitelikliBilisim.Core.Services.Payments
             _option = configuration.GetSection("IyzicoOptions").Get<Options>();
         }
 
-        public Payment MakePayment(PayPostVm data, ApplicationUser user, List<Education> cartItems)
+        public ThreedsInitialize MakePayment(PayPostVm data, ApplicationUser user, List<Education> cartItems)
         {
             var totalPrice = cartItems.Sum(x => x.NewPrice.GetValueOrDefault());
             var request = new CreatePaymentRequest
@@ -91,7 +91,7 @@ namespace NitelikliBilisim.Core.Services.Payments
 
             request.BasketItems = basketItems;
 
-            return Payment.Create(request, _option);
+            return ThreedsInitialize.Create(request, _option);
         }
 
     }
