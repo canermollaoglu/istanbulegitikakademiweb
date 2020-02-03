@@ -28,6 +28,7 @@ btnShowAsList.on("click", btnShowAsList_onClick);
 listingFilters.on("click", listingFilters_onClick);
 btnSearch.on("click", btnSearch_onClick);
 selectOrder.on("change", selectOrder_onChange);
+inputSearch.bind('keyup', inputSearch_onSubmit);
 
 /* events */
 function document_onLoad() {
@@ -98,6 +99,11 @@ function buyBtns_onClick() {
 function selectOrder_onChange() {
     var order = $(this).children("option:selected").val();
     getSearchResults(false, order);
+}
+function inputSearch_onSubmit(e) {
+    if (e.keyCode === 13) {
+        btnSearch_onClick();
+    }
 }
 
 /* functions */
