@@ -21,12 +21,11 @@ namespace NitelikliBilisim.Core.Services.Payments
 
         public Payment MakePayment(PayPostVm data, ApplicationUser user, List<Education> cartItems)
         {
-            var conversationId = Guid.NewGuid();
             var totalPrice = cartItems.Sum(x => x.NewPrice.GetValueOrDefault());
             var request = new CreatePaymentRequest
             {
                 Locale = Locale.TR.ToString(),
-                ConversationId = conversationId.ToString(),
+                ConversationId = data.ConversationId.ToString(),
                 Price = totalPrice.ToString(new CultureInfo("en-US")),
                 PaidPrice = totalPrice.ToString(new CultureInfo("en-US")),
                 Currency = Currency.TRY.ToString(),

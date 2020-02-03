@@ -9,6 +9,7 @@ namespace NitelikliBilisim.Core.ViewModels.Sales
     public class PayPostVm
     {
         public Guid BasketId { get; set; } = Guid.NewGuid();
+        public Guid ConversationId { get; set; } = Guid.NewGuid();
         [Required]
         public _CardInfo CardInfo { get; set; }
         [Required]
