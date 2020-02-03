@@ -34,8 +34,25 @@ namespace NitelikliBilisim.Business.Repositories
                 try
                 {
                     _context.Invoices.Add(invoice);
+                    _context.InvoiceAddresses.Add(new InvoiceAddress
+                    {
+                        Id = invoice.Id,
+                        Address = data.InvoiceInfo.Address,
+                        City = data.InvoiceInfo.City,
+                        County = data.InvoiceInfo.Town
+                    });
+
+                    foreach (var invoiceDetail in invoiceDetails)
+                        invoiceDetail.InvoiceId = invoice.Id;
+                    _context.InvoiceDetails.AddRange(invoiceDetails);
+
+                    var tickets = CreateTickets(invoiceDetails, new Guid("E24DA16A-269A-4C91-B9FF-C64E4ABCC031"), userId);
+                    _context.AddRange(tickets);
+
+                    _context.SaveChanges();
+                    transaction.Commit();
                 }
-                catch
+                catch (Exception ex)
                 {
                     transaction.Rollback();
                 }
@@ -76,6 +93,22 @@ namespace NitelikliBilisim.Business.Repositories
             }
 
             return invoice;
+        }
+
+        private List<Ticket> CreateTickets(List<InvoiceDetail> invoiceDetails, Guid hostId, string userId)
+        {
+            var tickets = new List<Ticket>();
+            foreach (var item in invoiceDetails)
+                tickets.Add(new Ticket
+                {
+                    EducationId = item.EducationId,
+                    HostId = hostId,
+                    InvoiceDetailsId = item.Id,
+                    IsUsed = false,
+                    OwnerId = userId
+                });
+
+            return tickets;
         }
     }
 }

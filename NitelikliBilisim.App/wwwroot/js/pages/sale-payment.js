@@ -23,12 +23,13 @@ var isIndividual = document.getElementById("_is-individual").value;
 var chkConfirmDistantSalesAgreement = document.getElementById("chk-confirm-distant-sales");
 var chkCustomerTypeIndividual = document.getElementById("chk-customer-type-individual");
 var divCorporateField = $("#div-corporate-field");
+var cartItems = $("#_cart-items");
 var btnBuy = $("#btn-buy");
 
 /* assignments */
 $(document).ready(document_onLoad);
 $(selectProvinces).on("change", selectProvinces_onChange);
-btnBuy.on("click", btnBuy_onClick);
+//btnBuy.on("click", btnBuy_onClick);
 $("input[name='customer-type']").on('ifToggled', function () {
     customerType_onChange();
 });
@@ -95,7 +96,7 @@ function btnBuy_onClick() {
         IsDistantSalesAgreementConfirmed: isDistantSalesAgreementConfirmed,
         CartItems: cart.getItems()
     });
-    console.log(data);
+
     $.ajax({
         url: "/pay",
         method: "post",
@@ -121,6 +122,7 @@ function getCartItems() {
             if (res.isSuccess) {
                 appendCartItems(res.data.items);
                 txtTotal.text(res.data.total);
+                cartItems.val(JSON.stringify(res.data.items));
             }
         }
     });

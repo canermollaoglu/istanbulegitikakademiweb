@@ -92,7 +92,7 @@ namespace NitelikliBilisim.Data
         public DbSet<EducationGain> EducationGains { get; set; }
         public DbSet<EducationPromotionCode> EducationPromotionCodes { get; set; }
         public DbSet<Invoice> Invoices { get; set; }
-        public DbSet<InvoiceAddress> SaleAddresses { get; set; }
+        public DbSet<InvoiceAddress> InvoiceAddresses { get; set; }
         public DbSet<WishlistItem> Wishlist { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Educator> Educators { get; set; }

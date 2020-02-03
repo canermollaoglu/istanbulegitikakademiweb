@@ -10,6 +10,7 @@ using System.Globalization;
 using NitelikliBilisim.Core.ViewModels.Sales;
 using NitelikliBilisim.App.Utility;
 using System.Linq;
+using System.Security.Claims;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -100,7 +101,7 @@ namespace NitelikliBilisim.App.Controllers
                     errors = new List<string> { "?" }
                 });
 
-
+            _unitOfWork.Sale.Sell(data, User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             return Json(new ResponseModel
             {
