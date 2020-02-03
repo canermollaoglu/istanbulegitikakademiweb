@@ -9,7 +9,7 @@ namespace NitelikliBilisim.Core.Enums
     {
         [Description("Son Eklenenler")]
         Latest = 1010,
-        [Description("Popüler")]
+        [Description("Seviye")]
         Popular = 1020
     }
 }
