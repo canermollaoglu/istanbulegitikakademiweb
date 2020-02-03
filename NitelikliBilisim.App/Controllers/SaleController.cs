@@ -23,11 +23,11 @@ namespace NitelikliBilisim.App.Controllers
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly SaleVmCreator _vmCreator;
-        private readonly Options _option;
-        public SaleController(UnitOfWork unitOfWork, IConfiguration configuration)
+        private readonly IPaymentService _paymentService;
+        public SaleController(UnitOfWork unitOfWork, IPaymentService paymentService)
         {
             _unitOfWork = unitOfWork;
-            _option = configuration.GetSection("IyzicoOptions").Get<Options>();
+            _paymentService = paymentService;
             _vmCreator = new SaleVmCreator(_unitOfWork);
         }
 
@@ -117,7 +117,7 @@ namespace NitelikliBilisim.App.Controllers
                     errors = new List<string> { "?" }
                 });
 
-            _unitOfWork.Sale.Sell(data, User.FindFirstValue(ClaimTypes.NameIdentifier), _option);
+            _unitOfWork.Sale.Sell(data, User.FindFirstValue(ClaimTypes.NameIdentifier), _paymentService);
 
             return Json(new ResponseModel
             {
