@@ -117,12 +117,10 @@ namespace NitelikliBilisim.App.Controllers
             var splitted = data.CardInfo.NumberOnCard.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
             data.CardInfo.NumberOnCard = string.Join(null, splitted);
             data.Ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
-            var paymentResult = _unitOfWork.Sale.Sell(data, User.FindFirstValue(ClaimTypes.NameIdentifier), _paymentService, out PayPostVm dataResult);
 
-            //if (paymentResult.Status == "success")
-            //{
-                
-            //}
+
+            
+            _unitOfWork.Sale.Sell(data, User.FindFirstValue(ClaimTypes.NameIdentifier), _paymentService);
 
             return Json(new ResponseModel
             {
