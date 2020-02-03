@@ -34,6 +34,7 @@ namespace NitelikliBilisim.Business.Repositories
                 paymentCount: data.Installments,
                 isCash: true,
                 userId: userId);
+
             data.BasketId = invoice.Id;
 
             #region OnlinePaymentService
