@@ -57,4 +57,24 @@ namespace NitelikliBilisim.Core.ViewModels.Sales
         [MaxLength(256)]
         public string TaxOffice { get; set; }
     }
+
+    public enum CreditCardTypes
+    {
+        TROY = 10,
+        MASTERCARD = 100,
+        VISA = 200,
+        AMEX = 1000
+    }
+
+    public enum CreditCardPrograms
+    {
+        BONUS = 10,
+        WORD = 20,
+        MAXIMUM = 30,
+        AXESS = 40,
+        CARDFINANS = 50,
+        PARAF = 60,
+        ADVANTAGE = 70
+    }
+
 }
