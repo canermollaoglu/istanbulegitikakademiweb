@@ -18,7 +18,7 @@ using NitelikliBilisim.Core.Services;
 using NitelikliBilisim.Core.Services.Abstracts;
 using Iyzipay;
 using NitelikliBilisim.Business.UoW;
-using NitelikliBilisim.Core.Services.Payment;
+using NitelikliBilisim.Core.Services.Payments;
 
 namespace NitelikliBilisim.App.Extensions
 {
@@ -31,7 +31,7 @@ namespace NitelikliBilisim.App.Extensions
             services.AddScoped<UnitOfWork>();
             services.AddSingleton<IMessageService, EmailService>();
             services.AddSingleton<IStorageService, StorageService>();
-            services.AddScoped<PaymentService, PaymentService>();
+            services.AddScoped<IPaymentService, PaymentService>();
             #endregion
 
             #region IdentityConfig

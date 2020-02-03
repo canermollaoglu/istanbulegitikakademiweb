@@ -71,13 +71,16 @@ namespace NitelikliBilisim.Business.Repositories
         public ListGetVm GetListVm()
         {
             var groups = _context.EducationGroups.Include(x => x.Education).Include(x => x.Host)
+                .Include(x => x.GroupStudents)
                 .Select(x => new
                 {
                     Id = x.Id,
                     GroupName = x.GroupName,
                     StartDate = x.StartDate,
                     HostLocation = x.Host.City,
-                    EducationName = x.Education.Name
+                    EducationName = x.Education.Name,
+                    Quota = x.Quota,
+                    AssignedCount = x.GroupStudents.Count
                 }).ToList();
 
             var data = new List<_Group>();
@@ -90,7 +93,9 @@ namespace NitelikliBilisim.Business.Repositories
                     GroupName = item.GroupName,
                     EducationName = item.EducationName,
                     Location = hostLocation,
-                    StartDate = item.StartDate
+                    StartDate = item.StartDate,
+                    AssignedCount = item.AssignedCount,
+                    Quota = item.Quota
                 });
             }
 

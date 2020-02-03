@@ -4,6 +4,9 @@ var _searchText = $("#_search-text");
 var _page = $("#_page");
 var _showAs = $("#_show-as");
 var _hasFilter = false;
+var _beginSearch = false;
+var _baseCatToggled = false;
+var _catFilterToggleCount = 0;
 
 /* elements */
 var divEducationContainer = $("#div-education-container");
@@ -25,12 +28,14 @@ btnShowAsList.on("click", btnShowAsList_onClick);
 listingFilters.on("click", listingFilters_onClick);
 btnSearch.on("click", btnSearch_onClick);
 selectOrder.on("change", selectOrder_onChange);
+inputSearch.bind('keyup', inputSearch_onSubmit);
 
 /* events */
 function document_onLoad() {
     clearUri();
     prepareFilterBox();
-    getSearchResults(false);
+    if(_categoryName.val() == "")
+        getSearchResults(false);
     $('small[name=base-cat]').each(function () {
         if ($(this).text() == _categoryName.val())
             $(this).addClass('selected-cat');
@@ -95,6 +100,11 @@ function selectOrder_onChange() {
     var order = $(this).children("option:selected").val();
     getSearchResults(false, order);
 }
+function inputSearch_onSubmit(e) {
+    if (e.keyCode === 13) {
+        btnSearch_onClick();
+    }
+}
 
 /* functions */
 function getSearchResults(isLoadMore, filter, order) {
@@ -157,6 +167,8 @@ function getSearchResults(isLoadMore, filter, order) {
             $("a[name='btn-buy']").on("click", buyBtns_onClick);
 
             _page.val(parseInt(_page.val()) + 1);
+
+            _beginSearch = true;
         }
     });
 }
@@ -291,12 +303,12 @@ function prepareFilterBox() {
                                         <input type="checkbox" name="base-cat-filter" value="${item.categoryName}" class="icheck ${chosen}" style="position: absolute; opacity: 0;">
                                         <small>${item.categoryName} (${item.count})</small>
                                     </label>
-                                    <ul class="sub-cat" data-cat-name="${item.categoryName}"></ul>
+                                    <ul class="sub-cat" data-base-cat-name="${item.categoryName}"></ul>
                                 </li>
                             `);
                 }
                 else {
-                    var ul = $("ul").find(`[data-cat-name="${item.baseCategoryName}"]`);
+                    var ul = $("ul").find(`[data-base-cat-name="${item.baseCategoryName}"]`);
                     ul.append(`
                                 <li>
                                     <label class="filter">
@@ -367,17 +379,34 @@ function iCheckAll() {
         radioClass: 'iradio_square-grey'
     });
 
+    $('input[name="base-cat-filter"]').on('ifToggled', function () {
+        _baseCatToggled = true;
+        var ul = $("ul").find(`[data-base-cat-name="${$(this).val()}"]`);
+        var state = $(this).parent('[class*="icheckbox"]').hasClass('checked') ? 'uncheck' : 'check';
+        ul.find('input[name="cat-filter"]').iCheck(state);
+        _categoryName.val("");
+        $(this).removeClass("chosen");
+    });
+
+    $('input[name="cat-filter"]').on('ifToggled', function () {
+        _catFilterToggleCount++;
+
+        var ul = $(this).closest('ul');
+        console.log(ul.children().length, _catFilterToggleCount);
+        _beginSearch = ul.children().length == _catFilterToggleCount;
+
+        if (!_beginSearch && _baseCatToggled) return;
+        _catFilterToggleCount = 0;
+        _baseCatToggled = false;
+        getFilteredResults(false);        
+    });
+
+    $('input[name="lev-filter"]').on('ifToggled', function () {
+        getFilteredResults(false);
+    });
+
     $('.icheck').on('ifToggled', function () {
         $('.icheck').iCheck('disable');
-        if ($(this).attr('name') == 'base-cat-filter') {
-            var ul = $("ul").find(`[data-cat-name="${$(this).val()}"]`);
-            var state = $(this).parent('[class*="icheckbox"]').hasClass('checked') ? 'uncheck' : 'check';
-            ul.find('input[name="cat-filter"]').iCheck(state);
-            _categoryName.val("");
-            $(this).removeClass("chosen");
-        }
-        else
-            getFilteredResults(false);
     });
 
     $('.chosen').iCheck('check');
