@@ -18,7 +18,7 @@ using NitelikliBilisim.Core.Services;
 using NitelikliBilisim.Core.Services.Abstracts;
 using Iyzipay;
 using NitelikliBilisim.Business.UoW;
-using NitelikliBilisim.Core.Services.Payment;
+using NitelikliBilisim.Core.Services.Payments;
 
 namespace NitelikliBilisim.App.Extensions
 {
