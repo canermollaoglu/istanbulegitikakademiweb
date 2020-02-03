@@ -1,21 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.App.VmCreator;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.Services.Payments;
 using NitelikliBilisim.Core.ViewModels.Cart;
 using NitelikliBilisim.Core.ViewModels.Sales;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Security.Claims;
-using Iyzipay;
-using Iyzipay.Model;
-using Iyzipay.Request;
-using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
-using NitelikliBilisim.Core.Services.Payment;
 
 namespace NitelikliBilisim.App.Controllers
 {
