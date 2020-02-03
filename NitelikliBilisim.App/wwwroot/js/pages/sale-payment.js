@@ -19,7 +19,7 @@ var inputCompanyName = $("#input-company-name");
 var inputTaxNo = $("#input-tax-no");
 var inputTaxOffice = $("#input-tax-office");
 var isDistantSalesAgreementConfirmed = document.getElementById("_is-distant-sales-agreement-confirmed");
-var isIndividual = document.getElementById("_is-individual").value;
+var isIndividual = document.getElementById("_is-individual");
 var chkConfirmDistantSalesAgreement = document.getElementById("chk-confirm-distant-sales");
 var chkCustomerTypeIndividual = document.getElementById("chk-customer-type-individual");
 var divCorporateField = $("#div-corporate-field");
@@ -44,18 +44,18 @@ function document_onLoad() {
     inputCardNumber.payform('formatCardNumber');
     inputCvc.payform('formatCardCVC');
     inputPhone.mask("(000) 000 0000");
-    isIndividual = true;
+    isIndividual.value = true;
 }
 function customerType_onChange() {
     var type = $("input[name='customer-type']:checked").val();
 
     if (type == "individual") {
         divCorporateField.hide();
-        isIndividual = true;
+        isIndividual.value = true;
     }
     else if (type == "corporate") {
         divCorporateField.show();
-        isIndividual = false;
+        isIndividual.value = false;
     }
 }
 function selectProvinces_onChange() {
