@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Iyzipay.Model;
 
 namespace NitelikliBilisim.Core.ViewModels.Sales
 {
@@ -14,6 +15,8 @@ namespace NitelikliBilisim.Core.ViewModels.Sales
         [Required]
         public bool IsDistantSalesAgreementConfirmed { get; set; }
         public List<Guid> CartItems { get; set; }
+        public PaymentChannel PaymentChannel { get; set; } = PaymentChannel.MOBILE_WEB;
+        public PaymentGroup PaymentGroup { get; set; } = PaymentGroup.PRODUCT;
     }
 
     public class _CardInfo
