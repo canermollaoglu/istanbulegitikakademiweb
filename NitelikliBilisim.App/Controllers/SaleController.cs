@@ -11,6 +11,7 @@ using NitelikliBilisim.Core.ViewModels.Sales;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Security.Claims;
 
 namespace NitelikliBilisim.App.Controllers
@@ -113,6 +114,9 @@ namespace NitelikliBilisim.App.Controllers
                     errors = new List<string> { "?" }
                 });
 
+            var splitted = data.CardInfo.NumberOnCard.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
+            data.CardInfo.NumberOnCard = string.Join(null, splitted);
+            data.Ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
             _unitOfWork.Sale.Sell(data, User.FindFirstValue(ClaimTypes.NameIdentifier), _paymentService);
 
             return Json(new ResponseModel

@@ -18,11 +18,11 @@ namespace NitelikliBilisim.Core.ViewModels.Sales
         public bool IsDistantSalesAgreementConfirmed { get; set; }
         public string CartItemsJson { get; set; }
         public List<Guid> CartItems { get; set; }
-        public PaymentChannel PaymentChannel { get; set; } = PaymentChannel.MOBILE_WEB;
+        public PaymentChannel PaymentChannel { get; set; } = PaymentChannel.WEB;
         public PaymentGroup PaymentGroup { get; set; } = PaymentGroup.PRODUCT;
         public string Ip { get; set; }
-        public byte Installments { get; set; } = 0;
-        public string IdentityNumber { get; set; }
+        public byte Installments { get; set; } = 1;
+        public string IdentityNumber { get; set; } = "12345678901";
     }
 
     public class _CardInfo
