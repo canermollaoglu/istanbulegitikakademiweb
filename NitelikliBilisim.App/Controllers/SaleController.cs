@@ -1,16 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Models;
+using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.App.VmCreator;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ViewModels.Cart;
+using NitelikliBilisim.Core.ViewModels.Sales;
 using System;
 using System.Collections.Generic;
-using NitelikliBilisim.App.Controllers.Base;
 using System.Globalization;
-using NitelikliBilisim.Core.ViewModels.Sales;
-using NitelikliBilisim.App.Utility;
-using System.Linq;
 using System.Security.Claims;
+using NitelikliBilisim.Core.Services.Payment;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -18,9 +18,11 @@ namespace NitelikliBilisim.App.Controllers
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly SaleVmCreator _vmCreator;
-        public SaleController(UnitOfWork unitOfWork)
+        private readonly IPaymentService _paymentService;
+        public SaleController(UnitOfWork unitOfWork, IPaymentService paymentService)
         {
             _unitOfWork = unitOfWork;
+            _paymentService = paymentService;
             _vmCreator = new SaleVmCreator(_unitOfWork);
         }
 
@@ -101,7 +103,7 @@ namespace NitelikliBilisim.App.Controllers
                     errors = new List<string> { "?" }
                 });
 
-            _unitOfWork.Sale.Sell(data, User.FindFirstValue(ClaimTypes.NameIdentifier));
+            _unitOfWork.Sale.Sell(data, _paymentService, User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             return Json(new ResponseModel
             {

@@ -55,8 +55,6 @@ namespace NitelikliBilisim.App
                 //.AddRoleManager<RoleManager<ApplicationRole>>()
                 .AddDefaultTokenProviders();
 
-            services.AddScoped<UnitOfWork>();
-
             services.AddApplicationServices(this.Configuration);
 
             //services.AddControllers(options => { options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()); });

@@ -4,6 +4,7 @@ using NitelikliBilisim.Core.ViewModels.Sales;
 using NitelikliBilisim.Data;
 using System.Collections.Generic;
 using System.Linq;
+using NitelikliBilisim.Core.Services.Payment;
 
 namespace NitelikliBilisim.Business.Repositories
 {
@@ -15,7 +16,7 @@ namespace NitelikliBilisim.Business.Repositories
             _context = context;
         }
 
-        public void Sell(PayPostVm data, string userId)
+        public void Sell(PayPostVm data, IPaymentService paymentService, string userId)
         {
             var invoiceDetails = CreateInvoiceDetails(
                 _context.Educations
