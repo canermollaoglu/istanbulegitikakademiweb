@@ -1,4 +1,4 @@
-﻿@model NitelikliBilisim.Core.ViewModels.areas.admin.education.ListGetVm
+﻿
 @{
     ViewData["Title"] = "Eğitim Listesi";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -6,6 +6,22 @@
 @section styles{
     <link href="~/assets/css/area-admin/dataTables.bootstrap4.css" rel="stylesheet" />
     <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
+    <link href="~/css/dx.common.css" rel="stylesheet" />
+    <link href="~/css/dx.light.css" rel="stylesheet" />
+    <style>
+        .dx-datagrid-content .dx-datagrid-table .dx-row > td:first-child, .dx-datagrid-content .dx-datagrid-table .dx-row > tr > td:first-child {
+            width: 44px !important;
+        }
+
+        .dx-datagrid .dx-column-lines > td {
+            border-right: none;
+            vertical-align: middle !important;
+        }
+
+        #education-grid {
+            margin-top: -15px !important;
+        }
+    </style>
 }
 @section alerts{
     <partial name="partials/_Alert" />
@@ -15,98 +31,7 @@
         <i class="fa fa-table"></i> Eğitimler
     </div>
     <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>İsmi</th>
-                        <th>Etiketler</th>
-                        <th>Gün / Saat</th>
-                        <th>Seviye</th>
-                        <th>Medyalar/Parçalar/Kazanımlar/Eğitmenler</th>
-                        @*<th>Parçalar</th>
-                            <th>Kazanımlar</th>
-                            <th>Eğitmenler</th>*@
-                    </tr>
-                </thead>
-                <tfoot>
-                    <tr>
-                        <th>#</th>
-                        <th>İsmi</th>
-                        <th>Etiketler</th>
-                        <th>Gün / Saat</th>
-                        <th>Seviye</th>
-                        <th>Medyalar/Parçalar/Kazanımlar/Eğitmenler</th>
-                        @*<th>Parçalar</th>
-                            <th>Kazanımlar</th>
-                            <th>Eğitmenler</th>*@
-                    </tr>
-                    @*<tr>
-                            <th colspan="8">
-                                <ul class="pagination" id="pages-bottom"></ul>
-                            </th>
-                        </tr>*@
-                </tfoot>
-                <tbody id="tbody-egitimler">
-                    @foreach (var item in Model.Educations)
-                    {
-                        <text>
-                            @{
-                            var educationMedias = Model.Medias.FirstOrDefault(x => x.EducationId == item.Id);
-                            var mediaCount = educationMedias != null ? educationMedias.Count : 0;
-                            var media = $"<a href=\"/admin/egitim-medya-yonetimi/{item.Id}\" class=\"btn btn-primary\"/><i class=\"fa fa-file-photo-o\"></i> {mediaCount}</a>";
-                            var educationParts = Model.Parts.FirstOrDefault(x => x.EducationId == item.Id);
-                            var partCount = educationParts != null ? educationParts.Count : 0;
-                            var part = $"<a href=\"/admin/egitim-parca-yonetimi/{item.Id}\" class=\"btn btn-secondary\"/><i class=\"fa fa-list-ul\"></i> {partCount}</a>";
-                            var educationGains = Model.Gains.FirstOrDefault(x => x.EducationId == item.Id);
-                            var gainCount = educationGains != null ? educationGains.Count : 0;
-                            var gain = $"<a href=\"/admin/egitim-kazanim-yonetimi/{item.Id}\" class=\"btn btn-info\"/><i class=\"fa fa-gift\"></i> {gainCount}</a>";
-                            var educators = Model.Educators.FirstOrDefault(x => x.EducationId == item.Id);
-                            var educatorCount = educators != null ? educators.Count : 0;
-                            var educator = $"<a href=\"/admin/egitmen-ata/{item.Id}\" class=\"btn btn-success\"><i class=\"fa fa-users\"></i> {educatorCount}</a>";
-
-                            var categories = Model.EducationCategories.FirstOrDefault(x => x.EducationId == item.Id);
-                            var concattedCategories = categories != null ? categories.ConcattedCategories : null;
-
-                            if (concattedCategories == null)
-                            {
-                                concattedCategories = "-";
-                            }
-
-                            var validEducation = item.IsActive ?
-                                    $"<i class=\"fa fa-unlock text-success\" style=\"padding:25%;font-size:200%;text-align:center;vertical-align:middle;\"></i>"
-                                    :
-                                    $"<i class=\"fa fa-lock text-danger\" style=\"padding:25%;font-size:200%;text-align:center;vertical-align:middle;\"></i>";
-                            }
-                        </text>
-                        <tr>
-                            <td style="padding:0;"><a href="/admin/egitim-guncelle/@item.Id">@Html.Raw(validEducation)</a></td>
-                            <td>@item.Name</td>
-                            <td>@Html.Raw(concattedCategories)</td>
-                            <td>@item.Days gün / @item.HoursPerDay saat</td>
-                            <td>@item.Level.ToString()</td>
-                            <td>
-                                <div class="row">
-                                    <div class="offset-md-2 col-md-8">
-                                        <div class="btn-group">
-                                            @Html.Raw(media)
-                                            @Html.Raw(part)
-                                            @Html.Raw(gain)
-                                            @Html.Raw(educator)
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                            @*<td>@Html.Raw(media)</td>
-                                <td>@Html.Raw(part)</td>
-                                <td>@Html.Raw(gain)</td>
-                                <td>@Html.Raw(educator)</td>*@
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
+        <div id="education-grid"></div>
     </div>
     <div class="card-footer small text-muted">Veri tarihi: @DateTime.Now</div>
 </div>
@@ -114,6 +39,7 @@
     <script src="~/assets/js/area-admin/jquery.dataTables.js"></script>
     <script src="~/assets/js/area-admin/dataTables.bootstrap4.js"></script>
     <script src="~/js/sup/alert-sup.js"></script>
+    <script src="~/js/dx.all.js"></script>
     <script>
         /* fields */
         var confirmModalBuilder = new AlertSupport.ConfirmModalBuilder();
@@ -123,7 +49,93 @@
 
         /* events */
         function document_onLoad() {
+            createGrid();
+        }
 
+        /*DataGrid*/
+        function createGrid() {
+            $("#education-grid").dxDataGrid({
+                dataSource: `get-education-list`,
+                showBorders: true,
+                showColumnLines: true,
+                showRowLines: true,
+                wordWrapEnabled: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                searchPanel: {
+                    visible: true,
+                    width: 240,
+                    placeholder: "Search..."
+                },
+                paging: {
+                    pageSize: 8
+                },
+                onContentReady: function () {
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10, 20],
+                    showInfo: true
+                },
+                columns: [{
+                    headerCellTemplate: $('<i style="padding:0; color: black; font-weight: bolder">#</i>'),
+                    cellTemplate: function (container, options) {
+                        var current = options.data;
+                        if (current.isActive == true) {
+                            $(`<a href="/admin/egitim-guncelle/${current.id}">
+                                            <i class=\"fa fa-unlock text-success\" style=\"font-size:200%;\"></i></a>`)
+                                .appendTo(container);
+                        }
+                        else {
+                            $(`<a href="/admin/egitim-guncelle/${current.id}">
+                                            <i class=\"fa fa-lock text-danger\" style=\"font-size:200%;\"></i></a>`)
+                                .appendTo(container);
+                        }
+                    },
+                    alignment: "center"
+                }, {
+                    dataField: "name",
+                    headerCellTemplate: $('<i style="color: black; font-weight: bold">İsmi</i>'),
+                    width: 160
+
+                }, {
+                    dataField: "educationCategories",
+                    headerCellTemplate: $('<i style="color: black; font-weight: bold">Etiketler</i>'),
+                    width: 290
+                }, {
+                    cellTemplate: function (container, options) {
+                        var current = options.data;
+                        $(`<span>${current.days} gün / ${current.hoursPerDay} saat</span>`)
+                            .appendTo(container);
+                    },
+                    headerCellTemplate: $('<i style="color: black; font-weight: bold">Gün / Saat</i>'),
+                    width: 100
+                }, {
+                    dataField: "level",
+                    headerCellTemplate: $('<i style="color: black; font-weight: bold">Seviye</i>'),
+                    width: 100,
+                    alignment: "center"
+                }, {
+                    headerCellTemplate: $('<i style="vertical-align:middle; color: black; font-weight: bold">Medyalar/Parçalar/Kazanımlar/Eğitmenler</i>'),
+                    allowSearch: false,
+                    cellTemplate: function (container, options) {
+                        var current = options.data;
+                        $(`<a class="btn btn-primary" href="/admin/egitim-medya-yonetimi/${current.id}"><i class=\"fa fa-file-photo-o\"></i><span style="display: block">${current.mediaCount}</span></a>`)
+                            .appendTo(container);
+                        $(`<a class="btn btn-secondary" href="/admin/egitim-parca-yonetimi/${current.id}"><i class=\"fa fa-list-ul\"></i><span style="display: block"> ${current.partCount}</span></a>`)
+                            .appendTo(container);
+                        $(`<a class="btn btn-info" href="/admin/egitim-kazanim-yonetimi/${current.id}"><i class=\"fa fa-gift\"></i><span style="display: block"> ${current.gainCount}</span></a>`)
+                            .appendTo(container);
+                        $(`<a class="btn btn-success" href="/admin/egitmen-ata/${current.id}"><i class=\"fa fa-users\"></i><span style="display: block"> ${current.educatorCount}</span></a>`)
+                            .appendTo(container);
+                    },
+                    width: "auto",
+                    alignment: "center"
+                }
+                ]
+            });
         }
     </script>
 }

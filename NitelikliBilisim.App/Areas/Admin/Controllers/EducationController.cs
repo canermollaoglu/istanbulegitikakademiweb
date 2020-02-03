@@ -101,9 +101,21 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/egitimler")]
         public IActionResult List(int page = 0)
         {
-            var model = _vmCreator.CreateListGetVm(page);
-            return View(model);
+            return View();
         }
+
+        [Route("admin/get-education-list")]
+        public IActionResult GetList(int page = 0)
+        {
+            var model = _vmCreator.CreateListGetVm(page);
+
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = model
+            });
+        }
+
 
         [Route("admin/egitim-guncelle/{educationId}")]
         public IActionResult Update(Guid? educationId)

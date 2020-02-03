@@ -40,7 +40,7 @@ namespace NitelikliBilisim.Business.Repositories
             };
         }
 
-        public ListGetVm GetPagedEducations(int page = 0, int shownRecords = 15)
+        public List<EducationDto> GetPagedEducations(int page = 0, int shownRecords = 15)
         {
             var educations = Table
                 .OrderBy(o => o.Name)
@@ -124,9 +124,6 @@ namespace NitelikliBilisim.Business.Repositories
             }
 
             var educationDtos = new List<EducationDto>();
-            //var mapper = new Mapper.Mapper<Education, EducationDto>();
-            //foreach (var item in educations)
-            //    educationDtos.Add(mapper.Map(item));
 
             foreach (var item in educations)
                 educationDtos.Add(new EducationDto
@@ -138,18 +135,16 @@ namespace NitelikliBilisim.Business.Repositories
                     HoursPerDay = item.HoursPerDay,
                     Level = EnumSupport.GetDescription(item.Level),
                     NewPrice = item.NewPrice,
-                    IsActive = item.IsActive
+                    IsActive = item.IsActive,
+                    MediaCount = mediaCount.Where(x => x.EducationId == item.Id).Sum(x=>x.Count),
+                    PartCount = partCount.Where(x => x.EducationId == item.Id).Sum(x => x.Count),
+                    GainCount = gainCount.Where(x => x.EducationId == item.Id).Sum(x => x.Count),
+                    EducatorCount = educatorCount.Where(x => x.EducationId == item.Id).Sum(x => x.Count),
+                    EducationCategories = educationCategories.Count(x => x.EducationId == item.Id) > 0 ?
+                        string.Join(", ", educationCategories.Where(x=>x.EducationId == item.Id).Select(x=>x.ConcattedCategories)) : "-"
                 });
 
-            return new ListGetVm
-            {
-                Educations = educationDtos,
-                Medias = mediaCount,
-                Parts = partCount,
-                Gains = gainCount,
-                Educators = educatorCount,
-                EducationCategories = educationCategories
-            };
+            return educationDtos;
         }
 
         public Guid? Insert(Education entity, List<Guid> tagIds, List<EducationMedia> medias, bool isSaveLater = false)

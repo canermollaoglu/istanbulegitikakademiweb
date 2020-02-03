@@ -1,9 +1,11 @@
 ﻿using NitelikliBilisim.App.Areas.Admin.Models.Education;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.DTO;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education;
 using NitelikliBilisim.Support.Enums;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace NitelikliBilisim.App.Areas.Admin.VmCreator.Education
@@ -28,7 +30,7 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.Education
             };
         }
 
-        public ListGetVm CreateListGetVm(int page = 0, int shownRecords = 15)
+        public List<EducationDto> CreateListGetVm(int page = 0, int shownRecords = 15)
         {
             return _unitOfWork.Education.GetPagedEducations(page, shownRecords);
         }
