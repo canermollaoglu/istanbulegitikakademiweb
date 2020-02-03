@@ -88,8 +88,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/gruba-ogrenci-ata/{groupId?}")]
         public IActionResult AssignStudents(Guid? groupId)
         {
-            if (groupId == null)
-                return Redirect("/admin/gruplar");
+            //if (groupId == null)
+            //    return Redirect("/admin/gruplar");
 
             return View();
         }
