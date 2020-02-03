@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Security.Claims;
+using Newtonsoft.Json;
 using NitelikliBilisim.Core.Services.Payment;
 
 namespace NitelikliBilisim.App.Controllers
@@ -78,7 +79,16 @@ namespace NitelikliBilisim.App.Controllers
         [HttpPost, ValidateAntiForgeryToken, Route("pay")]
         public IActionResult Pay(PayPostVm data)
         {
-            if (!HttpContext.User.Identity.IsAuthenticated || data.CartItems == null || data.CartItems.Count == 0)
+            if (!HttpContext.User.Identity.IsAuthenticated || data.CartItemsJson == null)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Sepette ürün bulunmamaktadır" }
+                });
+
+            data.CartItems = JsonConvert.DeserializeObject<List<Guid>>(data.CartItemsJson);
+
+            if (data.CartItems == null || data.CartItems.Count == 0)
                 return Json(new ResponseModel
                 {
                     isSuccess = false,

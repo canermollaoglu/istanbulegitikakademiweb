@@ -122,7 +122,12 @@ function getCartItems() {
             if (res.isSuccess) {
                 appendCartItems(res.data.items);
                 txtTotal.text(res.data.total);
-                cartItems.val(JSON.stringify(res.data.items));
+                var cartItemIds = [];
+                for (var i = 0; i < res.data.items.length; i++) {
+                    var item = res.data.items[i];
+                    cartItemIds.push(item.educationId);
+                }
+                cartItems.val(JSON.stringify(cartItemIds));
             }
         }
     });
