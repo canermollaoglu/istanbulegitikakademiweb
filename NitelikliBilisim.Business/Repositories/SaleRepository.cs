@@ -2,6 +2,7 @@
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.ViewModels.Sales;
 using NitelikliBilisim.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -28,7 +29,7 @@ namespace NitelikliBilisim.Business.Repositories
                 paymentCount: 1,
                 isCash: true,
                 userId: userId);
-
+            // OnlinePay(data, userId);
             using (var transaction = _context.Database.BeginTransaction())
             {
                 try

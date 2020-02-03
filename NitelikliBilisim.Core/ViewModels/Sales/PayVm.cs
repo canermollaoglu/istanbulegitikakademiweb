@@ -8,7 +8,7 @@ namespace NitelikliBilisim.Core.ViewModels.Sales
 {
     public class PayPostVm
     {
-        public Guid BaskeyId { get; set; } = Guid.NewGuid();
+        public Guid BasketId { get; set; } = Guid.NewGuid();
         [Required]
         public _CardInfo CardInfo { get; set; }
         [Required]
@@ -16,6 +16,7 @@ namespace NitelikliBilisim.Core.ViewModels.Sales
         public _CorporateInvoiceInfo CorporateInvoiceInfo { get; set; }
         [Required]
         public bool IsDistantSalesAgreementConfirmed { get; set; }
+        public string CartItemsJson { get; set; }
         public List<Guid> CartItems { get; set; }
         public PaymentChannel PaymentChannel { get; set; } = PaymentChannel.MOBILE_WEB;
         public PaymentGroup PaymentGroup { get; set; } = PaymentGroup.PRODUCT;
