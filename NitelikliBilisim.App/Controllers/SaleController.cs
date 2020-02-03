@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Security.Claims;
+using Iyzipay.Model;
+using Iyzipay.Request;
 using Newtonsoft.Json;
 using NitelikliBilisim.Core.Services.Payment;
 
@@ -19,8 +21,8 @@ namespace NitelikliBilisim.App.Controllers
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly SaleVmCreator _vmCreator;
-        private readonly IPaymentService _paymentService;
-        public SaleController(UnitOfWork unitOfWork, IPaymentService paymentService)
+        private readonly PaymentService _paymentService;
+        public SaleController(UnitOfWork unitOfWork, PaymentService paymentService)
         {
             _unitOfWork = unitOfWork;
             _paymentService = paymentService;

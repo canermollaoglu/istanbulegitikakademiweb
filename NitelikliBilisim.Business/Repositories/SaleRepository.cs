@@ -5,6 +5,8 @@ using NitelikliBilisim.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Iyzipay.Model;
+using Iyzipay.Request;
 using NitelikliBilisim.Core.Services.Payment;
 
 namespace NitelikliBilisim.Business.Repositories
@@ -17,7 +19,7 @@ namespace NitelikliBilisim.Business.Repositories
             _context = context;
         }
 
-        public void Sell(PayPostVm data, IPaymentService paymentService, string userId)
+        public void Sell(PayPostVm data, PaymentService paymentService, string userId)
         {
             var invoiceDetails = CreateInvoiceDetails(
                 _context.Educations
@@ -30,7 +32,14 @@ namespace NitelikliBilisim.Business.Repositories
                 paymentCount: 1,
                 isCash: true,
                 userId: userId);
-            // OnlinePay(data, userId);
+
+            #region OnlinePaymentService
+
+            var paymentResult = paymentService.MakePayment(new CreatePaymentRequest());
+
+
+            #endregion
+
             using (var transaction = _context.Database.BeginTransaction())
             {
                 try

@@ -31,7 +31,7 @@ namespace NitelikliBilisim.App.Extensions
             services.AddScoped<UnitOfWork>();
             services.AddSingleton<IMessageService, EmailService>();
             services.AddSingleton<IStorageService, StorageService>();
-            services.AddScoped<IPaymentService, PaymentService>();
+            services.AddScoped<PaymentService, PaymentService>();
             #endregion
 
             #region IdentityConfig
