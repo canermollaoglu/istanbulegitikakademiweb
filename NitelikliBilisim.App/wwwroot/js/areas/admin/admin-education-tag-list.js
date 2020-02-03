@@ -94,7 +94,9 @@ function createGrid() {
                     .appendTo(container);
                 $(`<button class="btn-confirmation-modal-trigger btn btn-danger" data-url="/admin/etiket-sil?tagId=${current.id}" style="cursor:pointer;">Sil</button>`)
                     .appendTo(container);
-            }
+            },
+            alignment: "center",
+            width:"auto"
         }
         ]
     });

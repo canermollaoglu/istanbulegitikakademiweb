@@ -95,7 +95,9 @@ function createGrid() {
                         .appendTo(container);
                     $(`<button class="btn-confirmation-modal-trigger btn btn-danger" data-url="/admin/kategori-sil?categoryId=${current.id}" style="cursor:pointer;">Sil</button>`)
                         .appendTo(container);
-                }
+                },
+                alignment: "center",
+                width:"auto"
             }
         ]
     });
