@@ -1,3 +1,4 @@
+using System;
 using Iyzipay;
 using Iyzipay.Model;
 using Iyzipay.Request;
@@ -20,16 +21,21 @@ namespace NitelikliBilisim.App.Controllers
         [HttpPost]
         public IActionResult MakePayment(PayPostVm model)
         {
-            CreatePaymentRequest request = new CreatePaymentRequest();
-            request.Locale = Locale.TR.ToString();
-            request.ConversationId = "123456789";
-            request.Price = "1";
-            request.PaidPrice = "1.2";
-            request.Currency = Currency.TRY.ToString();
-            request.Installment = 1;
-            request.BasketId = "B67832";
-            request.PaymentChannel = PaymentChannel.WEB.ToString();
-            request.PaymentGroup = PaymentGroup.PRODUCT.ToString();
+            var conversationId = Guid.NewGuid();
+            CreatePaymentRequest request = new CreatePaymentRequest
+            {
+                Locale = Locale.TR.ToString(),
+                ConversationId = conversationId.ToString(),
+                Price = "1",
+                PaidPrice = "1.2",
+                Currency = Currency.TRY.ToString(),
+                Installment = 1,
+                BasketId = "B67832",
+                PaymentChannel = model.PaymentChannel.ToString(),
+                PaymentGroup = model.PaymentGroup.ToString()
+            };
+
+
             return View();
         }
     }

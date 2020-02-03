@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Xml.Linq;
 using Iyzipay.Model;
 
 namespace NitelikliBilisim.Core.ViewModels.Sales
 {
     public class PayPostVm
     {
+        public Guid BaskeyId { get; set; } = Guid.NewGuid();
         [Required]
         public _CardInfo CardInfo { get; set; }
         [Required]
@@ -17,6 +19,7 @@ namespace NitelikliBilisim.Core.ViewModels.Sales
         public List<Guid> CartItems { get; set; }
         public PaymentChannel PaymentChannel { get; set; } = PaymentChannel.MOBILE_WEB;
         public PaymentGroup PaymentGroup { get; set; } = PaymentGroup.PRODUCT;
+        public string Ip { get; set; }
     }
 
     public class _CardInfo
