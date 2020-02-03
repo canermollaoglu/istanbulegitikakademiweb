@@ -18,7 +18,7 @@ namespace NitelikliBilisim.Business.Repositories
             _context = context;
         }
 
-        public void Sell(PayPostVm data, string userId, IPaymentService paymentService)
+        public Iyzipay.Model.Payment Sell(PayPostVm data, string userId, IPaymentService paymentService, out PayPostVm dataResult)
         {
             var cartItems = _context.Educations
                 .Where(x => data.CartItems.Contains(x.Id))
@@ -42,7 +42,9 @@ namespace NitelikliBilisim.Business.Repositories
             var user = _context.Users.First(x => x.Id == userId);
 
             var paymentResult = paymentService.MakePayment(data, user, cartItems);
+            dataResult = data;
 
+            return paymentResult;
             #endregion
 
             using (var transaction = _context.Database.BeginTransaction())
