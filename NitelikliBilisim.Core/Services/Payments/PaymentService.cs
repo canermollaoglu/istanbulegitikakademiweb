@@ -2,6 +2,7 @@
 using Iyzipay.Model;
 using Iyzipay.Request;
 using Microsoft.Extensions.Configuration;
+using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.ViewModels.Sales;
 using System;
@@ -13,10 +14,10 @@ namespace NitelikliBilisim.Core.Services.Payments
 {
     public class PaymentService : IPaymentService
     {
-        private readonly Options _option;
+        private readonly PaymentOptions _option;
         public PaymentService(IConfiguration configuration)
         {
-            _option = configuration.GetSection("IyzicoOptions").Get<Options>();
+            _option = configuration.GetSection("IyzicoOptions").Get<PaymentOptions>();
         }
 
         public ThreedsInitialize MakePayment(PayPostVm data, ApplicationUser user, List<Education> cartItems)
@@ -32,7 +33,8 @@ namespace NitelikliBilisim.Core.Services.Payments
                 Installment = data.Installments,
                 BasketId = data.BasketId.ToString(),
                 PaymentChannel = data.PaymentChannel.ToString(),
-                PaymentGroup = data.PaymentGroup.ToString()
+                PaymentGroup = data.PaymentGroup.ToString(),
+                CallbackUrl = _option.ThreedsCallbackUrl
             };
 
             var paymentCard = new PaymentCard
