@@ -18,7 +18,7 @@ var inputCvc = $("#input-cvc");
 var inputCompanyName = $("#input-company-name");
 var inputTaxNo = $("#input-tax-no");
 var inputTaxOffice = $("#input-tax-office");
-var isDistantSalesAgreementConfirmed = document.getElementById("_is-distant-sales-agreement-confirmed").value;
+var isDistantSalesAgreementConfirmed = document.getElementById("_is-distant-sales-agreement-confirmed");
 var isIndividual = document.getElementById("_is-individual").value;
 var chkConfirmDistantSalesAgreement = document.getElementById("chk-confirm-distant-sales");
 var chkCustomerTypeIndividual = document.getElementById("chk-customer-type-individual");
@@ -62,7 +62,8 @@ function selectProvinces_onChange() {
     getDistricts($(this).val());
 }
 function chkConfirmDistantSalesAgreement_onChange() {
-    isDistantSalesAgreementConfirmed = chkConfirmDistantSalesAgreement.checked;
+    isDistantSalesAgreementConfirmed.value = chkConfirmDistantSalesAgreement.checked;
+    console.log(isDistantSalesAgreementConfirmed);
 }
 
 function btnBuy_onClick() {

@@ -14,7 +14,6 @@ namespace NitelikliBilisim.Core.ViewModels.Sales
         [Required]
         public _InvoiceInfo InvoiceInfo { get; set; }
         public _CorporateInvoiceInfo CorporateInvoiceInfo { get; set; }
-        [Required]
         public bool IsDistantSalesAgreementConfirmed { get; set; }
         public string CartItemsJson { get; set; }
         public List<Guid> CartItems { get; set; }
