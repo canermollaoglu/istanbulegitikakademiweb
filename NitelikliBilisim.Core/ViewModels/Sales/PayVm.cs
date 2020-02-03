@@ -20,6 +20,8 @@ namespace NitelikliBilisim.Core.ViewModels.Sales
         public PaymentChannel PaymentChannel { get; set; } = PaymentChannel.MOBILE_WEB;
         public PaymentGroup PaymentGroup { get; set; } = PaymentGroup.PRODUCT;
         public string Ip { get; set; }
+        public byte Installments { get; set; } = 0;
+        public string IdentityNumber { get; set; }
     }
 
     public class _CardInfo
