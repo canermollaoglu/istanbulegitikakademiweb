@@ -152,9 +152,8 @@ namespace NitelikliBilisim.App.Controllers
         [HttpPost, Route("odeme-sonucu")]
         public IActionResult PaymentResult(CreateThreedsPaymentRequest data)
         {
-            var d = data;
-            data.Locale = "tr-TR";
-            var threedsPayment = ThreedsPayment.Create(data, null);
+            data.Locale = Locale.TR.ToString();
+            var result = _paymentService.Confirm3DsPayment(data);
             return View();
         }
     }
