@@ -23,6 +23,7 @@ namespace NitelikliBilisim.Core.ViewModels.Sales
         public string Ip { get; set; }
         public byte Installments { get; set; } = 1;
         public string IdentityNumber { get; set; } = "12345678901";
+        public string PaymentResult { get; set; }
     }
 
     public class _CardInfo

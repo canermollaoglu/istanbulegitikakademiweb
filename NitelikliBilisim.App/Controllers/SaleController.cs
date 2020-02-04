@@ -123,6 +123,7 @@ namespace NitelikliBilisim.App.Controllers
 
             var paymentResult = _unitOfWork.Sale.Sell(data, User.FindFirstValue(ClaimTypes.NameIdentifier), _paymentService, out PayPostVm dataResult);
 
+            dataResult.PaymentResult = JsonConvert.SerializeObject(paymentResult);
             HttpContext.Session.SetString("sales_data", JsonConvert.SerializeObject(dataResult));
             if (paymentResult.Status == "success")
             {
@@ -146,9 +147,10 @@ namespace NitelikliBilisim.App.Controllers
             });
         }
 
-        [Route("odeme-basarili")]
-        public IActionResult Success()
+        [Route("odeme-sonucu")]
+        public IActionResult PaymentResult()
         {
+            var data = JsonConvert.DeserializeObject<PayPostVm>(HttpContext.Session.GetString("sales_data"));
             return View();
         }
     }
