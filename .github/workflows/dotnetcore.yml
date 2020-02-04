@@ -5,6 +5,7 @@ on:
     branches:
     - dev
     - test-ready
+    - iyzico
     
   pull_request:
     branches:
