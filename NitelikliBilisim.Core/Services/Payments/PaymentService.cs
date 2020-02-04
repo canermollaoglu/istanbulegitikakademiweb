@@ -164,5 +164,29 @@ namespace NitelikliBilisim.Core.Services.Payments
 
             return Refund.Create(request, _options);
         }
+
+        #region BKM ödeme
+
+        public BkmInitialize MakeBkmPayment(PayPostVm data, ApplicationUser user, List<Education> cartItems)
+        {
+            var r1 = this.InitDefaultRequest(data, user, cartItems);
+            var request = new CreateBkmInitializeRequest()
+            {
+                Locale = r1.Locale,
+                ConversationId = r1.ConversationId,
+                Price = r1.Price,
+                BasketId = r1.BasketId,
+                PaymentGroup = r1.PaymentGroup,
+                Buyer = r1.Buyer,
+                BillingAddress = r1.BillingAddress,
+                BasketItems = r1.BasketItems,
+                CallbackUrl = _options.ThreedsCallbackUrl
+            };
+            return BkmInitialize.Create(request, _options);
+        }
+
+        public Bkm ConfirmBkmPayment(RetrieveBkmRequest request)=> Bkm.Retrieve(request, _options);
+
+        #endregion
     }
 }
