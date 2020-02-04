@@ -18,7 +18,7 @@ namespace NitelikliBilisim.Core.Services.Payments
             _option = configuration.GetSection("IyzicoOptions").Get<PaymentOptions>();
         }
 
-        public ThreedsInitialize MakePayment(PayPostVm data, ApplicationUser user, List<Education> cartItems)
+        public ThreedsInitialize Make3DsPayment(PayPostVm data, ApplicationUser user, List<Education> cartItems)
         {
             var totalPrice = cartItems.Sum(x => x.NewPrice.GetValueOrDefault());
             var request = new CreatePaymentRequest

@@ -19,7 +19,7 @@ namespace NitelikliBilisim.Business.Repositories
             _context = context;
         }
 
-        public Iyzipay.Model.ThreedsInitialize Sell(PayPostVm data, string userId, IPaymentService paymentService, out PayPostVm dataResult)
+        public ThreedsInitialize Sell(PayPostVm data, string userId, IPaymentService paymentService, out PayPostVm dataResult)
         {
             var cartItems = _context.Educations
                 .Where(x => data.CartItems.Contains(x.Id))
@@ -42,7 +42,7 @@ namespace NitelikliBilisim.Business.Repositories
 
             var user = _context.Users.First(x => x.Id == userId);
 
-            var paymentResult = paymentService.MakePayment(data, user, cartItems);
+            var paymentResult = paymentService.Make3DsPayment(data, user, cartItems);
             dataResult = data;
             #endregion
 

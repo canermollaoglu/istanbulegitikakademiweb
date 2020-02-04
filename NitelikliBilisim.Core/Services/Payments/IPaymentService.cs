@@ -8,7 +8,7 @@ namespace NitelikliBilisim.Core.Services.Payments
 {
     public interface IPaymentService
     {
-        ThreedsInitialize MakePayment(PayPostVm data, ApplicationUser user, List<Education> cartItems);
+        ThreedsInitialize Make3DsPayment(PayPostVm data, ApplicationUser user, List<Education> cartItems);
         ThreedsPayment Confirm3DsPayment(CreateThreedsPaymentRequest request);
     }
 }
