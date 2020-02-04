@@ -119,11 +119,10 @@ namespace NitelikliBilisim.App.Controllers
 
             var splitted = data.CardInfo.NumberOnCard.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
             data.CardInfo.NumberOnCard = string.Join(null, splitted);
-            data.Ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+            data.SpecialInfo.Ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
 
             var paymentResult = _unitOfWork.Sale.Sell(data, User.FindFirstValue(ClaimTypes.NameIdentifier), _paymentService, out PayPostVm dataResult);
 
-            dataResult.PaymentResult = JsonConvert.SerializeObject(paymentResult);
             HttpContext.Session.SetString("sales_data", JsonConvert.SerializeObject(dataResult));
             if (paymentResult.Status == "success")
             {

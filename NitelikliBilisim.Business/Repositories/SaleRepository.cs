@@ -32,7 +32,7 @@ namespace NitelikliBilisim.Business.Repositories
             _CorporateInvoiceInfo corporateInvoiceInfo = !data.InvoiceInfo.IsIndividual ? data.CorporateInvoiceInfo : null;
 
             var invoice = CreateInvoice(corporateInvoiceInfo: corporateInvoiceInfo,
-                paymentCount: data.Installments,
+                paymentCount: data.PaymentInfo.Installments,
                 isCash: true,
                 userId: userId);
 
