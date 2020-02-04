@@ -1,5 +1,4 @@
-﻿using Iyzipay.Model;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Services.Payments;
@@ -8,6 +7,7 @@ using NitelikliBilisim.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Iyzipay.Model;
 
 namespace NitelikliBilisim.Business.Repositories
 {
