@@ -62,13 +62,8 @@ namespace NitelikliBilisim.Business.UoW
 
         public GroupLessonDayRepository GroupLessonDay => _groupLessonDayRepository ??= new GroupLessonDayRepository(_context);
 
-        public TicketRepository Ticket
-        {
-            get
-            {
-                return _ticketRepository ?? (_ticketRepository = new TicketRepository(_context));
-            }
-        }
+        public TicketRepository Ticket => _ticketRepository ??= new TicketRepository(_context);
+
         public SaleRepository Sale
         {
             get

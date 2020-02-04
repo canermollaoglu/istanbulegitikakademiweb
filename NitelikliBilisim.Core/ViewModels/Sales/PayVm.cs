@@ -1,19 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Xml.Linq;
+using Iyzipay.Model;
 
 namespace NitelikliBilisim.Core.ViewModels.Sales
 {
     public class PayPostVm
     {
+        public Guid BasketId { get; set; } = Guid.NewGuid();
+        public Guid ConversationId { get; set; } = Guid.NewGuid();
         [Required]
         public _CardInfo CardInfo { get; set; }
         [Required]
         public _InvoiceInfo InvoiceInfo { get; set; }
         public _CorporateInvoiceInfo CorporateInvoiceInfo { get; set; }
-        [Required]
         public bool IsDistantSalesAgreementConfirmed { get; set; }
+        public string CartItemsJson { get; set; }
         public List<Guid> CartItems { get; set; }
+        public PaymentChannel PaymentChannel { get; set; } = PaymentChannel.WEB;
+        public PaymentGroup PaymentGroup { get; set; } = PaymentGroup.PRODUCT;
+        public string Ip { get; set; }
+        public byte Installments { get; set; } = 1;
+        public string IdentityNumber { get; set; } = "12345678901";
     }
 
     public class _CardInfo
@@ -57,4 +66,24 @@ namespace NitelikliBilisim.Core.ViewModels.Sales
         [MaxLength(256)]
         public string TaxOffice { get; set; }
     }
+
+    public enum CreditCardTypes
+    {
+        TROY = 10,
+        MASTERCARD = 100,
+        VISA = 200,
+        AMEX = 1000
+    }
+
+    public enum CreditCardPrograms
+    {
+        BONUS = 10,
+        WORD = 20,
+        MAXIMUM = 30,
+        AXESS = 40,
+        CARDFINANS = 50,
+        PARAF = 60,
+        ADVANTAGE = 70
+    }
+
 }

@@ -1,11 +1,12 @@
-﻿using NitelikliBilisim.Core.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
+using NitelikliBilisim.Core.Services.Payments;
 using NitelikliBilisim.Core.ViewModels.Sales;
 using NitelikliBilisim.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace NitelikliBilisim.Business.Repositories
 {
@@ -17,19 +18,34 @@ namespace NitelikliBilisim.Business.Repositories
             _context = context;
         }
 
-        public void Sell(PayPostVm data, string userId)
+        public Iyzipay.Model.ThreedsInitialize Sell(PayPostVm data, string userId, IPaymentService paymentService, out PayPostVm dataResult)
         {
-            var invoiceDetails = CreateInvoiceDetails(
-                _context.Educations
+            var cartItems = _context.Educations
                 .Where(x => data.CartItems.Contains(x.Id))
-                .ToList());
+                .Include(x => x.Category)
+                .ThenInclude(x => x.BaseCategory)
+                .ToList();
+
+            var invoiceDetails = CreateInvoiceDetails(cartItems);
 
             _CorporateInvoiceInfo corporateInvoiceInfo = !data.InvoiceInfo.IsIndividual ? data.CorporateInvoiceInfo : null;
 
             var invoice = CreateInvoice(corporateInvoiceInfo: corporateInvoiceInfo,
-                paymentCount: 1,
+                paymentCount: data.Installments,
                 isCash: true,
                 userId: userId);
+
+            data.BasketId = invoice.Id;
+
+            #region OnlinePaymentService
+
+            var user = _context.Users.First(x => x.Id == userId);
+
+            var paymentResult = paymentService.MakePayment(data, user, cartItems);
+            dataResult = data;
+
+            return paymentResult;
+            #endregion
 
             using (var transaction = _context.Database.BeginTransaction())
             {
@@ -69,7 +85,7 @@ namespace NitelikliBilisim.Business.Repositories
                 invoiceDetails.Add(new InvoiceDetail
                 {
                     EducationId = education.Id,
-                    PriceAtCurrentDate = education.NewPrice.Value
+                    PriceAtCurrentDate = education.NewPrice.GetValueOrDefault()
                 });
             }
 
