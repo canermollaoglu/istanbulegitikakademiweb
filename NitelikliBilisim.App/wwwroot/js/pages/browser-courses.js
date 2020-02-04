@@ -154,8 +154,14 @@ function getSearchResults(isLoadMore, filter, order) {
                 }
             } else {
                 if (!isLoadMore) {
-                    divEducationContainer.html("");
-                    divEducationContainer.append(`<div class="alert alert-info">Ne yazık ki gösterilecek sonuç yok</div>`);
+                    if (showAs === "grid") {
+                        divEducationContainerRow.html("");
+                        divEducationContainerRow.append(`<div class="alert alert-info">Ne yazık ki gösterilecek sonuç yok</div>`);
+                    }
+                    else {
+                        divEducationContainer.html("");
+                        divEducationContainer.append(`<div class="alert alert-info">Ne yazık ki gösterilecek sonuç yok</div>`);
+                    }
                 }
             }
 
@@ -359,8 +365,6 @@ function prepareLevelFilter(data) {
     })
 
     iCheckAll();
-
-    chosenLevels = [];
 }
 function clearUri() {
     var uri = window.location.toString();
