@@ -12,13 +12,19 @@ namespace NitelikliBilisim.Core.Services.Payments
 {
     public class PaymentService : IPaymentService
     {
-        private readonly PaymentOptions _option;
+        private readonly PaymentOptions _options;
         public PaymentService(IConfiguration configuration)
         {
-            _option = configuration.GetSection("IyzicoOptions").Get<PaymentOptions>();
+            _options = configuration.GetSection("IyzicoOptions").Get<PaymentOptions>();
         }
-
-        public ThreedsInitialize Make3DsPayment(PayPostVm data, ApplicationUser user, List<Education> cartItems)
+        /// <summary>
+        /// Ortak ayarlamaların yapıldığı method!
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="user"></param>
+        /// <param name="cartItems"></param>
+        /// <returns></returns>
+        private CreatePaymentRequest InitDefaultRequest(PayPostVm data, ApplicationUser user, List<Education> cartItems)
         {
             var totalPrice = cartItems.Sum(x => x.NewPrice.GetValueOrDefault());
             var request = new CreatePaymentRequest
@@ -31,8 +37,7 @@ namespace NitelikliBilisim.Core.Services.Payments
                 Installment = data.Installments,
                 BasketId = data.BasketId.ToString(),
                 PaymentChannel = data.PaymentChannel.ToString(),
-                PaymentGroup = data.PaymentGroup.ToString(),
-                CallbackUrl = _option.ThreedsCallbackUrl
+                PaymentGroup = data.PaymentGroup.ToString()
             };
 
             var paymentCard = new PaymentCard
@@ -91,9 +96,73 @@ namespace NitelikliBilisim.Core.Services.Payments
 
             request.BasketItems = basketItems;
 
-            return ThreedsInitialize.Create(request, _option);
+            return request;
         }
 
-        public ThreedsPayment Confirm3DsPayment(CreateThreedsPaymentRequest request) => ThreedsPayment.Create(request, _option);
+        public InstallmentInfo CheckInstallment(string conversationId, string binNumber, decimal price)
+        {
+            var request = new RetrieveInstallmentInfoRequest
+            {
+                Locale = Locale.TR.ToString(),
+                ConversationId = conversationId,
+                BinNumber = binNumber,
+                Price = price.ToString(new CultureInfo("en-US")),
+            };
+
+            return InstallmentInfo.Retrieve(request, _options);
+        }
+        public Payment MakePayment(PayPostVm data, ApplicationUser user, List<Education> cartItems)
+        {
+            var request = this.InitDefaultRequest(data, user, cartItems);
+            return Payment.Create(request, _options);
+        }
+        public Payment CheckPayment(RetrievePaymentRequest request) => Payment.Retrieve(request, _options);
+
+        #region 3D Security
+
+        public ThreedsInitialize Make3DsPayment(PayPostVm data, ApplicationUser user, List<Education> cartItems)
+        {
+            var request = this.InitDefaultRequest(data, user, cartItems);
+            request.CallbackUrl = _options.ThreedsCallbackUrl;
+
+            return ThreedsInitialize.Create(request, _options);
+        }
+
+        public ThreedsPayment Confirm3DsPayment(CreateThreedsPaymentRequest request) => ThreedsPayment.Create(request, _options);
+
+
+        #endregion
+
+        public Cancel CreateCancelRequest(string conversationId, string paymentId, string ip, RefundReason reason, string description)
+        {
+            CreateCancelRequest request = new CreateCancelRequest
+            {
+                ConversationId = conversationId,
+                Locale = Locale.TR.ToString(),
+                PaymentId = paymentId,
+                Ip = ip,
+                Reason = reason.ToString(),
+                Description = description
+            };
+
+            return Cancel.Create(request, _options);
+        }
+
+        public Refund CreateRefundRequest(string conversationId, string paymentTransactionId, decimal price, string ip, RefundReason reason, string description)
+        {
+            CreateRefundRequest request = new CreateRefundRequest
+            {
+                ConversationId = conversationId,
+                Locale = Locale.TR.ToString(),
+                PaymentTransactionId = paymentTransactionId,
+                Price = price.ToString(new CultureInfo("en-US")),
+                Ip = ip,
+                Currency = Currency.TRY.ToString(),
+                Reason = reason.ToString(),
+                Description = description
+            };
+
+            return Refund.Create(request, _options);
+        }
     }
 }
