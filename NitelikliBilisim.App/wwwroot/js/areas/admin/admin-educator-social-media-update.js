@@ -31,7 +31,6 @@ function btnSave_onClick() {
             Extension: file.extension
         }
     }
-    console.log(data)
     var tokenVerifier = new SecuritySupport.TokenVerifier();
     data = tokenVerifier.addToken("form-update-educator-social-media", data);
     btnSave.on("click", btnSave_onClick);

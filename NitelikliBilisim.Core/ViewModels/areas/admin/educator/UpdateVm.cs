@@ -12,6 +12,7 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.educator
         public string Email { get; set; }
         public string Title { get; set; }
         public string Biography { get; set; }
+        public string FilePath { get; set; }
     }
 
     public class UpdatePostVm : AddPostVm
@@ -31,6 +32,8 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.educator
         public string Email { get; set; }
         public string Title { get; set; }
         public Guid EducatorId { get; set; }
+        public _SocialMedia SocialMedia { get; set; }
+        public _PostedFile ProfilePhoto { get; set; }
     }
 
     public class UpdateGetEducatorSocialMediaVm : AddGetVm
