@@ -131,8 +131,9 @@ function catFilter_ifToggled() {
     _beginSearch = subCategoryCount == _catFilterToggleCount;
 
     var checkCount = subCategoriesList.find('input:checked').length;
+    var uncheckCount = subCategoriesList.find('input:not(:checked)').length;
 
-    if (!_beginSearch && _baseCatToggled && checkCount > 0) return;
+    if (!_beginSearch && _baseCatToggled && checkCount > 0 && uncheckCount > 0) return;
 
     _catFilterToggleCount = 0;
     _baseCatToggled = false;
