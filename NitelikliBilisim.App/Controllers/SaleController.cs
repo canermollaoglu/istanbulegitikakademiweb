@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Iyzipay.Model;
+using Iyzipay.Request;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using NitelikliBilisim.App.Controllers.Base;
@@ -12,9 +14,7 @@ using NitelikliBilisim.Core.ViewModels.Sales;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Security.Claims;
 
 namespace NitelikliBilisim.App.Controllers
@@ -147,10 +147,11 @@ namespace NitelikliBilisim.App.Controllers
             });
         }
 
-        [Route("odeme-sonucu")]
-        public IActionResult PaymentResult()
+        [HttpPost, Route("odeme-sonucu")]
+        public IActionResult PaymentResult(CreateThreedsPaymentRequest data)
         {
-            var data = JsonConvert.DeserializeObject<PayPostVm>(HttpContext.Session.GetString("sales_data"));
+            data.Locale = Locale.TR.ToString();
+            var result = _paymentService.Confirm3DsPayment(data);
             return View();
         }
     }
