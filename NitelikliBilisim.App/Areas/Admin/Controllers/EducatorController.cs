@@ -233,8 +233,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 });
             }
 
-            var educatorSocialMedias = _unitOfWork.EducatorSocialMedia.Get(x => x.EducatorId == data.EducatorId, null, x => x.Educator).ToList();
-
             if (!string.IsNullOrEmpty(data.Facebook))
             {
                 var facebook = _unitOfWork.EducatorSocialMedia.Get().FirstOrDefault(x => x.EducatorId == data.EducatorId &&
@@ -253,8 +251,17 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                         SocialMediaType = Core.Enums.EducatorSocialMediaType.Facebook,
                         Link = data.Facebook
                     });
-                }   
+                }
             }
+            else
+            {
+               var facebook = _unitOfWork.EducatorSocialMedia.Get().FirstOrDefault(x => x.EducatorId == data.EducatorId &&
+               x.SocialMediaType == Core.Enums.EducatorSocialMediaType.Facebook);
+
+                 if (facebook != null)
+                    _unitOfWork.EducatorSocialMedia.Delete(facebook);
+            }
+
             if (!string.IsNullOrEmpty(data.Linkedin))
             {
                 var linkedin = _unitOfWork.EducatorSocialMedia.Get().FirstOrDefault(x => x.EducatorId == data.EducatorId &&
@@ -275,6 +282,15 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     });
                 }
             }
+            else
+            {
+                var linkedin = _unitOfWork.EducatorSocialMedia.Get().FirstOrDefault(x => x.EducatorId == data.EducatorId &&
+               x.SocialMediaType == Core.Enums.EducatorSocialMediaType.LinkedIn);
+
+                if (linkedin != null)
+                    _unitOfWork.EducatorSocialMedia.Delete(linkedin);
+            }
+
             if (!string.IsNullOrEmpty(data.GooglePlus))
             {
                 var googlePlus = _unitOfWork.EducatorSocialMedia.Get().FirstOrDefault(x => x.EducatorId == data.EducatorId &&
@@ -295,6 +311,15 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     });
                 }
             }
+            else
+            {
+                var googlePlus = _unitOfWork.EducatorSocialMedia.Get().FirstOrDefault(x => x.EducatorId == data.EducatorId &&
+                x.SocialMediaType == Core.Enums.EducatorSocialMediaType.GooglePlus);
+
+                if(googlePlus != null)
+                    _unitOfWork.EducatorSocialMedia.Delete(googlePlus);
+            }
+
             if (!string.IsNullOrEmpty(data.Twitter))
             {
                 var twitter = _unitOfWork.EducatorSocialMedia.Get().FirstOrDefault(x => x.EducatorId == data.EducatorId &&
@@ -315,6 +340,15 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     });
                 }
             }
+            else
+            {
+                var twitter = _unitOfWork.EducatorSocialMedia.Get().FirstOrDefault(x => x.EducatorId == data.EducatorId &&
+               x.SocialMediaType == Core.Enums.EducatorSocialMediaType.Twitter);
+
+                if (twitter != null)
+                    _unitOfWork.EducatorSocialMedia.Delete(twitter);
+            }
+
             return Json(new ResponseModel
             {
                 isSuccess = true,
@@ -323,7 +357,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         }
 
         [Route("admin/delete-educator")]
-        public IActionResult Delete(Guid? educatorId)
+        public IActionResult Delete(Guid educatorId)
         {
             if (educatorId == null)
                 return Json(new ResponseModel

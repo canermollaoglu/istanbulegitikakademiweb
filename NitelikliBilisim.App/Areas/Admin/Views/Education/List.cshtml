@@ -98,12 +98,12 @@
                 }, {
                     dataField: "name",
                     headerCellTemplate: $('<i style="color: black; font-weight: bold">İsmi</i>'),
-                    width: 160
+                    width: 140
 
                 }, {
                     dataField: "educationCategories",
                     headerCellTemplate: $('<i style="color: black; font-weight: bold">Etiketler</i>'),
-                    width: 290
+                    width: 250
                 }, {
                     cellTemplate: function (container, options) {
                         var current = options.data;
@@ -111,14 +111,14 @@
                             .appendTo(container);
                     },
                     headerCellTemplate: $('<i style="color: black; font-weight: bold">Gün / Saat</i>'),
-                    width: 100
+                    width: 80
                 }, {
                     dataField: "level",
                     headerCellTemplate: $('<i style="color: black; font-weight: bold">Seviye</i>'),
-                    width: 100,
+                    width: 60,
                     alignment: "center"
                 }, {
-                    headerCellTemplate: $('<i style="vertical-align:middle; color: black; font-weight: bold">Medyalar/Parçalar/Kazanımlar/Eğitmenler</i>'),
+                    headerCellTemplate: $('<i style="vertical-align:middle; color: black; font-weight: bold">İşlem</i>'),
                     allowSearch: false,
                     cellTemplate: function (container, options) {
                         var current = options.data;
