@@ -14,9 +14,7 @@ using NitelikliBilisim.Core.ViewModels.Sales;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Security.Claims;
 
 namespace NitelikliBilisim.App.Controllers
