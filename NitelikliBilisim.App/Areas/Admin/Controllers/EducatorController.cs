@@ -127,6 +127,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/egitmenler")]
         public IActionResult List()
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducatorList");
             return View();
         }
 
