@@ -63,7 +63,7 @@ function btnShowAsList_onClick() {
         url += `/${slugify(_categoryName.val())}`;
     url += `?`;
     if (_searchText.val());
-    url += `s=${_searchText.val()}&`;
+    url += `s=${inputSearch.val()}&`;
     location.href = `${url}showAs=list`;
 }
 function btnSearch_onClick() {
