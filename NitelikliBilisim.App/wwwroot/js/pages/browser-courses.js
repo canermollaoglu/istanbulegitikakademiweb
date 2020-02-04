@@ -63,7 +63,7 @@ function btnShowAsList_onClick() {
         url += `/${slugify(_categoryName.val())}`;
     url += `?`;
     if (_searchText.val());
-    url += `s=${_searchText.val()}&`;
+    url += `s=${inputSearch.val()}&`;
     location.href = `${url}showAs=list`;
 }
 function btnSearch_onClick() {
@@ -82,7 +82,7 @@ function listingFilters_onClick() {
     var order = $(this).val();
 
     if (order == 0)
-        location.href = 'egitimler';
+        location.href = '/egitimler';
 
     if (_hasFilter)
         getFilteredResults(false, order);
