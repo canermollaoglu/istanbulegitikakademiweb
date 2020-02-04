@@ -17,5 +17,10 @@ namespace NitelikliBilisim.Core.Services.Payments
         Refund CreateRefundRequest(string conversationId, string paymentTransactionId, decimal price, string ip, RefundReason reason, string description);
         BkmInitialize MakeBkmPayment(PayPostVm data, ApplicationUser user, List<Education> cartItems);
         Bkm ConfirmBkmPayment(RetrieveBkmRequest request);
+
+        CheckoutFormInitialize MakeCheckoutForm(PayPostVm data, ApplicationUser user,
+            List<Education> cartItems);
+
+        CheckoutForm ConfirmCheckoutForm(RetrieveCheckoutFormRequest request);
     }
 }

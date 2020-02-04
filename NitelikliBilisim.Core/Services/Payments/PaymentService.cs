@@ -176,6 +176,7 @@ namespace NitelikliBilisim.Core.Services.Payments
                 ConversationId = r1.ConversationId,
                 Price = r1.Price,
                 BasketId = r1.BasketId,
+                PaymentSource = r1.PaymentSource,
                 PaymentGroup = r1.PaymentGroup,
                 Buyer = r1.Buyer,
                 BillingAddress = r1.BillingAddress,
@@ -185,7 +186,36 @@ namespace NitelikliBilisim.Core.Services.Payments
             return BkmInitialize.Create(request, _options);
         }
 
-        public Bkm ConfirmBkmPayment(RetrieveBkmRequest request)=> Bkm.Retrieve(request, _options);
+        public Bkm ConfirmBkmPayment(RetrieveBkmRequest request) => Bkm.Retrieve(request, _options);
+
+        #endregion
+
+        #region Hazır Ödeme Formu
+
+        public CheckoutFormInitialize MakeCheckoutForm(PayPostVm data, ApplicationUser user, List<Education> cartItems)
+        {
+            var r1 = this.InitDefaultRequest(data, user, cartItems);
+            var request = new CreateCheckoutFormInitializeRequest()
+            {
+                Locale = r1.Locale,
+                ConversationId = r1.ConversationId,
+                Price = r1.Price,
+                PaidPrice = r1.PaidPrice,
+                BasketId = r1.BasketId,
+                PaymentGroup = r1.PaymentGroup,
+                PaymentSource = r1.PaymentSource,
+                Buyer = r1.Buyer,
+                BillingAddress = r1.BillingAddress,
+                BasketItems = r1.BasketItems,
+                CallbackUrl = _options.ThreedsCallbackUrl
+            };
+            var enabledInstallments = new List<int> { 2, 3, 6, 9 };
+            request.EnabledInstallments = enabledInstallments;
+
+            return CheckoutFormInitialize.Create(request, _options);
+        }
+
+        public CheckoutForm ConfirmCheckoutForm(RetrieveCheckoutFormRequest request) => CheckoutForm.Retrieve(request, _options);
 
         #endregion
     }
