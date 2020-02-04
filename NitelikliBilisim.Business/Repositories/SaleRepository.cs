@@ -132,7 +132,7 @@ namespace NitelikliBilisim.Business.Repositories
             return tickets;
         }
 
-        private bool IsValidConversation(Guid determinedConversationId, ThreedsInitialize paymentResult)
+        public bool IsValidConversation(Guid determinedConversationId, ThreedsInitialize paymentResult)
         {
             if (paymentResult.Status == "success"
                 && determinedConversationId.ToString() == paymentResult.ConversationId
