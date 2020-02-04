@@ -89,7 +89,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                         errors = res.Errors.Select(x => x.Description)
                     });
                 }
-                    
+
                 res = await _userManager.AddToRoleAsync(newUser, "User");
                 if (!res.Succeeded)
                 {
@@ -127,7 +127,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/egitmenler")]
         public IActionResult List()
         {
-
             return View();
         }
 
@@ -141,6 +140,18 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 data = educators
             });
         }
+
+        [Route("admin/get-educators-list")]
+        public JsonResult GetEducatorslist()
+        {
+            var model = _vmCreator.GetEducators();
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = model
+            });
+        }
+
         [Route("admin/egitmen-guncelle/{educatorId}")]
         public IActionResult Update(Guid? educatorId)
         {
@@ -158,6 +169,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             };
             return View(model);
         }
+
         [HttpPost, Route("admin/egitmen-guncelle")]
         public IActionResult Update(UpdatePostNewVm data)
         {
@@ -181,6 +193,144 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             {
                 isSuccess = true,
                 message = "Eğitmen başarıyla güncellenmiştir"
+            });
+        }
+
+        [Route("admin/egitmen-sosyal-medya-guncelle/{educatorId}")]
+        public IActionResult UpdateEducatorSocialMedia(Guid? educatorId)
+        {
+            if (!educatorId.HasValue)
+                return Redirect("/admin/egitmenler");
+            var educatorSocialMedias = _unitOfWork.EducatorSocialMedia.Get(x => x.EducatorId == educatorId.ToString(), null, x => x.Educator).ToList();
+            var model = new UpdateGetEducatorSocialMediaVm
+            {
+                Id = Guid.Parse(educatorSocialMedias.First().EducatorId),
+                Facebook = educatorSocialMedias.FirstOrDefault(x => x.SocialMediaType == Core.Enums.EducatorSocialMediaType.Facebook)?.Link,
+                Linkedin = educatorSocialMedias.FirstOrDefault(x => x.SocialMediaType == Core.Enums.EducatorSocialMediaType.LinkedIn)?.Link,
+                GooglePlus = educatorSocialMedias.FirstOrDefault(x => x.SocialMediaType == Core.Enums.EducatorSocialMediaType.GooglePlus)?.Link,
+                Twitter = educatorSocialMedias.FirstOrDefault(x => x.SocialMediaType == Core.Enums.EducatorSocialMediaType.Twitter)?.Link
+            };
+            return View(model);
+        }
+
+        [HttpPost, Route("admin/egitmen-sosyal-medya-guncelle")]
+        public IActionResult UpdateEducatorSocialMedia(UpdatePostEducatorSocialMediaVm data)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelStateUtil.GetErrors(ModelState);
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = errors
+                });
+            }
+
+            var educatorSocialMedias = _unitOfWork.EducatorSocialMedia.Get(x => x.EducatorId == data.EducatorId, null, x => x.Educator).ToList();
+
+            if (!string.IsNullOrEmpty(data.Facebook))
+            {
+                var facebook = _unitOfWork.EducatorSocialMedia.Get().FirstOrDefault(x => x.EducatorId == data.EducatorId &&
+                x.SocialMediaType == Core.Enums.EducatorSocialMediaType.Facebook);
+
+                if (facebook != null)
+                {
+                    facebook.Link = data.Facebook;
+                    _unitOfWork.EducatorSocialMedia.Update(facebook);
+                }
+                else
+                {
+                    _unitOfWork.EducatorSocialMedia.Insert(new EducatorSocialMedia()
+                    {
+                        EducatorId = data.EducatorId,
+                        SocialMediaType = Core.Enums.EducatorSocialMediaType.Facebook,
+                        Link = data.Facebook
+                    });
+                }   
+            }
+            if (!string.IsNullOrEmpty(data.Linkedin))
+            {
+                var linkedin = _unitOfWork.EducatorSocialMedia.Get().FirstOrDefault(x => x.EducatorId == data.EducatorId &&
+                x.SocialMediaType == Core.Enums.EducatorSocialMediaType.LinkedIn);
+
+                if (linkedin != null)
+                {
+                    linkedin.Link = data.Linkedin;
+                    _unitOfWork.EducatorSocialMedia.Update(linkedin);
+                }
+                else
+                {
+                    _unitOfWork.EducatorSocialMedia.Insert(new EducatorSocialMedia()
+                    {
+                        EducatorId = data.EducatorId,
+                        SocialMediaType = Core.Enums.EducatorSocialMediaType.LinkedIn,
+                        Link = data.Linkedin
+                    });
+                }
+            }
+            if (!string.IsNullOrEmpty(data.GooglePlus))
+            {
+                var googlePlus = _unitOfWork.EducatorSocialMedia.Get().FirstOrDefault(x => x.EducatorId == data.EducatorId &&
+                x.SocialMediaType == Core.Enums.EducatorSocialMediaType.GooglePlus);
+
+                if (googlePlus != null)
+                {
+                    googlePlus.Link = data.GooglePlus;
+                    _unitOfWork.EducatorSocialMedia.Update(googlePlus);
+                }
+                else
+                {
+                    _unitOfWork.EducatorSocialMedia.Insert(new EducatorSocialMedia()
+                    {
+                        EducatorId = data.EducatorId,
+                        SocialMediaType = Core.Enums.EducatorSocialMediaType.GooglePlus,
+                        Link = data.GooglePlus
+                    });
+                }
+            }
+            if (!string.IsNullOrEmpty(data.Twitter))
+            {
+                var twitter = _unitOfWork.EducatorSocialMedia.Get().FirstOrDefault(x => x.EducatorId == data.EducatorId &&
+                x.SocialMediaType == Core.Enums.EducatorSocialMediaType.Twitter);
+
+                if (twitter != null)
+                {
+                    twitter.Link = data.Twitter;
+                    _unitOfWork.EducatorSocialMedia.Update(twitter);
+                }
+                else
+                {
+                    _unitOfWork.EducatorSocialMedia.Insert(new EducatorSocialMedia()
+                    {
+                        EducatorId = data.EducatorId,
+                        SocialMediaType = Core.Enums.EducatorSocialMediaType.Twitter,
+                        Link = data.Twitter
+                    });
+                }
+            }
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                message = "Eğitmenin Sosyal Medya Profilleri başarıyla güncellenmiştir"
+            });
+        }
+
+        [Route("admin/delete-educator")]
+        public IActionResult Delete(Guid? educatorId)
+        {
+            if (educatorId == null)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    message = "Silinecek veri bulunamadı"
+                });
+
+            _unitOfWork.Educator.Delete(educatorId.ToString());
+
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                message = "Silme işlemi başarılı"
             });
         }
     }

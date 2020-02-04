@@ -1,18 +1,27 @@
 ﻿/* fields */
 var confirmModalBuilder = new AlertSupport.ConfirmModalBuilder();
 
-/* elements */
-var tbodyEducators = $("#tbody-educators");
-
 /* assignments */
 $(document).ready(document_onLoad);
 
 /* events */
 function document_onLoad() {
-    getEducators();
+    var deleteButtons = $(".btn-confirmation-modal-trigger");
+    for (var i = 0; i < deleteButtons.length; i++) {
+        var btn = deleteButtons[i];
+        btn.onclick = btnConfirmationModalTrigger_onClick;
+    }
+    confirmModalBuilder.buildModal({
+        title: "Emin misiniz?",
+        bodyText: "Seçmiş olduğunuz kayıt kalıcı olarak silinecektir.",
+        cancelText: "Hayır, iptal et",
+        confirmText: "Evet, eminim",
+        onConfirmClick: confirm_onClick
+    });
+    createGrid();
 }
+
 function btnConfirmationModalTrigger_onClick() {
-    /* assigned @@ createTable */
     var url = this.getAttribute("data-url");
     confirmModalBuilder.setUrl(url);
     confirmModalBuilder.display();
@@ -37,60 +46,72 @@ function confirm_onClick() {
     });
 }
 
-/* functions */
-function createTable(data) {
-    console.log(data);
-    tbodyEducators.html("");
-    var content = "";
-    if (data.length != 0) {
-        for (var i = 0; i < data.length; i++) {
-            var element = data[i];
-            content +=
-                `<tr>` +
-                `<td>${element.title}</td>` +
-                `<td>${element.fullName}</td>` +
-                `<td>${element.phone}</td>` +
-                `<td>${element.email}</td>` +
-                `<td>` +
-                `<div class="btn-group">` +
-                `<a href="/admin/egitmen-guncelle/${element.id}" class="btn btn-warning"><i class="fa fa-edit"></i></a>` +
-                `<a href="/admin/egitmen-sosyal-medya-guncelle/${element.id}" class="btn btn-primary"><i class="fa fa-chain"></i> ${element.socialMediaCount}</a>` +
-                `<button class="btn btn-danger btn-confirmation-modal-trigger" data-url="/admin/delete-educator/${element.id}"><i class="fa fa-trash"></i></button>` +
-                `</div>` +
-                `</td>` +
-                `</tr>`;
-        }
-    } else
-        content = `<tr><td colspan="5"><div class="alert alert-info"><strong>Bilgi:</strong> Henüz eğitmen eklenmemiştir</div></td></tr>`;
-    tbodyEducators.append(content);
 
-    var deleteButtons = $(".btn-confirmation-modal-trigger");
-    for (var i = 0; i < deleteButtons.length; i++) {
-        var btn = deleteButtons[i];
-        btn.onclick = btnConfirmationModalTrigger_onClick;
-    }
-    confirmModalBuilder.buildModal({
-        title: "Emin misiniz?",
-        bodyText: "Seçmiş olduğunuz kayıt kalıcı olarak silinecektir.",
-        cancelText: "Hayır, iptal et",
-        confirmText: "Evet, eminim",
-        onConfirmClick: confirm_onClick
-    });
-}
-function getEducators() {
-
-    var resultAlert = new AlertSupport.ResultAlert();
-    $.ajax({
-        url: `/admin/get-educators`,
-        method: "get",
-        success: (res) => {
-            if (res.isSuccess) {
-                createTable(res.data);
-            } else {
-                resultAlert.display({
-                    success: false
-                });
+/*DataGrid*/
+function createGrid() {
+    $("#educator-grid").dxDataGrid({
+        dataSource: `get-educators-list`,
+        showBorders: true,
+        showColumnLines: true,
+        showRowLines: true,
+        filterRow: {
+            visible: true,
+            applyFilter: "auto"
+        },
+        searchPanel: {
+            visible: true,
+            width: 240,
+            placeholder: "Search..."
+        },
+        paging: {
+            pageSize: 5
+        },
+        onContentReady: function () {
+            var deleteButtons = $(".btn-confirmation-modal-trigger");
+            for (var i = 0; i < deleteButtons.length; i++) {
+                var btn = deleteButtons[i];
+                btn.onclick = btnConfirmationModalTrigger_onClick;
             }
+        },
+        pager: {
+            showPageSizeSelector: true,
+            allowedPageSizes: [5, 10, 20],
+            showInfo: true
+        },
+        columns: [{
+            dataField: "title",
+            headerCellTemplate: $('<i style="color: black; font-weight: bold">Ünvan</i>')
+        },
+        {
+            dataField: "fullName",
+            headerCellTemplate: $('<i style="color: black; font-weight: bold">Eğitmen Adı</i>'),
+            width:200
+        },
+        {
+            dataField: "phone",
+            headerCellTemplate: $('<i style="color: black; font-weight: bold">Telefon</i>'),
+            width: 150
+        },
+        {
+            dataField: "email",
+            headerCellTemplate: $('<i style="color: black; font-weight: bold">E-Posta</i>'),
+            width: 280
+        },
+        {
+            headerCellTemplate: $('<i style="color: black; font-weight: bold">İşlemler</i>'),
+            allowSearch: false,
+            cellTemplate: function (container, options) {
+                var current = options.data;
+                $(`<a class="btn btn-warning" href="/admin/egitmen-guncelle/${current.id}"><i class=\"fa fa-edit\"></i></a>`)
+                    .appendTo(container);
+                $(`<a class="btn btn-primary" href="/admin/egitmen-sosyal-medya-guncelle/${current.id}"><i class=\"fa fa-chain\"></i><span>${current.socialMediaCount}</span></a>`)
+                    .appendTo(container);
+                $(`<button class="btn-confirmation-modal-trigger btn btn-danger" data-url="/admin/delete-educator?educatorId=${current.id}" style="cursor:pointer;"><i class=\"fa fa-trash\"></i></button>`)
+                    .appendTo(container);
+            },
+            alignment: "center",
+            width: "auto"
         }
+        ]
     });
 }

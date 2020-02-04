@@ -32,4 +32,26 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.educator
         public string Title { get; set; }
         public Guid EducatorId { get; set; }
     }
+
+    public class UpdateGetEducatorSocialMediaVm : AddGetVm
+    {
+        public Guid Id { get; set; }
+        public string Facebook { get; set; }
+        public string Linkedin { get; set; }
+        public string GooglePlus { get; set; }
+        public string Twitter { get; set; }
+    }
+
+    public class UpdatePostEducatorSocialMediaVm
+    {
+        [MaxLength(100, ErrorMessage = "Facebook linki en fazla 100 karakter içerebilir")]
+        public string Facebook { get; set; }
+        [MaxLength(100, ErrorMessage = "Linkedin linki en fazla 100 karakter içerebilir")]
+        public string Linkedin { get; set; }
+        [MaxLength(100, ErrorMessage = "Google Plus linki en fazla 100 karakter içerebilir")]
+        public string GooglePlus { get; set; }
+        [MaxLength(100, ErrorMessage = "Twitter linki en fazla 100 karakter içerebilir")]
+        public string Twitter { get; set; }
+        public string EducatorId { get; set; }
+    }
 }
