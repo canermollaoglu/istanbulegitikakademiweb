@@ -106,6 +106,49 @@ function inputSearch_onSubmit(e) {
         btnSearch_onClick();
     }
 }
+function baseCatFilter_ifToggled() {
+    _baseCatToggled = true;
+
+    var baseCategoryName = $(this).val();
+    var subCategoriesList = $("ul").find(`[data-base-cat-name="${baseCategoryName}"]`);
+
+    if (!_catToggled) {
+        var state = $(this).parent('[class*="icheckbox"]').hasClass('checked') ? 'uncheck' : 'check';
+        subCategoriesList.find('input[name="cat-filter"]').iCheck(state);
+    }
+
+    _categoryName.val("");
+
+    $(this).removeClass("chosen");
+}
+function catFilter_ifToggled() {
+    _catFilterToggleCount++;
+    _catToggled = true;
+
+    var subCategoriesList = $(this).closest('ul');
+    var subCategoryCount = subCategoriesList.children().length;
+
+    _beginSearch = subCategoryCount == _catFilterToggleCount;
+
+    var checkCount = subCategoriesList.find('input:checked').length;
+
+    if (!_beginSearch && _baseCatToggled && checkCount > 0) return;
+
+    _catFilterToggleCount = 0;
+    _baseCatToggled = false;
+
+    var baseCategoryName = subCategoriesList.data('base-cat-name');
+
+    if (subCategoriesList.find('input:checked').length == subCategoryCount)
+        $(`:checkbox[value="${baseCategoryName}"]`).iCheck('check')
+    else
+        $(`:checkbox[value="${baseCategoryName}"]`).iCheck('uncheck')
+
+    getFilteredResults(false);
+}
+function levFilter_ifToggled() {
+    getFilteredResults(false);
+}
 
 /* functions */
 function getSearchResults(isLoadMore, filter, order) {
@@ -385,51 +428,11 @@ function iCheckAll() {
         radioClass: 'iradio_square-grey'
     });
 
-    $('input[name="base-cat-filter"]').on('ifToggled', function () {
-        _baseCatToggled = true;
+    $('input[name="base-cat-filter"]').on('ifToggled', baseCatFilter_ifToggled);
 
-        var baseCategoryName = $(this).val();
-        var subCategoriesList = $("ul").find(`[data-base-cat-name="${baseCategoryName}"]`);
-        
-        if (!_catToggled) {
-            var state = $(this).parent('[class*="icheckbox"]').hasClass('checked') ? 'uncheck' : 'check';
-            subCategoriesList.find('input[name="cat-filter"]').iCheck(state);
-        }
-            
-        _categoryName.val("");
+    $('input[name="cat-filter"]').on('ifToggled', catFilter_ifToggled);
 
-        $(this).removeClass("chosen");
-    });
-
-    $('input[name="cat-filter"]').on('ifToggled', function () {
-        _catFilterToggleCount++;
-        _catToggled = true;
-
-        var subCategoriesList = $(this).closest('ul');
-        var subCategoryCount = subCategoriesList.children().length;
-
-        _beginSearch = subCategoryCount == _catFilterToggleCount;
-
-        var checkCount = subCategoriesList.find('input:checked').length;
-
-        if (!_beginSearch && _baseCatToggled && checkCount > 0) return;
-
-        _catFilterToggleCount = 0;
-        _baseCatToggled = false;
-        
-        var baseCategoryName = subCategoriesList.data('base-cat-name');
-
-        if (subCategoriesList.find('input:checked').length == subCategoryCount)
-            $(`:checkbox[value="${baseCategoryName}"]`).iCheck('check')
-        else
-            $(`:checkbox[value="${baseCategoryName}"]`).iCheck('uncheck')
-            
-        getFilteredResults(false);        
-    });
-
-    $('input[name="lev-filter"]').on('ifToggled', function () {
-        getFilteredResults(false);
-    });
+    $('input[name="lev-filter"]').on('ifToggled', levFilter_ifToggled);
 
     $('.icheck').on('ifToggled', function () {
         $('.icheck').iCheck('disable');
