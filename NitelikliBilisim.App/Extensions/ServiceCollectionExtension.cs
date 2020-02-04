@@ -16,6 +16,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using NitelikliBilisim.Core.Services;
 using NitelikliBilisim.Core.Services.Abstracts;
+using Iyzipay;
+using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.Services.Payments;
 
 namespace NitelikliBilisim.App.Extensions
 {
@@ -25,8 +28,10 @@ namespace NitelikliBilisim.App.Extensions
             IConfiguration configuration)
         {
             #region Dependency Injections
+            services.AddScoped<UnitOfWork>();
             services.AddSingleton<IMessageService, EmailService>();
             services.AddSingleton<IStorageService, StorageService>();
+            services.AddScoped<IPaymentService, PaymentService>();
             #endregion
 
             #region IdentityConfig

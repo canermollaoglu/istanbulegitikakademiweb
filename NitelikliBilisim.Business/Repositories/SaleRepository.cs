@@ -1,11 +1,13 @@
-﻿using NitelikliBilisim.Core.Entities;
+﻿using Iyzipay.Model;
+using Microsoft.EntityFrameworkCore;
+using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
+using NitelikliBilisim.Core.Services.Payments;
 using NitelikliBilisim.Core.ViewModels.Sales;
 using NitelikliBilisim.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace NitelikliBilisim.Business.Repositories
 {
@@ -17,48 +19,65 @@ namespace NitelikliBilisim.Business.Repositories
             _context = context;
         }
 
-        public void Sell(PayPostVm data, string userId)
+        public Iyzipay.Model.ThreedsInitialize Sell(PayPostVm data, string userId, IPaymentService paymentService, out PayPostVm dataResult)
         {
-            var invoiceDetails = CreateInvoiceDetails(
-                _context.Educations
+            var cartItems = _context.Educations
                 .Where(x => data.CartItems.Contains(x.Id))
-                .ToList());
+                .Include(x => x.Category)
+                .ThenInclude(x => x.BaseCategory)
+                .ToList();
+
+            var invoiceDetails = CreateInvoiceDetails(cartItems);
 
             _CorporateInvoiceInfo corporateInvoiceInfo = !data.InvoiceInfo.IsIndividual ? data.CorporateInvoiceInfo : null;
 
             var invoice = CreateInvoice(corporateInvoiceInfo: corporateInvoiceInfo,
-                paymentCount: 1,
+                paymentCount: data.Installments,
                 isCash: true,
                 userId: userId);
 
-            using (var transaction = _context.Database.BeginTransaction())
-            {
-                try
+            data.BasketId = invoice.Id;
+
+            #region OnlinePaymentService
+
+            var user = _context.Users.First(x => x.Id == userId);
+
+            var paymentResult = paymentService.MakePayment(data, user, cartItems);
+            dataResult = data;
+            #endregion
+
+            if (IsValidConversation(data.ConversationId, paymentResult))
+                using (var transaction = _context.Database.BeginTransaction())
                 {
-                    _context.Invoices.Add(invoice);
-                    _context.InvoiceAddresses.Add(new InvoiceAddress
+                    try
                     {
-                        Id = invoice.Id,
-                        Address = data.InvoiceInfo.Address,
-                        City = data.InvoiceInfo.City,
-                        County = data.InvoiceInfo.Town
-                    });
+                        invoice.ConversationId = data.ConversationId;
+                        _context.Invoices.Add(invoice);
+                        _context.InvoiceAddresses.Add(new InvoiceAddress
+                        {
+                            Id = invoice.Id,
+                            Address = data.InvoiceInfo.Address,
+                            City = data.InvoiceInfo.City,
+                            County = data.InvoiceInfo.Town
+                        });
 
-                    foreach (var invoiceDetail in invoiceDetails)
-                        invoiceDetail.InvoiceId = invoice.Id;
-                    _context.InvoiceDetails.AddRange(invoiceDetails);
+                        foreach (var invoiceDetail in invoiceDetails)
+                            invoiceDetail.InvoiceId = invoice.Id;
+                        _context.InvoiceDetails.AddRange(invoiceDetails);
 
-                    var tickets = CreateTickets(invoiceDetails, new Guid("E24DA16A-269A-4C91-B9FF-C64E4ABCC031"), userId);
-                    _context.AddRange(tickets);
+                        var tickets = CreateTickets(invoiceDetails, new Guid("E24DA16A-269A-4C91-B9FF-C64E4ABCC031"), userId);
+                        _context.AddRange(tickets);
 
-                    _context.SaveChanges();
-                    transaction.Commit();
+                        _context.SaveChanges();
+                        transaction.Commit();
+                    }
+                    catch
+                    {
+                        transaction.Rollback();
+                    }
                 }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                }
-            }
+
+            return paymentResult;
         }
 
         private List<InvoiceDetail> CreateInvoiceDetails(List<Education> educations)
@@ -69,7 +88,7 @@ namespace NitelikliBilisim.Business.Repositories
                 invoiceDetails.Add(new InvoiceDetail
                 {
                     EducationId = education.Id,
-                    PriceAtCurrentDate = education.NewPrice.Value
+                    PriceAtCurrentDate = education.NewPrice.GetValueOrDefault()
                 });
             }
 
@@ -111,6 +130,18 @@ namespace NitelikliBilisim.Business.Repositories
                 });
 
             return tickets;
+        }
+
+        private bool IsValidConversation(Guid determinedConversationId, ThreedsInitialize paymentResult)
+        {
+            if (paymentResult.Status == "success"
+                && determinedConversationId.ToString() == paymentResult.ConversationId
+                && paymentResult.ErrorCode == null
+                && paymentResult.ErrorMessage == null
+                && paymentResult.ErrorGroup == null
+                && paymentResult.HtmlContent != null)
+                return true;
+            return false;
         }
     }
 }

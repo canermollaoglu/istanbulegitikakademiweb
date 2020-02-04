@@ -24,6 +24,8 @@ namespace NitelikliBilisim.Core.Entities
         public string TaxOffice { get; set; }
         public bool IsCash { get; set; }
         public byte PaymentCount { get; set; }
+        public Guid ConversationId { get; set; }
+        public string PaymentId { get; set; }
 
         [ForeignKey("Customer"), MaxLength(450)]
         public string CustomerId { get; set; }
