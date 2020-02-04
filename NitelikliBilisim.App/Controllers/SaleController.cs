@@ -11,7 +11,9 @@ using NitelikliBilisim.Core.ViewModels.Sales;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Claims;
 
 namespace NitelikliBilisim.App.Controllers
@@ -118,19 +120,43 @@ namespace NitelikliBilisim.App.Controllers
             data.CardInfo.NumberOnCard = string.Join(null, splitted);
             data.Ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
 
+            var paymentResult = _unitOfWork.Sale.Sell(data, User.FindFirstValue(ClaimTypes.NameIdentifier), _paymentService, out PayPostVm dataResult);
 
-            
-            _unitOfWork.Sale.Sell(data, User.FindFirstValue(ClaimTypes.NameIdentifier), _paymentService);
+            TempData["sales_data"] = JsonConvert.SerializeObject(dataResult);
+            if (paymentResult.Status == "success")
+            {
+                var content = TempData["html_content"] as string;
+                return Redirect("/secure3d");
+            }
 
             return Json(new ResponseModel
             {
                 isSuccess = true
             });
         }
+
+        [Route("secure3d")]
+        public IActionResult Secure3d()
+        {
+            return View(new Secure3dModel
+            {
+                HtmlContent = TempData["html_content"] as string
+            });
+        }
+
+        [Route("payment-success")]
+        public IActionResult PaymentSuccesS()
+        {
+            return View();
+        }
     }
 
     public class GetCartItemsData
     {
         public List<Guid> Items { get; set; }
+    }
+    public class Secure3dModel
+    {
+        public string HtmlContent { get; set; }
     }
 }

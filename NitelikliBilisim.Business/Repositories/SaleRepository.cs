@@ -18,7 +18,7 @@ namespace NitelikliBilisim.Business.Repositories
             _context = context;
         }
 
-        public Iyzipay.Model.Payment Sell(PayPostVm data, string userId, IPaymentService paymentService, out PayPostVm dataResult)
+        public Iyzipay.Model.ThreedsInitialize Sell(PayPostVm data, string userId, IPaymentService paymentService, out PayPostVm dataResult)
         {
             var cartItems = _context.Educations
                 .Where(x => data.CartItems.Contains(x.Id))
