@@ -15,15 +15,12 @@ namespace NitelikliBilisim.Core.ViewModels.Sales
         [Required]
         public _InvoiceInfo InvoiceInfo { get; set; }
         public _CorporateInvoiceInfo CorporateInvoiceInfo { get; set; }
+        public _PaymentInfo PaymentInfo { get; set; } = new _PaymentInfo();
+        public _SpecialInfo SpecialInfo { get; set; } = new _SpecialInfo();
         public bool IsDistantSalesAgreementConfirmed { get; set; }
         public string CartItemsJson { get; set; }
         public List<Guid> CartItems { get; set; }
-        public PaymentChannel PaymentChannel { get; set; } = PaymentChannel.WEB;
-        public PaymentGroup PaymentGroup { get; set; } = PaymentGroup.PRODUCT;
-        public string Ip { get; set; }
-        public byte Installments { get; set; } = 1;
-        public string IdentityNumber { get; set; } = "12345678901";
-        public string PaymentResult { get; set; }
+
     }
 
     public class _CardInfo
@@ -66,6 +63,17 @@ namespace NitelikliBilisim.Core.ViewModels.Sales
 
         [MaxLength(256)]
         public string TaxOffice { get; set; }
+    }
+    public class _PaymentInfo
+    {
+        public PaymentChannel PaymentChannel { get; set; } = PaymentChannel.WEB;
+        public PaymentGroup PaymentGroup { get; set; } = PaymentGroup.PRODUCT;
+        public byte Installments { get; set; } = 1;
+    }
+    public class _SpecialInfo
+    {
+        public string Ip { get; set; }
+        public string IdentityNumber { get; set; } = "12345678901";
     }
 
     public enum CreditCardTypes

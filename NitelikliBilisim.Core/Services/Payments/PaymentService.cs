@@ -34,10 +34,10 @@ namespace NitelikliBilisim.Core.Services.Payments
                 Price = totalPrice.ToString(new CultureInfo("en-US")),
                 PaidPrice = totalPrice.ToString(new CultureInfo("en-US")),
                 Currency = Currency.TRY.ToString(),
-                Installment = data.Installments,
+                Installment = data.PaymentInfo.Installments,
                 BasketId = data.BasketId.ToString(),
-                PaymentChannel = data.PaymentChannel.ToString(),
-                PaymentGroup = data.PaymentGroup.ToString()
+                PaymentChannel = data.PaymentInfo.PaymentChannel.ToString(),
+                PaymentGroup = data.PaymentInfo.PaymentGroup.ToString()
             };
 
             var paymentCard = new PaymentCard
@@ -58,11 +58,11 @@ namespace NitelikliBilisim.Core.Services.Payments
                 Surname = user.Surname,
                 GsmNumber = user.PhoneNumber,
                 Email = user.Email,
-                IdentityNumber = data.IdentityNumber,
+                IdentityNumber = data.SpecialInfo.IdentityNumber,
                 //LastLoginDate = "2015-10-05 12:43:35",
                 //RegistrationDate = "2013-04-21 15:12:09",
                 RegistrationAddress = data.InvoiceInfo.Address,
-                Ip = data.Ip,
+                Ip = data.SpecialInfo.Ip,
                 City = data.InvoiceInfo.City,
                 Country = "Turkey",
                 //ZipCode = "34732"

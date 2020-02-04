@@ -25,6 +25,7 @@ namespace NitelikliBilisim.Core.Entities
         public bool IsCash { get; set; }
         public byte PaymentCount { get; set; }
         public Guid ConversationId { get; set; }
+        [MaxLength(16)]
         public string PaymentId { get; set; }
 
         [ForeignKey("Customer"), MaxLength(450)]
