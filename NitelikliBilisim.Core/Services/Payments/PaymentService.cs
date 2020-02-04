@@ -1,11 +1,9 @@
-﻿using Iyzipay;
-using Iyzipay.Model;
+﻿using Iyzipay.Model;
 using Iyzipay.Request;
 using Microsoft.Extensions.Configuration;
 using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.ViewModels.Sales;
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -96,5 +94,6 @@ namespace NitelikliBilisim.Core.Services.Payments
             return ThreedsInitialize.Create(request, _option);
         }
 
+        public ThreedsPayment Confirm3DsPayment(CreateThreedsPaymentRequest request) => ThreedsPayment.Create(request, _option);
     }
 }
