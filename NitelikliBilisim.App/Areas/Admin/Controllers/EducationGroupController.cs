@@ -84,5 +84,14 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     isSuccess = false
                 });
         }
+
+        [Route("admin/gruba-ogrenci-ata/{groupId?}")]
+        public IActionResult AssignStudents(Guid? groupId)
+        {
+            //if (groupId == null)
+            //    return Redirect("/admin/gruplar");
+
+            return View();
+        }
     }
 }

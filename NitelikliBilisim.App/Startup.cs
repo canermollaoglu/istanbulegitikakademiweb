@@ -55,11 +55,14 @@ namespace NitelikliBilisim.App
                 //.AddRoleManager<RoleManager<ApplicationRole>>()
                 .AddDefaultTokenProviders();
 
-            services.AddScoped<UnitOfWork>();
-
             services.AddApplicationServices(this.Configuration);
 
             //services.AddControllers(options => { options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()); });
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromSeconds(30);
+                options.Cookie.IsEssential = true;
+            });
             services.AddMvc();
 
 #if DEBUG
@@ -108,7 +111,7 @@ namespace NitelikliBilisim.App
             //        name: "default",
             //        template: "{controller=Home}/{action=Index}/{id?}");
             //});
-
+            app.UseSession();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

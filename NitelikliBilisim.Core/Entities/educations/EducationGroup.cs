@@ -29,5 +29,7 @@ namespace NitelikliBilisim.Core.Entities
         public bool IsGroupOpenForAssignment { get; set; }
         public byte Quota { get; set; }
         public decimal ExtraPrice { get; set; }
+
+        public virtual List<Bridge_GroupStudent> GroupStudents { get; set; }
     }
 }

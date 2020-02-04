@@ -30,3 +30,15 @@
 hr, ul {
     margin: 0;
 }
+
+.icheckbox_square-grey{
+    transform: scale(0.75);
+}
+
+.filter_type ul .sub-cat {
+    margin-left: 20px;
+}
+
+.filter {
+    cursor: pointer;
+}
