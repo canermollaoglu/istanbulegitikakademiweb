@@ -82,7 +82,7 @@ function listingFilters_onClick() {
     var order = $(this).val();
 
     if (order == 0)
-        location.href = 'egitimler';
+        location.href = '/egitimler';
 
     if (_hasFilter)
         getFilteredResults(false, order);
