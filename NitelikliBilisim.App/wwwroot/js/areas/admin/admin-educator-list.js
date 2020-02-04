@@ -85,12 +85,12 @@ function createGrid() {
         {
             dataField: "fullName",
             headerCellTemplate: $('<i style="color: black; font-weight: bold">Eğitmen Adı</i>'),
-            width:200
+            width:160
         },
         {
             dataField: "phone",
             headerCellTemplate: $('<i style="color: black; font-weight: bold">Telefon</i>'),
-            width: 150
+            width: 130
         },
         {
             dataField: "email",
