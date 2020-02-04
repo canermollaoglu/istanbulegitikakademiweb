@@ -199,7 +199,7 @@ footer ul.links li a:hover:after {
 }
 
 .filters_listing {
-    background: #fc4912 !important;
+    background: #2d2f33 !important;
 }
 a.social_bt.facebook {
     color: #fff !important;
@@ -354,7 +354,6 @@ ul.additional_info li strong {
     /*ul.list_ok li:before {
         color: #fc4912 !important;
     }
-
     a {
         color: #2d2f33 !important;
         font-size: 0.875rem !important;
@@ -372,3 +371,35 @@ ul.additional_info li strong {
 .follow_us a, .follow_us i {
     color: #ff3000 !important;
 }
+
+.preview-img{
+    min-width: 100% !important;
+    max-height: 180px !important;
+}
+
+.filter_type {
+    overflow: auto;
+    height: 200px;
+    width: 100%;
+    text-align: justify;
+    transition: 0.3s;
+}
+
+.filter_type::-webkit-scrollbar, .modal-body::-webkit-scrollbar {
+    width: 4px;
+}
+
+/* Track */
+.filter_type::-webkit-scrollbar-track, .modal-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+.filter_type::-webkit-scrollbar-thumb, .modal-body::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+    /* Handle on hover */
+    .filter_type::-webkit-scrollbar-thumb:hover, .modal-body::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }

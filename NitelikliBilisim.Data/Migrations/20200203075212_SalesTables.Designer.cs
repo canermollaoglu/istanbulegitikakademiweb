@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NitelikliBilisim.Data;
 
 namespace NitelikliBilisim.Data.Migrations
 {
     [DbContext(typeof(NbDataContext))]
-    partial class NbDataContextModelSnapshot : ModelSnapshot
+    [Migration("20200203075212_SalesTables")]
+    partial class SalesTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -947,9 +949,6 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("nvarchar(128)")
                         .HasMaxLength(128);
 
-                    b.Property<Guid>("ConversationId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
@@ -966,9 +965,6 @@ namespace NitelikliBilisim.Data.Migrations
 
                     b.Property<byte>("PaymentCount")
                         .HasColumnType("tinyint");
-
-                    b.Property<string>("PaymentId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TaxNo")
                         .HasColumnType("nvarchar(32)")
@@ -1313,7 +1309,7 @@ namespace NitelikliBilisim.Data.Migrations
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.Bridge_GroupStudent", b =>
                 {
                     b.HasOne("NitelikliBilisim.Core.Entities.EducationGroup", "Group")
-                        .WithMany("GroupStudents")
+                        .WithMany()
                         .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

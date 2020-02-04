@@ -22,6 +22,8 @@ namespace NitelikliBilisim.Business.UoW
         private EducationGroupRepository _educationGroupRepository;
         private EducationHostRepository _educationHostRepository;
         private GroupLessonDayRepository _groupLessonDayRepository;
+        private TicketRepository _ticketRepository;
+        private SaleRepository _saleRepository;
         public UnitOfWork(NbDataContext context)
         {
             _context = context;
@@ -59,5 +61,15 @@ namespace NitelikliBilisim.Business.UoW
         public EducationHostRepository EductionHost => _educationHostRepository ??= new EducationHostRepository(_context);
 
         public GroupLessonDayRepository GroupLessonDay => _groupLessonDayRepository ??= new GroupLessonDayRepository(_context);
+
+        public TicketRepository Ticket => _ticketRepository ??= new TicketRepository(_context);
+
+        public SaleRepository Sale
+        {
+            get
+            {
+                return _saleRepository ?? (_saleRepository = new SaleRepository(_context));
+            }
+        }
     }
 }

@@ -38,313 +38,241 @@
                         <a href="#0" class="bs-wizard-dot"></a>
                     </div>
                 </div>
-                <!-- End bs-wizard -->
             </div>
         </div>
     </section>
-    <!--/hero_in-->
     @{
         var isLoggedIn = User.Identity.IsAuthenticated;
     }
-    <div class="bg_color_1">
-        <div class="container margin_60_35">
-            <div class="row">
-                <div class="col-lg-8">
-                    <div class="box_cart">
-                        @*<div class="message">
-                                <p>Exisitng Customer? <a href="#0">Click here to login</a></p>
-                            </div>*@
-                        @*<div class="form_title">
-                                <h3><strong>1</strong>Your Details</h3>
-                                <p>
-                                    Mussum ipsum cacilds, vidis litro abertis.
-                                </p>
-                            </div>*@
-                        @*<div class="step">
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <span class="input">
-                                            <input class="input_field" type="text">
-                                            <label class="input_label">
-                                                <span class="input__label-content">First name</span>
-                                            </label>
-                                        </span>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <span class="input">
-                                            <input class="input_field" type="text">
-                                            <label class="input_label">
-                                                <span class="input__label-content">Last name</span>
-                                            </label>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <span class="input">
-                                            <input class="input_field" type="email">
-                                            <label class="input_label">
-                                                <span class="input__label-content">Email</span>
-                                            </label>
-                                        </span>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <span class="input">
-                                            <input class="input_field" type="email">
-                                            <label class="input_label">
-                                                <span class="input__label-content">Confirm email</span>
-                                            </label>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <span class="input">
-                                            <input class="input_field" type="text">
-                                            <label class="input_label">
-                                                <span class="input__label-content">Telephone</span>
-                                            </label>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <hr>*@
-                        <!--End step -->
 
-                        <div class="form_title">
-                            <h3><strong>1</strong>Ödeme Bilgileri</h3>
-                        </div>
-                        <div class="step">
-                            <span class="input">
-                                <input class="input_field" type="text" id="input-owner">
-                                <label class="input_label">
-                                    <span class="input__label-content">Kartın Üzerindeki Ad Soyad</span>
-                                </label>
-                            </span>
-                            <div class="row">
-                                <div class="col-md-6" id="card-number-field">
-                                    <span class="input">
-                                        <input class="input_field" type="text" id="card-number">
-                                        <label class="input_label">
-                                            <span class="input__label-content">Kart Numarası</span>
-                                        </label>
-                                    </span>
-                                </div>
-                                <div class="col-md-6 col-sm-6">
-                                    <img src="~/assets/img/payments.png" alt="Kartlar" class="cards">
-                                </div>
+    <form id="form-buy" method="post" asp-controller="Sale" asp-action="Pay">
+        <div class="bg_color_1">
+            <div class="container margin_60_35">
+                <div class="row">
+
+                    <div class="col-lg-8">
+                        <!-- FORM TAG START FOR AJAX -->
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" value="" id="_is-distant-sales-agreement-confirmed" name="IsDistantSalesAgreementConfirmed" />
+                        <input type="hidden" value="" id="_is-individual" name="InvoiceInfo.IsIndividual"/>
+                        <input type="hidden" value="" id="_cart-items" name="CartItemsJson" />
+                        <div class="box_cart">
+                            <div class="form_title">
+                                <h3><strong>1</strong>Ödeme Bilgileri</h3>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6 add_top_30">
-                                    <label>Son Kullanma Tarihi</label>
-                                    <div class="row">
-                                        <div class="col-md-6 col-sm-6">
-                                            <div class="form-group select">
-                                                <div class="styled-select">
-                                                    <select class="required">
-                                                        <option value="" disabled selected>Ay</option>
-                                                        @for (int i = 1; i <= 12; i++)
-                                                        {
-                                                            <option value="@i.ToString("00")">@i.ToString("00")</option>
-                                                        }
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 col-sm-6">
-                                            <div class="form-group select">
-                                                <div class="styled-select">
-                                                    <select class="required">
-                                                        <option value="" disabled selected>Yıl</option>
-                                                        @for (int i = @DateTime.Now.Year % 100; i <= (DateTime.Now.Year + 20) % 100; i++)
-                                                        {
-                                                            <option value="@i.ToString("00");">@i.ToString("00")</option>
-                                                        }
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
+                            <div class="step">
+                                <span class="input">
+                                    <input class="input_field" type="text" id="input-owner" name="CardInfo.NameOnCard">
+                                    <label class="input_label">
+                                        <span class="input__label-content">Kartın Üzerindeki Ad Soyad</span>
+                                    </label>
+                                </span>
+                                <div class="row">
+                                    <div class="col-md-6" id="div-card-number">
+                                        <span class="input">
+                                            <input class="input_field" type="text" id="input-card-number" name="CardInfo.NumberOnCard">
+                                            <label class="input_label">
+                                                <span class="input__label-content">Kart Numarası</span>
+                                            </label>
+                                        </span>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6">
+                                        <img src="~/assets/img/payments.png" alt="Kartlar" class="cards">
                                     </div>
                                 </div>
-                                <div class="col-md-6 add_top_30">
-                                    <div class="form-group">
-                                        <label>Güvenlik Kodu (CVC) <i class="icon-info-circled" data-toggle="tooltip" data-placement="top" data-html="true" title="<p>Kartınızın arka yüzündeki 3 haneli güvenlik numarasıdır.<img style='width: 50px; float: right' src='/assets/img/ccv-info.png'/></p>"></i></label>
+                                <div class="row">
+                                    <div class="col-md-6 add_top_30">
+                                        <label>Son Kullanma Tarihi</label>
                                         <div class="row">
-                                            <div class="col-md-4">
-                                                <span class="input">
-                                                    <input class="input_field" maxlength="3" type="text" id="cvc">
-                                                    <label class="input_label">
-                                                        <span class="input__label-content">CVC</span>
-                                                    </label>
-                                                </span>
+                                            <div class="col-md-6 col-sm-6">
+                                                <div class="form-group select">
+                                                    <div class="styled-select">
+                                                        <select class="required" id="select-months" name="CardInfo.MonthOnCard">
+                                                            <option value="" disabled selected>Ay</option>
+                                                            @for (int i = 1; i <= 12; i++)
+                                                            {
+                                                                <option value="@i.ToString("00")">@i.ToString("00")</option>
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-sm-6">
+                                                <div class="form-group select">
+                                                    <div class="styled-select">
+                                                        <select class="required" id="select-years" name="CardInfo.YearOnCard">
+                                                            <option value="" disabled selected>Yıl</option>
+                                                            @for (int i = @DateTime.Now.Year % 100; i <= (DateTime.Now.Year + 20) % 100; i++)
+                                                            {
+                                                                <option value="@i.ToString("00")">@i.ToString("00")</option>
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 add_top_30">
+                                        <div class="form-group">
+                                            <label>Güvenlik Kodu (CVC) <i class="icon-info-circled" data-toggle="tooltip" data-placement="top" data-html="true" title="<p>Kartınızın arka yüzündeki 3 haneli güvenlik numarasıdır.<img style='width: 50px; float: right' src='/assets/img/ccv-info.png'/></p>"></i></label>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <span class="input">
+                                                        <input class="input_field" maxlength="3" type="text" id="input-cvc" name="CardInfo.CVC">
+                                                        <label class="input_label">
+                                                            <span class="input__label-content">CVC</span>
+                                                        </label>
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <!--End row -->
-                            @*<h5>Or checkout with Paypal</h5> O da olur bir gün...
-                                <p>
-                                    Lorem ipsum dolor sit amet, vim id accusata sensibus, id ridens quaeque qui. Ne qui vocent ornatus molestie, reque fierent dissentiunt mel ea.
-                                </p>
-                                <p>
-                                    <img src="img/paypal_bt.png" alt="Image">
-                                </p>*@
-                        </div>
-                        <hr>
-                        <!--End step -->
+                            <hr>
 
-                        <div class="form_title">
-                            <h3><strong>2</strong>Fatura Bilgileri</h3>
-                        </div>
-                        <div class="step">
-                            <div class="row">
-                                <div class="col-md-6 col-sm-6">
-                                    <div class="form-group select">
-                                        <div class="styled-select">
-                                            <select class="required" id="select-provinces">
-                                                <option value="" selected="">İl</option>
-                                            </select>
+                            <div class="form_title">
+                                <h3><strong>2</strong>Fatura Bilgileri</h3>
+                            </div>
+                            <div class="step">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6">
+                                        <div class="form-group select">
+                                            <div class="styled-select">
+                                                <select class="required" id="select-provinces" name="InvoiceInfo.City">
+                                                    <option value="" selected="">İl</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6">
+                                        <div class="form-group select">
+                                            <div class="styled-select">
+                                                <select class="required" id="select-districts" name="InvoiceInfo.Town">
+                                                    <option value="" selected="">İlçe</option>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6 col-sm-6">
-                                    <div class="form-group select">
-                                        <div class="styled-select">
-                                            <select class="required" id="select-districts">
-                                                <option value="" selected="">İlçe</option>
-                                            </select>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <span class="input">
+                                            <input class="input_field" type="text" id="input-address" name="InvoiceInfo.Address">
+                                            <label class="input_label">
+                                                <span class="input__label-content">Adres</span>
+                                            </label>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <span class="input">
+                                            <input class="input_field" type="text" id="input-phone" name="InvoiceInfo.Phone">
+                                            <label class="input_label">
+                                                <span class="input__label-content">Telefon</span>
+                                            </label>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <h6>Fatura Tipi</h6>
+                                    <div class="col-md-12">
+                                        <div class="form-group radio_input">
+                                            <label>
+                                                <input type="radio" value="individual" checked="" name="customer-type" class="icheck" style="position: absolute; opacity: 0;" id="chk-customer-type-individual">Bireysel
+                                            </label>
+                                            <label class="">
+                                                <input type="radio" value="corporate" name="customer-type" class="icheck" style="position: absolute; opacity: 0;">Kurumsal
+                                            </label>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <span class="input">
-                                        <input class="input_field" type="text">
-                                        <label class="input_label">
-                                            <span class="input__label-content">Adres</span>
-                                        </label>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <span class="input">
-                                        <input class="input_field" type="text" id="input-telephone">
-                                        <label class="input_label">
-                                            <span class="input__label-content">Telefon</span>
-                                        </label>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <h6>Fatura Tipi</h6>
-                                <div class="col-md-12">
-                                    <div class="form-group radio_input">
-                                        <label>
-                                            <input type="radio" value="individual" checked="" name="customer-type" class="icheck" style="position: absolute; opacity: 0;">Bireysel
-                                        </label>
-                                        <label class="">
-                                            <input type="radio" value="corporate" name="customer-type" class="icheck" style="position: absolute; opacity: 0;">Kurumsal
-                                        </label>
+                                <div class="row" id="div-corporate-field" style="display: none">
+                                    <div class="col-md-6 col-md-offset-3">
+                                        <span class="input">
+                                            <input class="input_field" type="text" id="input-company-name" name="CorporateInvoiceInfo.CompanyName">
+                                            <label class="input_label">
+                                                <span class="input__label-content">Firma Adı</span>
+                                            </label>
+                                        </span>
+                                        <span class="input">
+                                            <input class="input_field" type="text" id="input-tax-no" name="CorporateInvoiceInfo.TaxNo">
+                                            <label class="input_label">
+                                                <span class="input__label-content">Vergi No</span>
+                                            </label>
+                                        </span>
+                                        <span class="input">
+                                            <input class="input_field" type="text" id="input-tax-office" name="CorporateInvoiceInfo.TaxOffice">
+                                            <label class="input_label">
+                                                <span class="input__label-content">Vergi Dairesi</span>
+                                            </label>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row" id="corporate-field" style="display: none">
-                                <div class="col-md-6 col-md-offset-3">
-                                    <span class="input">
-                                        <input class="input_field" type="text" id="input-company-name">
-                                        <label class="input_label">
-                                            <span class="input__label-content">Firma Adı</span>
-                                        </label>
-                                    </span>
-                                    <span class="input">
-                                        <input class="input_field" type="text" id="input-tax-no">
-                                        <label class="input_label">
-                                            <span class="input__label-content">Vergi No</span>
-                                        </label>
-                                    </span>
-                                    <span class="input">
-                                        <input class="input_field" type="text" id="input-tax-office">
-                                        <label class="input_label">
-                                            <span class="input__label-content">Vergi Dairesi</span>
-                                        </label>
-                                    </span>
-                                </div>
-                            </div>
-                            <!--End row -->
-                        </div>
-                        <hr>
-                        <!--End step -->
+                            <hr>
 
-                        <div class="form_title">
-                            <h3><strong>3</strong>Sözleşme ve Formlar</h3>
-                        </div>
-                        <div class="step">
-                            <div class="row">
-                                <div class="col-md-12 col-sm-12">
-                                    <h6>Cayma Hakkı</h6>
-                                    <div class="policy-box">
-                                        <partial name="partials/_CaymaHakki" />
+                            <div class="form_title">
+                                <h3><strong>3</strong>Sözleşme ve Formlar</h3>
+                            </div>
+                            <div class="step">
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12">
+                                        <h6>Cayma Hakkı</h6>
+                                        <div class="policy-box">
+                                            <partial name="partials/_CaymaHakki" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12">
+                                        <h6><a href="#" data-toggle="modal" data-target="#mss-modal">Mesafeli Satış Sözleşmesi <i class="icon-link-ext"></i></a></h6>
                                     </div>
                                 </div>
                             </div>
-                            @*<div class="row">
-                                <div class="col-md-12 col-sm-12">
-                                    <h6><a href="#" data-toggle="modal" data-target="#obf-modal">Ön Bilgilendirme Formu <i class="icon-link-ext"></i></a></h6>
-                                </div>
-                            </div>*@
-                            <div class="row">
-                                <div class="col-md-12 col-sm-12">
-                                    <h6><a href="#" data-toggle="modal" data-target="#mss-modal">Mesafeli Satış Sözleşmesi <i class="icon-link-ext"></i></a></h6>
-                                </div>
-                            </div>
+                            <hr>
                         </div>
-                        <hr>
-                        <!--End step -->
+                        <!-- FORM TAG END FOR AJAX -->
+
                     </div>
+
+                    <aside class="col-lg-4" id="sidebar">
+                        <div class="box_detail">
+                            <div>
+                                <h5>Sipariş Özeti</h5>
+                                <table id="tbody-cart-items"></table>
+                            </div>
+                            <div id="total_cart">
+                                Toplam <span class="float-right" id="txt-total"></span>
+                            </div>
+                            <div class="add_bottom_30">
+                                @*<label>
+                                        <input type="checkbox" class="icheck" style="position: absolute; opacity: 0;">
+                                        <span><a href="#" data-toggle="modal" data-target="#obf-modal">Ön Bilgilendirme Formu</a>'nu okudum ve kabul ediyorum.</span>
+                                    </label>*@
+                                <label>
+                                    <input type="checkbox" class="icheck" style="position: absolute; opacity: 0;" id="chk-confirm-distant-sales">
+                                    <span><a href="#" data-toggle="modal" data-target="#mss-modal">Mesafeli Satış Sözleşmesi</a>'ni okudum ve kabul ediyorum.</span>
+                                </label>
+                            </div>
+                            <div class="row">
+                                @*<div class="col-md-12">
+                                        <a href="/tum-egitimler" class="btn_1 full-width outline"><i class="icon-right"></i> Alışverişe devam et</a>
+                                    </div>*@
+                                <div class="col-md-12">
+                                    <!-- role="button" for ajax -->
+                                    <button class="btn_1 full-width" id="btn-buy">Satın Al</button>
+                                </div>
+                            </div>
+                        </div>
+                    </aside>
                 </div>
-                <!-- /col -->
-
-                <aside class="col-lg-4" id="sidebar">
-                    <div class="box_detail">
-                        <div>
-                            <h5>Sipariş Özeti</h5>
-                            <table id="tbody-cart-items"></table>
-                        </div>
-                        <div id="total_cart">
-                            Toplam <span class="float-right" id="txt-total"></span>
-                        </div>
-                        <div class="add_bottom_30">
-                            @*<label>
-                                <input type="checkbox" class="icheck" style="position: absolute; opacity: 0;">
-                                <span><a href="#" data-toggle="modal" data-target="#obf-modal">Ön Bilgilendirme Formu</a>'nu okudum ve kabul ediyorum.</span>
-                            </label>*@
-                            <label>
-                                <input type="checkbox" class="icheck" style="position: absolute; opacity: 0;">
-                                <span><a href="#" data-toggle="modal" data-target="#mss-modal">Mesafeli Satış Sözleşmesi</a>'ni okudum ve kabul ediyorum.</span>
-                            </label>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <a href="/tum-egitimler" class="btn_1 full-width outline"><i class="icon-right"></i> Alışverişe devam et</a>
-                            </div>
-                            <div class="col-md-12">
-                                <a href="cart-3.html" class="btn_1 full-width">Satın Al</a>
-                            </div>
-                        </div>
-                    </div>
-                </aside>
             </div>
-            <!-- /row -->
         </div>
-        <!-- /container -->
-    </div>
-    <!-- /bg_color_1 -->
+    </form>
 </main>
 
-<!-- Modal obf -->
 <div class="modal fade" id="obf-modal" tabindex="-1" role="dialog" aria-labelledby="obfLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -365,8 +293,7 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
-<!-- /.modal -->
-<!-- Modal terms -->
+
 <div class="modal fade" id="mss-modal" tabindex="-1" role="dialog" aria-labelledby="mssLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -385,172 +312,11 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
-<!-- /.modal -->
 
 @section postScripts{
     <script src="~/js/lib/security-support.js"></script>
     <script src="~/assets/js/jquery.payform.min.js"></script>
     <script src="~/assets/js/jquery.mask.min.js"></script>
-
-    <script>
-        /* fields */
-        var _cart = new CartSupport.Cart();
-        var provinces = {};
-
-        /* elements */
-        var tbodyCartItems = $("#tbody-cart-items");
-        var txtTotal = $("#txt-total");
-        var selectProvinces = $("#select-provinces");
-        var selectDistricts = $("#select-districts");
-        var owner = $('#input-owner');
-        var telephone = $('#input-telephone');
-        var cardNumber = $('#card-number');
-        var cardNumberField = $('#card-number-field');
-        var cvc = $("#cvc");
-        var mastercard = $("#mastercard");
-        var confirmButton = $('#confirm-purchase');
-        var visa = $("#visa");
-        var customerType = $("input[name='customer-type']");
-        var corporateField = $("#corporate-field");
-
-        /* assignments */
-        $(document).ready(document_onLoad);
-        selectProvinces.on("change", selectProvinces_onChange);
-        cardNumber.on("keyup", cardNumber_onKeyUp);
-
-        /* events */
-        function document_onLoad() {
-            getCartItems();
-            getProvinces();
-            cardNumber.payform('formatCardNumber');
-            cvc.payform('formatCardCVC');
-            telephone.mask("(000) 000 0000");
-            $('.icheck').on('ifToggled', function () {
-                customerType_onChange();
-            });
-        }
-        function customerType_onChange() {
-            var type = $("input[name='customer-type']:checked").val();
-
-            if (type == "individual")
-                corporateField.hide();
-            else if (type == "corporate")
-                corporateField.show();
-        }
-        function selectProvinces_onChange() {
-            getDistricts($(this).val());
-        }
-        function cardNumber_onKeyUp() {
-            visa.removeClass('transparent');
-            mastercard.removeClass('transparent');
-
-            if ($.payform.validateCardNumber(cardNumber.val()) == false) {
-                cardNumber.addClass('has-error');
-            } else {
-                cardNumberField.removeClass('has-error');
-                cardNumber.addClass('has-success');
-            }
-
-            if ($.payform.parseCardType(cardNumber.val()) == 'visa') {
-                mastercard.addClass('transparent');
-            } else if ($.payform.parseCardType(cardNumber.val()) == 'mastercard') {
-                visa.addClass('transparent');
-            }
-        }
-
-        /* functions */
-        function getCartItems() {
-            var items = _cart.getItems();
-            var data = {
-                Items: items
-            };
-            $.ajax({
-                url: "/get-cart-items",
-                method: "post",
-                data: data,
-                success: (res) => {
-                    if (res.isSuccess) {
-                        appendCartItems(res.data.items);
-                        txtTotal.text(res.data.total);
-                    }
-                }
-            });
-        }
-        function appendCartItems(data) {
-            tbodyCartItems.html("");
-
-            if (data.length === 0) {
-                tbodyCartItems.append(`<tr><td colspan="3">Sepetiniz boş</td></tr>`);
-            }
-
-            var appended = "";
-            for (var i = 0; i < data.length; i++) {
-                var item = data[i];
-                appended += `<tr>` +
-                    `<td style="width:100%">` +
-                    `<span class="item_cart">${item.educationName}</span>` +
-                    `</td>` +
-                    `<td style="white-space: nowrap">` +
-                    `<b>${item.priceText}</b>` +
-                    `</td>` +
-                    `<tr>`;
-            }
-            tbodyCartItems.append(appended);
-
-            var deleteButtons = document.getElementsByClassName("btn-delete-item");
-            for (var i = 0; i < deleteButtons.length; i++) {
-                var btn = deleteButtons[i];
-                btn.onclick = btnDeleteItem_onClick;
-            }
-        }
-        function getProvinces() {
-            return $.ajax({
-                url: "/data/cities.json",
-                method: 'GET',
-                dataType: 'json',
-                success: function (res) {
-                    provinces = res.data.sort(sortByTrAlphabet);
-                    $.each(provinces, function (index, value) {
-                        var name = correctTrChars(value.name)
-                        selectProvinces.append(new Option(name, value._id));
-                    });
-                }
-            });
-        }
-        function getDistricts(provinceId) {
-            var data = provinces.find(s => s._id == provinceId).towns;
-            selectDistricts.empty();
-            $.each(data, function (index, value) {
-                var name = correctTrChars(value.name)
-                selectDistricts.append(new Option(name, value._id));
-            });
-        }
-        function sortByTrAlphabet(a, b) {
-            var atitle = a.name;
-            var btitle = b.name;
-            var alfabe = "0123456789AaBbCcÇçDdEeFfGgĞğHhIıİiJjKkLlMmNnOoÖöPpQqRrSsŞşTtUuÜüVvWwXxYyZz";
-            if (atitle.length === 0 || btitle.length === 0) {
-                return atitle.length - btitle.length;
-            }
-            for (var i = 0; i < atitle.length && i < btitle.length; i++) {
-                var ai = alfabe.indexOf(atitle[i].toUpperCase());
-                var bi = alfabe.indexOf(btitle[i].toUpperCase());
-                if (ai !== bi) {
-                    return ai - bi;
-                }
-            }
-        }
-        function correctTrChars(text) {
-            if (text == null) {
-                return;
-            }
-            return text.replace(/&#199;/g, "Ç")
-                .replace(/&#214;/g, "Ö")
-                .replace(/&#220;/g, "Ü")
-                .replace(/&#231;/g, "ç")
-                .replace(/&#246;/g, "ö")
-                .replace(/&#304;/g, "İ")
-                .replace(/&#252;/g, "ü");
-        }
-    </script>
+    <script src="~/js/sup/cart.js"></script>
+    <script src="~/js/pages/sale-payment.js"></script>
 }

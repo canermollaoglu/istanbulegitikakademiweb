@@ -1,11 +1,21 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Iyzipay.Model;
+using Iyzipay.Request;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Models;
+using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.App.VmCreator;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.Services.Payments;
 using NitelikliBilisim.Core.ViewModels.Cart;
+using NitelikliBilisim.Core.ViewModels.Sales;
 using System;
 using System.Collections.Generic;
-using NitelikliBilisim.App.Controllers.Base;
+using System.Globalization;
+using System.Linq;
+using System.Security.Claims;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -13,9 +23,11 @@ namespace NitelikliBilisim.App.Controllers
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly SaleVmCreator _vmCreator;
-        public SaleController(UnitOfWork unitOfWork)
+        private readonly IPaymentService _paymentService;
+        public SaleController(UnitOfWork unitOfWork, IPaymentService paymentService)
         {
             _unitOfWork = unitOfWork;
+            _paymentService = paymentService;
             _vmCreator = new SaleVmCreator(_unitOfWork);
         }
 
@@ -31,11 +43,11 @@ namespace NitelikliBilisim.App.Controllers
             if (data == null || data.Items == null)
                 return Json(new ResponseModel
                 {
-                    isSuccess = true,
+                    isSuccess = false,
                     data = new
                     {
                         items = new List<CartItem>(),
-                        total = 0m.ToString("C")
+                        total = 0m.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"))
                     }
                 });
 
@@ -49,7 +61,7 @@ namespace NitelikliBilisim.App.Controllers
             var model = new
             {
                 items = cartItems,
-                total = sum.ToString("C")
+                total = sum.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"))
             };
 
             return Json(new ResponseModel
@@ -67,10 +79,88 @@ namespace NitelikliBilisim.App.Controllers
 
             return View();
         }
+
+        [HttpPost, ValidateAntiForgeryToken, Route("pay")]
+        public IActionResult Pay(PayPostVm data)
+        {
+            if (!HttpContext.User.Identity.IsAuthenticated || data.CartItemsJson == null)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Sepette ürün bulunmamaktadır" }
+                });
+
+            data.CartItems = JsonConvert.DeserializeObject<List<Guid>>(data.CartItemsJson);
+
+            if (data.CartItems == null || data.CartItems.Count == 0)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Sepette ürün bulunmamaktadır" }
+                });
+            if (!data.IsDistantSalesAgreementConfirmed)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Mesafeli Satış sözleşmesini onaylayınız" }
+                });
+            if (!ModelState.IsValid)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = ModelStateUtil.GetErrors(ModelState)
+                });
+            if (!data.InvoiceInfo.IsIndividual && data.CorporateInvoiceInfo == null)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "?" }
+                });
+
+            var splitted = data.CardInfo.NumberOnCard.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
+            data.CardInfo.NumberOnCard = string.Join(null, splitted);
+            data.SpecialInfo.Ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+
+            var paymentResult = _unitOfWork.Sale.Sell(data, User.FindFirstValue(ClaimTypes.NameIdentifier), _paymentService, out PayPostVm dataResult);
+
+            HttpContext.Session.SetString("sales_data", JsonConvert.SerializeObject(dataResult));
+            if (paymentResult.Status == "success")
+            {
+                HttpContext.Session.SetString("html_content", paymentResult.HtmlContent);
+                return Redirect("/secure3d");
+            }
+
+            return Json(new ResponseModel
+            {
+                isSuccess = false,
+                errors = new List<string> { paymentResult.ErrorMessage }
+            });
+        }
+
+        [Route("secure3d")]
+        public IActionResult Secure3d()
+        {
+            return View(new Secure3dModel
+            {
+                HtmlContent = HttpContext.Session.GetString("html_content")
+            });
+        }
+
+        [HttpPost, Route("odeme-sonucu")]
+        public IActionResult PaymentResult(CreateThreedsPaymentRequest data)
+        {
+            data.Locale = Locale.TR.ToString();
+            var result = _paymentService.Confirm3DsPayment(data);
+            return View();
+        }
     }
 
     public class GetCartItemsData
     {
         public List<Guid> Items { get; set; }
+    }
+    public class Secure3dModel
+    {
+        public string HtmlContent { get; set; }
     }
 }

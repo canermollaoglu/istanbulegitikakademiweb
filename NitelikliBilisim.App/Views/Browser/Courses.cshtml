@@ -1,0 +1,150 @@
+﻿@model NitelikliBilisim.Core.ViewModels.SearchResultsGetVm
+@{
+    ViewData["Title"] = string.IsNullOrEmpty(Model.CategoryName) ? "Tüm Eğitimler" : Model.CategoryName + " Eğitimleri";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section styles{
+    <link href="~/assets/css/grey.css" rel="stylesheet">
+    <link href="~/assets/css/search/search-results.css" rel="stylesheet" />
+    <style>
+        a [role="button"] {
+            cursor: pointer;
+        }
+
+        .courses {
+            height: 78px !important;
+        }
+    </style>
+}
+<main>
+    <section id="hero_in" class="courses">
+        <div class="wrapper">
+            <div class="container">
+                <h1 class="fadeInUp"><span></span>@(string.IsNullOrEmpty(Model.CategoryName) ? "TÜM EĞİTİMLER" : Model.CategoryName.ToUpper() + " EĞİTİMLERİ")</h1>
+            </div>
+        </div>
+    </section>
+
+    <input type="hidden" value="@Model.CategoryName" id="_category-name" />
+    <input type="hidden" value="@Model.SearchText" id="_search-text" />
+    <input type="hidden" value="0" id="_page" />
+    <input type="hidden" value="@Model.ShowAs" id="_show-as" />
+
+    <div class="filters_listing sticky_horizontal">
+        <div class="container">
+            <ul class="clearfix">
+                <li>
+                    <div class="switch-field">
+                        <input type="radio" id="criteria-all" name="listing_filter" value="0" checked>
+                        <label for="criteria-all">Tümü</label>
+                        @for (var i = 0; i < Model.OrderCriterias.Count; i++)
+                        {
+                            var item = Model.OrderCriterias.ElementAt(i);
+                            <input type="radio" id="criteria-@i" name="listing_filter" value="@item.Key">
+                            <label for="criteria-@i">@item.Value</label>
+                        }
+                    </div>
+                </li>
+                <li>
+                    <div class="layout_view">
+                        @if (Model.ShowAs == "grid")
+                        {
+                            <a role="button" class="active" id="btn-show-as-grid"><i class="icon-th"></i></a>
+                            <a role="button" id="btn-show-as-list"><i class="icon-th-list"></i></a>
+                        }
+                        else
+                        {
+                            <a role="button" id="btn-show-as-grid"><i class="icon-th"></i></a>
+                            <a role="button" class="active" id="btn-show-as-list"><i class="icon-th-list"></i></a>
+                        }
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="container margin_60_35">
+        <div class="row" style="transform: none;">
+            <aside class="col-lg-3" id="sidebar">
+                <div class="theiaStickySidebar">
+                    <div id="filters_col">
+                        <div class="input-group" style="margin-bottom: 20px">
+                            <input type="text" id="input-search" class="form-control" placeholder="Ara..." value="@Model.SearchText" aria-describedby="btn-search">
+                            <div class="input-group-append">
+                                <button type="submit" id="btn-search" class="btn btn-danger btn-sm"><i class="icon-search"></i></button>
+                            </div>
+                        </div>
+                        @if (!string.IsNullOrEmpty(Model.SearchText))
+                        {
+                            <div style="margin-bottom: 20px">
+                                <a href="/egitimler"><span class="text-danger"><i class="ti-close"></i> Aranan: <strong>@Model.SearchText</strong></span></a>
+                            </div>
+                        }
+                        <a data-toggle="collapse" href="#collapseFilters" aria-expanded="false" aria-controls="collapseFilters" id="filters_col_bt">Filtreleme </a>
+                        <div class="collapse show" id="collapseFilters">
+                            <div class="filter_type">
+                                <h6>Kategori</h6>
+                                <ul id="category-list"></ul>
+                            </div>
+                            <div class="filter_type">
+                                <h6>Seviye</h6>
+                                <ul id="level-list"></ul>
+                            </div>
+                            @*<div class="filter_type">
+                <h6>Değerlendirme</h6>
+                <ul id="rating-list">
+                    <li>
+                        <label>
+                            <input type="checkbox" name="rat-filter" value="5" class="icheck" style="position: absolute; opacity: 0;">
+                            <span class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i> <small>(0)</small></span>
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="checkbox" name="rat-filter" value="4" class="icheck" style="position: absolute; opacity: 0;">
+                            <span class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i> <small>(0)</small></span>
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="checkbox" name="rat-filter" value="3" class="icheck" style="position: absolute; opacity: 0;">
+                            <span class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(0)</small></span>
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="checkbox" name="rat-filter" value="2" class="icheck" style="position: absolute; opacity: 0;">
+                            <span class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(0)</small></span>
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="checkbox" name="rat-filter" value="1" class="icheck" style="position: absolute; opacity: 0;">
+                            <span class="rating"><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(0)</small></span>
+                        </label>
+                    </li>
+                </ul>
+            </div>*@
+                        </div>
+                    </div>
+                </div>
+            </aside>
+            <div class="col-lg-9" id="div-education-container">
+                @if (Model.ShowAs == "grid")
+                {
+                    <div class="row" id="div-education-container-row">
+
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <partial name="partials/search/_SearchResultsPreFooter" />
+
+</main>
+
+@section postScripts{
+    <script src="~/js/sup/cart.js"></script>
+    <script src="~/js/pages/browser-courses.js"></script>
+}
