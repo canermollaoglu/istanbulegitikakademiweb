@@ -6,6 +6,7 @@ var _showAs = $("#_show-as");
 var _hasFilter = false;
 var _beginSearch = false;
 var _baseCatToggled = false;
+var _catToggled = false;
 var _catFilterToggleCount = 0;
 
 /* elements */
@@ -108,8 +109,6 @@ function inputSearch_onSubmit(e) {
 
 /* functions */
 function getSearchResults(isLoadMore, filter, order) {
-    console.log(isLoadMore, filter, order)
-
     var pBtnContainer = document.getElementById("p-btn-container");
     if (pBtnContainer)
         pBtnContainer.remove();
@@ -155,8 +154,14 @@ function getSearchResults(isLoadMore, filter, order) {
                 }
             } else {
                 if (!isLoadMore) {
-                    divEducationContainer.html("");
-                    divEducationContainer.append(`<div class="alert alert-info">Ne yazık ki gösterilecek sonuç yok</div>`);
+                    if (showAs === "grid") {
+                        divEducationContainerRow.html("");
+                        divEducationContainerRow.append(`<div class="alert alert-info">Ne yazık ki gösterilecek sonuç yok</div>`);
+                    }
+                    else {
+                        divEducationContainer.html("");
+                        divEducationContainer.append(`<div class="alert alert-info">Ne yazık ki gösterilecek sonuç yok</div>`);
+                    }
                 }
             }
 
@@ -173,6 +178,9 @@ function getSearchResults(isLoadMore, filter, order) {
     });
 }
 function getFilteredResults(isLoadMore, order) {
+    _catToggled = false;
+    _baseCatToggled = false;
+
     var filterOptions = {
         categories: [],
         levels: [],
@@ -357,8 +365,6 @@ function prepareLevelFilter(data) {
     })
 
     iCheckAll();
-
-    chosenLevels = [];
 }
 function clearUri() {
     var uri = window.location.toString();
@@ -381,23 +387,43 @@ function iCheckAll() {
 
     $('input[name="base-cat-filter"]').on('ifToggled', function () {
         _baseCatToggled = true;
-        var ul = $("ul").find(`[data-base-cat-name="${$(this).val()}"]`);
-        var state = $(this).parent('[class*="icheckbox"]').hasClass('checked') ? 'uncheck' : 'check';
-        ul.find('input[name="cat-filter"]').iCheck(state);
+
+        var baseCategoryName = $(this).val();
+        var subCategoriesList = $("ul").find(`[data-base-cat-name="${baseCategoryName}"]`);
+        
+        if (!_catToggled) {
+            var state = $(this).parent('[class*="icheckbox"]').hasClass('checked') ? 'uncheck' : 'check';
+            subCategoriesList.find('input[name="cat-filter"]').iCheck(state);
+        }
+            
         _categoryName.val("");
+
         $(this).removeClass("chosen");
     });
 
     $('input[name="cat-filter"]').on('ifToggled', function () {
         _catFilterToggleCount++;
+        _catToggled = true;
 
-        var ul = $(this).closest('ul');
-        console.log(ul.children().length, _catFilterToggleCount);
-        _beginSearch = ul.children().length == _catFilterToggleCount;
+        var subCategoriesList = $(this).closest('ul');
+        var subCategoryCount = subCategoriesList.children().length;
 
-        if (!_beginSearch && _baseCatToggled) return;
+        _beginSearch = subCategoryCount == _catFilterToggleCount;
+
+        var checkCount = subCategoriesList.find('input:checked').length;
+
+        if (!_beginSearch && _baseCatToggled && checkCount > 0) return;
+
         _catFilterToggleCount = 0;
         _baseCatToggled = false;
+        
+        var baseCategoryName = subCategoriesList.data('base-cat-name');
+
+        if (subCategoriesList.find('input:checked').length == subCategoryCount)
+            $(`:checkbox[value="${baseCategoryName}"]`).iCheck('check')
+        else
+            $(`:checkbox[value="${baseCategoryName}"]`).iCheck('uncheck')
+            
         getFilteredResults(false);        
     });
 
