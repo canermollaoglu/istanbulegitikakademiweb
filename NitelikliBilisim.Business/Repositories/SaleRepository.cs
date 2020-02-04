@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Iyzipay.Model;
+using Microsoft.EntityFrameworkCore;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Services.Payments;
@@ -43,38 +44,40 @@ namespace NitelikliBilisim.Business.Repositories
 
             var paymentResult = paymentService.MakePayment(data, user, cartItems);
             dataResult = data;
-
-            return paymentResult;
             #endregion
 
-            using (var transaction = _context.Database.BeginTransaction())
-            {
-                try
+            if (IsValidConversation(data.ConversationId, paymentResult))
+                using (var transaction = _context.Database.BeginTransaction())
                 {
-                    _context.Invoices.Add(invoice);
-                    _context.InvoiceAddresses.Add(new InvoiceAddress
+                    try
                     {
-                        Id = invoice.Id,
-                        Address = data.InvoiceInfo.Address,
-                        City = data.InvoiceInfo.City,
-                        County = data.InvoiceInfo.Town
-                    });
+                        invoice.ConversationId = data.ConversationId;
+                        _context.Invoices.Add(invoice);
+                        _context.InvoiceAddresses.Add(new InvoiceAddress
+                        {
+                            Id = invoice.Id,
+                            Address = data.InvoiceInfo.Address,
+                            City = data.InvoiceInfo.City,
+                            County = data.InvoiceInfo.Town
+                        });
 
-                    foreach (var invoiceDetail in invoiceDetails)
-                        invoiceDetail.InvoiceId = invoice.Id;
-                    _context.InvoiceDetails.AddRange(invoiceDetails);
+                        foreach (var invoiceDetail in invoiceDetails)
+                            invoiceDetail.InvoiceId = invoice.Id;
+                        _context.InvoiceDetails.AddRange(invoiceDetails);
 
-                    var tickets = CreateTickets(invoiceDetails, new Guid("E24DA16A-269A-4C91-B9FF-C64E4ABCC031"), userId);
-                    _context.AddRange(tickets);
+                        var tickets = CreateTickets(invoiceDetails, new Guid("E24DA16A-269A-4C91-B9FF-C64E4ABCC031"), userId);
+                        _context.AddRange(tickets);
 
-                    _context.SaveChanges();
-                    transaction.Commit();
+                        _context.SaveChanges();
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                    }
                 }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                }
-            }
+
+            return paymentResult;
         }
 
         private List<InvoiceDetail> CreateInvoiceDetails(List<Education> educations)
@@ -127,6 +130,18 @@ namespace NitelikliBilisim.Business.Repositories
                 });
 
             return tickets;
+        }
+
+        private bool IsValidConversation(Guid determinedConversationId, ThreedsInitialize paymentResult)
+        {
+            if (paymentResult.Status == "success"
+                && determinedConversationId.ToString() == paymentResult.ConversationId
+                && paymentResult.ErrorCode == null
+                && paymentResult.ErrorMessage == null
+                && paymentResult.ErrorGroup == null
+                && paymentResult.HtmlContent != null)
+                return true;
+            return false;
         }
     }
 }
