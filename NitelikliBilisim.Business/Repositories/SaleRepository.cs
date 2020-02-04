@@ -29,6 +29,8 @@ namespace NitelikliBilisim.Business.Repositories
 
             var invoiceDetails = CreateInvoiceDetails(cartItems);
 
+            var invoiceDetailsIds = invoiceDetails.Select(x => x.Id).ToList();
+
             _CorporateInvoiceInfo corporateInvoiceInfo = !data.InvoiceInfo.IsIndividual ? data.CorporateInvoiceInfo : null;
 
             var invoice = CreateInvoice(corporateInvoiceInfo: corporateInvoiceInfo,
@@ -42,7 +44,7 @@ namespace NitelikliBilisim.Business.Repositories
 
             var user = _context.Users.First(x => x.Id == userId);
 
-            var paymentResult = paymentService.Make3DsPayment(data, user, cartItems);
+            var paymentResult = paymentService.Make3DsPayment(data, user, cartItems, invoiceDetailsIds);
             dataResult = data;
             #endregion
 
