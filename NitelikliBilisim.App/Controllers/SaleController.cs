@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Models;
@@ -122,16 +123,17 @@ namespace NitelikliBilisim.App.Controllers
 
             var paymentResult = _unitOfWork.Sale.Sell(data, User.FindFirstValue(ClaimTypes.NameIdentifier), _paymentService, out PayPostVm dataResult);
 
-            TempData["sales_data"] = JsonConvert.SerializeObject(dataResult);
+            HttpContext.Session.SetString("sales_data", JsonConvert.SerializeObject(dataResult));
             if (paymentResult.Status == "success")
             {
-                var content = TempData["html_content"] as string;
+                HttpContext.Session.SetString("html_content", paymentResult.HtmlContent);
                 return Redirect("/secure3d");
             }
 
             return Json(new ResponseModel
             {
-                isSuccess = true
+                isSuccess = false,
+                errors = new List<string> { paymentResult.ErrorMessage }
             });
         }
 
@@ -140,12 +142,12 @@ namespace NitelikliBilisim.App.Controllers
         {
             return View(new Secure3dModel
             {
-                HtmlContent = TempData["html_content"] as string
+                HtmlContent = HttpContext.Session.GetString("html_content")
             });
         }
 
-        [Route("payment-success")]
-        public IActionResult PaymentSuccesS()
+        [Route("odeme-basarili")]
+        public IActionResult Success()
         {
             return View();
         }

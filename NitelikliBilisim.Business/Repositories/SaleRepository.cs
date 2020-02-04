@@ -71,7 +71,7 @@ namespace NitelikliBilisim.Business.Repositories
                         _context.SaveChanges();
                         transaction.Commit();
                     }
-                    catch (Exception ex)
+                    catch
                     {
                         transaction.Rollback();
                     }
