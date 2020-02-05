@@ -39,6 +39,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/kategori-guncelle/{categoryId}")]
         public IActionResult Update(Guid? categoryId)
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationCategoryUpdate");
             if (categoryId == null)
                 return Redirect("/admin/kategoriler");
 

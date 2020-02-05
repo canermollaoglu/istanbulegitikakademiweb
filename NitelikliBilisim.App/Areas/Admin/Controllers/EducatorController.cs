@@ -156,6 +156,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/egitmen-guncelle/{educatorId}")]
         public IActionResult Update(Guid? educatorId)
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducatorUpdate");
             if (!educatorId.HasValue)
                 return Redirect("/admin/egitmenler");
             var educator = _unitOfWork.Educator.Get(x => x.Id == educatorId.ToString(), null, x => x.User).First();
@@ -207,6 +208,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/egitmen-sosyal-medya-guncelle/{educatorId}")]
         public IActionResult UpdateEducatorSocialMedia(Guid? educatorId)
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducatorUpdateEducatorSocialMedia");
             if (!educatorId.HasValue)
                 return Redirect("/admin/egitmenler");
             var educatorSocialMedias = _unitOfWork.EducatorSocialMedia.Get(x => x.EducatorId == educatorId.ToString(), null, x => x.Educator).ToList();

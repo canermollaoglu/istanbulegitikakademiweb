@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Areas.Admin.Models.Education;
 using NitelikliBilisim.App.Areas.Admin.VmCreator.Education;
+using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Managers;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
@@ -38,6 +39,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/egitim-ekle")]
         public IActionResult Add()
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationAdd");
             var model = _vmCreator.CreateAddGetVm();
             return View(model);
         }
@@ -101,6 +103,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/egitimler")]
         public IActionResult List(int page = 0)
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationList");
             return View();
         }
 
@@ -120,6 +123,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/egitim-guncelle/{educationId}")]
         public IActionResult Update(Guid? educationId)
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationUpdate");
             if (!educationId.HasValue)
                 return Redirect("/admin/egitimler");
 
@@ -147,6 +151,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/egitmen-ata/{educationId}")]
         public IActionResult ManageAssignEducators(Guid? educationId)
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationManageAssignEducators");
             if (educationId == null)
                 return Redirect("/admin/egitimler");
             var model = _vmCreator.CreateManageAssignEducatorsVm(educationId.Value);
