@@ -8,6 +8,8 @@ using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.App.VmCreator;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.Factory;
+using NitelikliBilisim.Core.Factory.Enums;
 using NitelikliBilisim.Core.Services.Payments;
 using NitelikliBilisim.Core.ViewModels.Cart;
 using NitelikliBilisim.Core.ViewModels.Sales;
@@ -117,9 +119,18 @@ namespace NitelikliBilisim.App.Controllers
                     errors = new List<string> { "?" }
                 });
 
-            var splitted = data.CardInfo.NumberOnCard.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
-            data.CardInfo.NumberOnCard = string.Join(null, splitted);
+            data.CardInfo.NumberOnCard = FormatCardNumber(data.CardInfo.NumberOnCard);
             data.SpecialInfo.Ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+
+            InstallmentInfo info = _paymentService.CheckInstallment(
+                conversationId: data.ConversationId.ToString(),
+                binNumber: data.CardInfo.NumberOnCard.Substring(0, 6),
+                price: GetPriceSumForCartItems(data.CartItems));
+
+            var factory = new PaymentManagerFactory(_paymentService);
+            var payer = factory.Create(TransactionType.Normal);
+            var manager = new PaymentManager(payer);
+            var result = manager.Pay();
 
             var paymentResult = _unitOfWork.Sale.Sell(data, User.FindFirstValue(ClaimTypes.NameIdentifier), _paymentService, out PayPostVm dataResult);
 
@@ -152,6 +163,32 @@ namespace NitelikliBilisim.App.Controllers
             data.Locale = Locale.TR.ToString();
             var result = _paymentService.Confirm3DsPayment(data);
             return View();
+        }
+
+        public IActionResult GetCardInfo()
+        {
+            var conversationId = Guid.NewGuid().ToString();
+            var info = _paymentService.CheckInstallment(conversationId, "111111", 800);
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = new
+                {
+                    installmentOptions = info.InstallmentDetails[0].InstallmentPrices
+                }
+            });
+        }
+
+        [NonAction]
+        public string FormatCardNumber(string cardNumber)
+        {
+            var splitted = cardNumber.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
+            return string.Join(null, splitted);
+        }
+        [NonAction]
+        public decimal GetPriceSumForCartItems(List<Guid> itemIds)
+        {
+            return _unitOfWork.Education.Get(x => itemIds.Contains(x.Id), null).Sum(x => x.NewPrice.Value);
         }
     }
 
