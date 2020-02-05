@@ -44,7 +44,7 @@ namespace NitelikliBilisim.Business.Repositories
 
             var user = _context.Users.First(x => x.Id == userId);
 
-            var paymentResult = paymentService.Make3DsPayment(data, user, cartItems, invoiceDetailsIds);
+            var paymentResult = paymentService.Make3DsPayment(data, user, cartItems);
             dataResult = data;
             #endregion
 
