@@ -6,7 +6,7 @@ using NitelikliBilisim.Core.Services.Payments;
 
 namespace NitelikliBilisim.Core.ViewModels.Sales
 {
-    public class PayPostVm
+    public class PayData
     {
         public Guid BasketId { get; set; }
         public Guid ConversationId { get; set; } = Guid.NewGuid();
@@ -20,7 +20,6 @@ namespace NitelikliBilisim.Core.ViewModels.Sales
         public bool IsDistantSalesAgreementConfirmed { get; set; }
         public string CartItemsJson { get; set; }
         public List<Guid> CartItems { get; set; }
-
     }
 
     public class _CardInfo
@@ -72,6 +71,7 @@ namespace NitelikliBilisim.Core.ViewModels.Sales
     }
     public class _SpecialInfo
     {
+        public string UserId { get; set; }
         public string Ip { get; set; }
         public string IdentityNumber { get; set; } = "12345678901";
     }

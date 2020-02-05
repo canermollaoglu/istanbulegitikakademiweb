@@ -1,4 +1,4 @@
-﻿namespace NitelikliBilisim.Core.Factory.Enums
+﻿namespace NitelikliBilisim.Core.PaymentModels
 {
     public enum TransactionType
     {

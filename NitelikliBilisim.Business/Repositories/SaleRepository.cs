@@ -1,13 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
-using NitelikliBilisim.Core.Services.Payments;
 using NitelikliBilisim.Core.ViewModels.Sales;
 using NitelikliBilisim.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Iyzipay.Model;
+using NitelikliBilisim.Core.PaymentModels;
 
 namespace NitelikliBilisim.Business.Repositories
 {
@@ -18,18 +18,27 @@ namespace NitelikliBilisim.Business.Repositories
         {
             _context = context;
         }
-
-        public ThreedsInitialize Sell(PayPostVm data, string userId, IPaymentService paymentService, out PayPostVm dataResult)
+        public ApplicationUser GetUser(string userId)
         {
-            var cartItems = _context.Educations
+            return _context.Users.First(x => x.Id == userId);
+        }
+        public List<CartItem> Sell(PayData data, string userId)
+        {
+            var educations = _context.Educations
                 .Where(x => data.CartItems.Contains(x.Id))
                 .Include(x => x.Category)
                 .ThenInclude(x => x.BaseCategory)
                 .ToList();
 
-            var invoiceDetails = CreateInvoiceDetails(cartItems);
+            var invoiceDetails = CreateInvoiceDetails(educations);
 
-            var invoiceDetailsIds = invoiceDetails.Select(x => x.Id).ToList();
+            var cartItems = new List<CartItem>();
+            for (int i = 0; i < educations.Count; i++)
+                cartItems.Add(new CartItem
+                {
+                    InvoiceDetailsId = invoiceDetails[i].Id,
+                    Education = educations[i]
+                });
 
             _CorporateInvoiceInfo corporateInvoiceInfo = !data.InvoiceInfo.IsIndividual ? data.CorporateInvoiceInfo : null;
 
@@ -40,46 +49,38 @@ namespace NitelikliBilisim.Business.Repositories
 
             data.BasketId = invoice.Id;
 
-            #region OnlinePaymentService
-
-            var user = _context.Users.First(x => x.Id == userId);
-
-            var paymentResult = paymentService.Make3DsPayment(data, user, cartItems);
-            dataResult = data;
-            #endregion
-
-            if (IsValidConversation(data.ConversationId, paymentResult))
-                using (var transaction = _context.Database.BeginTransaction())
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
                 {
-                    try
+                    invoice.ConversationId = data.ConversationId;
+                    _context.Invoices.Add(invoice);
+                    _context.InvoiceAddresses.Add(new InvoiceAddress
                     {
-                        invoice.ConversationId = data.ConversationId;
-                        _context.Invoices.Add(invoice);
-                        _context.InvoiceAddresses.Add(new InvoiceAddress
-                        {
-                            Id = invoice.Id,
-                            Address = data.InvoiceInfo.Address,
-                            City = data.InvoiceInfo.City,
-                            County = data.InvoiceInfo.Town
-                        });
+                        Id = invoice.Id,
+                        Address = data.InvoiceInfo.Address,
+                        City = data.InvoiceInfo.City,
+                        County = data.InvoiceInfo.Town
+                    });
 
-                        foreach (var invoiceDetail in invoiceDetails)
-                            invoiceDetail.InvoiceId = invoice.Id;
-                        _context.InvoiceDetails.AddRange(invoiceDetails);
+                    foreach (var invoiceDetail in invoiceDetails)
+                        invoiceDetail.InvoiceId = invoice.Id;
+                    _context.InvoiceDetails.AddRange(invoiceDetails);
 
-                        var tickets = CreateTickets(invoiceDetails, new Guid("E24DA16A-269A-4C91-B9FF-C64E4ABCC031"), userId);
-                        _context.AddRange(tickets);
+                    var tickets = CreateTickets(invoiceDetails, new Guid("E24DA16A-269A-4C91-B9FF-C64E4ABCC031"), userId);
+                    _context.AddRange(tickets);
 
-                        _context.SaveChanges();
-                        transaction.Commit();
-                    }
-                    catch
-                    {
-                        transaction.Rollback();
-                    }
+                    _context.SaveChanges();
+                    transaction.Commit();
+
+                    return cartItems;
                 }
-
-            return paymentResult;
+                catch
+                {
+                    transaction.Rollback();
+                    return null;
+                }
+            }
         }
 
         private List<InvoiceDetail> CreateInvoiceDetails(List<Education> educations)

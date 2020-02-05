@@ -3,10 +3,10 @@ using Iyzipay.Request;
 using Microsoft.Extensions.Configuration;
 using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.PaymentModels;
 using NitelikliBilisim.Core.ViewModels.Sales;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 
 namespace NitelikliBilisim.Core.Services.Payments
 {
@@ -24,9 +24,12 @@ namespace NitelikliBilisim.Core.Services.Payments
         /// <param name="user"></param>
         /// <param name="cartItems"></param>
         /// <returns></returns>
-        private CreatePaymentRequest InitDefaultRequest(PayPostVm data, ApplicationUser user, List<Education> cartItems)
+        private CreatePaymentRequest InitDefaultRequest(PayData data, ApplicationUser user, List<CartItem> cartItems)
         {
-            var totalPrice = cartItems.Sum(x => x.NewPrice.GetValueOrDefault());
+            var totalPrice = 0.0m;
+            foreach (var item in cartItems)
+                totalPrice += item.Education.NewPrice.GetValueOrDefault();
+
             var request = new CreatePaymentRequest
             {
                 Locale = Locale.TR.ToString(),
@@ -84,12 +87,12 @@ namespace NitelikliBilisim.Core.Services.Payments
             {
                 var basketItem = new BasketItem
                 {
-                    Id = cartItem.Id.ToString(),
-                    Name = cartItem.Name,
-                    Category1 = cartItem.Category.BaseCategory.Name,
-                    Category2 = cartItem.Category.Name,
+                    Id = cartItem.InvoiceDetailsId.ToString(),
+                    Name = cartItem.Education.Name,
+                    Category1 = cartItem.Education.Category.BaseCategory.Name,
+                    Category2 = cartItem.Education.Category.Name,
                     ItemType = BasketItemType.VIRTUAL.ToString(),
-                    Price = cartItem.NewPrice.GetValueOrDefault().ToString(new CultureInfo("en-US"))
+                    Price = cartItem.Education.NewPrice.GetValueOrDefault().ToString(new CultureInfo("en-US"))
                 };
                 basketItems.Add(basketItem);
             }
@@ -111,7 +114,7 @@ namespace NitelikliBilisim.Core.Services.Payments
 
             return InstallmentInfo.Retrieve(request, _options);
         }
-        public Payment MakePayment(PayPostVm data, ApplicationUser user, List<Education> cartItems)
+        public Payment MakePayment(PayData data, ApplicationUser user, List<CartItem> cartItems)
         {
             var request = this.InitDefaultRequest(data, user, cartItems);
             return Payment.Create(request, _options);
@@ -120,7 +123,7 @@ namespace NitelikliBilisim.Core.Services.Payments
 
         #region 3D Security
 
-        public ThreedsInitialize Make3DsPayment(PayPostVm data, ApplicationUser user, List<Education> cartItems)
+        public ThreedsInitialize Make3DsPayment(PayData data, ApplicationUser user, List<CartItem> cartItems)
         {
             var request = this.InitDefaultRequest(data, user, cartItems);
             request.CallbackUrl = _options.ThreedsCallbackUrl;
@@ -167,7 +170,7 @@ namespace NitelikliBilisim.Core.Services.Payments
 
         #region BKM ödeme
 
-        public BkmInitialize MakeBkmPayment(PayPostVm data, ApplicationUser user, List<Education> cartItems)
+        public BkmInitialize MakeBkmPayment(PayData data, ApplicationUser user, List<CartItem> cartItems)
         {
             var r1 = this.InitDefaultRequest(data, user, cartItems);
             var request = new CreateBkmInitializeRequest()
@@ -192,7 +195,7 @@ namespace NitelikliBilisim.Core.Services.Payments
 
         #region Hazır Ödeme Formu
 
-        public CheckoutFormInitialize MakeCheckoutForm(PayPostVm data, ApplicationUser user, List<Education> cartItems)
+        public CheckoutFormInitialize MakeCheckoutForm(PayData data, ApplicationUser user, List<CartItem> cartItems)
         {
             var r1 = this.InitDefaultRequest(data, user, cartItems);
             var request = new CreateCheckoutFormInitializeRequest()

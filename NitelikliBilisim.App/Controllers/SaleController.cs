@@ -8,8 +8,6 @@ using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.App.VmCreator;
 using NitelikliBilisim.Business.UoW;
-using NitelikliBilisim.Core.Factory;
-using NitelikliBilisim.Core.Factory.Enums;
 using NitelikliBilisim.Core.Services.Payments;
 using NitelikliBilisim.Core.ViewModels.Cart;
 using NitelikliBilisim.Core.ViewModels.Sales;
@@ -83,7 +81,7 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [HttpPost, ValidateAntiForgeryToken, Route("pay")]
-        public IActionResult Pay(PayPostVm data)
+        public IActionResult Pay(PayData data)
         {
             if (!HttpContext.User.Identity.IsAuthenticated || data.CartItemsJson == null)
                 return Json(new ResponseModel
@@ -121,30 +119,28 @@ namespace NitelikliBilisim.App.Controllers
 
             data.CardInfo.NumberOnCard = FormatCardNumber(data.CardInfo.NumberOnCard);
             data.SpecialInfo.Ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+            data.SpecialInfo.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             InstallmentInfo info = _paymentService.CheckInstallment(
                 conversationId: data.ConversationId.ToString(),
                 binNumber: data.CardInfo.NumberOnCard.Substring(0, 6),
                 price: GetPriceSumForCartItems(data.CartItems));
 
-            var factory = new PaymentManagerFactory(_paymentService);
-            var payer = factory.Create(TransactionType.Normal);
-            var manager = new PaymentManager(payer);
-            var result = manager.Pay();
+            //var manager = new PaymentManager(_paymentService, TransactionType.Normal);
+            //var result = manager.Pay(data);
 
-            var paymentResult = _unitOfWork.Sale.Sell(data, User.FindFirstValue(ClaimTypes.NameIdentifier), _paymentService, out PayPostVm dataResult);
+            //var paymentResult = _unitOfWork.Sale.Sell(data, null, _paymentService, out PayData dataResult);
 
-            HttpContext.Session.SetString("sales_data", JsonConvert.SerializeObject(dataResult));
-            if (paymentResult.Status == "success")
-            {
-                HttpContext.Session.SetString("html_content", paymentResult.HtmlContent);
-                return Redirect("/secure3d");
-            }
+            //HttpContext.Session.SetString("sales_data", JsonConvert.SerializeObject(dataResult));
+            //if (paymentResult.Status == "success")
+            //{
+            //    HttpContext.Session.SetString("html_content", paymentResult.HtmlContent);
+            //    return Redirect("/secure3d");
+            //}
 
             return Json(new ResponseModel
             {
                 isSuccess = false,
-                errors = new List<string> { paymentResult.ErrorMessage }
             });
         }
 
