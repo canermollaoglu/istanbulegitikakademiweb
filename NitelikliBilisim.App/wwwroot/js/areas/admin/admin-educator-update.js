@@ -13,7 +13,7 @@ function document_onLoad() {
     fileManager.set({
         container: "file-upload-for-educator-photo",
         preview: "img-after-preview-for-educator-photo",
-        validExtensions: ["jpg", "jpeg"],
+        validExtensions: ["jpg", "jpeg","png"],
         style: { content: "Resim Yükle" }
     });
 }

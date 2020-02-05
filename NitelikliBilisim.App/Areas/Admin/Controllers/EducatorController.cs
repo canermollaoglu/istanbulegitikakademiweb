@@ -174,10 +174,10 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         }
 
         [HttpPost, Route("admin/egitmen-guncelle")]
-        public async Task<IActionResult> UpdateAsync(UpdatePostNewVm data)
+        public async Task<IActionResult> Update(UpdatePostNewVm data)
         {
             if (!ModelState.IsValid)
-            {
+            {  
                 var errors = ModelStateUtil.GetErrors(ModelState);
                 return Json(new ResponseModel
                 {
@@ -185,18 +185,24 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     errors = errors
                 });
             }
-            var stream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.ProfilePhoto.Base64Content));
-            var fileName = $"{data.Name} {data.Surname}".FormatForTag();
-            var dbPath = await _storageService.UploadFile(stream, $"{fileName}.{data.ProfilePhoto.Extension}", "educator-photos");
-            var userName = TextHelper.ConcatForUserName(data.Name, data.Surname);
 
             var educator = _unitOfWork.Educator.Get(x => x.Id == data.EducatorId.ToString(), null, x => x.User).First();
+
+            if (!string.IsNullOrEmpty(data.ProfilePhoto.Base64Content))
+            {
+                var stream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.ProfilePhoto.Base64Content));
+                var fileName = $"{data.Name} {data.Surname}".FormatForTag();
+                var dbPath = await _storageService.UploadFile(stream, $"{fileName}.{data.ProfilePhoto.Extension}", "educator-photos");
+                var userName = TextHelper.ConcatForUserName(data.Name, data.Surname);
+                educator.User.AvatarPath = dbPath;
+            }
+
             educator.Title = data.Title;
             educator.User.Name = data.Name;
             educator.User.Surname = data.Surname;
             educator.User.PhoneNumber = data.Phone;
             educator.User.Email = data.Email;
-            educator.User.AvatarPath = dbPath;
+            
             _unitOfWork.Educator.Update(educator);
             return Json(new ResponseModel
             {

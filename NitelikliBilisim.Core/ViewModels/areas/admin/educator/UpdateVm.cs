@@ -33,7 +33,12 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.educator
         public string Title { get; set; }
         public Guid EducatorId { get; set; }
         public _SocialMedia SocialMedia { get; set; }
-        public _PostedFile ProfilePhoto { get; set; }
+        public _PostedFileUpdate ProfilePhoto { get; set; }
+    }
+    public class _PostedFileUpdate
+    {
+        public string Base64Content { get; set; }
+        public string Extension { get; set; }
     }
 
     public class UpdateGetEducatorSocialMediaVm : AddGetVm
@@ -44,7 +49,7 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.educator
         public string GooglePlus { get; set; }
         public string Twitter { get; set; }
     }
-   
+
     public class UpdatePostEducatorSocialMediaVm : _SocialMedia
     {
         public string EducatorId { get; set; }
