@@ -13,13 +13,14 @@ function document_onLoad() {
     fileManager.set({
         container: "file-upload-for-educator-photo",
         preview: "img-after-preview-for-educator-photo",
-        validExtensions: ["jpg", "jpeg"],
+        validExtensions: ["jpg", "jpeg","png"],
         style: { content: "Resim Yükle" }
     });
 }
 function btnSave_onClick() {
     btnSave.off("click");
     var file = fileManager.getFile();
+    console.log(file)
     var data = {
         Name: $("#input-name").val(),
         Surname: $("#input-surname").val(),
