@@ -11,7 +11,6 @@ namespace NitelikliBilisim.Core.Entities
         [ForeignKey("Id")]
         public virtual Invoice Invoice { get; set; }
 
-        public Guid ConversationId { get; set; }
         [MaxLength(16)]
         public string PaymentId { get; set; }
         [MaxLength(6)]

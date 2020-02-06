@@ -159,9 +159,16 @@ namespace NitelikliBilisim.App.Controllers
         [HttpPost, Route("odeme-sonucu")]
         public IActionResult PaymentResult(CreateThreedsPaymentRequest data)
         {
-            data.Locale = Locale.TR.ToString();
-            var result = _paymentService.Confirm3DsPayment(data);
-            
+            if (data != null)
+            {
+                data.Locale = Locale.TR.ToString();
+                var result = _paymentService.Confirm3DsPayment(data);
+                var manager = new PaymentManager(_paymentService, TransactionType.Secure3d);
+                var model = manager.Create3dCompletionModel(result);
+                var paymentModelSuccess = JsonConvert.DeserializeObject<PaymentModelSuccess>(HttpContext.Session.GetString("sales_data"));
+                _unitOfWork.Sale.CompletePayment(model, paymentModelSuccess.InvoiceId, paymentModelSuccess.InvoiceDetailIds);
+            }
+
             return View();
         }
 

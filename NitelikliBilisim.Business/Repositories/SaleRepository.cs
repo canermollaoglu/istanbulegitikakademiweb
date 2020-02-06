@@ -21,6 +21,25 @@ namespace NitelikliBilisim.Business.Repositories
         {
             return _context.Users.First(x => x.Id == userId);
         }
+        public List<CartItem> PrepareCartItems(PayData data)
+        {
+            var educations = _context.Educations
+               .Where(x => data.CartItems.Contains(x.Id))
+               .Include(x => x.Category)
+               .ThenInclude(x => x.BaseCategory)
+               .ToList();
+
+            var cartItems = new List<CartItem>();
+
+            foreach (var item in educations)
+                cartItems.Add(new CartItem
+                {
+                    Education = item,
+                    InvoiceDetailsId = Guid.NewGuid()
+                });
+
+            return cartItems;
+        }
         public List<InvoiceDetail> Sell(PayData data, List<CartItem> cartItems, string userId)
         {
             var invoiceDetails = CreateInvoiceDetails(cartItems);
@@ -65,25 +84,50 @@ namespace NitelikliBilisim.Business.Repositories
                 }
             }
         }
-
-        public List<CartItem> PrepareCartItems(PayData data)
+        public void CompletePayment(PaymentCompletionModel completionModel, Guid invoiceId, List<Guid> invoiceDetailsId)
         {
-            var educations = _context.Educations
-               .Where(x => data.CartItems.Contains(x.Id))
-               .Include(x => x.Category)
-               .ThenInclude(x => x.BaseCategory)
-               .ToList();
-
-            var cartItems = new List<CartItem>();
-
-            foreach (var item in educations)
-                cartItems.Add(new CartItem
+            using var transaction = _context.Database.BeginTransaction();
+            try
+            {
+                var invoice = _context.Invoices.Find(invoiceId);
+                invoice.TransactionStatus = TransactionStatus.TransactionSuccess;
+                var onlinePaymentInfo = new OnlinePaymentInfo
                 {
-                    Education = item,
-                    InvoiceDetailsId = Guid.NewGuid()
-                });
+                    Id = invoice.Id,
+                    PaymentId = completionModel.Invoice.PaymentId,
+                    BinNumber = completionModel.Invoice.BinNumber,
+                    CommissionRate = completionModel.Invoice.CommissionRate,
+                    CommissonFee = completionModel.Invoice.CommissonFee,
+                    HostRef = completionModel.Invoice.HostRef,
+                    LastFourDigit = completionModel.Invoice.LastFourDigit,
+                    PaidPrice = completionModel.Invoice.PaidPrice,
+                };
+                _context.OnlinePaymentInfos.Add(onlinePaymentInfo);
 
-            return cartItems;
+                var onlinePaymentDetailInfos = new List<OnlinePaymentDetailsInfo>();
+                for (int i = 0; i < completionModel.InvoiceDetails.Count; i++)
+                {
+                    var item = completionModel.InvoiceDetails[i];
+                    onlinePaymentDetailInfos.Add(new OnlinePaymentDetailsInfo
+                    {
+                        Id = invoiceDetailsId[i],
+                        TransactionId = item.TransactionId,
+                        CommisionRate = item.CommisionRate,
+                        CommissionFee = item.CommissionFee,
+                        MerchantPayout = item.MerchantPayout,
+                        PaidPrice = item.PaidPrice,
+                        Price = item.Price
+                    });
+                }
+                _context.OnlinePaymentDetailsInfos.AddRange(onlinePaymentDetailInfos);
+
+                _context.SaveChanges();
+                transaction.Commit();
+            }
+            catch
+            {
+                transaction.Rollback();
+            }
         }
         private List<InvoiceDetail> CreateInvoiceDetails(List<CartItem> cartItems)
         {
@@ -106,7 +150,7 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 BillingType = CustomerType.Individual,
                 TransactionStatus = TransactionStatus.TransactionAwait,
-                
+
                 CustomerId = userId,
                 PaymentCount = paymentCount,
             };
@@ -136,16 +180,5 @@ namespace NitelikliBilisim.Business.Repositories
 
             return tickets;
         }
-        //public bool IsValidConversation(Guid determinedConversationId, ThreedsInitialize paymentResult)
-        //{
-        //    if (paymentResult.Status == "success"
-        //        && determinedConversationId.ToString() == paymentResult.ConversationId
-        //        && paymentResult.ErrorCode == null
-        //        && paymentResult.ErrorMessage == null
-        //        && paymentResult.ErrorGroup == null
-        //        && paymentResult.HtmlContent != null)
-        //        return true;
-        //    return false;
-        //}
     }
 }
