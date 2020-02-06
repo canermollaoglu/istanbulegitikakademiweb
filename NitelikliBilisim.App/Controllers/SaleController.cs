@@ -161,6 +161,7 @@ namespace NitelikliBilisim.App.Controllers
         {
             data.Locale = Locale.TR.ToString();
             var result = _paymentService.Confirm3DsPayment(data);
+            
             return View();
         }
 
