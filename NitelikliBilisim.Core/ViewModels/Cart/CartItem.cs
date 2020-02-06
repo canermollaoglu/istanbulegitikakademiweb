@@ -2,7 +2,7 @@
 
 namespace NitelikliBilisim.Core.ViewModels.Cart
 {
-    public class CartItem
+    public class CartItemVm
     {
         public Guid EducationId { get; set; }
         public string PreviewPhoto { get; set; }

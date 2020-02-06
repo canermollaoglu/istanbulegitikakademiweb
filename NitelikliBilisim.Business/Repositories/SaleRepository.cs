@@ -1,13 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
-using NitelikliBilisim.Core.Services.Payments;
 using NitelikliBilisim.Core.ViewModels.Sales;
 using NitelikliBilisim.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Iyzipay.Model;
+using NitelikliBilisim.Core.PaymentModels;
 
 namespace NitelikliBilisim.Business.Repositories
 {
@@ -18,90 +18,99 @@ namespace NitelikliBilisim.Business.Repositories
         {
             _context = context;
         }
-
-        public ThreedsInitialize Sell(PayPostVm data, string userId, IPaymentService paymentService, out PayPostVm dataResult)
+        public ApplicationUser GetUser(string userId)
         {
-            var cartItems = _context.Educations
-                .Where(x => data.CartItems.Contains(x.Id))
-                .Include(x => x.Category)
-                .ThenInclude(x => x.BaseCategory)
-                .ToList();
-
+            return _context.Users.First(x => x.Id == userId);
+        }
+        public List<Guid> Sell(PayData data, List<CartItem> cartItems, string userId)
+        {
             var invoiceDetails = CreateInvoiceDetails(cartItems);
 
             _CorporateInvoiceInfo corporateInvoiceInfo = !data.InvoiceInfo.IsIndividual ? data.CorporateInvoiceInfo : null;
 
             var invoice = CreateInvoice(corporateInvoiceInfo: corporateInvoiceInfo,
                 paymentCount: data.PaymentInfo.Installments,
-                isCash: true,
                 userId: userId);
 
             data.BasketId = invoice.Id;
 
-            #region OnlinePaymentService
-
-            var user = _context.Users.First(x => x.Id == userId);
-
-            var paymentResult = paymentService.Make3DsPayment(data, user, cartItems);
-            dataResult = data;
-            #endregion
-
-            if (IsValidConversation(data.ConversationId, paymentResult))
-                using (var transaction = _context.Database.BeginTransaction())
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
                 {
-                    try
+                    _context.Invoices.Add(invoice);
+                    _context.InvoiceAddresses.Add(new InvoiceAddress
                     {
-                        invoice.ConversationId = data.ConversationId;
-                        _context.Invoices.Add(invoice);
-                        _context.InvoiceAddresses.Add(new InvoiceAddress
-                        {
-                            Id = invoice.Id,
-                            Address = data.InvoiceInfo.Address,
-                            City = data.InvoiceInfo.City,
-                            County = data.InvoiceInfo.Town
-                        });
+                        Id = invoice.Id,
+                        Address = data.InvoiceInfo.Address,
+                        City = data.InvoiceInfo.City,
+                        County = data.InvoiceInfo.Town
+                    });
 
-                        foreach (var invoiceDetail in invoiceDetails)
-                            invoiceDetail.InvoiceId = invoice.Id;
-                        _context.InvoiceDetails.AddRange(invoiceDetails);
+                    foreach (var invoiceDetail in invoiceDetails)
+                        invoiceDetail.InvoiceId = invoice.Id;
+                    _context.InvoiceDetails.AddRange(invoiceDetails);
 
-                        var tickets = CreateTickets(invoiceDetails, new Guid("E24DA16A-269A-4C91-B9FF-C64E4ABCC031"), userId);
-                        _context.AddRange(tickets);
+                    var tickets = CreateTickets(invoiceDetails, new Guid("E24DA16A-269A-4C91-B9FF-C64E4ABCC031"), userId);
+                    _context.AddRange(tickets);
 
-                        _context.SaveChanges();
-                        transaction.Commit();
-                    }
-                    catch
-                    {
-                        transaction.Rollback();
-                    }
+                    _context.SaveChanges();
+                    transaction.Commit();
+
+                    return invoiceDetails.Select(x => x.Id).ToList();
                 }
-
-            return paymentResult;
+                catch
+                {
+                    transaction.Rollback();
+                    return null;
+                }
+            }
         }
 
-        private List<InvoiceDetail> CreateInvoiceDetails(List<Education> educations)
+        public List<CartItem> PrepareCartItems(PayData data)
+        {
+            var educations = _context.Educations
+               .Where(x => data.CartItems.Contains(x.Id))
+               .Include(x => x.Category)
+               .ThenInclude(x => x.BaseCategory)
+               .ToList();
+
+            var cartItems = new List<CartItem>();
+
+            foreach (var item in educations)
+                cartItems.Add(new CartItem
+                {
+                    Education = item,
+                    InvoiceDetailsId = Guid.NewGuid()
+                });
+
+            return cartItems;
+        }
+
+        private List<InvoiceDetail> CreateInvoiceDetails(List<CartItem> cartItems)
         {
             var invoiceDetails = new List<InvoiceDetail>();
-            foreach (var education in educations)
+            foreach (var cartItem in cartItems)
             {
                 invoiceDetails.Add(new InvoiceDetail
                 {
-                    EducationId = education.Id,
-                    PriceAtCurrentDate = education.NewPrice.GetValueOrDefault()
+                    Id = cartItem.InvoiceDetailsId,
+                    EducationId = cartItem.Education.Id,
+                    PriceAtCurrentDate = cartItem.Education.NewPrice.GetValueOrDefault()
                 });
             }
 
             return invoiceDetails;
         }
 
-        private Invoice CreateInvoice(_CorporateInvoiceInfo corporateInvoiceInfo, byte paymentCount, bool isCash, string userId)
+        private Invoice CreateInvoice(_CorporateInvoiceInfo corporateInvoiceInfo, byte paymentCount, string userId)
         {
             var invoice = new Invoice
             {
                 BillingType = CustomerType.Individual,
+                TransactionStatus = TransactionStatus.TransactionAwait,
+                
                 CustomerId = userId,
-                IsCash = isCash,
                 PaymentCount = paymentCount,
             };
 

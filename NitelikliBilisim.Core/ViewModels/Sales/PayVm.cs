@@ -6,9 +6,9 @@ using NitelikliBilisim.Core.Services.Payments;
 
 namespace NitelikliBilisim.Core.ViewModels.Sales
 {
-    public class PayPostVm
+    public class PayData
     {
-        public Guid BasketId { get; set; } = Guid.NewGuid();
+        public Guid BasketId { get; set; }
         public Guid ConversationId { get; set; } = Guid.NewGuid();
         [Required]
         public _CardInfo CardInfo { get; set; }
@@ -20,7 +20,6 @@ namespace NitelikliBilisim.Core.ViewModels.Sales
         public bool IsDistantSalesAgreementConfirmed { get; set; }
         public string CartItemsJson { get; set; }
         public List<Guid> CartItems { get; set; }
-
     }
 
     public class _CardInfo
@@ -72,36 +71,13 @@ namespace NitelikliBilisim.Core.ViewModels.Sales
     }
     public class _SpecialInfo
     {
+        public string UserId { get; set; }
         public string Ip { get; set; }
         public string IdentityNumber { get; set; } = "12345678901";
     }
-    public enum CardTypes
+    public class _AfterSale
     {
-        CREDIT_CARD = 1, DEBIT_CARD = 100, PREPAID_CARD = 500
-    }
-    public enum CardAssociations
-    {
-        TROY = 10, VISA = 200, MASTER_CARD = 100, AMERICAN_EXPRESS = 1000
-    }
-    public enum CreditCardTypes
-    {
-        TROY = 10,
-        MASTERCARD = 100,
-        VISA = 200,
-        AMEX = 1000
-    }
-    public enum CardFamilyNames
-    {
-        Bonus = 10, Axess = 40, World = 20, Maximum = 30, Paraf = 60, CardFinans = 50, Advantage = 70
-    }
-    public enum CreditCardPrograms
-    {
-        BONUS = 10,
-        WORD = 20,
-        MAXIMUM = 30,
-        AXESS = 40,
-        CARDFINANS = 50,
-        PARAF = 60,
-        ADVANTAGE = 70
+        public Guid InvoiceId { get; set; }
+        public List<Guid> InvoiceDetailIds { get; set; }
     }
 }
