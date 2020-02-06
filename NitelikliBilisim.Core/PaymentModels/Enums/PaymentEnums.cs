@@ -1,10 +1,19 @@
-﻿namespace NitelikliBilisim.Core.PaymentModels
+﻿using System.ComponentModel;
+
+namespace NitelikliBilisim.Core.PaymentModels
 {
     public enum TransactionType
     {
         Normal = 1010,
         Secure3d = 1020,
         BKM = 1030
+    }
+    public enum TransactionStatus
+    {
+        [Description("Ödeme Bekleniyor")]
+        TransactionAwait = 1010,
+        [Description("Ödeme Alındı")]
+        TransactionSuccess = 1020
     }
     public enum CardTypes
     {

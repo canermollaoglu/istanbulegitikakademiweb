@@ -26,19 +26,10 @@ namespace NitelikliBilisim.Business.Repositories
         {
             var invoiceDetails = CreateInvoiceDetails(cartItems);
 
-            //var cartItems = new List<CartItem>();
-            //for (int i = 0; i < educations.Count; i++)
-            //    cartItems.Add(new CartItem
-            //    {
-            //        InvoiceDetailsId = invoiceDetails[i].Id,
-            //        Education = educations[i]
-            //    });
-
             _CorporateInvoiceInfo corporateInvoiceInfo = !data.InvoiceInfo.IsIndividual ? data.CorporateInvoiceInfo : null;
 
             var invoice = CreateInvoice(corporateInvoiceInfo: corporateInvoiceInfo,
                 paymentCount: data.PaymentInfo.Installments,
-                isCash: true,
                 userId: userId);
 
             data.BasketId = invoice.Id;
@@ -47,7 +38,6 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 try
                 {
-                    invoice.ConversationId = data.ConversationId;
                     _context.Invoices.Add(invoice);
                     _context.InvoiceAddresses.Add(new InvoiceAddress
                     {
@@ -113,13 +103,14 @@ namespace NitelikliBilisim.Business.Repositories
             return invoiceDetails;
         }
 
-        private Invoice CreateInvoice(_CorporateInvoiceInfo corporateInvoiceInfo, byte paymentCount, bool isCash, string userId)
+        private Invoice CreateInvoice(_CorporateInvoiceInfo corporateInvoiceInfo, byte paymentCount, string userId)
         {
             var invoice = new Invoice
             {
                 BillingType = CustomerType.Individual,
+                TransactionStatus = TransactionStatus.TransactionAwait,
+                
                 CustomerId = userId,
-                IsCash = isCash,
                 PaymentCount = paymentCount,
             };
 

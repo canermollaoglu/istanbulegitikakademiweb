@@ -105,5 +105,7 @@ namespace NitelikliBilisim.Data
         public DbSet<GroupLessonDays> GroupLessonDays { get; set; }
         public DbSet<InvoiceDetail> InvoiceDetails { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
+        public DbSet<OnlinePaymentInfo> OnlinePaymentInfos { get; set; }
+        public DbSet<OnlinePaymentDetailsInfo> OnlinePaymentDetailsInfos { get; set; }
     }
 }
