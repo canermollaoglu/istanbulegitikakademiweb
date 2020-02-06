@@ -22,7 +22,7 @@ namespace NitelikliBilisim.Business.Repositories
         {
             return _context.Users.First(x => x.Id == userId);
         }
-        public List<Guid> Sell(PayData data, List<CartItem> cartItems, string userId)
+        public List<InvoiceDetail> Sell(PayData data, List<CartItem> cartItems, string userId)
         {
             var invoiceDetails = CreateInvoiceDetails(cartItems);
 
@@ -57,7 +57,7 @@ namespace NitelikliBilisim.Business.Repositories
                     _context.SaveChanges();
                     transaction.Commit();
 
-                    return invoiceDetails.Select(x => x.Id).ToList();
+                    return invoiceDetails.ToList();
                 }
                 catch
                 {
