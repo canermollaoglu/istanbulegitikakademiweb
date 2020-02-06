@@ -45,22 +45,24 @@
         var isLoggedIn = User.Identity.IsAuthenticated;
     }
 
-    <div class="bg_color_1">
-        <div class="container margin_60_35">
-            <div class="row">
+    <form id="form-buy" method="post" asp-controller="Sale" asp-action="Pay">
+        <div class="bg_color_1">
+            <div class="container margin_60_35">
+                <div class="row">
 
-                <div class="col-lg-8">
-                    <form id="form-buy">
+                    <div class="col-lg-8">
+                        <!-- FORM TAG START FOR AJAX -->
                         @Html.AntiForgeryToken()
-                        <input type="hidden" value="" id="_is-distant-sales-agreement-confirmed" />
-                        <input type="hidden" value="" id="_is-individual" />
+                        <input type="hidden" value="" id="_is-distant-sales-agreement-confirmed" name="IsDistantSalesAgreementConfirmed" />
+                        <input type="hidden" value="" id="_is-individual" name="InvoiceInfo.IsIndividual"/>
+                        <input type="hidden" value="" id="_cart-items" name="CartItemsJson" />
                         <div class="box_cart">
                             <div class="form_title">
                                 <h3><strong>1</strong>Ödeme Bilgileri</h3>
                             </div>
                             <div class="step">
                                 <span class="input">
-                                    <input class="input_field" type="text" id="input-owner">
+                                    <input class="input_field" type="text" id="input-owner" name="CardInfo.NameOnCard">
                                     <label class="input_label">
                                         <span class="input__label-content">Kartın Üzerindeki Ad Soyad</span>
                                     </label>
@@ -68,7 +70,7 @@
                                 <div class="row">
                                     <div class="col-md-6" id="div-card-number">
                                         <span class="input">
-                                            <input class="input_field" type="text" id="input-card-number">
+                                            <input class="input_field" type="text" id="input-card-number" name="CardInfo.NumberOnCard">
                                             <label class="input_label">
                                                 <span class="input__label-content">Kart Numarası</span>
                                             </label>
@@ -85,7 +87,7 @@
                                             <div class="col-md-6 col-sm-6">
                                                 <div class="form-group select">
                                                     <div class="styled-select">
-                                                        <select class="required" id="select-months">
+                                                        <select class="required" id="select-months" name="CardInfo.MonthOnCard">
                                                             <option value="" disabled selected>Ay</option>
                                                             @for (int i = 1; i <= 12; i++)
                                                             {
@@ -98,7 +100,7 @@
                                             <div class="col-md-6 col-sm-6">
                                                 <div class="form-group select">
                                                     <div class="styled-select">
-                                                        <select class="required" id="select-years">
+                                                        <select class="required" id="select-years" name="CardInfo.YearOnCard">
                                                             <option value="" disabled selected>Yıl</option>
                                                             @for (int i = @DateTime.Now.Year % 100; i <= (DateTime.Now.Year + 20) % 100; i++)
                                                             {
@@ -116,7 +118,7 @@
                                             <div class="row">
                                                 <div class="col-md-4">
                                                     <span class="input">
-                                                        <input class="input_field" maxlength="3" type="text" id="input-cvc">
+                                                        <input class="input_field" maxlength="3" type="text" id="input-cvc" name="CardInfo.CVC">
                                                         <label class="input_label">
                                                             <span class="input__label-content">CVC</span>
                                                         </label>
@@ -137,7 +139,7 @@
                                     <div class="col-md-6 col-sm-6">
                                         <div class="form-group select">
                                             <div class="styled-select">
-                                                <select class="required" id="select-provinces">
+                                                <select class="required" id="select-provinces" name="InvoiceInfo.City">
                                                     <option value="" selected="">İl</option>
                                                 </select>
                                             </div>
@@ -146,7 +148,7 @@
                                     <div class="col-md-6 col-sm-6">
                                         <div class="form-group select">
                                             <div class="styled-select">
-                                                <select class="required" id="select-districts">
+                                                <select class="required" id="select-districts" name="InvoiceInfo.Town">
                                                     <option value="" selected="">İlçe</option>
                                                 </select>
                                             </div>
@@ -156,7 +158,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <span class="input">
-                                            <input class="input_field" type="text" id="input-address">
+                                            <input class="input_field" type="text" id="input-address" name="InvoiceInfo.Address">
                                             <label class="input_label">
                                                 <span class="input__label-content">Adres</span>
                                             </label>
@@ -166,7 +168,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <span class="input">
-                                            <input class="input_field" type="text" id="input-phone">
+                                            <input class="input_field" type="text" id="input-phone" name="InvoiceInfo.Phone">
                                             <label class="input_label">
                                                 <span class="input__label-content">Telefon</span>
                                             </label>
@@ -189,19 +191,19 @@
                                 <div class="row" id="div-corporate-field" style="display: none">
                                     <div class="col-md-6 col-md-offset-3">
                                         <span class="input">
-                                            <input class="input_field" type="text" id="input-company-name">
+                                            <input class="input_field" type="text" id="input-company-name" name="CorporateInvoiceInfo.CompanyName">
                                             <label class="input_label">
                                                 <span class="input__label-content">Firma Adı</span>
                                             </label>
                                         </span>
                                         <span class="input">
-                                            <input class="input_field" type="text" id="input-tax-no">
+                                            <input class="input_field" type="text" id="input-tax-no" name="CorporateInvoiceInfo.TaxNo">
                                             <label class="input_label">
                                                 <span class="input__label-content">Vergi No</span>
                                             </label>
                                         </span>
                                         <span class="input">
-                                            <input class="input_field" type="text" id="input-tax-office">
+                                            <input class="input_field" type="text" id="input-tax-office" name="CorporateInvoiceInfo.TaxOffice">
                                             <label class="input_label">
                                                 <span class="input__label-content">Vergi Dairesi</span>
                                             </label>
@@ -231,41 +233,44 @@
                             </div>
                             <hr>
                         </div>
-                    </form>
-                </div>
+                        <!-- FORM TAG END FOR AJAX -->
 
-                <aside class="col-lg-4" id="sidebar">
-                    <div class="box_detail">
-                        <div>
-                            <h5>Sipariş Özeti</h5>
-                            <table id="tbody-cart-items"></table>
-                        </div>
-                        <div id="total_cart">
-                            Toplam <span class="float-right" id="txt-total"></span>
-                        </div>
-                        <div class="add_bottom_30">
-                            @*<label>
-                                    <input type="checkbox" class="icheck" style="position: absolute; opacity: 0;">
-                                    <span><a href="#" data-toggle="modal" data-target="#obf-modal">Ön Bilgilendirme Formu</a>'nu okudum ve kabul ediyorum.</span>
-                                </label>*@
-                            <label>
-                                <input type="checkbox" class="icheck" style="position: absolute; opacity: 0;" id="chk-confirm-distant-sales">
-                                <span><a href="#" data-toggle="modal" data-target="#mss-modal">Mesafeli Satış Sözleşmesi</a>'ni okudum ve kabul ediyorum.</span>
-                            </label>
-                        </div>
-                        <div class="row">
-                            @*<div class="col-md-12">
-                                    <a href="/tum-egitimler" class="btn_1 full-width outline"><i class="icon-right"></i> Alışverişe devam et</a>
-                                </div>*@
-                            <div class="col-md-12">
-                                <button role="button" class="btn_1 full-width" id="btn-buy">Satın Al</button>
+                    </div>
+
+                    <aside class="col-lg-4" id="sidebar">
+                        <div class="box_detail">
+                            <div>
+                                <h5>Sipariş Özeti</h5>
+                                <table id="tbody-cart-items"></table>
+                            </div>
+                            <div id="total_cart">
+                                Toplam <span class="float-right" id="txt-total"></span>
+                            </div>
+                            <div class="add_bottom_30">
+                                @*<label>
+                                        <input type="checkbox" class="icheck" style="position: absolute; opacity: 0;">
+                                        <span><a href="#" data-toggle="modal" data-target="#obf-modal">Ön Bilgilendirme Formu</a>'nu okudum ve kabul ediyorum.</span>
+                                    </label>*@
+                                <label>
+                                    <input type="checkbox" class="icheck" style="position: absolute; opacity: 0;" id="chk-confirm-distant-sales">
+                                    <span><a href="#" data-toggle="modal" data-target="#mss-modal">Mesafeli Satış Sözleşmesi</a>'ni okudum ve kabul ediyorum.</span>
+                                </label>
+                            </div>
+                            <div class="row">
+                                @*<div class="col-md-12">
+                                        <a href="/tum-egitimler" class="btn_1 full-width outline"><i class="icon-right"></i> Alışverişe devam et</a>
+                                    </div>*@
+                                <div class="col-md-12">
+                                    <!-- role="button" for ajax -->
+                                    <button class="btn_1 full-width" id="btn-buy">Satın Al</button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </aside>
+                    </aside>
+                </div>
             </div>
         </div>
-    </div>
+    </form>
 </main>
 
 <div class="modal fade" id="obf-modal" tabindex="-1" role="dialog" aria-labelledby="obfLabel" aria-hidden="true">

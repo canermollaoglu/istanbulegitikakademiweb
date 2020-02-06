@@ -16,5 +16,7 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_groups
         public DateTime StartDate { get; set; }
         public string Location { get; set; }
         public string EducationName { get; set; }
+        public int AssignedCount { get; set; }
+        public byte Quota { get; set; }
     }
 }

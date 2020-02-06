@@ -12,6 +12,7 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.educator
         public string Email { get; set; }
         public string Title { get; set; }
         public string Biography { get; set; }
+        public string FilePath { get; set; }
     }
 
     public class UpdatePostVm : AddPostVm
@@ -31,5 +32,26 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.educator
         public string Email { get; set; }
         public string Title { get; set; }
         public Guid EducatorId { get; set; }
+        public _SocialMedia SocialMedia { get; set; }
+        public _PostedFileUpdate ProfilePhoto { get; set; }
+    }
+    public class _PostedFileUpdate
+    {
+        public string Base64Content { get; set; }
+        public string Extension { get; set; }
+    }
+
+    public class UpdateGetEducatorSocialMediaVm : AddGetVm
+    {
+        public Guid Id { get; set; }
+        public string Facebook { get; set; }
+        public string Linkedin { get; set; }
+        public string GooglePlus { get; set; }
+        public string Twitter { get; set; }
+    }
+
+    public class UpdatePostEducatorSocialMediaVm : _SocialMedia
+    {
+        public string EducatorId { get; set; }
     }
 }

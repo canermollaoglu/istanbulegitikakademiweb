@@ -11,5 +11,10 @@ namespace NitelikliBilisim.Core.DTO
         public byte HoursPerDay { get; set; }
         public string Level { get; set; }
         public bool IsActive { get; set; }
+        public int MediaCount { get; set; }
+        public int PartCount { get; set; }
+        public int GainCount { get; set; }
+        public int EducatorCount { get; set; }
+        public string EducationCategories { get; set; }
     }
 }

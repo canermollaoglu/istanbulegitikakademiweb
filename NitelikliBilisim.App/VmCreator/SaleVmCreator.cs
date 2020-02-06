@@ -17,10 +17,10 @@ namespace NitelikliBilisim.App.VmCreator
         }
 
         // gereksiz request sayısı
-        public List<CartItem> GetCartItems(List<Guid> itemIds)
+        public List<CartItemVm> GetCartItems(List<Guid> itemIds)
         {
             var educations = _unitOfWork.Education.Get(x => itemIds.Contains(x.Id), x => x.OrderBy(o => o.Name));
-            var model = educations.Select(x => new CartItem
+            var model = educations.Select(x => new CartItemVm
             {
                 EducationId = x.Id,
                 EducationName = x.Name,

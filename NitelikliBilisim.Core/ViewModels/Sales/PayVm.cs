@@ -1,18 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Iyzipay.Model;
+using NitelikliBilisim.Core.Services.Payments;
 
 namespace NitelikliBilisim.Core.ViewModels.Sales
 {
-    public class PayPostVm
+    public class PayData
     {
+        public Guid BasketId { get; set; }
+        public Guid ConversationId { get; set; } = Guid.NewGuid();
         [Required]
         public _CardInfo CardInfo { get; set; }
         [Required]
         public _InvoiceInfo InvoiceInfo { get; set; }
         public _CorporateInvoiceInfo CorporateInvoiceInfo { get; set; }
-        [Required]
+        public _PaymentInfo PaymentInfo { get; set; } = new _PaymentInfo();
+        public _SpecialInfo SpecialInfo { get; set; } = new _SpecialInfo();
         public bool IsDistantSalesAgreementConfirmed { get; set; }
+        public string CartItemsJson { get; set; }
         public List<Guid> CartItems { get; set; }
     }
 
@@ -56,5 +62,22 @@ namespace NitelikliBilisim.Core.ViewModels.Sales
 
         [MaxLength(256)]
         public string TaxOffice { get; set; }
+    }
+    public class _PaymentInfo
+    {
+        public PaymentChannel PaymentChannel { get; set; } = PaymentChannel.WEB;
+        public PaymentGroup PaymentGroup { get; set; } = PaymentGroup.PRODUCT;
+        public byte Installments { get; set; } = 1;
+    }
+    public class _SpecialInfo
+    {
+        public string UserId { get; set; }
+        public string Ip { get; set; }
+        public string IdentityNumber { get; set; } = "12345678901";
+    }
+    public class _AfterSale
+    {
+        public Guid InvoiceId { get; set; }
+        public List<Guid> InvoiceDetailIds { get; set; }
     }
 }

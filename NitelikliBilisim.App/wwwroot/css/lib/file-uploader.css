@@ -1,10 +1,15 @@
-﻿.file-upload-container {
-    min-height: 75px;
-    max-height: 256px;
-    max-width: 256px;
+﻿
+.file-upload-container {
+    background-image: url('../../img/nb_letter_logo_sm.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    min-height: 230px;
+    max-height: 230px;
+    max-width: 230px;
+    min-width: 230px;
     display: block;
     margin: 0;
-    padding: 0.5%;
+    padding: 0.1%;
     cursor: pointer;
     color: rgba(50,50,50,1);
     border: 1px dashed black;
@@ -25,7 +30,17 @@
     }
 
 .img-after-preview {
-    display: none;
-    height: 100%;
-    width: 100%;
+    background-size: cover;
+    min-height: 230px;
+    max-height: 230px;
+    max-width: 230px;
+    min-width: 230px;
+    margin: 0;
+    padding: 1.1%;
+    padding-left: inherit;
+    padding-top: initial;
+    cursor: pointer;
+}
+p {
+    margin-bottom: 10px !important;
 }

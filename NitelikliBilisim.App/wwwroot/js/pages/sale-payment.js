@@ -18,17 +18,18 @@ var inputCvc = $("#input-cvc");
 var inputCompanyName = $("#input-company-name");
 var inputTaxNo = $("#input-tax-no");
 var inputTaxOffice = $("#input-tax-office");
-var isDistantSalesAgreementConfirmed = document.getElementById("_is-distant-sales-agreement-confirmed").value;
-var isIndividual = document.getElementById("_is-individual").value;
+var isDistantSalesAgreementConfirmed = document.getElementById("_is-distant-sales-agreement-confirmed");
+var isIndividual = document.getElementById("_is-individual");
 var chkConfirmDistantSalesAgreement = document.getElementById("chk-confirm-distant-sales");
 var chkCustomerTypeIndividual = document.getElementById("chk-customer-type-individual");
 var divCorporateField = $("#div-corporate-field");
+var cartItems = $("#_cart-items");
 var btnBuy = $("#btn-buy");
 
 /* assignments */
 $(document).ready(document_onLoad);
 $(selectProvinces).on("change", selectProvinces_onChange);
-btnBuy.on("click", btnBuy_onClick);
+//btnBuy.on("click", btnBuy_onClick);
 $("input[name='customer-type']").on('ifToggled', function () {
     customerType_onChange();
 });
@@ -43,25 +44,26 @@ function document_onLoad() {
     inputCardNumber.payform('formatCardNumber');
     inputCvc.payform('formatCardCVC');
     inputPhone.mask("(000) 000 0000");
-    isIndividual = true;
+    isIndividual.value = true;
 }
 function customerType_onChange() {
     var type = $("input[name='customer-type']:checked").val();
 
     if (type == "individual") {
         divCorporateField.hide();
-        isIndividual = true;
+        isIndividual.value = true;
     }
     else if (type == "corporate") {
         divCorporateField.show();
-        isIndividual = false;
+        isIndividual.value = false;
     }
 }
 function selectProvinces_onChange() {
     getDistricts($(this).val());
 }
 function chkConfirmDistantSalesAgreement_onChange() {
-    isDistantSalesAgreementConfirmed = chkConfirmDistantSalesAgreement.checked;
+    isDistantSalesAgreementConfirmed.value = chkConfirmDistantSalesAgreement.checked;
+    console.log(isDistantSalesAgreementConfirmed);
 }
 
 function btnBuy_onClick() {
@@ -95,7 +97,7 @@ function btnBuy_onClick() {
         IsDistantSalesAgreementConfirmed: isDistantSalesAgreementConfirmed,
         CartItems: cart.getItems()
     });
-    console.log(data);
+
     $.ajax({
         url: "/pay",
         method: "post",
@@ -121,6 +123,12 @@ function getCartItems() {
             if (res.isSuccess) {
                 appendCartItems(res.data.items);
                 txtTotal.text(res.data.total);
+                var cartItemIds = [];
+                for (var i = 0; i < res.data.items.length; i++) {
+                    var item = res.data.items[i];
+                    cartItemIds.push(item.educationId);
+                }
+                cartItems.val(JSON.stringify(cartItemIds));
             }
         }
     });

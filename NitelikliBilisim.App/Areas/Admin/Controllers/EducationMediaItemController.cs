@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Areas.Admin.VmCreator.EducationMediaItems;
+using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Managers;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
@@ -36,6 +37,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/egitim-medya-yonetimi/{educationId}")]
         public IActionResult Manage(Guid? educationId)
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationMediaItem");
             if (educationId == null)
                 return Redirect("/");
             var model = _vmCreator.CreateManageVm(educationId.Value);

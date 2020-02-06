@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Areas.Admin.VmCreator.EducationParts;
+using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
@@ -25,6 +26,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/egitim-parca-yonetimi/{educationId}")]
         public IActionResult Manage(Guid? educationId)
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationPart");
             if (educationId == null)
                 return Redirect("/");
 
@@ -140,6 +142,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/egitim-parca-guncelle/{partId}")]
         public IActionResult UpdatePart(Guid? partId)
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationUpdatePart");
             if (partId == null)
                 return Redirect("/admin/egitimler");
 

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.Debugging;
@@ -23,6 +24,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/etiket-ekle")]
         public IActionResult Add()
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationTagAdd");
             var data = _unitOfWork.EducationTag.Get(null, q => q.OrderBy(o => o.Name));
             var model = new AddGetVm
             {
@@ -34,6 +36,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/etiket-guncelle/{tagId}")]
         public IActionResult Update(Guid? tagId)
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationTagUpdate");
             if (tagId == null)
                 return Redirect("/admin/etiketler");
 
@@ -96,12 +99,28 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/etiketler")]
         public IActionResult List()
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationTagList");
             var performer = new Performer();
             var model = _unitOfWork.EducationTag.Get(null, order => order.OrderBy(o => o.Name));
             performer.Watch("List");
 
             return View(model);
         }
+
+        [Route("admin/get-tag-list")]
+        public JsonResult GetList()
+        {
+            var performer = new Performer();
+            var model = _unitOfWork.EducationTag.Get(null, order => order.OrderBy(o => o.Name));
+            performer.Watch("List");
+
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = model
+            });
+        }
+
 
         [Route("admin/etiket-sil")]
         public IActionResult Delete(Guid? tagId)

@@ -1,4 +1,4 @@
-﻿@model List<NitelikliBilisim.Core.Entities.EducationCategory>
+﻿
 @{
     ViewData["Title"] = "Kategori Listesi";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -7,6 +7,14 @@
 @section styles{
     <link href="~/assets/css/area-admin/dataTables.bootstrap4.css" rel="stylesheet" />
     <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
+    <link href="~/css/dx.common.css" rel="stylesheet" />
+    <link href="~/css/dx.light.css" rel="stylesheet" />
+<style>
+    #category-grid{
+        margin-top:-15px !important;
+    }
+</style>
+
 }
 @section alerts{
     <partial name="partials/_Alert" />
@@ -16,55 +24,7 @@
         <i class="fa fa-table"></i> Eğitim Kategorileri
     </div>
     <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th>Kategori İsmi</th>
-                        <th>Açıklama</th>
-                        <th>İşlem</th>
-                    </tr>
-                </thead>
-                <tfoot>
-                    <tr>
-                        <th>Kategori İsmi</th>
-                        <th>Açıklama</th>
-                        <th>İşlem</th>
-                    </tr>
-                </tfoot>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            @{
-                                var baseCategory = "Ana Kategori";
-                                if (item.BaseCategory != null)
-                                {
-                                    baseCategory = item.BaseCategory.Name;
-                                }
-                            }
-                            <td>
-                                @if (baseCategory == "Ana Kategori")
-                                {
-                                    <b style="color:#662d91;">[@baseCategory] @item.Name</b>
-                                }
-                                else
-                                {
-                                    <p><i>[@baseCategory]</i> @item.Name</p>
-                                }
-                            </td>
-                            <td>@item.Description</td>
-                            <td>
-                                <div class="btn-group">
-                                    <a class="btn btn-warning" href="/admin/kategori-guncelle/@item.Id">Güncelle</a>
-                                    <button class="btn-confirmation-modal-trigger btn btn-danger" data-url="/admin/kategori-sil?categoryId=@item.Id" style="cursor:pointer;">Sil</button>
-                                </div>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
+        <div id="category-grid"></div>
     </div>
     <div class="card-footer small text-muted">Veri tarihi: @DateTime.Now</div>
 </div>
@@ -74,4 +34,5 @@
     <script src="~/assets/js/area-admin/dataTables.bootstrap4.js"></script>
     <script src="~/js/sup/alert-sup.js"></script>
     <script src="~/js/areas/admin/admin-category-list.js"></script>
+    <script src="~/js/dx.all.js"></script>
 }

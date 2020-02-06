@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Areas.Admin.Models.Category;
+using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.Debugging;
@@ -25,6 +26,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/kategori-ekle")]
         public IActionResult Add()
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationCategoryAdd");
             var data = _unitOfWork.EducationCategory.Get(x => x.BaseCategoryId == null, q => q.OrderBy(o => o.Name));
             var model = new AddGetVm
             {
@@ -37,6 +39,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/kategori-guncelle/{categoryId}")]
         public IActionResult Update(Guid? categoryId)
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationCategoryUpdate");
             if (categoryId == null)
                 return Redirect("/admin/kategoriler");
 
@@ -106,11 +109,26 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/kategoriler")]
         public IActionResult List()
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationCategoryList");
             var performer = new Performer();
             var model = _unitOfWork.EducationCategory.Get(null, order => order.OrderBy(o => o.Name), x => x.BaseCategory);
             performer.Watch("List");
 
             return View(model);
+        }
+
+        [Route("admin/get-category-list")]
+        public JsonResult GetList()
+        {
+            //ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationCategoryGetList");
+            var performer = new Performer();
+            var model = _unitOfWork.EducationCategory.Get(null, order => order.OrderBy(o => o.Name), x => x.BaseCategory);
+            performer.Watch("List");
+
+            return Json(new ResponseModel(){ 
+                isSuccess = true,
+                data = model
+            });
         }
 
         [Route("admin/kategori-sil")]
