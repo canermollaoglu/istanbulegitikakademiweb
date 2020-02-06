@@ -75,4 +75,9 @@ namespace NitelikliBilisim.Core.ViewModels.Sales
         public string Ip { get; set; }
         public string IdentityNumber { get; set; } = "12345678901";
     }
+    public class _AfterSale
+    {
+        public Guid InvoiceId { get; set; }
+        public List<Guid> InvoiceDetailIds { get; set; }
+    }
 }
