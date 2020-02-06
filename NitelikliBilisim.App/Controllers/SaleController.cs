@@ -133,7 +133,7 @@ namespace NitelikliBilisim.App.Controllers
 
             if (result.TransactionType == TransactionType.Secure3d)
             {
-                HttpContext.Session.SetString("sales_data", JsonConvert.SerializeObject(data));
+                HttpContext.Session.SetString("sales_data", JsonConvert.SerializeObject(result.Success));
                 if (result.Status == "success")
                 {
                     HttpContext.Session.SetString("html_content", result.HtmlContent);
@@ -161,6 +161,7 @@ namespace NitelikliBilisim.App.Controllers
         {
             data.Locale = Locale.TR.ToString();
             var result = _paymentService.Confirm3DsPayment(data);
+            
             return View();
         }
 
