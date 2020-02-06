@@ -17,7 +17,7 @@ namespace NitelikliBilisim.Business.PaymentFactory
         public PaymentModel Pay(UnitOfWork unitOfWork, PayData data)
         {
             var user = unitOfWork.Sale.GetUser(data.SpecialInfo.UserId);
-            var cartItems = unitOfWork.Sale.Sell(data, user.Id);
+            var cartItems = unitOfWork.Sale.PrepareCartItems(data);
             var paymentResult = _service.Make3DsPayment(data, user, cartItems);
 
             var result = new PaymentModel
@@ -28,7 +28,10 @@ namespace NitelikliBilisim.Business.PaymentFactory
                 Locale = paymentResult.Locale,
                 Status = paymentResult.Status
             };
-            if (!IsValidConversation(data.ConversationId, paymentResult))
+
+            if (IsValidConversation(data.ConversationId, paymentResult))
+                unitOfWork.Sale.Sell(data, cartItems, user.Id);
+            else
                 result.Error = new PaymentModelError
                 {
                     ErrorCode = paymentResult.ErrorCode,
@@ -38,7 +41,7 @@ namespace NitelikliBilisim.Business.PaymentFactory
 
             return result;
         }
-        public bool IsValidConversation(Guid determinedConversationId, ThreedsInitialize paymentResult)
+        private bool IsValidConversation(Guid determinedConversationId, ThreedsInitialize paymentResult)
         {
             if (paymentResult.Status == "success"
                 && determinedConversationId.ToString() == paymentResult.ConversationId

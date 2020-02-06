@@ -22,23 +22,17 @@ namespace NitelikliBilisim.Business.Repositories
         {
             return _context.Users.First(x => x.Id == userId);
         }
-        public List<CartItem> Sell(PayData data, string userId)
+        public List<Guid> Sell(PayData data, List<CartItem> cartItems, string userId)
         {
-            var educations = _context.Educations
-                .Where(x => data.CartItems.Contains(x.Id))
-                .Include(x => x.Category)
-                .ThenInclude(x => x.BaseCategory)
-                .ToList();
+            var invoiceDetails = CreateInvoiceDetails(cartItems);
 
-            var invoiceDetails = CreateInvoiceDetails(educations);
-
-            var cartItems = new List<CartItem>();
-            for (int i = 0; i < educations.Count; i++)
-                cartItems.Add(new CartItem
-                {
-                    InvoiceDetailsId = invoiceDetails[i].Id,
-                    Education = educations[i]
-                });
+            //var cartItems = new List<CartItem>();
+            //for (int i = 0; i < educations.Count; i++)
+            //    cartItems.Add(new CartItem
+            //    {
+            //        InvoiceDetailsId = invoiceDetails[i].Id,
+            //        Education = educations[i]
+            //    });
 
             _CorporateInvoiceInfo corporateInvoiceInfo = !data.InvoiceInfo.IsIndividual ? data.CorporateInvoiceInfo : null;
 
@@ -73,7 +67,7 @@ namespace NitelikliBilisim.Business.Repositories
                     _context.SaveChanges();
                     transaction.Commit();
 
-                    return cartItems;
+                    return invoiceDetails.Select(x => x.Id).ToList();
                 }
                 catch
                 {
@@ -83,15 +77,36 @@ namespace NitelikliBilisim.Business.Repositories
             }
         }
 
-        private List<InvoiceDetail> CreateInvoiceDetails(List<Education> educations)
+        public List<CartItem> PrepareCartItems(PayData data)
+        {
+            var educations = _context.Educations
+               .Where(x => data.CartItems.Contains(x.Id))
+               .Include(x => x.Category)
+               .ThenInclude(x => x.BaseCategory)
+               .ToList();
+
+            var cartItems = new List<CartItem>();
+
+            foreach (var item in educations)
+                cartItems.Add(new CartItem
+                {
+                    Education = item,
+                    InvoiceDetailsId = Guid.NewGuid()
+                });
+
+            return cartItems;
+        }
+
+        private List<InvoiceDetail> CreateInvoiceDetails(List<CartItem> cartItems)
         {
             var invoiceDetails = new List<InvoiceDetail>();
-            foreach (var education in educations)
+            foreach (var cartItem in cartItems)
             {
                 invoiceDetails.Add(new InvoiceDetail
                 {
-                    EducationId = education.Id,
-                    PriceAtCurrentDate = education.NewPrice.GetValueOrDefault()
+                    Id = cartItem.InvoiceDetailsId,
+                    EducationId = cartItem.Education.Id,
+                    PriceAtCurrentDate = cartItem.Education.NewPrice.GetValueOrDefault()
                 });
             }
 

@@ -7,7 +7,9 @@ using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.App.VmCreator;
+using NitelikliBilisim.Business.PaymentFactory;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.PaymentModels;
 using NitelikliBilisim.Core.Services.Payments;
 using NitelikliBilisim.Core.ViewModels.Cart;
 using NitelikliBilisim.Core.ViewModels.Sales;
@@ -46,7 +48,7 @@ namespace NitelikliBilisim.App.Controllers
                     isSuccess = false,
                     data = new
                     {
-                        items = new List<CartItem>(),
+                        items = new List<CartItemVm>(),
                         total = 0m.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"))
                     }
                 });
@@ -126,17 +128,18 @@ namespace NitelikliBilisim.App.Controllers
                 binNumber: data.CardInfo.NumberOnCard.Substring(0, 6),
                 price: GetPriceSumForCartItems(data.CartItems));
 
-            //var manager = new PaymentManager(_paymentService, TransactionType.Normal);
-            //var result = manager.Pay(data);
+            var manager = new PaymentManager(_paymentService, TransactionType.Secure3d);
+            var result = manager.Pay(_unitOfWork, data);
 
-            //var paymentResult = _unitOfWork.Sale.Sell(data, null, _paymentService, out PayData dataResult);
-
-            //HttpContext.Session.SetString("sales_data", JsonConvert.SerializeObject(dataResult));
-            //if (paymentResult.Status == "success")
-            //{
-            //    HttpContext.Session.SetString("html_content", paymentResult.HtmlContent);
-            //    return Redirect("/secure3d");
-            //}
+            if (result.TransactionType == TransactionType.Secure3d)
+            {
+                HttpContext.Session.SetString("sales_data", JsonConvert.SerializeObject(data));
+                if (result.Status == "success")
+                {
+                    HttpContext.Session.SetString("html_content", result.HtmlContent);
+                    return Redirect("/secure3d");
+                }
+            }
 
             return Json(new ResponseModel
             {
