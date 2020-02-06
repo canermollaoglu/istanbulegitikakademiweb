@@ -1,4 +1,7 @@
-﻿namespace NitelikliBilisim.Core.PaymentModels
+﻿using System;
+using System.Collections.Generic;
+
+namespace NitelikliBilisim.Core.PaymentModels
 {
     public class PaymentModel
     {
@@ -7,6 +10,7 @@
         public string HtmlContent { get; set; }
         public string Status { get; set; }
         public string Locale { get; set; }
+        public PaymentModelSuccess Success { get; set; }
         public PaymentModelError Error { get; set; }
 
     }
@@ -15,5 +19,10 @@
         public string ErrorCode { get; set; }
         public string ErrorGroup { get; set; }
         public string ErrorMessage { get; set; }
+    }
+    public class PaymentModelSuccess
+    {
+        public Guid InvoiceId { get; set; }
+        public List<Guid> InvoiceDetailIds { get; set; }
     }
 }

@@ -20,7 +20,6 @@ function document_onLoad() {
 function btnSave_onClick() {
     btnSave.off("click");
     var file = fileManager.getFile();
-    console.log(file)
     var data = {
         Name: $("#input-name").val(),
         Surname: $("#input-surname").val(),

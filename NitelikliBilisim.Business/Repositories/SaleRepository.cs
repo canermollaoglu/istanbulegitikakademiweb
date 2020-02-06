@@ -6,7 +6,6 @@ using NitelikliBilisim.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Iyzipay.Model;
 using NitelikliBilisim.Core.PaymentModels;
 
 namespace NitelikliBilisim.Business.Repositories
@@ -22,7 +21,7 @@ namespace NitelikliBilisim.Business.Repositories
         {
             return _context.Users.First(x => x.Id == userId);
         }
-        public List<Guid> Sell(PayData data, List<CartItem> cartItems, string userId)
+        public List<InvoiceDetail> Sell(PayData data, List<CartItem> cartItems, string userId)
         {
             var invoiceDetails = CreateInvoiceDetails(cartItems);
 
@@ -57,7 +56,7 @@ namespace NitelikliBilisim.Business.Repositories
                     _context.SaveChanges();
                     transaction.Commit();
 
-                    return invoiceDetails.Select(x => x.Id).ToList();
+                    return invoiceDetails.ToList();
                 }
                 catch
                 {
@@ -86,7 +85,6 @@ namespace NitelikliBilisim.Business.Repositories
 
             return cartItems;
         }
-
         private List<InvoiceDetail> CreateInvoiceDetails(List<CartItem> cartItems)
         {
             var invoiceDetails = new List<InvoiceDetail>();
@@ -102,7 +100,6 @@ namespace NitelikliBilisim.Business.Repositories
 
             return invoiceDetails;
         }
-
         private Invoice CreateInvoice(_CorporateInvoiceInfo corporateInvoiceInfo, byte paymentCount, string userId)
         {
             var invoice = new Invoice
@@ -124,7 +121,6 @@ namespace NitelikliBilisim.Business.Repositories
 
             return invoice;
         }
-
         private List<Ticket> CreateTickets(List<InvoiceDetail> invoiceDetails, Guid hostId, string userId)
         {
             var tickets = new List<Ticket>();
@@ -140,17 +136,16 @@ namespace NitelikliBilisim.Business.Repositories
 
             return tickets;
         }
-
-        public bool IsValidConversation(Guid determinedConversationId, ThreedsInitialize paymentResult)
-        {
-            if (paymentResult.Status == "success"
-                && determinedConversationId.ToString() == paymentResult.ConversationId
-                && paymentResult.ErrorCode == null
-                && paymentResult.ErrorMessage == null
-                && paymentResult.ErrorGroup == null
-                && paymentResult.HtmlContent != null)
-                return true;
-            return false;
-        }
+        //public bool IsValidConversation(Guid determinedConversationId, ThreedsInitialize paymentResult)
+        //{
+        //    if (paymentResult.Status == "success"
+        //        && determinedConversationId.ToString() == paymentResult.ConversationId
+        //        && paymentResult.ErrorCode == null
+        //        && paymentResult.ErrorMessage == null
+        //        && paymentResult.ErrorGroup == null
+        //        && paymentResult.HtmlContent != null)
+        //        return true;
+        //    return false;
+        //}
     }
 }
