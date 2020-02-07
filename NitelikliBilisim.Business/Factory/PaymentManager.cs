@@ -11,7 +11,6 @@ namespace NitelikliBilisim.Business.PaymentFactory
     public class PaymentManager
     {
         private readonly IPayer _payer;
-        private readonly TransactionType _transactionType;
         public PaymentManager(IPaymentService service, TransactionType transactionType)
         {
             _payer = CreatePayer(service, transactionType);
@@ -21,7 +20,7 @@ namespace NitelikliBilisim.Business.PaymentFactory
         {
             return _payer.Pay(unitOfWork, data);
         }
-        public PaymentCompletionModel Create3dCompletionModel(ThreedsPayment result)
+        public PaymentCompletionModel CreateCompletionModel(PaymentResource result)
         {
             if (result.Status == "failure")
                 return null;

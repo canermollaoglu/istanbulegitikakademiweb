@@ -40,7 +40,7 @@ namespace NitelikliBilisim.Business.Repositories
 
             return cartItems;
         }
-        public List<InvoiceDetail> Sell(PayData data, List<CartItem> cartItems, string userId)
+        public List<InvoiceDetail> Sell(PayData data, List<CartItem> cartItems, string userId, TransactionStatus transactionStatus = TransactionStatus.TransactionAwait)
         {
             var invoiceDetails = CreateInvoiceDetails(cartItems);
 
@@ -48,7 +48,8 @@ namespace NitelikliBilisim.Business.Repositories
 
             var invoice = CreateInvoice(corporateInvoiceInfo: corporateInvoiceInfo,
                 paymentCount: data.PaymentInfo.Installments,
-                userId: userId);
+                userId: userId,
+                transactionStatus: transactionStatus);
 
             data.BasketId = invoice.Id;
 
@@ -144,12 +145,12 @@ namespace NitelikliBilisim.Business.Repositories
 
             return invoiceDetails;
         }
-        private Invoice CreateInvoice(_CorporateInvoiceInfo corporateInvoiceInfo, byte paymentCount, string userId)
+        private Invoice CreateInvoice(_CorporateInvoiceInfo corporateInvoiceInfo, byte paymentCount, string userId, TransactionStatus transactionStatus = TransactionStatus.TransactionAwait)
         {
             var invoice = new Invoice
             {
                 BillingType = CustomerType.Individual,
-                TransactionStatus = TransactionStatus.TransactionAwait,
+                TransactionStatus = transactionStatus,
 
                 CustomerId = userId,
                 PaymentCount = paymentCount,

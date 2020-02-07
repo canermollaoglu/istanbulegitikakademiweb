@@ -10,6 +10,7 @@ namespace NitelikliBilisim.Core.ViewModels.Sales
     {
         public Guid BasketId { get; set; }
         public Guid ConversationId { get; set; } = Guid.NewGuid();
+        public bool Use3d { get; set; }
         [Required]
         public _CardInfo CardInfo { get; set; }
         [Required]

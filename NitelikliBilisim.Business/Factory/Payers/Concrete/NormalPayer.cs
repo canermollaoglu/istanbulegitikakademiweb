@@ -4,6 +4,7 @@ using NitelikliBilisim.Core.PaymentModels;
 using NitelikliBilisim.Core.Services.Payments;
 using NitelikliBilisim.Core.ViewModels.Sales;
 using System;
+using System.Linq;
 
 namespace NitelikliBilisim.Business.PaymentFactory
 {
@@ -22,15 +23,23 @@ namespace NitelikliBilisim.Business.PaymentFactory
 
             var result = new PaymentModel
             {
-                TransactionType = TransactionType.Secure3d,
+                TransactionType = TransactionType.Normal,
                 ConversationId = paymentResult.ConversationId,
                 HtmlContent = null,
                 Locale = paymentResult.Locale,
-                Status = paymentResult.Status
+                Status = paymentResult.Status,
+                PaymentForNormal = paymentResult
             };
 
             if (IsValidConversation(data.ConversationId, paymentResult))
-                unitOfWork.Sale.Sell(data, cartItems, user.Id);
+            {
+                var invoiceDetails = unitOfWork.Sale.Sell(data, cartItems, user.Id);
+                result.Success = new PaymentModelSuccess
+                {
+                    InvoiceId = invoiceDetails[0].InvoiceId,
+                    InvoiceDetailIds = invoiceDetails.Select(x => x.Id).ToList()
+                };
+            }
             else
                 result.Error = new PaymentModelError
                 {

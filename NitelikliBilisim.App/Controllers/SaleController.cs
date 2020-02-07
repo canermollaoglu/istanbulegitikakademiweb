@@ -7,6 +7,7 @@ using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.App.VmCreator;
+using NitelikliBilisim.Business.Factory;
 using NitelikliBilisim.Business.PaymentFactory;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.PaymentModels;
@@ -85,6 +86,7 @@ namespace NitelikliBilisim.App.Controllers
         [HttpPost, ValidateAntiForgeryToken, Route("pay")]
         public IActionResult Pay(PayData data)
         {
+            #region Validation
             if (!HttpContext.User.Identity.IsAuthenticated || data.CartItemsJson == null)
                 return Json(new ResponseModel
                 {
@@ -118,6 +120,7 @@ namespace NitelikliBilisim.App.Controllers
                     isSuccess = false,
                     errors = new List<string> { "?" }
                 });
+            #endregion
 
             data.CardInfo.NumberOnCard = FormatCardNumber(data.CardInfo.NumberOnCard);
             data.SpecialInfo.Ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
@@ -128,8 +131,18 @@ namespace NitelikliBilisim.App.Controllers
                 binNumber: data.CardInfo.NumberOnCard.Substring(0, 6),
                 price: GetPriceSumForCartItems(data.CartItems));
 
-            var manager = new PaymentManager(_paymentService, TransactionType.Secure3d);
+            var cardInfoChecker = new CardInfoChecker();
+            var transactionType = cardInfoChecker.DecideTransactionType(info, data.Use3d);
+
+            var manager = new PaymentManager(_paymentService, transactionType);
             var result = manager.Pay(_unitOfWork, data);
+
+            if (result.TransactionType == TransactionType.Normal)
+            {
+                var model = manager.CreateCompletionModel(result.PaymentForNormal);
+                _unitOfWork.Sale.CompletePayment(model, result.Success.InvoiceId, result.Success.InvoiceDetailIds);
+                return Redirect("/odeme-sonucunuz");
+            }
 
             if (result.TransactionType == TransactionType.Secure3d)
             {
@@ -141,10 +154,7 @@ namespace NitelikliBilisim.App.Controllers
                 }
             }
 
-            return Json(new ResponseModel
-            {
-                isSuccess = false,
-            });
+            return Redirect("/");
         }
 
         [Route("secure3d")]
@@ -156,6 +166,12 @@ namespace NitelikliBilisim.App.Controllers
             });
         }
 
+        [HttpGet, Route("odeme-sonucunuz")]
+        public IActionResult NormalPaymentResult()
+        {
+            return View();
+        }
+
         [HttpPost, Route("odeme-sonucu")]
         public IActionResult PaymentResult(CreateThreedsPaymentRequest data)
         {
@@ -164,10 +180,10 @@ namespace NitelikliBilisim.App.Controllers
                 data.Locale = Locale.TR.ToString();
                 var result = _paymentService.Confirm3DsPayment(data);
                 var manager = new PaymentManager(_paymentService, TransactionType.Secure3d);
-                var model = manager.Create3dCompletionModel(result);
+                var model = manager.CreateCompletionModel(result);
                 if (model == null)
                     return View();
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
                 var paymentModelSuccess = _unitOfWork.TempSaleData.Get(data.ConversationId);
                 _unitOfWork.TempSaleData.Remove(data.ConversationId);
                 _unitOfWork.Sale.CompletePayment(model, paymentModelSuccess.InvoiceId, paymentModelSuccess.InvoiceDetailIds);

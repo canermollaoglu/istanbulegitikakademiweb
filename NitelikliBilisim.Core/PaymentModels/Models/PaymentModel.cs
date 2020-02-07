@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Iyzipay.Model;
+using System;
 using System.Collections.Generic;
 
 namespace NitelikliBilisim.Core.PaymentModels
@@ -12,6 +13,7 @@ namespace NitelikliBilisim.Core.PaymentModels
         public string Locale { get; set; }
         public PaymentModelSuccess Success { get; set; }
         public PaymentModelError Error { get; set; }
+        public Payment PaymentForNormal { get; set; }
 
     }
     public class PaymentModelError

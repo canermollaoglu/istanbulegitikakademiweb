@@ -15,26 +15,26 @@ namespace NitelikliBilisim.Core.PaymentModels
         [Description("Ödeme Alındı")]
         TransactionSuccess = 1020
     }
-    public enum CardTypes
+    public enum CardType
     {
         CREDIT_CARD = 1, DEBIT_CARD = 100, PREPAID_CARD = 500
     }
-    public enum CardAssociations
+    public enum CardAssociation
     {
         TROY = 10, VISA = 200, MASTER_CARD = 100, AMERICAN_EXPRESS = 1000
     }
-    public enum CreditCardTypes
+    public enum CreditCardType
     {
         TROY = 10,
         MASTERCARD = 100,
         VISA = 200,
         AMEX = 1000
     }
-    public enum CardFamilyNames
+    public enum CardFamilyName
     {
         Bonus = 10, Axess = 40, World = 20, Maximum = 30, Paraf = 60, CardFinans = 50, Advantage = 70
     }
-    public enum CreditCardPrograms
+    public enum CreditCardProgram
     {
         BONUS = 10,
         WORD = 20,
