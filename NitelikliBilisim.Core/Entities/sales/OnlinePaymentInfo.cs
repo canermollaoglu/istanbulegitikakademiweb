@@ -11,13 +11,13 @@ namespace NitelikliBilisim.Core.Entities
         [ForeignKey("Id")]
         public virtual Invoice Invoice { get; set; }
 
-        [MaxLength(16)]
+        [MaxLength(32)]
         public string PaymentId { get; set; }
-        [MaxLength(6)]
+        [MaxLength(12)]
         public string BinNumber { get; set; }
-        [MaxLength(4)]
+        [MaxLength(8)]
         public string LastFourDigit { get; set; }
-        [MaxLength(16)]
+        [MaxLength(32)]
         public string HostRef { get; set; }
         public decimal CommissonFee { get; set; }
         public decimal CommissionRate { get; set; }

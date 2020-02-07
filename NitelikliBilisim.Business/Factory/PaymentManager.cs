@@ -23,6 +23,9 @@ namespace NitelikliBilisim.Business.PaymentFactory
         }
         public PaymentCompletionModel Create3dCompletionModel(ThreedsPayment result)
         {
+            if (result.Status == "failure")
+                return null;
+
             var model = new PaymentCompletionModel
             {
                 Invoice = new PaymentCompletionInvoice

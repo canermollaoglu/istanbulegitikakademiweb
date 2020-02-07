@@ -124,7 +124,7 @@ namespace NitelikliBilisim.Business.Repositories
                 _context.SaveChanges();
                 transaction.Commit();
             }
-            catch
+            catch (Exception ex)
             {
                 transaction.Rollback();
             }

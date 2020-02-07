@@ -133,9 +133,9 @@ namespace NitelikliBilisim.App.Controllers
 
             if (result.TransactionType == TransactionType.Secure3d)
             {
-                HttpContext.Session.SetString("sales_data", JsonConvert.SerializeObject(result.Success));
                 if (result.Status == "success")
                 {
+                    _unitOfWork.TempSaleData.Create(result.ConversationId, result.Success);
                     HttpContext.Session.SetString("html_content", result.HtmlContent);
                     return Redirect("/secure3d");
                 }
@@ -165,7 +165,11 @@ namespace NitelikliBilisim.App.Controllers
                 var result = _paymentService.Confirm3DsPayment(data);
                 var manager = new PaymentManager(_paymentService, TransactionType.Secure3d);
                 var model = manager.Create3dCompletionModel(result);
-                var paymentModelSuccess = JsonConvert.DeserializeObject<PaymentModelSuccess>(HttpContext.Session.GetString("sales_data"));
+                if (model == null)
+                    return View();
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var paymentModelSuccess = _unitOfWork.TempSaleData.Get(data.ConversationId);
+                _unitOfWork.TempSaleData.Remove(data.ConversationId);
                 _unitOfWork.Sale.CompletePayment(model, paymentModelSuccess.InvoiceId, paymentModelSuccess.InvoiceDetailIds);
             }
 

@@ -10,7 +10,7 @@ namespace NitelikliBilisim.Core.Entities
     {
         [ForeignKey("Id")]
         public virtual InvoiceDetail InvoiceDetail { get; set; }
-        [MaxLength(16)]
+        [MaxLength(32)]
         public string TransactionId { get; set; }
         public decimal Price { get; set; }
         public decimal CommissionFee { get; set; }
