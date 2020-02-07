@@ -42,6 +42,10 @@
             return items.length;
         }
 
+        Cart.prototype.clearCart = function () {
+            localStorage.setItem("cart", JSON.stringify([]));
+        }
+
         return Cart;
     }());
     CartSupport.Cart = Cart;
