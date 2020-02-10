@@ -49,12 +49,6 @@
                             </tr>
                         </thead>
                         <tbody id="tbody-assigned">
-                            <!--foreach group students-->
-                            <tr>
-                                <td>Test</td>
-                                <td>Test</td>
-                                <td><button class="btn btn-danger"><i class="fa fa-minus"></i></button></td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -70,12 +64,7 @@
                             </tr>
                         </thead>
                         <tbody id="tbody-tickets">
-                            <!--foreach available ticket holders-->
-                            <tr>
-                                <td>Test</td>
-                                <td>Test</td>
-                                <td><button class="btn btn-success"><i class="fa fa-plus"></i></button></td>
-                            </tr>
+
                         </tbody>
                     </table>
                 </div>
@@ -87,13 +76,61 @@
 
 @section postScripts{
     <script>
+        /* fields */
+        var _groupId = document.getElementById("_group-id").value;
         /* elements */
-
+        var tbodyAssigned = $("#tbody-assigned");
+        var tbodyTickets = $("#tbody-tickets");
         /* assignments */
-
+        $(document).ready(document_onLoad);
         /* events */
-
+        function document_onLoad() {
+            createTables();
+        }
         /* functions */
+        function createTables() {
+            $.ajax({
+                url: `/admin/get-eligible-and-assigned-students/${_groupId}`,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        console.log(res.data);
+                        tbodyAssigned.html("");
+                        tbodyTickets.html("");
+                        var assignedStudents = res.data.assignedStudents;
+                        var eligibleTickets = res.data.eligibleTickets;
 
+                        var assignedAppend = "";
+                        var eligibleAppend = "";
+
+                        if (assignedStudents.length != 0)
+                            for (var i = 0; i < assignedStudents.length; i++) {
+                                var item1 = assignedStudents[i];
+                                assignedAppend += "<tr>" +
+                                    `<td>${item1.customerName}</td>` +
+                                    `<td>${item1.customerSurname}</td>` +
+                                    `<td><button class="btn btn-danger" data-ticket-id="${item1.ticketId}"><i class="fa fa-minus"></i></button></td>` +
+                                    "</tr>";
+                            }
+                        else
+                            assignedAppend = `<tr><td colspan="3">Gruba atanmış öğrenci yoktur</td></tr>`;
+                        tbodyAssigned.append(assignedAppend);
+
+                        if (eligibleTickets.length != 0)
+                            for (var i = 0; i < eligibleTickets.length; i++) {
+                                var item2 = eligibleTickets[i];
+                                eligibleAppend += "<tr>" +
+                                    `<td>${item2.customerName}</td>` +
+                                    `<td>${item2.customerSurname}</td>` +
+                                    `<td><button class="btn btn-success" data-ticket-id="${item2.ticketId}"><i class="fa fa-plus"></i></button></td>` +
+                                    "<tr>";
+                            }
+                        else
+                            eligibleAppend = `<tr><td>Gruba atanabilecek öğrenci yoktur</td></tr>`;
+                        tbodyTickets.append(eligibleAppend);
+                    }
+                }
+            });
+        }
     </script>
 }

@@ -12,8 +12,14 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_groups
 
     public class GetEligibleAndAssignedStudentsVm
     {
-        public List<Ticket> EligibleTickets { get; set; }
-        public List<Bridge_GroupStudent> AssignedStudents { get; set; }
+        public List<_Ticket> EligibleTickets { get; set; }
+        public List<_Ticket> AssignedStudents { get; set; }
     }
 
+    public class _Ticket
+    {
+        public Guid TicketId { get; set; }
+        public string CustomerName { get; set; }
+        public string CustomerSurname { get; set; }
+    }
 }

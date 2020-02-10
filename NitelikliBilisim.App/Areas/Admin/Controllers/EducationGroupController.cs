@@ -96,15 +96,16 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             return View(model);
         }
 
-        public IActionResult GetEligibleAndAssignedStudents(Guid? grupId)
+        [Route("admin/get-eligible-and-assigned-students/{groupId?}")]
+        public IActionResult GetEligibleAndAssignedStudents(Guid? groupId)
         {
-            if (!grupId.HasValue)
+            if (!groupId.HasValue)
                 return Json(new ResponseModel
                 {
                     isSuccess = false
                 });
 
-            var model = _unitOfWork.EducationGroup.GetEligibleTicketsToAssign(grupId.Value);
+            var model = _unitOfWork.EducationGroup.GetEligibleAndAssignedStudents(groupId.Value);
             return Json(new ResponseModel
             {
                 isSuccess = true,

@@ -105,7 +105,7 @@ namespace NitelikliBilisim.Business.Repositories
             };
         }
 
-        public GetEligibleAndAssignedStudentsVm GetEligibleTicketsToAssign(Guid groupId)
+        public GetEligibleAndAssignedStudentsVm GetEligibleAndAssignedStudents(Guid groupId)
         {
             var group = _context.EducationGroups.FirstOrDefault(x => x.Id == groupId);
             if (group == null)
@@ -115,12 +115,26 @@ namespace NitelikliBilisim.Business.Repositories
 
             var eligibleTickets = _context.Tickets
                 .Include(x => x.Owner)
+                .ThenInclude(x => x.User)
                 .Where(x => !x.IsUsed && x.EducationId == group.EducationId)
+                .Select(x => new _Ticket
+                {
+                    TicketId = x.Id,
+                    CustomerName = x.Owner.User.Name,
+                    CustomerSurname = x.Owner.User.Surname
+                })
                 .ToList();
 
             var groupTickets = _context.Bridge_GroupStudents
                 .Where(x => x.Id == groupId)
                 .Include(x => x.Customer)
+                .ThenInclude(x => x.User)
+                .Select(x => new _Ticket
+                {
+                    TicketId = x.Id,
+                    CustomerName = x.Customer.User.Name,
+                    CustomerSurname = x.Customer.User.Surname
+                })
                 .ToList();
 
             return new GetEligibleAndAssignedStudentsVm
