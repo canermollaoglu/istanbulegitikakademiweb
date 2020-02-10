@@ -5,6 +5,9 @@ using NitelikliBilisim.Core.ViewModels.Main.Course;
 using System;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.Support.Enums;
+using System.Collections.Generic;
+using System.Linq;
+using NitelikliBilisim.App.Models;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -20,34 +23,52 @@ namespace NitelikliBilisim.App.Controllers
         [Route("kurs-detayi/{courseId}")]
         public IActionResult Details(Guid? courseId)
         {
-            var educationDetails = _unitOfWork.Education.GetEducation(courseId.GetValueOrDefault());
-            var educators = _unitOfWork.Bridge_EducationEducator.GetAssignedEducators(courseId.GetValueOrDefault());
-            var firstAvailableGroup = _unitOfWork.EducationGroup.GetFirstAvailableGroup(courseId.GetValueOrDefault());
-            GroupVm group = null;
-            if (firstAvailableGroup != null)
-            {
-                group = new GroupVm
-                {
-                    GroupId = firstAvailableGroup.Id,
-                    StartDate = firstAvailableGroup.StartDate,
-                    Quota = firstAvailableGroup.Quota,
-                    Host = new HostVm
-                    {
-                        Address = firstAvailableGroup.Host.Address,
-                        City = EnumSupport.GetDescription(firstAvailableGroup.Host.City),
-                        HostName = firstAvailableGroup.Host.HostName,
-                        Latitude = firstAvailableGroup.Host.Latitude,
-                        Longitude = firstAvailableGroup.Host.Longitude
-                    }
-                };
-            }
+            if (!courseId.HasValue)
+                return Redirect("/");
+
+            var educationDetails = _unitOfWork.Education.GetEducation(courseId.Value);
+            var educators = _unitOfWork.Bridge_EducationEducator.GetAssignedEducators(courseId.Value);
+
             var model = new CourseDetailsVm
             {
                 Details = educationDetails,
                 Educators = educators,
-                Group = group
             };
             return View(model);
+        }
+
+        [Route("get-available-groups-for-course/{courseId?}")]
+        public IActionResult GetAvailableGroupsForCourse(Guid? courseId)
+        {
+            if (!courseId.HasValue)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false
+                });
+
+            var firstAvailableGroups = _unitOfWork.EducationGroup.GetFirstAvailableGroups(courseId.Value);
+
+            var model = firstAvailableGroups.Select(x => new GroupVm
+            {
+                GroupId = x.Id,
+                StartDate = x.StartDate,
+                Quota = x.Quota,
+                Host = new HostVm
+                {
+                    HostId = x.Host.Id,
+                    Address = x.Host.Address,
+                    City = EnumSupport.GetDescription(x.Host.City),
+                    HostName = x.Host.HostName,
+                    Latitude = x.Host.Latitude,
+                    Longitude = x.Host.Longitude
+                }
+            }).ToList();
+
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = model
+            });
         }
     }
 }

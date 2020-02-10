@@ -449,7 +449,7 @@ namespace NitelikliBilisim.Business.Repositories
                     DaysText = x.Education.Days.ToString(),
                     DaysNumeric = x.Education.Days,
                     HoursPerDayNumeric = x.Education.HoursPerDay,
-                    StartDateText = educationGroupRepository.GetFirstAvailableGroup(x.Education.Id)?.StartDate
+                    StartDateText = educationGroupRepository.GetFirstAvailableGroups(x.Education.Id).FirstOrDefault()?.StartDate
                         .ToString("dd MMMM yyyy", CultureInfo.CreateSpecificCulture("tr-TR")) ?? "Açılan grup yok"
                 },
                 Medias = new List<EducationMediaVm> { new EducationMediaVm { EducationId = x.Education.Id, FileUrl = x.EducationPreviewMedia.FileUrl } }

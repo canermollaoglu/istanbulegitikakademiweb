@@ -123,7 +123,7 @@ namespace NitelikliBilisim.Business.Repositories
             var educationGroupRepository = new EducationGroupRepository(Context);
 
             foreach (var item in model)
-                item.Base.StartDateText = educationGroupRepository.GetFirstAvailableGroup(item.Base.Id)?.StartDate
+                item.Base.StartDateText = educationGroupRepository.GetFirstAvailableGroups(item.Base.Id).FirstOrDefault()?.StartDate
                         .ToString("dd MMMM yyyy", CultureInfo.CreateSpecificCulture("tr-TR")) ?? "Açılan grup yok";
 
             return model;

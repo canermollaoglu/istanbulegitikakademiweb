@@ -49,15 +49,20 @@ namespace NitelikliBilisim.Business.Repositories
                 }
             }
         }
-        public EducationGroup GetFirstAvailableGroup(Guid educationId)
+        public List<EducationGroup> GetFirstAvailableGroups(Guid educationId)
         {
-            var group = _context.EducationGroups
+            var groups = _context.EducationGroups
                 .Include(x => x.Host)
                 .Where(x => x.EducationId == educationId && x.IsGroupOpenForAssignment)
                 .OrderBy(o => o.StartDate)
-                .FirstOrDefault();
+                .ToList();
 
-            return group;
+            var model = new List<EducationGroup>();
+            foreach (var item in groups)
+                if (!model.Select(x => x.HostId).Contains(item.HostId))
+                    model.Add(item);
+
+            return groups;
         }
 
         private string SerializeDays(List<int> days)
