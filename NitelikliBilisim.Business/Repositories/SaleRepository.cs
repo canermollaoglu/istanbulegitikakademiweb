@@ -127,6 +127,7 @@ namespace NitelikliBilisim.Business.Repositories
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex);
                 transaction.Rollback();
             }
         }
