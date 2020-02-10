@@ -105,30 +105,61 @@ namespace NitelikliBilisim.Business.Repositories
             };
         }
 
-        //public GroupAssignmentGetVm GetEligibleTicketsToAssign(Guid groupId)
-        //{
-        //    var group = _context.EducationGroups.FirstOrDefault(x => x.Id == groupId);
-        //    if (group == null)
-        //        return null;
-        //    if (!group.IsGroupOpenForAssignment)
-        //        return null;
+        public GetEligibleAndAssignedStudentsVm GetEligibleTicketsToAssign(Guid groupId)
+        {
+            var group = _context.EducationGroups.FirstOrDefault(x => x.Id == groupId);
+            if (group == null)
+                return null;
+            if (!group.IsGroupOpenForAssignment)
+                return null;
 
-        //    var eligibleTickets = _context.Tickets
-        //        .Include(x => x.Owner)
-        //        .Where(x => !x.IsUsed && x.EducationId == group.EducationId)
-        //        .ToList();
+            var eligibleTickets = _context.Tickets
+                .Include(x => x.Owner)
+                .Where(x => !x.IsUsed && x.EducationId == group.EducationId)
+                .ToList();
 
-        //    var groupTickets = _context.Bridge_GroupStudents
-        //        .Where(x => x.Id == groupId)
-        //        .Include(x => x.Ticket)
-        //        .ThenInclude(x => x.Owner)
-        //        .ToList();
+            var groupTickets = _context.Bridge_GroupStudents
+                .Where(x => x.Id == groupId)
+                .Include(x => x.Customer)
+                .ToList();
 
-        //    return new GroupAssignmentGetVm
-        //    {
-        //        AssignedStudents = groupTickets,
-        //        EligibleTickets = eligibleTickets
-        //    };
-        //}
+            return new GetEligibleAndAssignedStudentsVm
+            {
+                AssignedStudents = groupTickets,
+                EligibleTickets = eligibleTickets
+            };
+        }
+
+        public AssignStudentsVm GetAssignStudentsVm(Guid groupId)
+        {
+            var group = _context.EducationGroups
+                .Include(x => x.Education)
+                .Include(x => x.Host)
+                .FirstOrDefault(x => x.Id == groupId);
+
+            var educator = _context.Educators
+                .Include(x => x.User)
+                .Where(x => x.Id == group.EducatorId)
+                .Select(x => new
+                {
+                    EducatorName = x.User.Name + " " + x.User.Surname
+                })
+                .FirstOrDefault();
+
+            var data = new _Group
+            {
+                GroupId = group.Id,
+                GroupName = group.GroupName,
+                EducationName = group.Education.Name,
+                EducatorName = educator.EducatorName,
+                StartDate = group.StartDate,
+                Location = $"{group.Host.HostName} ({EnumSupport.GetDescription(group.Host.City)})"
+            };
+
+            return new AssignStudentsVm
+            {
+                Group = data
+            };
+        }
     }
 }

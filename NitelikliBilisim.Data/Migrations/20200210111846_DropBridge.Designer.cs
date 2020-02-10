@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NitelikliBilisim.Data;
 
 namespace NitelikliBilisim.Data.Migrations
 {
     [DbContext(typeof(NbDataContext))]
-    partial class NbDataContextModelSnapshot : ModelSnapshot
+    [Migration("20200210111846_DropBridge")]
+    partial class DropBridge
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -314,38 +316,6 @@ namespace NitelikliBilisim.Data.Migrations
                     b.HasIndex("Id2");
 
                     b.ToTable("Bridge_EducationTags");
-                });
-
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.Bridge_GroupStudent", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Id2")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
-
-                    b.Property<Guid>("TicketId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
-
-                    b.HasKey("Id", "Id2");
-
-                    b.HasIndex("Id2");
-
-                    b.ToTable("Bridge_GroupStudents");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.Customer", b =>
@@ -1405,21 +1375,6 @@ namespace NitelikliBilisim.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("NitelikliBilisim.Core.Entities.Education", "Education")
-                        .WithMany()
-                        .HasForeignKey("Id2")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.Bridge_GroupStudent", b =>
-                {
-                    b.HasOne("NitelikliBilisim.Core.Entities.EducationGroup", "Group")
-                        .WithMany("GroupStudents")
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("NitelikliBilisim.Core.Entities.Customer", "Customer")
                         .WithMany()
                         .HasForeignKey("Id2")
                         .OnDelete(DeleteBehavior.Cascade)

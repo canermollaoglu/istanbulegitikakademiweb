@@ -1,12 +1,14 @@
-﻿
+﻿@model NitelikliBilisim.Core.ViewModels.areas.admin.education_groups.AssignStudentsVm
 @{
     ViewData["Title"] = "Gruba Öğrenci Ata";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
+<input type="hidden" value="@Model.Group.GroupId" id="_group-id" />
+
 <div class="card mb-3">
     <div class="card-header">
-        <i class="fa fa-list"></i> <strong>{GroupName}</strong> Grubuna Öğrenci Ata
+        <i class="fa fa-list"></i> <strong>@Model.Group.GroupName</strong> Grubuna Öğrenci Ata
     </div>
     <div class="card-body">
         <div class="row">
@@ -14,23 +16,23 @@
                 <table class="table table-bordered">
                     <tr>
                         <th>Grup Adı</th>
-                        <td>{GroupName}</td>
+                        <td>@Model.Group.GroupName</td>
                     </tr>
                     <tr>
                         <th>Başlangıç Tarihi</th>
-                        <td>{StartDate}</td>
+                        <td>@Model.Group.StartDate.ToLongDateString()</td>
                     </tr>
                     <tr>
                         <th>Eğitim</th>
-                        <td>{Education.Name}</td>
+                        <td>@Model.Group.EducationName</td>
                     </tr>
                     <tr>
                         <th>Eğitmen</th>
-                        <td>{Educator.Name} {Education.Surname}</td>
+                        <td>@Model.Group.EducatorName</td>
                     </tr>
                     <tr>
                         <th>Konum</th>
-                        <td>{Host.City}</td>
+                        <td>@Model.Group.Location</td>
                     </tr>
                 </table>
             </div>
@@ -82,3 +84,16 @@
     </div>
     <div class="card-footer small text-muted">Veri tarihi: @DateTime.Now</div>
 </div>
+
+@section postScripts{
+    <script>
+        /* elements */
+
+        /* assignments */
+
+        /* events */
+
+        /* functions */
+
+    </script>
+}

@@ -88,10 +88,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/gruba-ogrenci-ata/{groupId?}")]
         public IActionResult AssignStudents(Guid? groupId)
         {
-            //if (groupId == null)
-            //    return Redirect("/admin/gruplar");
+            if (!groupId.HasValue)
+                return Redirect("/admin/gruplar");
 
-            return View();
+            var model = _unitOfWork.EducationGroup.GetAssignStudentsVm(groupId.Value);
+
+            return View(model);
         }
 
         public IActionResult GetEligibleAndAssignedStudents(Guid? grupId)
@@ -102,10 +104,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     isSuccess = false
                 });
 
+            var model = _unitOfWork.EducationGroup.GetEligibleTicketsToAssign(grupId.Value);
             return Json(new ResponseModel
             {
                 isSuccess = true,
-                data = null
+                data = model
             });
         }
     }

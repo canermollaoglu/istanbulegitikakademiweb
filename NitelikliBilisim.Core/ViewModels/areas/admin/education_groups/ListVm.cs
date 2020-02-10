@@ -18,5 +18,6 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_groups
         public string EducationName { get; set; }
         public int AssignedCount { get; set; }
         public byte Quota { get; set; }
+        public string EducatorName { get; set; }
     }
 }
