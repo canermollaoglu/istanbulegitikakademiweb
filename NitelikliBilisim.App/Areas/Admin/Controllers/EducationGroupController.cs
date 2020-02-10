@@ -93,5 +93,20 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
             return View();
         }
+
+        public IActionResult GetEligibleAndAssignedStudents(Guid? grupId)
+        {
+            if (!grupId.HasValue)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false
+                });
+
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = null
+            });
+        }
     }
 }

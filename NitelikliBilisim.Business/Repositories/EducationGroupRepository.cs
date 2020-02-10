@@ -104,5 +104,31 @@ namespace NitelikliBilisim.Business.Repositories
                 Groups = data
             };
         }
+
+        //public GroupAssignmentGetVm GetEligibleTicketsToAssign(Guid groupId)
+        //{
+        //    var group = _context.EducationGroups.FirstOrDefault(x => x.Id == groupId);
+        //    if (group == null)
+        //        return null;
+        //    if (!group.IsGroupOpenForAssignment)
+        //        return null;
+
+        //    var eligibleTickets = _context.Tickets
+        //        .Include(x => x.Owner)
+        //        .Where(x => !x.IsUsed && x.EducationId == group.EducationId)
+        //        .ToList();
+
+        //    var groupTickets = _context.Bridge_GroupStudents
+        //        .Where(x => x.Id == groupId)
+        //        .Include(x => x.Ticket)
+        //        .ThenInclude(x => x.Owner)
+        //        .ToList();
+
+        //    return new GroupAssignmentGetVm
+        //    {
+        //        AssignedStudents = groupTickets,
+        //        EligibleTickets = eligibleTickets
+        //    };
+        //}
     }
 }
