@@ -26,8 +26,6 @@
         <div class="wrapper">
             <div class="container" style="display: none !important">
                 <input type="hidden" value="@Model.Details.Base.Id" id="_education-id" />
-                @*<input type="hidden" value="@Model.Group.Host.Latitude" id="_host-latitude" />
-                    <input type="hidden" value="@Model.Group.Host.Longitude" id="_host-longitude" />*@
                 <h1 class="fadeInUp"><span></span>@Model.Details.Base.Name</h1>
             </div>
         </div>
@@ -55,10 +53,6 @@
                         </div>
                         <div class="group-selector-container">
                             <select id="select-groups">
-                                @*@foreach (var group in Model.Groups)
-                                    {
-                                        <option value="@group.GroupId" data-host-id="@group.Host.HostId">@group.Host.HostName (@group.Host.City)</option>
-                                    }*@
                             </select>
                         </div>
                         <h3><span></span>@Model.Details.Base.Name</h3>
@@ -164,11 +158,11 @@
                         <div id="list_feat">
                             <h3></h3>
                             <ul class="course-summary-list">
-                                @*<li><i class="icon-calendar-circled" id="text-group-host-start-date"></i>@Model.Group.StartDate.ToLongDateString()</li>
-                                    <li><i class="icon-hourglass"></i>@Model.Details.Base.DaysText gün (@hours saat)</li>
-                                    <li><i class=" icon-location-2" id="text-group-host-address"></i>@Model.Group.Host.Address</li>
-                                    <li><i class="icon-user"></i>Katılımcı: 0</li>
-                                    <li><i class="icon-users-2" id="text-group-quota"></i>Kontenjan: @Model.Group.Quota</li>*@
+                                <li id="text-group-host-start-date"></li>
+                                <li><i class="icon-hourglass"></i>@Model.Details.Base.DaysText gün (@hours saat)</li>
+                                <li id="text-group-host-address"></li>
+                                <li id="text-group-joined"></li>
+                                <li id="text-group-quota"></li>
                             </ul>
                         </div>
                     </div>
@@ -205,21 +199,27 @@
 </main>
 
 @section postScripts{
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBwbBlZQaeP0fYu7xTiviCCWGAK3onN-iE&callback=initMap"></script>
     <script src="~/js/sup/cart.js"></script>
     <script>
         /* fields */
         var _educationId = $("#_education-id").val();
         var groups = [];
-        var latitude, longitude;
+        var latitude = 0, longitude = 0;
         var markerTitle = "Niteliklibilişim"
 
         /* elements */
         var btnBuy = $("#btn-buy");
         var btnBuy2 = $("#btn-buy2");
         var selectGroups = document.getElementById("select-groups");
+        var textGroupHostStartDate = $("#text-group-host-start-date");
+        var textGroupHostAddress = $("#text-group-host-address");
+        var textGroupQuota = $("#text-group-quota");
+        var textGroupJoined = $("#text-group-joined");
 
         /* assignments */
         $(document).ready(document_onLoad);
+        selectGroups.onchange = selectGroups_onChange;
         btnBuy.on("click", btnBuy_onClick);
         btnBuy2.on("click", btnBuy_onClick);
 
@@ -229,25 +229,30 @@
                 url: `/get-available-groups-for-course/${_educationId}`,
                 method: "get",
                 success: (res) => {
-                    groups = res;
+                    groups = res.data;
                     var appended = "";
                     for (var i = 0; i < groups.length; i++) {
                         var item = groups[i];
                         appended += `<option value="${item.groupId}">${item.host.hostName} (${item.host.city})</option>`;
                     }
                     $(selectGroups).append(appended);
-                    console.log(appended);
-                    console.log(groups);
                     selectGroups.selectedIndex = 0;
+                    selectGroups_onChange();
                     initMap();
                 }
             });
         }
         function selectGroups_onChange() {
             var index = selectGroups.selectedIndex;
-            latitude = groups[index].host.latitude;
-            longitude = groups[index].host.longitude;
+            var group = groups[index];
+            console.log(group);
+            latitude = group.host.latitude;
+            longitude = group.host.longitude;
             initMap();
+            textGroupHostStartDate.html(`<i class="icon-calendar-circled"></i> ${group.startDateText}`);
+            textGroupHostAddress.html(`<i class=" icon-location-2"></i> ${group.host.address}`);
+            textGroupJoined.html(`<i class="icon-user"></i> Katılımcı: ${group.joined}`);
+            textGroupQuota.html(`<i class="icon-users-2"></i> Kontenjan: ${group.quota}`);
         }
         function btnBuy_onClick() {
             var cart = new CartSupport.Cart();
@@ -259,7 +264,6 @@
         /* functions */
         function initMap() {
             var location = { lat: parseFloat(latitude), lng: parseFloat(longitude) };
-            console.log(location) //silinmeli
             var map = new google.maps.Map(document.getElementById('map'), { zoom: 13, center: location });
             var marker = new google.maps.Marker({
                 position: location,
@@ -267,7 +271,10 @@
                 title: markerTitle
             });
         }
-
     </script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBwbBlZQaeP0fYu7xTiviCCWGAK3onN-iE&callback=initMap"></script>
 }
+@*<li id="text-group-host-start-date"><i class="icon-calendar-circled"></i>@Model.Group.StartDate.ToLongDateString()</li>
+    <li id=""><i class="icon-hourglass"></i>@Model.Details.Base.DaysText gün (@hours saat)</li>
+    <li id="text-group-host-address"><i class=" icon-location-2"></i>@Model.Group.Host.Address</li>
+    <li><i class="icon-user"></i>Katılımcı: 0</li>
+    <li id="text-group-quota"><i class="icon-users-2"></i>Kontenjan: @Model.Group.Quota</li>*@

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_groups;
 using NitelikliBilisim.Data;
 using NitelikliBilisim.Support.Enums;
@@ -49,7 +50,7 @@ namespace NitelikliBilisim.Business.Repositories
                 }
             }
         }
-        public List<EducationGroup> GetFirstAvailableGroups(Guid educationId)
+        public List<GroupVm> GetFirstAvailableGroups(Guid educationId)
         {
             var groups = _context.EducationGroups
                 .Include(x => x.Host)
@@ -57,12 +58,32 @@ namespace NitelikliBilisim.Business.Repositories
                 .OrderBy(o => o.StartDate)
                 .ToList();
 
-            var model = new List<EducationGroup>();
+            var model = new List<GroupVm>();
+            var hostIds = new List<Guid>();
             foreach (var item in groups)
-                if (!model.Select(x => x.HostId).Contains(item.HostId))
-                    model.Add(item);
+                if (!hostIds.Contains(item.HostId))
+                {
+                    hostIds.Add(item.HostId);
+                    model.Add(new GroupVm
+                    {
+                        GroupId = item.Id,
+                        StartDate = item.StartDate,
+                        StartDateText = item.StartDate.ToLongDateString(),
+                        Joined = _context.Bridge_GroupStudents.Count(x => x.Id == item.Id),
+                        Quota = item.Quota,
+                        Host = new HostVm
+                        {
+                            HostId = item.Host.Id,
+                            Address = item.Host.Address,
+                            City = EnumSupport.GetDescription(item.Host.City),
+                            HostName = item.Host.HostName,
+                            Latitude = item.Host.Latitude,
+                            Longitude = item.Host.Longitude
+                        }
+                    });
+                }
 
-            return groups;
+            return model;
         }
 
         private string SerializeDays(List<int> days)
@@ -82,6 +103,7 @@ namespace NitelikliBilisim.Business.Repositories
                     Id = x.Id,
                     GroupName = x.GroupName,
                     StartDate = x.StartDate,
+                    HostName = x.Host.HostName,
                     HostLocation = x.Host.City,
                     EducationName = x.Education.Name,
                     Quota = x.Quota,
@@ -91,7 +113,7 @@ namespace NitelikliBilisim.Business.Repositories
             var data = new List<_Group>();
             foreach (var item in groups)
             {
-                var hostLocation = EnumSupport.GetDescription(item.HostLocation);
+                var hostLocation = $"{item.HostName.Substring(0, 10)}... {EnumSupport.GetDescription(item.HostLocation)}";
                 data.Add(new _Group
                 {
                     GroupId = item.Id,

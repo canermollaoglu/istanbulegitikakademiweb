@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace NitelikliBilisim.Core.ViewModels
 {
@@ -8,6 +6,8 @@ namespace NitelikliBilisim.Core.ViewModels
     {
         public Guid GroupId { get; set; }
         public DateTime StartDate { get; set; }
+        public string StartDateText { get; set; }
+        public int Joined { get; set; }
         public byte Quota { get; set; }
         public HostVm Host { get; set; }
     }
