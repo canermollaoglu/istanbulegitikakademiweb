@@ -102,7 +102,7 @@ namespace NitelikliBilisim.Data
         public DbSet<Bridge_EducationEducator> Bridge_EducationEducators { get; set; }
         public DbSet<EducationGroup> EducationGroups { get; set; }
         public DbSet<Bridge_GroupStudent> Bridge_GroupStudents { get; set; }
-        public DbSet<GroupLessonDays> GroupLessonDays { get; set; }
+        public DbSet<WeekDaysOfGroup> WeekDaysOfGroups { get; set; }
         public DbSet<InvoiceDetail> InvoiceDetails { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<OnlinePaymentInfo> OnlinePaymentInfos { get; set; }

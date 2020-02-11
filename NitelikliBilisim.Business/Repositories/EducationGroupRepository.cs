@@ -32,7 +32,7 @@ namespace NitelikliBilisim.Business.Repositories
 
                     _context.EducationGroups.Add(entity);
                     _context.SaveChanges();
-                    _context.GroupLessonDays.Add(new GroupLessonDays
+                    _context.WeekDaysOfGroups.Add(new WeekDaysOfGroup
                     {
                         DaysJson = daysJson,
                         GroupId = entity.Id

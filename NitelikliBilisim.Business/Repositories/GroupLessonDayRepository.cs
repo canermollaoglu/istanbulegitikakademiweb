@@ -7,7 +7,7 @@ using System.Text;
 
 namespace NitelikliBilisim.Business.Repositories
 {
-    public class GroupLessonDayRepository : BaseRepository<GroupLessonDays, Guid>
+    public class GroupLessonDayRepository : BaseRepository<WeekDaysOfGroup, Guid>
     {
         private readonly NbDataContext _context;
         public GroupLessonDayRepository(NbDataContext context) : base(context)
@@ -15,14 +15,14 @@ namespace NitelikliBilisim.Business.Repositories
             _context = context;
         }
 
-        public bool Insert(GroupLessonDays entity, List<int> days)
+        public bool Insert(WeekDaysOfGroup entity, List<int> days)
         {
             if (days == null || days.Count == 0)
                 return false;
 
             var json = JsonConvert.SerializeObject(days);
             entity.DaysJson = json;
-            _context.GroupLessonDays.Add(entity);
+            _context.WeekDaysOfGroups.Add(entity);
             _context.SaveChanges();
 
             return true;

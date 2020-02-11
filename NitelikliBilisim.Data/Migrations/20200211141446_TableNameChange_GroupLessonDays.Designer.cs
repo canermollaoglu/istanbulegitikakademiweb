@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NitelikliBilisim.Data;
 
 namespace NitelikliBilisim.Data.Migrations
 {
     [DbContext(typeof(NbDataContext))]
-    partial class NbDataContextModelSnapshot : ModelSnapshot
+    [Migration("20200211141446_TableNameChange_GroupLessonDays")]
+    partial class TableNameChange_GroupLessonDays
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1295,7 +1297,7 @@ namespace NitelikliBilisim.Data.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("WeekDaysOfGroups");
+                    b.ToTable("WeekDaysOfGroup");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.WishlistItem", b =>

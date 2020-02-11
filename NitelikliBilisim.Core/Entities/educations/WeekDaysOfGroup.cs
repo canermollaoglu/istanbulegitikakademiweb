@@ -5,9 +5,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NitelikliBilisim.Core.Entities
 {
-    public class GroupLessonDays : BaseEntity<Guid>
+    [Table("WeekDaysOfGroups")]
+    public class WeekDaysOfGroup : BaseEntity<Guid>
     {
-        public GroupLessonDays()
+        public WeekDaysOfGroup()
         {
             Id = Guid.NewGuid();
         }
