@@ -2,7 +2,7 @@
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace NitelikliBilisim.Core.Entities.educations
+namespace NitelikliBilisim.Core.Entities
 {
     [Table("GroupLessonDays")]
     public class GroupLessonDay : BaseEntity<Guid>
