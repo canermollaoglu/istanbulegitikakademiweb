@@ -178,7 +178,7 @@
                 <div class="col-md-7">
                     <div class="row">
                         <div class="col-md-12">
-                            @*<span id="text-group-start-date">@Model.Group.StartDate.ToLongDateString() </span><span id="text-group-name-and-city">@Model.Group.Host.HostName (@Model.Group.Host.City)</span>*@
+                            <span id="text-group-start-date"></span><span id="text-group-name-and-city"></span>
                         </div>
                     </div>
                     <div class="row">
@@ -216,6 +216,8 @@
         var textGroupHostAddress = $("#text-group-host-address");
         var textGroupQuota = $("#text-group-quota");
         var textGroupJoined = $("#text-group-joined");
+        var textGroupStartDate = $("#text-group-start-date");
+        var textGroupNameAndCity = $("#text-group-name-and-city");
 
         /* assignments */
         $(document).ready(document_onLoad);
@@ -253,6 +255,8 @@
             textGroupHostAddress.html(`<i class=" icon-location-2"></i> ${group.host.address}`);
             textGroupJoined.html(`<i class="icon-user"></i> Katılımcı: ${group.joined}`);
             textGroupQuota.html(`<i class="icon-users-2"></i> Kontenjan: ${group.quota}`);
+            textGroupStartDate.html(`${group.startDateText}, `);
+            textGroupNameAndCity.html(`${group.host.hostName} (${group.host.city})`);
         }
         function btnBuy_onClick() {
             var cart = new CartSupport.Cart();
