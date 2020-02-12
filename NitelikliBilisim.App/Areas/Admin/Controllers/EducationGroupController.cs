@@ -112,5 +112,22 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 data = model
             });
         }
+
+        public IActionResult AssignTicket(AssignPostVm data)
+        {
+
+            return Json(new ResponseModel
+            {
+                isSuccess = true
+            });
+        }
+        public IActionResult UnassignTicket(UnassignPostVm data)
+        {
+
+            return Json(new ResponseModel
+            {
+                isSuccess = true
+            });
+        }
     }
 }
