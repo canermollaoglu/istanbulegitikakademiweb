@@ -94,7 +94,7 @@ namespace NitelikliBilisim.App.Controllers
                     errors = new List<string> { "Sepette ürün bulunmamaktadır" }
                 });
 
-            data.CartItems = JsonConvert.DeserializeObject<List<Guid>>(data.CartItemsJson);
+            data.CartItems = JsonConvert.DeserializeObject<List<_CartItem>>(data.CartItemsJson);
 
             if (data.CartItems == null || data.CartItems.Count == 0)
                 return Json(new ResponseModel
@@ -213,9 +213,10 @@ namespace NitelikliBilisim.App.Controllers
             return string.Join(null, splitted);
         }
         [NonAction]
-        public decimal GetPriceSumForCartItems(List<Guid> itemIds)
+        public decimal GetPriceSumForCartItems(List<_CartItem> itemIds)
         {
-            return _unitOfWork.Education.Get(x => itemIds.Contains(x.Id), null).Sum(x => x.NewPrice.Value);
+            var educationIds = itemIds.Select(x => x.EducationId).ToList();
+            return _unitOfWork.Education.Get(x => educationIds.Contains(x.Id), null).Sum(x => x.NewPrice.Value);
         }
     }
 

@@ -46,23 +46,6 @@ namespace NitelikliBilisim.App.Controllers
                     isSuccess = false
                 });
 
-            //var firstAvailableGroups = _unitOfWork.EducationGroup.GetFirstAvailableGroups(courseId.Value);
-
-            //var model = firstAvailableGroups.Select(x => new GroupVm
-            //{
-            //    GroupId = x.Id,
-            //    StartDate = x.StartDate,
-            //    Quota = x.Quota,
-            //    Host = new HostVm
-            //    {
-            //        HostId = x.Host.Id,
-            //        Address = x.Host.Address,
-            //        City = EnumSupport.GetDescription(x.Host.City),
-            //        HostName = x.Host.HostName,
-            //        Latitude = x.Host.Latitude,
-            //        Longitude = x.Host.Longitude
-            //    }
-            //}).ToList();
             var model = _unitOfWork.EducationGroup.GetFirstAvailableGroups(courseId.Value);
             return Json(new ResponseModel
             {

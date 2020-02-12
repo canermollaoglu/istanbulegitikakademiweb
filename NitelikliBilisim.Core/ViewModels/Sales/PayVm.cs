@@ -20,7 +20,7 @@ namespace NitelikliBilisim.Core.ViewModels.Sales
         public _SpecialInfo SpecialInfo { get; set; } = new _SpecialInfo();
         public bool IsDistantSalesAgreementConfirmed { get; set; }
         public string CartItemsJson { get; set; }
-        public List<Guid> CartItems { get; set; }
+        public List<_CartItem> CartItems { get; set; }
     }
 
     public class _CardInfo
@@ -75,6 +75,11 @@ namespace NitelikliBilisim.Core.ViewModels.Sales
         public string UserId { get; set; }
         public string Ip { get; set; }
         public string IdentityNumber { get; set; } = "12345678901";
+    }
+    public class _CartItem
+    {
+        public Guid EducationId { get; set; }
+        public Guid HostId { get; set; }
     }
     public class _AfterSale
     {
