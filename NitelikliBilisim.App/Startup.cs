@@ -17,17 +17,21 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using Microsoft.Extensions.Hosting;
+using NitelikliBilisim.App.Filters;
 
 namespace NitelikliBilisim.App
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
+            CurrentEnvironment = env;
         }
 
         public IConfiguration Configuration { get; }
+
+        private IWebHostEnvironment CurrentEnvironment { get; set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -55,6 +59,8 @@ namespace NitelikliBilisim.App
                 //.AddRoleManager<RoleManager<ApplicationRole>>()
                 .AddDefaultTokenProviders();
 
+services.AddScoped<UnitOfWork>();
+            services.AddScoped<ComingSoonActionFilter>();
             services.AddApplicationServices(this.Configuration);
 
             //services.AddControllers(options => { options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()); });
@@ -65,9 +71,11 @@ namespace NitelikliBilisim.App
             });
             services.AddMvc();
 
-#if DEBUG
-            services.AddControllersWithViews().AddRazorRuntimeCompilation();
-#endif
+            services.AddControllersWithViews(options =>
+            {
+                options.Filters.Add(new ComingSoonActionFilter());
+            });
+
             services.AddControllers();
         }
 
