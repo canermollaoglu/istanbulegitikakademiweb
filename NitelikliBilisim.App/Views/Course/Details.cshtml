@@ -199,6 +199,7 @@
 </main>
 
 @section postScripts{
+    <script src="~/vendor/@@microsoft\signalr\dist\browser\signalr.min.js"></script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBwbBlZQaeP0fYu7xTiviCCWGAK3onN-iE&callback=initMap"></script>
     <script src="~/js/sup/cart.js"></script>
     <script>
@@ -206,7 +207,7 @@
         var _educationId = $("#_education-id").val();
         var groups = [];
         var latitude = 0, longitude = 0;
-        var markerTitle = "Niteliklibilişim"
+        var markerTitle = "NitelikliBilişim"
 
         /* elements */
         var btnBuy = $("#btn-buy");
@@ -243,11 +244,27 @@
                     initMap();
                 }
             });
+            initSignalR();
+        }
+        let initSignalR = function (){
+            var connection = new signalR.HubConnectionBuilder()
+                    .withUrl('/messages')
+                    .build();
+
+            //bindConnectionMessage(connection);
+            connection.start()
+                .then(function () {
+                    console.log(connection);
+                    onConnected(connection);
+                })
+                .catch(function (error) {
+                    console.error(error.message);
+                });
         }
         function selectGroups_onChange() {
             var index = selectGroups.selectedIndex;
             var group = groups[index];
-            console.log(group);
+            //console.log(group);
             latitude = group.host.latitude;
             longitude = group.host.longitude;
             initMap();
