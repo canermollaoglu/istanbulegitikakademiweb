@@ -12,19 +12,19 @@
                 localStorage.setItem("cart", JSON.stringify([]));
         }
 
-        Cart.prototype.addToCart = function (educationId) {
+        Cart.prototype.addToCart = function (educationId, hostId) {
             this.ensureStorageCreated();
             var deserialized = JSON.parse(localStorage.getItem("cart"));
-            if (deserialized.indexOf(educationId) === -1) {
-                deserialized.push(educationId);
+            if (deserialized.filter(x => x.educationId == educationId).length !== 0) {
+                deserialized.push({ educationId: educationId, hostId: hostId });
                 localStorage.setItem("cart", JSON.stringify(deserialized));
             }
         }
 
-        Cart.prototype.removeFromCart = function (educationId) {
+        Cart.prototype.removeFromCart = function (educationId, hostId) {
             this.ensureStorageCreated();
             var deserialized = JSON.parse(localStorage.getItem("cart"));
-            var index = deserialized.indexOf(educationId);
+            var index = deserialized.indexOf({ educationId: educationId, hostId: hostId });
             if (index > -1) {
                 deserialized.splice(index, 1);
                 localStorage.setItem("cart", JSON.stringify(deserialized));

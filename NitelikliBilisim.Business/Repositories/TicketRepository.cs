@@ -63,7 +63,7 @@ namespace NitelikliBilisim.Business.Repositories
             group.IsGroupOpenForAssignment = true;
             _context.SaveChanges();
         }
-        public void Auto__AsignTicket(Guid ticketId)
+        public void Auto__AssignTicket(Guid ticketId)
         {
 
         }

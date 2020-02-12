@@ -236,7 +236,7 @@
                     var appended = "";
                     for (var i = 0; i < groups.length; i++) {
                         var item = groups[i];
-                        appended += `<option value="${item.groupId}">${item.host.hostName} (${item.host.city})</option>`;
+                        appended += `<option value="${item.host.hostId}">${item.host.hostName} (${item.host.city})</option>`;
                     }
                     $(selectGroups).append(appended);
                     selectGroups.selectedIndex = 0;
@@ -277,7 +277,8 @@
         }
         function btnBuy_onClick() {
             var cart = new CartSupport.Cart();
-            cart.addToCart(_educationId);
+            var hostId = selectGroups.options[selectGroups.selectedIndex].value;
+            cart.addToCart(_educationId, hostId);
 
             location.href = "/sepet";
         }

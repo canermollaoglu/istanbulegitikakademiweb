@@ -24,7 +24,7 @@ namespace NitelikliBilisim.Business.Repositories
         public List<CartItem> PrepareCartItems(PayData data)
         {
             var educations = _context.Educations
-               .Where(x => data.CartItems.Contains(x.Id))
+               .Where(x => data.CartItems.Select(x => x.EducationId).Contains(x.Id))
                .Include(x => x.Category)
                .ThenInclude(x => x.BaseCategory)
                .ToList();
@@ -70,7 +70,7 @@ namespace NitelikliBilisim.Business.Repositories
                         invoiceDetail.InvoiceId = invoice.Id;
                     _context.InvoiceDetails.AddRange(invoiceDetails);
 
-                    var tickets = CreateTickets(invoiceDetails, new Guid("E24DA16A-269A-4C91-B9FF-C64E4ABCC031"), userId);
+                    var tickets = CreateTickets(invoiceDetails, data.CartItems.Select(x => x.HostId).ToList(), userId);
                     _context.AddRange(tickets);
 
                     _context.SaveChanges();
@@ -168,18 +168,21 @@ namespace NitelikliBilisim.Business.Repositories
 
             return invoice;
         }
-        private List<Ticket> CreateTickets(List<InvoiceDetail> invoiceDetails, Guid hostId, string userId)
+        private List<Ticket> CreateTickets(List<InvoiceDetail> invoiceDetails, List<Guid> hostIds, string userId)
         {
             var tickets = new List<Ticket>();
-            foreach (var item in invoiceDetails)
+            for (var i = 0; i < invoiceDetails.Count; i++)
+            {
+                var item = invoiceDetails[i];
                 tickets.Add(new Ticket
                 {
                     EducationId = item.EducationId,
-                    HostId = hostId,
+                    HostId = hostIds[i],
                     InvoiceDetailsId = item.Id,
                     IsUsed = false,
                     OwnerId = userId
                 });
+            }
 
             return tickets;
         }
