@@ -85,7 +85,7 @@ namespace NitelikliBilisim.Business.Repositories
                 }
             }
         }
-        public void CompletePayment(PaymentCompletionModel completionModel, Guid invoiceId, List<Guid> invoiceDetailsId)
+        public void CompletePayment(PaymentCompletionModel completionModel, Guid invoiceId, List<Guid> invoiceDetailsIds)
         {
             using var transaction = _context.Database.BeginTransaction();
             try
@@ -111,7 +111,7 @@ namespace NitelikliBilisim.Business.Repositories
                     var item = completionModel.InvoiceDetails[i];
                     onlinePaymentDetailInfos.Add(new OnlinePaymentDetailsInfo
                     {
-                        Id = invoiceDetailsId[i],
+                        Id = invoiceDetailsIds[i],
                         TransactionId = item.TransactionId,
                         CommisionRate = item.CommisionRate,
                         CommissionFee = item.CommissionFee,
@@ -131,6 +131,8 @@ namespace NitelikliBilisim.Business.Repositories
                 Console.WriteLine(ex);
                 transaction.Rollback();
             }
+
+            Auto__AssignTickets(invoiceDetailsIds);
         }
         private List<InvoiceDetail> CreateInvoiceDetails(List<CartItem> cartItems)
         {
@@ -186,12 +188,20 @@ namespace NitelikliBilisim.Business.Repositories
 
             return tickets;
         }
-        public void Auto__AssignTickets(List<Guid> invoiceDetailsIds)
+        private bool Auto__AssignTickets(List<Guid> invoiceDetailsIds)
         {
-            var tickets = _context.Tickets
-                .Where(x => invoiceDetailsIds.Contains(x.InvoiceDetailsId))
-                .ToList();
+            try
+            {
+                var tickets = _context.Tickets
+                    .Where(x => invoiceDetailsIds.Contains(x.InvoiceDetailsId))
+                    .ToList();
 
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }
