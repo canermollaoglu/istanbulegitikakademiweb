@@ -87,7 +87,42 @@
         function document_onLoad() {
             createTables();
         }
+        function btnAssign_onClick() {
+            var ticketId = this.getAttribute("data-ticket-id");
+            $.ajax({
+                url: "/admin/assign-ticket",
+                method: "post",
+                data: {
+                    TicketId: ticketId,
+                    GroupId: _groupId
+                },
+                success: (res) => { createTables(); }
+            });
+        }
+        function btnUnassign_onClick() {
+            var ticketId = this.getAttribute("data-ticket-id");
+            $.ajax({
+                url: "/admin/unassign-ticket",
+                method: "post",
+                data: {
+                    TicketId: ticketId
+                },
+                success: (res) => { createTables(); }
+            });
+        }
         /* functions */
+        function createAssignmentButtons() {
+               var btnAssings = document.getElementsByClassName("btn-assign");
+            for (var i = 0; i < btnAssings.length; i++) {
+                var btn = btnAssings[i];
+                btn.onclick = btnAssign_onClick;
+            }
+            var btnUnassings = document.getElementsByClassName("btn-unassign");
+            for (var i = 0; i < btnUnassings.length; i++) {
+                var btn = btnUnassings[i];
+                btn.onclick = btnUnassign_onClick;
+            }
+        }
         function createTables() {
             $.ajax({
                 url: `/admin/get-eligible-and-assigned-students/${_groupId}`,
@@ -109,7 +144,7 @@
                                 assignedAppend += "<tr>" +
                                     `<td>${item1.customerName}</td>` +
                                     `<td>${item1.customerSurname}</td>` +
-                                    `<td><button class="btn btn-danger" data-ticket-id="${item1.ticketId}"><i class="fa fa-minus"></i></button></td>` +
+                                    `<td><button class="btn btn-danger btn-unassign" data-ticket-id="${item1.ticketId}"><i class="fa fa-minus"></i></button></td>` +
                                     "</tr>";
                             }
                         else
@@ -122,12 +157,14 @@
                                 eligibleAppend += "<tr>" +
                                     `<td>${item2.customerName}</td>` +
                                     `<td>${item2.customerSurname}</td>` +
-                                    `<td><button class="btn btn-success" data-ticket-id="${item2.ticketId}"><i class="fa fa-plus"></i></button></td>` +
+                                    `<td><button class="btn btn-success btn-assign" data-ticket-id="${item2.ticketId}"><i class="fa fa-plus"></i></button></td>` +
                                     "<tr>";
                             }
                         else
                             eligibleAppend = `<tr><td>Gruba atanabilecek öğrenci yoktur</td></tr>`;
                         tbodyTickets.append(eligibleAppend);
+
+                        createAssignmentButtons();
                     }
                 }
             });

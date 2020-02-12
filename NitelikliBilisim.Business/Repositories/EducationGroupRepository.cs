@@ -137,8 +137,6 @@ namespace NitelikliBilisim.Business.Repositories
             var group = _context.EducationGroups.FirstOrDefault(x => x.Id == groupId);
             if (group == null)
                 return null;
-            if (!group.IsGroupOpenForAssignment)
-                return null;
 
             var eligibleTickets = _context.Tickets
                 .Include(x => x.Owner)
@@ -158,7 +156,7 @@ namespace NitelikliBilisim.Business.Repositories
                 .ThenInclude(x => x.User)
                 .Select(x => new _Ticket
                 {
-                    TicketId = x.Id,
+                    TicketId = x.TicketId,
                     CustomerName = x.Customer.User.Name,
                     CustomerSurname = x.Customer.User.Surname
                 })

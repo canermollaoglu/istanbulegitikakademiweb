@@ -113,17 +113,19 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             });
         }
 
+        [HttpPost, Route("admin/assign-ticket")]
         public IActionResult AssignTicket(AssignPostVm data)
         {
-
+            _unitOfWork.Ticket.AssignTicket(data);
             return Json(new ResponseModel
             {
                 isSuccess = true
             });
         }
+        [HttpPost, Route("admin/unassign-ticket")]
         public IActionResult UnassignTicket(UnassignPostVm data)
         {
-
+            _unitOfWork.Ticket.UnassignTicket(data);
             return Json(new ResponseModel
             {
                 isSuccess = true

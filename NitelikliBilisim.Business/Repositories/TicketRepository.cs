@@ -1,7 +1,10 @@
-﻿using NitelikliBilisim.Core.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.ViewModels.areas.admin.education_groups;
 using NitelikliBilisim.Data;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace NitelikliBilisim.Business.Repositories
@@ -12,6 +15,57 @@ namespace NitelikliBilisim.Business.Repositories
         public TicketRepository(NbDataContext context) : base(context)
         {
             _context = context;
+        }
+
+        public void AssignTicket(AssignPostVm data)
+        {
+            // join?
+            var ticket = _context.Tickets
+                .FirstOrDefault(x => x.Id == data.TicketId);
+            if (ticket == null)
+                return;
+            var group = _context.EducationGroups.FirstOrDefault(x => x.Id == data.GroupId);
+            if (group == null)
+                return;
+
+            if (group.IsGroupOpenForAssignment
+                && !_context.Bridge_GroupStudents.Any(x => x.Id == data.GroupId && x.Id2 == ticket.OwnerId))
+            {
+                _context.Bridge_GroupStudents.Add(new Bridge_GroupStudent
+                {
+                    Id = data.GroupId,
+                    Id2 = ticket.OwnerId,
+                    TicketId = data.TicketId
+                });
+
+                var groupStudentsCount = _context.Bridge_GroupStudents.Count(x => x.Id == group.Id) + 1;
+                ticket.IsUsed = true;
+                if (groupStudentsCount == group.Quota)
+                    group.IsGroupOpenForAssignment = false;
+                _context.SaveChanges();
+            }
+        }
+        public void UnassignTicket(UnassignPostVm data)
+        {
+            // join?
+            var ticket = _context.Tickets
+                .FirstOrDefault(x => x.Id == data.TicketId);
+            if (ticket == null)
+                return;
+            var bridge_groupStudent = _context.Bridge_GroupStudents.FirstOrDefault(x => x.TicketId == data.TicketId);
+            if (bridge_groupStudent == null)
+                return;
+            var group = _context.EducationGroups.FirstOrDefault(x => x.Id == bridge_groupStudent.Id);
+            if (group == null)
+                return;
+            _context.Bridge_GroupStudents.Remove(bridge_groupStudent);
+            ticket.IsUsed = false;
+            group.IsGroupOpenForAssignment = true;
+            _context.SaveChanges();
+        }
+        public void Auto__AsignTicket(Guid ticketId)
+        {
+
         }
     }
 }
