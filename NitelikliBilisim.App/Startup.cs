@@ -69,10 +69,7 @@ namespace NitelikliBilisim.App
             });
 
             services.AddMvc();
-            services.AddControllersWithViews(options =>
-            {
-                options.Filters.Add(new ComingSoonActionFilter());
-            });
+            services.AddControllersWithViews();
             services.AddControllers();
         }
 
