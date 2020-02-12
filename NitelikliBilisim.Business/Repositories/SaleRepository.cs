@@ -186,5 +186,12 @@ namespace NitelikliBilisim.Business.Repositories
 
             return tickets;
         }
+        public void Auto__AssignTickets(List<Guid> invoiceDetailsIds)
+        {
+            var tickets = _context.Tickets
+                .Where(x => invoiceDetailsIds.Contains(x.InvoiceDetailsId))
+                .ToList();
+
+        }
     }
 }
