@@ -1,24 +1,13 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.DependencyInjection;
-using NitelikliBilisim.Business.Repositories;
-using NitelikliBilisim.Core.Entities;
-using NitelikliBilisim.Core.Repositories;
-using System;
-using System.Globalization;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using AspNet.Security.OAuth.GitHub;
-using Microsoft.AspNetCore.Authentication;
 //using Microsoft.AspNetCore.Authentication.Facebook;
 //using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Services;
 using NitelikliBilisim.Core.Services.Abstracts;
-using Iyzipay;
-using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Services.Payments;
+using System;
 
 namespace NitelikliBilisim.App.Extensions
 {
@@ -34,6 +23,14 @@ namespace NitelikliBilisim.App.Extensions
             services.AddScoped<IPaymentService, PaymentService>();
             #endregion
 
+            #region signalR
+
+            services.AddSignalR().AddAzureSignalR(config =>
+            {
+                config.ConnectionString = configuration["SignalROptions:ConnectionString"];
+            });
+
+            #endregion
             #region IdentityConfig
 
             services.Configure<IdentityOptions>(options =>
@@ -132,7 +129,7 @@ namespace NitelikliBilisim.App.Extensions
             //    });
 
             #endregion
-
+            
             return services;
         }
     }
