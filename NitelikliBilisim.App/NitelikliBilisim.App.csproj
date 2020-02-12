@@ -91,4 +91,6 @@
     </ItemGroup>
   </Target>
 
+  <ProjectExtensions><VisualStudio><UserProperties package_1json__JsonSchema="http://json.schemastore.org/project-1.0.0-beta5" /></VisualStudio></ProjectExtensions>
+
 </Project>
