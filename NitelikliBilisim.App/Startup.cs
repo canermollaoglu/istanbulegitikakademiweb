@@ -2,22 +2,20 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Hosting;
 using NitelikliBilisim.App.Extensions;
+using NitelikliBilisim.App.Filters;
+using NitelikliBilisim.App.Hubs;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Data;
 using System;
 using System.Globalization;
 using System.IO;
-using System.Net;
-using Microsoft.Extensions.Hosting;
-using NitelikliBilisim.App.Filters;
 
 namespace NitelikliBilisim.App
 {
@@ -59,7 +57,7 @@ namespace NitelikliBilisim.App
                 //.AddRoleManager<RoleManager<ApplicationRole>>()
                 .AddDefaultTokenProviders();
 
-services.AddScoped<UnitOfWork>();
+            services.AddScoped<UnitOfWork>();
             services.AddScoped<ComingSoonActionFilter>();
             services.AddApplicationServices(this.Configuration);
 
@@ -69,13 +67,9 @@ services.AddScoped<UnitOfWork>();
                 options.IdleTimeout = TimeSpan.FromSeconds(30);
                 options.Cookie.IsEssential = true;
             });
+
             services.AddMvc();
-
-            services.AddControllersWithViews(options =>
-            {
-                options.Filters.Add(new ComingSoonActionFilter());
-            });
-
+            services.AddControllersWithViews();
             services.AddControllers();
         }
 
@@ -105,20 +99,14 @@ services.AddScoped<UnitOfWork>();
                 FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"node_modules")),
                 RequestPath = new PathString("/vendor")
             });
-
+            app.UseAzureSignalR(config =>
+            {
+                config.MapHub<MessageHub>("/messages");
+            });
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-
             app.UseCookiePolicy();
-
-            //app.UseMvc(routes =>
-            //{
-            //    routes.MapRoute("areas", "{area}/{controller=Manage}/{action=Index}/{id?}");
-            //    routes.MapRoute(
-            //        name: "default",
-            //        template: "{controller=Home}/{action=Index}/{id?}");
-            //});
             app.UseSession();
             app.UseEndpoints(endpoints =>
             {
