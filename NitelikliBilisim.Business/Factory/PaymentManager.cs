@@ -47,7 +47,8 @@ namespace NitelikliBilisim.Business.PaymentFactory
                     CommissionFee = Convert.ToDecimal(item.IyziCommissionFee),
                     MerchantPayout = Convert.ToDecimal(item.MerchantPayoutAmount),
                     PaidPrice = Convert.ToDecimal(item.PaidPrice),
-                    Price = Convert.ToDecimal(item.Price)
+                    Price = Convert.ToDecimal(item.Price),
+                    BlockageDate = Convert.ToDateTime(item.BlockageResolvedDate)
                 });
 
             return model;

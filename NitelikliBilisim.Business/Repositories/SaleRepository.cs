@@ -117,7 +117,8 @@ namespace NitelikliBilisim.Business.Repositories
                         CommissionFee = item.CommissionFee,
                         MerchantPayout = item.MerchantPayout,
                         PaidPrice = item.PaidPrice,
-                        Price = item.Price
+                        Price = item.Price,
+                        BlockageResolveDate = item.BlockageDate
                     });
                 }
                 _context.OnlinePaymentDetailsInfos.AddRange(onlinePaymentDetailInfos);

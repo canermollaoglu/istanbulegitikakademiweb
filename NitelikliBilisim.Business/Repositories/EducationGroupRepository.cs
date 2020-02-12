@@ -54,7 +54,7 @@ namespace NitelikliBilisim.Business.Repositories
         {
             var groups = _context.EducationGroups
                 .Include(x => x.Host)
-                .Where(x => x.EducationId == educationId && x.IsGroupOpenForAssignment)
+                .Where(x => x.StartDate.Date > DateTime.Now.Date && x.EducationId == educationId && x.IsGroupOpenForAssignment)
                 .OrderBy(o => o.StartDate)
                 .ToList();
 

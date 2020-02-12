@@ -17,5 +17,6 @@ namespace NitelikliBilisim.Core.Entities
         public decimal CommisionRate { get; set; }
         public decimal MerchantPayout { get; set; }
         public decimal PaidPrice { get; set; }
+        public DateTime BlockageResolveDate { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace NitelikliBilisim.Core.PaymentModels
 {
@@ -25,5 +26,6 @@ namespace NitelikliBilisim.Core.PaymentModels
         public decimal CommisionRate { get; set; }
         public decimal MerchantPayout { get; set; }
         public decimal PaidPrice { get; set; }
+        public DateTime BlockageDate { get; set; }
     }
 }
