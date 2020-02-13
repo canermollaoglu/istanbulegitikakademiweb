@@ -133,7 +133,7 @@ namespace NitelikliBilisim.Business.Repositories
                 transaction.Rollback();
             }
 
-            await Task.Run(() => { Auto__AssignTickets(invoiceDetailsIds); });
+            Auto__AssignTickets(invoiceDetailsIds);
         }
         private List<InvoiceDetail> CreateInvoiceDetails(List<CartItem> cartItems)
         {
@@ -200,9 +200,11 @@ namespace NitelikliBilisim.Business.Repositories
                 foreach (var ticket in tickets)
                 {
                     var firstGroup = _context.EducationGroups
-                        .FirstOrDefault(x => x.StartDate.Date > DateTime.Now.Date
+                        .Where(x => x.StartDate.Date > DateTime.Now.Date
                         && x.IsGroupOpenForAssignment
-                        && x.HostId == ticket.HostId);
+                        && x.HostId == ticket.HostId)
+                        .OrderBy(o => o.StartDate)
+                        .FirstOrDefault();
                     if (firstGroup == null)
                     {
                         // başarısız atama için mail gönder
@@ -221,7 +223,7 @@ namespace NitelikliBilisim.Business.Repositories
                 }
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
                 return false;
             }
