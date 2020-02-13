@@ -119,7 +119,6 @@
         /* functions */
         function getCartItems() {
             var items = _cart.getItems();
-            console.log(items);
             var data = {
                 Items: items
             };
@@ -129,6 +128,7 @@
                 data: data,
                 success: (res) => {
                     if (res.isSuccess) {
+                        console.log(res);
                         appendCartItems(res.data.items);
                         txtTotal.text(res.data.total);
                     }
@@ -137,9 +137,9 @@
         }
         function appendCartItems(data) {
             tbodyCartItems.html("");
-            console.log(data);
-            if (data.length === 0) {
+            if (data.length == 0) {
                 tbodyCartItems.append(`<tr><td colspan="3">Sepetiniz boş</td></tr>`);
+                return;
             }
 
             var appended = "";

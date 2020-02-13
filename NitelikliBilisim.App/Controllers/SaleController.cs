@@ -46,7 +46,7 @@ namespace NitelikliBilisim.App.Controllers
             if (data == null || data.Items == null)
                 return Json(new ResponseModel
                 {
-                    isSuccess = false,
+                    isSuccess = true,
                     data = new
                     {
                         items = new List<CartItemVm>(),

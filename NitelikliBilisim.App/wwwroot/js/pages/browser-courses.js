@@ -284,7 +284,7 @@ function prepareCourseBoxesAsGrid(data) {
             //`</ul>` +
             `<ul>` +
             `<li><i class="icon_clock_alt"></i> ${item.base.daysText} gün (${item.base.hoursPerDayNumeric * item.base.daysNumeric} saat)</li>` +
-            `<li><a name="btn-buy" data-id="${item.base.id}" href="javascript:void(0)">Kayıt Ol</a></li>` +
+            //`<li><a name="btn-buy" data-id="${item.base.id}" href="javascript:void(0)">Kayıt Ol</a></li>` +
             `</ul>` +
             `</div>` +
             `</div>`;
