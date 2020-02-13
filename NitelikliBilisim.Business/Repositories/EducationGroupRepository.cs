@@ -45,7 +45,12 @@ namespace NitelikliBilisim.Business.Repositories
                     transation.Rollback();
                     return false;
                 }
-                var dates = CreateGroupLessonDays(_context.EducationGroups.Include(x => x.Education).FirstOrDefault(x => x.Id == entity.Id), days);
+
+                // to transaction?
+                var dates = CreateGroupLessonDays(
+                    group: _context.EducationGroups.Include(x => x.Education).FirstOrDefault(x => x.Id == entity.Id),
+                    daysInt: days,
+                    unwantedDays: new List<DateTime>());
 
                 var groupLessonDays = new List<GroupLessonDay>();
                 foreach (var date in dates)
