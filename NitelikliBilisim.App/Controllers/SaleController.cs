@@ -222,7 +222,7 @@ namespace NitelikliBilisim.App.Controllers
 
     public class GetCartItemsData
     {
-        public List<Guid> Items { get; set; }
+        public List<_CartItem> Items { get; set; }
     }
     public class Secure3dModel
     {

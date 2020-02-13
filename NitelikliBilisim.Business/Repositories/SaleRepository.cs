@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NitelikliBilisim.Core.PaymentModels;
+using System.Threading.Tasks;
 
 namespace NitelikliBilisim.Business.Repositories
 {
@@ -85,7 +86,7 @@ namespace NitelikliBilisim.Business.Repositories
                 }
             }
         }
-        public void CompletePayment(PaymentCompletionModel completionModel, Guid invoiceId, List<Guid> invoiceDetailsIds)
+        public async void CompletePayment(PaymentCompletionModel completionModel, Guid invoiceId, List<Guid> invoiceDetailsIds)
         {
             using var transaction = _context.Database.BeginTransaction();
             try
@@ -132,7 +133,7 @@ namespace NitelikliBilisim.Business.Repositories
                 transaction.Rollback();
             }
 
-            Auto__AssignTickets(invoiceDetailsIds);
+            await Task.Run(() => { Auto__AssignTickets(invoiceDetailsIds); });
         }
         private List<InvoiceDetail> CreateInvoiceDetails(List<CartItem> cartItems)
         {
@@ -196,6 +197,28 @@ namespace NitelikliBilisim.Business.Repositories
                     .Where(x => invoiceDetailsIds.Contains(x.InvoiceDetailsId))
                     .ToList();
 
+                foreach (var ticket in tickets)
+                {
+                    var firstGroup = _context.EducationGroups
+                        .FirstOrDefault(x => x.StartDate.Date > DateTime.Now.Date
+                        && x.IsGroupOpenForAssignment
+                        && x.HostId == ticket.HostId);
+                    if (firstGroup == null)
+                    {
+                        // başarısız atama için mail gönder
+                        return false;
+                    }
+
+                    _context.Bridge_GroupStudents.Add(new Bridge_GroupStudent
+                    {
+                        Id = firstGroup.Id,
+                        Id2 = ticket.OwnerId,
+                        TicketId = ticket.Id
+                    });
+
+                    ticket.IsUsed = true;
+                    _context.SaveChanges();
+                }
                 return true;
             }
             catch

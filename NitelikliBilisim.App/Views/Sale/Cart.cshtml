@@ -119,6 +119,7 @@
         /* functions */
         function getCartItems() {
             var items = _cart.getItems();
+            console.log(items);
             var data = {
                 Items: items
             };
@@ -136,7 +137,7 @@
         }
         function appendCartItems(data) {
             tbodyCartItems.html("");
-
+            console.log(data);
             if (data.length === 0) {
                 tbodyCartItems.append(`<tr><td colspan="3">Sepetiniz boş</td></tr>`);
             }
@@ -169,21 +170,3 @@
         }
     </script>
 }
-
-@*<tr>
-        <td>
-            <div class="thumb_cart">
-                <img src="http://via.placeholder.com/150x150/ccc/fff/thumb_cart_1.jpg" alt="Image">
-            </div>
-            <span class="item_cart">Persius delenit has cu</span>
-        </td>
-        <td>
-            0%
-        </td>
-        <td>
-            <strong>24,71$</strong>
-        </td>
-        <td class="options" style="width:5%; text-align:center;">
-            <a href="#"><i class="icon-trash"></i></a>
-        </td>
-    </tr>*@

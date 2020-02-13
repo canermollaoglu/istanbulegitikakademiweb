@@ -1,7 +1,7 @@
 ﻿var CartSupport;
 (function (CartSupport) {
 
-/* class */
+    /* class */
     var Cart = (function () {
         function Cart() {
 
@@ -15,20 +15,17 @@
         Cart.prototype.addToCart = function (educationId, hostId) {
             this.ensureStorageCreated();
             var deserialized = JSON.parse(localStorage.getItem("cart"));
-            if (deserialized.filter(x => x.educationId == educationId).length !== 0) {
+            if (deserialized.filter(x => x.educationId == educationId).length === 0) {
                 deserialized.push({ educationId: educationId, hostId: hostId });
                 localStorage.setItem("cart", JSON.stringify(deserialized));
             }
         }
 
-        Cart.prototype.removeFromCart = function (educationId, hostId) {
+        Cart.prototype.removeFromCart = function (educationId) {
             this.ensureStorageCreated();
             var deserialized = JSON.parse(localStorage.getItem("cart"));
-            var index = deserialized.indexOf({ educationId: educationId, hostId: hostId });
-            if (index > -1) {
-                deserialized.splice(index, 1);
-                localStorage.setItem("cart", JSON.stringify(deserialized));
-            }
+            deserialized = deserialized.filter(x => x.educationId != educationId);
+            localStorage.setItem("cart", JSON.stringify(deserialized));
         }
 
         Cart.prototype.getItems = function () {

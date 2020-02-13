@@ -1,6 +1,7 @@
 ﻿using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.ViewModels.Cart;
+using NitelikliBilisim.Core.ViewModels.Sales;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -17,9 +18,9 @@ namespace NitelikliBilisim.App.VmCreator
         }
 
         // gereksiz request sayısı
-        public List<CartItemVm> GetCartItems(List<Guid> itemIds)
+        public List<CartItemVm> GetCartItems(List<_CartItem> items)
         {
-            var educations = _unitOfWork.Education.Get(x => itemIds.Contains(x.Id), x => x.OrderBy(o => o.Name));
+            var educations = _unitOfWork.Education.Get(x => items.Select(x => x.EducationId).Contains(x.Id), x => x.OrderBy(o => o.Name));
             var model = educations.Select(x => new CartItemVm
             {
                 EducationId = x.Id,
