@@ -1,8 +1,6 @@
 ﻿using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
-using NitelikliBilisim.Core.ViewModels.search;
 using NitelikliBilisim.Data;
-using NitelikliBilisim.Support.Text;
 using System;
 using System.Collections.Generic;
 using System.Linq;
