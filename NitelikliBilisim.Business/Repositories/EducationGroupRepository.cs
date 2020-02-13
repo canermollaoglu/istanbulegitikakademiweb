@@ -38,8 +38,6 @@ namespace NitelikliBilisim.Business.Repositories
                     });
                     _context.SaveChanges();
                     transation.Commit();
-
-                    return true;
                 }
                 catch (Exception ex)
                 {
@@ -47,7 +45,45 @@ namespace NitelikliBilisim.Business.Repositories
                     transation.Rollback();
                     return false;
                 }
+                var dates = CreateGroupLessonDays(_context.EducationGroups.Include(x => x.Education).FirstOrDefault(x => x.Id == entity.Id), days);
+
+                var groupLessonDays = new List<GroupLessonDay>();
+                foreach (var date in dates)
+                    groupLessonDays.Add(new GroupLessonDay
+                    {
+                        DateOfLesson = date,
+                        GroupId = entity.Id,
+                        HasAttendanceRecord = false,
+                        IsImmuneToAutoChange = false
+                    });
+
+                _context.GroupLessonDays.AddRange(groupLessonDays);
+                _context.SaveChanges();
+                return true;
             }
+        }
+        public List<DateTime> CreateGroupLessonDays(EducationGroup group, List<int> daysInt, List<DateTime> unwantedDays)
+        {
+            var validDays = new List<DayOfWeek>();
+            foreach (var dayInt in daysInt)
+                validDays.Add((DayOfWeek)dayInt);
+
+            var dayCount = group.Education.Days;
+            var date = group.StartDate;
+            var dates = new List<DateTime>();
+            for (int i = 0; i < dayCount; i++)
+            {
+                if (!validDays.Contains(date.DayOfWeek) || unwantedDays.Contains(date))
+                {
+                    i--;
+                    continue;
+                }
+
+                dates.Add(date);
+                date = date.AddDays(1);
+            }
+
+            return dates;
         }
         public List<GroupVm> GetFirstAvailableGroups(Guid educationId)
         {
