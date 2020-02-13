@@ -112,26 +112,29 @@ function btnBuy_onClick() {
 /* functions */
 function getCartItems() {
     var items = _cart.getItems();
-    var data = {
-        Items: items
-    };
-    $.ajax({
-        url: "/get-cart-items",
-        method: "post",
-        data: data,
-        success: (res) => {
-            if (res.isSuccess) {
-                appendCartItems(res.data.items);
-                txtTotal.text(res.data.total);
-                var cartItemIds = [];
-                for (var i = 0; i < res.data.items.length; i++) {
-                    var item = res.data.items[i];
-                    cartItemIds.push(item.educationId);
-                }
-                cartItems.val(JSON.stringify(cartItemIds));
-            }
-        }
-    });
+    cartItems.val(JSON.stringify(items));
+    console.log(cartItems.val());
+    //var data = {
+    //    Items: items
+    //};
+    //$.ajax({
+    //    url: "/get-cart-items",
+    //    method: "post",
+    //    data: data,
+    //    success: (res) => {
+    //        if (res.isSuccess) {
+    //            appendCartItems(res.data.items);
+    //            txtTotal.text(res.data.total);
+    //            var cartItemIds = [];
+    //            for (var i = 0; i < res.data.items.length; i++) {
+    //                var item = res.data.items[i];
+    //                cartItemIds.push(item);
+    //            }
+    //            console.log(cartItemIds);
+    //            cartItems.val(JSON.stringify(cartItemIds));
+    //        }
+    //    }
+    //});
 }
 function appendCartItems(data) {
     tbodyCartItems.html("");
