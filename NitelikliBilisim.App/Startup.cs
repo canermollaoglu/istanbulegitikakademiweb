@@ -69,7 +69,7 @@ namespace NitelikliBilisim.App
             });
 
             services.AddMvc();
-            services.AddControllersWithViews();
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddControllers();
         }
 

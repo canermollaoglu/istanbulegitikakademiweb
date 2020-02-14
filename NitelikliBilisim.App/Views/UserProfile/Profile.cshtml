@@ -1,6 +1,131 @@
-﻿
+﻿@model NitelikliBilisim.Core.ViewModels.Main.Profile.UserInfoVm
 @{
-    ViewData["Title"] = "Profile";
+    ViewData["Title"] = "Profil";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<main>
+    <section id="hero_in" class="general">
+        <div class="wrapper">
+            <div class="container">
+                <h1 class="fadeInUp"><span></span>@Model.PersonalAndAccountInfo.FirstName @Model.PersonalAndAccountInfo.LastName</h1>
+            </div>
+        </div>
+    </section>
+    <div class="container margin_60_35">
+        <div class="row">
+            <aside class="col-lg-3" id="sidebar">
+                <div class="profile">
+                    <figure><img src="http://via.placeholder.com/150x150/ccc/fff/teacher_2_small.jpg" alt="Teacher" class="rounded-circle"></figure>
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <a href="#"><i class="icon-user"></i> Bilgilerim</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="#"><i class="icon-key"></i> Hesabım</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="#"><i class="icon-book-open"></i> Eğitimlerim</a>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+
+            <div class="col-lg-9">
+                <div class="box_teacher">
+                    <div class="indent_title_in">
+                        <i class="pe-7s-user"></i>
+                        <h3>Kişisel ve Hesap Bilgileri</h3>
+                        <p>Mussum ipsum cacilds, vidis litro abertis.</p>
+                    </div>
+                    <div class="wrapper_indent">
+                        <h6>Kişisel Bilgiler <i class="icon-edit"></i></h6>
+                        <p><b>İsim Soyisim: </b>@Model.PersonalAndAccountInfo.FirstName @Model.PersonalAndAccountInfo.LastName</p>
+                        <p><b>Telefon: </b>@Model.PersonalAndAccountInfo.PhoneNumber</p>
+                        <p><b>E-Posta: </b>@Model.PersonalAndAccountInfo.Email</p>
+                        <h6>Hesap Bilgileri <i class="icon-edit"></i></h6>
+                        <p><b>Kullanıcı Adı: </b>@Model.PersonalAndAccountInfo.UserName</p>
+                    </div>
+                    <hr class="styled_2">
+                    <div class="indent_title_in">
+                        <i class="pe-7s-display1"></i>
+                        <h3>Eğitimlerim</h3>
+                        <p>Mussum ipsum cacilds, vidis litro abertis.</p>
+                    </div>
+                    <div class="wrapper_indent">
+                        <p>Mei ut decore accusam consequat, alii dignissim no usu. Phaedrum intellegat sit ut, no pri mutat eirmod. In eum iriure perpetua adolescens, pri dicunt prodesset et. Vis dicta postulant ad.</p>
+                        <table class="table table-responsive table-striped add_bottom_30">
+                            <thead>
+                                <tr>
+                                    <th>Eğitim</th>
+                                    <th>Kurum</th>
+                                    <th>Gruba Atandı</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var ticket in Model.Tickets)
+                                {
+                                    <tr>
+                                        <td><a href="/kurs-detayi/@ticket.EducationId">@ticket.EducationName</a></td>
+                                        <td>@ticket.HostName (@ticket.HostCity)</td>
+                                        <td>
+                                            @if (ticket.IsUsed)
+                                            {
+                                                <i class="icon-ok text-success"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="icon-cancel text-danger"></i>
+                                            }
+                                        </td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <a href="#" class="btn btn-secondary"><i class="icon-comment-empty text-light"></i></a>
+                                                <a href="#" class="btn btn-danger"><i class="icon-alert text-light"></i></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                                @if(Model.Tickets == null || Model.Tickets.Count == 0)
+                                {
+                                    <tr>
+                                        <td colspan="4">Henüz eğitim satın almadınız</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <hr class="styled_2">
+                    <div class="indent_title_in">
+                        <i class="pe-7s-key"></i>
+                        <h3>Eğitim Geçmişi</h3>
+                        <p>Mussum ipsum cacilds, vidis litro abertis.</p>
+                    </div>
+                    <div class="wrapper_indent">
+                        @if (Model.EducationInfo != null)
+                        {
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ul class="list_3">
+                                        <li>
+                                            <strong>@Model.EducationInfo.EducationCategory</strong>
+                                            <p>@Model.EducationInfo.EducationCenter (@Model.EducationInfo.StartedAt.ToShortDateString())</p>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="alert alert-info">
+                                <strong>Nitelikli Bilişim Uzman Yetiştirme eğitimi kayıtlı değildir.</strong> Eğer siteye kayıt esnasında eğitim bilgilerini boş geçtiyseniz aşağıdaki düğmeye tıklayarak bilgilerinizi girebilirsiniz.
+                            </div>
+                            <button class="btn btn-primary"><i class="icon-plus"></i> Eğitim Ekle</button>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
