@@ -18,6 +18,7 @@ namespace NitelikliBilisim.App.Extensions
         {
             #region Dependency Injections
             services.AddScoped<UnitOfWork>();
+            services.AddScoped<UserUnitOfWork>();
             services.AddSingleton<IMessageService, EmailService>();
             services.AddSingleton<IStorageService, StorageService>();
             services.AddScoped<IPaymentService, PaymentService>();
