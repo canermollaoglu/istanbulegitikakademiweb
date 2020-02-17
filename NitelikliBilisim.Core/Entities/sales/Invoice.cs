@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace NitelikliBilisim.Core.Entities
 {
     [Table("Invoices")]
-    public class Invoice : BaseEntity<Guid>
+    public class Invoice : BaseEntity<Guid>, IAuditIp
     {
         public Invoice()
         {
@@ -29,5 +29,6 @@ namespace NitelikliBilisim.Core.Entities
         [ForeignKey("Customer"), MaxLength(450)]
         public string CustomerId { get; set; }
         public virtual Customer Customer { get; set; }
+        public string Ip { get; set; }
     }
 }
