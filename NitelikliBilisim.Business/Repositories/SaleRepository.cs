@@ -86,7 +86,7 @@ namespace NitelikliBilisim.Business.Repositories
                 }
             }
         }
-        public async void CompletePayment(PaymentCompletionModel completionModel, Guid invoiceId, List<Guid> invoiceDetailsIds)
+        public void CompletePayment(PaymentCompletionModel completionModel, Guid invoiceId, List<Guid> invoiceDetailsIds)
         {
             using var transaction = _context.Database.BeginTransaction();
             try
@@ -225,6 +225,7 @@ namespace NitelikliBilisim.Business.Repositories
             }
             catch (Exception ex)
             {
+                System.Console.WriteLine(ex.Message);
                 return false;
             }
         }
