@@ -49,13 +49,13 @@ namespace NitelikliBilisim.Business.Repositories
                 .FirstOrDefault(x => x.Id == data.TicketId);
             if (ticket == null)
                 return;
-            var bridge_groupStudent = _context.Bridge_GroupStudents.FirstOrDefault(x => x.TicketId == data.TicketId);
-            if (bridge_groupStudent == null)
+            var bridgeGroupStudent = _context.Bridge_GroupStudents.FirstOrDefault(x => x.TicketId == data.TicketId);
+            if (bridgeGroupStudent == null)
                 return;
-            var group = _context.EducationGroups.FirstOrDefault(x => x.Id == bridge_groupStudent.Id);
+            var group = _context.EducationGroups.FirstOrDefault(x => x.Id == bridgeGroupStudent.Id);
             if (group == null)
                 return;
-            _context.Bridge_GroupStudents.Remove(bridge_groupStudent);
+            _context.Bridge_GroupStudents.Remove(bridgeGroupStudent);
             ticket.IsUsed = false;
             group.IsGroupOpenForAssignment = true;
             _context.SaveChanges();
