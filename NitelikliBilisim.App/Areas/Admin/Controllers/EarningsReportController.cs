@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NitelikliBilisim.App.Models;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
@@ -14,6 +15,15 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         public IActionResult IncomeReport()
         {
             return View();
+        }
+
+        public IActionResult FetchIncomeReport(int year, int month)
+        {
+            
+            return Json(new ResponseModel
+            {
+                isSuccess = true
+            });
         }
     }
 }
