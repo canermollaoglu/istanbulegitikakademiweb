@@ -98,6 +98,7 @@ namespace NitelikliBilisim.Business.Repositories
                 var weekDays = _context.WeekDaysOfGroups.FirstOrDefault(x => x.GroupId == groupId);
                 if (weekDays == null)
                     daysInt = new List<int> { 6, 0 };
+                //TODO: weekDays null gelirse hata verecektir!!!!!!!
                 daysInt = JsonConvert.DeserializeObject<List<int>>(weekDays.DaysJson);
             }
 

@@ -36,7 +36,7 @@ namespace NitelikliBilisim.Business.Repositories
         }
         public PaymentModelSuccess Get(string conversationId)
         {
-            var data = _context.TempSaleData.FirstOrDefault(x => x.Id == conversationId);
+            var data = _context.TempSaleData.First(x => x.Id == conversationId);
             return JsonConvert.DeserializeObject<PaymentModelSuccess>(data.Data);
         }
         public void Remove(string conversationId)

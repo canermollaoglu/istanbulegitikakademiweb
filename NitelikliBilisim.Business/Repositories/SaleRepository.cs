@@ -1,13 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
+using NitelikliBilisim.Core.PaymentModels;
 using NitelikliBilisim.Core.ViewModels.Sales;
 using NitelikliBilisim.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using NitelikliBilisim.Core.PaymentModels;
-using System.Threading.Tasks;
 
 namespace NitelikliBilisim.Business.Repositories
 {
@@ -25,7 +24,7 @@ namespace NitelikliBilisim.Business.Repositories
         public List<CartItem> PrepareCartItems(PayData data)
         {
             var educations = _context.Educations
-               .Where(x => data.CartItems.Select(x => x.EducationId).Contains(x.Id))
+               .Where(x => data.CartItems.Select(cartItem => cartItem.EducationId).Contains(x.Id))
                .Include(x => x.Category)
                .ThenInclude(x => x.BaseCategory)
                .ToList();

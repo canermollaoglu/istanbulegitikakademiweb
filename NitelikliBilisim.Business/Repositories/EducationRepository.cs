@@ -226,10 +226,10 @@ namespace NitelikliBilisim.Business.Repositories
 
         public bool CheckEducationState(Guid educationId)
         {
-            var hasBanner = Context.EducationMedias.Count(x => x.EducationId == educationId && x.MediaType == Core.Enums.EducationMediaType.Banner) > 0;
+            var hasBanner = Context.EducationMedias.Count(x => x.EducationId == educationId && x.MediaType == EducationMediaType.Banner) > 0;
             var hasPreview = Context.EducationMedias.Count(x => x.EducationId == educationId &&
-                (x.MediaType == Core.Enums.EducationMediaType.PreviewPhoto ||
-                x.MediaType == Core.Enums.EducationMediaType.PreviewVideo)) > 0;
+                (x.MediaType == EducationMediaType.PreviewPhoto ||
+                x.MediaType == EducationMediaType.PreviewVideo)) > 0;
 
             var partCount = Context.EducationParts.Count(x => x.EducationId == educationId);
 
