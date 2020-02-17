@@ -6,7 +6,7 @@
 
 <div class="card mb-3">
     <div class="card-header">
-        <i class="fa fa-list"></i> <strong>!</strong> Eğitiminin Parçaları
+        <i class="fa fa-list"></i> <strong>Gelir/Gider Raporu</strong>
     </div>
     <div class="card-body">
         <div class="row" style="margin-bottom:1%;">
@@ -47,10 +47,9 @@
                                     </td>
                                 </tr>*@
                             <tr>
-                                <th>Sıra</th>
-                                <th>Başlık</th>
-                                <th>Süre</th>
-                                <th>İşlem</th>
+                                <th>Ödenme Tarihi</th>
+                                <th>Miktar</th>
+                                <th>Müşteri</th>
                             </tr>
                         </thead>
                         <tbody id="tbody-report">
@@ -67,6 +66,7 @@
         /* elements */
         var btnFetch = $("#btn-fetch");
         var inputMonth = $("#input-month");
+        var tbodyReport = $("#tbody-report");
 
         /* assignments */
         btnFetch.on("click", btnFetch_onClick);
@@ -79,13 +79,33 @@
             var parts = date.split("-");
             var year = parseInt(parts[0]);
             var month = parseInt(parts[1]);
-            console.log(year);
-            console.log(month);
+
+            $.ajax({
+                url: `/fetch-income-report/${year}/${month}`,
+                method: "get",
+                success: (res) => {
+                    console.log(res);
+                    createTable(res.data);
+                }
+            });
         }
 
         /* functions */
-        function createTable() {
-
+        function createTable(data) {
+            tbodyReport.html("");
+            var payouts = data.payouts;
+            var appended = "";
+            for (var i = 0; i < payouts.length; i++) {
+                var item = payouts[i];
+                var style = item.isNegative ? "text-danger" : "text-success";
+                appended += "<tr>" +
+                    `<td>${item.payoutDateText}</td>` +
+                    `<td class="${style}">${item.payoutText}</td>` +
+                    `<td>${item.payer}</td>` +
+                    "</tr>";
+            }
+            appended += `<tr><td colspan="3">${data.sumOfPositive + data.sumOfNegative}</td></tr>`;
+            tbodyReport.append(appended);
         }
     </script>
 }

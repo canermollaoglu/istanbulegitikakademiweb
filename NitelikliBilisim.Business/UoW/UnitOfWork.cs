@@ -26,6 +26,7 @@ namespace NitelikliBilisim.Business.UoW
         private SaleRepository _saleRepository;
         private TempSaleDataRepository _tempSaleDataRepository;
         private GroupLessonDayRepository _groupLessonDayRepository;
+        private ReportRepository _reportRepository;
         public UnitOfWork(NbDataContext context)
         {
             _context = context;
@@ -85,6 +86,13 @@ namespace NitelikliBilisim.Business.UoW
             get
             {
                 return _groupLessonDayRepository ?? (_groupLessonDayRepository = new GroupLessonDayRepository(_context));
+            }
+        }
+        public ReportRepository Report
+        {
+            get
+            {
+                return _reportRepository ?? (_reportRepository = new ReportRepository(_context));
             }
         }
     }
