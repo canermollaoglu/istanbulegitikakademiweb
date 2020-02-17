@@ -131,7 +131,6 @@ namespace NitelikliBilisim.Business.Repositories
                 Console.WriteLine(ex);
                 transaction.Rollback();
             }
-
             Auto__AssignTickets(invoiceDetailsIds);
         }
         private List<InvoiceDetail> CreateInvoiceDetails(List<CartItem> cartItems)
