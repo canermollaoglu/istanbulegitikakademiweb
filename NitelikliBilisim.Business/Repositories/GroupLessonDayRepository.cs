@@ -49,9 +49,15 @@ namespace NitelikliBilisim.Business.Repositories
                 if (weekDays == null)
                 {
                     daysInt = new List<int> { 6, 0 };
-                    return daysInt;
+                    _context.WeekDaysOfGroups.Add(new WeekDaysOfGroup
+                    {
+                        GroupId = groupId,
+                        DaysJson = JsonConvert.SerializeObject(daysInt)
+                    });
+                    _context.SaveChanges();
                 }
-                daysInt = JsonConvert.DeserializeObject<List<int>>(weekDays.DaysJson);
+                else
+                    daysInt = JsonConvert.DeserializeObject<List<int>>(weekDays.DaysJson);
             }
 
             return daysInt;
