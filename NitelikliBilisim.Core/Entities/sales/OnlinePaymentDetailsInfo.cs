@@ -19,6 +19,6 @@ namespace NitelikliBilisim.Core.Entities
         public decimal PaidPrice { get; set; }
         public DateTime BlockageResolveDate { get; set; }
         public bool IsCancelled { get; set; }
-        public DateTime CancellationDate { get; set; }
+        public DateTime? CancellationDate { get; set; }
     }
 }
