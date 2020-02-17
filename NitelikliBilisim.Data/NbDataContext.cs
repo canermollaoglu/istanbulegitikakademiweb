@@ -25,6 +25,7 @@ namespace NitelikliBilisim.Data
 
         public override int SaveChanges()
         {
+            var ip = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
             //TODO: jwt yapınca kontrol et!!!!
             var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var selectedEntityList = ChangeTracker.Entries()
@@ -43,6 +44,16 @@ namespace NitelikliBilisim.Data
             {
                 ((AuditBase)(entity.Entity)).UpdatedUser = userId;
                 ((AuditBase)(entity.Entity)).UpdatedDate = DateTime.Now;
+            }
+
+            selectedEntityList = ChangeTracker.Entries()
+            .Where(x => x.Entity is IAuditIp && (x.State == EntityState.Added || x.State == EntityState.Modified));
+            foreach (var entity in selectedEntityList)
+            {
+                if (entity.State == EntityState.Added)
+                    ((IAuditIp)entity.Entity).CreatedIp = ip;
+                if (entity.State == EntityState.Modified)
+                    ((IAuditIp)entity.Entity).UpdatedIp = ip;
             }
 
             return base.SaveChanges();
@@ -109,5 +120,6 @@ namespace NitelikliBilisim.Data
         public DbSet<OnlinePaymentDetailsInfo> OnlinePaymentDetailsInfos { get; set; }
         public DbSet<TempSaleData> TempSaleData { get; set; }
         public DbSet<GroupLessonDay> GroupLessonDays { get; set; }
+        public DbSet<GroupAttendance> GroupAttendances { get; set; }
     }
 }
