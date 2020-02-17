@@ -2,6 +2,7 @@ namespace NitelikliBilisim.Core.Abstracts
 {
     public interface IAuditIp
     {
-        string Ip { get; set; }
+        string CreatedIp { get; set; }
+        string UpdatedIp { get; set; }
     }
 }

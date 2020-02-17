@@ -29,6 +29,9 @@ namespace NitelikliBilisim.Core.Entities
         [ForeignKey("Customer"), MaxLength(450)]
         public string CustomerId { get; set; }
         public virtual Customer Customer { get; set; }
-        public string Ip { get; set; }
+        [MaxLength(32)]
+        public string CreatedIp { get; set; }
+        [MaxLength(32)]
+        public string UpdatedIp { get; set; }
     }
 }
