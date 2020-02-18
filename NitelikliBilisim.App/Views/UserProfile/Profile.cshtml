@@ -81,13 +81,14 @@
                                         </td>
                                         <td>
                                             <div class="btn-group">
-                                                <a href="#" class="btn btn-secondary"><i class="icon-comment-empty text-light"></i></a>
+                                                <a href="/gruplarim/@ticket.TicketId" class="btn btn-primary"><i class="icon-info text-light"></i></a>
+                                                <a href="#" class="btn btn-info"><i class="icon-comment-empty text-light"></i></a>
                                                 <a href="#" class="btn btn-danger"><i class="icon-alert text-light"></i></a>
                                             </div>
                                         </td>
                                     </tr>
                                 }
-                                @if(Model.Tickets == null || Model.Tickets.Count == 0)
+                                @if (Model.Tickets == null || Model.Tickets.Count == 0)
                                 {
                                     <tr>
                                         <td colspan="4">Henüz eğitim satın almadınız</td>

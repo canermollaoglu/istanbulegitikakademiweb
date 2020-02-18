@@ -41,7 +41,7 @@ namespace NitelikliBilisim.Business.Repositories
 
             return dates;
         }
-        private List<int> MakeSureWeekDaysExists(Guid groupId, List<int> daysInt)
+        public List<int> MakeSureWeekDaysExists(Guid groupId, List<int> daysInt)
         {
             if (daysInt == null || daysInt.Count == 0)
             {
