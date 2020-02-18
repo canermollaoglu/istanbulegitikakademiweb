@@ -75,16 +75,10 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 Quota = data.Quota.Value
             }, days: data.LessonDays);
 
-            if (isSuccess)
-                return Json(new ResponseModel
-                {
-                    isSuccess = true
-                });
-            else
-                return Json(new ResponseModel
-                {
-                    isSuccess = false
-                });
+            return Json(new ResponseModel
+            {
+                isSuccess = isSuccess
+            });
         }
 
         [Route("admin/gruba-ogrenci-ata/{groupId?}")]

@@ -1,11 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NitelikliBilisim.Core.ViewModels.areas.admin.reports;
 using NitelikliBilisim.Data;
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 
 namespace NitelikliBilisim.Business.Repositories
 {
@@ -26,6 +24,8 @@ namespace NitelikliBilisim.Business.Repositories
                 .ThenInclude(x => x.User)
                 .Where(x => x.BlockageResolveDate.Year == year - 1 || x.BlockageResolveDate.Year == year)
                 .ToList();
+
+//TODO: eğitim bilgisi de ekleyelim
 
             var payouts = new List<_Payout>();
             foreach (var item in data)
