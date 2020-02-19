@@ -12,12 +12,14 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
 
     public class _Group
     {
+        public DateTime StartDate { get; set; }
         public string GroupName { get; set; }
         public string Educator { get; set; }
         public string Host { get; set; }
     }
     public class _LessonDay
     {
+        public DateTime LessonDate { get; set; }
         public string LessonDateText { get; set; }
     }
 }

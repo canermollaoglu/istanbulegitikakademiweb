@@ -227,5 +227,11 @@ namespace NitelikliBilisim.Business.Repositories
                 return false;
             }
         }
+
+        // TODO: iptal işlemleri için
+        private bool Auto__UnassingTickets(List<Guid> invoiceDetailsIds)
+        {
+            return false;
+        }
     }
 }

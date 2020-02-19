@@ -38,6 +38,21 @@ namespace NitelikliBilisim.Business.Repositories
                 dates.Add(date);
                 date = date.AddDays(1);
             }
+            var groupLessonDays = new List<GroupLessonDay>();
+            foreach (var item in dates)
+                groupLessonDays.Add(new GroupLessonDay
+                {
+                    DateOfLesson = item,
+                    GroupId = group.Id,
+                    HasAttendanceRecord = false,
+                    IsImmuneToAutoChange = false
+                });
+
+            if (isReset)
+            {
+                _context.GroupLessonDays.AddRange(groupLessonDays);
+                _context.SaveChanges();
+            }
 
             return dates;
         }

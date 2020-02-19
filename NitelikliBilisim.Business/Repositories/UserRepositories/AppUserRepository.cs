@@ -75,5 +75,34 @@ namespace NitelikliBilisim.Business.Repositories
 
             return model;
         }
+
+        public void GetUserInvoices(string userId)
+        {
+            var invoices = _context.OnlinePaymentDetailsInfos
+                .Include(x => x.InvoiceDetail)
+                .ThenInclude(x => x.Invoice)
+                .Where(x => x.InvoiceDetail.Invoice.CustomerId == userId)
+                .Join(_context.Tickets, l => l.InvoiceDetail.Id, r => r.InvoiceDetailsId, (x, y) => new
+                {
+                    Base = x,
+                    Ticket = y
+                })
+                .GroupBy(x => x.Base)
+                .Select(x => new
+                {
+                    Invoice = x.Key,
+                    Data = x.ToList()
+                })
+                .ToList();
+
+            var model = new List<MyInvoicesVm>();
+            foreach (var invoice in invoices)
+            {
+                model.Add(new MyInvoicesVm
+                {
+                    
+                });
+            }
+        }
     }
 }

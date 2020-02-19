@@ -43,12 +43,14 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 Group = new _Group
                 {
+                    StartDate = bridge.Group.StartDate,
                     GroupName = bridge.Group.GroupName,
                     Educator = educator != null ? $"{educator.User.Name.ToUpper()} {educator.User.Surname.ToUpper()}" : "?",
                     Host = $"{bridge.Group.Host.HostName} ({EnumSupport.GetDescription(bridge.Group.Host.City)})"
                 },
                 LessonDays = lessonDays.Select(x => new _LessonDay
                 {
+                    LessonDate = x.DateOfLesson,
                     LessonDateText = x.DateOfLesson.ToLongDateString()
                 }).ToList()
             };

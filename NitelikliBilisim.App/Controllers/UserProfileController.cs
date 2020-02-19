@@ -30,7 +30,16 @@ namespace NitelikliBilisim.App.Controllers
             if (!ticketId.HasValue)
                 return Redirect($"/profil/{User.FindFirstValue(ClaimTypes.NameIdentifier)}");
             var model = _userUnitOfWork.Group.GetMyGroupVm(ticketId.Value);
+            if (model == null)
+                return Redirect($"/profil/{User.FindFirstValue(ClaimTypes.NameIdentifier)}");
             return View(model);
+        }
+
+        [Route("faturalarim")]
+        public IActionResult MyInvoices()
+        {
+            
+            return View();
         }
 
         public IActionResult Cancellation(Guid? ticketId)
