@@ -5,6 +5,7 @@ using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.ViewModels.Main.Profile;
 using NitelikliBilisim.Data;
 using NitelikliBilisim.Support.Enums;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -104,6 +105,7 @@ namespace NitelikliBilisim.Business.Repositories
                 {
                     Invoice = new _Invoice
                     {
+                        InvoiceId = item.Base.InvoiceDetail.Invoice.Id,
                         BillingType = EnumSupport.GetDescription(item.Base.InvoiceDetail.Invoice.BillingType),
                         CompanyInfo = item.Base.InvoiceDetail.Invoice.BillingType == CustomerType.Corporate ? new _CompanyInfo
                         {
@@ -115,6 +117,7 @@ namespace NitelikliBilisim.Business.Repositories
                     },
                     InvoiceDetails = item.Data.Select(x => x.Base).Select(y => new _InvoiceDetail
                     {
+                        InvoiceDetailsId = y.InvoiceDetail.Id,
                         Education = _context.Educations.First(x => x.Id == y.InvoiceDetail.EducationId).Name,
                         IsCancelled = y.IsCancelled,
                         PaidPriceNumeric = y.PaidPrice,
@@ -122,6 +125,21 @@ namespace NitelikliBilisim.Business.Repositories
                     }).ToList()
                 });
             }
+
+            var invoiceDetailsIds = new List<Guid>();
+            foreach (var item in model)
+                foreach (var i in item.InvoiceDetails)
+                    if (!invoiceDetailsIds.Contains(i.InvoiceDetailsId))
+                        invoiceDetailsIds.Add(i.InvoiceDetailsId);
+
+            var ticketIds = _context.Tickets
+                .Where(x => invoiceDetailsIds.Contains(x.InvoiceDetailsId))
+                .Select(x => x.Id);
+
+            var bridgeGroups = _context.Bridge_GroupStudents
+                .Include(x => x.Group)
+                .Where(x => ticketIds.Contains(x.TicketId))
+                .ToList();
 
             return model;
         }
