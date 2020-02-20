@@ -67,7 +67,7 @@ namespace NitelikliBilisim.Core.ViewModels.Sales
     {
         public PaymentChannel PaymentChannel { get; set; } = PaymentChannel.WEB;
         public PaymentGroup PaymentGroup { get; set; } = PaymentGroup.PRODUCT;
-        public byte Installments { get; set; } = 1;
+        public byte Installments { get; set; } = 3;
     }
     public class _SpecialInfo
     {

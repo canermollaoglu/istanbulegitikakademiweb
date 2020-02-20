@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_groups;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
@@ -73,16 +75,10 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 Quota = data.Quota.Value
             }, days: data.LessonDays);
 
-            if (isSuccess)
-                return Json(new ResponseModel
-                {
-                    isSuccess = true
-                });
-            else
-                return Json(new ResponseModel
-                {
-                    isSuccess = false
-                });
+            return Json(new ResponseModel
+            {
+                isSuccess = isSuccess
+            });
         }
 
         [Route("admin/gruba-ogrenci-ata/{groupId?}")]
@@ -130,6 +126,22 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             {
                 isSuccess = true
             });
+        }
+        [Route("make-sure-lesson-days-created/{groupId}")]
+        public IActionResult CreateGroupLessonDays(Guid groupId)
+        {
+            var groupDays = _unitOfWork.WeekDaysOfGroup.GetById(groupId);
+            List<int> daysInt = null;
+            if (groupDays != null)
+                daysInt = JsonConvert.DeserializeObject<List<int>>(groupDays.DaysJson);
+
+            _unitOfWork.GroupLessonDay.CreateGroupLessonDays(
+                group: _unitOfWork.EducationGroup.Get(x => x.Id == groupId, null, x => x.Education).FirstOrDefault(),
+                daysInt: daysInt,
+                unwantedDays: new List<DateTime>(),
+                isReset: true);
+
+            return Json(true);
         }
     }
 }

@@ -13,6 +13,7 @@ namespace NitelikliBilisim.Business.UoW
         private readonly NbDataContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private AppUserRepository _appUserRepository;
+        private UserGroupRepository _userGroupRepository;
         public UserUnitOfWork(NbDataContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
@@ -24,6 +25,13 @@ namespace NitelikliBilisim.Business.UoW
             get
             {
                 return _appUserRepository ?? (_appUserRepository = new AppUserRepository(_context, _userManager));
+            }
+        }
+        public UserGroupRepository Group
+        {
+            get
+            {
+                return _userGroupRepository ?? (_userGroupRepository = new UserGroupRepository(_context));
             }
         }
     }

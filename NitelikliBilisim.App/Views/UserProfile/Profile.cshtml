@@ -19,13 +19,16 @@
                     <figure><img src="http://via.placeholder.com/150x150/ccc/fff/teacher_2_small.jpg" alt="Teacher" class="rounded-circle"></figure>
                     <ul class="list-group">
                         <li class="list-group-item">
-                            <a href="#"><i class="icon-user"></i> Bilgilerim</a>
+                            <a href="#bilgilerim"><i class="icon-user"></i> Bilgilerim</a>
                         </li>
                         <li class="list-group-item">
-                            <a href="#"><i class="icon-key"></i> Hesabım</a>
+                            <a href="#hesap-bilgileri"><i class="icon-key"></i> Hesabım</a>
                         </li>
                         <li class="list-group-item">
-                            <a href="#"><i class="icon-book-open"></i> Eğitimlerim</a>
+                            <a href="#egitim-gecmisi"><i class="icon-book-open"></i> Eğitimlerim</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="/faturalarim"><i class="icon-money"></i> Faturalarım</a> <i class="icon-link"></i>
                         </li>
                     </ul>
                 </div>
@@ -33,7 +36,7 @@
 
             <div class="col-lg-9">
                 <div class="box_teacher">
-                    <div class="indent_title_in">
+                    <div id="bilgilerim" class="indent_title_in">
                         <i class="pe-7s-user"></i>
                         <h3>Kişisel ve Hesap Bilgileri</h3>
                         <p>Mussum ipsum cacilds, vidis litro abertis.</p>
@@ -49,7 +52,7 @@
                     <hr class="styled_2">
                     <div class="indent_title_in">
                         <i class="pe-7s-display1"></i>
-                        <h3>Eğitimlerim</h3>
+                        <h3 id="hesap-bilgileri">Eğitimlerim</h3>
                         <p>Mussum ipsum cacilds, vidis litro abertis.</p>
                     </div>
                     <div class="wrapper_indent">
@@ -81,13 +84,21 @@
                                         </td>
                                         <td>
                                             <div class="btn-group">
-                                                <a href="#" class="btn btn-secondary"><i class="icon-comment-empty text-light"></i></a>
-                                                <a href="#" class="btn btn-danger"><i class="icon-alert text-light"></i></a>
+                                                @if (ticket.IsUsed)
+                                                {
+                                                    <a href="/gruplarim/@ticket.TicketId" class="btn btn-primary"><i class="icon-info text-light"></i></a>
+                                                }
+                                                else
+                                                {
+                                                    <a href="#" class="btn btn-dark"><i class="icon-info text-light"></i></a>
+                                                }
+                                                <a href="#" class="btn btn-info"><i class="icon-comment-empty text-light"></i></a>
+                                                <a href="/iptal-formu/@ticket.TicketId" class="btn btn-danger"><i class="icon-alert text-light"></i></a>
                                             </div>
                                         </td>
                                     </tr>
                                 }
-                                @if(Model.Tickets == null || Model.Tickets.Count == 0)
+                                @if (Model.Tickets == null || Model.Tickets.Count == 0)
                                 {
                                     <tr>
                                         <td colspan="4">Henüz eğitim satın almadınız</td>
@@ -99,7 +110,7 @@
                     <hr class="styled_2">
                     <div class="indent_title_in">
                         <i class="pe-7s-key"></i>
-                        <h3>Eğitim Geçmişi</h3>
+                        <h3 id="egitim-gecmisi">Eğitim Geçmişi</h3>
                         <p>Mussum ipsum cacilds, vidis litro abertis.</p>
                     </div>
                     <div class="wrapper_indent">

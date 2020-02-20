@@ -1,13 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
+using NitelikliBilisim.Core.PaymentModels;
 using NitelikliBilisim.Core.ViewModels.Sales;
 using NitelikliBilisim.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using NitelikliBilisim.Core.PaymentModels;
-using System.Threading.Tasks;
 
 namespace NitelikliBilisim.Business.Repositories
 {
@@ -25,7 +24,7 @@ namespace NitelikliBilisim.Business.Repositories
         public List<CartItem> PrepareCartItems(PayData data)
         {
             var educations = _context.Educations
-               .Where(x => data.CartItems.Select(x => x.EducationId).Contains(x.Id))
+               .Where(x => data.CartItems.Select(cartItem => cartItem.EducationId).Contains(x.Id))
                .Include(x => x.Category)
                .ThenInclude(x => x.BaseCategory)
                .ToList();
@@ -86,7 +85,7 @@ namespace NitelikliBilisim.Business.Repositories
                 }
             }
         }
-        public async void CompletePayment(PaymentCompletionModel completionModel, Guid invoiceId, List<Guid> invoiceDetailsIds)
+        public void CompletePayment(PaymentCompletionModel completionModel, Guid invoiceId, List<Guid> invoiceDetailsIds)
         {
             using var transaction = _context.Database.BeginTransaction();
             try
@@ -132,7 +131,6 @@ namespace NitelikliBilisim.Business.Repositories
                 Console.WriteLine(ex);
                 transaction.Rollback();
             }
-
             Auto__AssignTickets(invoiceDetailsIds);
         }
         private List<InvoiceDetail> CreateInvoiceDetails(List<CartItem> cartItems)
@@ -225,8 +223,15 @@ namespace NitelikliBilisim.Business.Repositories
             }
             catch (Exception ex)
             {
+                System.Console.WriteLine(ex.Message);
                 return false;
             }
+        }
+
+        // TODO: iptal işlemleri için
+        private bool Auto__UnassingTickets(List<Guid> invoiceDetailsIds)
+        {
+            return false;
         }
     }
 }

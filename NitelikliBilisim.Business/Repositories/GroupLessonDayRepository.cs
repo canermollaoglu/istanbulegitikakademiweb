@@ -38,17 +38,41 @@ namespace NitelikliBilisim.Business.Repositories
                 dates.Add(date);
                 date = date.AddDays(1);
             }
+            var groupLessonDays = new List<GroupLessonDay>();
+            foreach (var item in dates)
+                groupLessonDays.Add(new GroupLessonDay
+                {
+                    DateOfLesson = item,
+                    GroupId = group.Id,
+                    HasAttendanceRecord = false,
+                    IsImmuneToAutoChange = false
+                });
+
+            if (isReset)
+            {
+                _context.GroupLessonDays.AddRange(groupLessonDays);
+                _context.SaveChanges();
+            }
 
             return dates;
         }
-        private List<int> MakeSureWeekDaysExists(Guid groupId, List<int> daysInt)
+        public List<int> MakeSureWeekDaysExists(Guid groupId, List<int> daysInt)
         {
             if (daysInt == null || daysInt.Count == 0)
             {
                 var weekDays = _context.WeekDaysOfGroups.FirstOrDefault(x => x.GroupId == groupId);
                 if (weekDays == null)
+                {
                     daysInt = new List<int> { 6, 0 };
-                daysInt = JsonConvert.DeserializeObject<List<int>>(weekDays.DaysJson);
+                    _context.WeekDaysOfGroups.Add(new WeekDaysOfGroup
+                    {
+                        GroupId = groupId,
+                        DaysJson = JsonConvert.SerializeObject(daysInt)
+                    });
+                    _context.SaveChanges();
+                }
+                else
+                    daysInt = JsonConvert.DeserializeObject<List<int>>(weekDays.DaysJson);
             }
 
             return daysInt;

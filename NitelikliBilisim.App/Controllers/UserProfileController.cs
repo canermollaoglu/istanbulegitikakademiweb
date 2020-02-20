@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.Business.UoW;
@@ -24,6 +22,35 @@ namespace NitelikliBilisim.App.Controllers
                 return Redirect("/");
             var model = _userUnitOfWork.User.GetCustomerInfo(userId);
             return View(model);
+        }
+
+        [Route("gruplarim/{ticketId?}")]
+        public IActionResult MyGroup(Guid? ticketId)
+        {
+            if (!ticketId.HasValue)
+                return Redirect($"/profil/{User.FindFirstValue(ClaimTypes.NameIdentifier)}");
+            var model = _userUnitOfWork.Group.GetMyGroupVm(ticketId.Value);
+            if (model == null)
+                return Redirect($"/profil/{User.FindFirstValue(ClaimTypes.NameIdentifier)}");
+            return View(model);
+        }
+
+        [Route("faturalarim")]
+        public IActionResult MyInvoices()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var model = _userUnitOfWork.User.GetUserInvoices(userId);
+            if (model == null)
+                return Redirect($"/profil/{userId}");
+            return View(model);
+        }
+
+        public IActionResult Cancellation(Guid? ticketId)
+        {
+            if (!ticketId.HasValue)
+                return Redirect($"/profil/{User.FindFirstValue(ClaimTypes.NameIdentifier)}");
+
+            return View();
         }
     }
 }

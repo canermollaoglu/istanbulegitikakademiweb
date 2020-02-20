@@ -1,0 +1,63 @@
+﻿@model NitelikliBilisim.Core.ViewModels.Main.Profile.MyGroupVm
+
+@{
+    ViewData["Title"] = $"Gruplarım - {Model.Group.GroupName}";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<main>
+    <div class="container margin_60_35">
+
+    </div>
+    <div class="container margin_60_35">
+        <div class="row">
+            <div class="col-lg-12">
+                <table class="table table-bordered">
+                    <tr>
+                        <th>Grup Durumu</th>
+                        @if (Model.Group.StartDate.Date >= DateTime.Now.Date)
+                        {
+                            if (Model.LessonDays[Model.LessonDays.Count - 1].LessonDate > DateTime.Now.Date)
+                            {
+                                <td class="text-success">Grup tamamlandı</td>
+                            }
+                            else
+                            {
+                                <td class="text-warning">Grup devam ediyor</td>
+                            }
+                        }
+                        else
+                        {
+                            <td class="text-danger">Grup başlamadı</td>
+                        }
+                    </tr>
+                    <tr>
+                        <th>Grup İsmi</th>
+                        <td>@Model.Group.GroupName</td>
+                    </tr>
+                    <tr>
+                        <th>Eğitim Yeri</th>
+                        <td>@Model.Group.Host</td>
+                    </tr>
+                    <tr>
+                        <th>Eğitmen</th>
+                        <td>@Model.Group.Educator</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <table class="table table-bordered">
+                    <tr>
+                        <th colspan="@Model.LessonDays.Count">Eğitim Günleri</th>
+                        @foreach (var lessonDay in Model.LessonDays)
+                        {
+                            <td>@lessonDay.LessonDateText</td>
+                        }
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
