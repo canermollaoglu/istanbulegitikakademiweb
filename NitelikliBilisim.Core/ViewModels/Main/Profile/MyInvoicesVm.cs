@@ -17,6 +17,8 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public string BillingType { get; set; }
         public int PaymentCount { get; set; }
         public string TransactionStatus { get; set; }
+        public bool IsEligibleToFullyCancel { get; set; }
+        public DateTime CreatedDate { get; set; } // TODO: gün içerisinde alınmış olma durumunu kontrol etmek için (yeterli olup olmadığı kontrol edilmeli)
         public _CompanyInfo CompanyInfo { get; set; }
     }
     public class _InvoiceDetail
@@ -31,6 +33,9 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
     public class _CorrespondingGroup
     {
         public string GroupName { get; set; }
+        public bool IsGroupStarted { get; set; }
+        public DateTime StartDate { get; set; }
+        public string StartDateText { get; set; }
     }
     public class _CompanyInfo
     {

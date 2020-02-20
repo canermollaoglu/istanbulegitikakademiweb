@@ -16,6 +16,12 @@
                     <div class="row">
                         <div class="offset-md-2 col-md-8">
                             <table class="table table-bordered">
+                                @if (item.Invoice.IsEligibleToFullyCancel)
+                                {
+                                    <tr>
+                                        <td colspan="2"><a href="#" class="btn btn-danger text-light">Tüm satışı iptal et</a></td>
+                                    </tr>
+                                }
                                 <tr>
                                     <th>Fatura Tipi</th>
                                     <td>@item.Invoice.BillingType</td>
@@ -46,6 +52,7 @@
                                                 <tr>
                                                     <th>Eğitim</th>
                                                     <th>Ödenen Miktar</th>
+                                                    <th>Grup Durumu</th>
                                                     <th>İşlemler</th>
                                                 </tr>
                                             </thead>
@@ -56,7 +63,23 @@
                                                     <tr class="@rowStyle">
                                                         <td>@details.Education</td>
                                                         <td>@details.PaidPriceText</td>
-                                                        <td><a href="#" class="btn btn-danger text-light">İade Talebi</a></td>
+                                                        @if (details.Group != null)
+                                                        {
+                                                            if (details.Group.IsGroupStarted)
+                                                            {
+                                                                <td>@details.Group.StartDateText tarihinde grup <b class="text-success">başlamıştır</b></td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td>@details.Group.StartDateText tarihinde grup <b class="text-warning">başlayacaktır</b></td>
+                                                                <td><a href="#" class="btn btn-danger text-light">İade Talebi</a></td>
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            <td>Gruba atanmamıştır</td>
+                                                            <td><a href="#" class="btn btn-danger text-light">İade Talebi</a></td>
+                                                        }
                                                     </tr>
                                                 }
                                             </tbody>

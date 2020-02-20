@@ -113,7 +113,9 @@ namespace NitelikliBilisim.Business.Repositories
                         } : null,
                         IsIndividual = item.Base.InvoiceDetail.Invoice.BillingType == CustomerType.Individual,
                         PaymentCount = item.Base.InvoiceDetail.Invoice.PaymentCount,
-                        TransactionStatus = EnumSupport.GetDescription(item.Base.InvoiceDetail.Invoice.TransactionStatus)
+                        TransactionStatus = EnumSupport.GetDescription(item.Base.InvoiceDetail.Invoice.TransactionStatus),
+                        CreatedDate = item.Base.CreatedDate,
+                        IsEligibleToFullyCancel = true
                     },
                     InvoiceDetails = item.Data.Select(x => x.Base).Select(y => new _InvoiceDetail
                     {
@@ -132,14 +134,38 @@ namespace NitelikliBilisim.Business.Repositories
                     if (!invoiceDetailsIds.Contains(i.InvoiceDetailsId))
                         invoiceDetailsIds.Add(i.InvoiceDetailsId);
 
-            var ticketIds = _context.Tickets
+            var tickets = _context.Tickets
                 .Where(x => invoiceDetailsIds.Contains(x.InvoiceDetailsId))
-                .Select(x => x.Id);
+                .ToList();
 
             var bridgeGroups = _context.Bridge_GroupStudents
                 .Include(x => x.Group)
-                .Where(x => ticketIds.Contains(x.TicketId))
+                .Where(x => tickets.Select(x => x.Id).Contains(x.TicketId))
                 .ToList();
+
+            foreach (var item in model)
+            {
+                foreach (var i in item.InvoiceDetails)
+                {
+                    if (tickets.Select(x => x.InvoiceDetailsId).Contains(i.InvoiceDetailsId))
+                    {
+                        var ticket = tickets.FirstOrDefault(x => x.InvoiceDetailsId == i.InvoiceDetailsId);
+                        var bridgeGroup = bridgeGroups.FirstOrDefault(x => x.TicketId == ticket.Id);
+                        if (bridgeGroup != null)
+                        {
+                            i.Group = new _CorrespondingGroup
+                            {
+                                GroupName = bridgeGroup.Group.GroupName,
+                                IsGroupStarted = bridgeGroup.Group.StartDate.Date >= DateTime.Now.Date,
+                                StartDate = bridgeGroup.Group.StartDate,
+                                StartDateText = bridgeGroup.Group.StartDate.ToLongDateString()
+                            };
+                            if (i.Group.IsGroupStarted || DateTime.Now.Date > item.Invoice.CreatedDate.Date)
+                                item.Invoice.IsEligibleToFullyCancel = false;
+                        }
+                    }
+                }
+            }
 
             return model;
         }
