@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.ViewModels.Main.Profile;
 using NitelikliBilisim.Data;
 using NitelikliBilisim.Support.Enums;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace NitelikliBilisim.Business.Repositories
@@ -76,7 +78,7 @@ namespace NitelikliBilisim.Business.Repositories
             return model;
         }
 
-        public void GetUserInvoices(string userId)
+        public List<MyInvoicesVm> GetUserInvoices(string userId)
         {
             var invoices = _context.OnlinePaymentDetailsInfos
                 .Include(x => x.InvoiceDetail)
@@ -86,23 +88,42 @@ namespace NitelikliBilisim.Business.Repositories
                 {
                     Base = x,
                     Ticket = y
-                })
+                }).ToList()
                 .GroupBy(x => x.Base)
                 .Select(x => new
                 {
-                    Invoice = x.Key,
+                    Base = x.Key,
                     Data = x.ToList()
                 })
                 .ToList();
 
             var model = new List<MyInvoicesVm>();
-            foreach (var invoice in invoices)
+            foreach (var item in invoices)
             {
                 model.Add(new MyInvoicesVm
                 {
-                    
+                    Invoice = new _Invoice
+                    {
+                        BillingType = EnumSupport.GetDescription(item.Base.InvoiceDetail.Invoice.BillingType),
+                        CompanyInfo = item.Base.InvoiceDetail.Invoice.BillingType == CustomerType.Corporate ? new _CompanyInfo
+                        {
+                            CompanyName = item.Base.InvoiceDetail.Invoice.CompanyName
+                        } : null,
+                        IsIndividual = item.Base.InvoiceDetail.Invoice.BillingType == CustomerType.Individual,
+                        PaymentCount = item.Base.InvoiceDetail.Invoice.PaymentCount,
+                        TransactionStatus = EnumSupport.GetDescription(item.Base.InvoiceDetail.Invoice.TransactionStatus)
+                    },
+                    InvoiceDetails = item.Data.Select(x => x.Base).Select(y => new _InvoiceDetail
+                    {
+                        Education = _context.Educations.First(x => x.Id == y.InvoiceDetail.EducationId).Name,
+                        IsCancelled = y.IsCancelled,
+                        PaidPriceNumeric = y.PaidPrice,
+                        PaidPriceText = y.PaidPrice.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"))
+                    }).ToList()
                 });
             }
+
+            return model;
         }
     }
 }

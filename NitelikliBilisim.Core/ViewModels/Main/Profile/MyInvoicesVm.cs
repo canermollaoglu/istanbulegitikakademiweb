@@ -16,7 +16,7 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public string BillingType { get; set; }
         public int PaymentCount { get; set; }
         public string TransactionStatus { get; set; }
-        
+        public _CompanyInfo CompanyInfo { get; set; }
     }
     public class _InvoiceDetail
     {

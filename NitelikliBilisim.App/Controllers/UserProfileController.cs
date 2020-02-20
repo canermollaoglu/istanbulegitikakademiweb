@@ -38,8 +38,11 @@ namespace NitelikliBilisim.App.Controllers
         [Route("faturalarim")]
         public IActionResult MyInvoices()
         {
-            
-            return View();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var model = _userUnitOfWork.User.GetUserInvoices(userId);
+            if (model == null)
+                return Redirect($"/profil/{userId}");
+            return View(model);
         }
 
         public IActionResult Cancellation(Guid? ticketId)

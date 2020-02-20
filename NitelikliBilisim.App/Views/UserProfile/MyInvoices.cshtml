@@ -1,4 +1,4 @@
-﻿
+﻿@model List<NitelikliBilisim.Core.ViewModels.Main.Profile.MyInvoicesVm>
 @{
     ViewData["Title"] = "Faturalarım";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -11,7 +11,62 @@
     <div class="container margin_60_35">
         <div class="row">
             <div class="col-lg-12">
-
+                @foreach (var item in Model)
+                {
+                    <div class="row">
+                        <div class="offset-md-2 col-md-8">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>Fatura Tipi</th>
+                                    <td>@item.Invoice.BillingType</td>
+                                </tr>
+                                @if (!item.Invoice.IsIndividual)
+                                {
+                                    <tr>
+                                        <th>Şirket İsmi</th>
+                                        <td>@item.Invoice.CompanyInfo.CompanyName</td>
+                                    </tr>
+                                }
+                                @if (item.Invoice.PaymentCount > 1)
+                                {
+                                    <tr>
+                                        <th>Taksit Sayısı</th>
+                                        <td>@item.Invoice.PaymentCount</td>
+                                    </tr>
+                                }
+                                <tr>
+                                    <th>Tahsilat Durumu</th>
+                                    <td>@item.Invoice.TransactionStatus</td>
+                                </tr>
+                                <tr>
+                                    <th>Fatura Detayları</th>
+                                    <td>
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Eğitim</th>
+                                                    <th>Ödenen Miktar</th>
+                                                    <th>İşlemler</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var details in item.InvoiceDetails)
+                                                {
+                                                    var rowStyle = details.IsCancelled ? "text-danger" : "text-success";
+                                                    <tr class="@rowStyle">
+                                                        <td>@details.Education</td>
+                                                        <td>@details.PaidPriceText</td>
+                                                        <td><a href="#" class="btn btn-danger text-light">İade Talebi</a></td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
     </div>
