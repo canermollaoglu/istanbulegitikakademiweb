@@ -143,5 +143,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
             return Json(true);
         }
+        public IActionResult GroupDaysManagement(Guid? groupId)
+        {
+            if (!groupId.HasValue)
+                return Redirect("admin/gruplar");
+
+            return View();
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.ViewModels.areas.admin.education_groups;
 using NitelikliBilisim.Data;
 using System;
 using System.Collections.Generic;
@@ -76,6 +77,57 @@ namespace NitelikliBilisim.Business.Repositories
             }
 
             return daysInt;
+        }
+        public EliminatedAndNewDates DeterminePostponeDates(Guid groupId, DateTime from, DateTime? to)
+        {
+            if ((!to.HasValue) || (to < from))
+                to = from;
+
+            var groupLessonDays = _context.GroupLessonDays
+                .Where(x => x.GroupId == groupId)
+                .ToList();
+            var eliminatedDates = groupLessonDays
+                .Where(x => (x.DateOfLesson.Date >= from && x.DateOfLesson <= to))
+                .ToList();
+            var weekDaysOfGroup = GetWeekDaysOfGroup(groupId, null);
+            var lastDate = groupLessonDays
+                .OrderByDescending(o => o.DateOfLesson)
+                .First();
+            var newDates = CreateNewDates(lastDate.DateOfLesson, eliminatedDates.Count, weekDaysOfGroup, null);
+            return new EliminatedAndNewDates
+            {
+                EliminatedDates = eliminatedDates.Select(x => x.DateOfLesson).ToList(),
+                NewDates = newDates
+            };
+        }
+
+        public List<DateTime> CreateNewDates(DateTime lastDate, int newDateCount, DayOfWeek[] eligibleDays, List<DateTime> unwantedDates)
+        {
+            if (unwantedDates == null)
+                unwantedDates = new List<DateTime>();
+
+            var dates = new List<DateTime>();
+            for (int i = 0; i < newDateCount; i++)
+            {
+                lastDate = lastDate.AddDays(1);
+                if (!eligibleDays.Contains(lastDate.DayOfWeek) || unwantedDates.Any(x => x.Date == lastDate.Date))
+                {
+                    i--;
+                    continue;
+                }
+                dates.Add(lastDate);
+            }
+            return dates;
+        }
+
+        private DayOfWeek[] GetWeekDaysOfGroup(Guid groupId, List<int> daysInt)
+        {
+            daysInt = MakeSureWeekDaysExists(groupId, daysInt);
+            var days = new List<DayOfWeek>();
+            foreach (var item in daysInt)
+                days.Add((DayOfWeek)item);
+
+            return days.ToArray();
         }
     }
 }
