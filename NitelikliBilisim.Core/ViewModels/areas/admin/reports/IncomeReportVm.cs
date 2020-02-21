@@ -12,8 +12,11 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.reports
 
     public class _Payout
     {
+        public decimal TotalNumeric { get; set; }
+        public string TotalText { get; set; }
         public decimal PayoutNumeric { get; set; }
         public string PayoutText { get; set; }
+        public string OrderOfPayment { get; set; }
         public bool IsNegative { get; set; }
         public DateTime PayoutDate { get; set; }
         public string PayoutDateText { get; set; }

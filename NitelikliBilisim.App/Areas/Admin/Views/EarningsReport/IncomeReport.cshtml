@@ -48,6 +48,8 @@
                                 </tr>*@
                             <tr>
                                 <th>Ödenme Tarihi</th>
+                                <th>Toplam Ödeme</th>
+                                <th>Taksit Sırası</th>
                                 <th>Miktar</th>
                                 <th>Müşteri</th>
                             </tr>
@@ -100,11 +102,13 @@
                 var style = item.isNegative ? "text-danger" : "text-success";
                 appended += "<tr>" +
                     `<td>${item.payoutDateText}</td>` +
+                    `<td>${item.totalText}</td>` +
+                    `<td>${item.orderOfPayment}</td>` +
                     `<td class="${style}">${item.payoutText}</td>` +
                     `<td>${item.payer}</td>` +
                     "</tr>";
             }
-            appended += `<tr><td colspan="3">${data.sumOfPositive + data.sumOfNegative}</td></tr>`;
+            appended += `<tr><td colspan="5">${data.sumOfPositive + data.sumOfNegative}</td></tr>`;
             tbodyReport.append(appended);
         }
     </script>
