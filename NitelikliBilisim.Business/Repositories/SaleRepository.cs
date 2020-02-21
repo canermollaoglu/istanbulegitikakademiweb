@@ -199,6 +199,7 @@ namespace NitelikliBilisim.Business.Repositories
                 {
                     var firstGroup = _context.EducationGroups
                         .Where(x => x.StartDate.Date > DateTime.Now.Date
+                        && x.EducationId == ticket.EducationId
                         && x.IsGroupOpenForAssignment
                         && x.HostId == ticket.HostId)
                         .OrderBy(o => o.StartDate)
