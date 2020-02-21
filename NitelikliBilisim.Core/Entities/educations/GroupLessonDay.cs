@@ -18,6 +18,10 @@ namespace NitelikliBilisim.Core.Entities
         public bool HasAttendanceRecord { get; set; }
         public bool IsImmuneToAutoChange { get; set; }
 
+        [ForeignKey("Classroom")]
+        public Guid ClassroomId { get; set; }
+        public virtual Classroom Classroom { get; set; }
+
         public virtual EducationGroup Group { get; set; }
     }
 }
