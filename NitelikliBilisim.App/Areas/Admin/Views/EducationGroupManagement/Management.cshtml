@@ -1,0 +1,213 @@
+﻿
+@{
+    ViewData["Title"] = "Grup Yönetimi";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@section styles{
+    <style>
+        .row {
+            margin-bottom: 1.5%;
+        }
+    </style>
+}
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-cog"></i> Grup Yönetimi
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Tarih</th>
+                            <th>Eğitmen</th>
+                            <th>Sınıf</th>
+                            <th>Düzenle</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-lesson-days">
+                        <tr>
+                            <td>25.01.2019</td>
+                            <td>Someone Someone</td>
+                            <td>306</td>
+                            <td><button class="btn btn-light"><i class="fa fa-edit"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td>25.01.2019</td>
+                            <td>Someone Someone</td>
+                            <td>306</td>
+                            <td><button class="btn btn-light"><i class="fa fa-edit"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td>25.01.2019</td>
+                            <td>Someone Someone</td>
+                            <td>306</td>
+                            <td><button class="btn btn-light"><i class="fa fa-edit"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td>25.01.2019</td>
+                            <td>Someone Someone</td>
+                            <td>306</td>
+                            <td><button class="btn btn-light"><i class="fa fa-edit"></i></button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Operasyon: </label>
+                        <label id="text-current-operation" style="font-weight:bold;text-transform:uppercase;color:#ef1f1f;">Eğitmen Değişimi</label>
+                    </div>
+                </div>
+                <div class="row" style="margin-bottom:2%;">
+                    <div class="col-md-12">
+                        <div class="btn-group">
+                            <button id="btn-switch-educator" class="btn btn-secondary btn-operation"><i class="fa fa-exchange"></i></button>
+                            <button id="btn-postpone-lesson" class="btn btn-outline-secondary btn-operation"><i class="fa fa-history"></i></button>
+                            <button id="btn-change-classroom" class="btn btn-outline-secondary btn-operation"><i class="fa fa-desktop"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-bottom:2%;">
+                    <div class="col-md-12">
+                        <table class="table table-borderless">
+                            <tr>
+                                <td>
+                                    <div class="form-group">
+                                        <label for="input-start-date">Başlangıç</label>
+                                        <input id="input-start-date" class="form-control" type="date" value="" />
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group">
+                                        <label for="input-end-date">Bitiş</label>
+                                        <input id="input-end-date" class="form-control" type="date" value="" />
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group">
+                                        <label for="btn-calculate">Hesapla</label>
+                                        <button id="btn-calculate" class="btn btn-dark btn-block"><i class="fa fa-calculator"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div id="div-change-summary" class="row" style="display:none; margin-bottom:1%;">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Eklenecek Tarihler</label>
+                                        <ul class="list-group">
+                                            <li class="list-group-item list-group-item-success">25.01.2019</li>
+                                            <li class="list-group-item list-group-item-success">25.01.2019</li>
+                                            <li class="list-group-item list-group-item-success">25.01.2019</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Elenen Tarihler</label>
+                                        <ul class="list-group">
+                                            <li class="list-group-item list-group-item-danger">25.01.2019</li>
+                                            <li class="list-group-item list-group-item-danger">25.01.2019</li>
+                                            <li class="list-group-item list-group-item-danger">25.01.2019</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="offset-md-6 col-md-6">
+                                <div class="row">
+                                    <div class="offset-md-4 col-md-4">
+                                        <button id="btn-cancel" class="btn btn-outline-danger btn-block"><i class="fa fa-close"></i></button>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button id="btn-confirm" class="btn btn-outline-success btn-block"><i class="fa fa-check"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section postScripts{
+    <script>
+        /* fields */
+        var OperationType = {
+            SWITCH_EDUCATOR: 1000,
+            POSTPONE_LESSON: 2000,
+            CHANGE_CLASSROOM: 3000
+        };
+        var operation = OperationType.SWITCH_EDUCATOR;
+
+        /* elements */
+        var textCurrentOperation = $("#text-current-operation");
+        var divChangeSummary = $("#div-change-summary");
+        var btnSwitchEducator = $("#btn-switch-educator");
+        var btnPostponeLesson = $("#btn-postpone-lesson");
+        var btnChangeClassroom = $("#btn-change-classroom");
+        var btnCalculate = $("#btn-calculate");
+        var btnConfirm = $("#btn-confirm");
+
+        /* assignments */
+        btnSwitchEducator.on("click", btnSwitchEducator_onClick);
+        btnPostponeLesson.on("click", btnPostponeLesson_onClick);
+        btnChangeClassroom.on("click", btnChangeClassroom_onClick);
+        btnCalculate.on("click", btnCalculate_onClick);
+        btnConfirm.on("click", btnConfirm_onClick);
+
+        /* events */
+        function btnSwitchEducator_onClick() {
+            operation = OperationType.SWITCH_EDUCATOR;
+            textCurrentOperation.html("Eğitmen Değişimi");
+            removeClasses("btn-switch-educator");
+        }
+        function btnPostponeLesson_onClick() {
+            operation = OperationType.POSTPONE_LESSON;
+            textCurrentOperation.html("Ders Erteleme");
+            removeClasses("btn-postpone-lesson");
+        }
+        function btnChangeClassroom_onClick() {
+            operation = OperationType.CHANGE_CLASSROOM;
+            textCurrentOperation.html("Sınıf Değişimi");
+            removeClasses("btn-change-classroom");
+        }
+        function btnCalculate_onClick() {
+            divChangeSummary.css("display", "block");
+        }
+        function btnConfirm_onClick() {
+            console.log(operation);
+        }
+
+        /* functions */
+        function removeClasses(btnName) {
+            var btnOperations = document.getElementsByClassName("btn-operation");
+            for (var i = 0; i < btnOperations.length; i++) {
+                var btn = $(btnOperations[i]);
+                btn.removeClass("btn-secondary");
+                btn.addClass("btn-outline-secondary");
+            }
+
+            switch (btnName) {
+                case "btn-switch-educator": btnSwitchEducator.addClass("btn-secondary"); btnSwitchEducator.removeClass("btn-outline-secondary");
+                    break;
+                case "btn-postpone-lesson": btnPostponeLesson.addClass("btn-secondary"); btnPostponeLesson.removeClass("btn-outline-secondary");
+                    break;
+                case "btn-change-classroom": btnChangeClassroom.addClass("btn-secondary"); btnChangeClassroom.removeClass("btn-outline-secondary");
+                    break;
+                default:
+                    btnSwitchEducator.addClass("btn-secondary"); btnSwitchEducator.removeClass("btn-outline-secondary");
+                    break;
+            }
+        }
+    </script>
+}

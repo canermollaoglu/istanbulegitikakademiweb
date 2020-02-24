@@ -7,15 +7,15 @@ namespace NitelikliBilisim.Core.Enums
 {
     public enum HourOfDay
     {
-        _0800, _0830, _0900,
-        _0930, _1000, _1030,
-        _1100, _1130, _1200,
-        _1230, _1300, _1330,
-        _1400, _1430, _1500,
-        _1530, _1600, _1630,
-        _1700, _1730, _1800,
-        _1830, _1900, _1930,
-        _2000
+        [Description("08:00")]_0800, [Description("08:30")]_0830, [Description("09:00")]_0900,
+        [Description("09:30")]_0930, [Description("10:00")]_1000, [Description("10:30")]_1030,
+        [Description("11:00")]_1100, [Description("11:30")]_1130, [Description("12:00")]_1200,
+        [Description("12:30")]_1230, [Description("13:00")]_1300, [Description("13:30")]_1330,
+        [Description("14:00")]_1400, [Description("14:30")]_1430, [Description("15:00")]_1500,
+        [Description("15:30")]_1530, [Description("16:00")]_1600, [Description("16:30")]_1630,
+        [Description("17:00")]_1700, [Description("17:30")]_1730, [Description("18:00")]_1800,
+        [Description("18:30")]_1830, [Description("19:00")]_1900, [Description("19:30")]_1930,
+        [Description("20:00")]_2000
     }
 }
 
