@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NitelikliBilisim.Data;
 
 namespace NitelikliBilisim.Data.Migrations
 {
     [DbContext(typeof(NbDataContext))]
-    partial class NbDataContextModelSnapshot : ModelSnapshot
+    [Migration("20200225125928_AddClassroomTable")]
+    partial class AddClassroomTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -983,10 +985,6 @@ namespace NitelikliBilisim.Data.Migrations
 
                     b.Property<DateTime>("DateOfLesson")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("EducatorId")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
 
                     b.Property<Guid>("GroupId")
                         .HasColumnType("uniqueidentifier");

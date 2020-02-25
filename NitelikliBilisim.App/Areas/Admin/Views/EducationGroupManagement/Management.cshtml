@@ -103,19 +103,13 @@
                             <div class="col-md-12">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <label>Eklenecek Tarihler</label>
-                                        <ul class="list-group">
-                                            <li class="list-group-item list-group-item-success">25.01.2019</li>
-                                            <li class="list-group-item list-group-item-success">25.01.2019</li>
-                                            <li class="list-group-item list-group-item-success">25.01.2019</li>
+                                        <label id="text-success-info">Eklenecek Tarihler</label>
+                                        <ul id="list-success" class="list-group">
                                         </ul>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div id="div-danger" class="col-md-6" style="display:none;">
                                         <label>Elenen Tarihler</label>
-                                        <ul class="list-group">
-                                            <li class="list-group-item list-group-item-danger">25.01.2019</li>
-                                            <li class="list-group-item list-group-item-danger">25.01.2019</li>
-                                            <li class="list-group-item list-group-item-danger">25.01.2019</li>
+                                        <ul id="list-danger" class="list-group">
                                         </ul>
                                     </div>
                                 </div>
@@ -152,17 +146,24 @@
         var groupId = document.getElementById("_group-id").value;
 
         /* elements */
+        var tbodyLessonDays = $("#tbody-lesson-days");
         var textCurrentOperation = $("#text-current-operation");
         var inputStartDate = $("#input-start-date");
         var inputEndDate = $("#input-end-date");
         var divChangeSummary = $("#div-change-summary");
+        var divDanger = $("#div-danger");
+        var textSuccessInfo = $("#text-success-info");
+        var listSuccess = $("#list-success");
+        var listDanger = $("#list-danger");
         var btnSwitchEducator = $("#btn-switch-educator");
         var btnPostponeLesson = $("#btn-postpone-lesson");
         var btnChangeClassroom = $("#btn-change-classroom");
+        var textSuccessInfo = $("#text-success-info");
         var btnCalculate = $("#btn-calculate");
         var btnConfirm = $("#btn-confirm");
 
         /* assignments */
+        $(document).ready(document_onLoad);
         btnSwitchEducator.on("click", btnSwitchEducator_onClick);
         btnPostponeLesson.on("click", btnPostponeLesson_onClick);
         btnChangeClassroom.on("click", btnChangeClassroom_onClick);
@@ -170,6 +171,9 @@
         btnConfirm.on("click", btnConfirm_onClick);
 
         /* events */
+        function document_onLoad() {
+            loadLessonDays();
+        }
         function btnSwitchEducator_onClick() {
             operation = OperationType.SWITCH_EDUCATOR;
             textCurrentOperation.html("Eğitmen Değişimi");
@@ -196,6 +200,9 @@
 
         /* functions */
         function preOperation() {
+            divDanger.css("display", "none");
+            listSuccess.html("");
+            listDanger.html("");
             switch (operation) {
                 case OperationType.SWITCH_EDUCATOR:
                     alert("operation: switch educator");
@@ -205,7 +212,24 @@
                         url: `/admin/determine-postpone-dates?groupId=${groupId}&from=${inputStartDate.val()}&to=${inputEndDate.val()}`,
                         method: "get",
                         success: (res) => {
-                            console.log(res);
+                            var data = res.data;
+                            if (data.newDateTexts.length > 0 && data.eliminatedDateTexts.length > 0) {
+                                var newDatesAppended = "";
+                                var eliminatedDatesAppended = "";
+                                for (var i = 0; i < data.newDateTexts.length; i++) {
+                                    var item1 = data.newDateTexts[i];
+                                    newDatesAppended += `<li class="list-group-item list-group-item-success">${item1}</li>`;
+                                }
+                                for (var j = 0; j < data.eliminatedDateTexts.length; j++) {
+                                    var item2 = data.eliminatedDateTexts[j];
+                                    eliminatedDatesAppended += `<li class="list-group-item list-group-item-danger"><i class="fa fa-long-arrow-left"></i> ${item2}</li>`;
+                                }
+                                divDanger.css("display", "block");
+                                listSuccess.append(newDatesAppended);
+                                listDanger.append(eliminatedDatesAppended);
+                            } else {
+                                // no data
+                            }
                         }
                     });
                     break;
@@ -227,8 +251,29 @@
                     break;
             }
         }
-        function createTable() {
-
+        function loadLessonDays() {
+            tbodyLessonDays.html("");
+            $.ajax({
+                url: `/admin/get-lesson-days/${groupId}`,
+                method: "get",
+                success: (res) => {
+                    if (res.data.length > 0) {
+                        var appended = "";
+                        for (var i = 0; i < res.data.length; i++) {
+                            var item = res.data[i];
+                            appended += `<tr>` + 
+                                `<td>${item.dateOfLessonText}</td>` +
+                                `<td>${item.educatorName}</td>` +
+                                `<td>${item.classroom}</td>` +
+                                `<td><a href="/admin/ders-gunu-duzenle/${item.id}" class="btn btn-light"><i class="fa fa-edit"></i></a></td>` +
+                                "</tr>";
+                        }
+                        tbodyLessonDays.append(appended);
+                    } else {
+                        // no data
+                    }
+                }
+            });
         }
         function removeClasses(btnName) {
             var btnOperations = document.getElementsByClassName("btn-operation");

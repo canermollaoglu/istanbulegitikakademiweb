@@ -26,6 +26,23 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             return View(model);
         }
 
+        [Route("admin/get-lesson-days/{groupId?}")]
+        public IActionResult GetLessonDays(Guid? groupId)
+        {
+            if (!groupId.HasValue)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false
+                });
+
+            var model = _unitOfWork.GroupLessonDay.GetGroupLessonDays(groupId.Value);
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = model
+            });
+        }
+
         [Route("admin/determine-postpone-dates")]
         public IActionResult DeterminePostponeDates(Guid? groupId, DateTime from, DateTime? to)
         {

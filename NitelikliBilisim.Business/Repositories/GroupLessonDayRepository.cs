@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_groups;
+using NitelikliBilisim.Core.ViewModels.areas.admin.group_lesson_days;
 using NitelikliBilisim.Data;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,34 @@ namespace NitelikliBilisim.Business.Repositories
         public GroupLessonDayRepository(NbDataContext context) : base(context)
         {
             _context = context;
+        }
+        public List<GroupLessonDayVm> GetGroupLessonDays(Guid groupId)
+        {
+            var joined = (from groupLessonDay in _context.GroupLessonDays.Where(x => x.GroupId == groupId)
+                         join classroom in _context.Classrooms
+                         on groupLessonDay.ClassroomId equals classroom.Id
+                         into groupLessonDayClassroom
+                         from classroom in groupLessonDayClassroom.DefaultIfEmpty()
+                         join educator in _context.Users
+                         on groupLessonDay.EducatorId equals educator.Id
+                         into groupLessonDayClassroomEducator
+                         from educator in groupLessonDayClassroomEducator.DefaultIfEmpty()
+                         select new
+                         {
+                             LessonDay = groupLessonDay,
+                             Classroom = classroom,
+                             Educator = educator
+                         }).ToList();
+
+            return joined.Select(x => new GroupLessonDayVm
+            {
+                Id = x.LessonDay.Id,
+                DateOfLesson = x.LessonDay.DateOfLesson,
+                DateOfLessonText = x.LessonDay.DateOfLesson.ToLongDateString(),
+                HasAttendanceRecord = x.LessonDay.HasAttendanceRecord,
+                Classroom = x.Classroom != null ? x.Classroom.Name : "SINIF YOK",
+                EducatorName = x.Educator != null ? $"{x.Educator.Name} {x.Educator.Surname}" : "EĞİTMEN YOK"
+            }).ToList();
         }
         public List<DateTime> CreateGroupLessonDays(EducationGroup group, List<int> daysInt, List<DateTime> unwantedDays, bool isReset = false)
         {
@@ -97,7 +126,9 @@ namespace NitelikliBilisim.Business.Repositories
             return new EliminatedAndNewDates
             {
                 EliminatedDates = eliminatedDates.Select(x => x.DateOfLesson).ToList(),
-                NewDates = newDates
+                NewDates = newDates,
+                EliminatedDateTexts = eliminatedDates.Select(x => x.DateOfLesson.ToLongDateString()).ToList(),
+                NewDateTexts = newDates.Select(x => x.ToLongDateString()).ToList()
             };
         }
 

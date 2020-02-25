@@ -1,5 +1,6 @@
 ﻿using NitelikliBilisim.Core.Abstracts;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NitelikliBilisim.Core.Entities
@@ -17,7 +18,8 @@ namespace NitelikliBilisim.Core.Entities
         public DateTime DateOfLesson { get; set; }
         public bool HasAttendanceRecord { get; set; }
         public bool IsImmuneToAutoChange { get; set; }
-
+        [MaxLength(128)]
+        public string EducatorId { get; set; }
         public Guid? ClassroomId { get; set; }
 
         public virtual EducationGroup Group { get; set; }
