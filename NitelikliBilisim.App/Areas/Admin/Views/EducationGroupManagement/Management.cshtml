@@ -1,4 +1,4 @@
-﻿
+﻿@model NitelikliBilisim.Core.Entities.EducationGroup
 @{
     ViewData["Title"] = "Grup Yönetimi";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -10,9 +10,10 @@
         }
     </style>
 }
+<input id="_group-id" type="hidden" value="@Model.Id" />
 <div class="card mb-3">
     <div class="card-header">
-        <i class="fa fa-cog"></i> Grup Yönetimi
+        <i class="fa fa-cog"></i> <h3>@Model.GroupName</h3> Grup Yönetimi
     </div>
     <div class="card-body">
         <div class="row">
@@ -148,9 +149,12 @@
             CHANGE_CLASSROOM: 3000
         };
         var operation = OperationType.SWITCH_EDUCATOR;
+        var groupId = document.getElementById("_group-id").value;
 
         /* elements */
         var textCurrentOperation = $("#text-current-operation");
+        var inputStartDate = $("#input-start-date");
+        var inputEndDate = $("#input-end-date");
         var divChangeSummary = $("#div-change-summary");
         var btnSwitchEducator = $("#btn-switch-educator");
         var btnPostponeLesson = $("#btn-postpone-lesson");
@@ -182,13 +186,50 @@
             removeClasses("btn-change-classroom");
         }
         function btnCalculate_onClick() {
+            preOperation();
+            // display
             divChangeSummary.css("display", "block");
         }
         function btnConfirm_onClick() {
-            console.log(operation);
+            executeOperation();
         }
 
         /* functions */
+        function preOperation() {
+            switch (operation) {
+                case OperationType.SWITCH_EDUCATOR:
+                    alert("operation: switch educator");
+                    break;
+                case OperationType.POSTPONE_LESSON:
+                    $.ajax({
+                        url: `/admin/determine-postpone-dates?groupId=${groupId}&from=${inputStartDate.val()}&to=${inputEndDate.val()}`,
+                        method: "get",
+                        success: (res) => {
+                            console.log(res);
+                        }
+                    });
+                    break;
+                case OperationType.CHANGE_CLASSROOM:
+                    alert("operation: change classroom");
+                    break;
+            }
+        }
+        function executeOperation() {
+            switch (operation) {
+                case OperationType.SWITCH_EDUCATOR:
+                    alert("operation: switch educator");
+                    break;
+                case OperationType.POSTPONE_LESSON:
+                    alert("operation: postpone lesson");
+                    break;
+                case OperationType.CHANGE_CLASSROOM:
+                    alert("operation: change classroom");
+                    break;
+            }
+        }
+        function createTable() {
+
+        }
         function removeClasses(btnName) {
             var btnOperations = document.getElementsByClassName("btn-operation");
             for (var i = 0; i < btnOperations.length; i++) {
