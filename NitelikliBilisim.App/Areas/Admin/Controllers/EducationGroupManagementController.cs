@@ -22,7 +22,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         {
             if (!groupId.HasValue)
                 return Redirect("admin/gruplar");
-            var model = _unitOfWork.EducationGroup.GetById(groupId.Value);
+            var model = _unitOfWork.GroupLessonDay.CreateManagementVm(groupId.Value);
             return View(model);
         }
 
@@ -59,5 +59,82 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 data = model
             });
         }
+        [Route("admin/determine-to-be-changed-dates")]
+        public IActionResult DetermineToBeChangedDates(Guid? groupId, DateTime from, DateTime? to)
+        {
+            if (!groupId.HasValue)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false
+                });
+
+            var model = _unitOfWork.GroupLessonDay.DetermineToBeChangedDatesAsText(groupId.Value, from, to);
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = model
+            });
+        }
+        [HttpPost, Route("admin/postpone-dates")]
+        public IActionResult PostponeDates(PostponeData data)
+        {
+            if (!data.groupId.HasValue)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false
+                });
+
+            _unitOfWork.GroupLessonDay.PostponeLessons(data.groupId.Value, data.from, data.to);
+
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = null
+            });
+        }
+        [HttpPost, Route("admin/switch-educators")]
+        public IActionResult SwitchEducators(SwitchEducatorData data)
+        {
+            if (!data.groupId.HasValue)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false
+                });
+
+            _unitOfWork.GroupLessonDay.SwitchEducator(data.groupId.Value, data.from, data.to, data.educatorId);
+            return Json(new ResponseModel
+            {
+                isSuccess = true
+            });
+        }
+        [HttpPost, Route("admin/change-classrooms")]
+        public IActionResult ChangeClassrooms(ChangeClassroomData data)
+        {
+            if (!data.groupId.HasValue)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false
+                });
+
+            _unitOfWork.GroupLessonDay.ChangeClassroom(data.groupId.Value, data.from, data.to, data.classroomId);
+            return Json(new ResponseModel
+            {
+                isSuccess = true
+            });
+        }
+    }
+    public class PostponeData
+    {
+        public Guid? groupId { get; set; }
+        public DateTime from { get; set; }
+        public DateTime? to { get; set; }
+    }
+    public class SwitchEducatorData : PostponeData
+    {
+        public string educatorId { get; set; }
+    }
+    public class ChangeClassroomData : PostponeData
+    {
+        public Guid classroomId { get; set; }
     }
 }

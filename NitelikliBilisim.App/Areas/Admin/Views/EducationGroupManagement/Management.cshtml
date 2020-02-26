@@ -1,4 +1,4 @@
-﻿@model NitelikliBilisim.Core.Entities.EducationGroup
+﻿@model NitelikliBilisim.Core.ViewModels.areas.admin.group_lesson_days.GroupLessonDayManagementVm
 @{
     ViewData["Title"] = "Grup Yönetimi";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -10,10 +10,10 @@
         }
     </style>
 }
-<input id="_group-id" type="hidden" value="@Model.Id" />
+<input id="_group-id" type="hidden" value="@Model.Group.Id" />
 <div class="card mb-3">
     <div class="card-header">
-        <i class="fa fa-cog"></i> <h3>@Model.GroupName</h3> Grup Yönetimi
+        <i class="fa fa-cog"></i> <h3>@Model.Group.GroupName</h3> Grup Yönetimi
     </div>
     <div class="card-body">
         <div class="row">
@@ -28,30 +28,6 @@
                         </tr>
                     </thead>
                     <tbody id="tbody-lesson-days">
-                        <tr>
-                            <td>25.01.2019</td>
-                            <td>Someone Someone</td>
-                            <td>306</td>
-                            <td><button class="btn btn-light"><i class="fa fa-edit"></i></button></td>
-                        </tr>
-                        <tr>
-                            <td>25.01.2019</td>
-                            <td>Someone Someone</td>
-                            <td>306</td>
-                            <td><button class="btn btn-light"><i class="fa fa-edit"></i></button></td>
-                        </tr>
-                        <tr>
-                            <td>25.01.2019</td>
-                            <td>Someone Someone</td>
-                            <td>306</td>
-                            <td><button class="btn btn-light"><i class="fa fa-edit"></i></button></td>
-                        </tr>
-                        <tr>
-                            <td>25.01.2019</td>
-                            <td>Someone Someone</td>
-                            <td>306</td>
-                            <td><button class="btn btn-light"><i class="fa fa-edit"></i></button></td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -95,6 +71,25 @@
                                 </td>
                             </tr>
                         </table>
+                    </div>
+                </div>
+                <div id="div-classrooms-and-educators" class="row" style="display:none; margin-bottom:1%;">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Seçiniz:</label>
+                            <select id="select-educators" class="form-control" style="display:none;">
+                                @foreach (var item in Model.Educators)
+                                {
+                                    <option value="@item.EducatorId">@item.FullName</option>
+                                }
+                            </select>
+                            <select id="select-classrooms" class="form-control" style="display:none;">
+                                @foreach (var item in Model.Classrooms)
+                                {
+                                    <option value="@item.ClassroomId">@item.Name</option>
+                                }
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <div id="div-change-summary" class="row" style="display:none; margin-bottom:1%;">
@@ -148,13 +143,17 @@
         /* elements */
         var tbodyLessonDays = $("#tbody-lesson-days");
         var textCurrentOperation = $("#text-current-operation");
+        var selectEducators = document.getElementById("select-educators");
+        var selectClassrooms = document.getElementById("select-classrooms");
         var inputStartDate = $("#input-start-date");
         var inputEndDate = $("#input-end-date");
+        var divClassroomsAndEducators = $("#div-classrooms-and-educators");
         var divChangeSummary = $("#div-change-summary");
         var divDanger = $("#div-danger");
         var textSuccessInfo = $("#text-success-info");
         var listSuccess = $("#list-success");
         var listDanger = $("#list-danger");
+        var btnCancel = $("#btn-cancel");
         var btnSwitchEducator = $("#btn-switch-educator");
         var btnPostponeLesson = $("#btn-postpone-lesson");
         var btnChangeClassroom = $("#btn-change-classroom");
@@ -168,6 +167,7 @@
         btnPostponeLesson.on("click", btnPostponeLesson_onClick);
         btnChangeClassroom.on("click", btnChangeClassroom_onClick);
         btnCalculate.on("click", btnCalculate_onClick);
+        btnCancel.on("click", btnCancel_onClick);
         btnConfirm.on("click", btnConfirm_onClick);
 
         /* events */
@@ -194,7 +194,11 @@
             // display
             divChangeSummary.css("display", "block");
         }
+        function btnCancel_onClick() {
+            reset();
+        }
         function btnConfirm_onClick() {
+            btnConfirm.off("click");
             executeOperation();
         }
 
@@ -205,51 +209,137 @@
             listDanger.html("");
             switch (operation) {
                 case OperationType.SWITCH_EDUCATOR:
-                    alert("operation: switch educator");
+                    preUpdateOperation();
+                    textSuccessInfo.html("Değişecek Tarihler");
+                    divClassroomsAndEducators.css("display", "block");
+                    $(selectEducators).css("display", "block");
+                    $(selectClassrooms).css("display", "none");
                     break;
                 case OperationType.POSTPONE_LESSON:
-                    $.ajax({
-                        url: `/admin/determine-postpone-dates?groupId=${groupId}&from=${inputStartDate.val()}&to=${inputEndDate.val()}`,
-                        method: "get",
-                        success: (res) => {
-                            var data = res.data;
-                            if (data.newDateTexts.length > 0 && data.eliminatedDateTexts.length > 0) {
-                                var newDatesAppended = "";
-                                var eliminatedDatesAppended = "";
-                                for (var i = 0; i < data.newDateTexts.length; i++) {
-                                    var item1 = data.newDateTexts[i];
-                                    newDatesAppended += `<li class="list-group-item list-group-item-success">${item1}</li>`;
-                                }
-                                for (var j = 0; j < data.eliminatedDateTexts.length; j++) {
-                                    var item2 = data.eliminatedDateTexts[j];
-                                    eliminatedDatesAppended += `<li class="list-group-item list-group-item-danger"><i class="fa fa-long-arrow-left"></i> ${item2}</li>`;
-                                }
-                                divDanger.css("display", "block");
-                                listSuccess.append(newDatesAppended);
-                                listDanger.append(eliminatedDatesAppended);
-                            } else {
-                                // no data
-                            }
-                        }
-                    });
+                    prePostponeOperation();
+                    textSuccessInfo.html("Eklenecek Tarihler");
+                    divClassroomsAndEducators.css("display", "none");
+                    $(selectEducators).css("display", "none");
+                    $(selectClassrooms).css("display", "none");
                     break;
                 case OperationType.CHANGE_CLASSROOM:
-                    alert("operation: change classroom");
+                    preUpdateOperation();
+                    textSuccessInfo.html("Değişecek Tarihler");
+                    divClassroomsAndEducators.css("display", "block");
+                    $(selectEducators).css("display", "none");
+                    $(selectClassrooms).css("display", "block");
                     break;
             }
         }
         function executeOperation() {
             switch (operation) {
                 case OperationType.SWITCH_EDUCATOR:
-                    alert("operation: switch educator");
+                    executeSwitchEducatorsOperation();
                     break;
                 case OperationType.POSTPONE_LESSON:
-                    alert("operation: postpone lesson");
+                    executePostponeOperation();
                     break;
                 case OperationType.CHANGE_CLASSROOM:
-                    alert("operation: change classroom");
+                    executeChangeClassroomOperation();
                     break;
             }
+            reset();
+        }
+        function preUpdateOperation() {
+            $.ajax({
+                url: `/admin/determine-to-be-changed-dates?groupId=${groupId}&from=${inputStartDate.val()}&to=${inputEndDate.val()}`,
+                method: "get",
+                success: (res) => {
+                    var data = res.data;
+                    if (data.length > 0) {
+                        var appended = "";
+                        for (var i = 0; i < data.length; i++) {
+                            var item = data[i];
+                            appended += `<li class="list-group-item list-group-item-success">${item}</li>`;
+                        }
+                        listSuccess.append(appended);
+
+                    } else {
+                        // no data
+                    }
+                }
+            });
+        }
+        function prePostponeOperation() {
+            $.ajax({
+                url: `/admin/determine-postpone-dates?groupId=${groupId}&from=${inputStartDate.val()}&to=${inputEndDate.val()}`,
+                method: "get",
+                success: (res) => {
+                    var data = res.data;
+                    if (data.newDateTexts.length > 0 && data.eliminatedDateTexts.length > 0) {
+                        var newDatesAppended = "";
+                        var eliminatedDatesAppended = "";
+                        for (var i = 0; i < data.newDateTexts.length; i++) {
+                            var item1 = data.newDateTexts[i];
+                            newDatesAppended += `<li class="list-group-item list-group-item-success">${item1}</li>`;
+                        }
+                        for (var j = 0; j < data.eliminatedDateTexts.length; j++) {
+                            var item2 = data.eliminatedDateTexts[j];
+                            eliminatedDatesAppended += `<li class="list-group-item list-group-item-danger"><i class="fa fa-long-arrow-left"></i> ${item2}</li>`;
+                        }
+                        divDanger.css("display", "block");
+                        listSuccess.append(newDatesAppended);
+                        listDanger.append(eliminatedDatesAppended);
+                    } else {
+                        // no data
+                    }
+                }
+            });
+        }
+        function executePostponeOperation() {
+            var data = {
+                groupId: groupId,
+                from: inputStartDate.val(),
+                to: inputEndDate.val()
+            };
+            $.ajax({
+                url: `/admin/postpone-dates`,
+                method: "post",
+                data: data,
+                success: (res) => {
+                    loadLessonDays();
+                    btnConfirm.on("click", btnConfirm_onClick);
+                }
+            });
+        }
+        function executeSwitchEducatorsOperation() {
+            var data = {
+                groupId: groupId,
+                from: inputStartDate.val(),
+                to: inputEndDate.val(),
+                educatorId: selectEducators.options[selectEducators.selectedIndex].value
+            };
+            $.ajax({
+                url: "/admin/switch-educators",
+                method: "post",
+                data: data,
+                success: (res) => {
+                    loadLessonDays();
+                    btnConfirm.on("click", btnConfirm_onClick);
+                }
+            });
+        }
+        function executeChangeClassroomOperation() {
+            var data = {
+                groupId: groupId,
+                from: inputStartDate.val(),
+                to: inputEndDate.val(),
+                classroomId: selectClassrooms.options[selectClassrooms.selectedIndex].value
+            };
+            $.ajax({
+                url: "/admin/change-classrooms",
+                method: "post",
+                data: data,
+                success: (res) => {
+                    loadLessonDays();
+                    btnConfirm.on("click", btnConfirm_onClick);
+                }
+            });
         }
         function loadLessonDays() {
             tbodyLessonDays.html("");
@@ -261,7 +351,7 @@
                         var appended = "";
                         for (var i = 0; i < res.data.length; i++) {
                             var item = res.data[i];
-                            appended += `<tr>` + 
+                            appended += `<tr>` +
                                 `<td>${item.dateOfLessonText}</td>` +
                                 `<td>${item.educatorName}</td>` +
                                 `<td>${item.classroom}</td>` +
@@ -294,6 +384,12 @@
                     btnSwitchEducator.addClass("btn-secondary"); btnSwitchEducator.removeClass("btn-outline-secondary");
                     break;
             }
+        }
+        function reset() {
+            divChangeSummary.css("display", "none");
+            divClassroomsAndEducators.css("display", "none");
+            $(selectClassrooms).css("display", "none");
+            $(selectEducators).css("display", "none");
         }
     </script>
 }
