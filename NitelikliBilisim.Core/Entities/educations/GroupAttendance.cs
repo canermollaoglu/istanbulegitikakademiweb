@@ -18,5 +18,7 @@ namespace NitelikliBilisim.Core.Entities
         public DateTime Date { get; set; }
         [MaxLength(450)]
         public string CustomerId { get; set; }
+        [MaxLength(256)]
+        public string Reason { get; set; }
     }
 }

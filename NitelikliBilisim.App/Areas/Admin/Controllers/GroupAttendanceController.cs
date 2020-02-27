@@ -11,11 +11,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
     [Authorize(Roles = "Admin")]
     public class GroupAttendanceController : Controller
     {
-        [Route("yoklama-girisi/{groupId?}")]
-        public IActionResult ManageGroupAttendance(Guid? groupId)
+        [Route("admin/yoklama-girisi/{groupId?}/{date?}/{hasAttendanceRecord?}")]
+        public IActionResult EnterAttendance(Guid? groupId, DateTime? date, bool? hasAttendanceRecord)
         {
-            if (!groupId.HasValue)
-                return Redirect("/");
+            if (!groupId.HasValue || !date.HasValue || !hasAttendanceRecord.HasValue)
+                return Redirect($"/admin/grup/ayarlar/{groupId.Value}");
 
             return View();
         }

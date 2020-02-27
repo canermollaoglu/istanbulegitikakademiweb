@@ -25,6 +25,7 @@
                             <th>Eğitmen</th>
                             <th>Sınıf</th>
                             <th>Düzenle</th>
+                            <th>Yoklama</th>
                         </tr>
                     </thead>
                     <tbody id="tbody-lesson-days">
@@ -351,11 +352,15 @@
                         var appended = "";
                         for (var i = 0; i < res.data.length; i++) {
                             var item = res.data[i];
+                            var style = item.hasAttendanceRecord ?
+                                { anchor: "btn btn-outline-success btn-block", icon: "fa fa-check-circle-o" }
+                                : { anchor: "btn btn-outline-danger btn-block", icon: "fa fa-times-circle-o" };
                             appended += `<tr>` +
                                 `<td>${item.dateOfLessonText}</td>` +
                                 `<td>${item.educatorName}</td>` +
                                 `<td>${item.classroom}</td>` +
-                                `<td><a href="/admin/ders-gunu-duzenle/${item.id}" class="btn btn-light"><i class="fa fa-edit"></i></a></td>` +
+                                `<td><a href="/admin/ders-gunu-duzenle/${item.id}" class="btn btn-outline-dark btn-block"><i class="fa fa-edit"></i></a></td>` +
+                                `<td><a href="/admin/yoklama-girisi/${groupId}/${item.dateOfLesson}/${item.hasAttendanceRecord}" class="${style.anchor}"><i class="${style.icon}"></i></a></td>`
                                 "</tr>";
                         }
                         tbodyLessonDays.append(appended);

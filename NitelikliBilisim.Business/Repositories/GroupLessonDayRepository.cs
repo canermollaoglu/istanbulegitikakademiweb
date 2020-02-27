@@ -74,7 +74,7 @@ namespace NitelikliBilisim.Business.Repositories
                     DateOfLessonText = x.LessonDay.DateOfLesson.ToLongDateString(),
                     HasAttendanceRecord = x.LessonDay.HasAttendanceRecord,
                     Classroom = x.Classroom != null ? x.Classroom.Name : "SINIF YOK",
-                    EducatorName = x.Educator != null ? $"{x.Educator.Name} {x.Educator.Surname}" : "EĞİTMEN YOK"
+                    EducatorName = x.Educator != null ? $"{x.Educator.Name} {x.Educator.Surname}" : "EĞİTMEN YOK",
                 })
                 .OrderBy(o => o.DateOfLesson)
                 .ToList();

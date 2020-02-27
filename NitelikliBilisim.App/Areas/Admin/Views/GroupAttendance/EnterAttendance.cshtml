@@ -1,0 +1,44 @@
+﻿
+@{
+    ViewData["Title"] = "Yoklama Girişi Yap";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-table"></i> Yoklama Girişi @* <a href="/admin/grup/ayarlar/{groupId?}"></a> *@
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th colspan="4">{date} Tarihli Yoklama</th>
+                        </tr>
+                        <tr>
+                            <th>İsim</th>
+                            <th>Soyisim</th>
+                            <th>Geldi</th>
+                            <th>Mazaret</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-students">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="offset-md-9 col-md-3">
+                <button id="btn-save" class="btn btn-success btn-block">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section postScripts{
+    <script>
+
+    </script>
+}
