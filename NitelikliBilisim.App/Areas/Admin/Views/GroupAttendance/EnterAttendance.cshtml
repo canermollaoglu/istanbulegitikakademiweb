@@ -1,9 +1,10 @@
-﻿
+﻿@model NitelikliBilisim.Core.ViewModels.areas.admin.education_group_attendances.AttendanceVm
 @{
     ViewData["Title"] = "Yoklama Girişi Yap";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
-
+<input type="hidden" value="@Model.GroupId" id="_group-id" />
+<input type="hidden" value="@Model.Date" id="_date" />
 <div class="card mb-3">
     <div class="card-header">
         <i class="fa fa-table"></i> Yoklama Girişi @* <a href="/admin/grup/ayarlar/{groupId?}"></a> *@
@@ -14,7 +15,7 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th colspan="4">{date} Tarihli Yoklama</th>
+                            <th colspan="4">@Model.Date.ToLongDateString() Yoklaması</th>
                         </tr>
                         <tr>
                             <th>İsim</th>
@@ -24,7 +25,30 @@
                         </tr>
                     </thead>
                     <tbody id="tbody-students">
-
+                        @foreach (var item in Model.Attendances)
+                        {
+                            <tr data-customer-id="@item.CustomerId">
+                                <td>@item.Name</td>
+                                <td>@item.Surname</td>
+                                <td>
+                                    @if (item.IsAttended)
+                                    {
+                                        <label>
+                                            <input checked class="checkbox-is-attended" type="checkbox" value="" />
+                                        </label>
+                                    }
+                                    else
+                                    {
+                                        <label>
+                                            <input class="checkbox-is-attended" type="checkbox" value="" />
+                                        </label>
+                                    }
+                                </td>
+                                <td>
+                                    <input class="reason-for-not-attending form-control" type="text" value="@item.Reason" data-customer-id="@item.CustomerId" />
+                                </td>
+                            </tr>
+                        }
                     </tbody>
                 </table>
             </div>
@@ -39,6 +63,25 @@
 
 @section postScripts{
     <script>
+        var btnSave = $("#btn-save");
 
+        btnSave.on("click", btnSave_onClick);
+
+        function btnSave_onClick() {
+            var tbody = document.getElementById("tbody-students");
+            var rows = tbody.getElementsByTagName("tr");
+            console.log(rows);
+            for (var i = 0; i < rows.length; i++) {
+                var row = $(rows[i]);
+                console.log(row);
+                var isAttended = row.find(".checkbox-is-attended")[0].checked;
+                var reason = row.find(".reason-for-not-attending")[0].value;
+                var customerId = row.get(0).getAttribute("data-customer-id");
+
+                console.log(isAttended);
+                console.log(reason);
+                console.log(customerId);
+            }
+        }
     </script>
 }

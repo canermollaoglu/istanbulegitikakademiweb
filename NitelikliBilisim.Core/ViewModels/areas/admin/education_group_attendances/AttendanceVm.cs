@@ -6,6 +6,13 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_group_attendanc
 {
     public class AttendanceVm
     {
+        public Guid GroupId { get; set; }
+        public DateTime Date { get; set; }
+        public List<_Attendance> Attendances { get; set; } = new List<_Attendance>();
+    }
+    public class _Attendance
+    {
+        public string CustomerId { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }
         public bool IsAttended { get; set; }

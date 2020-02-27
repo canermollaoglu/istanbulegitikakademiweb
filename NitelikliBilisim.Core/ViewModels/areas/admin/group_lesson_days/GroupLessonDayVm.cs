@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace NitelikliBilisim.Core.ViewModels.areas.admin.group_lesson_days
 {

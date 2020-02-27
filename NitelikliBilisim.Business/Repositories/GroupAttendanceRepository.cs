@@ -16,25 +16,37 @@ namespace NitelikliBilisim.Business.Repositories
             _context = context;
         }
 
-        public List<AttendanceVm> GetAttendances(Guid groupId, DateTime date)
+        public AttendanceVm GetAttendances(Guid groupId, DateTime date)
         {
             var groupStudents = _context.Bridge_GroupStudents
                 .Where(x => x.Id == groupId)
                 .Join(_context.Users, l => l.Id2, r => r.Id, (x, y) => new
                 {
-                    GroupStudents = x,
-                    Customers = y
+                    GroupStudent = x,
+                    Customer = y
                 }).ToList();
             var attendances = _context.GroupAttendances
                 .Where(x => x.GroupId == groupId && x.Date == date)
                 .ToList();
 
-            var model = new List<AttendanceVm>();
+            var model = new AttendanceVm
+            {
+                GroupId = groupId,
+                Date = date
+            };
             foreach (var item in groupStudents)
             {
-
+                var attendance = attendances.FirstOrDefault(x => x.CustomerId == item.Customer.Id);
+                model.Attendances.Add(new _Attendance
+                {
+                    CustomerId = item.Customer.Id,
+                    Name = item.Customer.Name.ToUpper(),
+                    Surname = item.Customer.Surname.ToUpper(),
+                    IsAttended = attendance == null,
+                    Reason = attendance != null ? attendance.Reason : ""
+                });
             }
-            return null;
+            return model;
         }
     }
 }
