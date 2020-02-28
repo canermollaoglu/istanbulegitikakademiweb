@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.ViewModels.areas.admin.education_group_attendances;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
@@ -26,23 +27,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             return View(model);
         }
 
+        [HttpPost, Route("yoklamalari-kaydet")]
         public IActionResult SaveAttendances(AttendanceData data)
         {
 
             return Json("");
         }
-    }
-
-    public class AttendanceData
-    {
-        public Guid GroupId { get; set; }
-        public DateTime Date { get; set; }
-        public List<StudentRecord> StudentRecords { get; set; }
-    }
-    public class StudentRecord
-    {
-        public string CustomerId { get; set; }
-        public bool IsAttended { get; set; }
-        public string Reason { get; set; }
     }
 }

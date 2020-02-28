@@ -15,7 +15,7 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th colspan="4">@Model.Date.ToLongDateString() Yoklaması</th>
+                            <th colspan="4"><span style="color: red;">@Model.Date.ToLongDateString()</span> Yoklaması</th>
                         </tr>
                         <tr>
                             <th>İsim</th>
@@ -63,25 +63,45 @@
 
 @section postScripts{
     <script>
+        var _groupId = document.getElementById("_group-id").value;
+        var _date = document.getElementById("_date").value;
         var btnSave = $("#btn-save");
 
         btnSave.on("click", btnSave_onClick);
 
         function btnSave_onClick() {
+            btnSave.off("click");
+            var data = {
+                GroupId: _groupId,
+                Date: _date,
+                StudentRecords: []
+            };
             var tbody = document.getElementById("tbody-students");
             var rows = tbody.getElementsByTagName("tr");
-            console.log(rows);
             for (var i = 0; i < rows.length; i++) {
                 var row = $(rows[i]);
-                console.log(row);
                 var isAttended = row.find(".checkbox-is-attended")[0].checked;
                 var reason = row.find(".reason-for-not-attending")[0].value;
                 var customerId = row.get(0).getAttribute("data-customer-id");
 
-                console.log(isAttended);
-                console.log(reason);
-                console.log(customerId);
+                data.StudentRecords.push({
+                    CustomerId: customerId,
+                    IsAttended: isAttended,
+                    Reason: reason
+                });
+                //console.log(isAttended);
+                //console.log(reason);
+                //console.log(customerId);
             }
+
+            $.ajax({
+                url: "/yoklamalari-kaydet",
+                method: "post",
+                data: data,
+                success: (res) => {
+                    btnSave.on("click", btnSave_onClick);
+                }
+            });
         }
     </script>
 }
