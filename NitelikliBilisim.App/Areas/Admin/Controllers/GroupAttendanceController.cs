@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_group_attendances;
 
@@ -30,8 +31,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [HttpPost, Route("yoklamalari-kaydet")]
         public IActionResult SaveAttendances(AttendanceData data)
         {
-
-            return Json("");
+            _unitOfWork.GroupAttendance.SaveAttendances(data);
+            return Json(new ResponseModel
+            {
+                isSuccess = true
+            });
         }
     }
 }

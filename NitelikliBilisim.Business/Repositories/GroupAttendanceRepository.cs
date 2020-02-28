@@ -48,5 +48,36 @@ namespace NitelikliBilisim.Business.Repositories
             }
             return model;
         }
+
+        public void SaveAttendances(AttendanceData data)
+        {
+            var attendanceRecords = _context.GroupAttendances
+                .Where(x => x.GroupId == data.GroupId && x.Date == data.Date)
+                .ToList();
+
+            var addedRecords = new List<GroupAttendance>();
+            var removedRecords = new List<GroupAttendance>();
+            foreach (var item in data.StudentRecords)
+            {
+                if (attendanceRecords.Select(x => x.CustomerId).Contains(item.CustomerId) && !item.IsAttended)
+                {
+                    addedRecords.Add(new GroupAttendance
+                    {
+                        CustomerId = item.CustomerId,
+                        Date = data.Date,
+                        GroupId = data.GroupId,
+                        Reason = item.Reason
+                    });
+                }
+                if (attendanceRecords.Select(x => x.CustomerId).Contains(item.CustomerId) && item.IsAttended)
+                {
+                    var attendance = attendanceRecords.First(x => x.CustomerId == item.CustomerId);
+                    removedRecords.Add(attendance);
+                }
+            }
+            _context.GroupAttendances.AddRange(addedRecords);
+            _context.GroupAttendances.RemoveRange(removedRecords);
+            _context.SaveChanges();
+        }
     }
 }
