@@ -28,7 +28,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             return View(model);
         }
 
-        [HttpPost, Route("yoklamalari-kaydet")]
+        [HttpPost, Route("yoklamalari-kaydet"), Authorize(Roles = "Educator")]
         public IActionResult SaveAttendances(AttendanceData data)
         {
             _unitOfWork.GroupAttendance.SaveAttendances(data);
