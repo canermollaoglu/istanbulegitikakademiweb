@@ -1,9 +1,12 @@
-﻿
+﻿@model NitelikliBilisim.Core.ViewModels.areas.educator_area.group.MyGroupsGetVm
 @{
     ViewData["Title"] = "Gruplarım";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <ul>
-
+    @foreach (var item in Model.Groups)
+    {
+        <li><a href="/egitmen/grup-detayi/@item.GroupId">@item.GroupName (@item.EducationName)</a></li>
+    }
 </ul>

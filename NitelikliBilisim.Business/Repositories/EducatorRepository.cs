@@ -1,5 +1,7 @@
-﻿using NitelikliBilisim.Core.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.ViewModels.areas.admin.educator;
+using NitelikliBilisim.Core.ViewModels.areas.educator_area.group;
 using NitelikliBilisim.Data;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +36,22 @@ namespace NitelikliBilisim.Business.Repositories
             _context.EducatorSocialMedias.RemoveRange(educationSocialMedia);
             _context.SaveChanges();
             return base.Delete(id, isSaveLater);
+        }
+        public MyGroupsGetVm GetMyGroupsVm(string userId)
+        {
+            var groups = _context.EducationGroups
+                .Include(x => x.Education)
+                .Where(x => x.EducatorId == userId)
+                .ToList();
+            return new MyGroupsGetVm
+            {
+                Groups = groups.Select(x => new _Group
+                {
+                    GroupId = x.Id,
+                    GroupName = x.GroupName,
+                    EducationName = x.Education.Name
+                }).ToList()
+            };
         }
     }
 }

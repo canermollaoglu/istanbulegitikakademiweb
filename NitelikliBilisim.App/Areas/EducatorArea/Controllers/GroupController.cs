@@ -20,8 +20,8 @@ namespace NitelikliBilisim.App.Areas.EducatorArea.Controllers
         [Route("egitmen/gruplarim")]
         public IActionResult MyGroups()
         {
-
-            return View();
+            var model = _unitOfWork.Educator.GetMyGroupsVm(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            return View(model);
         }
         [Route("egitmen/grup-detayi/{groupId?}")]
         public IActionResult GroupDetails(Guid? groupId)
