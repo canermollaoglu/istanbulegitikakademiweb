@@ -57,9 +57,10 @@ namespace NitelikliBilisim.Business.Repositories
 
             var addedRecords = new List<GroupAttendance>();
             var removedRecords = new List<GroupAttendance>();
+            var attendanceCustomerIds = attendanceRecords.Select(x => x.CustomerId);
             foreach (var item in data.StudentRecords)
             {
-                if (attendanceRecords.Select(x => x.CustomerId).Contains(item.CustomerId) && !item.IsAttended)
+                if (!attendanceCustomerIds.Contains(item.CustomerId) && !item.IsAttended)
                 {
                     addedRecords.Add(new GroupAttendance
                     {
@@ -69,10 +70,15 @@ namespace NitelikliBilisim.Business.Repositories
                         Reason = item.Reason
                     });
                 }
-                if (attendanceRecords.Select(x => x.CustomerId).Contains(item.CustomerId) && item.IsAttended)
+                if (attendanceCustomerIds.Contains(item.CustomerId) && item.IsAttended)
                 {
                     var attendance = attendanceRecords.First(x => x.CustomerId == item.CustomerId);
                     removedRecords.Add(attendance);
+                }
+                if (attendanceCustomerIds.Contains(item.CustomerId) && !item.IsAttended)
+                {
+                    var attendance = attendanceRecords.First(x => x.CustomerId == item.CustomerId);
+                    attendance.Reason = item.Reason;
                 }
             }
             _context.GroupAttendances.AddRange(addedRecords);
