@@ -14,6 +14,10 @@
         {
             <li><a href="/admin/panel" class="btn_1">Admin Panel</a></li>
         }
+        @if (User.Identity.IsAuthenticated && User.IsInRole("Educator"))
+        {
+            <li><a href="/egitmen/yonetim-paneli">Eğitmen Paneli</a></li>
+        }
         @if (!User.Identity.IsAuthenticated)
         {
             <li><a href="/giris-yap" class="login">GİRİŞ YAP</a></li>

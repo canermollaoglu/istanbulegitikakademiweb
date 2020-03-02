@@ -37,10 +37,8 @@
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Views\Shared\partials\categories\" />
-    <Folder Include="Areas\Educator\Controllers\" />
-    <Folder Include="Areas\Educator\Data\" />
-    <Folder Include="Areas\Educator\Models\" />
-    <Folder Include="Areas\Educator\Views\" />
+    <Folder Include="Areas\EducatorArea\Data\" />
+    <Folder Include="Areas\EducatorArea\Models\" />
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="wwwroot\assets\font\area-admin\" />
     <Folder Include="wwwroot\coming-soon\" />
