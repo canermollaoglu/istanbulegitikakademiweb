@@ -17,8 +17,13 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-lg-12">
+            <div class="offset-lg-1 col-lg-10">
                 <h1>@Model.Group.GroupName (@Model.Group.EducationName)</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <h3>Yoklamalar</h3>
                 <ul>
                     @foreach (var item in Model.Days)
                     {
@@ -34,6 +39,15 @@
                                 }
                             </a>
                         </li>
+                    }
+                </ul>
+            </div>
+            <div class="col-lg-6">
+                <h3>Öğrenci Listesi</h3>
+                <ul>
+                    @foreach (var item in Model.GroupStudents)
+                    {
+                        <li>@item.FullName</li>
                     }
                 </ul>
             </div>

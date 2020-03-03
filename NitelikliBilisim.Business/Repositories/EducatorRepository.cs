@@ -75,6 +75,16 @@ namespace NitelikliBilisim.Business.Repositories
                 DateText = x.DateOfLesson.ToLongDateString(),
                 HasAttendanceRecord = x.HasAttendanceRecord
             }).ToList();
+            var students = _context.Bridge_GroupStudents
+                .Where(x => x.Id == groupId)
+                .Join(_context.Users, l => l.Id2, r => r.Id, (x, y) => new
+                {
+                    Student = y
+                }).ToList()
+                .Select(x => new _GroupStudent
+                {
+                    FullName = $"{x.Student.Name} {x.Student.Surname}"
+                }).ToList();
             return new GroupDetailsVm
             {
                 Group = new _Group
@@ -83,7 +93,8 @@ namespace NitelikliBilisim.Business.Repositories
                     EducationName = group.Education.Name,
                     GroupName = group.GroupName
                 },
-                Days = lessonDays
+                Days = lessonDays,
+                GroupStudents = students
             };
         }
         public bool IsValidEducatorForGroup(Guid groupId, string educatorId)
