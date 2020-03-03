@@ -3,6 +3,9 @@
     ViewData["Title"] = "Grup Detayları";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@{
+    var groupId = Model.Group.GroupId;
+}
 <main>
     <div class="container margin_60_35">
 
@@ -20,9 +23,16 @@
                     @foreach (var item in Model.Days)
                     {
                         <li>
-                            @item.DateText
-                            @Model.Group.GroupId
-                            @item.HasAttendanceRecord
+                            <a href="/egitmen/yoklama-girisi/@groupId/@item.Date/@item.HasAttendanceRecord">
+                                @if (item.HasAttendanceRecord)
+                                {
+                                    @item.DateText <i class="text-success icon-ok-circled"></i>
+                                }
+                                else
+                                {
+                                    @item.DateText <i class="text-danger icon-cancel-circled"></i>
+                                }
+                            </a>
                         </li>
                     }
                 </ul>

@@ -38,5 +38,16 @@ namespace NitelikliBilisim.App.Areas.EducatorArea.Controllers
                 return Redirect("/");
             return View(model);
         }
+
+        [Route("egitmen/yoklama-girisi/{groupId?}/{date?}/{hasAttendanceRecord?}")]
+        public IActionResult EnterAttendance(Guid? groupId, DateTime? date, bool? hasAttendanceRecord)
+        {
+            if (!groupId.HasValue || !date.HasValue || !hasAttendanceRecord.HasValue)
+                return Redirect($"/egitmen/gruplarim");
+            if (!_unitOfWork.Educator.IsValidEducatorForGroup(groupId.Value, HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)))
+                return Redirect($"/egitmen/gruplarim");
+            var model = _unitOfWork.GroupAttendance.GetAttendances(groupId.Value, date.Value);
+            return View(model);
+        }
     }
 }

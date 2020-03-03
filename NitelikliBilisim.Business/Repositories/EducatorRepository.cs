@@ -62,7 +62,8 @@ namespace NitelikliBilisim.Business.Repositories
             if (group == null)
                 return null;
             var lessonDaysQuery = _context.GroupLessonDays
-                .Where(x => x.GroupId == groupId)
+                .Where(x => x.GroupId == groupId && x.EducatorId == userId)
+                .OrderBy(o => o.DateOfLesson)
                 .ToList();
             if (!lessonDaysQuery.Select(x => x.EducatorId).Contains(userId))
                 return null;
@@ -84,6 +85,12 @@ namespace NitelikliBilisim.Business.Repositories
                 },
                 Days = lessonDays
             };
+        }
+        public bool IsValidEducatorForGroup(Guid groupId, string educatorId)
+        {
+            var days = _context.GroupLessonDays.Where(x => x.GroupId == groupId)
+                .Select(x => x.EducatorId);
+            return days.Contains(educatorId);
         }
     }
 }

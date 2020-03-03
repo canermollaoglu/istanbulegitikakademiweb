@@ -54,7 +54,7 @@ namespace NitelikliBilisim.Business.Repositories
             var attendanceRecords = _context.GroupAttendances
                 .Where(x => x.GroupId == data.GroupId && x.Date == data.Date)
                 .ToList();
-
+            
             var addedRecords = new List<GroupAttendance>();
             var removedRecords = new List<GroupAttendance>();
             var attendanceCustomerIds = attendanceRecords.Select(x => x.CustomerId);
@@ -81,6 +81,8 @@ namespace NitelikliBilisim.Business.Repositories
                     attendance.Reason = item.Reason;
                 }
             }
+            var lessonDay = _context.GroupLessonDays.FirstOrDefault(x => x.GroupId == data.GroupId && x.DateOfLesson == data.Date);
+            lessonDay.HasAttendanceRecord = true;
             _context.GroupAttendances.AddRange(addedRecords);
             _context.GroupAttendances.RemoveRange(removedRecords);
             _context.SaveChanges();
