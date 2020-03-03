@@ -6,7 +6,8 @@ namespace NitelikliBilisim.Core.ViewModels.areas.educator_area.group
 {
     public class GroupDetailsVm
     {
-
+        public _Group Group { get; set; }
+        public List<_EducationDay> Days { get; set; }
     }
 
     public class _EducationDay

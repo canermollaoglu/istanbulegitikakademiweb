@@ -1,6 +1,32 @@
-﻿
+﻿@model NitelikliBilisim.Core.ViewModels.areas.educator_area.group.GroupDetailsVm
 @{
     ViewData["Title"] = "Grup Detayları";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<main>
+    <div class="container margin_60_35">
 
+    </div>
+    <div class="container margin_60_35">
+        <div class="row">
+            <div class="col-lg-12">
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <h1>@Model.Group.GroupName (@Model.Group.EducationName)</h1>
+                <ul>
+                    @foreach (var item in Model.Days)
+                    {
+                        <li>
+                            @item.DateText
+                            @Model.Group.GroupId
+                            @item.HasAttendanceRecord
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</main>

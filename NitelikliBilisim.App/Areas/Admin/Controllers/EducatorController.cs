@@ -77,8 +77,9 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     PhoneNumber = data.Phone,
                     UserName = $"{userName}{countText}"
                 };
+                // TODO: belirlenen şifre mail olarak atılmalı & sabit şifre değiştirilmeli
                 var pwd = TextHelper.RandomPasswordGenerator(10);
-                var res = await _userManager.CreateAsync(newUser, pwd);
+                var res = await _userManager.CreateAsync(newUser, "qwe123");
                 if (!res.Succeeded)
                 {
                     _fileManager.Delete(dbPath);
@@ -90,7 +91,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     });
                 }
 
-                res = await _userManager.AddToRoleAsync(newUser, "User");
+                res = await _userManager.AddToRoleAsync(newUser, "Educator");
                 if (!res.Succeeded)
                 {
                     _fileManager.Delete(dbPath);

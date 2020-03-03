@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace NitelikliBilisim.App.Areas.EducatorArea.Controllers
 {
-    [Area("EducatorArea"), Authorize("Educator")]
+    [Area("EducatorArea"), Authorize(Roles = "Educator")]
     public class ManagementController : Controller
     {
         [Route("egitmen/yonetim-paneli")]

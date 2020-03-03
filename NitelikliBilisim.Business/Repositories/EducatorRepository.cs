@@ -3,6 +3,7 @@ using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.ViewModels.areas.admin.educator;
 using NitelikliBilisim.Core.ViewModels.areas.educator_area.group;
 using NitelikliBilisim.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -51,6 +52,37 @@ namespace NitelikliBilisim.Business.Repositories
                     GroupName = x.GroupName,
                     EducationName = x.Education.Name
                 }).ToList()
+            };
+        }
+        public GroupDetailsVm GetGroupDetailsVm(Guid groupId, string userId)
+        {
+            var group = _context.EducationGroups
+                .Include(x => x.Education)
+                .FirstOrDefault(x => x.Id == groupId);
+            if (group == null)
+                return null;
+            var lessonDaysQuery = _context.GroupLessonDays
+                .Where(x => x.GroupId == groupId)
+                .ToList();
+            if (!lessonDaysQuery.Select(x => x.EducatorId).Contains(userId))
+                return null;
+
+            var lessonDays = lessonDaysQuery.Select(x => new _EducationDay
+            {
+                Id = x.Id,
+                Date = x.DateOfLesson,
+                DateText = x.DateOfLesson.ToLongDateString(),
+                HasAttendanceRecord = x.HasAttendanceRecord
+            }).ToList();
+            return new GroupDetailsVm
+            {
+                Group = new _Group
+                {
+                    GroupId = group.Id,
+                    EducationName = group.Education.Name,
+                    GroupName = group.GroupName
+                },
+                Days = lessonDays
             };
         }
     }

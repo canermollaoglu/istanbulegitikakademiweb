@@ -18,7 +18,7 @@
         {
             <li><a href="/egitmen/yonetim-paneli">Eğitmen Paneli</a></li>
         }
-        @if (!User.Identity.IsAuthenticated)
+        @if (!User.Identity.IsAuthenticated && User.IsInRole("User"))
         {
             <li><a href="/giris-yap" class="login">GİRİŞ YAP</a></li>
         }

@@ -59,7 +59,8 @@ namespace NitelikliBilisim.Business.Repositories
                         DateOfLesson = date,
                         GroupId = entity.Id,
                         HasAttendanceRecord = false,
-                        IsImmuneToAutoChange = false
+                        IsImmuneToAutoChange = false,
+                        EducatorId = entity.EducatorId
                     });
 
                 _context.GroupLessonDays.AddRange(groupLessonDays);

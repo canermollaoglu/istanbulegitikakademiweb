@@ -9,7 +9,7 @@ using NitelikliBilisim.Business.UoW;
 
 namespace NitelikliBilisim.App.Areas.EducatorArea.Controllers
 {
-    [Area("EducatorArea"), Authorize("Educator")]
+    [Area("EducatorArea"), Authorize(Roles = "Educator")]
     public class GroupController : Controller
     {
         private readonly UnitOfWork _unitOfWork;
@@ -29,11 +29,14 @@ namespace NitelikliBilisim.App.Areas.EducatorArea.Controllers
             if (!groupId.HasValue)
                 return Redirect("/egitmen/gruplarim");
             var group = _unitOfWork.EducationGroup.GetById(groupId.Value);
-            var educatorId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (group == null || group.EducatorId != educatorId)
+            if (group == null)
                 return Redirect("/");
 
-            return View();
+            var educatorId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var model = _unitOfWork.Educator.GetGroupDetailsVm(groupId.Value, educatorId);
+            if (model == null)
+                return Redirect("/");
+            return View(model);
         }
     }
 }
