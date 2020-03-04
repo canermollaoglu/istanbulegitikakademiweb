@@ -17,6 +17,7 @@ using NitelikliBilisim.Core.ViewModels.Sales;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 
@@ -135,6 +136,18 @@ namespace NitelikliBilisim.App.Controllers
             var transactionType = cardInfoChecker.DecideTransactionType(info, data.Use3d);
 
             var manager = new PaymentManager(_paymentService, transactionType);
+            string content = "";
+            using (var sr = new StreamReader("/data/cities.json"))
+            {
+                content = sr.ReadToEnd();
+            }
+            var cityTowns = JsonConvert.DeserializeObject<CityTownModel>(content);
+            var cityId = data.InvoiceInfo.City;
+            var townId = data.InvoiceInfo.Town;
+            var city = cityTowns.data.FirstOrDefault(x => x._id == cityId);
+            data.InvoiceInfo.City = city.name;
+            data.InvoiceInfo.Town = city.towns.FirstOrDefault(x => x._id == townId).name;
+            
             var result = manager.Pay(_unitOfWork, data);
 
             if (result.TransactionType == TransactionType.Normal)
