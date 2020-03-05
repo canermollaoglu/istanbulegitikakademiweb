@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.ComplexTypes;
+using NitelikliBilisim.Notificator.Services;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
@@ -13,9 +15,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
     public class EducationGroupManagementController : Controller
     {
         private readonly UnitOfWork _unitOfWork;
+        private readonly EmailSender _emailSender;
         public EducationGroupManagementController(UnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
+            _emailSender = new EmailSender();
         }
         [Route("admin/grup/ayarlar/{groupId?}")]
         public IActionResult Management(Guid? groupId)
@@ -76,7 +80,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             });
         }
         [HttpPost, Route("admin/postpone-dates")]
-        public IActionResult PostponeDates(PostponeData data)
+        public async Task<IActionResult> PostponeDates(PostponeData data)
         {
             if (!data.groupId.HasValue)
                 return Json(new ResponseModel
@@ -85,6 +89,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 });
 
             _unitOfWork.GroupLessonDay.PostponeLessons(data.groupId.Value, data.from, data.to);
+            
+            var emails = _unitOfWork.EmailHelper.GetEmailsOfStudentsByGroup(data.groupId.Value);
+            emails.Add(_unitOfWork.EmailHelper.GetEmailOfTeacherAtDate(data.groupId.Value, data.from));
+            await _emailSender.SendAsync(new EmailMessage {
+                Contacts = emails.ToArray()
+            });
 
             return Json(new ResponseModel
             {

@@ -14,16 +14,16 @@ namespace NitelikliBilisim.Business.Repositories
         {
             _context = context;
         }
-        public string[] GetAdminEmails()
+        public List<string> GetAdminEmails()
         {
             return _context.UserRoles
                 .Include(x => x.Role)
                 .Include(x => x.User)
                 .Where(x => x.Role.Name == "Admin")
                 .Select(x => x.User.Email)
-                .ToArray();
+                .ToList();
         }
-        public string[] GetEmailsOfTeachersByGroup(Guid groupId)
+        public List<string> GetEmailsOfTeachersByGroup(Guid groupId)
         {
             var educators = _context.GroupLessonDays
                 .Where(x => x.GroupId == groupId)
@@ -31,21 +31,21 @@ namespace NitelikliBilisim.Business.Repositories
             return _context.Users
                 .Where(x => educators.Contains(x.Id))
                 .Select(x => x.Email)
-                .ToArray();
+                .ToList();
         }
         public string GetEmailOfTeacherAtDate(Guid groupId, DateTime at)
         {
             var educatorId = _context.GroupLessonDays.First(x => x.GroupId == groupId && x.DateOfLesson == at).EducatorId;
             return _context.Users.First(x => x.Id == educatorId).Email;
         }
-        public string[] GetEmailsOfStudentsByGroup(Guid groupId)
+        public List<string> GetEmailsOfStudentsByGroup(Guid groupId)
         {
             return _context.Bridge_GroupStudents
                 .Where(x => x.Id == groupId)
                 .Include(x => x.Customer)
                 .ThenInclude(x => x.User)
                 .Select(x => x.Customer.User.Email)
-                .ToArray();
+                .ToList();
         }
     }
 }
