@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
@@ -11,7 +12,7 @@ using System.Linq;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    [Area("Admin")]
+    [Area("Admin"), Authorize(Roles = "Admin")]
     public class SuggestionController : TempSecurityController
     {
         private readonly UnitOfWork _unitOfWork;
@@ -59,7 +60,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 return Json(new ResponseModel
                 {
                     isSuccess = false,
-                    errors = new List<string> {$"Kategori'nin En son girilen Maksimum gün değerinden KÜÇÜK bir sayı girmeye çalıştınız" }
+                    errors = new List<string> { $"Kategori'nin En son girilen Maksimum gün değerinden KÜÇÜK bir sayı girmeye çalıştınız" }
                 });
             }
 
@@ -91,7 +92,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         }
 
         [Route("admin/oneri-kategori-guncelle/{suggestionId}")]
-        public IActionResult Update (Guid? suggestionId)
+        public IActionResult Update(Guid? suggestionId)
         {
             if (suggestionId == null)
                 return Json(new ResponseModel

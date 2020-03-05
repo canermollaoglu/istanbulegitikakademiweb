@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Areas.Admin.Models.Education;
 using NitelikliBilisim.App.Areas.Admin.VmCreator.Education;
@@ -19,8 +20,7 @@ using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    //[Authorize]
-    [Area("Admin")]
+    [Area("Admin"), Authorize(Roles = "Admin")]
     public class EducationController : TempSecurityController
     {
         private readonly UnitOfWork _unitOfWork;

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
@@ -11,7 +12,7 @@ using System.Linq;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    [Area("Admin")]
+    [Area("Admin"), Authorize(Roles = "Admin")]
     public class EducationGroupController : TempSecurityController
     {
         private readonly UnitOfWork _unitOfWork;

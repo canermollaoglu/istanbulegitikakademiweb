@@ -11,7 +11,6 @@ using NitelikliBilisim.Core.ViewModels.areas.admin.education_group_attendances;
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
     [Area("Admin")]
-
     public class GroupAttendanceController : Controller
     {
         private readonly UnitOfWork _unitOfWork;

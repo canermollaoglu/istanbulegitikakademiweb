@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
@@ -12,8 +13,7 @@ using System.Linq;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    //[Authorize]
-    [Area("Admin")]
+    [Area("Admin"), Authorize(Roles = "Admin")]
     public class EducationTagController : TempSecurityController
     {
         private readonly UnitOfWork _unitOfWork;
