@@ -185,7 +185,6 @@ namespace NitelikliBilisim.Business.Repositories
         {
             return DetermineToBeChangedDates(groupId, from, to).Select(x => x.ToLongDateString()).ToList();
         }
-
         public void SwitchEducator(Guid groupId, DateTime from, DateTime? to, string educatorId)
         {
             var dates = DetermineToBeChangedDates(groupId, from, to);
@@ -194,6 +193,11 @@ namespace NitelikliBilisim.Business.Repositories
                 .ToList();
             foreach (var item in lessonDays)
                 item.EducatorId = educatorId;
+
+            var group = _context.EducationGroups.First(x => x.Id == groupId);
+            var lastEducatorId = lessonDays.Last().EducatorId;
+            if (group.EducatorId != lastEducatorId)
+                group.EducatorId = lastEducatorId;
             _context.SaveChanges();
         }
         public void ChangeClassroom(Guid groupId, DateTime from, DateTime? to, Guid classroomId)

@@ -148,7 +148,6 @@ namespace NitelikliBilisim.Business.Repositories
 
             return model;
         }
-
         private string SerializeDays(List<int> days)
         {
             if (days == null || days.Count == 0)
@@ -156,7 +155,6 @@ namespace NitelikliBilisim.Business.Repositories
 
             return JsonConvert.SerializeObject(days);
         }
-
         public ListGetVm GetListVm()
         {
             var groups = _context.EducationGroups.Include(x => x.Education).Include(x => x.Host)
@@ -194,7 +192,6 @@ namespace NitelikliBilisim.Business.Repositories
                 Groups = data
             };
         }
-
         public GetEligibleAndAssignedStudentsVm GetEligibleAndAssignedStudents(Guid groupId)
         {
             var group = _context.EducationGroups.FirstOrDefault(x => x.Id == groupId);
@@ -231,7 +228,6 @@ namespace NitelikliBilisim.Business.Repositories
                 EligibleTickets = eligibleTickets
             };
         }
-
         public AssignStudentsVm GetAssignStudentsVm(Guid groupId)
         {
             var group = _context.EducationGroups

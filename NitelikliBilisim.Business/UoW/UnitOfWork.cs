@@ -28,6 +28,7 @@ namespace NitelikliBilisim.Business.UoW
         private GroupLessonDayRepository _groupLessonDayRepository;
         private ReportRepository _reportRepository;
         private GroupAttendanceRepository _groupAttendanceRepository;
+        private EmailRepository _emailRepository;
         public UnitOfWork(NbDataContext context)
         {
             _context = context;
@@ -101,6 +102,13 @@ namespace NitelikliBilisim.Business.UoW
             get
             {
                 return _groupAttendanceRepository ?? (_groupAttendanceRepository = new GroupAttendanceRepository(_context));
+            }
+        }
+        public EmailRepository EmailHelper
+        {
+            get
+            {
+                return _emailRepository ?? (_emailRepository = new EmailRepository(_context));
             }
         }
     }
