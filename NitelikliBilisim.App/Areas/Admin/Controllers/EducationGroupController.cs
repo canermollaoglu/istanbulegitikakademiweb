@@ -6,9 +6,11 @@ using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_groups;
+using NitelikliBilisim.Notificator.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
@@ -16,9 +18,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
     public class EducationGroupController : TempSecurityController
     {
         private readonly UnitOfWork _unitOfWork;
+        private readonly EmailSender _emailSender;
         public EducationGroupController(UnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
+            _emailSender = new EmailSender();
         }
         [Route("admin/gruplar")]
         public IActionResult List()
@@ -56,7 +60,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         }
 
         [HttpPost, Route("admin/add-group")]
-        public IActionResult Add(AddPostVm data)
+        public async Task<IActionResult> Add(AddPostVm data)
         {
             if (!ModelState.IsValid || data.LessonDays == null || data.LessonDays.Count == 0)
                 return Json(new ResponseModel
@@ -75,7 +79,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 StartDate = data.StartDate.Value,
                 Quota = data.Quota.Value
             }, days: data.LessonDays);
-
+            var emails = _unitOfWork.EmailHelper.GetAdminEmails();
+            await _emailSender.SendAsync(new Core.ComplexTypes.EmailMessage
+            {
+                Body = "Grup açılmıştır",
+                Contacts = emails.ToArray()
+            });
             return Json(new ResponseModel
             {
                 isSuccess = isSuccess

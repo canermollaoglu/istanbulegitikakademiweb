@@ -14,6 +14,10 @@ namespace NitelikliBilisim.Business.Repositories
         {
             _context = context;
         }
+        public string GetUserEmail(string userId)
+        {
+            return _context.Users.First(x => x.Id == userId).Email;
+        }
         public List<string> GetAdminEmails()
         {
             return _context.UserRoles

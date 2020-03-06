@@ -222,17 +222,32 @@ namespace NitelikliBilisim.Business.Repositories
                 }
                 return true;
             }
-            catch (Exception ex)
+            catch
             {
-                System.Console.WriteLine(ex.Message);
                 return false;
             }
         }
-
-        // TODO: iptal işlemleri için
         private bool Auto__UnassingTickets(List<Guid> invoiceDetailsIds)
         {
-            return false;
+            try
+            {
+                var tickets = _context.Tickets
+                    .Where(x => invoiceDetailsIds.Contains(x.InvoiceDetailsId))
+                    .ToList();
+
+                var bridges = _context.Bridge_GroupStudents
+                    .Where(x => tickets.Select(x => x.Id).Contains(x.TicketId))
+                    .ToList();
+                foreach (var ticket in tickets)
+                    ticket.IsUsed = false;
+                _context.RemoveRange(bridges);
+                _context.SaveChanges();
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

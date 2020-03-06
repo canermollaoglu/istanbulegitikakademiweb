@@ -118,7 +118,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             });
         }
         [HttpPost, Route("admin/change-classrooms")]
-        public IActionResult ChangeClassrooms(ChangeClassroomData data)
+        public async Task<IActionResult> ChangeClassrooms(ChangeClassroomData data)
         {
             if (!data.groupId.HasValue)
                 return Json(new ResponseModel
@@ -127,6 +127,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 });
 
             _unitOfWork.GroupLessonDay.ChangeClassroom(data.groupId.Value, data.from, data.to, data.classroomId);
+            var studentEmails = _unitOfWork.EmailHelper.GetEmailsOfStudentsByGroup(data.groupId.Value);
+            await _emailSender.SendAsync(new EmailMessage
+            {
+                Body = "Sınıf değişmiştir",
+                Contacts = studentEmails.ToArray()
+            });
             return Json(new ResponseModel
             {
                 isSuccess = true
