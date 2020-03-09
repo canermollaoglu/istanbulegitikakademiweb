@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
@@ -23,8 +24,20 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/gruplar")]
         public IActionResult List()
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationGrupList");
+            return View();
+        }
+
+        [Route("admin/get-education-grup-list")]
+        public IActionResult GetList()
+        {
             var model = _unitOfWork.EducationGroup.GetListVm();
-            return View(model);
+
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data =model
+            });
         }
 
         [Route("admin/grup-olustur")]

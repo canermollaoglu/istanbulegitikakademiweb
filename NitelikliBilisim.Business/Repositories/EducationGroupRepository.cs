@@ -155,7 +155,7 @@ namespace NitelikliBilisim.Business.Repositories
 
             return JsonConvert.SerializeObject(days);
         }
-        public ListGetVm GetListVm()
+        public List<_Group> GetListVm()
         {
             var groups = _context.EducationGroups.Include(x => x.Education).Include(x => x.Host)
                 .Include(x => x.GroupStudents)
@@ -187,10 +187,7 @@ namespace NitelikliBilisim.Business.Repositories
                 });
             }
 
-            return new ListGetVm
-            {
-                Groups = data
-            };
+            return data;
         }
         public GetEligibleAndAssignedStudentsVm GetEligibleAndAssignedStudents(Guid groupId)
         {
