@@ -235,13 +235,6 @@ namespace NitelikliBilisim.Business.Repositories
                 Group = data
             };
         }
-        private string SerializeDays(List<int> days)
-        {
-            if (days == null || days.Count == 0)
-                return null;
-
-            return JsonConvert.SerializeObject(days);
-        }
         private List<int> MakeSureWeekDaysExists(Guid groupId, List<int> daysInt)
         {
             if (daysInt == null || daysInt.Count == 0)
