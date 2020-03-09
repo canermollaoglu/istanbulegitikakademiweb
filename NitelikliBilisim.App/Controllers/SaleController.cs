@@ -1,5 +1,6 @@
 ﻿using Iyzipay.Model;
 using Iyzipay.Request;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -28,14 +29,16 @@ namespace NitelikliBilisim.App.Controllers
 {
     public class SaleController : BaseController
     {
+        private readonly IHostingEnvironment _hostingEnvironment;
         private readonly UnitOfWork _unitOfWork;
         private readonly SaleVmCreator _vmCreator;
         private readonly UserUnitOfWork _userUnitOfWork;
         private readonly IPaymentService _paymentService;
         private readonly EmailSender _emailSender;
 
-        public SaleController(UnitOfWork unitOfWork, IPaymentService paymentService, UserUnitOfWork userUnitOfWork)
+        public SaleController(IHostingEnvironment hostingEnvironment, UnitOfWork unitOfWork, IPaymentService paymentService, UserUnitOfWork userUnitOfWork)
         {
+            _hostingEnvironment = hostingEnvironment;
             _unitOfWork = unitOfWork;
             _paymentService = paymentService;
             _vmCreator = new SaleVmCreator(_unitOfWork);
@@ -145,7 +148,8 @@ namespace NitelikliBilisim.App.Controllers
 
             var manager = new PaymentManager(_paymentService, transactionType);
             string content = "";
-            using (var sr = new StreamReader("/data/cities.json"))
+            var rootPath = _hostingEnvironment.WebRootPath;
+            using (var sr = new StreamReader(Path.Combine(rootPath, "data/cities.json")))
             {
                 content = sr.ReadToEnd();
             }
