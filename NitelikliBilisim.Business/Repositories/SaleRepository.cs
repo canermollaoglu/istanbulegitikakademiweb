@@ -1,21 +1,27 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.PaymentModels;
 using NitelikliBilisim.Core.ViewModels.Sales;
 using NitelikliBilisim.Data;
+using NitelikliBilisim.Notificator.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace NitelikliBilisim.Business.Repositories
 {
     public class SaleRepository
     {
         private readonly NbDataContext _context;
+        private readonly EmailSender _emailSender;
+
         public SaleRepository(NbDataContext context)
         {
             _context = context;
+            _emailSender = new EmailSender();
         }
         public ApplicationUser GetUser(string userId)
         {
@@ -187,7 +193,7 @@ namespace NitelikliBilisim.Business.Repositories
 
             return tickets;
         }
-        private bool Auto__AssignTickets(List<Guid> invoiceDetailsIds)
+        private async Task<bool> Auto__AssignTickets(List<Guid> invoiceDetailsIds)
         {
             try
             {
@@ -206,7 +212,12 @@ namespace NitelikliBilisim.Business.Repositories
                         .FirstOrDefault();
                     if (firstGroup == null)
                     {
-                        // başarısız atama için mail gönder
+                        await _emailSender.SendAsync(new EmailMessage
+                        {
+                            Subject = "Grup Atamanız Yapılamamıştır | Nitelikli Bilişim",
+                            Body = $"{ticket.Education.Name} eğitimine yönelik grupların kontenjanları dolduğu için gruba atamanız yapılamamıştır.",
+                            Contacts = new string[]{ ticket.Owner.User.Email }
+                        });
                         return false;
                     }
 
@@ -215,6 +226,13 @@ namespace NitelikliBilisim.Business.Repositories
                         Id = firstGroup.Id,
                         Id2 = ticket.OwnerId,
                         TicketId = ticket.Id
+                    });
+
+                    await _emailSender.SendAsync(new EmailMessage
+                    {
+                        Subject = "Grup Atamanız Yapılmıştır | Nitelikli Bilişim",
+                        Body = $"{ticket.Education.Name} eğitimi için {firstGroup.StartDate.ToShortDateString()} tarihinde başlayacak olan {firstGroup.GroupName} grubuna atamanız yapılmıştır.",
+                        Contacts = new string[] { ticket.Owner.User.Email }
                     });
 
                     ticket.IsUsed = true;
@@ -227,7 +245,7 @@ namespace NitelikliBilisim.Business.Repositories
                 return false;
             }
         }
-        private bool Auto__UnassingTickets(List<Guid> invoiceDetailsIds)
+        private async Task<bool> Auto__UnassingTickets(List<Guid> invoiceDetailsIds)
         {
             try
             {
@@ -239,7 +257,17 @@ namespace NitelikliBilisim.Business.Repositories
                     .Where(x => tickets.Select(x => x.Id).Contains(x.TicketId))
                     .ToList();
                 foreach (var ticket in tickets)
+                {
+                    await _emailSender.SendAsync(new EmailMessage
+                    {
+                        Subject = "Gruptan Ayrıldınız | Nitelikli Bilişim",
+                        Body = $"{ticket.Education.Name} eğitimini iptal ettiğiniz atandığınız gruptan ayrıldınız.",
+                        Contacts = new string[] { ticket.Owner.User.Email }
+                    });
+
                     ticket.IsUsed = false;
+                }
+                    
                 _context.RemoveRange(bridges);
                 _context.SaveChanges();
             }
