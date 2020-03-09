@@ -245,7 +245,7 @@ namespace NitelikliBilisim.Business.Repositories
                 return false;
             }
         }
-        private bool Auto__UnassingTickets(List<Guid> invoiceDetailsIds)
+        private async Task<bool> Auto__UnassingTickets(List<Guid> invoiceDetailsIds)
         {
             try
             {
@@ -257,7 +257,17 @@ namespace NitelikliBilisim.Business.Repositories
                     .Where(x => tickets.Select(x => x.Id).Contains(x.TicketId))
                     .ToList();
                 foreach (var ticket in tickets)
+                {
+                    await _emailSender.SendAsync(new EmailMessage
+                    {
+                        Subject = "Gruptan Ayrıldınız | Nitelikli Bilişim",
+                        Body = $"{ticket.Education.Name} eğitimini iptal ettiğiniz atandığınız gruptan ayrıldınız.",
+                        Contacts = new string[] { ticket.Owner.User.Email }
+                    });
+
                     ticket.IsUsed = false;
+                }
+                    
                 _context.RemoveRange(bridges);
                 _context.SaveChanges();
             }
