@@ -78,6 +78,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 isSuccess = true,
                 data = model
             });
+
         }
         [HttpPost, Route("admin/postpone-dates")]
         public async Task<IActionResult> PostponeDates(PostponeData data)
@@ -103,7 +104,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             });
         }
         [HttpPost, Route("admin/switch-educators")]
-        public IActionResult SwitchEducators(SwitchEducatorData data)
+        public async Task<IActionResult> SwitchEducators(SwitchEducatorData data)
         {
             if (!data.groupId.HasValue)
                 return Json(new ResponseModel
@@ -112,9 +113,14 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 });
 
             _unitOfWork.GroupLessonDay.SwitchEducator(data.groupId.Value, data.from, data.to, data.educatorId);
+           var switchEducatorMessage = _unitOfWork.EmailHelper.GetEmailOfTeacherAtDate(data.groupId.Value, data.from);
+            await _emailSender.SendAsync(new EmailMessage{
+              Contacts = new string[] { switchEducatorMessage }
+            });
             return Json(new ResponseModel
             {
-                isSuccess = true
+                isSuccess = true,
+                data = null
             });
         }
         [HttpPost, Route("admin/change-classrooms")]
