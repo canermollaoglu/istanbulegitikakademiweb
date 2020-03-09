@@ -1,5 +1,6 @@
 ﻿using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Notificator.Services;
+using System;
 using Xunit;
 
 namespace NitelikliBilisim.Test.NotificatorTests
@@ -17,14 +18,14 @@ namespace NitelikliBilisim.Test.NotificatorTests
         [Fact]
         public void Should_Send_Email()
         {
-            var result = _emailSender.SendAsync(new EmailMessage()
+            var sendTask = _emailSender.SendAsync(new EmailMessage()
             {
                 Subject = "Test Mail | Nitelikli Bilişim",
-                Body = "Test",
+                Body = $"Test - Tarih: {DateTime.Now}",
                 Contacts = mailsToSend
             });
 
-            Assert.True(result.IsCompletedSuccessfully);
+            Assert.Null(sendTask.Exception);
         }
     }
 }
