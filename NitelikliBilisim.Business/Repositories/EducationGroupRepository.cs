@@ -92,27 +92,6 @@ namespace NitelikliBilisim.Business.Repositories
 
             return dates;
         }
-        private List<int> MakeSureWeekDaysExists(Guid groupId, List<int> daysInt)
-        {
-            if (daysInt == null || daysInt.Count == 0)
-            {
-                var weekDays = _context.WeekDaysOfGroups.FirstOrDefault(x => x.GroupId == groupId);
-                if (weekDays == null)
-                {
-                    daysInt = new List<int> { 6, 0 };
-                    _context.WeekDaysOfGroups.Add(new WeekDaysOfGroup
-                    {
-                        GroupId = groupId,
-                        DaysJson = JsonConvert.SerializeObject(daysInt)
-                    });
-                    _context.SaveChanges();
-                }
-                else
-                    daysInt = JsonConvert.DeserializeObject<List<int>>(weekDays.DaysJson);
-            }
-
-            return daysInt;
-        }
         public List<GroupVm> GetFirstAvailableGroups(Guid educationId)
         {
             var groups = _context.EducationGroups
@@ -255,6 +234,34 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 Group = data
             };
+        }
+        private string SerializeDays(List<int> days)
+        {
+            if (days == null || days.Count == 0)
+                return null;
+
+            return JsonConvert.SerializeObject(days);
+        }
+        private List<int> MakeSureWeekDaysExists(Guid groupId, List<int> daysInt)
+        {
+            if (daysInt == null || daysInt.Count == 0)
+            {
+                var weekDays = _context.WeekDaysOfGroups.FirstOrDefault(x => x.GroupId == groupId);
+                if (weekDays == null)
+                {
+                    daysInt = new List<int> { 6, 0 };
+                    _context.WeekDaysOfGroups.Add(new WeekDaysOfGroup
+                    {
+                        GroupId = groupId,
+                        DaysJson = JsonConvert.SerializeObject(daysInt)
+                    });
+                    _context.SaveChanges();
+                }
+                else
+                    daysInt = JsonConvert.DeserializeObject<List<int>>(weekDays.DaysJson);
+            }
+
+            return daysInt;
         }
     }
 }
