@@ -113,10 +113,19 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 });
 
             _unitOfWork.GroupLessonDay.SwitchEducator(data.groupId.Value, data.from, data.to, data.educatorId);
-           var switchEducatorMessage = _unitOfWork.EmailHelper.GetEmailOfTeacherAtDate(data.groupId.Value, data.from);
-            await _emailSender.SendAsync(new EmailMessage{
-              Contacts = new string[] { switchEducatorMessage }
-            });
+            var switchEducatorMessage = _unitOfWork.EmailHelper.GetEmailOfTeacherAtDate(data.groupId.Value, data.from);
+            var educationGrupName = _unitOfWork.EducationGroup.Get(x => x.Id == data.groupId).First().GroupName;
+            if (educationGrupName != null)
+            {
+                await _emailSender.SendAsync(new EmailMessage
+                { 
+                    Subject = "Eğitmen Değiştirme | Nitelikli Bilişim",
+                    Body = $"{educationGrupName} eğitimi için Başlangıç tarihi = {data.from.ToShortDateString()}" +
+                           $" Bitiş Tarihi =  {data.to.Value.ToShortDateString()} yapılacak olan derslere atamanız yapılmıştır.",
+                    Contacts = new string[] { switchEducatorMessage }
+                });
+            }
+       
             return Json(new ResponseModel
             {
                 isSuccess = true,
