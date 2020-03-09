@@ -78,6 +78,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 isSuccess = true,
                 data = model
             });
+
         }
         [HttpPost, Route("admin/postpone-dates")]
         public async Task<IActionResult> PostponeDates(PostponeData data)
@@ -103,7 +104,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             });
         }
         [HttpPost, Route("admin/switch-educators")]
-        public IActionResult SwitchEducators(SwitchEducatorData data)
+        public async Task<IActionResult> SwitchEducators(SwitchEducatorData data)
         {
             if (!data.groupId.HasValue)
                 return Json(new ResponseModel
@@ -112,9 +113,23 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 });
 
             _unitOfWork.GroupLessonDay.SwitchEducator(data.groupId.Value, data.from, data.to, data.educatorId);
+            var switchEducatorMessage = _unitOfWork.EmailHelper.GetEmailOfTeacherAtDate(data.groupId.Value, data.from);
+            var educationGrupName = _unitOfWork.EducationGroup.Get(x => x.Id == data.groupId).First().GroupName;
+            if (educationGrupName != null)
+            {
+                await _emailSender.SendAsync(new EmailMessage
+                { 
+                    Subject = "Eğitmen Değiştirme | Nitelikli Bilişim",
+                    Body = $"{educationGrupName} eğitimi için Başlangıç tarihi = {data.from.ToShortDateString()}" +
+                           $" Bitiş Tarihi =  {data.to.Value.ToShortDateString()} yapılacak olan derslere atamanız yapılmıştır.",
+                    Contacts = new string[] { switchEducatorMessage }
+                });
+            }
+       
             return Json(new ResponseModel
             {
-                isSuccess = true
+                isSuccess = true,
+                data = null
             });
         }
         [HttpPost, Route("admin/change-classrooms")]
