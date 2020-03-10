@@ -19,7 +19,7 @@
                                 @if (item.Invoice.IsEligibleToFullyCancel)
                                 {
                                     <tr>
-                                        <td colspan="2"><a href="#" class="btn btn-danger text-light">Tüm satışı iptal et</a></td>
+                                        <td colspan="2"><a href="iptal-formu" class="btn btn-danger text-light">Tüm satışı iptal et</a></td>
                                     </tr>
                                 }
                                 <tr>
@@ -72,13 +72,13 @@
                                                             else
                                                             {
                                                                 <td>@details.Group.StartDateText tarihinde grup <b class="text-warning">başlayacaktır</b></td>
-                                                                <td><a href="#" class="btn btn-danger text-light">İade Talebi</a></td>
+                                                                <td><a href="iptal-formu/@details.Group.TicketId" class="btn btn-danger text-light">İade Talebi</a></td>
                                                             }
                                                         }
                                                         else
                                                         {
                                                             <td>Gruba atanmamıştır</td>
-                                                            <td><a href="#" class="btn btn-danger text-light">İade Talebi</a></td>
+                                                            <td><a href="iptal-formu" class="btn btn-danger text-light">İade Talebi</a></td>
                                                         }
                                                     </tr>
                                                 }

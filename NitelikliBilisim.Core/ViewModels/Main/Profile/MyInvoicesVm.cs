@@ -36,6 +36,7 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public bool IsGroupStarted { get; set; }
         public DateTime StartDate { get; set; }
         public string StartDateText { get; set; }
+        public Guid TicketId { get; set; }
     }
     public class _CompanyInfo
     {

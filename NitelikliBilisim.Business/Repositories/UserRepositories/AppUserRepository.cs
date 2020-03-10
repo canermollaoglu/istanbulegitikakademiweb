@@ -156,9 +156,10 @@ namespace NitelikliBilisim.Business.Repositories
                             i.Group = new _CorrespondingGroup
                             {
                                 GroupName = bridgeGroup.Group.GroupName,
-                                IsGroupStarted = bridgeGroup.Group.StartDate.Date >= DateTime.Now.Date,
+                                IsGroupStarted = bridgeGroup.Group.StartDate.Date <= DateTime.Now.Date,
                                 StartDate = bridgeGroup.Group.StartDate,
-                                StartDateText = bridgeGroup.Group.StartDate.ToLongDateString()
+                                StartDateText = bridgeGroup.Group.StartDate.ToLongDateString(),
+                                TicketId = bridgeGroup.TicketId
                             };
                             if (i.Group.IsGroupStarted || DateTime.Now.Date > item.Invoice.CreatedDate.Date)
                                 item.Invoice.IsEligibleToFullyCancel = false;
