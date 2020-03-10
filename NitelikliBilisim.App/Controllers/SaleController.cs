@@ -29,14 +29,14 @@ namespace NitelikliBilisim.App.Controllers
 {
     public class SaleController : BaseController
     {
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly UnitOfWork _unitOfWork;
         private readonly SaleVmCreator _vmCreator;
         private readonly UserUnitOfWork _userUnitOfWork;
         private readonly IPaymentService _paymentService;
         private readonly EmailSender _emailSender;
 
-        public SaleController(IHostingEnvironment hostingEnvironment, UnitOfWork unitOfWork, IPaymentService paymentService, UserUnitOfWork userUnitOfWork)
+        public SaleController(IWebHostEnvironment hostingEnvironment, UnitOfWork unitOfWork, IPaymentService paymentService, UserUnitOfWork userUnitOfWork)
         {
             _hostingEnvironment = hostingEnvironment;
             _unitOfWork = unitOfWork;
