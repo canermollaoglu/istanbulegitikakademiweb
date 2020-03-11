@@ -3,6 +3,7 @@ using NitelikliBilisim.Core.ViewModels.areas.admin.educator_salary;
 using NitelikliBilisim.Data;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace NitelikliBilisim.Business.Repositories
@@ -21,7 +22,12 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 Salaries = new List<_Salary>()
             };
-
+            var days = _context.GroupLessonDays
+                .Where(x => x.DateOfLesson.Date == date.Date)
+                .ToList();
+            var salaries = _context.EducatorSalaries
+                .Where(x => x.EarnedAt.Date == date.Date)
+                .ToList();
             return model;
         }
     }
