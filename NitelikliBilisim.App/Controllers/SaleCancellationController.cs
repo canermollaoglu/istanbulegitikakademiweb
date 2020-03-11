@@ -41,7 +41,7 @@ namespace NitelikliBilisim.App.Controllers
 
             if (cancelRequest.Status == "success")
             {
-                _unitOfWork.Sale.RefundPayment(data.InvoiceId);
+                _unitOfWork.Sale.CancelPayment(data.InvoiceId);
 
                 return Json(new ResponseData
                 {
@@ -65,7 +65,7 @@ namespace NitelikliBilisim.App.Controllers
 
             if(refundRequest.Status == "success")
             {
-                _unitOfWork.Sale.CancelPayment(data.TicketId);
+                _unitOfWork.Sale.RefundPayment(data.TicketId);
 
                 return Json(new ResponseData
                 {

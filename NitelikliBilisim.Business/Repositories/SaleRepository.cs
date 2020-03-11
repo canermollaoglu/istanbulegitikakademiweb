@@ -148,7 +148,7 @@ namespace NitelikliBilisim.Business.Repositories
 
             return !(isGroupStarted || DateTime.Now.Date > invoiceDate.Date);
         }
-        public async void CancelPayment(Guid ticketId)
+        public async void RefundPayment(Guid ticketId)
         {
             var invoiceDetailsId = _context.Tickets.First(x => x.Id == ticketId).InvoiceDetailsId;
             var onlinePaymentDetailsInfo = _context.OnlinePaymentDetailsInfos.First(x => x.Id == invoiceDetailsId);
@@ -160,10 +160,9 @@ namespace NitelikliBilisim.Business.Repositories
 
             await Auto__UnassignTickets(new List<Guid>() { invoiceDetailsId });
         }
-        public async void RefundPayment(Guid invoiceId)
+        public async void CancelPayment(Guid invoiceId)
         {
             var invoiceDetailsIds = _context.InvoiceDetails.Where(x => x.InvoiceId == invoiceId).Select(x => x.Id).ToList();
-
             var onlinePaymentDetails = _context.OnlinePaymentDetailsInfos.Where(x => invoiceDetailsIds.Contains(x.Id));
 
             foreach (var item in onlinePaymentDetails)
@@ -234,7 +233,7 @@ namespace NitelikliBilisim.Business.Repositories
         {
             try
             {
-                var tickets = _context.Tickets
+                var tickets = _context.Tickets.Include(x => x.Owner).ThenInclude(x => x.User)
                     .Where(x => invoiceDetailsIds.Contains(x.InvoiceDetailsId))
                     .ToList();
 
@@ -286,7 +285,7 @@ namespace NitelikliBilisim.Business.Repositories
         {
             try
             {
-                var tickets = _context.Tickets
+                var tickets = _context.Tickets.Include(x => x.Education).Include(x => x.Owner).ThenInclude(x => x.User)
                     .Where(x => invoiceDetailsIds.Contains(x.InvoiceDetailsId))
                     .ToList();
 
@@ -298,11 +297,11 @@ namespace NitelikliBilisim.Business.Repositories
                     await _emailSender.SendAsync(new EmailMessage
                     {
                         Subject = "Gruptan Ayrıldınız | Nitelikli Bilişim",
-                        Body = $"{ticket.Education.Name} eğitimini iptal ettiğiniz atandığınız gruptan ayrıldınız.",
+                        Body = $"{ticket.Education.Name} eğitimini iptal ettiğiniz için atandığınız gruptan ayrıldınız.",
                         Contacts = new string[] { ticket.Owner.User.Email }
                     });
 
-                    ticket.IsUsed = false;
+                    ticket.IsUsed = true;
                 }
                     
                 _context.RemoveRange(bridges);
