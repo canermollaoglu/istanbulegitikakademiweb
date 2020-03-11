@@ -17,6 +17,7 @@ namespace NitelikliBilisim.Core.Entities
         public decimal Paid { get; set; }
         [MaxLength(450)]
         public string EducatorId { get; set; }
-        public DateTime EarnedFor { get; set; }
+        public DateTime EarnedAt { get; set; }
+        public Guid? EarnedForGroup { get; set; }
     }
 }
