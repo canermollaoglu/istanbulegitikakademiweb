@@ -166,6 +166,19 @@ namespace NitelikliBilisim.App.Controllers
             {
                 var model = manager.CreateCompletionModel(result.PaymentForNormal);
                 _unitOfWork.Sale.CompletePayment(model, result.Success.InvoiceId, result.Success.InvoiceDetailIds);
+
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var customerEmail = _userUnitOfWork.User.GetCustomerInfo(userId).PersonalAndAccountInfo.Email;
+                if (customerEmail != null)
+                {
+                    await _emailSender.SendAsync(new EmailMessage
+                    {
+                        Subject = "Eğitim ödemeniz alınmıştır | Nitelikli Bilişim",
+                        Body = "Eğitim ödemeniz alınmıştır.",
+                        Contacts = new string[] { customerEmail }
+                    });
+                }
+
                 return Redirect("/odeme-sonucunuz");
             }
 
@@ -175,21 +188,23 @@ namespace NitelikliBilisim.App.Controllers
                 {
                     _unitOfWork.TempSaleData.Create(result.ConversationId, result.Success);
                     HttpContext.Session.SetString("html_content", result.HtmlContent);
+
+                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    var customerEmail = _userUnitOfWork.User.GetCustomerInfo(userId).PersonalAndAccountInfo.Email;
+                    if (customerEmail != null)
+                    {
+                        await _emailSender.SendAsync(new EmailMessage
+                        {
+                            Subject = "Eğitim ödemeniz alınmıştır | Nitelikli Bilişim",
+                            Body = "Eğitim ödemeniz alınmıştır.",
+                            Contacts = new string[] { customerEmail }
+                        });
+                    }
+
                     return Redirect("/secure3d");
                 }
             }
-            /*Satış sonrası Kullanıcıya gönderilecek Email*/
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var customerEmail = _userUnitOfWork.User.GetCustomerInfo(userId).PersonalAndAccountInfo.Email;
-            if (customerEmail != null)
-            {
-                await _emailSender.SendAsync(new EmailMessage
-                {
-                    Subject = "Eğitmen Değiştirme | Nitelikli Bilişim",
-                    Body = "Test",
-                    Contacts = new string[] { customerEmail }
-                });
-            }
+            
             return Redirect("/");
         }
 
