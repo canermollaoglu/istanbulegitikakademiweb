@@ -7,6 +7,7 @@ using Iyzipay.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Services.Payments;
 using NitelikliBilisim.Core.ViewModels.Main.Sales;
 
@@ -37,7 +38,23 @@ namespace NitelikliBilisim.App.Controllers
         {
             var conversationId = Guid.NewGuid().ToString();
             var cancelRequest = _paymentService.CreateCancelRequest(conversationId, "", "", RefundReason.BUYER_REQUEST, data.UserDescription);
-            return View();
+
+            if (cancelRequest.Status == "success")
+            {
+                _unitOfWork.Sale.RefundPayment(data.InvoiceId);
+
+                return Json(new ResponseData
+                {
+                    Success = true,
+                    Message = "Başarıyla iptal edildi."
+                });
+            }
+
+            return Json(new ResponseData
+            {
+                Success = false,
+                Message = "Bir sorun oluştu."
+            });
         }
 
         [HttpPost, Route("iade")]
@@ -46,7 +63,22 @@ namespace NitelikliBilisim.App.Controllers
             var conversationId = Guid.NewGuid().ToString();
             var refundRequest = _paymentService.CreateRefundRequest(conversationId, "", 0m, "", RefundReason.BUYER_REQUEST, data.UserDescription);
 
-            return View();
+            if(refundRequest.Status == "success")
+            {
+                _unitOfWork.Sale.CancelPayment(data.TicketId);
+
+                return Json(new ResponseData
+                {
+                    Success = true,
+                    Message = "İade talebiniz alınmıştır."
+                });
+            }
+
+            return Json(new ResponseData
+            {
+                Success = false,
+                Message = "Bir sorun oluştu."
+            });
         }
     }
 }

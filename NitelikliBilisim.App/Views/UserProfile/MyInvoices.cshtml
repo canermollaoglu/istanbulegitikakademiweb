@@ -19,7 +19,7 @@
                                 @if (item.Invoice.IsEligibleToFullyCancel)
                                 {
                                     <tr>
-                                        <td colspan="2"><a href="iptal-formu" class="btn btn-danger text-light">Tüm satışı iptal et</a></td>
+                                        <td colspan="2"><button data-invoice-id="@item.Invoice.InvoiceId" class="btn btn-danger text-light btn-cancel-sale">Tüm satışı iptal et</button></td>
                                     </tr>
                                 }
                                 <tr>
@@ -72,13 +72,13 @@
                                                             else
                                                             {
                                                                 <td>@details.Group.StartDateText tarihinde grup <b class="text-warning">başlayacaktır</b></td>
-                                                                <td><a href="iptal-formu/@details.Group.TicketId" class="btn btn-danger text-light">İade Talebi</a></td>
+                                                                <td><button data-ticket-id="@details.Group.TicketId" @(details.IsCancelled ? "disabled" : "") id="btn-refund-request" class="btn btn-danger text-light">İade Talebi</button></td>
                                                             }
                                                         }
                                                         else
                                                         {
                                                             <td>Gruba atanmamıştır</td>
-                                                            <td><a href="iptal-formu" class="btn btn-danger text-light">İade Talebi</a></td>
+                                                            <td><button @(details.IsCancelled ? "disabled" : "") class="btn btn-danger text-light">İade Talebi</button></td>
                                                         }
                                                     </tr>
                                                 }
@@ -94,3 +94,69 @@
         </div>
     </div>
 </main>
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmCancelModalLabel" aria-hidden="true" id="confirm-cancel-modal">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="confirmCancelModalLabel">Satışın İptalini Onayla</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="invoice-id" />
+                <p>Bu satışı iptal etmekle, aldığınız bütün eğitimlerden ayrılacaksınız. Emin misiniz?</p>
+                <textarea id="txt-user-description" class="form-control" rows="3" placeholder="Açıklama giriniz..." style="resize:none;"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" id="btn-modal-yes">Evet, eminim.</button>
+                <button type="button" class="btn btn-danger" id="btn-modal-no">Hayır</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section postScripts{ 
+    <script>
+        var btnCancelSale = $(".btn-cancel-sale");
+        var btnModalYes = $("#btn-modal-yes");
+        var btnModalNo = $("#btn-modal-no");
+        var btnRefundRequest = $("#btn-refund-request");
+        var confirmCancelModal = $("#confirm-cancel-modal");
+
+        btnCancelSale.on("click", btnCancelSale_onClick);
+        btnModalYes.on("click", btnModalYes_onClick);
+        btnModalNo.on("click", btnModalNo_onClick);
+        btnRefundRequest.on("click", btnRefundRequest_onClick);
+
+        function btnCancelSale_onClick() {
+            var invoiceId = $(this).data('invoice-id');
+            $('#invoice-id').val(invoiceId)
+            confirmCancelModal.modal('show');
+        }
+        function btnModalYes_onClick() {
+            if ($('#txt-user-description').val() == '') return;
+
+            $.ajax({
+                url: '/iptal',
+                method: 'post',
+                data: {
+                    InvoiceId: $('#invoice-id').val(),
+                    UserDescription: $('#txt-user-description').val()
+                },
+                success: (res) => {
+                    if (res.success) {
+                        console.log(res.message);
+                        $("#confirmCancelModal").modal('hide');
+                    }
+                }
+            })
+        }
+        function btnModalNo_onClick() {
+            confirmCancelModal.modal('hide');
+        }
+        function btnRefundRequest_onClick() {
+            var ticketId = $(this).data('ticket-id');
+            window.location.href = `/iptal-formu/${ticketId}`;
+        }
+    </script>
+}

@@ -139,6 +139,43 @@ namespace NitelikliBilisim.Business.Repositories
             }
             Task.Run(() => Auto__AssignTickets(invoiceDetailsIds));
         }
+        public bool GetIfCustomerEligibleToFullyCancel(Guid ticketId)
+        {
+            var groupStartDate = _context.Bridge_GroupStudents.Include(x=>x.Group).First(x => x.TicketId == ticketId).Group.StartDate;
+            var ticket = _context.Tickets.First(x => x.Id == ticketId);
+            var invoiceDate = _context.InvoiceDetails.Include(x => x.Invoice).First(x => x.Id == ticket.InvoiceDetailsId).Invoice.CreatedDate;
+            var isGroupStarted = groupStartDate <= DateTime.Now.Date;
+
+            return !(isGroupStarted || DateTime.Now.Date > invoiceDate.Date);
+        }
+        public async void CancelPayment(Guid ticketId)
+        {
+            var invoiceDetailsId = _context.Tickets.First(x => x.Id == ticketId).InvoiceDetailsId;
+            var onlinePaymentDetailsInfo = _context.OnlinePaymentDetailsInfos.First(x => x.Id == invoiceDetailsId);
+
+            onlinePaymentDetailsInfo.IsCancelled = true;
+            onlinePaymentDetailsInfo.CancellationDate = DateTime.Now;
+
+            _context.SaveChanges();
+
+            await Auto__UnassignTickets(new List<Guid>() { invoiceDetailsId });
+        }
+        public async void RefundPayment(Guid invoiceId)
+        {
+            var invoiceDetailsIds = _context.InvoiceDetails.Where(x => x.InvoiceId == invoiceId).Select(x => x.Id).ToList();
+
+            var onlinePaymentDetails = _context.OnlinePaymentDetailsInfos.Where(x => invoiceDetailsIds.Contains(x.Id));
+
+            foreach (var item in onlinePaymentDetails)
+            {
+                item.IsCancelled = true;
+                item.CancellationDate = DateTime.Now;
+            }
+
+            _context.SaveChanges();
+
+            await Auto__UnassignTickets(invoiceDetailsIds);
+        }
         private List<InvoiceDetail> CreateInvoiceDetails(List<CartItem> cartItems)
         {
             var invoiceDetails = new List<InvoiceDetail>();
@@ -245,7 +282,7 @@ namespace NitelikliBilisim.Business.Repositories
                 return false;
             }
         }
-        private async Task<bool> Auto__UnassingTickets(List<Guid> invoiceDetailsIds)
+        private async Task<bool> Auto__UnassignTickets(List<Guid> invoiceDetailsIds)
         {
             try
             {
