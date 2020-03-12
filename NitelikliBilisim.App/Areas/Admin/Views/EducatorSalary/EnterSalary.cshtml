@@ -14,12 +14,12 @@
                 <input type="date" value="" id="input-date" class="form-control" />
             </div>
             <div class="col-lg-4">
-                <button id="btn-save" class="btn btn-success btn-block">Kaydet</button>
+                <button id="btn-save" class="btn btn-primary btn-block">Kaydet</button>
             </div>
         </div>
         <div class="row">
             <div class="offset-md-9 col-md-3">
-                
+
             </div>
         </div>
         <div class="row">
@@ -35,13 +35,17 @@
 @section postScripts{
     <script>
         /* fields */
+        var educatorSalaries = [];
+
         /* elements */
         var inputArea = $("#input-area");
         var inputDate = $("#input-date");
+        var btnSave = $("#btn-save");
 
         /* assignments */
         $(document).ready(document_onLoad);
         inputDate.on("change", inputDate_onChange);
+        btnSave.on("click", btnSave_onClick);
 
         /* events */
         function document_onLoad() {
@@ -49,6 +53,34 @@
         }
         function inputDate_onChange() {
             getSalaries();
+        }
+        function btnSave_onClick() {
+            toggleSaveButton(btnSave, false);
+            educatorSalaries = [];
+            var inputSalaries = $(".input-salary");
+            if (!inputSalaries || inputSalaries.length === 0)
+                return;
+            for (var i = 0; i < inputSalaries.length; i++) {
+                var element = inputSalaries[i];
+                educatorSalaries.push({
+                    groupId: element.getAttribute("data-group-id"),
+                    educatorId: element.getAttribute("data-educator-id"),
+                    paid: element.value
+                });
+            }
+
+            var date = inputDate.val();
+            $.ajax({
+                url: `/admin/save-salary`,
+                method: "post",
+                data: {
+                    Date: date,
+                    Salaries: educatorSalaries
+                },
+                success: (res) => {
+                    toggleSaveButton(btnSave, true);
+                }
+            });
         }
 
         /* functions */
@@ -80,6 +112,19 @@
                     `<p>${item.educatorName} - ${item.groupName}</p>` +
                     `<input class="input-salary form-control" type="number" value="${item.paid}" data-educator-id="${item.educatorId}" data-group-id="${item.earnedForGroup}" />` +
                     `</div>`);
+            }
+        }
+        function toggleSaveButton(btn, activate) {
+            if (activate) {
+                btn.on("click", btnSave_onClick);
+                btn.removeClass("btn-danger");
+                btn.addClass("btn-primary");
+                btn.html("Kaydet");
+            } else {
+                btn.off("click");
+                btn.removeClass("btn-primary");
+                btn.addClass("btn-danger");
+                btn.html("Kaydediliyor");
             }
         }
     </script>
