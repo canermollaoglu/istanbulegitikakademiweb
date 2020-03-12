@@ -29,6 +29,7 @@ namespace NitelikliBilisim.Business.UoW
         private ReportRepository _reportRepository;
         private GroupAttendanceRepository _groupAttendanceRepository;
         private EmailRepository _emailRepository;
+        private EducatorSalaryRepository _educatorSalaryRepository;
         public UnitOfWork(NbDataContext context)
         {
             _context = context;
@@ -109,6 +110,13 @@ namespace NitelikliBilisim.Business.UoW
             get
             {
                 return _emailRepository ?? (_emailRepository = new EmailRepository(_context));
+            }
+        }
+        public EducatorSalaryRepository Salary
+        {
+            get
+            {
+                return _educatorSalaryRepository ?? (_educatorSalaryRepository = new EducatorSalaryRepository(_context));
             }
         }
     }
