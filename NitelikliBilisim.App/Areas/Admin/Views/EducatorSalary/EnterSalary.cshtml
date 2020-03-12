@@ -4,3 +4,83 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-table"></i> Ücret Girişi
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="offset-lg-4 col-lg-4">
+                <input type="date" value="" id="input-date" class="form-control" />
+            </div>
+            <div class="col-lg-4">
+                <button id="btn-save" class="btn btn-success btn-block">Kaydet</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="offset-md-9 col-md-3">
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div id="input-area">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section postScripts{
+    <script>
+        /* fields */
+        /* elements */
+        var inputArea = $("#input-area");
+        var inputDate = $("#input-date");
+
+        /* assignments */
+        $(document).ready(document_onLoad);
+        inputDate.on("change", inputDate_onChange);
+
+        /* events */
+        function document_onLoad() {
+
+        }
+        function inputDate_onChange() {
+            getSalaries();
+        }
+
+        /* functions */
+        function getSalaries() {
+            var date = inputDate.val();
+            if (!date)
+                return;
+            $.ajax({
+                url: `/admin/get-lesson-days-at-date/${date}`,
+                method: "get",
+                success: (res) => {
+                    createTable(res.data);
+                }
+            });
+        }
+        function createTable(data) {
+            var salaries = data.salaries;
+            inputArea.html("");
+            var appended;
+            for (var i = 0; i < salaries.length; i++) {
+                var item = salaries[i];
+                if (i % 3 === 0) {
+                    var row = $(`<div class="row"></div>`);
+                    inputArea.append(row);
+                    appended = row;
+                }
+                appended.append(
+                    `<div class="col-lg-4">` +
+                    `<p>${item.educatorName} - ${item.groupName}</p>` +
+                    `<input class="input-salary form-control" type="number" value="${item.paid}" data-educator-id="${item.educatorId}" data-group-id="${item.earnedForGroup}" />` +
+                    `</div>`);
+            }
+        }
+    </script>
+}
