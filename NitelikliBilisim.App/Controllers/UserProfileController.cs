@@ -1,8 +1,17 @@
 ﻿using System;
+using System.IO;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using NitelikliBilisim.App.Managers;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.ComplexTypes;
+using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Services.Abstracts;
+using NitelikliBilisim.Support.Text;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -10,9 +19,17 @@ namespace NitelikliBilisim.App.Controllers
     public class UserProfileController : Controller
     {
         private readonly UserUnitOfWork _userUnitOfWork;
-        public UserProfileController(UserUnitOfWork userUnitOfWork)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IStorageService _storageService;
+        private readonly IWebHostEnvironment _hostingEnvironment;
+        private readonly FileUploadManager _fileManager;
+        public UserProfileController(UserUnitOfWork userUnitOfWork, UserManager<ApplicationUser> userManager, IStorageService storageService, IWebHostEnvironment hostingEnvironment)
         {
             _userUnitOfWork = userUnitOfWork;
+            _userManager = userManager;
+            _storageService = storageService;
+            _hostingEnvironment = hostingEnvironment;
+            _fileManager = new FileUploadManager(_hostingEnvironment, "jpg", "jpeg");
         }
 
         [Route("profil/{userId}")]
@@ -22,6 +39,32 @@ namespace NitelikliBilisim.App.Controllers
                 return Redirect("/");
             var model = _userUnitOfWork.User.GetCustomerInfo(userId);
             return View(model);
+        }
+
+        [HttpPost, Route("profil/avatar-guncelle")]
+        public async Task<IActionResult> UpdateUserAvatar(string base64Content, string extension)
+        {
+            if (!string.IsNullOrEmpty(base64Content))
+            {
+                var user = await _userManager.GetUserAsync(HttpContext.User);
+
+                var stream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(base64Content));
+                var fileName = $"{user.Name} {user.Surname}".FormatForTag();
+                var dbPath = await _storageService.UploadFile(stream, $"{fileName}.{extension}", "user-avatars");
+                user.AvatarPath = dbPath;
+
+                await _userManager.UpdateAsync(user);
+
+                return Json(new ResponseData
+                {
+                    Success = true
+                });
+            }
+
+            return Json(new ResponseData
+            {
+                Success = false
+            });
         }
 
         [Route("gruplarim/{ticketId?}")]
