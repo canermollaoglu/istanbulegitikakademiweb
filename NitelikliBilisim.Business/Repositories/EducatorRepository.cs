@@ -2,9 +2,11 @@
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.ViewModels.areas.admin.educator;
 using NitelikliBilisim.Core.ViewModels.areas.educator_area.group;
+using NitelikliBilisim.Core.ViewModels.areas.educator_area.payment;
 using NitelikliBilisim.Data;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace NitelikliBilisim.Business.Repositories
@@ -102,6 +104,34 @@ namespace NitelikliBilisim.Business.Repositories
             var days = _context.GroupLessonDays.Where(x => x.GroupId == groupId)
                 .Select(x => x.EducatorId);
             return days.Contains(educatorId);
+        }
+        public MyPaymentsVm GetMySalaries(string userId)
+        {
+            var salaries = _context.EducatorSalaries
+                .Where(x => x.EducatorId == userId)
+                .ToList();
+
+            var grouped = salaries.GroupBy(x => x.EarnedForGroup)
+                .Select(x => new
+                {
+                    GroupId = x.Key,
+                    Sum = x.Sum(x => x.Paid)
+                });
+
+            var groups = _context.EducationGroups
+                .Where(x => grouped.Select(y => y.GroupId).Contains(x.Id))
+                .ToList();
+
+            var payments = grouped.Select(x => new _PaidByGroup
+            {
+                GroupName = groups.First(y => y.Id == x.GroupId).GroupName,
+                Paid = x.Sum.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"))
+            }).ToList();
+
+            return new MyPaymentsVm
+            {
+                Payments = payments
+            };
         }
     }
 }
