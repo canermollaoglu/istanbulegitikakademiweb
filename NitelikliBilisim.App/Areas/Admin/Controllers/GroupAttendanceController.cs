@@ -31,6 +31,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [HttpPost, Route("yoklamalari-kaydet"), Authorize(Roles = "Admin,Educator")]
         public IActionResult SaveAttendances(AttendanceData data)
         {
+            if (User.IsInRole("Educator") && data.Date.AddDays(7).Date > DateTime.Now.Date)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    message = "Yoklama girişinin zamanı geçmiştir"
+                });
             _unitOfWork.GroupAttendance.SaveAttendances(data);
             return Json(new ResponseModel
             {
