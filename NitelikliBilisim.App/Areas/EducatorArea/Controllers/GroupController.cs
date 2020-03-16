@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -40,13 +41,14 @@ namespace NitelikliBilisim.App.Areas.EducatorArea.Controllers
         }
 
         [Route("egitmen/yoklama-girisi/{groupId?}/{date?}/{hasAttendanceRecord?}")]
-        public IActionResult EnterAttendance(Guid? groupId, DateTime? date, bool? hasAttendanceRecord)
+        public IActionResult EnterAttendance(Guid? groupId, string date, bool? hasAttendanceRecord)
         {
-            if (!groupId.HasValue || !date.HasValue || !hasAttendanceRecord.HasValue)
+            if (!groupId.HasValue || !hasAttendanceRecord.HasValue)
                 return Redirect($"/egitmen/gruplarim");
             if (!_unitOfWork.Educator.IsValidEducatorForGroup(groupId.Value, HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)))
                 return Redirect($"/egitmen/gruplarim");
-            var model = _unitOfWork.GroupAttendance.GetAttendances(groupId.Value, date.Value);
+            var dateTime = Convert.ToDateTime(date, CultureInfo.CreateSpecificCulture("tr-TR"));
+            var model = _unitOfWork.GroupAttendance.GetAttendances(groupId.Value, dateTime);
             return View(model);
         }
     }

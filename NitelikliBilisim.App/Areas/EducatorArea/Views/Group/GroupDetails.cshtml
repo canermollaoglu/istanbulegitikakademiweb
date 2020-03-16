@@ -1,4 +1,5 @@
 ﻿@model NitelikliBilisim.Core.ViewModels.areas.educator_area.group.GroupDetailsVm
+@using System.Globalization
 @{
     ViewData["Title"] = "Grup Detayları";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -28,7 +29,7 @@
                     @foreach (var item in Model.Days)
                     {
                         <li>
-                            <a href="/egitmen/yoklama-girisi/@groupId/@item.Date/@item.HasAttendanceRecord">
+                            <a href="/egitmen/yoklama-girisi/@groupId/@item.Date.ToString("dd.MM.yyyy", CultureInfo.CreateSpecificCulture("tr-TR"))/@item.HasAttendanceRecord">
                                 @if (item.HasAttendanceRecord)
                                 {
                                     @item.DateText <i class="text-success icon-ok-circled"></i>
