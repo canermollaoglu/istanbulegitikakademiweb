@@ -153,6 +153,14 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 isSuccess = true
             });
         }
+        [HttpPost, Route("admin/change-educator-salary")]
+        public async Task<IActionResult> ChangeEducatorSalary(EducatorSalaryData data)
+        {
+            return Json(new ResponseModel
+            {
+                isSuccess = true
+            });
+        }
     }
     public class PostponeData
     {
@@ -167,5 +175,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
     public class ChangeClassroomData : PostponeData
     {
         public Guid classroomId { get; set; }
+    }
+
+    public class EducatorSalaryData : PostponeData
+    {
+        public decimal SalaryPerHour { get; set; }
+        public byte HourCount { get; set; }
     }
 }

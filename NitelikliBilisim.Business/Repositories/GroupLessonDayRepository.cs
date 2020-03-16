@@ -65,7 +65,11 @@ namespace NitelikliBilisim.Business.Repositories
                               Classroom = classroom,
                               Educator = educator
                           }).ToList();
-
+            var hoursPerDay = _context.EducationGroups
+                .Include(x => x.Education)
+                .First(x => x.Id == groupId)
+                .Education.HoursPerDay;
+                
             var model = joined
                 .Select(x => new GroupLessonDayVm
                 {
@@ -75,6 +79,7 @@ namespace NitelikliBilisim.Business.Repositories
                     HasAttendanceRecord = x.LessonDay.HasAttendanceRecord,
                     Classroom = x.Classroom != null ? x.Classroom.Name : "SINIF YOK",
                     EducatorName = x.Educator != null ? $"{x.Educator.Name} {x.Educator.Surname}" : "EĞİTMEN YOK",
+                    HoursPerDay = hoursPerDay
                 })
                 .OrderBy(o => o.DateOfLesson)
                 .ToList();
