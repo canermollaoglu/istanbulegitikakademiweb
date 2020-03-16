@@ -21,6 +21,7 @@ namespace NitelikliBilisim.Core.Entities
         [MaxLength(128)]
         public string EducatorId { get; set; }
         public Guid? ClassroomId { get; set; }
+        public decimal? EducatorSalary { get; set; }
 
         public virtual EducationGroup Group { get; set; }
     }
