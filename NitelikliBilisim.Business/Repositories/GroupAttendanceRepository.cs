@@ -51,10 +51,13 @@ namespace NitelikliBilisim.Business.Repositories
 
         public void SaveAttendances(AttendanceData data)
         {
+            if (data.Date.Date > DateTime.Now.Date)
+                return;
+
             var attendanceRecords = _context.GroupAttendances
                 .Where(x => x.GroupId == data.GroupId && x.Date == data.Date)
                 .ToList();
-            
+
             var addedRecords = new List<GroupAttendance>();
             var removedRecords = new List<GroupAttendance>();
             var attendanceCustomerIds = attendanceRecords.Select(x => x.CustomerId);
@@ -82,6 +85,8 @@ namespace NitelikliBilisim.Business.Repositories
                 }
             }
             var lessonDay = _context.GroupLessonDays.FirstOrDefault(x => x.GroupId == data.GroupId && x.DateOfLesson == data.Date);
+            if (lessonDay == null)
+                return;
             lessonDay.HasAttendanceRecord = true;
             _context.GroupAttendances.AddRange(addedRecords);
             _context.GroupAttendances.RemoveRange(removedRecords);
