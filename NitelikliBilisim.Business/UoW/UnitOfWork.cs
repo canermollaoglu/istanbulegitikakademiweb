@@ -30,6 +30,7 @@ namespace NitelikliBilisim.Business.UoW
         private GroupAttendanceRepository _groupAttendanceRepository;
         private EmailRepository _emailRepository;
         private EducatorSalaryRepository _educatorSalaryRepository;
+        private GroupMaterialRepository _groupMaterialRepository;
         public UnitOfWork(NbDataContext context)
         {
             _context = context;
@@ -117,6 +118,13 @@ namespace NitelikliBilisim.Business.UoW
             get
             {
                 return _educatorSalaryRepository ?? (_educatorSalaryRepository = new EducatorSalaryRepository(_context));
+            }
+        }
+        public GroupMaterialRepository Material
+        {
+            get
+            {
+                return _groupMaterialRepository ?? (_groupMaterialRepository = new GroupMaterialRepository(_context));
             }
         }
     }
