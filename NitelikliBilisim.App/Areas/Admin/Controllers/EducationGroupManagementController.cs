@@ -89,11 +89,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     isSuccess = false
                 });
 
-            _unitOfWork.GroupLessonDay.PostponeLessons(data.groupId.Value, data.from, data.to);
-            
+            var newDates = _unitOfWork.GroupLessonDay.PostponeLessons(data.groupId.Value, data.from, data.to);
+
             var emails = _unitOfWork.EmailHelper.GetEmailsOfStudentsByGroup(data.groupId.Value);
-            emails.Add(_unitOfWork.EmailHelper.GetEmailOfTeacherAtDate(data.groupId.Value, data.from));
-            await _emailSender.SendAsync(new EmailMessage {
+            emails.Add(_unitOfWork.EmailHelper.GetEmailOfTeacherAtDate(data.groupId.Value, newDates.First()));
+            await _emailSender.SendAsync(new EmailMessage
+            {
                 Contacts = emails.ToArray()
             });
 
@@ -118,14 +119,14 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             if (educationGrupName != null)
             {
                 await _emailSender.SendAsync(new EmailMessage
-                { 
+                {
                     Subject = "Eğitmen Değiştirme | Nitelikli Bilişim",
                     Body = $"{educationGrupName} eğitimi için Başlangıç tarihi = {data.from.ToShortDateString()}" +
                            $" Bitiş Tarihi =  {data.to.Value.ToShortDateString()} yapılacak olan derslere atamanız yapılmıştır.",
                     Contacts = new string[] { switchEducatorMessage }
                 });
             }
-       
+
             return Json(new ResponseModel
             {
                 isSuccess = true,
@@ -143,11 +144,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
             _unitOfWork.GroupLessonDay.ChangeClassroom(data.groupId.Value, data.from, data.to, data.classroomId);
             var studentEmails = _unitOfWork.EmailHelper.GetEmailsOfStudentsByGroup(data.groupId.Value);
-            await _emailSender.SendAsync(new EmailMessage
-            {
-                Body = "Sınıf değişmiştir",
-                Contacts = studentEmails.ToArray()
-            });
+            if (studentEmails.Count != 0)
+                await _emailSender.SendAsync(new EmailMessage
+                {
+                    Body = "Sınıf değişmiştir",
+                    Contacts = studentEmails.ToArray()
+                });
             return Json(new ResponseModel
             {
                 isSuccess = true
@@ -156,6 +158,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [HttpPost, Route("admin/change-educator-salary")]
         public async Task<IActionResult> ChangeEducatorSalary(EducatorSalaryData data)
         {
+            if (!data.groupId.HasValue)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false
+                });
+            _unitOfWork.GroupLessonDay.ChangeEducatorSalary(data.groupId.Value, data.from, data.to, data.salaryPerHour);
             return Json(new ResponseModel
             {
                 isSuccess = true
@@ -179,7 +187,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
     public class EducatorSalaryData : PostponeData
     {
-        public decimal SalaryPerHour { get; set; }
-        public byte HourCount { get; set; }
+        public decimal salaryPerHour { get; set; }
+        public byte hoursPerDay { get; set; }
     }
 }

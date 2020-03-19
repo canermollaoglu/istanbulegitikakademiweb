@@ -6,6 +6,7 @@ using NitelikliBilisim.Core.ViewModels.areas.admin.group_lesson_days;
 using NitelikliBilisim.Data;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace NitelikliBilisim.Business.Repositories
@@ -22,6 +23,7 @@ namespace NitelikliBilisim.Business.Repositories
             var group = _context.EducationGroups
                 .Where(x => x.Id == groupId)
                 .Include(x => x.Host)
+                .Include(x => x.Education)
                 .First();
             var educatorsQuery = _context.Bridge_EducationEducators
                 .Where(x => x.Id == group.EducationId)
@@ -45,7 +47,8 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 Group = group,
                 Educators = educators,
-                Classrooms = classrooms
+                Classrooms = classrooms,
+                HoursPerDay = group.Education.HoursPerDay
             };
         }
         public List<GroupLessonDayVm> GetGroupLessonDays(Guid groupId)
@@ -79,7 +82,8 @@ namespace NitelikliBilisim.Business.Repositories
                     HasAttendanceRecord = x.LessonDay.HasAttendanceRecord,
                     Classroom = x.Classroom != null ? x.Classroom.Name : "SINIF YOK",
                     EducatorName = x.Educator != null ? $"{x.Educator.Name} {x.Educator.Surname}" : "EĞİTMEN YOK",
-                    HoursPerDay = hoursPerDay
+                    HoursPerDay = hoursPerDay,
+                    EducatorSalary = x.LessonDay.EducatorSalary.HasValue ? x.LessonDay.EducatorSalary.Value.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")) : "BELİRLENMEMİŞ"
                 })
                 .OrderBy(o => o.DateOfLesson)
                 .ToList();
@@ -190,7 +194,7 @@ namespace NitelikliBilisim.Business.Repositories
         {
             return DetermineToBeChangedDates(groupId, from, to).Select(x => x.ToLongDateString()).ToList();
         }
-        public void SwitchEducator(Guid groupId, DateTime from, DateTime? to, string educatorId)
+        public List<DateTime> SwitchEducator(Guid groupId, DateTime from, DateTime? to, string educatorId)
         {
             var dates = DetermineToBeChangedDates(groupId, from, to);
             var lessonDays = _context.GroupLessonDays
@@ -204,8 +208,9 @@ namespace NitelikliBilisim.Business.Repositories
             if (group.EducatorId != lastEducatorId)
                 group.EducatorId = lastEducatorId;
             _context.SaveChanges();
+            return dates;
         }
-        public void ChangeClassroom(Guid groupId, DateTime from, DateTime? to, Guid classroomId)
+        public List<DateTime> ChangeClassroom(Guid groupId, DateTime from, DateTime? to, Guid classroomId)
         {
             var dates = DetermineToBeChangedDates(groupId, from, to);
             var lessonDays = _context.GroupLessonDays
@@ -214,9 +219,20 @@ namespace NitelikliBilisim.Business.Repositories
             foreach (var item in lessonDays)
                 item.ClassroomId = classroomId;
             _context.SaveChanges();
+            return dates;
         }
-
-        public void PostponeLessons(Guid groupId, DateTime from, DateTime? to)
+        public List<DateTime> ChangeEducatorSalary(Guid groupId, DateTime from, DateTime? to, decimal salaryPerHour)
+        {
+            var dates = DetermineToBeChangedDates(groupId, from, to);
+            var lessonDays = _context.GroupLessonDays
+                .Where(x => dates.Contains(x.DateOfLesson))
+                .ToList();
+            foreach (var item in lessonDays)
+                item.EducatorSalary = salaryPerHour;
+            _context.SaveChanges();
+            return dates;
+        }
+        public List<DateTime> PostponeLessons(Guid groupId, DateTime from, DateTime? to)
         {
             var data = DeterminePostponeDates(groupId, from, to);
             var lessonDays = _context.GroupLessonDays
@@ -228,6 +244,7 @@ namespace NitelikliBilisim.Business.Repositories
                 lessonDay.DateOfLesson = data.NewDates[i];
             }
             _context.SaveChanges();
+            return data.NewDates;
         }
         public List<DateTime> CreateNewDates(DateTime lastDate, int newDateCount, DayOfWeek[] eligibleDays, List<DateTime> unwantedDates)
         {

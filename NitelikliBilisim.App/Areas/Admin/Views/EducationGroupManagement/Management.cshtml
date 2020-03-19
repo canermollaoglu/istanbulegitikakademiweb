@@ -11,6 +11,7 @@
     </style>
 }
 <input id="_group-id" type="hidden" value="@Model.Group.Id" />
+<input id="_hours-per-day" type="hidden" value="@Model.HoursPerDay" />
 <div class="card mb-3">
     <div class="card-header">
         <i class="fa fa-cog"></i> <h3>@Model.Group.GroupName</h3> Grup Yönetimi
@@ -24,6 +25,8 @@
                             <th>Tarih</th>
                             <th>Eğitmen</th>
                             <th>Sınıf</th>
+                            <th>Ücret</th>
+                            <th>Saat</th>
                             <th>Düzenle</th>
                             <th>Yoklama</th>
                         </tr>
@@ -45,6 +48,7 @@
                             <button id="btn-switch-educator" class="btn btn-secondary btn-operation"><i class="fa fa-exchange"></i></button>
                             <button id="btn-postpone-lesson" class="btn btn-outline-secondary btn-operation"><i class="fa fa-history"></i></button>
                             <button id="btn-change-classroom" class="btn btn-outline-secondary btn-operation"><i class="fa fa-desktop"></i></button>
+                            <button id="btn-change-salary" class="btn btn-outline-secondary btn-operation"><i class="fa fa-dollar"></i></button>
                         </div>
                     </div>
                 </div>
@@ -93,6 +97,14 @@
                         </div>
                     </div>
                 </div>
+                <div id="div-change-salary" class="row" style="display:none; margin-bottom:1%;">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Miktar:</label>
+                            <input type="number" value="" id="input-salary-per-hour" class="form-control" />
+                        </div>
+                    </div>
+                </div>
                 <div id="div-change-summary" class="row" style="display:none; margin-bottom:1%;">
                     <div class="col-md-12">
                         <div class="row">
@@ -136,10 +148,12 @@
         var OperationType = {
             SWITCH_EDUCATOR: 1000,
             POSTPONE_LESSON: 2000,
-            CHANGE_CLASSROOM: 3000
+            CHANGE_CLASSROOM: 3000,
+            CHANGE_SALARY: 4000
         };
         var operation = OperationType.SWITCH_EDUCATOR;
         var groupId = document.getElementById("_group-id").value;
+        var _hoursPerDay = document.getElementById("_hours-per-day").value;
 
         /* elements */
         var tbodyLessonDays = $("#tbody-lesson-days");
@@ -148,7 +162,9 @@
         var selectClassrooms = document.getElementById("select-classrooms");
         var inputStartDate = $("#input-start-date");
         var inputEndDate = $("#input-end-date");
+        var inputSalaryPerHour = $("#input-salary-per-hour");
         var divClassroomsAndEducators = $("#div-classrooms-and-educators");
+        var divChangeSalary = $("#div-change-salary");
         var divChangeSummary = $("#div-change-summary");
         var divDanger = $("#div-danger");
         var textSuccessInfo = $("#text-success-info");
@@ -158,6 +174,7 @@
         var btnSwitchEducator = $("#btn-switch-educator");
         var btnPostponeLesson = $("#btn-postpone-lesson");
         var btnChangeClassroom = $("#btn-change-classroom");
+        var btnChangeSalary = $("#btn-change-salary");
         var textSuccessInfo = $("#text-success-info");
         var btnCalculate = $("#btn-calculate");
         var btnConfirm = $("#btn-confirm");
@@ -167,6 +184,7 @@
         btnSwitchEducator.on("click", btnSwitchEducator_onClick);
         btnPostponeLesson.on("click", btnPostponeLesson_onClick);
         btnChangeClassroom.on("click", btnChangeClassroom_onClick);
+        btnChangeSalary.on("click", btnChangeSalary_onClick);
         btnCalculate.on("click", btnCalculate_onClick);
         btnCancel.on("click", btnCancel_onClick);
         btnConfirm.on("click", btnConfirm_onClick);
@@ -190,6 +208,11 @@
             textCurrentOperation.html("Sınıf Değişimi");
             removeClasses("btn-change-classroom");
         }
+        function btnChangeSalary_onClick() {
+            operation = OperationType.CHANGE_SALARY;
+            textCurrentOperation.html("Ödeme Değişimi");
+            removeClasses("btn-change-salary");
+        }
         function btnCalculate_onClick() {
             preOperation();
             // display
@@ -212,6 +235,7 @@
                 case OperationType.SWITCH_EDUCATOR:
                     preUpdateOperation();
                     textSuccessInfo.html("Değişecek Tarihler");
+                    divChangeSalary.css("display", "none");
                     divClassroomsAndEducators.css("display", "block");
                     $(selectEducators).css("display", "block");
                     $(selectClassrooms).css("display", "none");
@@ -219,6 +243,7 @@
                 case OperationType.POSTPONE_LESSON:
                     prePostponeOperation();
                     textSuccessInfo.html("Eklenecek Tarihler");
+                    divChangeSalary.css("display", "none");
                     divClassroomsAndEducators.css("display", "none");
                     $(selectEducators).css("display", "none");
                     $(selectClassrooms).css("display", "none");
@@ -226,9 +251,18 @@
                 case OperationType.CHANGE_CLASSROOM:
                     preUpdateOperation();
                     textSuccessInfo.html("Değişecek Tarihler");
+                    divChangeSalary.css("display", "none");
                     divClassroomsAndEducators.css("display", "block");
                     $(selectEducators).css("display", "none");
                     $(selectClassrooms).css("display", "block");
+                    break;
+                case OperationType.CHANGE_SALARY:
+                    preUpdateOperation();
+                    textSuccessInfo.html("Değişecek Maaş Günleri");
+                    divChangeSalary.css("display", "block");
+                    divClassroomsAndEducators.css("display", "none");
+                    $(selectEducators).css("display", "none");
+                    $(selectClassrooms).css("display", "none");
                     break;
             }
         }
@@ -242,6 +276,9 @@
                     break;
                 case OperationType.CHANGE_CLASSROOM:
                     executeChangeClassroomOperation();
+                    break;
+                case OperationType.CHANGE_SALARY:
+                    executeChangeSalaryOperation();
                     break;
             }
             reset();
@@ -342,6 +379,24 @@
                 }
             });
         }
+        function executeChangeSalaryOperation() {
+            var data = {
+                groupId: groupId,
+                from: inputStartDate.val(),
+                to: inputEndDate.val(),
+                salaryPerHour: inputSalaryPerHour.val(),
+                hoursPerDay: _hoursPerDay
+            };
+            $.ajax({
+                url: "/admin/change-educator-salary",
+                method: "post",
+                data: data,
+                success: (res) => {
+                    loadLessonDays();
+                    btnConfirm.on("click", btnConfirm_onClick);
+                }
+            });
+        }
         function loadLessonDays() {
             tbodyLessonDays.html("");
             $.ajax({
@@ -359,9 +414,11 @@
                                 `<td>${item.dateOfLessonText}</td>` +
                                 `<td>${item.educatorName}</td>` +
                                 `<td>${item.classroom}</td>` +
+                                `<td>${item.educatorSalary}</td>` +
+                                `<td>${item.hoursPerDay}</td>` +
                                 `<td><a href="/admin/ders-gunu-duzenle/${item.id}" class="btn btn-outline-dark btn-block"><i class="fa fa-edit"></i></a></td>` +
                                 `<td><a href="/admin/yoklama-girisi/${groupId}/${item.dateOfLesson}/${item.hasAttendanceRecord}" class="${style.anchor}"><i class="${style.icon}"></i></a></td>`
-                                "</tr>";
+                            "</tr>";
                         }
                         tbodyLessonDays.append(appended);
                     } else {
@@ -385,8 +442,12 @@
                     break;
                 case "btn-change-classroom": btnChangeClassroom.addClass("btn-secondary"); btnChangeClassroom.removeClass("btn-outline-secondary");
                     break;
+                case "btn-change-salary": btnChangeSalary.addClass("btn-secondary");
+                    btnChangeSalary.removeClass("btn-outline-secondary");
+                    break;
                 default:
-                    btnSwitchEducator.addClass("btn-secondary"); btnSwitchEducator.removeClass("btn-outline-secondary");
+                    btnSwitchEducator.addClass("btn-secondary");
+                    btnSwitchEducator.removeClass("btn-outline-secondary");
                     break;
             }
         }
@@ -395,6 +456,7 @@
             divClassroomsAndEducators.css("display", "none");
             $(selectClassrooms).css("display", "none");
             $(selectEducators).css("display", "none");
+            divChangeSalary.css("display", "none");
         }
     </script>
 }

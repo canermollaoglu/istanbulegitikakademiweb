@@ -10,6 +10,8 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.group_lesson_days
         public EducationGroup Group { get; set; }
         public List<_GroupLessonDayEducator> Educators { get; set; }
         public List<_GroupLessonDayClassroom> Classrooms { get; set; }
+        //TODO: LessonDay içerisinden getirilmeli. Geçici olarak buradan alınıyor.
+        public int HoursPerDay { get; set; }
     }
 
     public class _GroupLessonDayEducator
