@@ -11,4 +11,8 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.group_material
         public byte Count { get; set; }
         public Guid GroupId { get; set; }
     }
+    public class UpdateMaterialPostVm : AddMaterialPostVm
+    {
+        public Guid MaterialId { get; set; }
+    }
 }

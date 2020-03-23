@@ -53,5 +53,31 @@ namespace NitelikliBilisim.Business.Repositories
             _context.SaveChanges();
             return true;
         }
+        public bool UpdateMaterial(UpdateMaterialPostVm data)
+        {
+            if (string.IsNullOrWhiteSpace(data.MaterialName) || data.Count < 1 || data.Price < 0)
+                return false;
+
+            var material = _context.GroupMaterials.FirstOrDefault(x => x.Id == data.MaterialId);
+            if (material == null)
+                return false;
+
+            material.MaterialName = data.MaterialName;
+            material.Price = data.Price;
+            material.Count = data.Count;
+            _context.SaveChanges();
+
+            return true;
+        }
+        public bool DeleteMaterial(Guid materialId)
+        {
+            var material = _context.GroupMaterials.FirstOrDefault(x => x.Id == materialId);
+            if (material == null)
+                return false;
+
+            _context.GroupMaterials.Remove(material);
+            _context.SaveChanges();
+            return true;
+        }
     }
 }

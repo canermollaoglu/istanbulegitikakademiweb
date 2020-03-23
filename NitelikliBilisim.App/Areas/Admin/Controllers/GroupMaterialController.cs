@@ -46,8 +46,40 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             var model = _unitOfWork.Material.GetMaterials(groupId.Value).Materials;
             return Json(new ResponseModel
             {
-                 isSuccess = true,
-                 data = model
+                isSuccess = true,
+                data = model
+            });
+        }
+        [Route("admin/materyal-guncelle/{materialId?}")]
+        public IActionResult UpdateMaterial(Guid? materialId)
+        {
+            if (!materialId.HasValue)
+                return Redirect("/admin/gruplar");
+
+            var model = _unitOfWork.Material.GetById(materialId.Value);
+            return View(model);
+        }
+        [HttpPost, Route("admin/update-material")]
+        public IActionResult UpdateMaterial(UpdateMaterialPostVm data)
+        {
+            var isSucces = _unitOfWork.Material.UpdateMaterial(data);
+            return Json(new ResponseModel
+            {
+                isSuccess = isSucces
+            });
+        }
+        [Route("admin/materyal-sil/{materialId?}")]
+        public IActionResult DeleteMaterial(Guid? materialId)
+        {
+            if (!materialId.HasValue)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false
+                });
+            var isSucces = _unitOfWork.Material.DeleteMaterial(materialId.Value);
+            return Json(new ResponseModel
+            {
+                isSuccess = isSucces
             });
         }
     }

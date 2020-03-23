@@ -108,7 +108,16 @@
                 }
             });
         }
-
+        function btnDelete_onClick() {
+            var materialId = this.getAttribute("data-material-id");
+            $.ajax({
+                url: `/admin/materyal-sil/${materialId}`,
+                method: "get",
+                success: (res) => {
+                    getMaterials();
+                }
+            });
+        }
         /* functions */
         function getMaterials() {
             $.ajax({
@@ -128,10 +137,15 @@
                     `<td>${item.materialName}</td>` +
                     `<td>${item.materialPrice}</td>` +
                     `<td>${item.materialCount}</td>` +
-                    `<td><div class="btn-group"><a href="/admin/materyal-guncelle/${item.materialId}" class="btn btn-warning"><i class="fa fa-edit"></i></a><a href="/admin/materyal-sil/${item.materialId}" class="btn btn-danger"><i class="fa fa-trash"></i></a></div></td>` +
+                    `<td><div class="btn-group"><a href="/admin/materyal-guncelle/${item.materialId}" class="btn btn-warning"><i class="fa fa-edit"></i></a><button data-material-id="${item.materialId}" class="btn btn-danger btn-delete"><i class="fa fa-trash"></i></button></div></td>` +
                     "</tr>";
             }
             tbodyGroupMaterials.append(appended);
+            var btnDeletes = $(".btn-delete");
+            for (var i = 0; i < btnDeletes.length; i++) {
+                var btn = btnDeletes[i];
+                btn.onclick = btnDelete_onClick;
+            }
         }
     </script>
 }

@@ -1,0 +1,78 @@
+﻿@model NitelikliBilisim.Core.Entities.GroupMaterial
+@{
+    ViewData["Title"] = "Materyal Güncelle";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<input type="hidden" value="@Model.Id" id="_material-id" />
+<input type="hidden" value="@Model.GroupId" id="_group-id" />
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-list"></i> Eğitiminin Parçaları
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <form id="form-add-materials" class="form-inline">
+                    @Html.AntiForgeryToken()
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <input type="text" value="@Model.MaterialName" class="form-control" id="input-material-name" placeholder="Materyal ismi" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <input type="text" value="@Model.Price" class="form-control" id="input-material-price" placeholder="Birim fiyatı" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <input type="text" value="@Model.Count" class="form-control" id="input-material-count" placeholder="Adet" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:1%;margin-bottom:1%">
+                        <div class="offset-md-11 col-md-1">
+                            <button id="btn-add" type="button" class="btn_1 form-control" style="cursor:pointer;"><i class="fa fa-plus"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section postScripts{
+    <script>
+        /* fields */
+        var _materialId = document.getElementById("_material-id").value;
+        var _groupId = document.getElementById("_group-id").value;
+        /* elements */
+        var inputMaterialName = $("#input-material-name");
+        var inputMaterialPrice = $("#input-material-price");
+        var inputMaterialCount = $("#input-material-count");
+        var btnAdd = $("#btn-add");
+
+        /* assignments */
+        btnAdd.on("click", btnAdd_onClick);
+
+        /* events */
+        function btnAdd_onClick() {
+            btnAdd.off("click");
+            var data = {
+                MaterialId: _materialId,
+                MaterialName: inputMaterialName.val(),
+                Price: inputMaterialPrice.val(),
+                Count: inputMaterialCount.val()
+            };
+            $.ajax({
+                url: "/admin/update-material",
+                method: "post",
+                data: data,
+                success: (res) => {
+                    location.href = `/admin/grup-materyalleri/${_groupId}`;
+                }
+            });
+        }
+    </script>
+}
