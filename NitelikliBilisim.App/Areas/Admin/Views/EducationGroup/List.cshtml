@@ -104,18 +104,20 @@
                 }, {
                     headerCellTemplate: $('<i style="vertical-align:middle; color: black; font-weight: bold">İşlem</i>'),
                     allowSearch: false,
-                        cellTemplate: function (container, options) {
-                            var current = options.data;
-                            var div = $('<div style="display: inline-flex; width:"auto"></div>');
+                    cellTemplate: function (container, options) {
+                        var current = options.data;
+                        var div = $('<div class="btn-group" style="display: inline-flex; width:"auto"></div>');
 
                         $(`<a class="btn btn-primary" href="/admin/gruba-ogrenci-ata/${current.groupId}"><i class=\"fa fa-users\"></i><span style="display: block">${current.assignedCount}/${current.quota}</span></a>`)
                             .appendTo(div);
                         $(`<a class="btn btn-warning" href="/admin/grup/ayarlar/${current.groupId}"><i class=\"fa fa-cogs\"></i><span style="display: block"></span></a>`)
                             .appendTo(div);
+                        $(`<a class="btn btn-success" href="/admin/grup-materyalleri/${current.groupId}"><i class=\"fa fa-dollar\"></i><span style="display: block"></span></a>`)
+                            .appendTo(div);
                         $(`<a class="btn btn-dark" href="/make-sure-lesson-days-created/${current.groupId}"><i class=\"fa fa-archive\"></i><span style="display: block"></span></a>`)
-                                .appendTo(div);
-                            
-                            div.appendTo(container);
+                            .appendTo(div);
+
+                        div.appendTo(container);
 
                     },
                     alignment: "center"
