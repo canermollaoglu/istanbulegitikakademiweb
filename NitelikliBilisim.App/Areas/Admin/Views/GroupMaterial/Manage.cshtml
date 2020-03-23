@@ -82,11 +82,31 @@
         var tbodyGroupMaterials = $("#tbody-group-materials");
 
         /* assignments */
+        $(document).ready(document_onLoad);
         btnAdd.on("click", btnAdd_onClick);
 
         /* events */
+        function document_onLoad() {
+            getMaterials();
+        }
         function btnAdd_onClick() {
+            btnAdd.off("click");
 
+            var data = {
+                MaterialName: inputMaterialName.val(),
+                Price: inputMaterialPrice.val(),
+                Count: inputMaterialCount.val(),
+                GroupId: _groupId
+            };
+            $.ajax({
+                url: "/admin/add-material-item",
+                method: "post",
+                data: data,
+                success: (res) => {
+                    getMaterials();
+                    btnAdd.on("click", btnAdd_onClick);
+                }
+            });
         }
 
         /* functions */
@@ -100,7 +120,7 @@
             });
         }
         function createTable(materials) {
-
+            tbodyGroupMaterials.html("");
         }
     </script>
 }
