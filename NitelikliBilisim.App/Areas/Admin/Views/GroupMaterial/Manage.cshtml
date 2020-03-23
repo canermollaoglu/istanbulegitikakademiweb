@@ -115,12 +115,23 @@
                 url: `/admin/get-materials/${_groupId}`,
                 method: "get",
                 success: (res) => {
-                    createTable(res);
+                    createTable(res.data);
                 }
             });
         }
         function createTable(materials) {
             tbodyGroupMaterials.html("");
+            var appended = "";
+            for (var i = 0; i < materials.length; i++) {
+                var item = materials[i];
+                appended += "<tr>" +
+                    `<td>${item.materialName}</td>` +
+                    `<td>${item.materialPrice}</td>` +
+                    `<td>${item.materialCount}</td>` +
+                    `<td><div class="btn-group"><a href="/admin/materyal-guncelle/${item.materialId}" class="btn btn-warning"><i class="fa fa-edit"></i></a><a href="/admin/materyal-sil/${item.materialId}" class="btn btn-danger"><i class="fa fa-trash"></i></a></div></td>` +
+                    "</tr>";
+            }
+            tbodyGroupMaterials.append(appended);
         }
     </script>
 }
