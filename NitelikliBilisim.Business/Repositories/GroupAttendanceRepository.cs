@@ -87,6 +87,15 @@ namespace NitelikliBilisim.Business.Repositories
             var lessonDay = _context.GroupLessonDays.FirstOrDefault(x => x.GroupId == data.GroupId && x.DateOfLesson == data.Date);
             if (lessonDay == null)
                 return;
+            var salary = _context.EducatorSalaries.FirstOrDefault(x => x.EducatorId == lessonDay.EducatorId);
+            if (salary == null)
+                _context.EducatorSalaries.Add(new EducatorSalary
+                {
+                    EarnedAt = data.Date,
+                    EducatorId = lessonDay.EducatorId,
+                    EarnedForGroup = data.GroupId,
+                    Paid = lessonDay.EducatorSalary.GetValueOrDefault(0)
+                });
             lessonDay.HasAttendanceRecord = true;
             _context.GroupAttendances.AddRange(addedRecords);
             _context.GroupAttendances.RemoveRange(removedRecords);
