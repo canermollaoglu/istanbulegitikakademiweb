@@ -1,4 +1,5 @@
-﻿using NitelikliBilisim.Core.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_group_attendances;
 using NitelikliBilisim.Data;
 using System;
@@ -84,7 +85,10 @@ namespace NitelikliBilisim.Business.Repositories
                     attendance.Reason = item.Reason;
                 }
             }
-            var lessonDay = _context.GroupLessonDays.FirstOrDefault(x => x.GroupId == data.GroupId && x.DateOfLesson == data.Date);
+            var lessonDay = _context.GroupLessonDays
+                .Include(x => x.Group)
+                .ThenInclude(x => x.Education)
+                .FirstOrDefault(x => x.GroupId == data.GroupId && x.DateOfLesson == data.Date);
             if (lessonDay == null)
                 return;
             var salary = _context.EducatorSalaries.FirstOrDefault(x => x.EducatorId == lessonDay.EducatorId);
@@ -94,7 +98,7 @@ namespace NitelikliBilisim.Business.Repositories
                     EarnedAt = data.Date,
                     EducatorId = lessonDay.EducatorId,
                     EarnedForGroup = data.GroupId,
-                    Paid = lessonDay.EducatorSalary.GetValueOrDefault(0)
+                    Paid = lessonDay.EducatorSalary.GetValueOrDefault(0) * lessonDay.Group.Education.HoursPerDay
                 });
             lessonDay.HasAttendanceRecord = true;
             _context.GroupAttendances.AddRange(addedRecords);
