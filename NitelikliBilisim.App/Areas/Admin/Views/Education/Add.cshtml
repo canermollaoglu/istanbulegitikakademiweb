@@ -67,13 +67,13 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Eğitim Süresi (Gün)</label>
-                    <input type="text" class="form-control" placeholder="Eğitimin kaç gün süreceğini giriniz..." id="input-days">
+                    <input type="number" class="form-control" placeholder="Eğitimin kaç gün süreceğini giriniz..." id="input-days">
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Günde Kaç Saat</label>
-                    <input type="text" class="form-control" placeholder="Derslerin günlük kaç saat işleneceğinizi giriniz..." id="input-hours-per-day">
+                    <input type="number" class="form-control" placeholder="Derslerin günlük kaç saat işleneceğinizi giriniz..." id="input-hours-per-day">
                 </div>
             </div>
         </div>
@@ -93,6 +93,31 @@
                             <option value="@item.Key">@item.Value</option>
                         }
                     </select>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="border: 1px solid black;padding:0.5%;margin:0.5%;border-radius:5px;">
+            <div class="col-md-12">
+                <h6>Fiyat önerisi için doldurunuz</h6>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Tahmini materyal ücreti (kişi başına)</label>
+                            <input type="number" value="" class="form-control" id="input-guess-material-price" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Eğitmenlere saat başı ödenecek tahmini tutar</label>
+                            <input type="number" value="" class="form-control" id="input-guess-educator-salary" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label style="color:#662d91;font-style:italic;">Önerilen satış fiyatı</label>
+                            <p id="text-recommended-price">0₺</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
