@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Lexicographer;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    //[Authorize]
-    [Area("admin")]
+    [Area("admin"), Authorize(Roles = "Admin")]
     public class HomeController : TempSecurityController
     {
         [Route("admin/panel")]

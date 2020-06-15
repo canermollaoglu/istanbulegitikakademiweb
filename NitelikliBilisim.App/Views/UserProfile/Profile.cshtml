@@ -1,7 +1,13 @@
 ﻿@model NitelikliBilisim.Core.ViewModels.Main.Profile.UserInfoVm
+@using NitelikliBilisim.Core.Services.Abstracts
+@inject IStorageService StorageService
 @{
     ViewData["Title"] = "Profil";
     Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    <link href="~/css/lib/file-uploader.css" rel="stylesheet" />
 }
 
 <main>
@@ -16,7 +22,26 @@
         <div class="row">
             <aside class="col-lg-3" id="sidebar">
                 <div class="profile">
-                    <figure><img src="http://via.placeholder.com/150x150/ccc/fff/teacher_2_small.jpg" alt="Teacher" class="rounded-circle"></figure>
+                    @{
+                        var filePath = "";
+                        try
+                        {
+                            filePath = StorageService.DownloadFile(System.IO.Path.GetFileName(Model.PersonalAndAccountInfo.FilePath), "user-avatars").Result;
+                        }
+                        catch
+                        {
+                        }
+                    }
+
+                    <figure>
+                        <div class="profile-avatar-upload-container" id="file-upload-for-customer-photo">
+                            <img class="profile-img-after-preview" src="@filePath" id="img-after-preview-for-customer-photo">
+                            <input id="input-avatar" type="file" style="display: none" />
+                        </div>
+                    </figure>
+
+                    <a class="btn btn-sm btn-block btn-secondary text-light" id="btn-save-avatar" style="display: none">Kaydet</a>
+
                     <ul class="list-group">
                         <li class="list-group-item">
                             <a href="#bilgilerim"><i class="icon-user"></i> Bilgilerim</a>
@@ -90,10 +115,9 @@
                                                 }
                                                 else
                                                 {
-                                                    <a href="#" class="btn btn-dark"><i class="icon-info text-light"></i></a>
+                                                    <a href="#" class="btn btn-dark"><i class="icon-cancel text-light"></i></a>
                                                 }
                                                 <a href="#" class="btn btn-info"><i class="icon-comment-empty text-light"></i></a>
-                                                <a href="/iptal-formu/@ticket.TicketId" class="btn btn-danger"><i class="icon-alert text-light"></i></a>
                                             </div>
                                         </td>
                                     </tr>
@@ -140,3 +164,8 @@
         </div>
     </div>
 </main>
+
+@section postScripts{
+    <script src="~/js/lib/file-uploader.js"></script>
+    <script src="~/js/pages/userprofile-profile.js"></script>
+}

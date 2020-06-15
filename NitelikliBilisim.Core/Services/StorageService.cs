@@ -7,6 +7,7 @@ namespace NitelikliBilisim.Core.Services
 {
     public class StorageService : IStorageService
     {
+        //commit
         private const string ReferanceName = "nbuploads";
         private const string AccessKey = "DefaultEndpointsProtocol=https;AccountName=niteliklidatastore;AccountKey=KxpcLymDmly4Gv0UG3LhUgr1olSbsSlfJ3cOy2jAPm2DZ94rTJ6GfXZFhiUGrX+FsFFeTr91jf1gcWIg/JbZ3g==;EndpointSuffix=core.windows.net";
         private const string SasToken =

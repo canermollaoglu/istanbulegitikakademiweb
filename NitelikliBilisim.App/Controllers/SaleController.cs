@@ -1,5 +1,6 @@
 ﻿using Iyzipay.Model;
 using Iyzipay.Request;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -10,28 +11,39 @@ using NitelikliBilisim.App.VmCreator;
 using NitelikliBilisim.Business.Factory;
 using NitelikliBilisim.Business.PaymentFactory;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.PaymentModels;
 using NitelikliBilisim.Core.Services.Payments;
 using NitelikliBilisim.Core.ViewModels.Cart;
 using NitelikliBilisim.Core.ViewModels.Sales;
+using NitelikliBilisim.Notificator.Services;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Controllers
 {
     public class SaleController : BaseController
     {
+        private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly UnitOfWork _unitOfWork;
         private readonly SaleVmCreator _vmCreator;
+        private readonly UserUnitOfWork _userUnitOfWork;
         private readonly IPaymentService _paymentService;
-        public SaleController(UnitOfWork unitOfWork, IPaymentService paymentService)
+        private readonly EmailSender _emailSender;
+
+        public SaleController(IWebHostEnvironment hostingEnvironment, UnitOfWork unitOfWork, IPaymentService paymentService, UserUnitOfWork userUnitOfWork)
         {
+            _hostingEnvironment = hostingEnvironment;
             _unitOfWork = unitOfWork;
             _paymentService = paymentService;
             _vmCreator = new SaleVmCreator(_unitOfWork);
+            _userUnitOfWork = userUnitOfWork;
+            _emailSender = new EmailSender();
         }
 
         [Route("sepet")]
@@ -84,7 +96,7 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [HttpPost, ValidateAntiForgeryToken, Route("pay")]
-        public IActionResult Pay(PayData data)
+        public async Task<IActionResult> Pay(PayData data)
         {
             #region Validation
             if (!HttpContext.User.Identity.IsAuthenticated || data.CartItemsJson == null)
@@ -135,12 +147,38 @@ namespace NitelikliBilisim.App.Controllers
             var transactionType = cardInfoChecker.DecideTransactionType(info, data.Use3d);
 
             var manager = new PaymentManager(_paymentService, transactionType);
+            string content = "";
+            var rootPath = _hostingEnvironment.WebRootPath;
+            using (var sr = new StreamReader(Path.Combine(rootPath, "data/cities.json")))
+            {
+                content = sr.ReadToEnd();
+            }
+            var cityTowns = JsonConvert.DeserializeObject<CityTownModel>(content);
+            var cityId = data.InvoiceInfo.City;
+            var townId = data.InvoiceInfo.Town;
+            var city = cityTowns.data.FirstOrDefault(x => x._id == cityId);
+            data.InvoiceInfo.City = city.name;
+            data.InvoiceInfo.Town = city.towns.FirstOrDefault(x => x._id == townId).name;
+            
             var result = manager.Pay(_unitOfWork, data);
 
             if (result.TransactionType == TransactionType.Normal)
             {
                 var model = manager.CreateCompletionModel(result.PaymentForNormal);
                 _unitOfWork.Sale.CompletePayment(model, result.Success.InvoiceId, result.Success.InvoiceDetailIds);
+
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var customerEmail = _userUnitOfWork.User.GetCustomerInfo(userId).PersonalAndAccountInfo.Email;
+                if (customerEmail != null)
+                {
+                    await _emailSender.SendAsync(new EmailMessage
+                    {
+                        Subject = "Eğitim ödemeniz alınmıştır | Nitelikli Bilişim",
+                        Body = "Eğitim ödemeniz alınmıştır.",
+                        Contacts = new string[] { customerEmail }
+                    });
+                }
+
                 return Redirect("/odeme-sonucunuz");
             }
 
@@ -150,10 +188,23 @@ namespace NitelikliBilisim.App.Controllers
                 {
                     _unitOfWork.TempSaleData.Create(result.ConversationId, result.Success);
                     HttpContext.Session.SetString("html_content", result.HtmlContent);
+
+                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    var customerEmail = _userUnitOfWork.User.GetCustomerInfo(userId).PersonalAndAccountInfo.Email;
+                    if (customerEmail != null)
+                    {
+                        await _emailSender.SendAsync(new EmailMessage
+                        {
+                            Subject = "Eğitim ödemeniz alınmıştır | Nitelikli Bilişim",
+                            Body = "Eğitim ödemeniz alınmıştır.",
+                            Contacts = new string[] { customerEmail }
+                        });
+                    }
+
                     return Redirect("/secure3d");
                 }
             }
-
+            
             return Redirect("/");
         }
 

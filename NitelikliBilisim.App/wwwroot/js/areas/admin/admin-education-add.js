@@ -5,10 +5,19 @@ var selectCategories = document.getElementById("select-categories");
 var btnSave = $("#btn-save");
 var fileManager1 = null;
 var fileManager2 = null;
+var textRecommendedPrice = $("#text-recommended-price");
+var inputDays = $("#input-days");
+var inputHoursPerDay = $("#input-hours-per-day");
+var inputMaterialPrice = $("#input-guess-material-price");
+var inputEducatorSalary = $("#input-guess-educator-salary");
 
 /* assignments */
 $(document).ready(document_onLoad);
 btnSave.on("click", btnSave_onClick);
+inputDays.on("change", suggestionElement_onChange);
+inputHoursPerDay.on("change", suggestionElement_onChange);
+inputMaterialPrice.on("change", suggestionElement_onChange);
+inputEducatorSalary.on("change", suggestionElement_onChange);
 
 /* events */
 function document_onLoad() {
@@ -95,4 +104,20 @@ function btnSave_onClick() {
             alert(error.message);
         }
     });
+}
+function suggestionElement_onChange() {
+    textRecommendedPrice.text(`${calculateSuggestedPrice()} ₺`);
+}
+/* functions */
+function getEssentialElementValues() {
+    return {
+        dayCount: inputDays.val() ? inputDays.val() : 1,
+        hoursPerDay: inputHoursPerDay.val() ? inputHoursPerDay.val() : 1,
+        materialPrice: inputMaterialPrice.val() ? inputMaterialPrice.val() : 0,
+        educatorSalary: inputEducatorSalary.val() ? inputEducatorSalary.val() : 0
+    };
+}
+function calculateSuggestedPrice() {
+    var values = getEssentialElementValues();
+    return values.educatorSalary * (values.dayCount * values.hoursPerDay) + (values.materialPrice * 15) + 0.25;
 }

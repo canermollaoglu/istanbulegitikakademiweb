@@ -4,11 +4,6 @@ using System.Text;
 
 namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_groups
 {
-    public class ListGetVm
-    {
-        public List<_Group> Groups { get; set; }
-    }
-
     public class _Group
     {
         public Guid GroupId { get; set; }

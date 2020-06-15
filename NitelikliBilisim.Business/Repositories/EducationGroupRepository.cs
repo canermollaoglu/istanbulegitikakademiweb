@@ -59,7 +59,8 @@ namespace NitelikliBilisim.Business.Repositories
                         DateOfLesson = date,
                         GroupId = entity.Id,
                         HasAttendanceRecord = false,
-                        IsImmuneToAutoChange = false
+                        IsImmuneToAutoChange = false,
+                        EducatorId = entity.EducatorId
                     });
 
                 _context.GroupLessonDays.AddRange(groupLessonDays);
@@ -90,27 +91,6 @@ namespace NitelikliBilisim.Business.Repositories
             }
 
             return dates;
-        }
-        private List<int> MakeSureWeekDaysExists(Guid groupId, List<int> daysInt)
-        {
-            if (daysInt == null || daysInt.Count == 0)
-            {
-                var weekDays = _context.WeekDaysOfGroups.FirstOrDefault(x => x.GroupId == groupId);
-                if (weekDays == null)
-                {
-                    daysInt = new List<int> { 6, 0 };
-                    _context.WeekDaysOfGroups.Add(new WeekDaysOfGroup
-                    {
-                        GroupId = groupId,
-                        DaysJson = JsonConvert.SerializeObject(daysInt)
-                    });
-                    _context.SaveChanges();
-                }
-                else
-                    daysInt = JsonConvert.DeserializeObject<List<int>>(weekDays.DaysJson);
-            }
-
-            return daysInt;
         }
         public List<GroupVm> GetFirstAvailableGroups(Guid educationId)
         {
@@ -147,7 +127,6 @@ namespace NitelikliBilisim.Business.Repositories
 
             return model;
         }
-
         private string SerializeDays(List<int> days)
         {
             if (days == null || days.Count == 0)
@@ -155,8 +134,7 @@ namespace NitelikliBilisim.Business.Repositories
 
             return JsonConvert.SerializeObject(days);
         }
-
-        public ListGetVm GetListVm()
+        public List<_Group> GetListVm()
         {
             var groups = _context.EducationGroups.Include(x => x.Education).Include(x => x.Host)
                 .Include(x => x.GroupStudents)
@@ -188,12 +166,8 @@ namespace NitelikliBilisim.Business.Repositories
                 });
             }
 
-            return new ListGetVm
-            {
-                Groups = data
-            };
+            return data;
         }
-
         public GetEligibleAndAssignedStudentsVm GetEligibleAndAssignedStudents(Guid groupId)
         {
             var group = _context.EducationGroups.FirstOrDefault(x => x.Id == groupId);
@@ -230,7 +204,6 @@ namespace NitelikliBilisim.Business.Repositories
                 EligibleTickets = eligibleTickets
             };
         }
-
         public AssignStudentsVm GetAssignStudentsVm(Guid groupId)
         {
             var group = _context.EducationGroups
@@ -261,6 +234,27 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 Group = data
             };
+        }
+        private List<int> MakeSureWeekDaysExists(Guid groupId, List<int> daysInt)
+        {
+            if (daysInt == null || daysInt.Count == 0)
+            {
+                var weekDays = _context.WeekDaysOfGroups.FirstOrDefault(x => x.GroupId == groupId);
+                if (weekDays == null)
+                {
+                    daysInt = new List<int> { 6, 0 };
+                    _context.WeekDaysOfGroups.Add(new WeekDaysOfGroup
+                    {
+                        GroupId = groupId,
+                        DaysJson = JsonConvert.SerializeObject(daysInt)
+                    });
+                    _context.SaveChanges();
+                }
+                else
+                    daysInt = JsonConvert.DeserializeObject<List<int>>(weekDays.DaysJson);
+            }
+
+            return daysInt;
         }
     }
 }

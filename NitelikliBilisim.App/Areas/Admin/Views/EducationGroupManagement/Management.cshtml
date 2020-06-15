@@ -1,0 +1,462 @@
+﻿@model NitelikliBilisim.Core.ViewModels.areas.admin.group_lesson_days.GroupLessonDayManagementVm
+@{
+    ViewData["Title"] = "Grup Yönetimi";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@section styles{
+    <style>
+        .row {
+            margin-bottom: 1.5%;
+        }
+    </style>
+}
+<input id="_group-id" type="hidden" value="@Model.Group.Id" />
+<input id="_hours-per-day" type="hidden" value="@Model.HoursPerDay" />
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-cog"></i> <h3>@Model.Group.GroupName</h3> Grup Yönetimi
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Tarih</th>
+                            <th>Eğitmen</th>
+                            <th>Sınıf</th>
+                            <th>Ücret</th>
+                            <th>Saat</th>
+                            <th>Düzenle</th>
+                            <th>Yoklama</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-lesson-days">
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Operasyon: </label>
+                        <label id="text-current-operation" style="font-weight:bold;text-transform:uppercase;color:#ef1f1f;">Eğitmen Değişimi</label>
+                    </div>
+                </div>
+                <div class="row" style="margin-bottom:2%;">
+                    <div class="col-md-12">
+                        <div class="btn-group">
+                            <button id="btn-switch-educator" class="btn btn-secondary btn-operation"><i class="fa fa-exchange"></i></button>
+                            <button id="btn-postpone-lesson" class="btn btn-outline-secondary btn-operation"><i class="fa fa-history"></i></button>
+                            <button id="btn-change-classroom" class="btn btn-outline-secondary btn-operation"><i class="fa fa-desktop"></i></button>
+                            <button id="btn-change-salary" class="btn btn-outline-secondary btn-operation"><i class="fa fa-dollar"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-bottom:2%;">
+                    <div class="col-md-12">
+                        <table class="table table-borderless">
+                            <tr>
+                                <td>
+                                    <div class="form-group">
+                                        <label for="input-start-date">Başlangıç</label>
+                                        <input id="input-start-date" class="form-control" type="date" value="" />
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group">
+                                        <label for="input-end-date">Bitiş</label>
+                                        <input id="input-end-date" class="form-control" type="date" value="" />
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group">
+                                        <label for="btn-calculate">Hesapla</label>
+                                        <button id="btn-calculate" class="btn btn-dark btn-block"><i class="fa fa-calculator"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div id="div-classrooms-and-educators" class="row" style="display:none; margin-bottom:1%;">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Seçiniz:</label>
+                            <select id="select-educators" class="form-control" style="display:none;">
+                                @foreach (var item in Model.Educators)
+                                {
+                                    <option value="@item.EducatorId">@item.FullName</option>
+                                }
+                            </select>
+                            <select id="select-classrooms" class="form-control" style="display:none;">
+                                @foreach (var item in Model.Classrooms)
+                                {
+                                    <option value="@item.ClassroomId">@item.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div id="div-change-salary" class="row" style="display:none; margin-bottom:1%;">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Miktar:</label>
+                            <input type="number" value="" id="input-salary-per-hour" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+                <div id="div-change-summary" class="row" style="display:none; margin-bottom:1%;">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label id="text-success-info">Eklenecek Tarihler</label>
+                                        <ul id="list-success" class="list-group">
+                                        </ul>
+                                    </div>
+                                    <div id="div-danger" class="col-md-6" style="display:none;">
+                                        <label>Elenen Tarihler</label>
+                                        <ul id="list-danger" class="list-group">
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="offset-md-6 col-md-6">
+                                <div class="row">
+                                    <div class="offset-md-4 col-md-4">
+                                        <button id="btn-cancel" class="btn btn-outline-danger btn-block"><i class="fa fa-close"></i></button>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button id="btn-confirm" class="btn btn-outline-success btn-block"><i class="fa fa-check"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section postScripts{
+    <script>
+        /* fields */
+        var OperationType = {
+            SWITCH_EDUCATOR: 1000,
+            POSTPONE_LESSON: 2000,
+            CHANGE_CLASSROOM: 3000,
+            CHANGE_SALARY: 4000
+        };
+        var operation = OperationType.SWITCH_EDUCATOR;
+        var groupId = document.getElementById("_group-id").value;
+        var _hoursPerDay = document.getElementById("_hours-per-day").value;
+
+        /* elements */
+        var tbodyLessonDays = $("#tbody-lesson-days");
+        var textCurrentOperation = $("#text-current-operation");
+        var selectEducators = document.getElementById("select-educators");
+        var selectClassrooms = document.getElementById("select-classrooms");
+        var inputStartDate = $("#input-start-date");
+        var inputEndDate = $("#input-end-date");
+        var inputSalaryPerHour = $("#input-salary-per-hour");
+        var divClassroomsAndEducators = $("#div-classrooms-and-educators");
+        var divChangeSalary = $("#div-change-salary");
+        var divChangeSummary = $("#div-change-summary");
+        var divDanger = $("#div-danger");
+        var textSuccessInfo = $("#text-success-info");
+        var listSuccess = $("#list-success");
+        var listDanger = $("#list-danger");
+        var btnCancel = $("#btn-cancel");
+        var btnSwitchEducator = $("#btn-switch-educator");
+        var btnPostponeLesson = $("#btn-postpone-lesson");
+        var btnChangeClassroom = $("#btn-change-classroom");
+        var btnChangeSalary = $("#btn-change-salary");
+        var textSuccessInfo = $("#text-success-info");
+        var btnCalculate = $("#btn-calculate");
+        var btnConfirm = $("#btn-confirm");
+
+        /* assignments */
+        $(document).ready(document_onLoad);
+        btnSwitchEducator.on("click", btnSwitchEducator_onClick);
+        btnPostponeLesson.on("click", btnPostponeLesson_onClick);
+        btnChangeClassroom.on("click", btnChangeClassroom_onClick);
+        btnChangeSalary.on("click", btnChangeSalary_onClick);
+        btnCalculate.on("click", btnCalculate_onClick);
+        btnCancel.on("click", btnCancel_onClick);
+        btnConfirm.on("click", btnConfirm_onClick);
+
+        /* events */
+        function document_onLoad() {
+            loadLessonDays();
+        }
+        function btnSwitchEducator_onClick() {
+            operation = OperationType.SWITCH_EDUCATOR;
+            textCurrentOperation.html("Eğitmen Değişimi");
+            removeClasses("btn-switch-educator");
+        }
+        function btnPostponeLesson_onClick() {
+            operation = OperationType.POSTPONE_LESSON;
+            textCurrentOperation.html("Ders Erteleme");
+            removeClasses("btn-postpone-lesson");
+        }
+        function btnChangeClassroom_onClick() {
+            operation = OperationType.CHANGE_CLASSROOM;
+            textCurrentOperation.html("Sınıf Değişimi");
+            removeClasses("btn-change-classroom");
+        }
+        function btnChangeSalary_onClick() {
+            operation = OperationType.CHANGE_SALARY;
+            textCurrentOperation.html("Ödeme Değişimi");
+            removeClasses("btn-change-salary");
+        }
+        function btnCalculate_onClick() {
+            preOperation();
+            // display
+            divChangeSummary.css("display", "block");
+        }
+        function btnCancel_onClick() {
+            reset();
+        }
+        function btnConfirm_onClick() {
+            btnConfirm.off("click");
+            executeOperation();
+        }
+
+        /* functions */
+        function preOperation() {
+            divDanger.css("display", "none");
+            listSuccess.html("");
+            listDanger.html("");
+            switch (operation) {
+                case OperationType.SWITCH_EDUCATOR:
+                    preUpdateOperation();
+                    textSuccessInfo.html("Değişecek Tarihler");
+                    divChangeSalary.css("display", "none");
+                    divClassroomsAndEducators.css("display", "block");
+                    $(selectEducators).css("display", "block");
+                    $(selectClassrooms).css("display", "none");
+                    break;
+                case OperationType.POSTPONE_LESSON:
+                    prePostponeOperation();
+                    textSuccessInfo.html("Eklenecek Tarihler");
+                    divChangeSalary.css("display", "none");
+                    divClassroomsAndEducators.css("display", "none");
+                    $(selectEducators).css("display", "none");
+                    $(selectClassrooms).css("display", "none");
+                    break;
+                case OperationType.CHANGE_CLASSROOM:
+                    preUpdateOperation();
+                    textSuccessInfo.html("Değişecek Tarihler");
+                    divChangeSalary.css("display", "none");
+                    divClassroomsAndEducators.css("display", "block");
+                    $(selectEducators).css("display", "none");
+                    $(selectClassrooms).css("display", "block");
+                    break;
+                case OperationType.CHANGE_SALARY:
+                    preUpdateOperation();
+                    textSuccessInfo.html("Değişecek Maaş Günleri");
+                    divChangeSalary.css("display", "block");
+                    divClassroomsAndEducators.css("display", "none");
+                    $(selectEducators).css("display", "none");
+                    $(selectClassrooms).css("display", "none");
+                    break;
+            }
+        }
+        function executeOperation() {
+            switch (operation) {
+                case OperationType.SWITCH_EDUCATOR:
+                    executeSwitchEducatorsOperation();
+                    break;
+                case OperationType.POSTPONE_LESSON:
+                    executePostponeOperation();
+                    break;
+                case OperationType.CHANGE_CLASSROOM:
+                    executeChangeClassroomOperation();
+                    break;
+                case OperationType.CHANGE_SALARY:
+                    executeChangeSalaryOperation();
+                    break;
+            }
+            reset();
+        }
+        function preUpdateOperation() {
+            $.ajax({
+                url: `/admin/determine-to-be-changed-dates?groupId=${groupId}&from=${inputStartDate.val()}&to=${inputEndDate.val()}`,
+                method: "get",
+                success: (res) => {
+                    var data = res.data;
+                    if (data.length > 0) {
+                        var appended = "";
+                        for (var i = 0; i < data.length; i++) {
+                            var item = data[i];
+                            appended += `<li class="list-group-item list-group-item-success">${item}</li>`;
+                        }
+                        listSuccess.append(appended);
+
+                    } else {
+                        // no data
+                    }
+                }
+            });
+        }
+        function prePostponeOperation() {
+            $.ajax({
+                url: `/admin/determine-postpone-dates?groupId=${groupId}&from=${inputStartDate.val()}&to=${inputEndDate.val()}`,
+                method: "get",
+                success: (res) => {
+                    var data = res.data;
+                    if (data.newDateTexts.length > 0 && data.eliminatedDateTexts.length > 0) {
+                        var newDatesAppended = "";
+                        var eliminatedDatesAppended = "";
+                        for (var i = 0; i < data.newDateTexts.length; i++) {
+                            var item1 = data.newDateTexts[i];
+                            newDatesAppended += `<li class="list-group-item list-group-item-success">${item1}</li>`;
+                        }
+                        for (var j = 0; j < data.eliminatedDateTexts.length; j++) {
+                            var item2 = data.eliminatedDateTexts[j];
+                            eliminatedDatesAppended += `<li class="list-group-item list-group-item-danger"><i class="fa fa-long-arrow-left"></i> ${item2}</li>`;
+                        }
+                        divDanger.css("display", "block");
+                        listSuccess.append(newDatesAppended);
+                        listDanger.append(eliminatedDatesAppended);
+                    } else {
+                        // no data
+                    }
+                }
+            });
+        }
+        function executePostponeOperation() {
+            var data = {
+                groupId: groupId,
+                from: inputStartDate.val(),
+                to: inputEndDate.val()
+            };
+            $.ajax({
+                url: `/admin/postpone-dates`,
+                method: "post",
+                data: data,
+                success: (res) => {
+                    loadLessonDays();
+                    btnConfirm.on("click", btnConfirm_onClick);
+                }
+            });
+        }
+        function executeSwitchEducatorsOperation() {
+            var data = {
+                groupId: groupId,
+                from: inputStartDate.val(),
+                to: inputEndDate.val(),
+                educatorId: selectEducators.options[selectEducators.selectedIndex].value
+            };
+            $.ajax({
+                url: "/admin/switch-educators",
+                method: "post",
+                data: data,
+                success: (res) => {
+                    loadLessonDays();
+                    btnConfirm.on("click", btnConfirm_onClick);
+                }
+            });
+        }
+        function executeChangeClassroomOperation() {
+            var data = {
+                groupId: groupId,
+                from: inputStartDate.val(),
+                to: inputEndDate.val(),
+                classroomId: selectClassrooms.options[selectClassrooms.selectedIndex].value
+            };
+            $.ajax({
+                url: "/admin/change-classrooms",
+                method: "post",
+                data: data,
+                success: (res) => {
+                    loadLessonDays();
+                    btnConfirm.on("click", btnConfirm_onClick);
+                }
+            });
+        }
+        function executeChangeSalaryOperation() {
+            var data = {
+                groupId: groupId,
+                from: inputStartDate.val(),
+                to: inputEndDate.val(),
+                salaryPerHour: inputSalaryPerHour.val(),
+                hoursPerDay: _hoursPerDay
+            };
+            $.ajax({
+                url: "/admin/change-educator-salary",
+                method: "post",
+                data: data,
+                success: (res) => {
+                    loadLessonDays();
+                    btnConfirm.on("click", btnConfirm_onClick);
+                }
+            });
+        }
+        function loadLessonDays() {
+            tbodyLessonDays.html("");
+            $.ajax({
+                url: `/admin/get-lesson-days/${groupId}`,
+                method: "get",
+                success: (res) => {
+                    if (res.data.length > 0) {
+                        var appended = "";
+                        for (var i = 0; i < res.data.length; i++) {
+                            var item = res.data[i];
+                            var style = item.hasAttendanceRecord ?
+                                { anchor: "btn btn-outline-success btn-block", icon: "fa fa-check-circle-o" }
+                                : { anchor: "btn btn-outline-danger btn-block", icon: "fa fa-times-circle-o" };
+                            appended += `<tr>` +
+                                `<td>${item.dateOfLessonText}</td>` +
+                                `<td>${item.educatorName}</td>` +
+                                `<td>${item.classroom}</td>` +
+                                `<td>${item.educatorSalary}</td>` +
+                                `<td>${item.hoursPerDay}</td>` +
+                                `<td><a href="/admin/ders-gunu-duzenle/${item.id}" class="btn btn-outline-dark btn-block"><i class="fa fa-edit"></i></a></td>` +
+                                `<td><a href="/admin/yoklama-girisi/${groupId}/${item.dateOfLesson}/${item.hasAttendanceRecord}" class="${style.anchor}"><i class="${style.icon}"></i></a></td>`
+                            "</tr>";
+                        }
+                        tbodyLessonDays.append(appended);
+                    } else {
+                        // no data
+                    }
+                }
+            });
+        }
+        function removeClasses(btnName) {
+            var btnOperations = document.getElementsByClassName("btn-operation");
+            for (var i = 0; i < btnOperations.length; i++) {
+                var btn = $(btnOperations[i]);
+                btn.removeClass("btn-secondary");
+                btn.addClass("btn-outline-secondary");
+            }
+
+            switch (btnName) {
+                case "btn-switch-educator": btnSwitchEducator.addClass("btn-secondary"); btnSwitchEducator.removeClass("btn-outline-secondary");
+                    break;
+                case "btn-postpone-lesson": btnPostponeLesson.addClass("btn-secondary"); btnPostponeLesson.removeClass("btn-outline-secondary");
+                    break;
+                case "btn-change-classroom": btnChangeClassroom.addClass("btn-secondary"); btnChangeClassroom.removeClass("btn-outline-secondary");
+                    break;
+                case "btn-change-salary": btnChangeSalary.addClass("btn-secondary");
+                    btnChangeSalary.removeClass("btn-outline-secondary");
+                    break;
+                default:
+                    btnSwitchEducator.addClass("btn-secondary");
+                    btnSwitchEducator.removeClass("btn-outline-secondary");
+                    break;
+            }
+        }
+        function reset() {
+            divChangeSummary.css("display", "none");
+            divClassroomsAndEducators.css("display", "none");
+            $(selectClassrooms).css("display", "none");
+            $(selectEducators).css("display", "none");
+            divChangeSalary.css("display", "none");
+        }
+    </script>
+}

@@ -14,13 +14,17 @@
         {
             <li><a href="/admin/panel" class="btn_1">Admin Panel</a></li>
         }
+        @if (User.Identity.IsAuthenticated && User.IsInRole("Educator"))
+        {
+            <li><a href="/egitmen/yonetim-paneli">Eğitmen Paneli</a></li>
+        }
+        @if (User.Identity.IsAuthenticated && User.IsInRole("User"))
+        {
+            <li><a href="/profil/@User.FindFirstValue(ClaimTypes.NameIdentifier)"><i class="fa fa-user"></i> Profil</a></li>
+        }
         @if (!User.Identity.IsAuthenticated)
         {
             <li><a href="/giris-yap" class="login">GİRİŞ YAP</a></li>
-        }
-        else
-        {
-            <li><a href="/profil/@User.FindFirstValue(ClaimTypes.NameIdentifier)"><i class="fa fa-user"></i> Profil</a></li>
         }
         <li><a href="#0" class="search-overlay-menu-btn">Arama</a></li>
         <li class="hidden_mobile"><a href="/biz-kimiz">BİZ KİMİZ?</a></li>

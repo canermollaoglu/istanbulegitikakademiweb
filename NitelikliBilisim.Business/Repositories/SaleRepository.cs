@@ -1,21 +1,27 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.PaymentModels;
 using NitelikliBilisim.Core.ViewModels.Sales;
 using NitelikliBilisim.Data;
+using NitelikliBilisim.Notificator.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace NitelikliBilisim.Business.Repositories
 {
     public class SaleRepository
     {
         private readonly NbDataContext _context;
+        private readonly EmailSender _emailSender;
+
         public SaleRepository(NbDataContext context)
         {
             _context = context;
+            _emailSender = new EmailSender();
         }
         public ApplicationUser GetUser(string userId)
         {
@@ -131,7 +137,43 @@ namespace NitelikliBilisim.Business.Repositories
                 Console.WriteLine(ex);
                 transaction.Rollback();
             }
-            Auto__AssignTickets(invoiceDetailsIds);
+            Task.Run(() => Auto__AssignTickets(invoiceDetailsIds));
+        }
+        public bool GetIfCustomerEligibleToFullyCancel(Guid ticketId)
+        {
+            var groupStartDate = _context.Bridge_GroupStudents.Include(x=>x.Group).First(x => x.TicketId == ticketId).Group.StartDate;
+            var ticket = _context.Tickets.First(x => x.Id == ticketId);
+            var invoiceDate = _context.InvoiceDetails.Include(x => x.Invoice).First(x => x.Id == ticket.InvoiceDetailsId).Invoice.CreatedDate;
+            var isGroupStarted = groupStartDate <= DateTime.Now.Date;
+
+            return !(isGroupStarted || DateTime.Now.Date > invoiceDate.Date);
+        }
+        public async void RefundPayment(Guid ticketId)
+        {
+            var invoiceDetailsId = _context.Tickets.First(x => x.Id == ticketId).InvoiceDetailsId;
+            var onlinePaymentDetailsInfo = _context.OnlinePaymentDetailsInfos.First(x => x.Id == invoiceDetailsId);
+
+            onlinePaymentDetailsInfo.IsCancelled = true;
+            onlinePaymentDetailsInfo.CancellationDate = DateTime.Now;
+
+            _context.SaveChanges();
+
+            await Auto__UnassignTickets(new List<Guid>() { invoiceDetailsId });
+        }
+        public async void CancelPayment(Guid invoiceId)
+        {
+            var invoiceDetailsIds = _context.InvoiceDetails.Where(x => x.InvoiceId == invoiceId).Select(x => x.Id).ToList();
+            var onlinePaymentDetails = _context.OnlinePaymentDetailsInfos.Where(x => invoiceDetailsIds.Contains(x.Id));
+
+            foreach (var item in onlinePaymentDetails)
+            {
+                item.IsCancelled = true;
+                item.CancellationDate = DateTime.Now;
+            }
+
+            _context.SaveChanges();
+
+            await Auto__UnassignTickets(invoiceDetailsIds);
         }
         private List<InvoiceDetail> CreateInvoiceDetails(List<CartItem> cartItems)
         {
@@ -187,11 +229,11 @@ namespace NitelikliBilisim.Business.Repositories
 
             return tickets;
         }
-        private bool Auto__AssignTickets(List<Guid> invoiceDetailsIds)
+        private async Task<bool> Auto__AssignTickets(List<Guid> invoiceDetailsIds)
         {
             try
             {
-                var tickets = _context.Tickets
+                var tickets = _context.Tickets.Include(x => x.Owner).ThenInclude(x => x.User)
                     .Where(x => invoiceDetailsIds.Contains(x.InvoiceDetailsId))
                     .ToList();
 
@@ -199,13 +241,19 @@ namespace NitelikliBilisim.Business.Repositories
                 {
                     var firstGroup = _context.EducationGroups
                         .Where(x => x.StartDate.Date > DateTime.Now.Date
+                        && x.EducationId == ticket.EducationId
                         && x.IsGroupOpenForAssignment
                         && x.HostId == ticket.HostId)
                         .OrderBy(o => o.StartDate)
                         .FirstOrDefault();
                     if (firstGroup == null)
                     {
-                        // başarısız atama için mail gönder
+                        await _emailSender.SendAsync(new EmailMessage
+                        {
+                            Subject = "Grup Atamanız Yapılamamıştır | Nitelikli Bilişim",
+                            Body = $"{ticket.Education.Name} eğitimine yönelik grupların kontenjanları dolduğu için gruba atamanız yapılamamıştır.",
+                            Contacts = new string[]{ ticket.Owner.User.Email }
+                        });
                         return false;
                     }
 
@@ -216,22 +264,54 @@ namespace NitelikliBilisim.Business.Repositories
                         TicketId = ticket.Id
                     });
 
+                    await _emailSender.SendAsync(new EmailMessage
+                    {
+                        Subject = "Grup Atamanız Yapılmıştır | Nitelikli Bilişim",
+                        Body = $"{ticket.Education.Name} eğitimi için {firstGroup.StartDate.ToShortDateString()} tarihinde başlayacak olan {firstGroup.GroupName} grubuna atamanız yapılmıştır.",
+                        Contacts = new string[] { ticket.Owner.User.Email }
+                    });
+
                     ticket.IsUsed = true;
                     _context.SaveChanges();
                 }
                 return true;
             }
-            catch (Exception ex)
+            catch
             {
-                System.Console.WriteLine(ex.Message);
                 return false;
             }
         }
-
-        // TODO: iptal işlemleri için
-        private bool Auto__UnassingTickets(List<Guid> invoiceDetailsIds)
+        private async Task<bool> Auto__UnassignTickets(List<Guid> invoiceDetailsIds)
         {
-            return false;
+            try
+            {
+                var tickets = _context.Tickets.Include(x => x.Education).Include(x => x.Owner).ThenInclude(x => x.User)
+                    .Where(x => invoiceDetailsIds.Contains(x.InvoiceDetailsId))
+                    .ToList();
+
+                var bridges = _context.Bridge_GroupStudents
+                    .Where(x => tickets.Select(x => x.Id).Contains(x.TicketId))
+                    .ToList();
+                foreach (var ticket in tickets)
+                {
+                    await _emailSender.SendAsync(new EmailMessage
+                    {
+                        Subject = "Gruptan Ayrıldınız | Nitelikli Bilişim",
+                        Body = $"{ticket.Education.Name} eğitimini iptal ettiğiniz için atandığınız gruptan ayrıldınız.",
+                        Contacts = new string[] { ticket.Owner.User.Email }
+                    });
+
+                    ticket.IsUsed = true;
+                }
+                    
+                _context.RemoveRange(bridges);
+                _context.SaveChanges();
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

@@ -24,7 +24,7 @@ namespace NitelikliBilisim.App.Controllers
             return View();
         }
 
-        [Route("somewhere-over-the-rainbow")]
+        [Route("create-admin-account")]
         public async Task<IActionResult> CreateAdmin(SecretHolder data)
         {
             if (data.secret != SECRET_KEY)
@@ -46,6 +46,22 @@ namespace NitelikliBilisim.App.Controllers
                 await _userManager.AddToRoleAsync(admin, "Admin");
             }
             else return Json("");
+
+            return Json("");
+        }
+
+        [Route("create-educator-role")]
+        public async Task<IActionResult> CreateEducatorRole(SecretHolder data)
+        {
+            if (data.secret != SECRET_KEY)
+                return Json("");
+            if (!await _roleManager.RoleExistsAsync("Educator"))
+            {
+                await _roleManager.CreateAsync(new ApplicationRole
+                {
+                    Name = "Educator"
+                });
+            }
 
             return Json("");
         }

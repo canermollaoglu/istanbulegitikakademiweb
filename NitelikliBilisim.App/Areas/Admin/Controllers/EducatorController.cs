@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Areas.Admin.VmCreator.Educator;
@@ -18,8 +19,7 @@ using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    //[Authorize]
-    [Area("Admin")]
+    [Area("Admin"), Authorize(Roles = "Admin")]
     public class EducatorController : TempSecurityController
     {
         private readonly IWebHostEnvironment _hostingEnvironment;
@@ -77,8 +77,9 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     PhoneNumber = data.Phone,
                     UserName = $"{userName}{countText}"
                 };
+                // TODO: belirlenen şifre mail olarak atılmalı & sabit şifre değiştirilmeli
                 var pwd = TextHelper.RandomPasswordGenerator(10);
-                var res = await _userManager.CreateAsync(newUser, pwd);
+                var res = await _userManager.CreateAsync(newUser, "qwe123");
                 if (!res.Succeeded)
                 {
                     _fileManager.Delete(dbPath);
@@ -90,7 +91,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     });
                 }
 
-                res = await _userManager.AddToRoleAsync(newUser, "User");
+                res = await _userManager.AddToRoleAsync(newUser, "Educator");
                 if (!res.Succeeded)
                 {
                     _fileManager.Delete(dbPath);
@@ -177,7 +178,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         public async Task<IActionResult> Update(UpdatePostNewVm data)
         {
             if (!ModelState.IsValid)
-            {  
+            {
                 var errors = ModelStateUtil.GetErrors(ModelState);
                 return Json(new ResponseModel
                 {
@@ -202,7 +203,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             educator.User.Surname = data.Surname;
             educator.User.PhoneNumber = data.Phone;
             educator.User.Email = data.Email;
-            
+
             _unitOfWork.Educator.Update(educator);
             return Json(new ResponseModel
             {
@@ -264,10 +265,10 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             }
             else
             {
-               var facebook = _unitOfWork.EducatorSocialMedia.Get().FirstOrDefault(x => x.EducatorId == data.EducatorId &&
-               x.SocialMediaType == Core.Enums.EducatorSocialMediaType.Facebook);
+                var facebook = _unitOfWork.EducatorSocialMedia.Get().FirstOrDefault(x => x.EducatorId == data.EducatorId &&
+                x.SocialMediaType == Core.Enums.EducatorSocialMediaType.Facebook);
 
-                 if (facebook != null)
+                if (facebook != null)
                     _unitOfWork.EducatorSocialMedia.Delete(facebook);
             }
 
@@ -325,7 +326,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 var googlePlus = _unitOfWork.EducatorSocialMedia.Get().FirstOrDefault(x => x.EducatorId == data.EducatorId &&
                 x.SocialMediaType == Core.Enums.EducatorSocialMediaType.GooglePlus);
 
-                if(googlePlus != null)
+                if (googlePlus != null)
                     _unitOfWork.EducatorSocialMedia.Delete(googlePlus);
             }
 

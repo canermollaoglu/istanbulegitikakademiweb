@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Areas.Admin.VmCreator.EducationParts;
 using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Models;
@@ -12,8 +13,7 @@ using System.Linq;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    //[Authorize]
-    [Area("Admin")]
+    [Area("Admin"), Authorize(Roles = "Admin")]
     public class EducationPartController : TempSecurityController
     {
         private readonly UnitOfWork _unitOfWork;
@@ -153,14 +153,14 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 EducationId = x.EducationId,
                 Title = x.Title
             }).ToList();
-           
+
             var model = new UpdateGetVm
             {
                 Id = partId.Value,
                 Order = part.Order,
-                Title =part.Title,
-                EducationId= part.EducationId,
-                Duration= part.Duration,
+                Title = part.Title,
+                EducationId = part.EducationId,
+                Duration = part.Duration,
                 BasePartId = part.BasePartId,
                 BaseParts = baseParts
             };
@@ -181,7 +181,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             }
             var part = _unitOfWork.EducationPart.GetById(data.PartId);
             part.BasePartId = data.BasePartId;
-            part.Order= data.Order.Value;
+            part.Order = data.Order.Value;
             part.Title = data.Title;
             part.Duration = data.Duration.Value;
             _unitOfWork.EducationPart.Update(part);

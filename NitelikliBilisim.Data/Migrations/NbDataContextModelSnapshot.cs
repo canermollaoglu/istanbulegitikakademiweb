@@ -348,6 +348,40 @@ namespace NitelikliBilisim.Data.Migrations
                     b.ToTable("Bridge_GroupStudents");
                 });
 
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.Classroom", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedUser")
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
+
+                    b.Property<Guid>("HostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(64)")
+                        .HasMaxLength(64);
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HostId");
+
+                    b.ToTable("Classrooms");
+                });
+
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.Customer", b =>
                 {
                     b.Property<string>("Id")
@@ -863,6 +897,44 @@ namespace NitelikliBilisim.Data.Migrations
                     b.ToTable("Educators");
                 });
 
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducatorSalary", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedUser")
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
+
+                    b.Property<DateTime>("EarnedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("EarnedForGroup")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("EducatorId")
+                        .HasColumnType("nvarchar(450)")
+                        .HasMaxLength(450);
+
+                    b.Property<decimal>("Paid")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EducatorSalaries");
+                });
+
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducatorSocialMedia", b =>
                 {
                     b.Property<int>("Id")
@@ -903,6 +975,7 @@ namespace NitelikliBilisim.Data.Migrations
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.GroupAttendance", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedDate")
@@ -919,6 +992,13 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Reason")
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
@@ -928,6 +1008,8 @@ namespace NitelikliBilisim.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("GroupId");
+
                     b.ToTable("GroupAttendances");
                 });
 
@@ -935,6 +1017,9 @@ namespace NitelikliBilisim.Data.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ClassroomId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedDate")
@@ -946,6 +1031,13 @@ namespace NitelikliBilisim.Data.Migrations
 
                     b.Property<DateTime>("DateOfLesson")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("EducatorId")
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
+
+                    b.Property<decimal?>("EducatorSalary")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid>("GroupId")
                         .HasColumnType("uniqueidentifier");
@@ -968,6 +1060,46 @@ namespace NitelikliBilisim.Data.Migrations
                     b.HasIndex("GroupId");
 
                     b.ToTable("GroupLessonDays");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.GroupMaterial", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<byte>("Count")
+                        .HasColumnType("tinyint");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedUser")
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
+
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("MaterialName")
+                        .HasColumnType("nvarchar(64)")
+                        .HasMaxLength(64);
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupId");
+
+                    b.ToTable("GroupMaterials");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.Invoice", b =>
@@ -1510,6 +1642,15 @@ namespace NitelikliBilisim.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.Classroom", b =>
+                {
+                    b.HasOne("NitelikliBilisim.Core.Entities.EducationHost", "Host")
+                        .WithMany()
+                        .HasForeignKey("HostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.Customer", b =>
                 {
                     b.HasOne("NitelikliBilisim.Core.Entities.ApplicationUser", "User")
@@ -1614,12 +1755,21 @@ namespace NitelikliBilisim.Data.Migrations
                 {
                     b.HasOne("NitelikliBilisim.Core.Entities.EducationGroup", "Group")
                         .WithMany()
-                        .HasForeignKey("Id")
+                        .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.GroupLessonDay", b =>
+                {
+                    b.HasOne("NitelikliBilisim.Core.Entities.EducationGroup", "Group")
+                        .WithMany()
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.GroupMaterial", b =>
                 {
                     b.HasOne("NitelikliBilisim.Core.Entities.EducationGroup", "Group")
                         .WithMany()

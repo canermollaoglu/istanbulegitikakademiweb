@@ -1,0 +1,151 @@
+﻿
+@{
+    ViewData["Title"] = "Grup Materyallerini Yönet";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<input type="hidden" value="@Model" id="_group-id" />
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-list"></i> Eğitiminin Parçaları
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <form id="form-add-materials" class="form-inline">
+                    @Html.AntiForgeryToken()
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <input type="text" value="" class="form-control" id="input-material-name" placeholder="Materyal ismi" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <input type="text" value="" class="form-control" id="input-material-price" placeholder="Birim fiyatı" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <input type="text" value="" class="form-control" id="input-material-count" placeholder="Adet" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:1%;margin-bottom:1%">
+                        <div class="offset-md-11 col-md-1">
+                            <button id="btn-add" type="button" class="btn_1 form-control" style="cursor:pointer;"><i class="fa fa-plus"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>İsim</th>
+                                <th>Birim Fiyat</th>
+                                <th>Adet</th>
+                                <th>İşlem</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>İsim</th>
+                                <th>Birim Fiyat</th>
+                                <th>Adet</th>
+                                <th>İşlem</th>
+                            </tr>
+                        </tfoot>
+                        <tbody id="tbody-group-materials">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer small text-muted">Veri tarihi: @DateTime.Now</div>
+</div>
+
+@section postScripts{
+    <script>
+        /* fields */
+        var _groupId = document.getElementById("_group-id").value;
+
+        /* elements */
+        var inputMaterialName = $("#input-material-name");
+        var inputMaterialPrice = $("#input-material-price");
+        var inputMaterialCount = $("#input-material-count");
+        var btnAdd = $("#btn-add");
+        var tbodyGroupMaterials = $("#tbody-group-materials");
+
+        /* assignments */
+        $(document).ready(document_onLoad);
+        btnAdd.on("click", btnAdd_onClick);
+
+        /* events */
+        function document_onLoad() {
+            getMaterials();
+        }
+        function btnAdd_onClick() {
+            btnAdd.off("click");
+
+            var data = {
+                MaterialName: inputMaterialName.val(),
+                Price: inputMaterialPrice.val(),
+                Count: inputMaterialCount.val(),
+                GroupId: _groupId
+            };
+            $.ajax({
+                url: "/admin/add-material-item",
+                method: "post",
+                data: data,
+                success: (res) => {
+                    getMaterials();
+                    btnAdd.on("click", btnAdd_onClick);
+                }
+            });
+        }
+        function btnDelete_onClick() {
+            var materialId = this.getAttribute("data-material-id");
+            $.ajax({
+                url: `/admin/materyal-sil/${materialId}`,
+                method: "get",
+                success: (res) => {
+                    getMaterials();
+                }
+            });
+        }
+        /* functions */
+        function getMaterials() {
+            $.ajax({
+                url: `/admin/get-materials/${_groupId}`,
+                method: "get",
+                success: (res) => {
+                    createTable(res.data);
+                }
+            });
+        }
+        function createTable(materials) {
+            tbodyGroupMaterials.html("");
+            var appended = "";
+            for (var i = 0; i < materials.length; i++) {
+                var item = materials[i];
+                appended += "<tr>" +
+                    `<td>${item.materialName}</td>` +
+                    `<td>${item.materialPrice}</td>` +
+                    `<td>${item.materialCount}</td>` +
+                    `<td><div class="btn-group"><a href="/admin/materyal-guncelle/${item.materialId}" class="btn btn-warning"><i class="fa fa-edit"></i></a><button data-material-id="${item.materialId}" class="btn btn-danger btn-delete"><i class="fa fa-trash"></i></button></div></td>` +
+                    "</tr>";
+            }
+            tbodyGroupMaterials.append(appended);
+            var btnDeletes = $(".btn-delete");
+            for (var i = 0; i < btnDeletes.length; i++) {
+                var btn = btnDeletes[i];
+                btn.onclick = btnDelete_onClick;
+            }
+        }
+    </script>
+}

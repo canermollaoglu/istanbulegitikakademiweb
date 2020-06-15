@@ -121,5 +121,8 @@ namespace NitelikliBilisim.Data
         public DbSet<TempSaleData> TempSaleData { get; set; }
         public DbSet<GroupLessonDay> GroupLessonDays { get; set; }
         public DbSet<GroupAttendance> GroupAttendances { get; set; }
+        public DbSet<Classroom> Classrooms { get; set; }
+        public DbSet<EducatorSalary> EducatorSalaries { get; set; }
+        public DbSet<GroupMaterial> GroupMaterials { get; set; }
     }
 }

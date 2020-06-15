@@ -27,6 +27,10 @@ namespace NitelikliBilisim.Business.UoW
         private TempSaleDataRepository _tempSaleDataRepository;
         private GroupLessonDayRepository _groupLessonDayRepository;
         private ReportRepository _reportRepository;
+        private GroupAttendanceRepository _groupAttendanceRepository;
+        private EmailRepository _emailRepository;
+        private EducatorSalaryRepository _educatorSalaryRepository;
+        private GroupMaterialRepository _groupMaterialRepository;
         public UnitOfWork(NbDataContext context)
         {
             _context = context;
@@ -93,6 +97,34 @@ namespace NitelikliBilisim.Business.UoW
             get
             {
                 return _reportRepository ?? (_reportRepository = new ReportRepository(_context));
+            }
+        }
+        public GroupAttendanceRepository GroupAttendance
+        {
+            get
+            {
+                return _groupAttendanceRepository ?? (_groupAttendanceRepository = new GroupAttendanceRepository(_context));
+            }
+        }
+        public EmailRepository EmailHelper
+        {
+            get
+            {
+                return _emailRepository ?? (_emailRepository = new EmailRepository(_context));
+            }
+        }
+        public EducatorSalaryRepository Salary
+        {
+            get
+            {
+                return _educatorSalaryRepository ?? (_educatorSalaryRepository = new EducatorSalaryRepository(_context));
+            }
+        }
+        public GroupMaterialRepository Material
+        {
+            get
+            {
+                return _groupMaterialRepository ?? (_groupMaterialRepository = new GroupMaterialRepository(_context));
             }
         }
     }

@@ -42,8 +42,11 @@ namespace NitelikliBilisim.Business.Repositories
                             PayoutNumeric = payout,
                             PayoutText = payout.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
                             IsNegative = payout < 0,
+                            TotalNumeric = item.MerchantPayout,
+                            TotalText = item.MerchantPayout.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
                             PayoutDate = item.BlockageResolveDate.AddMonths(i),
                             PayoutDateText = item.BlockageResolveDate.AddMonths(i).ToShortDateString(),
+                            OrderOfPayment = paymentCount > 1 ? $"{i + 1}. taksit" : "Tek çekim",
                             Payer = $"{item.InvoiceDetail.Invoice.Customer.User.Name.ToUpper()} {item.InvoiceDetail.Invoice.Customer.User.Surname.ToUpper()}"
                         });
                     }
