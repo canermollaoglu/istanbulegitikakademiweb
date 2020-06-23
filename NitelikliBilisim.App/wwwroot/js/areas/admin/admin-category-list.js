@@ -84,7 +84,7 @@ function createGrid() {
             },
             {
                 dataField: "description",
-                headerCellTemplate: $('<i style="color: black; font-weight: bold">Açıklama</i>')
+                headerCellTemplate: $('<i style="color: black; font-weight: bold">Slogan</i>')
             },
             {
                 headerCellTemplate: $('<i style="color: black; font-weight: bold">İşlem</i>'),
