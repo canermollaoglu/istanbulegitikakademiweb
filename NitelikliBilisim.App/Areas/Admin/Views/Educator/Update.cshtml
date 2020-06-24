@@ -74,6 +74,18 @@
                                 <input type="email" class="form-control" placeholder="Eğitmenin e-posta adresi" id="input-email" value="@Model.Email">
                             </div>
                         </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Kısa Açıklama</label>
+                                <textarea rows="4" class="form-control" maxlength="400" id="input-short-description">@Model.ShortDescription</textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Biyografi</label>
+                                <textarea rows="12" class="form-control" id="input-biography">@Model.Biography</textarea>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -12,6 +12,7 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.educator
         public string Email { get; set; }
         public string Title { get; set; }
         public string Biography { get; set; }
+        public string ShortDescription { get; set; }
         public string FilePath { get; set; }
     }
 
@@ -34,6 +35,10 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.educator
         public Guid EducatorId { get; set; }
         public _SocialMedia SocialMedia { get; set; }
         public _PostedFileUpdate ProfilePhoto { get; set; }
+        [Required(ErrorMessage = "Biyografi alanı boş geçilemez")]
+        public string Biography { get; set; }
+        [Required(ErrorMessage = "Kısa Açıklama alanı boş geçilemez"), MaxLength(400, ErrorMessage = "Kısa Açıklama alanı en fazla 400 karakter içerebilir.")]
+        public string ShortDescription { get; set; }
     }
     public class _PostedFileUpdate
     {

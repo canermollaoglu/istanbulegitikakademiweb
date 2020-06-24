@@ -107,7 +107,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 {
                     Id = newUser.Id,
                     Title = data.Title,
-                    Biography = "?"
+                    Biography = data.Biography,
+                    ShortDescription = data.ShortDescription
                 };
                 _unitOfWork.Educator.Insert(newEducator);
 
@@ -169,7 +170,10 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 Surname = educator.User.Surname,
                 Phone = educator.User.PhoneNumber,
                 Email = educator.User.Email,
-                FilePath = educator.User.AvatarPath
+                FilePath = educator.User.AvatarPath,
+                Biography = educator.Biography,
+                ShortDescription = educator.ShortDescription
+                
             };
             return View(model);
         }
@@ -199,6 +203,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             }
 
             educator.Title = data.Title;
+            educator.Biography = data.Biography;
+            educator.ShortDescription = data.ShortDescription;
             educator.User.Name = data.Name;
             educator.User.Surname = data.Surname;
             educator.User.PhoneNumber = data.Phone;

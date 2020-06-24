@@ -20,6 +20,10 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.educator
         public string Title { get; set; }
         public _SocialMedia SocialMedia { get; set; }
         public _PostedFile ProfilePhoto { get; set; }
+        [Required(ErrorMessage = "Biyografi alanı boş geçilemez")]
+        public string Biography { get; set; }
+        [Required(ErrorMessage = "Kısa Açıklama alanı boş geçilemez"),MaxLength(400,ErrorMessage ="Kısa Açıklama alanı en fazla 400 karakter içerebilir.")]
+        public string ShortDescription { get; set; }
     }
 
     public class _SocialMedia

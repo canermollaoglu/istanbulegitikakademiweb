@@ -14,6 +14,11 @@ namespace NitelikliBilisim.Core.Entities
         public string Title { get; set; }
         [MaxLength(8192)]
         public string Biography { get; set; }
-        
+        /// <summary>
+        /// Eğitmen Hakkında Kısa Bilgi
+        /// </summary>
+        [MaxLength(400)]
+        public string ShortDescription { get; set; }
+
     }
 }

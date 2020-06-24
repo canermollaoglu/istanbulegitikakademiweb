@@ -22,6 +22,8 @@ function btnSave_onClick() {
     var file = fileManager.getFile();
     var data = {
         Name: $("#input-name").val(),
+        Biography: $("#input-biography").val(),
+        ShortDescription: $("#input-short-description").val(),
         Surname: $("#input-surname").val(),
         Phone: $("#input-phone").val(),
         Email: $("#input-email").val(),
