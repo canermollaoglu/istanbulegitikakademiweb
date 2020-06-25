@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Entities.user_details;
 using NitelikliBilisim.Core.ViewModels.areas.admin.educator;
 using NitelikliBilisim.Core.ViewModels.areas.educator_area.group;
 using NitelikliBilisim.Core.ViewModels.areas.educator_area.payment;
@@ -8,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace NitelikliBilisim.Business.Repositories
 {
@@ -18,7 +20,50 @@ namespace NitelikliBilisim.Business.Repositories
         {
             _context = context;
         }
+        public  string Insert(Educator entity,List<int> certificateIds, bool isSaveLater = false)
+        {
+           string educatorId=  base.Insert(entity, isSaveLater);
 
+            if (certificateIds !=null && certificateIds.Count>0)
+            {
+                var bridge = new List<Bridge_EducatorCertificate>();
+                foreach (var certificateId in certificateIds)
+                {
+                    bridge.Add(new Bridge_EducatorCertificate
+                    {
+                        Id = educatorId,
+                        Id2 = certificateId
+                    });
+                }
+                Context.Bridge_EducatorEducatorCertificates.AddRange(bridge);
+                Context.SaveChanges();
+            }
+            return educatorId;
+        }
+
+        public  int Update(Educator entity,List<int> certificateIds, bool isSaveLater = false)
+        {
+            var _certificates = Context.Bridge_EducatorEducatorCertificates.Where(x => x.Id == entity.Id);
+            Context.Bridge_EducatorEducatorCertificates.RemoveRange(_certificates);
+
+            
+            if (certificateIds!=null && certificateIds.Count>0)
+            {
+                var newCertificates = new List<Bridge_EducatorCertificate>();
+                foreach (var certificateId in certificateIds)
+                {
+                    newCertificates.Add(new Bridge_EducatorCertificate
+                    {
+                        Id = entity.Id,
+                        Id2 = certificateId
+                    });
+                };
+                Context.Bridge_EducatorEducatorCertificates.AddRange(newCertificates);
+                Context.SaveChanges();
+            }
+
+            return base.Update(entity, isSaveLater);
+        }
         public List<_Educator> GetEducators()
         {
             var model = Context.Users
@@ -32,6 +77,27 @@ namespace NitelikliBilisim.Business.Repositories
                     SocialMediaCount = Context.EducatorSocialMedias.Count(z => z.EducatorId == x.Id)
                 }).ToList();
             return model;
+        }
+
+        public IQueryable<_Educator> GetListQueryable()
+        {
+            return Context.Users
+                  .Join(Context.Educators, l => l.Id, r => r.Id, (x, y) => new _Educator
+                  {
+                      Id = x.Id,
+                      FullName = x.Name + " " + x.Surname,
+                      Title = y.Title,
+                      Phone = x.PhoneNumber,
+                      Email = x.Email,
+                      SocialMediaCount = Context.EducatorSocialMedias.Count(z => z.EducatorId == x.Id)
+                  });
+        }
+        public List<EducatorCertificate> GetCertificates (string userId){
+            var data = (from b in Context.Bridge_EducatorEducatorCertificates
+                        join c in Context.EducatorCertificates on b.Id2 equals c.Id
+                        where b.Id == userId
+                        select c).ToList();
+            return data;
         }
         public override int Delete(string id, bool isSaveLater = false)
         {

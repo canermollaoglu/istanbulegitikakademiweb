@@ -67,7 +67,11 @@ namespace NitelikliBilisim.App
                 options.IdleTimeout = TimeSpan.FromSeconds(30);
                 options.Cookie.IsEssential = true;
             });
-
+            services.AddCors(options=>
+            {
+                options.AddPolicy("AllowAll",
+                    builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+            });
             services.AddMvc();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddControllers();
@@ -103,10 +107,12 @@ namespace NitelikliBilisim.App
             {
                 config.MapHub<MessageHub>("/messages");
             });
+            
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseCookiePolicy();
+            app.UseCors("AllowAll");
             app.UseSession();
             app.UseEndpoints(endpoints =>
             {

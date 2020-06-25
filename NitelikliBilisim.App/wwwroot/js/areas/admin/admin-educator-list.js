@@ -50,7 +50,18 @@ function confirm_onClick() {
 /*DataGrid*/
 function createGrid() {
     $("#educator-grid").dxDataGrid({
-        dataSource: `get-educators-list`,
+        dataSource: DevExpress.data.AspNet.createStore({
+            key: "id",
+            loadUrl: "../../api/educator/get-educators-list"
+        }),
+        remoteOperations: {
+            paging: true,
+            filtering: true,
+            sorting: true,
+            grouping: true,
+            summary: true,
+            groupPaging: true
+        },
         showBorders: true,
         showColumnLines: true,
         showRowLines: true,

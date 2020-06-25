@@ -72,10 +72,21 @@
                         </ul>
                     </li>
                     <li>
+                        <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseEgitmenSertifika" data-parent="#exampleAccordion">Eğitmen Sertifikaları</a>
+                        <ul class="sidenav-third-level collapse" id="collapseEgitmenSertifika">
+                            <li>
+                                <a href="@Url.Action("List","EducatorCertificate")">Listele</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("Add", "EducatorCertificate")">Ekle</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
                         <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseGroups" data-parent="#exampleAccordion">Gruplar</a>
                         <ul class="sidenav-third-level collapse" id="collapseGroups">
                             <li>
-                                <a href="@Url.Action("List", "EducationGroup")">Listele</a>
+                                <a href="@Url.Action("List", "EducatorGroup")">Listele</a>
                             </li>
                             <li>
                                 <a href="/admin/grup-olustur">Oluştur</a>

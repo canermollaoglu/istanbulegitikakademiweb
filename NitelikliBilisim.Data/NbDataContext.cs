@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NitelikliBilisim.Core.Abstracts;
 using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Entities.user_details;
 
 namespace NitelikliBilisim.Data
 {
@@ -74,6 +75,8 @@ namespace NitelikliBilisim.Data
                 .HasKey(x => new { x.Id, x.Id2 });
             builder.Entity<WishlistItem>()
                 .HasKey(x => new { x.Id, x.Id2 });
+            builder.Entity<Bridge_EducatorCertificate>()
+                .HasKey(x => new { x.Id, x.Id2 });
 
             builder.Entity<ApplicationUserRole>(userRole =>
             {
@@ -124,5 +127,7 @@ namespace NitelikliBilisim.Data
         public DbSet<Classroom> Classrooms { get; set; }
         public DbSet<EducatorSalary> EducatorSalaries { get; set; }
         public DbSet<GroupMaterial> GroupMaterials { get; set; }
+        public DbSet<EducatorCertificate> EducatorCertificates { get; set; }
+        public DbSet<Bridge_EducatorCertificate> Bridge_EducatorEducatorCertificates { get; set; }
     }
 }
