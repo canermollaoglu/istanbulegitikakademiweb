@@ -1,16 +1,16 @@
 ﻿
 @{
-    ViewData["Title"] = "Eğitmen Listesi";
+    ViewData["Title"] = "Eğitmen Sertifika Listesi";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
 @section styles{
     <link href="~/assets/css/area-admin/dataTables.bootstrap4.css" rel="stylesheet" />
     <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
-    <link href="~/vendor/devextreme/dist/css/dx.common.css" rel="stylesheet">
-    <link href="~/vendor/devextreme/dist/css/dx.light.css" rel="stylesheet">
+    <link href="~/vendor\devextreme\dist\css\dx.common.css" rel="stylesheet" />
+    <link href="~/vendor\devextreme\dist\css\dx.light.css" rel="stylesheet" />
     <style>
-        #educator-grid {
+        #tag-grid {
             margin-top: -15px !important;
         }
     </style>
@@ -20,10 +20,10 @@
 }
 <div class="card mb-3">
     <div class="card-header">
-        <i class="fa fa-table"></i> Eğitimen Listesi
+        <i class="fa fa-table"></i> Eğitmen Sertifikaları
     </div>
     <div class="card-body">
-        <div id="educator-grid"></div>
+        <div id="certificate-grid"></div>
     </div>
     <div class="card-footer small text-muted">Veri tarihi: @DateTime.Now</div>
 </div>
@@ -32,7 +32,7 @@
     <script src="~/assets/js/area-admin/jquery.dataTables.js"></script>
     <script src="~/assets/js/area-admin/dataTables.bootstrap4.js"></script>
     <script src="~/js/sup/alert-sup.js"></script>
-    <script src="~/vendor/devextreme/dist/js/dx.all.js"></script>
+    <script src="~/vendor\devextreme\dist\js\dx.all.js"></script>
     <script src="~/vendor\devextreme-aspnet-data\js\dx.aspnet.data.js"></script>
-    <script src="~/js/areas/admin/admin-educator-list.js"></script>
+    <script src="~/js/areas/admin/admin-educator-certificate-list.js"></script>
 }

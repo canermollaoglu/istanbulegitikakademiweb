@@ -42,7 +42,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         public IActionResult Add()
         {
             ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducatorAdd");
-            return View();
+            var model = new AddGetVm
+            {
+                Certificates = _unitOfWork.EducatorCertificate.Get(null, order => order.OrderBy(x => x.Name))
+            };
+            return View(model);
         }
 
         [HttpPost, Route("admin/egitmen-ekle")]
@@ -110,7 +114,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     Biography = data.Biography,
                     ShortDescription = data.ShortDescription
                 };
-                _unitOfWork.Educator.Insert(newEducator);
+                _unitOfWork.Educator.Insert(newEducator,data.CertificateIds);
 
                 if (data.SocialMedia != null)
                     _unitOfWork.EducatorSocialMedia.Insert(newEducator.Id, data.SocialMedia.Facebook, data.SocialMedia.Linkedin, data.SocialMedia.GooglePlus, data.SocialMedia.Twitter);
@@ -172,8 +176,9 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 Email = educator.User.Email,
                 FilePath = educator.User.AvatarPath,
                 Biography = educator.Biography,
-                ShortDescription = educator.ShortDescription
-                
+                ShortDescription = educator.ShortDescription,
+                Certificates = _unitOfWork.EducatorCertificate.Get(null,o=>o.OrderBy(x=>x.Name)),
+                RelatedCertificates = _unitOfWork.Educator.GetCertificates(educator.Id)
             };
             return View(model);
         }
@@ -190,8 +195,9 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     errors = errors
                 });
             }
-
+            
             var educator = _unitOfWork.Educator.Get(x => x.Id == data.EducatorId.ToString(), null, x => x.User).First();
+           
 
             if (!string.IsNullOrEmpty(data.ProfilePhoto.Base64Content))
             {
@@ -210,7 +216,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             educator.User.PhoneNumber = data.Phone;
             educator.User.Email = data.Email;
 
-            _unitOfWork.Educator.Update(educator);
+            _unitOfWork.Educator.Update(educator,data.CertificateIds);
+
             return Json(new ResponseModel
             {
                 isSuccess = true,
