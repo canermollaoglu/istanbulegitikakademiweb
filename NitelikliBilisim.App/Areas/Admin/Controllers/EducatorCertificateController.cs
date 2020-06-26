@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Managers;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
@@ -32,6 +33,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/egitmensertifika/ekle")]
         public IActionResult Add()
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducatorCertificateAdd");
             return View();
         }
 
@@ -85,7 +87,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/egitmensertifika/sertifikalar")]
         public IActionResult List()
         {
-            //ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducatorCertificateList")
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducatorCertificateList");
             return View();
         }
 
@@ -112,6 +114,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/egitmensertifika/guncelle")]
         public IActionResult Update(int certificateId)
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducatorCertificateUpdate");
             var certificate = _unitOfWork.EducatorCertificate.GetById(certificateId);
             var certificateVm = new EducatorCertificateUpdateGetVM
             {
