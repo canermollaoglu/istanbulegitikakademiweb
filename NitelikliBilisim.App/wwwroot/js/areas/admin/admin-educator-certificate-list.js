@@ -93,7 +93,7 @@ function createGrid() {
             }, {
                 dataField: "description",
                 headerCellTemplate: $('<b style="color: black;">Açıklaması</b>'),
-                width: 700
+                width: 500
             },
             , {
                 headerCellTemplate: $('<b style="vertical-align:middle; color: black;">İşlem</b>'),

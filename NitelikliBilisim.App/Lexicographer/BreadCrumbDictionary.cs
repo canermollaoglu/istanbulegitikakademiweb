@@ -67,6 +67,15 @@ namespace NitelikliBilisim.App.Lexicographer
             /*EducationGrup*/
             _dictionary.Add("AdminEducationGrupList",
             new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Eğitim Grupları Listele", url: null) });
+       
+            /*Educator Certificate*/
+            _dictionary.Add("AdminEducatorCertificateList",
+                new BreadCrumbItem[] {new BreadCrumbItem(title:"Admin Panel",url:"/admin/panel"),new BreadCrumbItem(title:"Eğitmen Sertifikası Listele",url:null)});
+            _dictionary.Add("AdminEducatorCertificateAdd",
+                new BreadCrumbItem[] { new BreadCrumbItem(title: "Eğitmen Sertifika Listesi", url: "/admin/egitmensertifika/sertifikalar"), new BreadCrumbItem(title: "Eğitmen Sertifikası Ekle", url: null) });
+            _dictionary.Add("AdminEducatorCertificateUpdate",
+                new BreadCrumbItem[] { new BreadCrumbItem(title: "Eğitmen Sertifika Listesi", url: "/admin/egitmensertifika/sertifikalar"), new BreadCrumbItem(title: "Eğitmen Sertifikası Güncelle", url: null) });
+
         }
 
         public static BreadCrumbItem[] ReadPart(string part)
