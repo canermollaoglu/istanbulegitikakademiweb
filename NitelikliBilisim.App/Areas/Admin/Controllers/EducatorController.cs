@@ -215,7 +215,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             educator.User.Surname = data.Surname;
             educator.User.PhoneNumber = data.Phone;
             educator.User.Email = data.Email;
-
+            //Test 
             _unitOfWork.Educator.Update(educator, data.CertificateIds);
 
             return Json(new ResponseModel
