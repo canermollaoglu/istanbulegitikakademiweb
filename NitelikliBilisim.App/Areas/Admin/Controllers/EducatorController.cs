@@ -114,7 +114,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     Biography = data.Biography,
                     ShortDescription = data.ShortDescription
                 };
-                _unitOfWork.Educator.Insert(newEducator,data.CertificateIds);
+                _unitOfWork.Educator.Insert(newEducator, data.CertificateIds);
 
                 if (data.SocialMedia != null)
                     _unitOfWork.EducatorSocialMedia.Insert(newEducator.Id, data.SocialMedia.Facebook, data.SocialMedia.Linkedin, data.SocialMedia.GooglePlus, data.SocialMedia.Twitter);
@@ -177,7 +177,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 FilePath = educator.User.AvatarPath,
                 Biography = educator.Biography,
                 ShortDescription = educator.ShortDescription,
-                Certificates = _unitOfWork.EducatorCertificate.Get(null,o=>o.OrderBy(x=>x.Name)),
+                Certificates = _unitOfWork.EducatorCertificate.Get(null, o => o.OrderBy(x => x.Name)),
                 RelatedCertificates = _unitOfWork.Educator.GetCertificates(educator.Id)
             };
             return View(model);
@@ -195,9 +195,9 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     errors = errors
                 });
             }
-            
+
             var educator = _unitOfWork.Educator.Get(x => x.Id == data.EducatorId.ToString(), null, x => x.User).First();
-           
+
 
             if (!string.IsNullOrEmpty(data.ProfilePhoto.Base64Content))
             {
@@ -216,7 +216,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             educator.User.PhoneNumber = data.Phone;
             educator.User.Email = data.Email;
 
-            _unitOfWork.Educator.Update(educator,data.CertificateIds);
+            _unitOfWork.Educator.Update(educator, data.CertificateIds);
 
             return Json(new ResponseModel
             {
@@ -234,7 +234,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             var educatorSocialMedias = _unitOfWork.EducatorSocialMedia.Get(x => x.EducatorId == educatorId.ToString(), null, x => x.Educator).ToList();
             var model = new UpdateGetEducatorSocialMediaVm
             {
-                Id = Guid.Parse(educatorSocialMedias.First().EducatorId),
+                Id = Guid.Parse(educatorId.ToString()),
                 Facebook = educatorSocialMedias.FirstOrDefault(x => x.SocialMediaType == Core.Enums.EducatorSocialMediaType.Facebook)?.Link,
                 Linkedin = educatorSocialMedias.FirstOrDefault(x => x.SocialMediaType == Core.Enums.EducatorSocialMediaType.LinkedIn)?.Link,
                 GooglePlus = educatorSocialMedias.FirstOrDefault(x => x.SocialMediaType == Core.Enums.EducatorSocialMediaType.GooglePlus)?.Link,

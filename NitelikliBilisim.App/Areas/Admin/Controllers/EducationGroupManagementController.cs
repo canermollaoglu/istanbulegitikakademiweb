@@ -156,7 +156,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             });
         }
         [HttpPost, Route("admin/change-educator-salary")]
-        public async Task<IActionResult> ChangeEducatorSalary(EducatorSalaryData data)
+        public  IActionResult ChangeEducatorSalary(EducatorSalaryData data)
         {
             if (!data.groupId.HasValue)
                 return Json(new ResponseModel
