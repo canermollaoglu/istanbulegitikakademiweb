@@ -17,8 +17,6 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.educator
         public string ShortDescription { get; set; }
         public string FilePath { get; set; }
         public List<EducatorCertificate> RelatedCertificates { get; set; }
-        public List<EducatorCertificate> Certificates { get; set; }
-
     }
 
     public class UpdatePostVm : AddPostVm
