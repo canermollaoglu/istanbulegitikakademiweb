@@ -94,8 +94,7 @@ function createGrid() {
                 dataField: "description",
                 headerCellTemplate: $('<b style="color: black;">Açıklaması</b>'),
                 width: 500
-            },
-            , {
+            }, {
                 headerCellTemplate: $('<b style="vertical-align:middle; color: black;">İşlem</b>'),
                 allowSearch: false,
                 cellTemplate: function (container, options) {
@@ -108,5 +107,63 @@ function createGrid() {
                 alignment: "center"
             }
         ]
+        ,
+        masterDetail: {
+            enabled: true,
+            template: function (container, options) {
+                var currentCertificateData = options.data;
+                $("<div>")
+                    .addClass("font-weight-bold")
+                    .text(currentCertificateData.name +" sertifikasına sahip eğitmenler : ")
+                    .appendTo(container);
+                $("<div>")
+                    .dxDataGrid({
+                        remoteOperations: true,
+                        dataSource: {
+                            store: DevExpress.data.AspNet.createStore({
+                                loadParams: { certificateId: options.data.id },
+                                loadUrl: "../../api/educator/get-educator-list-by-certificate-id",
+                                onBeforeSend: function (method, ajaxOptions) {
+                                    ajaxOptions.xhrFields = { withCredentials: true };
+                                }
+                            })
+                        },
+                        columnAutoWidth: true,
+                        hoverStateEnabled: true,
+                        showBorders: true,
+                        showColumnLines: true,
+                        showRowLines: true,
+                        paging: { pageSize: 5 },
+                        pager: {
+                            showPageSizeSelector: true,
+                            allowedPageSizes: [5, 15, 30, 45],
+                            showInfo: true
+                        },
+                        rowAlternationEnabled: true,
+                        columns: [
+                            {
+                                headerCellTemplate: $("<b>Ünvan</b>"),
+                                caption: 'Ünvan',
+                                dataField: "title",
+                            },
+                            {
+                                headerCellTemplate: $('<b>Ad Soyad</b>'),
+                                caption: 'Ad Soyad',
+                                dataField: 'fullName',
+                            },
+                            {
+                                headerCellTemplate: $('<b> Email</b>'),
+                                caption: 'E Mail',
+                                dataField: 'email'
+                            }, {
+                                headerCellTemplate: $('<b>Telefon</b>'),
+                                caption: 'Telefon',
+                                dataField: 'phone'
+                            }
+                        ]
+
+                    }).appendTo(container);
+            }
+        }
     });
 }
