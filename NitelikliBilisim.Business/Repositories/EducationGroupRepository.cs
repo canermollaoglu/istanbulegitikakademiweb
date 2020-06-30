@@ -19,6 +19,24 @@ namespace NitelikliBilisim.Business.Repositories
             _context = context;
         }
 
+        public IQueryable<EducationGroupListVm> GetListQueryable()
+        {
+            var groups = from eg in Context.EducationGroups
+                       join e in Context.Educations on eg.EducationId equals e.Id
+                       join h in Context.EducationHosts on eg.HostId equals h.Id
+                       join gs in Context.Bridge_GroupStudents on eg.Id equals gs.Id
+                       select new EducationGroupListVm
+                       {
+                           Id = eg.Id,
+                           EducationName = e.Name,
+                           GroupName = eg.GroupName,
+                           HostName = h.HostName,
+                           HostCity = EnumSupport.GetDescription(h.City),
+                           StartDate = eg.StartDate
+                       };
+            return groups;
+        }
+
         public bool Insert(EducationGroup entity, List<int> days)
         {
             using (var transation = _context.Database.BeginTransaction())

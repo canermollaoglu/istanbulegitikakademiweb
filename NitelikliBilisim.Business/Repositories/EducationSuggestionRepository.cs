@@ -37,6 +37,11 @@ namespace NitelikliBilisim.Business.Repositories
         {
 
         }
+        
+        public IQueryable<Suggestion> GetListQueryable()
+        {
+            return Context.Suggestions.Include(c => c.Category);
+        }
 
         public GetSuggestionsVm GetSuggestionsVm()
         {

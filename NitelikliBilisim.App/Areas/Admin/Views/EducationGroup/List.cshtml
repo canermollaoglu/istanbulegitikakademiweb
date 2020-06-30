@@ -43,6 +43,7 @@
     <script src="~/assets/js/area-admin/dataTables.bootstrap4.js"></script>
     <script src="~/js/sup/alert-sup.js"></script>
     <script src="~/vendor\devextreme\dist\js\dx.all.js"></script>
+    <script src="~/vendor\devextreme-aspnet-data\js\dx.aspnet.data.js"></script>
     <script>
         /* fields */
         var confirmModalBuilder = new AlertSupport.ConfirmModalBuilder();
@@ -58,7 +59,18 @@
         /*DataGrid*/
         function createGrid() {
             $("#educationGrup-grid").dxDataGrid({
-                dataSource: `get-education-grup-list`,
+                dataSource: DevExpress.data.AspNet.createStore({
+                    key: "id",
+                    loadUrl: "../../api/educationgroup/get-education-group-list"
+                }),
+                remoteOperations: {
+                    paging: true,
+                    filtering: true,
+                    sorting: true,
+                    grouping: true,
+                    summary: true,
+                    groupPaging: true
+                },
                 showBorders: true,
                 showColumnLines: true,
                 showRowLines: true,
@@ -70,10 +82,10 @@
                 searchPanel: {
                     visible: true,
                     width: 240,
-                    placeholder: "Search..."
+                    placeholder: "Ara..."
                 },
                 paging: {
-                    pageSize: 8
+                    pageSize: 10
                 },
                 onContentReady: function () {
                 },
@@ -83,38 +95,43 @@
                     showInfo: true
                 },
                 columns: [{
+                    headerCellTemplate: $('<b style="color: black; font-weight: bold">Grup İsmi</b>'),
                     dataField: "groupName",
-                    headerCellTemplate: $('<i style="color: black; font-weight: bold">Grup İsmi</i>'),
                     width: 140
 
                 }, {
+                    headerCellTemplate: $('<b style="color: black; font-weight: bold">Eğitim İsmi</b>'),
                     dataField: "educationName",
-                    headerCellTemplate: $('<i style="color: black; font-weight: bold">Eğitim İsmi</i>'),
                     width: 270
                 }, {
+                    headerCellTemplate: $('<b style="color: black; font-weight: bold">Başlangıç Tarihi</b>'),
                     dataField: "startDate",
-                    headerCellTemplate: $('<i style="color: black; font-weight: bold">Başlangıç Tarihi</i>'),
                     dataType: 'date',
-                    format: 'dd/MM/yyyy',
-                    width: 200
+                    format: 'dd/MM/yyyy'
                 }, {
-                    dataField: "location",
-                    headerCellTemplate: $('<i style="color: black; font-weight: bold">Konum</i>'),
-                    width: 250
-                }, {
-                    headerCellTemplate: $('<i style="vertical-align:middle; color: black; font-weight: bold">İşlem</i>'),
+                    headerCellTemplate: $('<b style="color: black; font-weight: bold">Konum</b>'),
+                    dataField: "hostName",
+                    },
+                    {
+                        headerCellTemplate: $('<b style="color: black; font-weight: bold">Şehir</b>'),
+                        dataField: "hostCity",
+                        allowSearch: false,
+                        allowFiltering:false
+                    },
+                    {
+                    headerCellTemplate: $('<b style="vertical-align:middle; color: black; font-weight: bold">İşlem</b>'),
                     allowSearch: false,
                     cellTemplate: function (container, options) {
                         var current = options.data;
                         var div = $('<div class="btn-group" style="display: inline-flex; width:"auto"></div>');
 
-                        $(`<a class="btn btn-primary" href="/admin/gruba-ogrenci-ata/${current.groupId}"><i class=\"fa fa-users\"></i><span style="display: block">${current.assignedCount}/${current.quota}</span></a>`)
+                        $(`<a title="Gruba Öğrenci Ata" class="btn btn-primary" href="/admin/gruba-ogrenci-ata/${current.id}"><i class=\"fa fa-users\"></i><span style="display: block"></span></a>`)
                             .appendTo(div);
-                        $(`<a class="btn btn-warning" href="/admin/grup/ayarlar/${current.groupId}"><i class=\"fa fa-cogs\"></i><span style="display: block"></span></a>`)
+                        $(`<a title="Grup Ayarları" class="btn btn-warning" href="/admin/grup/ayarlar/${current.id}"><i class=\"fa fa-cogs\"></i><span style="display: block"></span></a>`)
                             .appendTo(div);
-                        $(`<a class="btn btn-success" href="/admin/grup-materyalleri/${current.groupId}"><i class=\"fa fa-dollar\"></i><span style="display: block"></span></a>`)
+                        $(`<a title="Grup Materyalleri" class="btn btn-success" href="/admin/grup-materyalleri/${current.id}"><i class=\"fa fa-dollar\"></i><span style="display: block"></span></a>`)
                             .appendTo(div);
-                        $(`<a class="btn btn-dark" href="/make-sure-lesson-days-created/${current.groupId}"><i class=\"fa fa-archive\"></i><span style="display: block"></span></a>`)
+                        $(`<a title="Eğitim günlerini sıfırla" class="btn btn-dark" href="/make-sure-lesson-days-created/${current.id}"><i class=\"fa fa-archive\"></i><span style="display: block"></span></a>`)
                             .appendTo(div);
 
                         div.appendTo(container);
