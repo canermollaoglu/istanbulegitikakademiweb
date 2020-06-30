@@ -93,18 +93,19 @@ function createGrid() {
             }, {
                 dataField: "description",
                 headerCellTemplate: $('<b style="color: black;">Açıklaması</b>'),
-                width: 500
+                
             }, {
                 headerCellTemplate: $('<b style="vertical-align:middle; color: black;">İşlem</b>'),
                 allowSearch: false,
                 cellTemplate: function (container, options) {
                     var current = options.data;
-                    $(`<a class="btn btn-warning" href="/admin/egitmensertifika/guncelle?certificateId=${current.id}">Güncelle</a>`)
+                    $(`<a title="Güncelle" class="btn btn-warning btn-sm" href="/admin/egitmensertifika/guncelle?certificateId=${current.id}"><i class=\"fa fa-edit\"></i></a>`)
                         .appendTo(container);
-                    $(`<button class="btn btn-danger" onClick="btnConfirmationModalTrigger_onClick(this)" data-url="/admin/educatorcertificate/delete?certificateId=${current.id}" style="cursor:pointer;">Sil</button>`)
+                    $(`<button title="Sil" class="btn btn-danger btn-sm" onClick="btnConfirmationModalTrigger_onClick(this)" data-url="/admin/educatorcertificate/delete?certificateId=${current.id}" style="cursor:pointer;"><i class=\"fa fa-trash\"></i></button>`)
                         .appendTo(container);
                 },
-                alignment: "center"
+                alignment: "center",
+                width:150
             }
         ]
         ,

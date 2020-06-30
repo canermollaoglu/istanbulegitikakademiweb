@@ -93,7 +93,8 @@ function createGrid() {
         },
         columns: [{
             caption:"Etiket İsmi",
-            dataField: "name"
+            dataField: "name",
+            width:300
         },
             {
             caption:"Açıklama",
@@ -104,13 +105,13 @@ function createGrid() {
             allowSearch: false,
             cellTemplate: function (container, options) {
                 var current = options.data;
-                $(`<a class="btn_1 gray" href="/admin/etiket-guncelle/${current.id}"><i class="fa fa-fw fa-pencil-square-o"></i> Güncelle</a>`)
+                $(`<a title="Güncelle" class="btn btn-warning btn-sm" href="/admin/etiket-guncelle/${current.id}"><i class="fa fa-fw fa-pencil-square-o"></i> </a>`)
                     .appendTo(container);
-                $(`<button class="btn-confirmation-modal-trigger btn_1 gray delete" data-url="/admin/etiket-sil?tagId=${current.id}" style="cursor:pointer;"><i class="fa fa-fw fa-times-circle-o"></i> Sil</button>`)
+                $(`<button title="Sil" class="btn-confirmation-modal-trigger btn btn-danger btn-sm" data-url="/admin/etiket-sil?tagId=${current.id}" style="cursor:pointer;"><i class="fa fa-trash"></i></button>`)
                     .appendTo(container);
             },
             alignment: "center",
-            width:"auto"
+            width:150
             }
         ]
     });

@@ -125,13 +125,13 @@
                         var current = options.data;
                         var div = $('<div class="btn-group" style="display: inline-flex; width:"auto"></div>');
 
-                        $(`<a title="Gruba Öğrenci Ata" class="btn btn-primary" href="/admin/gruba-ogrenci-ata/${current.id}"><i class=\"fa fa-users\"></i><span style="display: block"></span></a>`)
+                        $(`<a title="Gruba Öğrenci Ata" class="btn btn-primary btn-sm" href="/admin/gruba-ogrenci-ata/${current.id}"><i class=\"fa fa-users\"></i><span style="display: block"></span></a>`)
                             .appendTo(div);
-                        $(`<a title="Grup Ayarları" class="btn btn-warning" href="/admin/grup/ayarlar/${current.id}"><i class=\"fa fa-cogs\"></i><span style="display: block"></span></a>`)
+                        $(`<a title="Grup Ayarları" class="btn btn-warning btn-sm" href="/admin/grup/ayarlar/${current.id}"><i class=\"fa fa-cogs\"></i><span style="display: block"></span></a>`)
                             .appendTo(div);
-                        $(`<a title="Grup Materyalleri" class="btn btn-success" href="/admin/grup-materyalleri/${current.id}"><i class=\"fa fa-dollar\"></i><span style="display: block"></span></a>`)
+                        $(`<a title="Grup Materyalleri" class="btn btn-success btn-sm" href="/admin/grup-materyalleri/${current.id}"><i class=\"fa fa-dollar\"></i><span style="display: block"></span></a>`)
                             .appendTo(div);
-                        $(`<a title="Eğitim günlerini sıfırla" class="btn btn-dark" href="/make-sure-lesson-days-created/${current.id}"><i class=\"fa fa-archive\"></i><span style="display: block"></span></a>`)
+                        $(`<a title="Eğitim günlerini sıfırla" class="btn btn-dark btn-sm" href="/make-sure-lesson-days-created/${current.id}"><i class=\"fa fa-archive\"></i><span style="display: block"></span></a>`)
                             .appendTo(div);
 
                         div.appendTo(container);

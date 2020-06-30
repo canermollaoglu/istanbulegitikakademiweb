@@ -90,13 +90,13 @@ function createGrid() {
             showInfo: true
         },
         columns: [{
-            dataField: "title",
-            headerCellTemplate: $('<b style="color: black; font-weight: bold">Ünvan</b>')
-        },
-        {
             dataField: "fullName",
             headerCellTemplate: $('<b style="color: black; font-weight: bold">Eğitmen Adı</b>'),
-            width:160
+            width: 160
+        },
+        {
+            dataField: "title",
+            headerCellTemplate: $('<b style="color: black; font-weight: bold">Ünvan</b>')
         },
         {
             dataField: "phone",
@@ -108,18 +108,18 @@ function createGrid() {
             dataField: "email",
             headerCellTemplate: $('<b style="color: black; font-weight: bold">E-Posta</b>'),
             width: 280,
-            allowSorting:false
+            allowSorting: false
         },
         {
             headerCellTemplate: $('<b style="color: black; font-weight: bold">İşlemler</b>'),
             allowSearch: false,
             cellTemplate: function (container, options) {
                 var current = options.data;
-                $(`<a class="btn btn-warning" href="/admin/egitmen-guncelle/${current.id}"><i class=\"fa fa-edit\"></i></a>`)
+                $(`<a title="Güncelle" class="btn btn-warning btn-sm" href="/admin/egitmen-guncelle/${current.id}"><i class=\"fa fa-edit\"></i></a>`)
                     .appendTo(container);
-                $(`<a class="btn btn-primary" href="/admin/egitmen-sosyal-medya-guncelle/${current.id}"><i class=\"fa fa-chain\"></i><span>${current.socialMediaCount}</span></a>`)
+                $(`<a title="Sosyal Medya Hesapları" class="btn btn-primary btn-sm" href="/admin/egitmen-sosyal-medya-guncelle/${current.id}"><i class=\"fa fa-chain\"></i></a>`)
                     .appendTo(container);
-                $(`<button class="btn-confirmation-modal-trigger btn btn-danger" data-url="/admin/delete-educator?educatorId=${current.id}" style="cursor:pointer;"><i class=\"fa fa-trash\"></i></button>`)
+                $(`<button title="Sil" class="btn-confirmation-modal-trigger btn btn-danger btn-sm" data-url="/admin/delete-educator?educatorId=${current.id}" style="cursor:pointer;"><i class=\"fa fa-trash\"></i></button>`)
                     .appendTo(container);
             },
             alignment: "center",
@@ -128,3 +128,5 @@ function createGrid() {
         ]
     });
 }
+
+
