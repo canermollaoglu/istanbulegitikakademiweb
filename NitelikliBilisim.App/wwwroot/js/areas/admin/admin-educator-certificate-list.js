@@ -76,7 +76,7 @@ function createGrid() {
             placeholder: "Ara..."
         },
         paging: {
-            pageSize: 5
+            pageSize: 10
         },
         onContentReady: function () {
         },
