@@ -91,25 +91,27 @@ function createGrid() {
         },
         columns: [{
             dataField: "title",
-            headerCellTemplate: $('<i style="color: black; font-weight: bold">Ünvan</i>')
+            headerCellTemplate: $('<b style="color: black; font-weight: bold">Ünvan</b>')
         },
         {
             dataField: "fullName",
-            headerCellTemplate: $('<i style="color: black; font-weight: bold">Eğitmen Adı</i>'),
+            headerCellTemplate: $('<b style="color: black; font-weight: bold">Eğitmen Adı</b>'),
             width:160
         },
         {
             dataField: "phone",
-            headerCellTemplate: $('<i style="color: black; font-weight: bold">Telefon</i>'),
-            width: 130
+            headerCellTemplate: $('<b style="color: black; font-weight: bold">Telefon</b>'),
+            width: 130,
+            allowSorting: false
         },
         {
             dataField: "email",
-            headerCellTemplate: $('<i style="color: black; font-weight: bold">E-Posta</i>'),
-            width: 280
+            headerCellTemplate: $('<b style="color: black; font-weight: bold">E-Posta</b>'),
+            width: 280,
+            allowSorting:false
         },
         {
-            headerCellTemplate: $('<i style="color: black; font-weight: bold">İşlemler</i>'),
+            headerCellTemplate: $('<b style="color: black; font-weight: bold">İşlemler</b>'),
             allowSearch: false,
             cellTemplate: function (container, options) {
                 var current = options.data;
