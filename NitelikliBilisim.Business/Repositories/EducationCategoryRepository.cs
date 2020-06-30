@@ -73,6 +73,17 @@ namespace NitelikliBilisim.Business.Repositories
 
             return dictionary;
         }
+
+        public IQueryable<EducationCategory> GetBaseCategoryListQueryable()
+        {
+            return Context.EducationCategories.Where(x=>x.BaseCategoryId == null);
+        }
+        public IQueryable<EducationCategory> GetCategoriesByBaseCategoryId(Guid baseCategoryId)
+        {
+            return Context.EducationCategories.Where(x => x.BaseCategoryId == baseCategoryId);
+
+        }
+
     }
 
     public class _EducationCountByCategory

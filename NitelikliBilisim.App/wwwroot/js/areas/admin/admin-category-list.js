@@ -50,10 +50,21 @@ function confirm_onClick() {
 /*DataGrid*/
 function createGrid() {
     $("#category-grid").dxDataGrid({
-        dataSource: `get-category-list`,
+        dataSource: DevExpress.data.AspNet.createStore({
+            key: "id",
+            loadUrl:"../../api/educationcategory/get-base-category-list"
+        }),
+        remoteOperations: {
+            paging: true,
+            filtering: true,
+            sorting: true,
+            grouping: true,
+            summary: true,
+            groupPaging: true
+        },
         showBorders: true,
         showColumnLines: true,
-        showRowLines: true,
+        showRowLines: false,
         filterRow: {
             visible: true,
             applyFilter: "auto"
@@ -61,7 +72,7 @@ function createGrid() {
         searchPanel: {
             visible: true,
             width: 240,
-            placeholder: "Search..."
+            placeholder: "Ara..."
         },
         paging: {
             pageSize: 10
@@ -80,26 +91,88 @@ function createGrid() {
         },
         columns: [{
             dataField: "name",
-            headerCellTemplate: $('<i style="color: black; font-weight: bold">Kategori Adı</i>')
+            headerCellTemplate: $('<b style="color: black;">Kategori Adı</b>')
             },
             {
                 dataField: "description",
-                headerCellTemplate: $('<i style="color: black; font-weight: bold">Slogan</i>')
+                headerCellTemplate: $('<b style="color: black;">Slogan</b>')
             },
             {
-                headerCellTemplate: $('<i style="color: black; font-weight: bold">İşlem</i>'),
+                headerCellTemplate: $('<b style="color: black;">İşlem</b>'),
                 allowSearch: false,
                 cellTemplate: function (container, options) {
                     var current = options.data;
-                    $(`<a class="btn btn-warning" href="/admin/kategori-guncelle/${current.id}">Güncelle</a>`)
+                    $(`<a class="btn_1 gray" href="/admin/kategori-guncelle/${current.id}"><i class="fa fa-fw fa-pencil-square-o"></i> Güncelle</a>`)
                         .appendTo(container);
-                    $(`<button class="btn-confirmation-modal-trigger btn btn-danger" data-url="/admin/kategori-sil?categoryId=${current.id}" style="cursor:pointer;">Sil</button>`)
+                    $(`<button class="btn-confirmation-modal-trigger btn_1 gray delete" data-url="/admin/kategori-sil?categoryId=${current.id}" style="cursor:pointer;"><i class="fa fa-fw fa-times-circle-o"></i> Sil</button>`)
                         .appendTo(container);
                 },
                 alignment: "center",
                 width:"auto"
             }
-        ]
+        ],
+        masterDetail: {
+            enabled: true,
+            template: function (container, options) {
+                var currentCategoryData = options.data;
+                $("<div>")
+                    .addClass("master-detail-caption")
+                    .text(currentCategoryData.name + " kategorisine bağlı alt kategoriler :")
+                    .appendTo(container);
+                $("<div>")
+                    .dxDataGrid({
+                        remoteOperations: true,
+                        dataSource: {
+                            store: DevExpress.data.AspNet.createStore({
+                                loadParams: { baseCategoryId: options.data.id },
+                                loadUrl: "../../api/educationcategory/get-categories-by-base-category-id",
+                                onBeforeSend: function (method, ajaxOptions) {
+                                    ajaxOptions.xhrFields = { withCredentials: true };
+                                }
+                            })
+                        },
+                        columnAutoWidth: true,
+                        hoverStateEnabled: true,
+                        showBorders: true,
+                        showColumnLines: true,
+                        showRowLines: true,
+                        paging: { pageSize: 5 },
+                        pager: {
+                            showPageSizeSelector: true,
+                            allowedPageSizes: [5, 15, 30, 45],
+                            showInfo: true
+                        },
+                        rowAlternationEnabled: true,
+                        columns: [
+                            {
+                                headerCellTemplate: $("<b>Kategori Adı</b>"),
+                                caption: 'Ünvan',
+                                dataField: "name",
+                            },
+                            {
+                                headerCellTemplate: $('<b>Slogan</b>'),
+                                caption: 'Açıklama',
+                                dataField: 'description',
+                            },
+                            {
+                                headerCellTemplate: $('<b>İşlem</b>'),
+                                allowSearch: false,
+                                cellTemplate: function (container, options) {
+                                    console.log(options.data);
+                                    var current = options.data;
+                                    $(`<a class="btn_1 gray" href="/admin/kategori-guncelle/${current.id}"><i class="fa fa-fw fa-pencil-square-o"></i> Güncelle</a>`)
+                                        .appendTo(container);
+                                    $(`<button class="btn-confirmation-modal-trigger btn_1 gray delete" data-url="/admin/kategori-sil?categoryId=${current.id}" style="cursor:pointer;"><i class="fa fa-fw fa-times-circle-o"></i> Sil</button>`)
+                                        .appendTo(container);
+                                },
+                                alignment: "center",
+                                width: "auto"
+                            }
+                        ]
+
+                    }).appendTo(container);
+            }
+        }
     });
 
 }
