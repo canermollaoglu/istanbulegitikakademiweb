@@ -93,7 +93,7 @@ function createGrid() {
             }, {
                 dataField: "description",
                 headerCellTemplate: $('<b style="color: black;">Açıklaması</b>'),
-                
+
             }, {
                 headerCellTemplate: $('<b style="vertical-align:middle; color: black;">İşlem</b>'),
                 allowSearch: false,
@@ -105,7 +105,7 @@ function createGrid() {
                         .appendTo(container);
                 },
                 alignment: "center",
-                width:150
+                width: 150
             }
         ]
         ,
@@ -115,7 +115,7 @@ function createGrid() {
                 var currentCertificateData = options.data;
                 $("<div>")
                     .addClass("font-weight-bold")
-                    .text(currentCertificateData.name +" sertifikasına sahip eğitmenler : ")
+                    .text(currentCertificateData.name + " sertifikasına sahip eğitmenler : ")
                     .appendTo(container);
                 $("<div>")
                     .dxDataGrid({
@@ -143,14 +143,17 @@ function createGrid() {
                         rowAlternationEnabled: true,
                         columns: [
                             {
+                                headerCellTemplate: $('<b>Ad Soyad</b>'),
+                                caption: 'Ad Soyad',
+                                cellTemplate: function (container, options) {
+                                    var current = options.data;
+                                    $(`<a href="/admin/egitmen-guncelle/${current.id}">${current.fullName}</a>`)
+                                        .appendTo(container);
+                                },
+                            }, {
                                 headerCellTemplate: $("<b>Ünvan</b>"),
                                 caption: 'Ünvan',
                                 dataField: "title",
-                            },
-                            {
-                                headerCellTemplate: $('<b>Ad Soyad</b>'),
-                                caption: 'Ad Soyad',
-                                dataField: 'fullName',
                             },
                             {
                                 headerCellTemplate: $('<b> Email</b>'),
