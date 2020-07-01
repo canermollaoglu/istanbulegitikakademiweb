@@ -143,6 +143,13 @@ function createGrid() {
                             showInfo: true
                         },
                         rowAlternationEnabled: true,
+                        onContentReady: function () {
+                            var deleteButtons = $(".btn-confirmation-modal-trigger");
+                            for (var i = 0; i < deleteButtons.length; i++) {
+                                var btn = deleteButtons[i];
+                                btn.onclick = btnConfirmationModalTrigger_onClick;
+                            }
+                        },
                         columns: [
                             {
                                 headerCellTemplate: $("<b>Kategori Adı</b>"),
