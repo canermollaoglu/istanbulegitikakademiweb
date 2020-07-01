@@ -21,9 +21,9 @@ namespace NitelikliBilisim.Business.Repositories
                 Name = x.Name,
                 Description = x.Description,
                 CertificateImageFullPath = x.CertificateImagePath
-            });
+        });
         }
 
-
+       
     }
 }

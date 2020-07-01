@@ -41,6 +41,7 @@
     <script src="~/assets/js/area-admin/dataTables.bootstrap4.js"></script>
     <script src="~/js/sup/alert-sup.js"></script>
     <script src="~/vendor\devextreme\dist\js\dx.all.js"></script>
+    <script src="~/vendor\devextreme-aspnet-data\js\dx.aspnet.data.js"></script>
     <script>
         /* fields */
         var confirmModalBuilder = new AlertSupport.ConfirmModalBuilder();
@@ -56,7 +57,18 @@
         /*DataGrid*/
         function createGrid() {
             $("#education-grid").dxDataGrid({
-                dataSource: `get-education-list`,
+                dataSource: DevExpress.data.AspNet.createStore({
+                    key: "id",
+                    loadUrl: "../../api/education/get-education-list"
+                }),
+                remoteOperations: {
+                    paging: true,
+                    filtering: true,
+                    sorting: true,
+                    grouping: true,
+                    summary: true,
+                    groupPaging: true
+                },
                 showBorders: true,
                 showColumnLines: true,
                 showRowLines: true,
@@ -68,10 +80,10 @@
                 searchPanel: {
                     visible: true,
                     width: 240,
-                    placeholder: "Search..."
+                    placeholder: "Ara..."
                 },
                 paging: {
-                    pageSize: 8
+                    pageSize: 10
                 },
                 onContentReady: function () {
                 },
@@ -86,24 +98,28 @@
                         var current = options.data;
                         if (current.isActive == true) {
                             $(`<a href="/admin/egitim-guncelle/${current.id}">
-                                                            <i class=\"fa fa-unlock text-success\" style=\"font-size:200%;\"></i></a>`)
+                                                                    <i class=\"fa fa-unlock text-success\" style=\"font-size:200%;\"></i></a>`)
                                 .appendTo(container);
                         }
                         else {
                             $(`<a href="/admin/egitim-guncelle/${current.id}">
-                                                            <i class=\"fa fa-lock text-danger\" style=\"font-size:200%;\"></i></a>`)
+                                                                    <i class=\"fa fa-lock text-danger\" style=\"font-size:200%;\"></i></a>`)
                                 .appendTo(container);
                         }
                     },
                     alignment: "center"
                 }, {
                     dataField: "name",
-                    headerCellTemplate: $('<i style="color: black; font-weight: bold">İsmi</i>'),
-                    width: 140
+                    headerCellTemplate: $('<b style="color: black; font-weight: bold">İsmi</b>'),
+                    width: 250
 
                 }, {
-                    dataField: "educationCategories",
-                    headerCellTemplate: $('<i style="color: black; font-weight: bold">Etiketler</i>'),
+
+                    headerCellTemplate: $('<b style="color: black; font-weight: bold">Kategorisi</b>'),
+                    cellTemplate: function (container, options) {
+                        var category = options.data.category;
+                        $(`<span> ${category.name} </span>`).appendTo(container);
+                    },
                     width: 250
                 }, {
                     cellTemplate: function (container, options) {
@@ -117,19 +133,22 @@
                     dataField: "level",
                     headerCellTemplate: $('<i style="color: black; font-weight: bold">Seviye</i>'),
                     width: 60,
-                    alignment: "center"
+                    alignment: "center",
+                    allowSorting: false,
+                    allowSearch: false,
+                    allowFiltering: false
                 }, {
                     headerCellTemplate: $('<i style="vertical-align:middle; color: black; font-weight: bold">İşlem</i>'),
                     allowSearch: false,
                     cellTemplate: function (container, options) {
                         var current = options.data;
-                        $(`<a class="btn btn-primary" href="/admin/egitim-medya-yonetimi/${current.id}"><i class=\"fa fa-file-photo-o\"></i><span style="display: block">${current.mediaCount}</span></a>`)
+                        $(`<a title="Medya Yönetimi" class="btn btn-primary btn-sm btn-space" href="/admin/egitim-medya-yonetimi/${current.id}"><i class=\"fa fa-file-photo-o\"></i><span style="display: block"></span></a>`)
                             .appendTo(container);
-                        $(`<a class="btn btn-secondary" href="/admin/egitim-parca-yonetimi/${current.id}"><i class=\"fa fa-list-ul\"></i><span style="display: block"> ${current.partCount}</span></a>`)
+                        $(`<a title="Parça Yönetimi" class="btn btn-secondary btn-sm" href="/admin/egitim-parca-yonetimi/${current.id}"><i class=\"fa fa-list-ul\"></i><span style="display: block"></span></a>`)
                             .appendTo(container);
-                        $(`<a class="btn btn-info" href="/admin/egitim-kazanim-yonetimi/${current.id}"><i class=\"fa fa-gift\"></i><span style="display: block"> ${current.gainCount}</span></a>`)
+                        $(`<a title="Neler Öğreneceksiniz?" class="btn btn-info btn-sm" href="/admin/egitim-kazanim-yonetimi/${current.id}"><i class=\"fa fa-gift\"></i><span style="display: block"></span></a>`)
                             .appendTo(container);
-                        $(`<a class="btn btn-success" href="/admin/egitmen-ata/${current.id}"><i class=\"fa fa-users\"></i><span style="display: block"> ${current.educatorCount}</span></a>`)
+                        $(`<a title="Eğitmen Ata" class="btn btn-success btn-sm" href="/admin/egitmen-ata/${current.id}"><i class=\"fa fa-users\"></i><span style="display: block"></span></a>`)
                             .appendTo(container);
                     },
                     width: "auto",

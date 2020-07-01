@@ -49,10 +49,24 @@ function confirm_onClick() {
 /*DataGrid*/
 function createGrid() {
     $("#tag-grid").dxDataGrid({
-        dataSource: `get-tag-list`,
+        dataSource: DevExpress.data.AspNet.createStore({
+            key: "id",
+            loadUrl: "../../api/educationtag/get-education-tag-list",
+        }),
+        selection: {
+            mode: "single"
+        },
+        remoteOperations: {
+            paging: true,
+            filtering: true,
+            sorting: true,
+            grouping: true,
+            summary: true,
+            groupPaging: true
+        },
         showBorders: true,
         showColumnLines: true,
-        showRowLines: true,
+        showRowLines: false,
         filterRow: {
             visible: true,
             applyFilter: "auto"
@@ -60,7 +74,7 @@ function createGrid() {
         searchPanel: {
             visible: true,
             width: 240,
-            placeholder: "Search..."
+            placeholder: "Ara..."
         },
         paging: {
             pageSize: 10
@@ -78,26 +92,27 @@ function createGrid() {
             showInfo: true
         },
         columns: [{
+            caption:"Etiket İsmi",
             dataField: "name",
-            headerCellTemplate: $('<i style="color: black; font-weight: bold">Etiket İsmi</i>')
+            width:300
+        },
+            {
+            caption:"Açıklama",
+            dataField: "description"
         },
         {
-            dataField: "description",
-            headerCellTemplate: $('<i style="color: black; font-weight: bold">Açıklama</i>')
-        },
-        {
-            headerCellTemplate: $('<i style="color: black; font-weight: bold">İşlem</i>'),
+            caption:"İşlem",
             allowSearch: false,
             cellTemplate: function (container, options) {
                 var current = options.data;
-                $(`<a class="btn btn-warning" href="/admin/etiket-guncelle/${current.id}">Güncelle</a>`)
+                $(`<a title="Güncelle" class="btn btn-warning btn-sm" href="/admin/etiket-guncelle/${current.id}"><i class="fa fa-fw fa-pencil-square-o"></i> </a>`)
                     .appendTo(container);
-                $(`<button class="btn-confirmation-modal-trigger btn btn-danger" data-url="/admin/etiket-sil?tagId=${current.id}" style="cursor:pointer;">Sil</button>`)
+                $(`<button title="Sil" class="btn-confirmation-modal-trigger btn btn-danger btn-sm" data-url="/admin/etiket-sil?tagId=${current.id}" style="cursor:pointer;"><i class="fa fa-trash"></i></button>`)
                     .appendTo(container);
             },
             alignment: "center",
-            width:"auto"
-        }
+            width:150
+            }
         ]
     });
 

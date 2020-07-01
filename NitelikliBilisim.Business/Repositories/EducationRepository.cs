@@ -5,8 +5,10 @@ using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education;
+using NitelikliBilisim.Core.ViewModels.areas.admin.suggestion;
 using NitelikliBilisim.Core.ViewModels.search;
 using NitelikliBilisim.Data;
+using NitelikliBilisim.Data.Migrations;
 using NitelikliBilisim.Support.Enums;
 using NitelikliBilisim.Support.Text;
 using System;
@@ -19,8 +21,26 @@ namespace NitelikliBilisim.Business.Repositories
 {
     public class EducationRepository : BaseRepository<Education, Guid>, IPageableEntity<Education>
     {
+
         public EducationRepository(NbDataContext context) : base(context)
         {
+        }
+
+        public IQueryable<EducationListVm> GetListQueryable()
+        {
+            return from e in Context.Educations
+                   join c in Context.EducationCategories on e.CategoryId equals c.Id
+                   select new EducationListVm
+                   {
+                       Id = e.Id,
+                       Name = e.Name,
+                       Description = e.Description,
+                       Category = c,
+                       Level = EnumSupport.GetDescription<EducationLevel>((EducationLevel)e.Level),
+                       Days = e.Days,
+                       HoursPerDay = e.HoursPerDay,
+                       isActive = e.IsActive
+                   };
         }
 
         public PagedEntity<Education> GetPagedEntity(int page = 0, Expression<Func<Education, bool>> filter = null, int shownRecords = 15)

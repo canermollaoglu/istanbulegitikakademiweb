@@ -92,6 +92,25 @@ namespace NitelikliBilisim.Business.Repositories
                       SocialMediaCount = Context.EducatorSocialMedias.Count(z => z.EducatorId == x.Id)
                   });
         }
+
+        public IQueryable<_Educator> GetEducatorListByCertificateId(int certificateId)
+        {
+            var data = from e in Context.Educators
+                       join us in Context.Users on e.Id equals us.Id
+                       join ec in Context.Bridge_EducatorEducatorCertificates on e.Id equals ec.Id
+                       join c in Context.EducatorCertificates on ec.Id2 equals c.Id
+                       where c.Id == certificateId
+                       select new _Educator
+                       {
+                           Id = e.Id,
+                           FullName = us.Name + "  " + us.Surname,
+                           Title = e.Title,
+                           Email = us.Email,
+                           Phone = us.PhoneNumber
+                       };
+
+            return data;
+        }
         public List<EducatorCertificate> GetCertificates (string userId){
             var data = (from b in Context.Bridge_EducatorEducatorCertificates
                         join c in Context.EducatorCertificates on b.Id2 equals c.Id

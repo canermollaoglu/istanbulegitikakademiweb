@@ -1,4 +1,5 @@
-﻿using NitelikliBilisim.Core.Enums;
+﻿using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Enums;
 using System;
 using System.Collections.Generic;
 
@@ -28,6 +29,19 @@ namespace NitelikliBilisim.Core.ViewModels
         public string HoursPerDayText { get; set; }
         public string Level { get; set; }
         public string StartDateText { get; set; }
+    }
+
+    public class EducationListVm
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public EducationCategory Category { get; set; }
+        public string Description { get; set; }
+        public string Level { get; set; }
+        public byte HoursPerDay { get; set; }
+        public byte Days { get; set; }
+        public bool isActive { get; set; }
+
     }
     public class EducationMediaVm
     {

@@ -86,7 +86,7 @@ function formatState(opt) {
     if (!optimage) {
         return opt.text;
     } else {
-        var $opt = $('<span><img src="' + optimage + '"width="40px"/>' + opt.text+'</span>');
+        var $opt = $('<span><img src="' + optimage + '"height="30px"/>' + opt.text+'</span>');
     }
     return $opt;
 };
