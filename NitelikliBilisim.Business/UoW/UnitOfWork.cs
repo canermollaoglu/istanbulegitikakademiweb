@@ -69,7 +69,7 @@ namespace NitelikliBilisim.Business.UoW
         public BridgeEducationEducatorRepository Bridge_EducationEducator => _bridgeEducationEducatorRepository ??= new BridgeEducationEducatorRepository(_context);
         public EducationGroupRepository EducationGroup => _educationGroupRepository ??= new EducationGroupRepository(_context);
 
-        public EducationHostRepository EductionHost => _educationHostRepository ??= new EducationHostRepository(_context);
+        public EducationHostRepository EducationHost => _educationHostRepository ??= new EducationHostRepository(_context);
 
         public WeekDaysOfGroupRepository WeekDaysOfGroup => _weekDaysOfGroupRepository ??= new WeekDaysOfGroupRepository(_context);
 
