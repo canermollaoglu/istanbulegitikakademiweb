@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NitelikliBilisim.Data;
 
 namespace NitelikliBilisim.Data.Migrations
 {
     [DbContext(typeof(NbDataContext))]
-    partial class NbDataContextModelSnapshot : ModelSnapshot
+    [Migration("20200701120353_customerUniversityIdChange")]
+    partial class customerUniversityIdChange
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1591,9 +1593,6 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("nvarchar(128)")
                         .HasMaxLength(128);
 
-                    b.Property<string>("CustomerId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<bool>("IsDefaultAddress")
                         .HasColumnType("bit");
 
@@ -1613,8 +1612,6 @@ namespace NitelikliBilisim.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CityId");
-
-                    b.HasIndex("CustomerId");
 
                     b.HasIndex("StateId");
 
@@ -2075,10 +2072,6 @@ namespace NitelikliBilisim.Data.Migrations
                     b.HasOne("NitelikliBilisim.Core.Entities.user_details.City", "City")
                         .WithMany()
                         .HasForeignKey("CityId");
-
-                    b.HasOne("NitelikliBilisim.Core.Entities.Customer", "Customer")
-                        .WithMany("Addresses")
-                        .HasForeignKey("CustomerId");
 
                     b.HasOne("NitelikliBilisim.Core.Entities.user_details.State", "State")
                         .WithMany()
