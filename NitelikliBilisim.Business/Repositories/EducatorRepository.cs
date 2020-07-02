@@ -88,8 +88,7 @@ namespace NitelikliBilisim.Business.Repositories
                       FullName = x.Name + " " + x.Surname,
                       Title = y.Title,
                       Phone = x.PhoneNumber,
-                      Email = x.Email,
-                      SocialMediaCount = Context.EducatorSocialMedias.Count(z => z.EducatorId == x.Id)
+                      Email = x.Email
                   });
         }
 

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NitelikliBilisim.Data;
 
 namespace NitelikliBilisim.Data.Migrations
 {
     [DbContext(typeof(NbDataContext))]
-    partial class NbDataContextModelSnapshot : ModelSnapshot
+    [Migration("20200701081001_UpdateCustomerFields")]
+    partial class UpdateCustomerFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -387,8 +389,8 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("CityId")
-                        .HasColumnType("int");
+                    b.Property<string>("CityId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -412,7 +414,7 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<string>("Job")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("LastGraduatedSchoolId")
+                    b.Property<int>("LastGraduatedSchoolId")
                         .HasColumnType("int");
 
                     b.Property<string>("LinkedInProfileUrl")
@@ -1571,56 +1573,6 @@ namespace NitelikliBilisim.Data.Migrations
                     b.ToTable("Wishlist");
                 });
 
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.user_details.Address", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("CityId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Content")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
-
-                    b.Property<string>("CustomerId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool>("IsDefaultAddress")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("StateId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CityId");
-
-                    b.HasIndex("CustomerId");
-
-                    b.HasIndex("StateId");
-
-                    b.ToTable("Addresses");
-                });
-
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.user_details.Bridge_EducatorCertificate", b =>
                 {
                     b.Property<string>("Id")
@@ -1648,24 +1600,6 @@ namespace NitelikliBilisim.Data.Migrations
                     b.HasIndex("Id2");
 
                     b.ToTable("Bridge_EducatorCertificates");
-                });
-
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.user_details.City", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Order")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Cities");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.user_details.EducatorCertificate", b =>
@@ -1701,39 +1635,6 @@ namespace NitelikliBilisim.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("EducatorCertificates");
-                });
-
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.user_details.State", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("CityId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("States");
-                });
-
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.user_details.University", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Universities");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -2068,21 +1969,6 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasForeignKey("Id2")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.user_details.Address", b =>
-                {
-                    b.HasOne("NitelikliBilisim.Core.Entities.user_details.City", "City")
-                        .WithMany()
-                        .HasForeignKey("CityId");
-
-                    b.HasOne("NitelikliBilisim.Core.Entities.Customer", "Customer")
-                        .WithMany("Addresses")
-                        .HasForeignKey("CustomerId");
-
-                    b.HasOne("NitelikliBilisim.Core.Entities.user_details.State", "State")
-                        .WithMany()
-                        .HasForeignKey("StateId");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.user_details.Bridge_EducatorCertificate", b =>

@@ -130,5 +130,9 @@ namespace NitelikliBilisim.Data
         public DbSet<EducatorCertificate> EducatorCertificates { get; set; }
         public DbSet<Bridge_EducatorCertificate> Bridge_EducatorEducatorCertificates { get; set; }
         public DbSet<EducationHost> EducationHosts { get; set; }
+        public DbSet<City> Cities { get; set; }
+        public DbSet<State> States { get; set; }
+        public DbSet<Address> Addresses { get; set; }
+        public DbSet<University> Universities { get; set; }
     }
 }

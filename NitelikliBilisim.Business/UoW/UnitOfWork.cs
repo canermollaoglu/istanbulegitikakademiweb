@@ -32,6 +32,9 @@ namespace NitelikliBilisim.Business.UoW
         private EducatorSalaryRepository _educatorSalaryRepository;
         private GroupMaterialRepository _groupMaterialRepository;
         private EducatorCertificateRepository _educatorCertificateRepository;
+        private StateRepository _stateRepository;
+        private CityRepository _cityRepository;
+        private AddressRepository _addressRepository;
         public UnitOfWork(NbDataContext context)
         {
             _context = context;
@@ -66,7 +69,7 @@ namespace NitelikliBilisim.Business.UoW
         public BridgeEducationEducatorRepository Bridge_EducationEducator => _bridgeEducationEducatorRepository ??= new BridgeEducationEducatorRepository(_context);
         public EducationGroupRepository EducationGroup => _educationGroupRepository ??= new EducationGroupRepository(_context);
 
-        public EducationHostRepository EductionHost => _educationHostRepository ??= new EducationHostRepository(_context);
+        public EducationHostRepository EducationHost => _educationHostRepository ??= new EducationHostRepository(_context);
 
         public WeekDaysOfGroupRepository WeekDaysOfGroup => _weekDaysOfGroupRepository ??= new WeekDaysOfGroupRepository(_context);
 
@@ -136,5 +139,11 @@ namespace NitelikliBilisim.Business.UoW
                 return _educatorCertificateRepository ?? (_educatorCertificateRepository = new EducatorCertificateRepository(_context));
             }
         }
+
+        public StateRepository State => _stateRepository ??= new StateRepository(_context);
+        public CityRepository City => _cityRepository ??= new CityRepository(_context);
+        public AddressRepository Address => _addressRepository ??= new AddressRepository(_context);
+
+
     }
 }
