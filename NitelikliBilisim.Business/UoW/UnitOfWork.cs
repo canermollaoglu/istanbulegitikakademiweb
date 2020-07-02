@@ -35,6 +35,7 @@ namespace NitelikliBilisim.Business.UoW
         private StateRepository _stateRepository;
         private CityRepository _cityRepository;
         private AddressRepository _addressRepository;
+        private EducationHostImageRepository _educationHostImageRepository;
         public UnitOfWork(NbDataContext context)
         {
             _context = context;
@@ -143,6 +144,7 @@ namespace NitelikliBilisim.Business.UoW
         public StateRepository State => _stateRepository ??= new StateRepository(_context);
         public CityRepository City => _cityRepository ??= new CityRepository(_context);
         public AddressRepository Address => _addressRepository ??= new AddressRepository(_context);
+        public EducationHostImageRepository EducationHostImage => _educationHostImageRepository ??= new EducationHostImageRepository(_context);
 
 
     }
