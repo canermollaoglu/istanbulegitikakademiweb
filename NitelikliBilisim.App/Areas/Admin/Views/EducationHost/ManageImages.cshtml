@@ -1,0 +1,55 @@
+﻿@model NitelikliBilisim.Core.ViewModels.areas.admin.education_host.EducationHostImageManageVm
+@{
+    ViewData["Title"] = "Eğitim Yerleri Görsel Yönetimi";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@section styles{
+    <link href="~/assets/css/area-admin/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
+    <link href="~/css/lib/file-uploader.css" rel="stylesheet" />
+    <style>
+        .img-after-preview {
+            height: 250px !important;
+            width: 424px !important;
+        }
+    </style>
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-list"></i> <strong>@Model.EducationHostName</strong> Görselleri
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <form id="form-add-education-host-images">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" value="@Model.EducationHostId" id="education-host-id" />
+                    <div class="form-group">
+                        <label>Medya Seçiniz</label>
+                        <div class="file-upload-container-with-education-host-image" id="file-upload-for-host-image">
+                            <img class="img-after-preview-with-education-host-image" id="img-after-preview-for-host-image" />
+                            <p><i class="fa fa-file"></i> Resim yüklemek için tıklayınız...</p>
+                            <input type="file" />
+                        </div>
+                        <br />
+                        <button id="btn-add" type="button" class="btn btn-info btn-sm" style="cursor:pointer;"><i class="fa fa-upload"></i> Yükle</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row" id="education-host-images">
+
+        </div>
+    </div>
+</div>
+@section postScripts{
+    <script src="~/assets/js/area-admin/jquery.dataTables.js"></script>
+    <script src="~/assets/js/area-admin/dataTables.bootstrap4.js"></script>
+    <script src="~/js/sup/alert-sup.js"></script>
+    <script src="~/js/lib/security-support.js"></script>
+    <script src="~/js/lib/file-uploader.js"></script>
+    <script src="~/js/areas/admin/admin-education-host-manage-images.js"></script>
+}

@@ -106,6 +106,8 @@ function createGrid() {
                 allowSearch: false,
                 cellTemplate: function (container, options) {
                     var current = options.data;
+                    $(`<a title="Görsel Yönetimi" class="btn btn-primary btn-sm" href="/admin/egitim-kurumlari/gorsel-yonetimi?educationHostId=${current.id}"><i class=\"fa fa-picture-o\"></i></a>`)
+                        .appendTo(container);
                     $(`<a title="Güncelle" class="btn btn-warning btn-sm" href="/admin/egitim-kurumlari/guncelle?educationHostId=${current.id}"><i class=\"fa fa-edit\"></i></a>`)
                         .appendTo(container);
                     $(`<button title="Sil" class="btn btn-danger btn-sm" onClick="btnConfirmationModalTrigger_onClick(this)" data-url="/admin/egitim-kurumlari/sil?educationHostId=${current.id}" style="cursor:pointer;"><i class=\"fa fa-trash\"></i></button>`)

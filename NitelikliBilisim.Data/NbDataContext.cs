@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NitelikliBilisim.Core.Abstracts;
 using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Entities.educations;
 using NitelikliBilisim.Core.Entities.user_details;
 
 namespace NitelikliBilisim.Data
@@ -134,5 +135,6 @@ namespace NitelikliBilisim.Data
         public DbSet<State> States { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<University> Universities { get; set; }
+        public DbSet<EducationHostImage> EducationHostImages { get; set; }
     }
 }
