@@ -50,7 +50,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             var model = new AddGetVm
             {
                 Educations = _unitOfWork.Education.Get(x => x.IsActive, x => x.OrderBy(o => o.CategoryId)),
-                Hosts = _unitOfWork.EductionHost.Get(null, x => x.OrderBy(o => o.HostName))
+                Hosts = _unitOfWork.EducationHost.Get(null, x => x.OrderBy(o => o.HostName))
             };
             return View(model);
         }
