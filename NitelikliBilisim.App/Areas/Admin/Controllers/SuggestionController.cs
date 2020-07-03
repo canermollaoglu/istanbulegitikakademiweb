@@ -54,18 +54,19 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     isSuccess = false,
                     errors = ModelStateUtil.GetErrors(ModelState)
                 });
-            var suggestion = _unitOfWork.Suggestion.Get(x => x.CategoryId == data.CategoryId.Value, null).OrderByDescending(x => x.UpdatedDate).First();
-            if ((suggestion.RangeMax > data.MaxRange))
-            {
-                return Json(new ResponseModel
-                {
-                    isSuccess = false,
-                    errors = new List<string> { $"Kategori'nin En son girilen Maksimum gün değerinden KÜÇÜK bir sayı girmeye çalıştınız" }
-                });
-            }
+            var suggestion = _unitOfWork.Suggestion.Get(x => x.CategoryId == data.CategoryId.Value, null).OrderByDescending(x => x.UpdatedDate).FirstOrDefault();
+            
 
             if (suggestion != null) //todo: Bu if her zaman true çıkmaz mı?
             {
+                if ((suggestion.RangeMax > data.MaxRange))
+                {
+                    return Json(new ResponseModel
+                    {
+                        isSuccess = false,
+                        errors = new List<string> { $"Kategori'nin En son girilen Maksimum gün değerinden KÜÇÜK bir sayı girmeye çalıştınız" }
+                    });
+                }
                 _unitOfWork.Suggestion.Insert(new Suggestion
                 {
                     CategoryId = data.CategoryId.Value,

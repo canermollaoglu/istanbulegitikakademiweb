@@ -22,18 +22,18 @@ namespace NitelikliBilisim.Business.Repositories
         public IQueryable<EducationGroupListVm> GetListQueryable()
         {
             var groups = from eg in Context.EducationGroups
-                       join e in Context.Educations on eg.EducationId equals e.Id
-                       join h in Context.EducationHosts on eg.HostId equals h.Id
-                       join gs in Context.Bridge_GroupStudents on eg.Id equals gs.Id
-                       select new EducationGroupListVm
-                       {
-                           Id = eg.Id,
-                           EducationName = e.Name,
-                           GroupName = eg.GroupName,
-                           HostName = h.HostName,
-                           HostCity = EnumSupport.GetDescription(h.City),
-                           StartDate = eg.StartDate
-                       };
+                         join e in Context.Educations on eg.EducationId equals e.Id
+                         join h in Context.EducationHosts on eg.HostId equals h.Id
+                         select new EducationGroupListVm
+                         {
+                             Id = eg.Id,
+                             EducationName = e.Name,
+                             GroupName = eg.GroupName,
+                             HostName = h.HostName,
+                             HostCity = EnumSupport.GetDescription(h.City),
+                             StartDate = eg.StartDate
+                         };
+
             return groups;
         }
 

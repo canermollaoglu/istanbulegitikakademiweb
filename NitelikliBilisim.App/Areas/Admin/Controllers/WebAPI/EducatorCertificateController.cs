@@ -5,7 +5,6 @@ using NitelikliBilisim.Business.UoW;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers.WebAPI
 {
-    [Route("api/[controller]")]
     public class EducatorCertificateController : BaseApiController
     {
         private readonly UnitOfWork _unitOfWork;
