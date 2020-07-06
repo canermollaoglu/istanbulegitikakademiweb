@@ -1,5 +1,4 @@
 ﻿/* fields */
-
 /* elements */
 var btnSave = $("#btn-save");
 
@@ -16,11 +15,13 @@ function initMap() {
     var latitude = $('#input-latitude').val();
     var longitude = $('#input-longitude').val();
     var location = { lat: parseFloat(latitude), lng:parseFloat(longitude) };
-    var myOptions = { zoom: 15, center: location };
+    var myOptions = { zoom: 17, center: location };
     var map = new google.maps.Map(document.getElementById('map'), myOptions);
     var geocoder = new google.maps.Geocoder();
-
-    
+    var autocomplete   = new google.maps.places.Autocomplete(
+        (document.getElementById('search_key')), {
+        types: ['geocode']
+    });
     // Create marker
     var marker = new google.maps.Marker({
         position: location,
@@ -46,7 +47,44 @@ function initMap() {
         $('#input-latitude').val(mapsMouseEvent.latLng.lat());
         $('#input-longitude').val(mapsMouseEvent.latLng.lng());
     });
+
+   // Change Search value
+    autocomplete.addListener('place_changed', function () {
+        var place = autocomplete.getPlace();
+
+        if (place.length == 0) {
+            return;
+        };
+
+        // Clear out the old marker.
+        marker.setMap(null);
+
+        
+        var bounds = new google.maps.LatLngBounds();
+        if (!place.geometry) {
+            console.log("Returned place contains no geometry");
+            return;
+        };
+
+        // Create a marker for each place.
+        marker = new google.maps.Marker({
+            map: map,
+            title: place.name,
+            position: place.geometry.location
+        });
+
+        if (place.geometry.viewport) {
+            // Only geocodes have viewport.
+            bounds.union(place.geometry.viewport);
+        } else {
+            bounds.extend(place.geometry.location);
+        }
+        map.fitBounds(bounds);
+        map.setZoom(17);
+    });
+    
 }
+
 
 function btnSave_onClick() {
     btnSave.off("click");
