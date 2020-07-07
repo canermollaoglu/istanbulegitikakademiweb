@@ -98,12 +98,12 @@
                         var current = options.data;
                         if (current.isActive == true) {
                             $(`<a href="/admin/egitim-guncelle/${current.id}">
-                                                                    <i class=\"fa fa-unlock text-success\" style=\"font-size:200%;\"></i></a>`)
+                                                                                            <i class=\"fa fa-unlock text-success\" style=\"font-size:200%;\"></i></a>`)
                                 .appendTo(container);
                         }
                         else {
                             $(`<a href="/admin/egitim-guncelle/${current.id}">
-                                                                    <i class=\"fa fa-lock text-danger\" style=\"font-size:200%;\"></i></a>`)
+                                                                                            <i class=\"fa fa-lock text-danger\" style=\"font-size:200%;\"></i></a>`)
                                 .appendTo(container);
                         }
                     },
@@ -114,14 +114,11 @@
                     width: 250
 
                 }, {
-
                     headerCellTemplate: $('<b style="color: black; font-weight: bold">Kategorisi</b>'),
-                    cellTemplate: function (container, options) {
-                        var category = options.data.category;
-                        $(`<span> ${category.name} </span>`).appendTo(container);
-                    },
+                    dataField: "categoryName",
                     width: 250
-                }, {
+                },
+                {
                     cellTemplate: function (container, options) {
                         var current = options.data;
                         $(`<span>${current.days} gün / ${current.hoursPerDay} saat</span>`)

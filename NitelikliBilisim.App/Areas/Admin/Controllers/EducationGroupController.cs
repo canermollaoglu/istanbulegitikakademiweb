@@ -32,17 +32,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             return View();
         }
 
-        [Route("admin/get-education-grup-list")]
-        public IActionResult GetList()
-        {
-            var model = _unitOfWork.EducationGroup.GetListVm();
-
-            return Json(new ResponseModel
-            {
-                isSuccess = true,
-                data =model
-            });
-        }
 
         [Route("admin/grup-olustur")]
         public IActionResult Add()

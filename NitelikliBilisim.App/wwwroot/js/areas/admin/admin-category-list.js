@@ -92,23 +92,23 @@ function createGrid() {
         columns: [{
             dataField: "name",
             headerCellTemplate: $('<b style="color: black;">Kategori Adı</b>')
+          },
+        {
+            dataField: "description",
+            headerCellTemplate: $('<b style="color: black;">Slogan</b>')
+             },
+        {
+            headerCellTemplate: $('<b style="color: black;">İşlem</b>'),
+               allowSearch: false,
+            cellTemplate: function (container, options) {
+                var current = options.data;
+                $(`<a title="Güncelle" class="btn btn-warning btn-sm" href="/admin/kategori-guncelle/${current.id}"><i class="fa fa-fw fa-pencil-square-o"></i></a>`)
+                    .appendTo(container);
+                $(`<button title="Sil" class="btn-confirmation-modal-trigger btn btn-danger btn-sm" data-url="/admin/kategori-sil?categoryId=${current.id}" style="cursor:pointer;"><i class="fa fa-trash"></i></button>`)
+                    .appendTo(container);
             },
-            {
-                dataField: "description",
-                headerCellTemplate: $('<b style="color: black;">Slogan</b>')
-            },
-            {
-                headerCellTemplate: $('<b style="color: black;">İşlem</b>'),
-                allowSearch: false,
-                cellTemplate: function (container, options) {
-                    var current = options.data;
-                    $(`<a title="Güncelle" class="btn btn-warning btn-sm" href="/admin/kategori-guncelle/${current.id}"><i class="fa fa-fw fa-pencil-square-o"></i></a>`)
-                        .appendTo(container);
-                    $(`<button title="Sil" class="btn-confirmation-modal-trigger btn btn-danger btn-sm" data-url="/admin/kategori-sil?categoryId=${current.id}" style="cursor:pointer;"><i class="fa fa-trash"></i></button>`)
-                        .appendTo(container);
-                },
-                alignment: "center",
-                width:"auto"
+            alignment: "center",
+            width:"auto"
             }
         ],
         masterDetail: {
@@ -153,12 +153,10 @@ function createGrid() {
                         columns: [
                             {
                                 headerCellTemplate: $("<b>Kategori Adı</b>"),
-                                caption: 'Ünvan',
                                 dataField: "name",
-                            },
+                                 },
                             {
                                 headerCellTemplate: $('<b>Slogan</b>'),
-                                caption: 'Açıklama',
                                 dataField: 'description',
                             },
                             {
