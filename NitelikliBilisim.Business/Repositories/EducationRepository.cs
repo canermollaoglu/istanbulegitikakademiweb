@@ -35,8 +35,8 @@ namespace NitelikliBilisim.Business.Repositories
                        Id = e.Id,
                        Name = e.Name,
                        Description = e.Description,
-                       Category = c,
-                       Level = EnumSupport.GetDescription<EducationLevel>((EducationLevel)e.Level),
+                       CategoryName = c.Name,
+                       Level = EnumSupport.GetDescription((EducationLevel)e.Level),
                        Days = e.Days,
                        HoursPerDay = e.HoursPerDay,
                        isActive = e.IsActive
