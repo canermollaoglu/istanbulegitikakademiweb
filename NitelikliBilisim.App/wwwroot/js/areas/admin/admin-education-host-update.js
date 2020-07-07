@@ -20,7 +20,8 @@ function initMap() {
     var geocoder = new google.maps.Geocoder();
     var autocomplete   = new google.maps.places.Autocomplete(
         (document.getElementById('search_key')), {
-        types: ['geocode']
+            types: ['geocode'],
+            zoom: 17
     });
     // Create marker
     var marker = new google.maps.Marker({
@@ -80,7 +81,6 @@ function initMap() {
             bounds.extend(place.geometry.location);
         }
         map.fitBounds(bounds);
-        map.setZoom(17);
     });
     
 }

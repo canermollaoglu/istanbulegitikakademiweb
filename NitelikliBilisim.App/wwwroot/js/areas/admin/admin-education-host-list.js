@@ -61,11 +61,6 @@ function createGrid() {
             summary: true,
             groupPaging: true
         },
-        bindingOptions: {
-            gouping: "grouping",
-            filterRow: "filterRow",
-            headerFilter: "headerFilter"
-        },
         filterRow: {
             visible: true,
             applyFilter: "auto"
@@ -77,8 +72,6 @@ function createGrid() {
         },
         paging: {
             pageSize: 10
-        },
-        onContentReady: function () {
         },
         pager: {
             showPageSizeSelector: true,
@@ -95,7 +88,7 @@ function createGrid() {
                 dataField: "address",
             },{
                 headerCellTemplate: $('<b style="vertical-align:middle; color: black;">Şehir</b>'),
-                dataField: "cityName",
+                 dataField: "cityName",
                 allowSorting: false,
                 allowSearch: false,
                 allowFiltering: false,
@@ -103,7 +96,7 @@ function createGrid() {
             },
             {
                 headerCellTemplate: $('<b style="vertical-align:middle; color: black;">İşlem</b>'),
-                allowSearch: false,
+                 allowSearch: false,
                 cellTemplate: function (container, options) {
                     var current = options.data;
                     $(`<a title="Görsel Yönetimi" class="btn btn-primary btn-sm" href="/admin/egitim-kurumlari/gorsel-yonetimi?educationHostId=${current.id}"><i class=\"fa fa-picture-o\"></i></a>`)
