@@ -21,7 +21,6 @@ namespace NitelikliBilisim.Core.ViewModels
         public  string EducationName { get; set; }
         public  string HostName { get; set; }
         public string HostCity { get; set; }
-        public int GroupStudents { get; set; }
 
     }
 }

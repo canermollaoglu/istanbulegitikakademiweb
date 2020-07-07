@@ -21,22 +21,21 @@ namespace NitelikliBilisim.Business.Repositories
 
         public IQueryable<EducationGroupListVm> GetListQueryable()
         {
-            var groups = from eg in Context.EducationGroups
-                         join e in Context.Educations on eg.EducationId equals e.Id
-                         join h in Context.EducationHosts on eg.HostId equals h.Id
-                         select new EducationGroupListVm
+            var groups = _context.EducationGroups.Include(x => x.Education).Include(x => x.Host)
+                .Include(x => x.GroupStudents)
+                .Select(x => new EducationGroupListVm
                          {
-                             Id = eg.Id,
-                             EducationName = e.Name,
-                             GroupName = eg.GroupName,
-                             HostName = h.HostName,
-                             HostCity = EnumSupport.GetDescription(h.City),
-                             StartDate = eg.StartDate
-                         };
+                             Id = x.Id,
+                             EducationName = x.Education.Name,
+                             GroupName = x.GroupName,
+                             HostName = x.Host.HostName,
+                             HostCity = EnumSupport.GetDescription(x.Host.City),
+                             StartDate = x.StartDate
+                         });
 
             return groups;
         }
-
+       
         public bool Insert(EducationGroup entity, List<int> days)
         {
             using (var transation = _context.Database.BeginTransaction())
@@ -151,40 +150,6 @@ namespace NitelikliBilisim.Business.Repositories
                 return null;
 
             return JsonConvert.SerializeObject(days);
-        }
-        public List<_Group> GetListVm()
-        {
-            var groups = _context.EducationGroups.Include(x => x.Education).Include(x => x.Host)
-                .Include(x => x.GroupStudents)
-                .Select(x => new
-                {
-                    Id = x.Id,
-                    GroupName = x.GroupName,
-                    StartDate = x.StartDate,
-                    HostName = x.Host.HostName,
-                    HostLocation = x.Host.City,
-                    EducationName = x.Education.Name,
-                    Quota = x.Quota,
-                    AssignedCount = x.GroupStudents.Count
-                }).ToList();
-
-            var data = new List<_Group>();
-            foreach (var item in groups)
-            {
-                var hostLocation = $"{item.HostName.Substring(0, 10)}... {EnumSupport.GetDescription(item.HostLocation)}";
-                data.Add(new _Group
-                {
-                    GroupId = item.Id,
-                    GroupName = item.GroupName,
-                    EducationName = item.EducationName,
-                    Location = hostLocation,
-                    StartDate = item.StartDate,
-                    AssignedCount = item.AssignedCount,
-                    Quota = item.Quota
-                });
-            }
-
-            return data;
         }
         public GetEligibleAndAssignedStudentsVm GetEligibleAndAssignedStudents(Guid groupId)
         {
