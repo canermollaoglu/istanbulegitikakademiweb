@@ -30,16 +30,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             try
             {
                 #region Validasyonlar
-                var temp = _unitOfWork.OffDay.IsDuplicate(data.Day, data.Month, data.Year);
-                if (temp)
-                {
-                    return Json(new ResponseModel
-                    {
-                        isSuccess = false,
-                        errors = new List<string> { "Tatil günü zaten kayıtlı." }
-                    });
-                }
-
                 if (string.IsNullOrEmpty(data.Name) || data.Day<1 || data.Month<1||data.Year<1)
                 {
                     return Json(new ResponseModel
@@ -51,7 +41,18 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
                 #endregion
                 if (data.Id == 0)
+                {
+                    var temp = _unitOfWork.OffDay.IsDuplicate(data.Day, data.Month, data.Year);
+                    if (temp)
+                    {
+                        return Json(new ResponseModel
+                        {
+                            isSuccess = false,
+                            errors = new List<string> { "Tatil günü zaten kayıtlı." }
+                        });
+                    }
                     _unitOfWork.OffDay.Insert(data);
+                }
                 else
                     _unitOfWork.OffDay.Update(data);
                 return Json(new ResponseModel
