@@ -31,6 +31,14 @@ html {
   min-height: 100%;
 }
 
+.no-label {
+    margin-top: 32px;
+}
+
+.btn.no-label {
+    margin-top: 27px;
+}
+
 .master-detail-caption {
     padding: 0 0 5px 10px;
     font-size: 14px;
