@@ -21,6 +21,11 @@ namespace NitelikliBilisim.Core.Entities
         public CategoryType CategoryType { get; set; }
         public bool IsCurrent { get; set; }
 
+        /// <summary>
+        /// NBUY Eğitimleri için eğitim gün sayısı
+        /// </summary>
+        public int? EducationDayCount{ get; set; }
+
         public Guid? BaseCategoryId { get; set; }
         [ForeignKey("BaseCategoryId")]
         public virtual EducationCategory BaseCategory { get; set; }
