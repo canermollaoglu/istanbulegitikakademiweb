@@ -138,5 +138,6 @@ namespace NitelikliBilisim.Data
         public DbSet<University> Universities { get; set; }
         public DbSet<EducationHostImage> EducationHostImages { get; set; }
         public DbSet<OffDay> OffDays { get; set; }
+        public DbSet<EducationDay> EducationDays { get; set; }
     }
 }
