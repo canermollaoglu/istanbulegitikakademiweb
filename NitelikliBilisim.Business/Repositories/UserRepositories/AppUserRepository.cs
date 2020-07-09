@@ -37,7 +37,12 @@ namespace NitelikliBilisim.Business.Repositories
                 PhoneNumber = customer.User.PhoneNumber,
                 Email = customer.User.Email,
                 UserName = customer.User.UserName,
-                FilePath = customer.User.AvatarPath
+                FilePath = customer.User.AvatarPath,
+                DateOfBirth = customer.DateOfBirth,
+                Gender = customer.Gender,
+                Job = customer.Job,
+                LinkedInProfileUrl = customer.LinkedInProfileUrl,
+                WebSiteUrl = customer.WebSiteUrl
             };
             _EducationInfo _educationInfo = null;
             if (customer.IsNbuyStudent)

@@ -13,6 +13,8 @@ using NitelikliBilisim.App.Models.Account;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Entities.helper;
+using NitelikliBilisim.Core.Entities.user_details;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Services;
 using NitelikliBilisim.Core.ViewModels.Account;
@@ -27,6 +29,7 @@ namespace NitelikliBilisim.App.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UnitOfWork _unitOfWork;
 
+
         public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, UnitOfWork unitOfWork)
         {
             this._userManager = userManager;
@@ -39,7 +42,7 @@ namespace NitelikliBilisim.App.Controllers
         {
             var model = new RegisterGetVm
             {
-                EducationCenters  = EnumSupport.ToKeyValuePair<EducationCenter>(),
+                EducationCenters = EnumSupport.ToKeyValuePair<EducationCenter>(),
                 EducationCategories = _unitOfWork.EducationCategory.Get(x => x.BaseCategoryId == null, x => x.OrderBy(o => o.Name))
             };
 
@@ -88,7 +91,9 @@ namespace NitelikliBilisim.App.Controllers
                         EducationCenter = (EducationCenter)model.EducationCenter,
                         CategoryId = model.EducationCategory
                     };
-                    _unitOfWork.StudentEducationInfo.Insert(studentEducationInformation);
+                    var studentEducationInfoId = _unitOfWork.StudentEducationInfo.Insert(studentEducationInformation);
+                    if (model.EducationCategory.HasValue && model.StartedAt.HasValue)
+                        CreateEducationDays(studentEducationInfoId, model.EducationCategory.Value, model.StartedAt.Value);
                 }
                 if (result.Succeeded)
                 {
@@ -268,5 +273,73 @@ namespace NitelikliBilisim.App.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
+
+        #region Helper Functions
+        /// <summary>
+        /// Girilen parametrelere göre NBUY eğitimi alan öğrencinin eğitim günlerini db ye ekler.
+        /// </summary>
+        /// <param name="studentEducationInfoId">Öğrencinin aldığı NBUY eğitiminin tutulduğu tablo.</param>
+        /// <param name="categoryId">NBUY eğitimi alan öğrencinin aldığı eğitim kategorisi.</param>
+        /// <param name="startDate">NBUY eğitim başlangıç tarihi.</param>
+        private void CreateEducationDays(Guid studentEducationInfoId, Guid categoryId, DateTime startDate)
+        {
+            //Tatil Günleri
+            var offDays = _unitOfWork.OffDay.Get(x => x.Year == DateTime.Now.Year || x.Year == DateTime.Now.Year - 1 || x.Year == DateTime.Now.Year + 1).ToList();
+            //Kullanıcının aldığı Nbuy Eğitimi ve eğitimin süresi
+            var nbuyCategory = _unitOfWork.EducationCategory.GetById(categoryId);
+            var educationDayCount = nbuyCategory.EducationDayCount.HasValue ? nbuyCategory.EducationDayCount.Value : 0;
+            //Kullanıcının eğitime başlangıç tarihi 
+            var activeDate = startDate;
+            for (int i = 0; i < nbuyCategory.EducationDayCount; i++)
+            {
+                activeDate = activeDate.AddDays(1);
+                if (checkWeekdays(activeDate) && checkNotHoliday(activeDate, offDays))
+                {
+                    _unitOfWork.EducationDay.Insert(new EducationDay
+                    {
+                        Date = activeDate,
+                        Day = i + 1,
+                        StudentEducationInfoId = studentEducationInfoId
+                    }, true);
+                }
+                else
+                {
+                    i--;
+                }
+            }
+            _unitOfWork.EducationDay.Save();
+        }
+
+        /// <summary>
+        /// Parametre olarak gönderilen tarihin hafta içi olması durumunu kontrol eder.
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns>Hafta içi ise true döner.</returns>
+        private bool checkWeekdays(DateTime date)
+        {
+            if (!(date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday))
+                return true;
+            else
+                return false;
+        }
+        /// <summary>
+        /// Parametre olarak gönderilen aktif günün tatil olup olmaması durumunu kontrol eder.
+        /// </summary>
+        /// <param name="date">Geçerli gün</param>
+        /// <param name="offDays">Tatil günleri listesi</param>
+        /// <returns>Tatil değil ise true döner.</returns>
+        private bool checkNotHoliday(DateTime date, List<OffDay> offDays)
+        {
+            foreach (var offDay in offDays)
+            {
+                if (offDay.Date.Date == date.Date)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        #endregion
+
     }
 }
