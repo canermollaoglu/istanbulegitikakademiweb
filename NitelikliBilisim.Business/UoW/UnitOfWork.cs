@@ -39,6 +39,7 @@ namespace NitelikliBilisim.Business.UoW
         private EducationHostImageRepository _educationHostImageRepository;
         private OffDayRepository _offDayRepository;
         private EducationDayRepository _educationDayRepository;
+        private EducationSuggestionCriterionRepository _educationSuggestionCriterionRepository;
         public UnitOfWork(NbDataContext context)
         {
             _context = context;
@@ -150,5 +151,6 @@ namespace NitelikliBilisim.Business.UoW
         public EducationHostImageRepository EducationHostImage => _educationHostImageRepository ??= new EducationHostImageRepository(_context);
         public OffDayRepository OffDay => _offDayRepository ??= new OffDayRepository(_context);
         public EducationDayRepository EducationDay => _educationDayRepository ??= new EducationDayRepository(_context);
+        public EducationSuggestionCriterionRepository EducationSuggestionCriterion => _educationSuggestionCriterionRepository ??= new EducationSuggestionCriterionRepository(_context);
     }
 }

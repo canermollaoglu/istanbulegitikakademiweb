@@ -1,6 +1,8 @@
 ﻿using NitelikliBilisim.Core.Abstracts;
+using NitelikliBilisim.Core.Entities.educations;
 using NitelikliBilisim.Core.Enums;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -31,5 +33,7 @@ namespace NitelikliBilisim.Core.Entities
         public Guid CategoryId { get; set; }
         [ForeignKey("CategoryId")]
         public virtual EducationCategory Category { get; set; }
+
+        public virtual List<EducationSuggestionCriterion> EducationSuggestionCriterions { get; set; }
     }
 }

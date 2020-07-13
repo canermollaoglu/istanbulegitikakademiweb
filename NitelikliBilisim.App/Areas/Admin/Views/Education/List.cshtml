@@ -116,7 +116,7 @@
                 }, {
                     headerCellTemplate: $('<b style="color: black; font-weight: bold">Kategorisi</b>'),
                     dataField: "categoryName",
-                    width: 250
+                    width: 200
                 },
                 {
                     cellTemplate: function (container, options) {
@@ -124,22 +124,24 @@
                         $(`<span>${current.days} gün / ${current.hoursPerDay} saat</span>`)
                             .appendTo(container);
                     },
-                    headerCellTemplate: $('<i style="color: black; font-weight: bold">Gün / Saat</i>'),
+                    headerCellTemplate: $('<b style="color: black; font-weight: bold">Gün / Saat</b>'),
                     width: 80
                 }, {
                     dataField: "level",
-                    headerCellTemplate: $('<i style="color: black; font-weight: bold">Seviye</i>'),
+                    headerCellTemplate: $('<b style="color: black; font-weight: bold">Seviye</b>'),
                     width: 60,
                     alignment: "center",
                     allowSorting: false,
                     allowSearch: false,
                     allowFiltering: false
                 }, {
-                    headerCellTemplate: $('<i style="vertical-align:middle; color: black; font-weight: bold">İşlem</i>'),
+                    headerCellTemplate: $('<b style="vertical-align:middle; color: black; font-weight: bold">İşlem</b>'),
                     allowSearch: false,
                     cellTemplate: function (container, options) {
                         var current = options.data;
-                        $(`<a title="Medya Yönetimi" class="btn btn-primary btn-sm btn-space" href="/admin/egitim-medya-yonetimi/${current.id}"><i class=\"fa fa-file-photo-o\"></i><span style="display: block"></span></a>`)
+                        $(`<a title="Öneri Yönetimi" class="btn btn-warning btn-sm" href="/admin/egitim-oneri-kriteri-yonetimi?educationId=${current.id}"><i class=\"fa fa-lightbulb-o\"></i><span style="display: block"></span></a>`)
+                            .appendTo(container);
+                        $(`<a title="Medya Yönetimi" class="btn btn-primary btn-sm" href="/admin/egitim-medya-yonetimi/${current.id}"><i class=\"fa fa-file-photo-o\"></i><span style="display: block"></span></a>`)
                             .appendTo(container);
                         $(`<a title="Parça Yönetimi" class="btn btn-secondary btn-sm" href="/admin/egitim-parca-yonetimi/${current.id}"><i class=\"fa fa-list-ul\"></i><span style="display: block"></span></a>`)
                             .appendTo(container);
