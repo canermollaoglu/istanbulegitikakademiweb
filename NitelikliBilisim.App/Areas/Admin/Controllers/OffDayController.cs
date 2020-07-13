@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities.helper;
@@ -18,9 +19,10 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         }
 
 
-        [Route("admin/offday")]
+        [Route("admin/tatil-gunleri-yonetimi")]
         public IActionResult Manage()
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminOffDay");
             return View();
         }
 
