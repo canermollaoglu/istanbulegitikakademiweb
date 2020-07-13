@@ -5,10 +5,8 @@ using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education;
-using NitelikliBilisim.Core.ViewModels.areas.admin.suggestion;
 using NitelikliBilisim.Core.ViewModels.search;
 using NitelikliBilisim.Data;
-using NitelikliBilisim.Data.Migrations;
 using NitelikliBilisim.Support.Enums;
 using NitelikliBilisim.Support.Text;
 using System;
@@ -25,6 +23,141 @@ namespace NitelikliBilisim.Business.Repositories
         public EducationRepository(NbDataContext context) : base(context)
         {
         }
+
+
+        public List<SuggestedEducationVm> GetSuggestedEducationList(bool isLoggedIn, string userId)
+        {
+            //Eğitim Id ve uygun kriterlerin sayısı. Eğitimler uygun kriter sayısına göre listelenecek.
+            Dictionary<Guid, int> educationAndAppropriateCriterion = new Dictionary<Guid, int>();
+            //Kullanıcının NBUY eğitimi alıp almadığını kontrol ediyoruz.
+            var studentEducationInfo = Context.StudentEducationInfos.FirstOrDefault(x => x.CustomerId == userId);
+            //Kullanıcı kayıtlı ise ve NBUY öğrencisi ise 
+            if (isLoggedIn && studentEducationInfo != null)
+            {
+                var customer = Context.Customers.FirstOrDefault(x => x.Id == userId);
+                //Müşterinin en yakın eğitim günü. (Müşteri hafta sonu veya tatil günü sisteme giriş yaptığını varsayarak geçmiş en yakın gün baz alındı.)
+                int nearestDay = 0;
+                var educationDay = Context.EducationDays.Where(x => x.StudentEducationInfoId == studentEducationInfo.Id && x.Date <= DateTime.Now).OrderByDescending(c => c.Date).FirstOrDefault();
+                nearestDay = educationDay.Day;
+                
+                /*Müşterinin NBUY eğitimi aldığı kategoriye göre eğitim listesi.*/
+                var educations = Context.Educations.Include(c => c.Category).Where(x => x.Category.BaseCategoryId == studentEducationInfo.CategoryId.Value || x.Category.Id == studentEducationInfo.CategoryId.Value).Include(x => x.EducationSuggestionCriterions);
+
+                #region Kriterlerin uygunluğunun kontrolü
+                foreach (var education in educations)
+                {
+                    int appropriateCriterion = 0;
+                    if (education.EducationSuggestionCriterions != null && education.EducationSuggestionCriterions.Count > 0)
+                    {
+                        foreach (var criterion in education.EducationSuggestionCriterions)
+                        {
+                            #region Eğitim Günü Kriteri
+                            if (criterion.CriterionType == Core.Enums.educations.CriterionType.EducationDay)
+                            {
+                                if (nearestDay <= criterion.MaxValue && nearestDay >= criterion.MinValue)
+                                    appropriateCriterion++;
+                            }
+                            #endregion
+                            #region Yeni Kriter
+                            //Todo eklenen kriterler buraya girilecek.
+                            #endregion
+                        }
+                    }
+                    educationAndAppropriateCriterion.Add(education.Id, appropriateCriterion);
+                }
+                #endregion
+
+                //Yukarıda seçilen eğitimler içerisinden en çok kritere uyan 5 eğitim seçiliyor.
+                var selectedEducations = educationAndAppropriateCriterion.OrderByDescending(entry => entry.Value)
+                     .Take(5)
+                     .ToDictionary(pair => pair.Key, pair => pair.Value);
+
+                return FillSuggestedEducationList(selectedEducations);
+            }
+            else
+            {
+                //Üye olmayanlar veya NBUY eğitimi almamış olanlar için son eklenen 5 eğitim.
+                var educationsList = Context.Educations.OrderByDescending(x => x.CreatedDate).Take(5)
+                 .Join(Context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Id, r => r.EducationId, (x, y) => new
+                 {
+                     Education = x,
+                     EducationPreviewMedia = y
+                 })
+                 .Join(Context.EducationCategories, l => l.Education.CategoryId, r => r.Id, (x, y) => new
+                 {
+                     Education = x.Education,
+                     EducationPreviewMedia = x.EducationPreviewMedia,
+                     CategoryName = y.Name
+                 }).ToList();
+
+                var data = educationsList.Select(x => new SuggestedEducationVm
+                {
+                    Base = new EducationBaseVm
+                    {
+                        Id = x.Education.Id,
+                        Name = x.Education.Name,
+                        Description = x.Education.Description,
+                        CategoryName = x.CategoryName,
+                        Level = EnumSupport.GetDescription(x.Education.Level),
+                        PriceText = x.Education.NewPrice.Value.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
+                        HoursPerDayText = x.Education.HoursPerDay.ToString(),
+                        DaysText = x.Education.Days.ToString(),
+                        DaysNumeric = x.Education.Days,
+                        HoursPerDayNumeric = x.Education.HoursPerDay
+                    },
+                    Medias = new List<EducationMediaVm> { new EducationMediaVm { EducationId = x.Education.Id, FileUrl = x.EducationPreviewMedia.FileUrl } },
+                    AppropriateCriterionCount = 0
+                }
+         ).ToList();
+
+                return data;
+            }
+        }
+
+        #region Suggested Educations Helper Method
+        public List<SuggestedEducationVm> FillSuggestedEducationList(Dictionary<Guid, int> EducationAndAppropriateCriterion)
+        {
+            var educationsList = Context.Educations.Where(x => EducationAndAppropriateCriterion.Keys.Contains(x.Id) && x.IsActive)
+               .Join(Context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Id, r => r.EducationId, (x, y) => new
+               {
+                   Education = x,
+                   EducationPreviewMedia = y
+               })
+               .Join(Context.EducationCategories, l => l.Education.CategoryId, r => r.Id, (x, y) => new
+               {
+                   Education = x.Education,
+                   EducationPreviewMedia = x.EducationPreviewMedia,
+                   CategoryName = y.Name
+               }).ToList();
+
+            var data = educationsList.Select(x => new SuggestedEducationVm
+            {
+                Base = new EducationBaseVm
+                {
+                    Id = x.Education.Id,
+                    Name = x.Education.Name,
+                    Description = x.Education.Description,
+                    CategoryName = x.CategoryName,
+                    Level = EnumSupport.GetDescription(x.Education.Level),
+                    PriceText = x.Education.NewPrice.Value.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
+                    HoursPerDayText = x.Education.HoursPerDay.ToString(),
+                    DaysText = x.Education.Days.ToString(),
+                    DaysNumeric = x.Education.Days,
+                    HoursPerDayNumeric = x.Education.HoursPerDay
+                },
+                Medias = new List<EducationMediaVm> { new EducationMediaVm { EducationId = x.Education.Id, FileUrl = x.EducationPreviewMedia.FileUrl } },
+                AppropriateCriterionCount = EducationAndAppropriateCriterion.FirstOrDefault(y => y.Key == x.Education.Id).Value
+            }
+          ).OrderByDescending(x => x.AppropriateCriterionCount).ToList();
+
+            return data;
+        }
+        public Guid GetBaseCategoryId(Guid CategoryId)
+        {
+            var category = Context.EducationCategories.Where(x => x.Id == CategoryId).FirstOrDefault();
+            return category.BaseCategoryId ?? category.Id;
+        }
+        #endregion
 
         public IQueryable<EducationListVm> GetListQueryable()
         {
@@ -156,12 +289,12 @@ namespace NitelikliBilisim.Business.Repositories
                     Level = EnumSupport.GetDescription(item.Level),
                     NewPrice = item.NewPrice,
                     IsActive = item.IsActive,
-                    MediaCount = mediaCount.Where(x => x.EducationId == item.Id).Sum(x=>x.Count),
+                    MediaCount = mediaCount.Where(x => x.EducationId == item.Id).Sum(x => x.Count),
                     PartCount = partCount.Where(x => x.EducationId == item.Id).Sum(x => x.Count),
                     GainCount = gainCount.Where(x => x.EducationId == item.Id).Sum(x => x.Count),
                     EducatorCount = educatorCount.Where(x => x.EducationId == item.Id).Sum(x => x.Count),
                     EducationCategories = educationCategories.Count(x => x.EducationId == item.Id) > 0 ?
-                        string.Join(", ", educationCategories.Where(x=>x.EducationId == item.Id).Select(x=>x.ConcattedCategories)) : "-"
+                        string.Join(", ", educationCategories.Where(x => x.EducationId == item.Id).Select(x => x.ConcattedCategories)) : "-"
                 });
 
             return educationDtos;
@@ -309,9 +442,10 @@ namespace NitelikliBilisim.Business.Repositories
                     .Select(x => x.EducationId)
                     .ToList();
             }
-            else if(!string.IsNullOrEmpty(categoryName))
+            else if (!string.IsNullOrEmpty(categoryName))
             {
-                var educationCategories = Context.EducationCategories.Select(x => new {
+                var educationCategories = Context.EducationCategories.Select(x => new
+                {
                     Id = x.Id,
                     BaseCategoryId = x.BaseCategoryId,
                     Name = x.Name,
@@ -337,7 +471,7 @@ namespace NitelikliBilisim.Business.Repositories
             }
             else
                 educationIds = Context.Educations.Select(x => x.Id).ToList();
-                
+
 
             var educations = Context.Educations.Include(x => x.Category)
                 .Where(x => educationIds.Contains(x.Id) && x.IsActive);
@@ -414,7 +548,7 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 var baseCategoryId = Context.EducationCategories.FirstOrDefault(x => x.Name.ToLower() == category.ToLower())?.Id;
 
-                if(baseCategoryId != null)
+                if (baseCategoryId != null)
                 {
                     preList.AddRange(educations.Where(x => x.CategoryId == baseCategoryId));
 
@@ -581,7 +715,8 @@ namespace NitelikliBilisim.Business.Repositories
             }
             else if (!string.IsNullOrEmpty(categoryName))
             {
-                var educationCategories = Context.EducationCategories.Select(x => new {
+                var educationCategories = Context.EducationCategories.Select(x => new
+                {
                     Id = x.Id,
                     BaseCategoryId = x.BaseCategoryId,
                     Name = x.Name,
@@ -613,7 +748,8 @@ namespace NitelikliBilisim.Business.Repositories
 
             var educations = Context.Educations
                 .Where(x => educationIds.Contains(x.Id) && x.IsActive)
-                .Select(x=>new { 
+                .Select(x => new
+                {
                     Level = x.Level,
                     CategoryName = x.Name,
                     CategoryId = x.CategoryId
@@ -629,7 +765,8 @@ namespace NitelikliBilisim.Business.Repositories
 
             filterOptions.categories = educations.AsEnumerable()
                 .GroupBy(x => x.CategoryName)
-                .Select(x => new CategoryOptionVm() { 
+                .Select(x => new CategoryOptionVm()
+                {
                     BaseCategoryName = x.FirstOrDefault().BaseCategoryName,
                     CategoryName = x.Key,
                     Count = x.Count()
