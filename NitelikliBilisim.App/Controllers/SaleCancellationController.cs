@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Iyzipay.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Services.Payments;
@@ -14,7 +15,7 @@ using NitelikliBilisim.Core.ViewModels.Main.Sales;
 namespace NitelikliBilisim.App.Controllers
 {
     [Authorize]
-    public class SaleCancellationController : Controller
+    public class SaleCancellationController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly IPaymentService _paymentService;
