@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using NitelikliBilisim.Core.Abstracts;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Entities.educations;
+using NitelikliBilisim.Core.Entities.helper;
 using NitelikliBilisim.Core.Entities.user_details;
 
 namespace NitelikliBilisim.Data
@@ -136,5 +137,8 @@ namespace NitelikliBilisim.Data
         public DbSet<Address> Addresses { get; set; }
         public DbSet<University> Universities { get; set; }
         public DbSet<EducationHostImage> EducationHostImages { get; set; }
+        public DbSet<OffDay> OffDays { get; set; }
+        public DbSet<EducationDay> EducationDays { get; set; }
+        public DbSet<EducationSuggestionCriterion> EducationSuggestionCriterions { get; set; }
     }
 }

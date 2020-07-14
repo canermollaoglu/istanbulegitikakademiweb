@@ -29,11 +29,11 @@ namespace NitelikliBilisim.App.Controllers
             model.EducationCountByCategory = _unitOfWork.EducationCategory.GetEducationCountForCategories();
             var isLoggedIn = HttpContext.User.Identity.IsAuthenticated;
             if (!isLoggedIn)
-                model.SuggestedEducations = _unitOfWork.Suggestion.SuggestEducationsForHomeIndex(false, null);
+                model.SuggestedEducations = _unitOfWork.Education.GetSuggestedEducationList(false, null);
             else
             {
                 var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                model.SuggestedEducations = _unitOfWork.Suggestion.SuggestEducationsForHomeIndex(true, userId);
+                model.SuggestedEducations = _unitOfWork.Education.GetSuggestedEducationList(true, userId);
             }
 
             return View(model);

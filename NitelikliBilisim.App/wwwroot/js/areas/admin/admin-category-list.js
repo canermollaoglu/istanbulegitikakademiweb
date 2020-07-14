@@ -52,7 +52,7 @@ function createGrid() {
     $("#category-grid").dxDataGrid({
         dataSource: DevExpress.data.AspNet.createStore({
             key: "id",
-            loadUrl:"../../api/educationcategory/get-base-category-list"
+            loadUrl: "../../api/educationcategory/get-base-category-list"
         }),
         remoteOperations: {
             paging: true,
@@ -92,14 +92,20 @@ function createGrid() {
         columns: [{
             dataField: "name",
             headerCellTemplate: $('<b style="color: black;">Kategori Adı</b>')
-          },
+        },
         {
             dataField: "description",
             headerCellTemplate: $('<b style="color: black;">Slogan</b>')
-             },
+        },
+        {
+            dataField: "educationDayCount",
+            headerCellTemplate: $('<b style="color: black;">Süre (Gün)</b>'),
+            width: 100,
+            alignment:"center"
+        },
         {
             headerCellTemplate: $('<b style="color: black;">İşlem</b>'),
-               allowSearch: false,
+            allowSearch: false,
             cellTemplate: function (container, options) {
                 var current = options.data;
                 $(`<a title="Güncelle" class="btn btn-warning btn-sm" href="/admin/kategori-guncelle/${current.id}"><i class="fa fa-fw fa-pencil-square-o"></i></a>`)
@@ -108,8 +114,8 @@ function createGrid() {
                     .appendTo(container);
             },
             alignment: "center",
-            width:"auto"
-            }
+            width: "auto"
+        }
         ],
         masterDetail: {
             enabled: true,
@@ -154,7 +160,7 @@ function createGrid() {
                             {
                                 headerCellTemplate: $("<b>Kategori Adı</b>"),
                                 dataField: "name",
-                                 },
+                            },
                             {
                                 headerCellTemplate: $('<b>Slogan</b>'),
                                 dataField: 'description',

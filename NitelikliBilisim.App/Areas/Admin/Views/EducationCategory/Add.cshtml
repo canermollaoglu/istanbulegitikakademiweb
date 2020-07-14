@@ -40,20 +40,32 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Slogan</label>
-                    <textarea id="input-description" rows="5" class="form-control" style="height:100px;resize:none;" placeholder="Tek cümlelik bir slogan girilmelidir. Eğitim listesi sayfasında Kategori Adı altında görüntülenir."></textarea>
+                    <textarea id="input-description" rows="5" class="form-control"  placeholder="Tek cümlelik bir slogan girilmelidir. Eğitim listesi sayfasında Kategori Adı altında görüntülenir."></textarea>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="form-group">
-                    <label>Kategori Tipini Seçiniz</label>
-                    <select id="select-category-types" class="form-control">
-                        @foreach (var item in Model.Types)
-                        {
-                            <option value="@item.Key">@item.Value</option>
-                        }
-                    </select>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Kategori Tipini Seçiniz</label>
+                            <select id="select-category-types" class="form-control">
+                                @foreach (var item in Model.Types)
+                                {
+                                    <option value="@item.Key">@item.Value</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-12" id="div-educationdaycount">
+                        <div class="form-group">
+                            <label>Eğitim Gün Sayısı</label>
+                            <input type="number" class="form-control" id="input-educationdaycount" />
+                        </div>
+                    </div>
                 </div>
+             
             </div>
+            
         </div>
     </form>
 </div>

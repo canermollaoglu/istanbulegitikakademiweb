@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NitelikliBilisim.Data;
 
 namespace NitelikliBilisim.Data.Migrations
 {
     [DbContext(typeof(NbDataContext))]
-    partial class NbDataContextModelSnapshot : ModelSnapshot
+    [Migration("20200707165103_updateOffDayTable")]
+    partial class updateOffDayTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -515,9 +517,6 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(512)")
                         .HasMaxLength(512);
-
-                    b.Property<int?>("EducationDayCount")
-                        .HasColumnType("int");
 
                     b.Property<bool>("IsCurrent")
                         .HasColumnType("bit");
@@ -1611,45 +1610,6 @@ namespace NitelikliBilisim.Data.Migrations
                     b.ToTable("EducationHostImages");
                 });
 
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.educations.EducationSuggestionCriterion", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
-
-                    b.Property<int>("CriterionType")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("EducationId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int?>("MaxValue")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MinValue")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EducationId");
-
-                    b.ToTable("EducationSuggestionCriterions");
-                });
-
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.helper.OffDay", b =>
                 {
                     b.Property<int>("Id")
@@ -1770,29 +1730,6 @@ namespace NitelikliBilisim.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Cities");
-                });
-
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.user_details.EducationDay", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Day")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("StudentEducationInfoId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("StudentEducationInfoId");
-
-                    b.ToTable("EducationDays");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.user_details.EducatorCertificate", b =>
@@ -2206,15 +2143,6 @@ namespace NitelikliBilisim.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.educations.EducationSuggestionCriterion", b =>
-                {
-                    b.HasOne("NitelikliBilisim.Core.Entities.Education", "Education")
-                        .WithMany("EducationSuggestionCriterions")
-                        .HasForeignKey("EducationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.user_details.Address", b =>
                 {
                     b.HasOne("NitelikliBilisim.Core.Entities.user_details.City", "City")
@@ -2241,15 +2169,6 @@ namespace NitelikliBilisim.Data.Migrations
                     b.HasOne("NitelikliBilisim.Core.Entities.user_details.EducatorCertificate", "EducatorCertificate")
                         .WithMany()
                         .HasForeignKey("Id2")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.user_details.EducationDay", b =>
-                {
-                    b.HasOne("NitelikliBilisim.Core.Entities.StudentEducationInfo", "StudentEducationInfo")
-                        .WithMany("EducationDays")
-                        .HasForeignKey("StudentEducationInfoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

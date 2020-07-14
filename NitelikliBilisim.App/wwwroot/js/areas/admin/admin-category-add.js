@@ -3,6 +3,7 @@ var selectBaseCategories = document.getElementById("select-base-categories");
 var selectCategoryTypes = document.getElementById("select-category-types");
 var inputName = document.getElementById("input-name");
 var inputDescription = document.getElementById("input-description");
+var inputEducationDayCount = document.getElementById("input-educationdaycount");
 var btnSave = $("#btn-save");
 
 /* assignments */
@@ -12,6 +13,21 @@ btnSave.on("click", btnSave_onClick);
 /* events */
 function document_onLoad() {
     $(selectBaseCategories).select2();
+    selectCategoryTypes.addEventListener('change', function () {
+        if (this.value == '1010' && selectBaseCategories.value == '') {
+            $('#div-educationdaycount').slideDown(500);
+        } else {
+            $('#div-educationdaycount').slideUp(500);
+        }
+    });
+    $(selectBaseCategories).on('select2:selecting', function (e) {
+        if (e.params.args.data.id == "" && selectCategoryTypes.value === '1010') {
+            $('#div-educationdaycount').slideDown(500);
+        } else {
+            $('#div-educationdaycount').slideUp(500);
+        }
+
+    })
 }
 function btnSave_onClick() {
     btnSave.off("click");
@@ -21,7 +37,8 @@ function btnSave_onClick() {
         Name: inputName.value,
         Description: inputDescription.value,
         BaseCategoryId: baseCategoryId,
-        CategoryType: categoryType
+        CategoryType: categoryType,
+        EducationDayCount: inputEducationDayCount.value
     }
 
     var tokenVerfier = new SecuritySupport.TokenVerifier();

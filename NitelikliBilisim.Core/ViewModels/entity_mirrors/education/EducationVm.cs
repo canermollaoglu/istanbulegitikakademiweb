@@ -5,6 +5,13 @@ using System.Collections.Generic;
 
 namespace NitelikliBilisim.Core.ViewModels
 {
+    public class SuggestedEducationVm : EducationVm
+    {
+        /// <summary>
+        /// Uygun kriter adedi
+        /// </summary>
+        public int AppropriateCriterionCount { get; set; }
+    }
     public class EducationVm
     {
         public EducationBaseVm Base { get; set; }

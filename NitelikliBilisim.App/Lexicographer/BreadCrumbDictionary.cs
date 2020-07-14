@@ -83,6 +83,13 @@ namespace NitelikliBilisim.App.Lexicographer
                 new BreadCrumbItem[] { new BreadCrumbItem("Eğitim Kurumları Listesi", "/admin/egitim-kurumlari"), new BreadCrumbItem("Eğitim Kurumu Ekle", null) });
             _dictionary.Add("AdminEducationHostUpdate",
                 new BreadCrumbItem[] { new BreadCrumbItem("Eğitim Kurumları Listesi", "/admin/egitim-kurumlari"), new BreadCrumbItem("Eğitim Kurumu Güncelle", null) });
+
+            /*OffDay Manage*/
+            _dictionary.Add("AdminOffDay",
+                new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Tatil Günleri Yönetimi", url: null) });
+            /*Education Suggestion Criterion*/
+            _dictionary.Add("AdminEducationSuggestionCriterion",
+              new BreadCrumbItem[] { new BreadCrumbItem(title: "Eğitimler Listesi", url: "/admin/egitimler"), new BreadCrumbItem(title: "Eğitim Öneri Kriterleri Yönetimi", url: null) });
         }
 
         public static BreadCrumbItem[] ReadPart(string part)
