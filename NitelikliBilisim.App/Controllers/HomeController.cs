@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Controllers.Base;
+using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
@@ -23,6 +24,7 @@ namespace NitelikliBilisim.App.Controllers
             _unitOfWork = unitOfWork;
         }
 
+        [UserLoggerFilter]
         public IActionResult Index()
         {
             var model = new HomeIndexModel();

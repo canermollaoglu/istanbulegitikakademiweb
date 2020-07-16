@@ -1,13 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using NitelikliBilisim.Core.ComplexTypes;
-using System.Security.Claims;
 using System;
+using System.Security.Claims;
+using Serilog;
+using Serilog.Events;
+using Serilog.Formatting.Elasticsearch;
+using Serilog.Sinks.Elasticsearch;
 
 namespace NitelikliBilisim.App.Filters
 {
     public class UserLoggerFilterAttribute : Attribute, IActionFilter
     {
+        
+        
+
         public void OnActionExecuted(ActionExecutedContext context)
         {
             Console.WriteLine(DateTime.Now);
@@ -15,8 +22,6 @@ namespace NitelikliBilisim.App.Filters
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
-            
-            Console.WriteLine(DateTime.Now);
             var descriptor = context.ActionDescriptor as ControllerActionDescriptor;
             TransactionLog log = new TransactionLog
             {
@@ -30,7 +35,7 @@ namespace NitelikliBilisim.App.Filters
                 var userId = context.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
                 log.UserId = userId;
             }
-           
+            Log.Information("Processed {@log} in {Time} ms", log,DateTime.Now);
 
         }
 
