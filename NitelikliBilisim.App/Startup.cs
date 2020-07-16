@@ -11,9 +11,12 @@ using NitelikliBilisim.App.Extensions;
 using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Hubs;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.DependencyResolvers;
 using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Extensions;
 using NitelikliBilisim.Data;
 using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 
@@ -56,7 +59,6 @@ namespace NitelikliBilisim.App
                 //.AddUserManager<UserManager<ApplicationUser>>()
                 //.AddRoleManager<RoleManager<ApplicationRole>>()
                 .AddDefaultTokenProviders();
-
             services.AddScoped<UnitOfWork>();
             services.AddScoped<ComingSoonActionFilter>();
             services.AddApplicationServices(this.Configuration);
@@ -75,6 +77,10 @@ namespace NitelikliBilisim.App
             services.AddMvc();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddControllers();
+            services.AddDependencyResolvers(new Core.Utilities.IoC.ICoreModule[]
+            {
+                new CoreModule()
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
