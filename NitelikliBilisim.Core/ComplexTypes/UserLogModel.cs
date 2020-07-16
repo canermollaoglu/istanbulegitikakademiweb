@@ -1,0 +1,18 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace NitelikliBilisim.Core.ComplexTypes
+{
+    public class UserLogModel
+    {
+        public string SessionId { get; set; }
+        public string UserId { get; set; }
+        public string ControllerName { get; set; }
+        public string ActionName { get; set; }
+        public string Audit { get; set; }
+        public string MacAddress { get; set; }
+        public string Entity { get; set; }
+
+    }
+}
