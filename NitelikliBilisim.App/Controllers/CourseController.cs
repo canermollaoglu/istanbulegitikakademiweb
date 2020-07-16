@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using NitelikliBilisim.App.Controllers.Base;
-using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
-using NitelikliBilisim.Core.Aspects.Autofac.Performance;
+using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.Main.Course;
 using System;
+using NitelikliBilisim.App.Controllers.Base;
+using NitelikliBilisim.Support.Enums;
+using System.Collections.Generic;
+using System.Linq;
+using NitelikliBilisim.App.Models;
 
 namespace NitelikliBilisim.App.Controllers
 {

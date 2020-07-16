@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NitelikliBilisim.Business.PagedEntity;
-using NitelikliBilisim.Core.Aspects.Autofac.Performance;
 using NitelikliBilisim.Core.DTO;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
@@ -18,7 +17,6 @@ using System.Linq.Expressions;
 
 namespace NitelikliBilisim.Business.Repositories
 {
-    
     public class EducationRepository : BaseRepository<Education, Guid>, IPageableEntity<Education>
     {
 
@@ -614,7 +612,6 @@ namespace NitelikliBilisim.Business.Repositories
             return data;
         }
 
-        [PerformanceAspect(1)]
         public EducationVm GetEducation(Guid id)
         {
             var education = Context.Educations.First(x => x.Id == id);
