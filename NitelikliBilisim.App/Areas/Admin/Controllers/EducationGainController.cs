@@ -8,6 +8,7 @@ using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_gains;
 using System;
 using System.Collections.Generic;
+using NitelikliBilisim.App.Filters;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
@@ -53,6 +54,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         }
 
         [HttpPost, Route("admin/add-education-gain")]
+        [UserLoggerFilter]
         public IActionResult AddGain(AddGainVm data)
         {
             if (!ModelState.IsValid)
