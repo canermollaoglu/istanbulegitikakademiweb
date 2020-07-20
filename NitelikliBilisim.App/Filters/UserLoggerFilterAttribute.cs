@@ -1,21 +1,19 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Nest;
-using NitelikliBilisim.App.Extensions;
 using NitelikliBilisim.Core.ComplexTypes;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Security.Claims;
-using System.Text;
+
 
 namespace NitelikliBilisim.App.Filters
 {
     public class UserLoggerFilterAttribute : Attribute, IActionFilter
     {
 
+        //Bu alanda kullanıcı adı, şifre index adı vb. configurasyonlar yapılacak.
         private static readonly ConnectionSettings connSettings =
        new ConnectionSettings(new Uri("http://localhost:9200/"))
                        .DefaultIndex("transactionlog")
@@ -26,25 +24,22 @@ namespace NitelikliBilisim.App.Filters
            );
         private static readonly ElasticClient elasticClient = new ElasticClient(connSettings);
 
-        private List<TransactionLog> Search(string controllerName)
+        /// <summary>
+        /// Verilen sessionid ile yapılan işlemler listesini döndürür.
+        /// </summary>
+        /// <param name="sessionUserId"></param>
+        /// <returns></returns>
+        private List<TransactionLog> SearchSessionTransaction(string sessionUserId)
         {
-            //Tek bir get isteği
-            //var response2 = elasticClient.Get<TransactionLog>("1aa2a42c-0f96-3f29-f76a-82d021b47034", x => x.Index("transactionlog"));
-
-            //Search İşlemi
-            //var response = elasticClient.Search<TransactionLog>(i => i
-            //.Query(x => x.Match(m => m.Field(f => f.ControllerName).Query("educationgain"))));
-
             //Search string value
-            var response3 = elasticClient.Search<TransactionLog>(i => i.Query(m => m.Match(x => x.Field(p => p.ControllerName).Query(controllerName))));
+            var response = elasticClient.Search<TransactionLog>(i => i.Query(m => m.Match(x => x.Field(p => p.SessionId).Query(sessionUserId))));
 
 
             List<TransactionLog> items = new List<TransactionLog>();
-            foreach (var item in response3.Documents)
+            foreach (var item in response.Documents)
                 items.Add(item);
             return items;
         }
-
 
         public void OnActionExecuted(ActionExecutedContext context)
         {
@@ -53,12 +48,11 @@ namespace NitelikliBilisim.App.Filters
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
-            //Kullanıcıya bir sessionId veriyoruz
+            //Kullanıcıya bir sessionId atıyoruz.
             if (context.HttpContext.Session.GetString("userSessionId") == null)
             {
                 context.HttpContext.Session.SetString("userSessionId", Guid.NewGuid().ToString());
             }
-
             //Controller ve Action name için ActionDescriptor seçiliyor.
             var descriptor = context.ActionDescriptor as ControllerActionDescriptor;
             //Admin işlemleri log dışı tutuluyor.
@@ -77,9 +71,7 @@ namespace NitelikliBilisim.App.Filters
                 //Nesne es ye insert ediliyor.
                 elasticClient.Index<TransactionLog>(log, idx => idx.Index("transactionlog"));
                 #endregion
-
             }
         }
-
     }
 }
