@@ -11,7 +11,7 @@ using NitelikliBilisim.Core.Services.Abstracts;
 using System.IO;
 using System.Threading.Tasks;
 using NitelikliBilisim.Core.ViewModels.search;
-using System.Collections.Generic;
+using NitelikliBilisim.App.Filters;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -25,7 +25,7 @@ namespace NitelikliBilisim.App.Controllers
             _unitOfWork = unitOfWork;
             _storageService = storageService;
         }
-
+        [UserLoggerFilter]
         [Route("egitimler/{categoryUrl?}")]
         public IActionResult Courses(string categoryUrl, string s, string showAs = "grid")
         {
