@@ -4,10 +4,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Elasticsearch.Net;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Nest;
 using NitelikliBilisim.App.Controllers.Base;
+using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Models.Account;
 using NitelikliBilisim.App.Utility;
@@ -23,18 +26,21 @@ using NitelikliBilisim.Support.Enums;
 namespace NitelikliBilisim.App.Controllers
 {
     //[Authorize]
+
     public class AccountController : BaseController
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UnitOfWork _unitOfWork;
+        private readonly IElasticClient _elasticClient;
 
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, UnitOfWork unitOfWork)
+        public AccountController(IElasticClient elasticClient,UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, UnitOfWork unitOfWork)
         {
             this._userManager = userManager;
             this._signInManager = signInManager;
             _unitOfWork = unitOfWork;
+            _elasticClient= elasticClient;
         }
 
         [Route("kayit-ol")]
@@ -50,6 +56,7 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [HttpPost, Route("kayit-ol")]
+        
         public async Task<IActionResult> Register(RegisterPostVm model)
         {
             if (!model.AcceptedTerms || !ModelState.IsValid)
@@ -126,6 +133,7 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [HttpPost, Route("giris-yap")]
+        [UserLoggerFilter]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (!ModelState.IsValid)
