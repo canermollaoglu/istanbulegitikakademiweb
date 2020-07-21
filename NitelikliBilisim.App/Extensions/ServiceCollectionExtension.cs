@@ -22,7 +22,7 @@ namespace NitelikliBilisim.App.Extensions
             services.AddSingleton<IMessageService, EmailService>();
             services.AddSingleton<IStorageService, StorageService>();
             services.AddScoped<IPaymentService, PaymentService>();
-            //services.AddElasticsearch(configuration);
+            services.AddElasticsearch(configuration);
             #endregion
 
             #region signalR
