@@ -54,7 +54,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         }
 
         [HttpPost, Route("admin/add-education-gain")]
-        [TypeFilter(typeof(UserLoggerFilterAttribute))]
+        [UserLoggerFilter]
         public IActionResult AddGain(AddGainVm data)
         {
             if (!ModelState.IsValid)

@@ -14,19 +14,11 @@ namespace NitelikliBilisim.App.Filters
 {
     public class UserLoggerFilterAttribute : Attribute, IActionFilter
     {
-        private readonly IElasticClient _elasticClient;
-
-        public UserLoggerFilterAttribute(IElasticClient elasticClient)
+        private readonly ElasticClient _elasticClient;
+        public UserLoggerFilterAttribute()
         {
-            _elasticClient = elasticClient;
+            _elasticClient = ElasticSearchClientHelper.CreateElasticClient();
         }
-
-        //public UserLoggerFilterAttribute()
-        //{
-        //    _elasticClient = ElasticSearchClientHelper.CreateElasticClient();
-        //}
-
-
 
         /// <summary>
         /// Verilen sessionid ile yapılan işlemler listesini döndürür.
@@ -74,7 +66,7 @@ namespace NitelikliBilisim.App.Filters
                     UserId = context.HttpContext.User.Identity.IsAuthenticated ? context.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier) : string.Empty
                 };
                 //Index kontrol ediliyor yoksa oluşturuluyor.
-                //ElasticSearchClientHelper.CheckIndex<TransactionLog>((ElasticClient)_elasticClient, "usertransactionlog");
+                ElasticSearchClientHelper.CheckIndex<TransactionLog>((ElasticClient)_elasticClient, "usertransactionlog");
                 //Nesne es ye insert ediliyor.
                 _elasticClient.IndexDocument(log);
                 #endregion

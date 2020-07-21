@@ -18,7 +18,7 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [Route("kurs-detayi/{courseId}")]
-        [TypeFilter(typeof(UserLoggerFilterAttribute))]
+        [UserLoggerFilter]
         public IActionResult Details(Guid? courseId)
         {
             if (!courseId.HasValue)
