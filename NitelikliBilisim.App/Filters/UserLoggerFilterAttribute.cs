@@ -7,7 +7,6 @@ using NitelikliBilisim.App.ELK;
 using NitelikliBilisim.Core.ComplexTypes;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Security.Claims;
 
 
@@ -41,7 +40,6 @@ namespace NitelikliBilisim.App.Filters
 
         public void OnActionExecuted(ActionExecutedContext context)
         {
-            Debug.WriteLine(DateTime.Now);
         }
 
         public void OnActionExecuting(ActionExecutingContext context)
