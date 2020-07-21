@@ -32,15 +32,13 @@ namespace NitelikliBilisim.App.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UnitOfWork _unitOfWork;
-        private readonly IElasticClient _elasticClient;
 
 
-        public AccountController(IElasticClient elasticClient,UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, UnitOfWork unitOfWork)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, UnitOfWork unitOfWork)
         {
             this._userManager = userManager;
             this._signInManager = signInManager;
             _unitOfWork = unitOfWork;
-            _elasticClient= elasticClient;
         }
 
         [Route("kayit-ol")]
