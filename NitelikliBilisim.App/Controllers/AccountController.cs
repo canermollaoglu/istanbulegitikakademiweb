@@ -131,7 +131,6 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [HttpPost, Route("giris-yap")]
-        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (!ModelState.IsValid)

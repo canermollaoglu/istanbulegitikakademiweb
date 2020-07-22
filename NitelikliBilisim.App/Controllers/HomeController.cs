@@ -24,7 +24,7 @@ namespace NitelikliBilisim.App.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        [TypeFilter(typeof(UserLoggerFilterAttribute))]
+       
         public IActionResult Index()
         {
             var model = new HomeIndexModel();

@@ -25,7 +25,6 @@ namespace NitelikliBilisim.App.Controllers
             _unitOfWork = unitOfWork;
             _storageService = storageService;
         }
-        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("egitimler/{categoryUrl?}")]
         public IActionResult Courses(string categoryUrl, string s, string showAs = "grid")
         {

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Managers;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ComplexTypes;
@@ -16,7 +17,7 @@ using NitelikliBilisim.Support.Text;
 namespace NitelikliBilisim.App.Controllers
 {
     [Authorize]
-    public class UserProfileController : Controller
+    public class UserProfileController : BaseController
     {
         private readonly UserUnitOfWork _userUnitOfWork;
         private readonly UserManager<ApplicationUser> _userManager;

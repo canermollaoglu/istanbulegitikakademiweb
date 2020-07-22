@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NitelikliBilisim.Core.ComplexTypes.TransactionLogModels;
+using System;
 using System.Collections.Generic;
 
 namespace NitelikliBilisim.Core.ComplexTypes
@@ -16,6 +17,6 @@ namespace NitelikliBilisim.Core.ComplexTypes
         public string ActionName { get; set; }
         public string IpAddress { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.Now;
-        public IDictionary<string, object> ActionArguments { get; set; }
+        public List<LogParameter> Parameters { get; set; }
     }
 }
