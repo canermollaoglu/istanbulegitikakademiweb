@@ -29,7 +29,7 @@ namespace NitelikliBilisim.Data
         public override int SaveChanges()
         {
             var ip = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
-            //TODO: jwt yapınca kontrol et!!!!
+            //TODO: jwt yapınca kontrol et!!!
             var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var selectedEntityList = ChangeTracker.Entries()
                 .Where(x => x.Entity is AuditBase && x.State == EntityState.Added);
