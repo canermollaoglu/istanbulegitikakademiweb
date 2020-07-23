@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Nest;
 using NitelikliBilisim.Business.Repositories;
 using NitelikliBilisim.Core.Entities.helper;
 using NitelikliBilisim.Data;
@@ -40,8 +41,10 @@ namespace NitelikliBilisim.Business.UoW
         private OffDayRepository _offDayRepository;
         private EducationDayRepository _educationDayRepository;
         private EducationSuggestionCriterionRepository _educationSuggestionCriterionRepository;
-        public UnitOfWork(NbDataContext context)
+        private IElasticClient _elasticClient;
+        public UnitOfWork(NbDataContext context,IElasticClient elasticClient)
         {
+            _elasticClient = elasticClient;
             _context = context;
         }
         public int Save()
@@ -53,7 +56,7 @@ namespace NitelikliBilisim.Business.UoW
 
         public EducationTagRepository EducationTag => _educationTagRepository ??= new EducationTagRepository(_context);
 
-        public EducationRepository Education => _education ??= new EducationRepository(_context);
+        public EducationRepository Education => _education ??= new EducationRepository(_context,_elasticClient);
 
         public EducationMediaItemRepository EducationMedia => _educationMediaItem ??= new EducationMediaItemRepository(_context);
 

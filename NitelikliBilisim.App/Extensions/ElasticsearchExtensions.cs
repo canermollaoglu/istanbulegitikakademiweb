@@ -7,7 +7,7 @@ using System;
 namespace NitelikliBilisim.App.Extensions
 {
     public static class ElasticsearchExtensions
-    {
+    { 
         public static void AddElasticsearch(
         this IServiceCollection services, IConfiguration configuration)
         {
@@ -17,7 +17,7 @@ namespace NitelikliBilisim.App.Extensions
             var settings = new ConnectionSettings(new Uri(url))
                  .DefaultIndex(defaultIndex)
                  .DefaultMappingFor<TransactionLog>(m => m
-                    .IndexName("usertransactionlog")
+                    .IndexName("usertransactionlogsindex")
                     .IdProperty(p => p.Id)
                 );
 

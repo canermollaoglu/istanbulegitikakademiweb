@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Nest;
 using NitelikliBilisim.App.Controllers.Base;
-using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
@@ -17,14 +18,19 @@ namespace NitelikliBilisim.App.Controllers
     {
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly UnitOfWork _unitOfWork;
-        public HomeController(UnitOfWork unitOfWork, RoleManager<ApplicationRole> roleManager)
+        private readonly IElasticClient _elasticClient;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private ISession _session => _httpContextAccessor.HttpContext.Session;
+        public HomeController(UnitOfWork unitOfWork, RoleManager<ApplicationRole> roleManager, IElasticClient elasticClient, IHttpContextAccessor httpContextAccessor)
         {
+            _httpContextAccessor = httpContextAccessor;
             _roleManager = roleManager;
             CheckRoles().Wait();
             _unitOfWork = unitOfWork;
+            _elasticClient = elasticClient;
         }
 
-       
+
         public IActionResult Index()
         {
             var model = new HomeIndexModel();
@@ -51,6 +57,11 @@ namespace NitelikliBilisim.App.Controllers
         //[Authorize]
         public IActionResult Privacy()
         {
+            string sessionId = _session.GetString("userSessionId");
+            string userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            ViewData["userIdEducations"] = _unitOfWork.Education.GetViewingEducationsByCurrentUserId(userId);
+            ViewData["sessionIdEducations"] = _unitOfWork.Education.GetViewingEducationsByCurrentSessionId(sessionId);
             return View();
         }
 

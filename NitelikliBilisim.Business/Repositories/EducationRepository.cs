@@ -1,5 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Nest;
+using Newtonsoft.Json;
 using NitelikliBilisim.Business.PagedEntity;
+using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.DTO;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
@@ -14,15 +17,15 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Security.Cryptography.X509Certificates;
 
 namespace NitelikliBilisim.Business.Repositories
 {
     public class EducationRepository : BaseRepository<Education, Guid>, IPageableEntity<Education>
     {
-
-        public EducationRepository(NbDataContext context) : base(context)
+        private IElasticClient _elasticClient;
+        public EducationRepository(NbDataContext context,IElasticClient elasticClient) : base(context)
         {
+            _elasticClient = elasticClient;
         }
 
 
@@ -172,6 +175,51 @@ namespace NitelikliBilisim.Business.Repositories
             return category.BaseCategoryId ?? category.Id;
         }
         #endregion
+
+        #region ElasticSearch Request
+        public List<Education> GetViewingEducationsByCurrentSessionId(string sessionId)
+        {
+            List<TransactionLog> transactionLogs = new List<TransactionLog>();
+            List<Guid> educationIds = new List<Guid>();
+            var result = _elasticClient.Search<TransactionLog>(s =>
+            s.Query(q => q.Match(m => m.Field(f => f.SessionId).Query(sessionId))
+            && q.Match(m => m.Field(f => f.ControllerName).Query("Course"))
+            && q.Match(m => m.Field(f => f.ActionName).Query("Details"))
+            ));
+
+            if (result.IsValid && result.Documents != null && result.Documents.Count > 0)
+            {
+                foreach (var log in result.Documents)
+                {
+                    educationIds.Add(JsonConvert.DeserializeObject<Guid>(log.Parameters.Find(x => x.ParameterName == "courseId").ParameterValue));
+                }
+            }
+            return Context.Educations.Where(x => educationIds.Contains(x.Id)).ToList();
+        }
+        public List<Education> GetViewingEducationsByCurrentUserId(string userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+                return new List<Education>();
+
+
+            List<TransactionLog> transactionLogs = new List<TransactionLog>();
+            List<Guid> educationIds = new List<Guid>();
+            var result = _elasticClient.Search<TransactionLog>(s =>
+            s.Query(q => q.Match(m => m.Field(f => f.UserId).Query(userId))
+            && q.Match(m => m.Field(f => f.ControllerName).Query("Course"))
+            && q.Match(m => m.Field(f => f.ActionName).Query("Details"))
+            ));
+            if (result.IsValid && result.Documents != null && result.Documents.Count > 0)
+            {
+                foreach (var log in result.Documents)
+                {
+                    educationIds.Add(JsonConvert.DeserializeObject<Guid>(log.Parameters.Find(x => x.ParameterName == "courseId").ParameterValue));
+                }
+            }
+            return Context.Educations.Where(x => educationIds.Contains(x.Id)).ToList();
+        }
+        #endregion
+
 
         public IQueryable<EducationListVm> GetListQueryable()
         {

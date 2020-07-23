@@ -1,6 +1,26 @@
-﻿@{
+﻿@using NitelikliBilisim.Core.Entities
+@{
     ViewData["Title"] = "Privacy Policy";
 }
 <h1>@ViewData["Title"]</h1>
 
+<ul>
+    <h1>SessionId</h1>
+    @foreach (var education in ((List<Education>)ViewData["sessionIdEducations"]))
+    {
+        <li><b>@education.Name</b></li>
+
+    }
+</ul>
+<br />
+<hr />
+<br />
+<ul>
+    <h1>UserId</h1>
+    @foreach (var education in ((List<Education>)ViewData["userIdEducations"]))
+    {
+        <li><b>@education.Name</b></li>
+
+    }
+</ul>
 <p>Use this page to detail your site's privacy policy.</p>

@@ -46,6 +46,7 @@ namespace NitelikliBilisim.App.Filters
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
+            //Controller ve Action name için ActionDescriptor seçiliyor.
             var descriptor = context.ActionDescriptor as ControllerActionDescriptor;
             string currentUserRoleName = context.HttpContext.User.FindFirstValue(ClaimTypes.Role);
             string sessionId = context.HttpContext.Session.GetString("userSessionId");
@@ -54,8 +55,8 @@ namespace NitelikliBilisim.App.Filters
             {
                 context.HttpContext.Session.SetString("userSessionId", Guid.NewGuid().ToString());
             }
-            // var transactionList = SearchSessionTransaction(context.HttpContext.Session.GetString("userSessionId"));
-            //Controller ve Action name için ActionDescriptor seçiliyor.
+            //if (context.HttpContext.Request.Method.Equals("POST"))
+            
             //Admin işlemleri log dışı tutuluyor.
             if (currentUserRoleName != "Admin")
             {
@@ -92,11 +93,11 @@ namespace NitelikliBilisim.App.Filters
         /// </summary>
         private List<LogParameter> GetParameters(IDictionary<string, object> actionArguments)
         {
-            return actionArguments.Select(x => new LogParameter
+            return actionArguments.Where(x=>x.Value!=null).Select(x => new LogParameter
             {
                 ParameterName = x.Key,
-                ParameterValue = x.Value,
-                ParameterType = x.Value.GetType().Name,
+                ParameterValue = JsonConvert.SerializeObject(x.Value),
+                ParameterType = x.Value.GetType().FullName,
             }).ToList();
         }
 
@@ -109,7 +110,7 @@ namespace NitelikliBilisim.App.Filters
         private bool UpdateTransactionLogsSetUserId(string userId, string sessionId)
         {
             var response = _elasticClient.UpdateByQuery<TransactionLog>(u => u
-                .Query(q => q.Match(m => m.Field(f => f.SessionId).Query(sessionId)) && q.Bool(b=>b.MustNot(m=>m.Exists(t=>t.Field(f=>f.UserId)))))
+                .Query(q => q.Match(m => m.Field(f => f.SessionId).Query(sessionId)) && q.Bool(b => b.MustNot(m => m.Exists(t => t.Field(f => f.UserId)))))
                 .Script(s => s.
                 Source("ctx._source.userId = params.userId")
                 .Lang(ScriptLang.Painless)
@@ -124,12 +125,32 @@ namespace NitelikliBilisim.App.Filters
         /// </summary>
         private void CheckIndex()
         {
-            var response = _elasticClient.Indices.Exists("usertransactionlog");
+            var response = _elasticClient.Indices.Exists("usertransactionlogsindex");
             if (!response.Exists)
             {
-                _elasticClient.Indices.Create("usertransactionlog", index =>
+                _elasticClient.Indices.Create("usertransactionlogsindex", index =>
                    index.Map<TransactionLog>(x => x.AutoMap()));
             }
+        }
+
+        private string GetMacAddress(ActionExecutingContext context)
+        {
+            string macAddress = string.Empty;
+            macAddress = context.HttpContext.Request.Headers["X-Forwarded-For"].ToString();
+            if (string.IsNullOrEmpty(macAddress))
+            {
+                foreach (var item in System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces())
+                {
+                    System.Net.NetworkInformation.OperationalStatus ot = item.OperationalStatus;
+                    if (item.OperationalStatus == System.Net.NetworkInformation.OperationalStatus.Up)
+                    {
+                        macAddress = item.GetPhysicalAddress().ToString();
+                        break;
+                    }
+                }
+            }
+
+            return macAddress;
         }
         #endregion
     }
