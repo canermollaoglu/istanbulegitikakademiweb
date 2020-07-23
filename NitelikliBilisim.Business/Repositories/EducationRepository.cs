@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Cryptography.X509Certificates;
 
 namespace NitelikliBilisim.Business.Repositories
 {
@@ -39,14 +40,14 @@ namespace NitelikliBilisim.Business.Repositories
                 int nearestDay = 0;
                 var educationDay = Context.EducationDays.Where(x => x.StudentEducationInfoId == studentEducationInfo.Id && x.Date <= DateTime.Now).OrderByDescending(c => c.Date).FirstOrDefault();
                 nearestDay = educationDay.Day;
-                
+
                 /*Müşterinin NBUY eğitimi aldığı kategoriye göre eğitim listesi.*/
                 var educations = Context.Educations.Include(c => c.Category).Where(x => x.Category.BaseCategoryId == studentEducationInfo.CategoryId.Value || x.Category.Id == studentEducationInfo.CategoryId.Value).Include(x => x.EducationSuggestionCriterions);
 
                 #region Kriterlerin uygunluğunun kontrolü
                 foreach (var education in educations)
                 {
-                    int appropriateCriterion = 0;
+                    int appropriateCriterion = 1;
                     if (education.EducationSuggestionCriterions != null && education.EducationSuggestionCriterions.Count > 0)
                     {
                         foreach (var criterion in education.EducationSuggestionCriterions)
@@ -71,6 +72,19 @@ namespace NitelikliBilisim.Business.Repositories
                 var selectedEducations = educationAndAppropriateCriterion.OrderByDescending(entry => entry.Value)
                      .Take(5)
                      .ToDictionary(pair => pair.Key, pair => pair.Value);
+
+                //Eğer seçilmiş eğitimler 5 taneyi tamamlayamıyorsa son eklenen 5 eğitim ile doldurulacak.
+                var lastEducations = Context.Educations.OrderByDescending(x => x.CreatedDate).Take(5).ToList();
+                int i = 0;
+                while (Context.Educations.Count() > 5 && selectedEducations.Count <= 5)
+                {
+                    if (!selectedEducations.ContainsKey(lastEducations[i].Id))
+                    {
+                        selectedEducations.Add(lastEducations[i].Id, 0);
+                        i++;
+                    }
+                }
+
 
                 return FillSuggestedEducationList(selectedEducations);
             }
