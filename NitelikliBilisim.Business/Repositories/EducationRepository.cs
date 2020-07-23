@@ -662,7 +662,7 @@ namespace NitelikliBilisim.Business.Repositories
                     Description = x.Education.Description,
                     CategoryName = x.CategoryName,
                     Level = EnumSupport.GetDescription(x.Education.Level),
-                    PriceText = x.Education.NewPrice.Value.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
+                    PriceText = x.Education.NewPrice.GetValueOrDefault().ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
                     HoursPerDayText = x.Education.HoursPerDay.ToString(),
                     DaysText = x.Education.Days.ToString(),
                     DaysNumeric = x.Education.Days,
