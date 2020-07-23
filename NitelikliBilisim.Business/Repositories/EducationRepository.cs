@@ -77,16 +77,16 @@ namespace NitelikliBilisim.Business.Repositories
                      .ToDictionary(pair => pair.Key, pair => pair.Value);
 
                 //Eğer seçilmiş eğitimler 5 taneyi tamamlayamıyorsa son eklenen 5 eğitim ile doldurulacak.
-                var lastEducations = Context.Educations.OrderByDescending(x => x.CreatedDate).Take(5).ToList();
+                var lastEducations = Context.Educations.OrderByDescending(x => x.CreatedDate).Take(10).ToList();
                 int i = 0;
-                while (Context.Educations.Count() > 5 && selectedEducations.Count <= 5)
-                {
-                    if (!selectedEducations.ContainsKey(lastEducations[i].Id))
-                    {
-                        selectedEducations.Add(lastEducations[i].Id, 0);
-                        i++;
-                    }
-                }
+                //while (Context.Educations.Count() > 5 && selectedEducations.Count <= 5)
+                //{
+                //    if (!selectedEducations.ContainsKey(lastEducations[i].Id))
+                //    {
+                //        selectedEducations.Add(lastEducations[i].Id, 0);
+                //        i++;
+                //    }
+                //}
 
 
                 return FillSuggestedEducationList(selectedEducations);
@@ -191,7 +191,8 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 foreach (var log in result.Documents)
                 {
-                    educationIds.Add(JsonConvert.DeserializeObject<Guid>(log.Parameters.Find(x => x.ParameterName == "courseId").ParameterValue));
+                    if (log.Parameters != null && log.Parameters.Any(x => x.ParameterName == "courseId"))
+                        educationIds.Add(JsonConvert.DeserializeObject<Guid>(log.Parameters.First(x => x.ParameterName == "courseId").ParameterValue));
                 }
             }
             return Context.Educations.Where(x => educationIds.Contains(x.Id)).ToList();
@@ -213,7 +214,7 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 foreach (var log in result.Documents)
                 {
-                    if (log.Parameters != null && log.Parameters.Any())
+                    if (log.Parameters != null && log.Parameters.Any(x=>x.ParameterName=="courseId"))
                         educationIds.Add(JsonConvert.DeserializeObject<Guid>(log.Parameters.First(x => x.ParameterName == "courseId").ParameterValue));
                 }
             }
