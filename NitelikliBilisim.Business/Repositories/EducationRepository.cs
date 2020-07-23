@@ -22,7 +22,7 @@ namespace NitelikliBilisim.Business.Repositories
 {
     public class EducationRepository : BaseRepository<Education, Guid>, IPageableEntity<Education>
     {
-        private IElasticClient _elasticClient;
+        private readonly IElasticClient _elasticClient;
         public EducationRepository(NbDataContext context, IElasticClient elasticClient) : base(context)
         {
             _elasticClient = elasticClient;
@@ -132,9 +132,9 @@ namespace NitelikliBilisim.Business.Repositories
         }
 
         #region Suggested Educations Helper Method
-        public List<SuggestedEducationVm> FillSuggestedEducationList(Dictionary<Guid, int> EducationAndAppropriateCriterion)
+        public List<SuggestedEducationVm> FillSuggestedEducationList(Dictionary<Guid, int> educationAndAppropriateCriterion)
         {
-            var educationsList = Context.Educations.Where(x => EducationAndAppropriateCriterion.Keys.Contains(x.Id) && x.IsActive)
+            var educationsList = Context.Educations.Where(x => educationAndAppropriateCriterion.Keys.Contains(x.Id) && x.IsActive)
                .Join(Context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Id, r => r.EducationId, (x, y) => new
                {
                    Education = x,
@@ -163,15 +163,15 @@ namespace NitelikliBilisim.Business.Repositories
                     HoursPerDayNumeric = x.Education.HoursPerDay
                 },
                 Medias = new List<EducationMediaVm> { new EducationMediaVm { EducationId = x.Education.Id, FileUrl = x.EducationPreviewMedia.FileUrl } },
-                AppropriateCriterionCount = EducationAndAppropriateCriterion.FirstOrDefault(y => y.Key == x.Education.Id).Value
+                AppropriateCriterionCount = educationAndAppropriateCriterion.FirstOrDefault(y => y.Key == x.Education.Id).Value
             }
           ).OrderByDescending(x => x.AppropriateCriterionCount).ToList();
 
             return data;
         }
-        public Guid GetBaseCategoryId(Guid CategoryId)
+        public Guid GetBaseCategoryId(Guid categoryId)
         {
-            var category = Context.EducationCategories.Where(x => x.Id == CategoryId).FirstOrDefault();
+            var category = Context.EducationCategories.First(x => x.Id == categoryId);
             return category.BaseCategoryId ?? category.Id;
         }
         #endregion
@@ -203,8 +203,8 @@ namespace NitelikliBilisim.Business.Repositories
                 return new List<Education>();
 
 
-            List<TransactionLog> transactionLogs = new List<TransactionLog>();
-            List<Guid> educationIds = new List<Guid>();
+            var transactionLogs = new List<TransactionLog>();
+            var educationIds = new List<Guid>();
             var result = _elasticClient.Search<TransactionLog>(s =>
             s.Query(q => q.Match(m => m.Field(f => f.UserId).Query(userId))
             && q.Match(m => m.Field(f => f.ControllerName).Query("Course"))
