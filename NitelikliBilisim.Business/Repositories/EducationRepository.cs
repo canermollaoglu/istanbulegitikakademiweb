@@ -41,7 +41,7 @@ namespace NitelikliBilisim.Business.Repositories
                 var customer = Context.Customers.FirstOrDefault(x => x.Id == userId);
                 //Müşterinin en yakın eğitim günü. (Müşteri hafta sonu veya tatil günü sisteme giriş yaptığını varsayarak geçmiş en yakın gün baz alındı.)
                 int nearestDay = 0;
-                var educationDay = Context.EducationDays.Where(x => x.StudentEducationInfoId == studentEducationInfo.Id && x.Date <= DateTime.Now).OrderByDescending(c => c.Date).FirstOrDefault();
+                var educationDay = Context.EducationDays.Where(x => x.StudentEducationInfoId == studentEducationInfo.Id && x.Date <= DateTime.Now).OrderByDescending(c => c.Date).First();
                 nearestDay = educationDay.Day;
 
                 /*Müşterinin NBUY eğitimi aldığı kategoriye göre eğitim listesi.*/
@@ -116,7 +116,7 @@ namespace NitelikliBilisim.Business.Repositories
                         Description = x.Education.Description,
                         CategoryName = x.CategoryName,
                         Level = EnumSupport.GetDescription(x.Education.Level),
-                        PriceText = x.Education.NewPrice.Value.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
+                        PriceText = x.Education.NewPrice.GetValueOrDefault().ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
                         HoursPerDayText = x.Education.HoursPerDay.ToString(),
                         DaysText = x.Education.Days.ToString(),
                         DaysNumeric = x.Education.Days,
@@ -156,7 +156,7 @@ namespace NitelikliBilisim.Business.Repositories
                     Description = x.Education.Description,
                     CategoryName = x.CategoryName,
                     Level = EnumSupport.GetDescription(x.Education.Level),
-                    PriceText = x.Education.NewPrice.Value.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
+                    PriceText = x.Education.NewPrice.GetValueOrDefault().ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
                     HoursPerDayText = x.Education.HoursPerDay.ToString(),
                     DaysText = x.Education.Days.ToString(),
                     DaysNumeric = x.Education.Days,
@@ -233,7 +233,7 @@ namespace NitelikliBilisim.Business.Repositories
                        Name = e.Name,
                        Description = e.Description,
                        CategoryName = c.Name,
-                       Level = EnumSupport.GetDescription((EducationLevel)e.Level),
+                       Level = EnumSupport.GetDescription(e.Level),
                        Days = e.Days,
                        HoursPerDay = e.HoursPerDay,
                        isActive = e.IsActive
@@ -586,7 +586,7 @@ namespace NitelikliBilisim.Business.Repositories
                     Description = x.Education.Description,
                     CategoryName = x.CategoryName,
                     Level = EnumSupport.GetDescription(x.Education.Level),
-                    PriceText = x.Education.NewPrice.Value.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
+                    PriceText = x.Education.NewPrice.GetValueOrDefault().ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
                     HoursPerDayText = x.Education.HoursPerDay.ToString(),
                     DaysText = x.Education.Days.ToString(),
                     DaysNumeric = x.Education.Days,
@@ -825,20 +825,22 @@ namespace NitelikliBilisim.Business.Repositories
                     BaseCategoryName = y.BaseCategoryId.HasValue ? y.BaseCategory.Name : ""
                 });
 
-            var filterOptions = new FilterOptionsVm();
+            var filterOptions = new FilterOptionsVm
+            {
+                categories = educations.AsEnumerable()
+                    .GroupBy(x => x.CategoryName)
+                    .Select(x => new CategoryOptionVm()
+                    {
+                        BaseCategoryName = x.First().BaseCategoryName,
+                        CategoryName = x.Key,
+                        Count = x.Count()
+                    })
+                    .ToList()
+                    .OrderBy(x => x.BaseCategoryName)
+                    .ThenByDescending(x => x.Count)
+                    .ToList()
+            };
 
-            filterOptions.categories = educations.AsEnumerable()
-                .GroupBy(x => x.CategoryName)
-                .Select(x => new CategoryOptionVm()
-                {
-                    BaseCategoryName = x.FirstOrDefault().BaseCategoryName,
-                    CategoryName = x.Key,
-                    Count = x.Count()
-                })
-                .ToList()
-                .OrderBy(x => x.BaseCategoryName)
-                .ThenByDescending(x => x.Count)
-                .ToList();
 
             var baseCategories = filterOptions.categories.GroupBy(x => x.BaseCategoryName)
                 .Select(x => new CategoryOptionVm()
