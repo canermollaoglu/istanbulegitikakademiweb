@@ -202,8 +202,8 @@ namespace NitelikliBilisim.Business.Repositories
                 return new List<Education>();
 
 
-            List<TransactionLog> transactionLogs = new List<TransactionLog>();
-            List<Guid> educationIds = new List<Guid>();
+            var transactionLogs = new List<TransactionLog>();
+            var educationIds = new List<Guid>();
             var result = _elasticClient.Search<TransactionLog>(s =>
             s.Query(q => q.Match(m => m.Field(f => f.UserId).Query(userId))
             && q.Match(m => m.Field(f => f.ControllerName).Query("Course"))
