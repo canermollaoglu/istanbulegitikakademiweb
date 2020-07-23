@@ -23,7 +23,7 @@ namespace NitelikliBilisim.Business.Repositories
     public class EducationRepository : BaseRepository<Education, Guid>, IPageableEntity<Education>
     {
         private IElasticClient _elasticClient;
-        public EducationRepository(NbDataContext context,IElasticClient elasticClient) : base(context)
+        public EducationRepository(NbDataContext context, IElasticClient elasticClient) : base(context)
         {
             _elasticClient = elasticClient;
         }
@@ -213,7 +213,8 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 foreach (var log in result.Documents)
                 {
-                    educationIds.Add(JsonConvert.DeserializeObject<Guid>(log.Parameters.Find(x => x.ParameterName == "courseId").ParameterValue));
+                    if (log.Parameters != null && log.Parameters.Any())
+                        educationIds.Add(JsonConvert.DeserializeObject<Guid>(log.Parameters.First(x => x.ParameterName == "courseId").ParameterValue));
                 }
             }
             return Context.Educations.Where(x => educationIds.Contains(x.Id)).ToList();
