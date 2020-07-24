@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Nest;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Models;
@@ -8,7 +9,9 @@ using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -86,5 +89,92 @@ namespace NitelikliBilisim.App.Controllers
                 }
             }
         }
+
+        [HttpPost]
+        public IActionResult AddWishListItem(Guid? educationId)
+        {
+            if (!educationId.HasValue)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Lütfen sayfayı yenileyerek tekrar deneyiniz." }
+                });
+            }
+
+            try
+            {
+                var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (userId != null)
+                {
+                    WishlistItem newWishListItem = new WishlistItem();
+                    newWishListItem.Id = userId;
+                    newWishListItem.Id2 = educationId.Value;
+                    _unitOfWork.WishListItem.Insert(newWishListItem);
+                    return Json(new ResponseModel
+                    {
+                        isSuccess = true,
+                        message = "Eğitim favori olarak eklenmiştir."
+                    });
+                }
+                else
+                {
+                    //TODO 
+                    return Json(new ResponseModel
+                    {
+                        isSuccess = true,
+                        message = "Eğitim favori olarak eklenmiştir. Giriş yaparak işlemi tamamlayabilirsiniz. "
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex.Message);
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Bir sorunla karşılaşıldı." }
+                });
+            }
+
+        }
+
+        [HttpPost]
+        public IActionResult DeleteWishListItem(Guid? educationId)
+        {
+            if (!educationId.HasValue)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Lütfen sayfayı yenileyerek tekrar deneyiniz." }
+                });
+            }
+
+            try
+            {
+                var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                _unitOfWork.WishListItem.Delete(userId, educationId.Value);
+
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    message = "Eğitim favorilerden çıkarılmıştır."
+                });
+
+
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex.Message);
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Bir sorunla karşılaşıldı." }
+                });
+            }
+        }
+
     }
 }

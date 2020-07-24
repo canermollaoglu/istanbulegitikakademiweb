@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
+using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.Main.Profile;
 using NitelikliBilisim.Data;
 using NitelikliBilisim.Support.Enums;
@@ -27,6 +28,42 @@ namespace NitelikliBilisim.Business.Repositories
             var customer = _context.Customers
                 .Include(x => x.User)
                 .FirstOrDefault(x => x.Id == userId);
+            #region Favori eklenen eğitimler
+            var wishListItems = _context.Wishlist.Where(x => x.Id == userId).ToList();
+            List<Guid> wishListEducationIds = wishListItems.Select(x => x.Id2).ToList();
+            List<EducationVm> _wishList = new List<EducationVm>();
+            var educationsList = _context.Educations.Where(x => wishListEducationIds.Contains(x.Id) && x.IsActive)
+               .Join(_context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Id, r => r.EducationId, (x, y) => new
+               {
+                   Education = x,
+                   EducationPreviewMedia = y
+               })
+               .Join(_context.EducationCategories, l => l.Education.CategoryId, r => r.Id, (x, y) => new
+               {
+                   Education = x.Education,
+                   EducationPreviewMedia = x.EducationPreviewMedia,
+                   CategoryName = y.Name
+               }).ToList();
+
+            _wishList = educationsList.Select(x => new EducationVm
+            {
+                Base = new EducationBaseVm
+                {
+                    Id = x.Education.Id,
+                    Name = x.Education.Name,
+                    Description = x.Education.Description,
+                    CategoryName = x.CategoryName,
+                    Level = EnumSupport.GetDescription(x.Education.Level),
+                    PriceText = x.Education.NewPrice.GetValueOrDefault().ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
+                    HoursPerDayText = x.Education.HoursPerDay.ToString(),
+                    DaysText = x.Education.Days.ToString(),
+                    DaysNumeric = x.Education.Days,
+                    HoursPerDayNumeric = x.Education.HoursPerDay
+                },
+                Medias = new List<EducationMediaVm> { new EducationMediaVm { EducationId = x.Education.Id, FileUrl = x.EducationPreviewMedia.FileUrl } },
+            }).ToList();
+            
+            #endregion
             if (customer == null)
                 return null;
 
@@ -79,7 +116,8 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 PersonalAndAccountInfo = _personalAndAccount,
                 EducationInfo = _educationInfo,
-                Tickets = _tickets
+                Tickets = _tickets,
+                WishList = _wishList
             };
 
             return model;

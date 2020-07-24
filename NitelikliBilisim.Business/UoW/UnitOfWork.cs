@@ -41,6 +41,7 @@ namespace NitelikliBilisim.Business.UoW
         private OffDayRepository _offDayRepository;
         private EducationDayRepository _educationDayRepository;
         private EducationSuggestionCriterionRepository _educationSuggestionCriterionRepository;
+        private WishListRepository _wishListItemRepository;
         private IElasticClient _elasticClient;
         public UnitOfWork(NbDataContext context,IElasticClient elasticClient)
         {
@@ -155,5 +156,6 @@ namespace NitelikliBilisim.Business.UoW
         public OffDayRepository OffDay => _offDayRepository ??= new OffDayRepository(_context);
         public EducationDayRepository EducationDay => _educationDayRepository ??= new EducationDayRepository(_context);
         public EducationSuggestionCriterionRepository EducationSuggestionCriterion => _educationSuggestionCriterionRepository ??= new EducationSuggestionCriterionRepository(_context);
+        public WishListRepository WishListItem => _wishListItemRepository ??= new WishListRepository(_context);
     }
 }

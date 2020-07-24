@@ -12,6 +12,7 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public _PersonalAccountInfo PersonalAndAccountInfo { get; set; }
         public _EducationInfo EducationInfo { get; set; }
         public List<_Ticket> Tickets { get; set; }
+        public List<EducationVm> WishList { get; set; }
     }
 
     public class _PersonalAccountInfo

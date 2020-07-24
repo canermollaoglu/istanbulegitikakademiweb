@@ -10,6 +10,7 @@ using NitelikliBilisim.Core.Entities.user_details;
 using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels.areas.admin.educator_certificate;
 using NitelikliBilisim.Support.Text;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -76,7 +77,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 return Json(new ResponseModel
                 {
                     isSuccess = false,
-                    message = ex.Message
+                    errors = new List<string> { "Hata " + ex.Message }
 
                 }) ;
             }
