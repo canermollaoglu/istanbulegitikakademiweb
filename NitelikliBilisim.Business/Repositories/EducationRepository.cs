@@ -542,7 +542,8 @@ namespace NitelikliBilisim.Business.Repositories
                 .Where(x => educationIds.Contains(x.Id) && x.IsActive);
 
             //var educationGroupRepository = new EducationGroupRepository(Context);
-
+            
+            
             if (filter.categories != null)
             {
                 var categoryIds = Context.EducationCategories.Where(x => filter.categories.Contains(x.Name)).Select(x => x.Id).ToList();
