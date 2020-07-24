@@ -79,14 +79,15 @@ namespace NitelikliBilisim.Business.Repositories
                 //Eğer seçilmiş eğitimler 5 taneyi tamamlayamıyorsa son eklenen 5 eğitim ile doldurulacak.
                 var lastEducations = Context.Educations.OrderByDescending(x => x.CreatedDate).Take(10).ToList();
                 int i = 0;
-                //while (Context.Educations.Count() > 5 && selectedEducations.Count <= 5)
-                //{
-                //    if (!selectedEducations.ContainsKey(lastEducations[i].Id))
-                //    {
-                //        selectedEducations.Add(lastEducations[i].Id, 0);
-                //        i++;
-                //    }
-                //}
+                int educationCount = Context.Educations.Count(x => x.IsActive);
+                while (educationCount > 5 && selectedEducations.Count <= 5)
+                {
+                    if (!selectedEducations.ContainsKey(lastEducations[i].Id))
+                    {
+                        selectedEducations.Add(lastEducations[i].Id, 0);
+                    }
+                    i++;
+                }
 
 
                 return FillSuggestedEducationList(selectedEducations);
@@ -94,7 +95,7 @@ namespace NitelikliBilisim.Business.Repositories
             else
             {
                 //Üye olmayanlar veya NBUY eğitimi almamış olanlar için son eklenen 5 eğitim.
-                var educationsList = Context.Educations.OrderByDescending(x => x.CreatedDate).Take(5)
+                var educationsList = Context.Educations.Where(x => x.IsActive).OrderByDescending(x => x.CreatedDate).Take(5)
                  .Join(Context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Id, r => r.EducationId, (x, y) => new
                  {
                      Education = x,
@@ -214,7 +215,7 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 foreach (var log in result.Documents)
                 {
-                    if (log.Parameters != null && log.Parameters.Any(x=>x.ParameterName=="courseId"))
+                    if (log.Parameters != null && log.Parameters.Any(x => x.ParameterName == "courseId"))
                         educationIds.Add(JsonConvert.DeserializeObject<Guid>(log.Parameters.First(x => x.ParameterName == "courseId").ParameterValue));
                 }
             }
