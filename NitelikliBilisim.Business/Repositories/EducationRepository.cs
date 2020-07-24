@@ -861,7 +861,6 @@ namespace NitelikliBilisim.Business.Repositories
                 .ToDictionary(x => x.Key.ToString(), x => x.Value);
 
             // TODO: locations ve stars
-
             return filterOptions;
         }
 
