@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Nest;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Models;
@@ -11,7 +10,6 @@ using NitelikliBilisim.Core.Enums;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 

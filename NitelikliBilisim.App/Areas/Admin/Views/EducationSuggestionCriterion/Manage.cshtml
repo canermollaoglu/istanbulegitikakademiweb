@@ -5,6 +5,7 @@
 }
 
 @section styles{
+    <link href="~/vendor\select2/dist/css/select2.min.css" rel="stylesheet" />
     <link href="~/assets/css/area-admin/dataTables.bootstrap4.css" rel="stylesheet" />
     <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
 }
@@ -34,27 +35,32 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3" id="divMinVal">
                             <div class="form-group">
                                 <label>Minimum Değer</label>
                                 <input type="number" class="form-control" id="input-minVal" />
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3" id="divMaxVal">
                             <div class="form-group">
                                 <label>Maksimum Değer</label>
                                 <input type="number" class="form-control" id="input-maksVal" />
                             </div>
                         </div>
+                        <div class="col-md-6" id="divCharVal">
+                            <div class="form-group">
+                                <label>Değer</label>
+                                <select id="selectEducationLlist" multiple="multiple" class="form-control">
 
+                                </select>
+                            </div>
+                        </div>
                         <div class="col-md-2">
                             <div class="form-group">
                                 <button class="btn btn-success btn-block no-label" type="button" id="btn-save"><i class="fa fa-save"></i> Ekle</button>
                             </div>
                         </div>
-
                     </div>
-
                 </form>
             </div>
         </div>
@@ -87,16 +93,23 @@
                     @Html.AntiForgeryToken()
                     <input type="hidden" id="educationSuggestionCriterionId" />
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-6" id="divUptMinVal">
                             <div class="form-group">
                                 <label for="recipient-name" class="col-form-label">Minimum Değer:</label>
                                 <input type="number" class="form-control" id="upd_maxVal" />
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6" id="divUptMaxVal">
                             <div class="form-group">
                                 <label for="message-text" class="col-form-label">Maksimum Değer:</label>
                                 <input type="number" class="form-control" id="upd_minVal" />
+                            </div>
+                        </div>
+                        <div class="col-md-12" id="divUpdCharVal">
+                            <div class="form-group">
+                                <label>Değer</label>
+                                <select id="upd_SelectEducationList" multiple="multiple" class="form-control select2">
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -112,6 +125,7 @@
 
 
 @section postScripts{
+    <script src="~/vendor\select2/dist/js/select2.min.js"></script>
     <script src="~/assets/js/area-admin/jquery.dataTables.js"></script>
     <script src="~/assets/js/area-admin/dataTables.bootstrap4.js"></script>
     <script src="~/js/sup/alert-sup.js"></script>

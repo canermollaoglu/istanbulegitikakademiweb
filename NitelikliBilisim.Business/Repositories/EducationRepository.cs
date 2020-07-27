@@ -46,6 +46,8 @@ namespace NitelikliBilisim.Business.Repositories
 
                 /*Müşterinin NBUY eğitimi aldığı kategoriye göre eğitim listesi.*/
                 var educations = Context.Educations.Include(c => c.Category).Where(x => x.Category.BaseCategoryId == studentEducationInfo.CategoryId.Value || x.Category.Id == studentEducationInfo.CategoryId.Value).Include(x => x.EducationSuggestionCriterions);
+                var userWishList = Context.Wishlist.Where(x => x.Id == customer.Id).Include(x => x.Education).Select(x => x.Education.Id.ToString()).ToList();
+
 
                 #region Kriterlerin uygunluğunun kontrolü
                 foreach (var education in educations)
@@ -60,6 +62,14 @@ namespace NitelikliBilisim.Business.Repositories
                             {
                                 if (nearestDay <= criterion.MaxValue && nearestDay >= criterion.MinValue)
                                     appropriateCriterion++;
+                            }
+                            #endregion
+
+                            #region Favorilere Eklenmiş Eğitimler Kriteri
+                            if (criterion.CriterionType == Core.Enums.educations.CriterionType.WishListItem)
+                            {
+                                List<string> wishListItemIds = JsonConvert.DeserializeObject<string[]>(criterion.CharValue).ToList();
+                                appropriateCriterion = appropriateCriterion + SameElementCount(wishListItemIds, userWishList);
                             }
                             #endregion
                             #region Yeni Kriter
@@ -133,6 +143,15 @@ namespace NitelikliBilisim.Business.Repositories
         }
 
         #region Suggested Educations Helper Method
+        public int SameElementCount(List<string> first, List<string> second)
+        {
+            int count = 0;
+            for (int i = 0; i < first.Count; i++)
+                if (second.Contains(first[i]))
+                    count++;
+            return count;
+        }
+
         public List<SuggestedEducationVm> FillSuggestedEducationList(Dictionary<Guid, int> educationAndAppropriateCriterion)
         {
             var educationsList = Context.Educations.Where(x => educationAndAppropriateCriterion.Keys.Contains(x.Id) && x.IsActive)
@@ -542,8 +561,8 @@ namespace NitelikliBilisim.Business.Repositories
                 .Where(x => educationIds.Contains(x.Id) && x.IsActive);
 
             //var educationGroupRepository = new EducationGroupRepository(Context);
-            
-            
+
+
             if (filter.categories != null)
             {
                 var categoryIds = Context.EducationCategories.Where(x => filter.categories.Contains(x.Name)).Select(x => x.Id).ToList();

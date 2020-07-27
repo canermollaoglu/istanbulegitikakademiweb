@@ -14,8 +14,9 @@ namespace NitelikliBilisim.Core.Entities.educations
         }
 
         public CriterionType CriterionType { get; set; }
-        public int MinValue { get; set; }
+        public int? MinValue { get; set; }
         public int? MaxValue { get; set; }
+        public string CharValue { get; set; }
 
         public Guid EducationId { get; set; }
         [ForeignKey("EducationId")]
