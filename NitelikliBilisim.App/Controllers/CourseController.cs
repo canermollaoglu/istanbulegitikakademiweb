@@ -17,6 +17,7 @@ namespace NitelikliBilisim.App.Controllers
             _unitOfWork = unitOfWork;
         }
 
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("kurs-detayi/{courseId}")]
         public IActionResult Details(Guid? courseId)
         {

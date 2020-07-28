@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Controllers.Base;
+using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Enums;
@@ -22,7 +23,7 @@ namespace NitelikliBilisim.App.Controllers
             _unitOfWork = unitOfWork;
             _storageService = storageService;
         }
-
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("arama-sonuclari/{searchText}")]
         public IActionResult SearchResults(string searchText, string showAs = "grid")
         {
@@ -34,7 +35,7 @@ namespace NitelikliBilisim.App.Controllers
             };
             return View(model);
         }
-
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [HttpPost]
         [Route("search-for-courses")]
         public async Task<IActionResult> SearchEducation(string searchText, int page = 0, OrderCriteria order = OrderCriteria.Latest, FiltersVm filter = null)

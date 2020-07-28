@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Nest;
 using NitelikliBilisim.App.Controllers.Base;
+using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
@@ -31,7 +32,7 @@ namespace NitelikliBilisim.App.Controllers
             _elasticClient = elasticClient;
         }
 
-
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         public IActionResult Index()
         {
             var model = new HomeIndexModel();
@@ -88,6 +89,7 @@ namespace NitelikliBilisim.App.Controllers
             }
         }
 
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [HttpPost]
         public IActionResult AddWishListItem(Guid? educationId)
         {
@@ -137,6 +139,7 @@ namespace NitelikliBilisim.App.Controllers
 
         }
 
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [HttpPost]
         public IActionResult DeleteWishListItem(Guid? educationId)
         {

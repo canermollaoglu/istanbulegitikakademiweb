@@ -42,6 +42,7 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [Route("kayit-ol")]
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         public IActionResult Register()
         {
             var model = new RegisterGetVm
@@ -54,7 +55,7 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [HttpPost, Route("kayit-ol")]
-        
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         public async Task<IActionResult> Register(RegisterPostVm model)
         {
             if (!model.AcceptedTerms || !ModelState.IsValid)
@@ -119,7 +120,7 @@ namespace NitelikliBilisim.App.Controllers
                 isSuccess = true
             });
         }
-
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("giris-yap")]
         public async Task<IActionResult> Login(string returnUrl = null)
         {
@@ -129,7 +130,7 @@ namespace NitelikliBilisim.App.Controllers
             ViewBag.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             return View(new LoginViewModel() { ReturnUrl = returnUrl });
         }
-
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [HttpPost, Route("giris-yap")]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
