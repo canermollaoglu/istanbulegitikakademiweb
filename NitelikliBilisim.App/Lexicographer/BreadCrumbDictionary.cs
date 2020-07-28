@@ -90,6 +90,13 @@ namespace NitelikliBilisim.App.Lexicographer
             /*Education Suggestion Criterion*/
             _dictionary.Add("AdminEducationSuggestionCriterion",
               new BreadCrumbItem[] { new BreadCrumbItem(title: "Eğitimler Listesi", url: "/admin/egitimler"), new BreadCrumbItem(title: "Eğitim Öneri Kriterleri Yönetimi", url: null) });
+
+            /*Student*/
+            _dictionary.Add("AdminStudentList",
+               new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Öğrenci Listele", url: null) });
+            _dictionary.Add("AdminStudentLogList",
+                 new BreadCrumbItem[] { new BreadCrumbItem(title: "Öğrenci Listesi", url: "/admin/ogrenci-yonetimi"), new BreadCrumbItem(title: "Öğrenci Hareketleri", url: null) });
+
         }
 
         public static BreadCrumbItem[] ReadPart(string part)
