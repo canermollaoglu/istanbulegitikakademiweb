@@ -7,7 +7,8 @@ namespace NitelikliBilisim.Core.Enums.educations
         [Description("Eğitim Günü")]
         EducationDay = 1010,
         [Description("Favori Eğitimler")]
-        WishListItem = 1020
-
+        WishListEducations = 1020,
+        [Description("Satın Alınan Eğitimler")]
+        PurchasedEducations=1030
     }
 }

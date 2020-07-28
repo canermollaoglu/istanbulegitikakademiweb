@@ -27,9 +27,9 @@ function document_onLoad() {
     selectSuggestionCriterionTypes.on('change', function () {
         switch (this.value) {
             case "1010": getMinMaxValInputs(); break;
-            case "1020": getEducationsInput(); break;
+            case "1020": getEducationsInput(); 
+            case "1030": getEducationsInput(); break;
         }
-
     });
 
 
@@ -165,7 +165,7 @@ function createEducationSuggestionCriterionsList(data) {
                 `<div class="card-body d-flex flex-column align-items-start">` +
                 ` <strong class="d-inline-block mb-2 text-primary">${element.criterionTypeName}</strong>`;
 
-            if (element.criterionType == "1020") {
+            if (element.criterionType == "1020" || element.criterionType == "1030") {
                 content += `<p class="card-text mb-auto"> <b>Değer :</b>  ${element.charValue} </p></br></br>`;
             } else if (element.criterionType == "1010") {
                 content += `<p class="card-text mb-auto"><b>Minimum Değer :</b> ${element.minValue}</p>`;
@@ -214,11 +214,10 @@ function UpdateEducationSuggestionCriterionGet(id) {
                     $('#divUpdCharVal').hide();
                     $('#upd_maxVal').val(res.data.minValue);
                     $('#upd_minVal').val(res.data.maxValue);
-                } else if (res.data.criterionType == "1020") {
+                } else if (res.data.criterionType == "1020" || res.data.criterionType == "1030") {
                     $('#divUptMinVal').hide();
                     $('#divUptMaxVal').hide();
                     $("#upd_SelectEducationList").html("");
-                    console.log(res.data);
                     $.each(res.data.allEducations, function (index, value) {
                         if (res.data.selectedEducations[index]!==undefined) {
                             $("#upd_SelectEducationList").append($('<option selected></option>').val(index).text(value));

@@ -42,7 +42,7 @@ namespace NitelikliBilisim.Business.Repositories
                 vm.Id = criterion.Id;
                 vm.MinValue = criterion.MinValue;
                 vm.MaxValue = criterion.MaxValue;
-                if (!string.IsNullOrEmpty(criterion.CharValue) && vm.CriterionType == CriterionType.WishListItem)
+                if (!string.IsNullOrEmpty(criterion.CharValue) && vm.CriterionType == CriterionType.WishListEducations || vm.CriterionType == CriterionType.PurchasedEducations)
                 {
                     List<Guid> educationId = JsonConvert.DeserializeObject<List<Guid>>(criterion.CharValue);
                     vm.CharValue = string.Join(",", educations.Where(x => educationId.Contains(x.Id)).Select(x => x.Name).ToList());

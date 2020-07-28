@@ -67,7 +67,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     newCriterion.MinValue = data.MinValue;
                     newCriterion.MaxValue = data.MaxValue;
                 }
-                else if(newCriterion.CriterionType == CriterionType.WishListItem)
+                else if(newCriterion.CriterionType == CriterionType.WishListEducations || newCriterion.CriterionType == CriterionType.PurchasedEducations)
                 {
                     newCriterion.CharValue = JsonConvert.SerializeObject(data.CharValue);
                 }
@@ -116,7 +116,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     AllEducations = null,
                     SelectedEducations = null
                 };
-                if (data.CriterionType == CriterionType.WishListItem)
+                if (data.CriterionType == CriterionType.WishListEducations||data.CriterionType == CriterionType.PurchasedEducations)
                 {
 
                     List<Guid> educationIds = JsonConvert.DeserializeObject<List<Guid>>(data.CharValue);
@@ -165,7 +165,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     suggestionCriterion.MinValue = data.MinValue;
                     suggestionCriterion.MaxValue = data.MaxValue;
                 }
-                else if (suggestionCriterion.CriterionType == CriterionType.WishListItem)
+                else if (suggestionCriterion.CriterionType == CriterionType.WishListEducations || suggestionCriterion.CriterionType == CriterionType.PurchasedEducations)
                 {
                     suggestionCriterion.CharValue = JsonConvert.SerializeObject(data.CharValue);
                 }

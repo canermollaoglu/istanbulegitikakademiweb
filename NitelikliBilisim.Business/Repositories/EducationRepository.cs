@@ -6,6 +6,7 @@ using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.DTO;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
+using NitelikliBilisim.Core.Enums.educations;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education;
 using NitelikliBilisim.Core.ViewModels.search;
@@ -46,7 +47,16 @@ namespace NitelikliBilisim.Business.Repositories
 
                 /*Müşterinin NBUY eğitimi aldığı kategoriye göre eğitim listesi.*/
                 var educations = Context.Educations.Include(c => c.Category).Where(x => x.Category.BaseCategoryId == studentEducationInfo.CategoryId.Value || x.Category.Id == studentEducationInfo.CategoryId.Value).Include(x => x.EducationSuggestionCriterions);
-                var userWishList = Context.Wishlist.Where(x => x.Id == customer.Id).Include(x => x.Education).Select(x => x.Education.Id.ToString()).ToList();
+                #region Favori eklenen eğitimler
+                List<string> userWishList = Context.Wishlist.Where(x => x.Id == customer.Id).Include(x => x.Education).Select(x => x.Education.Id.ToString()).ToList();
+                #endregion
+                #region Satın alınan eğitimler
+                List<string> userPurchasedEducations = new List<string>();
+                var tickets = Context.Tickets
+                .Where(x => x.OwnerId == customer.Id)
+                .ToList();
+                tickets.ForEach(x => userPurchasedEducations.Add(x.EducationId.ToString()));
+                #endregion
 
 
                 #region Kriterlerin uygunluğunun kontrolü
@@ -58,7 +68,7 @@ namespace NitelikliBilisim.Business.Repositories
                         foreach (var criterion in education.EducationSuggestionCriterions)
                         {
                             #region Eğitim Günü Kriteri
-                            if (criterion.CriterionType == Core.Enums.educations.CriterionType.EducationDay)
+                            if (criterion.CriterionType == CriterionType.EducationDay)
                             {
                                 if (nearestDay <= criterion.MaxValue && nearestDay >= criterion.MinValue)
                                     appropriateCriterion++;
@@ -66,14 +76,18 @@ namespace NitelikliBilisim.Business.Repositories
                             #endregion
 
                             #region Favorilere Eklenmiş Eğitimler Kriteri
-                            if (criterion.CriterionType == Core.Enums.educations.CriterionType.WishListItem)
+                            if (criterion.CriterionType == CriterionType.WishListEducations)
                             {
                                 List<string> wishListItemIds = JsonConvert.DeserializeObject<string[]>(criterion.CharValue).ToList();
                                 appropriateCriterion = appropriateCriterion + SameElementCount(wishListItemIds, userWishList);
                             }
                             #endregion
-                            #region Yeni Kriter
-                            //Todo eklenen kriterler buraya girilecek.
+                            #region Satın Alınmış Eğitimler Kriteri
+                            if (criterion.CriterionType == CriterionType.PurchasedEducations)
+                            {
+                                List<string> criterionItemIds = JsonConvert.DeserializeObject<string[]>(criterion.CharValue).ToList();
+                                appropriateCriterion = appropriateCriterion + SameElementCount(userPurchasedEducations, criterionItemIds);
+                            }
                             #endregion
                         }
                     }
@@ -147,7 +161,7 @@ namespace NitelikliBilisim.Business.Repositories
         {
             int count = 0;
             for (int i = 0; i < first.Count; i++)
-                if (second.Contains(first[i]))
+                if (second.Contains(first[i].ToUpper()))
                     count++;
             return count;
         }
