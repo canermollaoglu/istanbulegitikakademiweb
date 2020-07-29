@@ -4,9 +4,9 @@ namespace NitelikliBilisim.Core.Enums.educations
 {
     public enum CriterionType
     {
-        [Description("Eğitim Günü")]
+        [Description("Bulunduğu Eğitim Günü")]
         EducationDay = 1010,
-        [Description("Favori Eğitimler")]
+        [Description("Favori Eğitimleri")]
         WishListEducations = 1020,
         [Description("Satın Alınan Eğitimler")]
         PurchasedEducations=1030

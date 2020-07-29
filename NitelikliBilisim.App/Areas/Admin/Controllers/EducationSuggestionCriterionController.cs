@@ -25,10 +25,18 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             _unitOfWork = unitOfWork;
         }
 
+        
+        [Route("admin/egitim-oneri-kriteri-listesi")]
+        public IActionResult List()
+        {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationSuggestionCriterionList");
+            return View();
+        }
+
         [Route("admin/egitim-oneri-kriteri-yonetimi")]
         public IActionResult Manage(Guid? educationId)
         {
-            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationSuggestionCriterion");
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationSuggestionCriterionManage");
             if (educationId == null)
                 return Redirect("/");
 

@@ -1,0 +1,36 @@
+﻿
+@{
+    ViewData["Title"] = "Eğitim Öneri Kriterleri Listesi";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
+    <link href="~/vendor\devextreme\dist\css\dx.common.css" rel="stylesheet" />
+    <link href="~/vendor\devextreme\dist\css\dx.light.css" rel="stylesheet" />
+<style>
+    .dx-datagrid-nowrap, .dx-datagrid-nowrap .dx-header-row > td > .dx-datagrid-text-content{
+        white-space :normal !important;
+    }
+</style>
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-table"></i> Eğitim Öneri Kriterleri
+    </div>
+    <div class="card-body">
+        <div id="education-suggestion-criterion-grid"></div>
+    </div>
+    <div class="card-footer small text-muted">Veri tarihi: @DateTime.Now</div>
+</div>
+
+@section postScripts{
+    <script src="~/js/sup/alert-sup.js"></script>
+    <script src="~/vendor\devextreme\dist\js\dx.all.js"></script>
+    <script src="~/vendor\devextreme-aspnet-data\js\dx.aspnet.data.js"></script>
+    <script src="https://cdn3.devexpress.com/jslib/20.1.6/js/localization/dx.messages.tr.js"></script>
+    <script src="~/js/areas/admin/admin-education-suggestion-criterion-list.js"></script>
+}
