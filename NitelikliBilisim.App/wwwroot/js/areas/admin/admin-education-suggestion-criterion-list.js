@@ -130,9 +130,8 @@ function createGrid() {
             template: function (container, options) {
                 var currentEducationData = options.data;
                 var currentDiv = $("<div>")
-                    .addClass("font-weight-bold")
                     .appendTo(container);
-                var title = $(`<div class="row">${currentEducationData.name} Eğitimine ait öneri kriterleri:</div>`);
+                var title = $(`<div class="font-weight-bold row" style="margin-bottom:5px;">${currentEducationData.name} Eğitimine ait öneri kriterleri:</div>`);
                 title.appendTo(currentDiv);
                 $.ajax({
                     url: `/admin/educationsuggestioncriterion/getlist?educationId=${currentEducationData.id}`,
