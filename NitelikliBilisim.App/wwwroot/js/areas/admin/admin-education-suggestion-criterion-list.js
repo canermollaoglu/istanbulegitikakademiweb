@@ -97,7 +97,6 @@ function createGrid() {
         {
             caption: "Eğitim Adı",
             dataField: "name",
-            width:350
         },
         {
             caption: "Gün/Saat",
@@ -106,11 +105,24 @@ function createGrid() {
                 $(`<span>${current.days} gün / ${current.hoursPerDay} saat</span>`)
                     .appendTo(container);
             },
+            width:120
         },
         {
             caption: "Aktif Mi",
-            dataField: "isActive"
-        }
+            dataField: "isActive",
+            width:100
+            
+        },
+        {
+            caption: "Yönet",
+            cellTemplate: function (container, options) {
+                var current = options.data;
+                $(`<a class="btn btn-primary btn-sm" href="/admin/egitim-oneri-kriteri-yonetimi?educationId=${current.id}"><i class="fa fa-tasks"></i></a>`)
+                    .appendTo(container);
+            },
+            width:75
+        },
+
         ]
         ,
         masterDetail: {
