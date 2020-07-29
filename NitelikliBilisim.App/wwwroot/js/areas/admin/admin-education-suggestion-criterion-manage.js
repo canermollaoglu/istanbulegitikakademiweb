@@ -110,6 +110,8 @@ function btnConfirmationModalTrigger_onClick() {
 }
 function confirm_onClick() {
     var url = this.getAttribute("data-url");
+    var btn = $(this);
+    btn.off("click");
     $.ajax({
         url: url,
         method: "get",
@@ -120,12 +122,14 @@ function confirm_onClick() {
                     success: true,
                     message: "Kayıt başarıyla silinmiştir"
                 });
+                btn.on("click");
             } else {
                 resultAlert.display({
                     success: false,
                     errors: res.errors,
                     message: "Hataları düzeltiniz"
                 });
+                btn.on("click");
             }
         }
     });
