@@ -18,7 +18,7 @@ namespace NitelikliBilisim.Business.UoW
         private EducatorRepository _educator;
         private EducatorSocialMediaRepository _educatorSocialMedia;
         private StudentEducationInfoRepository _studentEducationInfo;
-        private EducationSuggestionRepository _suggestionRepository;
+        private EducationSuggestionRepository _educationSuggestionRepository;
         private CustomerRepository _customerRepository;
         private BridgeEducationEducatorRepository _bridgeEducationEducatorRepository;
         private EducationGroupRepository _educationGroupRepository;
@@ -42,6 +42,8 @@ namespace NitelikliBilisim.Business.UoW
         private EducationDayRepository _educationDayRepository;
         private EducationSuggestionCriterionRepository _educationSuggestionCriterionRepository;
         private WishListRepository _wishListItemRepository;
+        private SuggestionRepository _suggestionRepository;
+
         private IElasticClient _elasticClient;
         public UnitOfWork(NbDataContext context,IElasticClient elasticClient)
         {
@@ -53,11 +55,12 @@ namespace NitelikliBilisim.Business.UoW
             _context.EnsureAutoHistory();
             return _context.SaveChanges();
         }
+        public SuggestionRepository Suggestions => _suggestionRepository ??= new SuggestionRepository(_context, _elasticClient);
         public EducationCategoryRepository EducationCategory => _educationCategoryRepository ??= new EducationCategoryRepository(_context);
 
         public EducationTagRepository EducationTag => _educationTagRepository ??= new EducationTagRepository(_context);
 
-        public EducationRepository Education => _education ??= new EducationRepository(_context,_elasticClient);
+        public EducationRepository Education => _education ??= new EducationRepository(_context);
 
         public EducationMediaItemRepository EducationMedia => _educationMediaItem ??= new EducationMediaItemRepository(_context);
 
@@ -71,7 +74,7 @@ namespace NitelikliBilisim.Business.UoW
 
         public StudentEducationInfoRepository StudentEducationInfo => _studentEducationInfo ??= new StudentEducationInfoRepository(_context);
 
-        public EducationSuggestionRepository Suggestion => _suggestionRepository ??= new EducationSuggestionRepository(_context);
+        public EducationSuggestionRepository Suggestion => _educationSuggestionRepository ??= new EducationSuggestionRepository(_context);
 
         public CustomerRepository Customer => _customerRepository ??= new CustomerRepository(_context);
 

@@ -20,7 +20,6 @@ namespace NitelikliBilisim.App.Controllers
     {
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly UnitOfWork _unitOfWork;
-        private readonly IElasticClient _elasticClient;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private ISession _session => _httpContextAccessor.HttpContext.Session;
         public HomeController(UnitOfWork unitOfWork, RoleManager<ApplicationRole> roleManager, IElasticClient elasticClient, IHttpContextAccessor httpContextAccessor)
@@ -29,7 +28,6 @@ namespace NitelikliBilisim.App.Controllers
             _roleManager = roleManager;
             CheckRoles().Wait();
             _unitOfWork = unitOfWork;
-            _elasticClient = elasticClient;
         }
 
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
@@ -39,11 +37,11 @@ namespace NitelikliBilisim.App.Controllers
             model.EducationCountByCategory = _unitOfWork.EducationCategory.GetEducationCountForCategories();
             var isLoggedIn = HttpContext.User.Identity.IsAuthenticated;
             if (!isLoggedIn)
-                model.SuggestedEducations = _unitOfWork.Education.GetSuggestedEducationList(false, null);
+                model.SuggestedEducations = _unitOfWork.Suggestions.GetSuggestedEducationList(false, null);
             else
             {
                 var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                model.SuggestedEducations = _unitOfWork.Education.GetSuggestedEducationList(true, userId);
+                model.SuggestedEducations = _unitOfWork.Suggestions.GetSuggestedEducationList(true, userId);
             }
 
             return View(model);
@@ -62,8 +60,8 @@ namespace NitelikliBilisim.App.Controllers
             string sessionId = _session.GetString("userSessionId");
             string userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            ViewData["userIdEducations"] = _unitOfWork.Education.GetViewingEducationsByCurrentUserId(userId);
-            ViewData["sessionIdEducations"] = _unitOfWork.Education.GetViewingEducationsByCurrentSessionId(sessionId);
+            ViewData["userIdEducations"] = _unitOfWork.Suggestions.GetViewingEducationsByCurrentUserId(userId);
+            ViewData["sessionIdEducations"] = _unitOfWork.Suggestions.GetViewingEducationsByCurrentSessionId(sessionId);
             return View();
         }
 
