@@ -9,6 +9,7 @@ using NitelikliBilisim.Core.ComplexTypes.TransactionLogModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Security.Claims;
 
 
@@ -133,20 +134,25 @@ namespace NitelikliBilisim.App.Filters
             }
         }
 
-        private string GetMacAddress(ActionExecutingContext context)
+        /// <summary>
+        /// Finds the MAC address of the NIC with maximum speed.
+        /// </summary>
+        /// <returns>The MAC address.</returns>
+        private string GetMacAddress()
         {
+            const int MIN_MAC_ADDR_LENGTH = 12;
             string macAddress = string.Empty;
-            macAddress = context.HttpContext.Request.Headers["X-Forwarded-For"].ToString();
-            if (string.IsNullOrEmpty(macAddress))
+            long maxSpeed = -1;
+
+            foreach (NetworkInterface nic in NetworkInterface.GetAllNetworkInterfaces())
             {
-                foreach (var item in System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces())
+                string tempMac = nic.GetPhysicalAddress().ToString();
+                if (nic.Speed > maxSpeed &&
+                    !string.IsNullOrEmpty(tempMac) &&
+                    tempMac.Length >= MIN_MAC_ADDR_LENGTH)
                 {
-                    System.Net.NetworkInformation.OperationalStatus ot = item.OperationalStatus;
-                    if (item.OperationalStatus == System.Net.NetworkInformation.OperationalStatus.Up)
-                    {
-                        macAddress = item.GetPhysicalAddress().ToString();
-                        break;
-                    }
+                    maxSpeed = nic.Speed;
+                    macAddress = tempMac;
                 }
             }
 

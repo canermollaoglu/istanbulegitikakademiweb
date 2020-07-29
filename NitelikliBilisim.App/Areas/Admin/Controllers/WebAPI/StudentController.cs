@@ -1,6 +1,7 @@
 ﻿using DevExtreme.AspNet.Data;
 using Microsoft.AspNetCore.Mvc;
 using Nest;
+using Newtonsoft.Json;
 using NitelikliBilisim.App.Extensions;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ComplexTypes;
@@ -35,10 +36,20 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.WebAPI
             ));
             
             loadOptions.PrimaryKey = new[] { "Id" };
-            
+
             var data = _elasticClient.Search<TransactionLog>(s =>
             s.From(0).Size((int)count.Count).Query(q => q.Match(m => m.Field(f => f.UserId).Query(studentId))
-            )).Documents;
+            )).Documents.Select(x=> new TransactionLogListViewModel
+            {
+                ActionName = x.ActionName,
+                ControllerName = x.ControllerName,
+                CreatedDate = x.CreatedDate,
+                Id = x.Id,
+                IpAddress = x.IpAddress,
+                Parameters = JsonConvert.SerializeObject(x.Parameters),
+                SessionId =x.SessionId,
+                UserId = x.UserId
+            }).ToList();
             
             var lastData = DataSourceLoader.Load(data, loadOptions);
             lastData.totalCount = (int)count.Count;

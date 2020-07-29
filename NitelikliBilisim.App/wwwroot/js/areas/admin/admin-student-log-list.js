@@ -58,23 +58,31 @@ function createGrid(currentStudentId) {
                 dataField: "createdDate",
                 dataType: "date",
                 format: "MM/dd/yyyy HH:mm",
-                width: 250
+                width: 150
             },
             {
                 caption: "Controller",
                 dataField: "controllerName",
-                width: 250
             },
             {
                 caption: "Action",
                 dataField: "actionName",
-                width: 300
             },
             {
                 caption: "Ip Adresi",
                 dataField: "ipAddress",
-
-
+            },
+            {
+                caption: "Session Id",
+                dataField:"sessionId"
+            },
+            {
+                caption: "User Id",
+                dataField:"userId"
+            },
+            {
+                caption: "Parametreler",
+                dataField:"parameters"
             }
         ]
 
