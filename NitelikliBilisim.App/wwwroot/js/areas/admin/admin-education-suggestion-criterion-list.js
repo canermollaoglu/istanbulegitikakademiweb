@@ -149,10 +149,10 @@ function createGrid() {
                                         ` <strong class="d-inline-block mb-2 text-primary">${element.criterionTypeName}</strong>`;
 
                                     if (element.criterionType == "1020" || element.criterionType == "1030") {
-                                        content += `<p class="card-text mb-auto"> <b>Değer :</b>  ${element.charValue} </p></br></br>`;
+                                        content += `<p class="card-text mb-auto">${element.charValue} </p></br></br>`;
                                     } else if (element.criterionType == "1010") {
-                                        content += `<p class="card-text mb-auto"><b>Minimum Değer :</b> ${element.minValue}</p>`;
-                                        content += `<p class="card-text mb-auto"><b>Maksimum Değer :</b> ${element.maxValue}</p></br>`;
+                                        content += `<p class="card-text mb-auto"><b>Minimum Gün :</b> ${element.minValue}</p>`;
+                                        content += `<p class="card-text mb-auto"><b>Maksimum Gün :</b> ${element.maxValue}</p></br>`;
                                     }
                                     content +=
                                         `</div>` +

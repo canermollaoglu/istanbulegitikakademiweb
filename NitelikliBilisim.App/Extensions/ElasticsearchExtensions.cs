@@ -17,7 +17,7 @@ namespace NitelikliBilisim.App.Extensions
             var settings = new ConnectionSettings(new Uri(url))
                  .DefaultIndex(defaultIndex)
                  .DefaultMappingFor<TransactionLog>(m => m
-                    .IndexName("usertransactionlogsindex")
+                    .IndexName("ut_log")
                     .IdProperty(p => p.Id)
                 );
 

@@ -24,22 +24,6 @@ namespace NitelikliBilisim.App.Filters
             _elasticClient = elasticClient;
         }
 
-        /// <summary>
-        /// Verilen sessionid ile yapılan işlemler listesini döndürür.
-        /// </summary>
-        /// <param name="sessionUserId"></param>
-        /// <returns></returns>
-        /// 
-        private List<TransactionLog> SearchSessionTransaction(string sessionUserId)
-        {
-            //Search string value
-            var response = _elasticClient.Search<TransactionLog>(i => i.Query(m => m.Match(x => x.Field(p => p.SessionId).Query(sessionUserId))));
-
-            List<TransactionLog> items = new List<TransactionLog>();
-            foreach (var item in response.Documents)
-                items.Add(item);
-            return items;
-        }
 
         public void OnActionExecuted(ActionExecutedContext context)
         {
@@ -111,7 +95,7 @@ namespace NitelikliBilisim.App.Filters
         private bool UpdateTransactionLogsSetUserId(string userId, string sessionId)
         {
             var response = _elasticClient.UpdateByQuery<TransactionLog>(u => u
-                .Query(q => q.Match(m => m.Field(f => f.SessionId).Query(sessionId)) && q.Bool(b => b.MustNot(m => m.Exists(t => t.Field(f => f.UserId)))))
+                .Query(q => q.Term(t => t.SessionId,sessionId) && q.Bool(b => b.MustNot(m => m.Exists(t => t.Field(f => f.UserId)))))
                 .Script(s => s.
                 Source("ctx._source.userId = params.userId")
                 .Lang(ScriptLang.Painless)
@@ -126,10 +110,10 @@ namespace NitelikliBilisim.App.Filters
         /// </summary>
         private void CheckIndex()
         {
-            var response = _elasticClient.Indices.Exists("usertransactionlogsindex");
+            var response = _elasticClient.Indices.Exists("ut_log");
             if (!response.Exists)
             {
-                _elasticClient.Indices.Create("usertransactionlogsindex", index =>
+                _elasticClient.Indices.Create("ut_log", index =>
                    index.Map<TransactionLog>(x => x.AutoMap()));
             }
         }

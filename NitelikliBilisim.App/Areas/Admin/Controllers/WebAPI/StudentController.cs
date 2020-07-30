@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using NitelikliBilisim.App.Extensions;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ComplexTypes;
+using System;
 using System.Linq;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers.WebAPI
@@ -31,15 +32,10 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.WebAPI
         [Route("get-student-log-list")]
         public IActionResult Logs(DataSourceLoadOptions loadOptions,string studentId)
         {
-            var count = _elasticClient.Count<TransactionLog>(s =>
-            s.Query(q => q.Match(m => m.Field(f => f.UserId).Query(studentId))
-            ));
-            
-            loadOptions.PrimaryKey = new[] { "Id" };
-
+            var count = _elasticClient.Count<TransactionLog>(s => s.Query
+            (q => q.Term(t => t.UserId, studentId)));
             var data = _elasticClient.Search<TransactionLog>(s =>
-            s.From(0).Size((int)count.Count).Query(q => q.Match(m => m.Field(f => f.UserId).Query(studentId))
-            )).Documents.Select(x=> new TransactionLogListViewModel
+            s.From(0).Size((int)count.Count).Query(q => q.Term(t => t.UserId, studentId))).Documents.Select(x => new TransactionLogListViewModel
             {
                 ActionName = x.ActionName,
                 ControllerName = x.ControllerName,
@@ -47,10 +43,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.WebAPI
                 Id = x.Id,
                 IpAddress = x.IpAddress,
                 Parameters = JsonConvert.SerializeObject(x.Parameters),
-                SessionId =x.SessionId,
+                SessionId = x.SessionId,
                 UserId = x.UserId
             }).ToList();
-            
+
+            loadOptions.PrimaryKey = new[] { "Id" };
+
             var lastData = DataSourceLoader.Load(data, loadOptions);
             lastData.totalCount = (int)count.Count;
 

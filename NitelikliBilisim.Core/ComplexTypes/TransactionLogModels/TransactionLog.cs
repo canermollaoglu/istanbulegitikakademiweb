@@ -1,4 +1,5 @@
-﻿using NitelikliBilisim.Core.ComplexTypes.TransactionLogModels;
+﻿using Nest;
+using NitelikliBilisim.Core.ComplexTypes.TransactionLogModels;
 using System;
 using System.Collections.Generic;
 
@@ -10,8 +11,11 @@ namespace NitelikliBilisim.Core.ComplexTypes
         {
             Id = Guid.NewGuid();
         }
+        [Keyword]
         public  Guid Id { get; set; }
+        [Keyword]
         public string SessionId { get; set; }
+        [Keyword]
         public string UserId { get; set; }
         public string ControllerName { get; set; }
         public string ActionName { get; set; }
