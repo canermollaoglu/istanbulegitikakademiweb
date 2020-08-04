@@ -60,8 +60,8 @@ namespace NitelikliBilisim.App.Controllers
             string sessionId = _session.GetString("userSessionId");
             string userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            ViewData["userIdEducations"] = _unitOfWork.Suggestions.GetViewingEducationsByCurrentUserId(userId);
-            ViewData["sessionIdEducations"] = _unitOfWork.Suggestions.GetViewingEducationsByCurrentSessionId(sessionId);
+            ViewData["userIdEducations"] = _unitOfWork.Suggestions.GetViewingEducationsByUserId(userId);
+            ViewData["sessionIdEducations"] = _unitOfWork.Suggestions.GetViewingEducationsBySessionId(sessionId);
             return View();
         }
 
