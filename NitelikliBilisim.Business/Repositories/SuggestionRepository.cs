@@ -7,6 +7,7 @@ using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Enums.educations;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Data;
+using NitelikliBilisim.Data.Migrations;
 using NitelikliBilisim.Support.Enums;
 using System;
 using System.Collections.Generic;
@@ -227,11 +228,21 @@ namespace NitelikliBilisim.Business.Repositories
         {
             List<TransactionLog> transactionLogs = new List<TransactionLog>();
             List<Guid> educationIds = new List<Guid>();
+
+            var count = _elasticClient.Count<TransactionLog>(s =>
+            s.Query(
+                q =>
+                q.Term(t => t.SessionId, sessionId) &&
+                q.Term(t => t.ControllerName, "course") &&
+                q.Term(t => t.ActionName, "details")));
+
             var result = _elasticClient.Search<TransactionLog>(s =>
-            s.Query(q => q.Match(m => m.Field(f => f.SessionId).Query(sessionId))
-            && q.Match(m => m.Field(f => f.ControllerName).Query("Course"))
-            && q.Match(m => m.Field(f => f.ActionName).Query("Details"))
-            ));
+            s.Size((int)count.Count)
+            .Query(
+                q =>
+                q.Term(t => t.SessionId, sessionId) &&
+                q.Term(t => t.ControllerName, "course") &&
+                q.Term(t => t.ActionName, "details")));
 
             if (result.IsValid && result.Documents != null && result.Documents.Count > 0)
             {
@@ -256,11 +267,21 @@ namespace NitelikliBilisim.Business.Repositories
 
             var transactionLogs = new List<TransactionLog>();
             var educationIds = new List<Guid>();
+            var count = _elasticClient.Count<TransactionLog>(s =>
+           s.Query(
+               q =>
+               q.Term(t => t.UserId, userId) &&
+               q.Term(t => t.ControllerName, "course") &&
+               q.Term(t => t.ActionName, "details")));
+
             var result = _elasticClient.Search<TransactionLog>(s =>
-            s.Query(q => q.Match(m => m.Field(f => f.UserId).Query(userId))
-            && q.Match(m => m.Field(f => f.ControllerName).Query("Course"))
-            && q.Match(m => m.Field(f => f.ActionName).Query("Details"))
-            ));
+            s.Size((int)count.Count)
+            .Query(
+               q =>
+               q.Term(t => t.UserId, userId) &&
+               q.Term(t => t.ControllerName, "course") &&
+               q.Term(t => t.ActionName, "details")));
+
             if (result.IsValid && result.Documents != null && result.Documents.Count > 0)
             {
                 foreach (var log in result.Documents)
@@ -314,12 +335,24 @@ namespace NitelikliBilisim.Business.Repositories
         /// <returns>List string</returns>
         public List<string> GetSearchedTextsByUserId(string userId)
         {
+            if (string.IsNullOrEmpty(userId))
+                return new List<string>();
+
             List<string> texts = new List<string>();
+
+            var searchedTextCount = _elasticClient.Count<TransactionLog>(s =>
+            s.Query(
+                q =>
+                q.Term(t => t.UserId, userId) &&
+                q.Term(t => t.ControllerName, "browser") &&
+                q.Term(t => t.ActionName, "getcourses")));
+
             var result = _elasticClient.Search<TransactionLog>(s =>
-            s.Query(q => q.Match(m => m.Field(f => f.UserId).Query(userId))
-            && q.Match(m => m.Field(f => f.ControllerName).Query("Browser"))
-            && q.Match(m => m.Field(f => f.ActionName).Query("GetCourses"))
-            ));
+            s.Size((int)searchedTextCount.Count)
+            .Query(q =>
+                q.Term(t => t.UserId, userId) &&
+                q.Term(t => t.ControllerName, "browser") &&
+                q.Term(t => t.ActionName, "getcourses")));
 
             if (result.IsValid && result.Documents != null && result.Documents.Count > 0)
             {

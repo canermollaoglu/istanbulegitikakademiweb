@@ -2,25 +2,38 @@
 @{
     ViewData["Title"] = "Privacy Policy";
 }
-<h1>@ViewData["Title"]</h1>
 
-<ul>
-    <h1>SessionId</h1>
-    @foreach (var education in ((List<Education>)ViewData["sessionIdEducations"]))
-    {
-        <li><b>@education.Name</b></li>
+        
+                <div class="row">
+                    <div class="col-md-6">
+                        <h1>SessionId ile incelenmiş eğitimler</h1>
+                        <ul>
+                            @foreach (var education in ((List<Education>)ViewData["sessionIdEducations"]))
+                            {
+                                <li><b>@education.Name</b></li>
 
-    }
-</ul>
-<br />
-<hr />
-<br />
-<ul>
-    <h1>UserId</h1>
-    @foreach (var education in ((List<Education>)ViewData["userIdEducations"]))
-    {
-        <li><b>@education.Name</b></li>
+                            }
+                        </ul>
+                        <br />
+                        <hr />
+                        <br />
+                        <h1>UserId ile incelenmiş eğitimler</h1>
+                        <ul>
+                            @foreach (var education in ((List<Education>)ViewData["userIdEducations"]))
+                            {
+                                <li><b>@education.Name</b></li>
 
-    }
-</ul>
-<p>Use this page to detail your site's privacy policy.</p>
+                            }
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h1>Kullanıcının yaptığı aramalar</h1>
+                        <ul>
+                            @foreach (var text in ((List<string>)ViewData["searchedTexts"]))
+                            {
+                                <li><b>@text</b></li>
+                            }
+                        </ul>
+
+                    </div>
+                </div>
