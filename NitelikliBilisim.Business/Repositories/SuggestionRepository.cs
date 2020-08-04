@@ -306,6 +306,33 @@ namespace NitelikliBilisim.Business.Repositories
             return retVal;
 
         }
+
+        /// <summary>
+        /// UserId ile arama yapılmış kelimeleri listeler.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns>List string</returns>
+        public List<string> GetSearchedTexts(string userId)
+        {
+            List<string> texts = new List<string>();
+            var result = _elasticClient.Search<TransactionLog>(s =>
+            s.Query(q => q.Match(m => m.Field(f => f.UserId).Query(userId))
+            && q.Match(m => m.Field(f => f.ControllerName).Query("Browser"))
+            && q.Match(m => m.Field(f => f.ActionName).Query("GetCourses"))
+            ));
+
+            if (result.IsValid && result.Documents != null && result.Documents.Count > 0)
+            {
+                foreach (var log in result.Documents)
+                {
+                    if (log.Parameters != null && log.Parameters.Any(x => x.ParameterName == "searchText"))
+                        texts.Add(JsonConvert.DeserializeObject<string>(log.Parameters.First(x => x.ParameterName == "searchText").ParameterValue));
+                }
+            }
+            return texts;
+
+        }
+
         #endregion
 
     }
