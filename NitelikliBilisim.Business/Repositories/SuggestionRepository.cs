@@ -223,7 +223,7 @@ namespace NitelikliBilisim.Business.Repositories
         /// </summary>
         /// <param name="sessionId"></param>
         /// <returns>List Education</returns>
-        public List<Education> GetViewingEducationsByCurrentSessionId(string sessionId)
+        public List<Education> GetViewingEducationsBySessionId(string sessionId)
         {
             List<TransactionLog> transactionLogs = new List<TransactionLog>();
             List<Guid> educationIds = new List<Guid>();
@@ -248,7 +248,7 @@ namespace NitelikliBilisim.Business.Repositories
         /// </summary>
         /// <param name="userId"></param>
         /// <returns>List Education</returns>
-        public List<Education> GetViewingEducationsByCurrentUserId(string userId)
+        public List<Education> GetViewingEducationsByUserId(string userId)
         {
             if (string.IsNullOrEmpty(userId))
                 return new List<Education>();
@@ -276,7 +276,7 @@ namespace NitelikliBilisim.Business.Repositories
         /// </summary>
         /// <param name="userId"></param>
         /// <returns>Dictionary<EğitimId,İncelenme sayısı></returns>
-        public Dictionary<Guid, int> EducationDetailViewsCount(string userId)
+        public Dictionary<Guid, int> EducationDetailViewsCountByUserId(string userId)
         {
             if (string.IsNullOrEmpty(userId))
                 return new Dictionary<Guid, int>();
@@ -312,7 +312,7 @@ namespace NitelikliBilisim.Business.Repositories
         /// </summary>
         /// <param name="userId"></param>
         /// <returns>List string</returns>
-        public List<string> GetSearchedTexts(string userId)
+        public List<string> GetSearchedTextsByUserId(string userId)
         {
             List<string> texts = new List<string>();
             var result = _elasticClient.Search<TransactionLog>(s =>
