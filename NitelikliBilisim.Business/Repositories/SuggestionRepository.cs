@@ -20,13 +20,13 @@ namespace NitelikliBilisim.Business.Repositories
     {
         private readonly NbDataContext _context;
         private readonly IElasticClient _elasticClient;
-        public SuggestionRepository(NbDataContext context,IElasticClient elasticClient)
+        public SuggestionRepository(NbDataContext context, IElasticClient elasticClient)
         {
             _context = context;
             _elasticClient = elasticClient;
         }
 
-
+        #region 1 KRİTERLERE GÖRE EĞİTİM ÖNERİLERİ
 
         /// <summary>
         /// Kriterlere göre önerilen eğitimler
@@ -50,7 +50,7 @@ namespace NitelikliBilisim.Business.Repositories
                 nearestDay = educationDay.Day;
 
                 /*Müşterinin NBUY eğitimi aldığı kategoriye göre eğitim listesi.*/
-                var educations = _context.Educations.Include(c => c.Category).Where(x => x.Category.BaseCategoryId == studentEducationInfo.CategoryId.Value || x.Category.Id == studentEducationInfo.CategoryId.Value).Include(x => x.EducationSuggestionCriterions).Where(x=>x.IsActive);
+                var educations = _context.Educations.Include(c => c.Category).Where(x => x.Category.BaseCategoryId == studentEducationInfo.CategoryId.Value || x.Category.Id == studentEducationInfo.CategoryId.Value).Include(x => x.EducationSuggestionCriterions).Where(x => x.IsActive);
                 #region Favori eklenen eğitimler
                 List<string> userWishList = _context.Wishlist.Where(x => x.Id == customer.Id).Include(x => x.Education).Select(x => x.Education.Id.ToString()).ToList();
                 #endregion
@@ -105,7 +105,7 @@ namespace NitelikliBilisim.Business.Repositories
                      .ToDictionary(pair => pair.Key, pair => pair.Value);
 
                 //Eğer seçilmiş eğitimler 5 taneyi tamamlayamıyorsa son eklenen 5 eğitim ile doldurulacak.
-                var lastEducations = _context.Educations.OrderByDescending(x => x.CreatedDate).Where(x=>x.IsActive).Take(10).ToList();
+                var lastEducations = _context.Educations.OrderByDescending(x => x.CreatedDate).Where(x => x.IsActive).Take(10).ToList();
                 int i = 0;
                 int educationCount = _context.Educations.Count(x => x.IsActive);
                 while (educationCount > 5 && selectedEducations.Count < 5)
@@ -213,8 +213,16 @@ namespace NitelikliBilisim.Business.Repositories
             return category.BaseCategoryId ?? category.Id;
         }
         #endregion
+        #endregion
 
-        #region ElasticSearch Request
+
+        #region 2 KULLANICI DAVRANIŞLARINA GÖRE EĞİTİM ÖNERİLERİ
+
+        /// <summary>
+        /// Parametre olarak verilen sessionId ile incelenmiş eğitim listesini döner
+        /// </summary>
+        /// <param name="sessionId"></param>
+        /// <returns>List Education</returns>
         public List<Education> GetViewingEducationsByCurrentSessionId(string sessionId)
         {
             List<TransactionLog> transactionLogs = new List<TransactionLog>();
@@ -235,6 +243,11 @@ namespace NitelikliBilisim.Business.Repositories
             }
             return _context.Educations.Where(x => educationIds.Contains(x.Id)).ToList();
         }
+        /// <summary>
+        /// Parametre olarak verilen userId ile incelenmiş eğitim listesini döner
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns>List Education</returns>
         public List<Education> GetViewingEducationsByCurrentUserId(string userId)
         {
             if (string.IsNullOrEmpty(userId))
@@ -258,9 +271,42 @@ namespace NitelikliBilisim.Business.Repositories
             }
             return _context.Educations.Where(x => educationIds.Contains(x.Id)).ToList();
         }
+        /// <summary>
+        /// User Id ile incelenmiş eğitimlerin kaç adet incelendiğini döner.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns>Dictionary<EğitimId,İncelenme sayısı></returns>
+        public Dictionary<Guid, int> EducationDetailViewsCount(string userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+                return new Dictionary<Guid, int>();
+
+            Dictionary<Guid, int> retVal = new Dictionary<Guid, int>();
+
+            var result = _elasticClient.Search<TransactionLog>(s =>
+            s.Query(q => q.Match(m => m.Field(f => f.UserId).Query(userId))
+            && q.Match(m => m.Field(f => f.ControllerName).Query("Course"))
+            && q.Match(m => m.Field(f => f.ActionName).Query("Details"))
+            ));
+
+            if (result.IsValid && result.Documents != null && result.Documents.Count > 0)
+            {
+                foreach (TransactionLog log in result.Documents)
+                {
+                    if (log.Parameters != null && log.Parameters.Any(x => x.ParameterName == "courseId"))
+                    {
+                        Guid educationId = JsonConvert.DeserializeObject<Guid>(log.Parameters.First(x => x.ParameterName == "courseId").ParameterValue);
+                        if (retVal.ContainsKey(educationId))
+                            retVal[educationId]++;
+                        else
+                            retVal.Add(educationId, 1);
+                    }
+                }
+            }
+            return retVal;
+
+        }
         #endregion
-
-
 
     }
 }
