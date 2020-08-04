@@ -50,7 +50,7 @@ namespace NitelikliBilisim.Business.Repositories
                 nearestDay = educationDay.Day;
 
                 /*Müşterinin NBUY eğitimi aldığı kategoriye göre eğitim listesi.*/
-                var educations = _context.Educations.Include(c => c.Category).Where(x => x.Category.BaseCategoryId == studentEducationInfo.CategoryId.Value || x.Category.Id == studentEducationInfo.CategoryId.Value).Include(x => x.EducationSuggestionCriterions);
+                var educations = _context.Educations.Include(c => c.Category).Where(x => x.Category.BaseCategoryId == studentEducationInfo.CategoryId.Value || x.Category.Id == studentEducationInfo.CategoryId.Value).Include(x => x.EducationSuggestionCriterions).Where(x=>x.IsActive);
                 #region Favori eklenen eğitimler
                 List<string> userWishList = _context.Wishlist.Where(x => x.Id == customer.Id).Include(x => x.Education).Select(x => x.Education.Id.ToString()).ToList();
                 #endregion
@@ -105,10 +105,10 @@ namespace NitelikliBilisim.Business.Repositories
                      .ToDictionary(pair => pair.Key, pair => pair.Value);
 
                 //Eğer seçilmiş eğitimler 5 taneyi tamamlayamıyorsa son eklenen 5 eğitim ile doldurulacak.
-                var lastEducations = _context.Educations.OrderByDescending(x => x.CreatedDate).Take(10).ToList();
+                var lastEducations = _context.Educations.OrderByDescending(x => x.CreatedDate).Where(x=>x.IsActive).Take(10).ToList();
                 int i = 0;
                 int educationCount = _context.Educations.Count(x => x.IsActive);
-                while (educationCount > 5 && selectedEducations.Count <= 5)
+                while (educationCount > 5 && selectedEducations.Count < 5)
                 {
                     if (!selectedEducations.ContainsKey(lastEducations[i].Id))
                     {
