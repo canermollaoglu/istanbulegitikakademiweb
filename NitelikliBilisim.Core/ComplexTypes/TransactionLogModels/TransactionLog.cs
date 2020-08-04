@@ -19,6 +19,7 @@ namespace NitelikliBilisim.Core.ComplexTypes
         public string UserId { get; set; }
         public string ControllerName { get; set; }
         public string ActionName { get; set; }
+        [Keyword]
         public string IpAddress { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public List<LogParameter> Parameters { get; set; }
