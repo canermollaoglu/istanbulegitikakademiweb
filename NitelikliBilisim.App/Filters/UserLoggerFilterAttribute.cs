@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Nest;
 using Newtonsoft.Json;
+using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.ComplexTypes.TransactionLogModels;
 using System;
@@ -63,7 +64,7 @@ namespace NitelikliBilisim.App.Filters
                 }
 
                 //Index kontrol ediliyor yoksa oluşturuluyor.
-                CheckIndex();
+                CheckLogIndex();
                 //Nesne es ye insert ediliyor.
                 var response = _elasticClient.IndexDocument(log);
                 Console.WriteLine(response.IsValid);
@@ -108,12 +109,12 @@ namespace NitelikliBilisim.App.Filters
         /// <summary>
         /// Indıcesin varlığını kontrol edip yoksa oluşturuyor.
         /// </summary>
-        private void CheckIndex()
+        private void CheckLogIndex()
         {
-            var response = _elasticClient.Indices.Exists("ut_log");
+            var response = _elasticClient.Indices.Exists(ElasticSearchIndexNameUtility.TransactionLogIndex);
             if (!response.Exists)
             {
-                _elasticClient.Indices.Create("ut_log", index =>
+                _elasticClient.Indices.Create(ElasticSearchIndexNameUtility.TransactionLogIndex, index =>
                    index.Map<TransactionLog>(x => x.AutoMap()));
             }
         }
