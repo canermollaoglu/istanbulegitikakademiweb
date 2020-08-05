@@ -3,37 +3,48 @@
     ViewData["Title"] = "Privacy Policy";
 }
 
-        
-                <div class="row">
-                    <div class="col-md-6">
-                        <h1>SessionId ile incelenmiş eğitimler</h1>
-                        <ul>
-                            @foreach (var education in ((List<Education>)ViewData["sessionIdEducations"]))
-                            {
-                                <li><b>@education.Name</b></li>
 
-                            }
-                        </ul>
-                        <br />
-                        <hr />
-                        <br />
-                        <h1>UserId ile incelenmiş eğitimler</h1>
-                        <ul>
-                            @foreach (var education in ((List<Education>)ViewData["userIdEducations"]))
-                            {
-                                <li><b>@education.Name</b></li>
 
-                            }
-                        </ul>
-                    </div>
-                    <div class="col-md-6">
-                        <h1>Kullanıcının yaptığı aramalar</h1>
-                        <ul>
-                            @foreach (var text in ((List<string>)ViewData["searchedTexts"]))
-                            {
-                                <li><b>@text</b></li>
-                            }
-                        </ul>
+<h3>SessionId ile incelenmiş eğitimler</h3>
+<ul>
+    @foreach (var education in ((List<Education>)ViewData["sessionIdEducations"]))
+    {
+        <li><b>@education.Name</b></li>
 
-                    </div>
-                </div>
+    }
+</ul>
+<br />
+<hr />
+<br />
+<h3>UserId ile incelenmiş eğitimler</h3>
+<ul>
+    @foreach (var education in ((List<Education>)ViewData["userIdEducations"]))
+    {
+        <li><b>@education.Name</b></li>
+
+    }
+</ul>
+<br />
+<hr />
+<br />
+
+<h3>Kullanıcının yaptığı aramalar</h3>
+<ul>
+    @foreach (var text in ((List<string>)ViewData["searchedTexts"]))
+    {
+        <li><b>@text</b></li>
+    }
+</ul>
+<br />
+<hr />
+<br />
+<h3>Eğitim Adı ve incelenme sayısı</h3>
+<ul>
+    @if (ViewData["viewingCount"] != null)
+    {
+        @foreach (var item in ((Dictionary<Education, int>)ViewData["viewingCount"]))
+        {
+            <li><b>@item.Key.Name</b> : @item.Value</li>
+        }
+    }
+</ul>

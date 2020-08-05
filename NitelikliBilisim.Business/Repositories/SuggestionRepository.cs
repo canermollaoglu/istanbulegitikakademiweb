@@ -68,6 +68,7 @@ namespace NitelikliBilisim.Business.Repositories
                 foreach (var education in educations)
                 {
                     int appropriateCriterion = 1;
+                    #region Kriterlere göre eğitim önerileri
                     if (education.EducationSuggestionCriterions != null && education.EducationSuggestionCriterions.Count > 0)
                     {
                         foreach (var criterion in education.EducationSuggestionCriterions)
@@ -79,7 +80,6 @@ namespace NitelikliBilisim.Business.Repositories
                                     appropriateCriterion++;
                             }
                             #endregion
-
                             #region Favorilere Eklenmiş Eğitimler Kriteri
                             if (criterion.CriterionType == CriterionType.WishListEducations)
                             {
@@ -96,6 +96,10 @@ namespace NitelikliBilisim.Business.Repositories
                             #endregion
                         }
                     }
+                    #endregion
+                    #region Kullanıcı davranışlarına göre eğitim önerileri
+                    //Bu alanda en çok incelenen eğitime veya en çok aranan eğitime +1 uygunluk puanı verilebilir.
+                    #endregion
                     educationAndAppropriateCriterion.Add(education.Id, appropriateCriterion);
                 }
                 #endregion
@@ -214,6 +218,7 @@ namespace NitelikliBilisim.Business.Repositories
             return category.BaseCategoryId ?? category.Id;
         }
         #endregion
+
         #endregion
 
 
@@ -297,18 +302,26 @@ namespace NitelikliBilisim.Business.Repositories
         /// </summary>
         /// <param name="userId"></param>
         /// <returns>Dictionary<EğitimId,İncelenme sayısı></returns>
-        public Dictionary<Guid, int> EducationDetailViewsCountByUserId(string userId)
+        public Dictionary<Education, int> EducationDetailViewsCountByUserId(string userId)
         {
             if (string.IsNullOrEmpty(userId))
-                return new Dictionary<Guid, int>();
+                return new Dictionary<Education, int>();
 
             Dictionary<Guid, int> retVal = new Dictionary<Guid, int>();
+            Dictionary<Education, int> viewingInformation = new Dictionary<Education, int>();
+            var count = _elasticClient.Count<TransactionLog>(s =>
+           s.Query(
+               q =>
+               q.Term(t => t.UserId, userId) &&
+               q.Term(t => t.ControllerName, "course") &&
+               q.Term(t => t.ActionName, "details")));
 
             var result = _elasticClient.Search<TransactionLog>(s =>
-            s.Query(q => q.Match(m => m.Field(f => f.UserId).Query(userId))
-            && q.Match(m => m.Field(f => f.ControllerName).Query("Course"))
-            && q.Match(m => m.Field(f => f.ActionName).Query("Details"))
-            ));
+            s.Query(
+                q =>
+                q.Term(t => t.UserId,userId) &&
+                q.Term(t => t.ControllerName,"course") &&
+                q.Term(t => t.ActionName,"details")));
 
             if (result.IsValid && result.Documents != null && result.Documents.Count > 0)
             {
@@ -324,7 +337,13 @@ namespace NitelikliBilisim.Business.Repositories
                     }
                 }
             }
-            return retVal;
+            var educations = _context.Educations.Where(x => retVal.Keys.Contains(x.Id)).ToList();
+            foreach (var val in retVal)
+            {
+                viewingInformation.Add(educations.First(x => x.Id == val.Key), val.Value);
+            }
+
+            return viewingInformation;
 
         }
 
