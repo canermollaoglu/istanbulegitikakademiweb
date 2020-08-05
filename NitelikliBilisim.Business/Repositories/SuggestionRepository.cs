@@ -7,13 +7,11 @@ using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Enums.educations;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Data;
-using NitelikliBilisim.Data.Migrations;
 using NitelikliBilisim.Support.Enums;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 
 namespace NitelikliBilisim.Business.Repositories
 {
@@ -317,7 +315,8 @@ namespace NitelikliBilisim.Business.Repositories
                q.Term(t => t.ActionName, "details")));
 
             var result = _elasticClient.Search<TransactionLog>(s =>
-            s.Query(
+            s.Size((int)count.Count)
+            .Query(
                 q =>
                 q.Term(t => t.UserId,userId) &&
                 q.Term(t => t.ControllerName,"course") &&
@@ -379,6 +378,7 @@ namespace NitelikliBilisim.Business.Repositories
                 {
                     if (log.Parameters != null && log.Parameters.Any(x => x.ParameterName == "searchText"))
                         texts.Add(JsonConvert.DeserializeObject<string>(log.Parameters.First(x => x.ParameterName == "searchText").ParameterValue));
+                    //Todo aranılan kelime ile bulunacak olan eğitimler listelenebilir (_unitOfWork.Education.GetInfiniteScrollSearchResults(categoryName, searchText, page, order, filter);)
                 }
             }
             return texts;
