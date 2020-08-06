@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Nest;
 using Newtonsoft.Json;
 using NitelikliBilisim.Core.ComplexTypes;
@@ -381,7 +382,7 @@ namespace NitelikliBilisim.Business.Repositories
                     //Todo aranılan kelime ile bulunacak olan eğitimler listelenebilir (_unitOfWork.Education.GetInfiniteScrollSearchResults(categoryName, searchText, page, order, filter);)
                 }
             }
-            return texts;
+            return texts.Distinct().ToList();
 
         }
 
