@@ -296,7 +296,7 @@ namespace NitelikliBilisim.App.Controllers
             var educationDayCount = nbuyCategory.EducationDayCount.HasValue ? nbuyCategory.EducationDayCount.Value : 0;
             //Kullanıcının eğitime başlangıç tarihi 
             var activeDate = startDate;
-            for (int i = 0; i < nbuyCategory.EducationDayCount; i++)
+            for (int i = 0; i < educationDayCount; i++)
             {
                 activeDate = activeDate.AddDays(1);
                 if (checkWeekdays(activeDate) && checkNotHoliday(activeDate, offDays))
