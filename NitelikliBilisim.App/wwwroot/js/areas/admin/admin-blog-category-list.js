@@ -1,4 +1,6 @@
-﻿/* elements */
+﻿/* fields */
+var confirmModalBuilder = new AlertSupport.ConfirmModalBuilder();
+/* elements */
 var inputName = document.getElementById("input-name");
 var inputDescription = document.getElementById("input-description");
 var btnSave = $("#btn-save");
@@ -9,8 +11,40 @@ btnSave.on("click", btnSave_onClick);
 
 /* events */
 function document_onLoad() {
-
+    confirmModalBuilder.buildModal({
+        title: "Emin misiniz?",
+        bodyText: "Seçmiş olduğunuz kayıt kalıcı olarak silinecektir.",
+        cancelText: "Hayır, iptal et",
+        confirmText: "Evet, eminim",
+        onConfirmClick: confirm_onClick
+    });
     createGrid();
+}
+
+function btnConfirmationModalTrigger_onClick() {
+    var url = this.getAttribute("data-url");
+    confirmModalBuilder.setUrl(url);
+    confirmModalBuilder.display();
+}
+
+function confirm_onClick() {
+    var url = this.getAttribute("data-url");
+    $.ajax({
+        url: url,
+        method: "get",
+        success: (res) => {
+            if (res.isSuccess) {
+                createGrid();
+            } else {
+                var resultAlert = new AlertSupport.ResultAlert();
+                resultAlert.display({
+                    success: false,
+                    errors: res.errors,
+                    message: "Hataları düzeltiniz"
+                });
+            }
+        }
+    });
 }
 
 function btnSave_onClick() {
@@ -52,8 +86,6 @@ function btnSave_onClick() {
 }
 
 
-
-
 /*DataGrid*/
 function createGrid() {
     $("#blog-category-grid").dxDataGrid({
@@ -84,11 +116,11 @@ function createGrid() {
             pageSize: 10
         },
         onContentReady: function () {
-            //var deleteButtons = $(".btn-confirmation-modal-trigger");
-            //for (var i = 0; i < deleteButtons.length; i++) {
-            //    var btn = deleteButtons[i];
-            //    btn.onclick = btnConfirmationModalTrigger_onClick;
-            //}
+            var deleteButtons = $(".btn-confirmation-modal-trigger");
+            for (var i = 0; i < deleteButtons.length; i++) {
+                var btn = deleteButtons[i];
+                btn.onclick = btnConfirmationModalTrigger_onClick;
+            }
         },
         pager: {
             showPageSizeSelector: true,
@@ -108,10 +140,12 @@ function createGrid() {
             caption: "Yönet",
             cellTemplate: function (container, options) {
                 var current = options.data;
-                $(`<a class="btn btn-outline-warning btn-sm" href="/admin/blogcategory/update?categoryId=${current.id}"><i class="fa fa-edit"></i></a>`)
+                $(`<a title="Düzenle" class="btn btn-outline-warning btn-sm" href="/admin/blogcategory/update?categoryId=${current.id}"><i class="fa fa-edit"></i></a>`)
+                    .appendTo(container);
+                $(`<a title="Sil" class="btn btn-outline-danger btn-sm btn-confirmation-modal-trigger" data-url="/admin/blogcategory/delete?categoryId=${current.id}" style="cursor:pointer;"><i class="fa fa-trash"></i></a>`)
                     .appendTo(container);
             },
-            width: 75
+            width: 100
         }
         ]
     });

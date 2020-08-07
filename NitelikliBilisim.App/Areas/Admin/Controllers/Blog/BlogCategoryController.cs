@@ -18,8 +18,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Blog
             _unitOfWork = unitOfWork;
         }
 
-
-        
         public IActionResult List()
         {
             return View();
@@ -46,6 +44,36 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Blog
                 {
                     isSuccess = true,
                     message = "Blog kategorisi başarı ile eklenmiştir."
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Hata " + ex.Message }
+                });
+            }
+
+        }
+
+        public IActionResult Delete(Guid? categoryId)
+        {
+            if (!categoryId.HasValue)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Hata: Sayfayı yenileyerek tekrar deneyiniz." }
+                });
+            }
+            try
+            {
+                _unitOfWork.BlogCategory.Delete(categoryId.Value);
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    message = "Kategori başarıyla silinmiştir."
                 });
             }
             catch (Exception ex)
