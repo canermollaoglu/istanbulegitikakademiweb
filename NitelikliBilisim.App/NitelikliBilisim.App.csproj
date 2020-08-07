@@ -38,6 +38,7 @@
 
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
+    <Folder Include="Areas\Admin\Views\BlogPost\" />
     <Folder Include="Areas\Admin\Views\Shared\partials\categories\" />
     <Folder Include="Areas\EducatorArea\Data\" />
     <Folder Include="Areas\EducatorArea\Models\" />
