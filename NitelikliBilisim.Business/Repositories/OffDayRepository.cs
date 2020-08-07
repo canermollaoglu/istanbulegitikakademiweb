@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Nest;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Entities.helper;
 using NitelikliBilisim.Core.Entities.user_details;
@@ -7,8 +6,6 @@ using NitelikliBilisim.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
-using System.Security.Cryptography.X509Certificates;
 
 namespace NitelikliBilisim.Business.Repositories
 {
@@ -20,7 +17,7 @@ namespace NitelikliBilisim.Business.Repositories
             _context = context;
         }
 
-        public override int Insert(OffDay entity, bool isSaveLater = false)
+        public int Insert(OffDay entity)
         {
             using (var transaction = _context.Database.BeginTransaction())
             {
@@ -32,7 +29,7 @@ namespace NitelikliBilisim.Business.Repositories
                         .ThenInclude(x => x.EducationDays)
                         .Where(x => x.StudentEducationInfos != null && x.StudentEducationInfos.Count > 0).ToList();
 
-                    ReCalculateEducationDays(customers, entity);
+                    ReCalculateEducationDaysInsert(customers, entity);
                     transaction.Commit();
                     return id;
 
@@ -47,7 +44,86 @@ namespace NitelikliBilisim.Business.Repositories
             }
         }
 
-        private void ReCalculateEducationDays(List<Customer> customers, OffDay newOffDay)
+        public int Delete(int id)
+        {
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    OffDay relatedOffDay = _context.OffDays.First(x => x.Id == id);
+                    int entityId = base.Delete(id);
+                    var customers = _context.Customers
+                        .Include(x => x.StudentEducationInfos)
+                        .ThenInclude(x => x.EducationDays)
+                        .Where(x => x.StudentEducationInfos != null && x.StudentEducationInfos.Count > 0).ToList();
+
+                    ReCalculateEducationDaysDelete(customers, relatedOffDay);
+                    transaction.Commit();
+                    return id;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw new Exception(ex.Message);
+                }
+
+            }
+        }
+
+        private void ReCalculateEducationDaysDelete(List<Customer> customers, OffDay relatedOffDay)
+        {
+            var offDays = _context.OffDays.Where(x => x.Year == DateTime.Now.Year || x.Year == DateTime.Now.Year - 1 || x.Year == DateTime.Now.Year + 1).ToList();
+            foreach (var customer in customers)
+            {
+                foreach (var studentEducationInfo in customer.StudentEducationInfos)
+                {
+                    var nbuyCategory = _context.EducationCategories.FirstOrDefault(x => x.Id == studentEducationInfo.CategoryId.GetValueOrDefault());
+                    var educationDayCount = nbuyCategory.EducationDayCount.HasValue ? nbuyCategory.EducationDayCount.Value : 0;
+
+                    if (studentEducationInfo.EducationDays != null && studentEducationInfo.EducationDays.Count > 0)
+                    {
+                        var educationDays = studentEducationInfo.EducationDays.OrderBy(x => x.Day);
+                        var lastDay = educationDays.Last();
+                        var firstDay = educationDays.First();
+
+                        if (relatedOffDay.Date >= firstDay.Date && relatedOffDay.Date <= lastDay.Date)
+                        {
+                            var reCalculatedStartDate = educationDays.First(x => x.Date <= relatedOffDay.Date);
+                            //Tekrar hesaplanacak olan günleri yenisini yazmak için db den siliyoruz
+                            var deletedItems = _context.EducationDays.Where(x => x.StudentEducationInfoId == studentEducationInfo.Id && x.Date >= reCalculatedStartDate.Date).ToList();
+                            if (deletedItems != null && deletedItems.Count > 0)
+                            {
+                                _context.EducationDays.RemoveRange(deletedItems);
+                            }
+
+                            //Yeni günleri oluşturuyoruz.
+                            DateTime activeDate = reCalculatedStartDate.Date;
+                            for (int i = reCalculatedStartDate.Day; i < educationDayCount; i++)
+                            {
+                                activeDate = activeDate.AddDays(1);
+                                if (CheckWeekdays(activeDate) && CheckNotHoliday(activeDate, offDays))
+                                {
+                                    _context.EducationDays.Add(new EducationDay
+                                    {
+                                        Date = activeDate,
+                                        Day = i + 1,
+                                        StudentEducationInfoId = studentEducationInfo.Id
+                                    });
+                                }
+                                else
+                                {
+                                    i--;
+                                }
+                            }
+                        }
+                        _context.SaveChanges();
+                    }
+                }
+            }
+        }
+
+
+        private void ReCalculateEducationDaysInsert(List<Customer> customers, OffDay relatedOffDay)
         {
             var offDays = _context.OffDays.Where(x => x.Year == DateTime.Now.Year || x.Year == DateTime.Now.Year - 1 || x.Year == DateTime.Now.Year + 1).ToList();
             foreach (var customer in customers)
@@ -62,7 +138,7 @@ namespace NitelikliBilisim.Business.Repositories
                     {
                         foreach (var day in studentEducationInfo.EducationDays)
                         {
-                            if (day.Date == newOffDay.Date)
+                            if (day.Date == relatedOffDay.Date)
                             {
                                 reCalculateStartDate = day;
                                 break;
@@ -72,7 +148,7 @@ namespace NitelikliBilisim.Business.Repositories
                         {
                             //tekrar hesaplanacak olan günden bir önceki eğitim gününü buluyorum. Bu günden başlayarak hesaplanacak.
                             var lastDate = studentEducationInfo.EducationDays.OrderBy(x => x.Day).LastOrDefault(x => x.Date < reCalculateStartDate.Date);
-                            if (lastDate!=null)
+                            if (lastDate != null)
                             {
                                 //Tekrar hesaplanacak olan günleri yenisini yazmak için db den siliyoruz
                                 var deletedItems = _context.EducationDays.Where(x => x.StudentEducationInfoId == studentEducationInfo.Id && x.Date >= reCalculateStartDate.Date).ToList();
@@ -83,7 +159,7 @@ namespace NitelikliBilisim.Business.Repositories
 
                                 //Yeni günleri oluşturuyoruz.
                                 DateTime activeDate = reCalculateStartDate.Date;
-                                for (int i = reCalculateStartDate.Day - 1; i < educationDayCount; i++)
+                                for (int i = lastDate.Day; i < educationDayCount; i++)
                                 {
                                     activeDate = activeDate.AddDays(1);
                                     if (CheckWeekdays(activeDate) && CheckNotHoliday(activeDate, offDays))
@@ -101,12 +177,13 @@ namespace NitelikliBilisim.Business.Repositories
                                     }
                                 }
                             }
+                            _context.SaveChanges();
                         }
-                        _context.SaveChanges();
                     }
                 }
             }
         }
+
         #region Helper Methods
 
         /// <summary>
@@ -138,7 +215,6 @@ namespace NitelikliBilisim.Business.Repositories
             }
             return true;
         }
-        #endregion
 
         /// <summary>
         /// Kayıt tekrarı varsa True döner.
@@ -154,7 +230,11 @@ namespace NitelikliBilisim.Business.Repositories
             }
             return false;
         }
+        #endregion
+
+
     }
-
-
 }
+
+
+
