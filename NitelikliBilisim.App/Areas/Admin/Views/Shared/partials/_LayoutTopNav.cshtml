@@ -53,9 +53,9 @@
                         </ul>
                     </li>
                     <li>
-                       
-                                <a href="@Url.Action("List", "EducationSuggestionCriterion")">Eğitim Öneri Kriterleri Listesi</a>
-                           
+
+                        <a href="@Url.Action("List", "EducationSuggestionCriterion")">Eğitim Öneri Kriterleri Listesi</a>
+
                     </li>
                     <li>
                         <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseEgitmenler" data-parent="#exampleAccordion">Eğitmenler</a>
@@ -80,6 +80,23 @@
                         </ul>
                     </li>
                     <li>
+                        <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseBlog" data-parent="#exampleAccordion">Blog</a>
+                        <ul class="sidenav-third-level collapse" id="collapseBlog">
+                            <li>
+                                <a href="@Url.Action("Add", "BlogPost")">Yeni Ekle</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("List", "BlogPost")">Tüm Yazılar</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("List", "BlogCategory")">Kategoriler</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("List", "BlogTag")">Etiketler</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
                         <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseGroups" data-parent="#exampleAccordion">Gruplar</a>
                         <ul class="sidenav-third-level collapse" id="collapseGroups">
                             <li>
@@ -90,7 +107,8 @@
                             </li>
                         </ul>
                     </li>
-                    <li> <a href="@Url.Action("Index", "Student")">Öğrenci Yönetimi</a>
+                    <li>
+                        <a href="@Url.Action("Index", "Student")">Öğrenci Yönetimi</a>
                     </li>
                     <li>
                         <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseHosts" data-parent="#exampleAccordion">Eğitim Kurumları</a>
