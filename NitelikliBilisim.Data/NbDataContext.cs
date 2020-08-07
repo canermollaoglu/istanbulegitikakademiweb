@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NitelikliBilisim.Core.Abstracts;
 using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Entities.blog;
 using NitelikliBilisim.Core.Entities.educations;
 using NitelikliBilisim.Core.Entities.helper;
 using NitelikliBilisim.Core.Entities.user_details;
@@ -79,7 +80,7 @@ namespace NitelikliBilisim.Data
                 .HasKey(x => new { x.Id, x.Id2 });
             builder.Entity<Bridge_EducatorCertificate>()
                 .HasKey(x => new { x.Id, x.Id2 });
-            builder.Entity<WishlistItem>()
+            builder.Entity<Bridge_BlogPostTag>()
                 .HasKey(x => new { x.Id, x.Id2 });
 
             builder.Entity<ApplicationUserRole>(userRole =>
@@ -142,5 +143,9 @@ namespace NitelikliBilisim.Data
         public DbSet<OffDay> OffDays { get; set; }
         public DbSet<EducationDay> EducationDays { get; set; }
         public DbSet<EducationSuggestionCriterion> EducationSuggestionCriterions { get; set; }
+        public DbSet<BlogPost> BlogPosts { get; set; }
+        public DbSet<BlogCategory> BlogCategories { get; set; }
+        public DbSet<BlogTag> BlogTags { get; set; }
+        public DbSet<Bridge_BlogPostTag> Bridge_BlogPostTags { get; set; }
     }
 }

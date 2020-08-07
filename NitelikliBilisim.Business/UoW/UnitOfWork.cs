@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Nest;
 using NitelikliBilisim.Business.Repositories;
+using NitelikliBilisim.Business.Repositories.BlogRepositories;
 using NitelikliBilisim.Core.Entities.helper;
 using NitelikliBilisim.Data;
 
@@ -43,9 +44,12 @@ namespace NitelikliBilisim.Business.UoW
         private EducationSuggestionCriterionRepository _educationSuggestionCriterionRepository;
         private WishListRepository _wishListItemRepository;
         private SuggestionRepository _suggestionRepository;
+        private BlogPostRepository _blogPostRepository;
+        private BlogCategoryRepository _blogCategoryRepository;
+        private BlogTagRepository _blogTagRepository;
 
         private IElasticClient _elasticClient;
-        public UnitOfWork(NbDataContext context,IElasticClient elasticClient)
+        public UnitOfWork(NbDataContext context, IElasticClient elasticClient)
         {
             _elasticClient = elasticClient;
             _context = context;
@@ -55,6 +59,7 @@ namespace NitelikliBilisim.Business.UoW
             _context.EnsureAutoHistory();
             return _context.SaveChanges();
         }
+        
         public SuggestionRepository Suggestions => _suggestionRepository ??= new SuggestionRepository(_context, _elasticClient);
         public EducationCategoryRepository EducationCategory => _educationCategoryRepository ??= new EducationCategoryRepository(_context);
 
@@ -151,7 +156,7 @@ namespace NitelikliBilisim.Business.UoW
                 return _educatorCertificateRepository ?? (_educatorCertificateRepository = new EducatorCertificateRepository(_context));
             }
         }
-
+        
         public StateRepository State => _stateRepository ??= new StateRepository(_context);
         public CityRepository City => _cityRepository ??= new CityRepository(_context);
         public AddressRepository Address => _addressRepository ??= new AddressRepository(_context);
@@ -160,5 +165,8 @@ namespace NitelikliBilisim.Business.UoW
         public EducationDayRepository EducationDay => _educationDayRepository ??= new EducationDayRepository(_context);
         public EducationSuggestionCriterionRepository EducationSuggestionCriterion => _educationSuggestionCriterionRepository ??= new EducationSuggestionCriterionRepository(_context);
         public WishListRepository WishListItem => _wishListItemRepository ??= new WishListRepository(_context);
-    }
+        public BlogPostRepository BlogPost => _blogPostRepository ??= new BlogPostRepository(_context);
+        public BlogCategoryRepository BlogCategory => _blogCategoryRepository ??= new BlogCategoryRepository(_context);
+        public BlogTagRepository BlogTag => _blogTagRepository ??= new BlogTagRepository(_context);
+     }
 }
