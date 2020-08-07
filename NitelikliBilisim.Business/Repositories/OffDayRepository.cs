@@ -29,7 +29,7 @@ namespace NitelikliBilisim.Business.Repositories
                         .ThenInclude(x => x.EducationDays)
                         .Where(x => x.StudentEducationInfos != null && x.StudentEducationInfos.Count > 0).ToList();
 
-                    ReCalculateEducationDaysInsert(customers, entity);
+                    ReCalculateEducationDays(customers);
                     transaction.Commit();
                     return id;
 
@@ -44,7 +44,7 @@ namespace NitelikliBilisim.Business.Repositories
             }
         }
 
-        public int Delete(int id)
+        public void Delete(int id)
         {
             using (var transaction = _context.Database.BeginTransaction())
             {
@@ -57,9 +57,8 @@ namespace NitelikliBilisim.Business.Repositories
                         .ThenInclude(x => x.EducationDays)
                         .Where(x => x.StudentEducationInfos != null && x.StudentEducationInfos.Count > 0).ToList();
 
-                    ReCalculateEducationDaysDelete(customers, relatedOffDay);
+                    ReCalculateEducationDays(customers);
                     transaction.Commit();
-                    return id;
                 }
                 catch (Exception ex)
                 {
@@ -70,7 +69,45 @@ namespace NitelikliBilisim.Business.Repositories
             }
         }
 
-        private void ReCalculateEducationDaysDelete(List<Customer> customers, OffDay relatedOffDay)
+        public int Update(OffDay entity)
+        {
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    int id = base.Update(entity);
+                    var customers = _context.Customers
+                        .Include(x => x.StudentEducationInfos)
+                        .ThenInclude(x => x.EducationDays)
+                        .Where(x => x.StudentEducationInfos != null && x.StudentEducationInfos.Count > 0).ToList();
+
+                    ReCalculateEducationDays(customers);
+                    transaction.Commit();
+                    return id;
+
+
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw new Exception(ex.Message);
+                }
+
+            }
+
+
+
+        }
+
+
+
+
+        #region Helper Methods
+        /// <summary>
+        /// Eğitim günlerini tekrar hesaplayıp db ye ekliyor.
+        /// </summary>
+        /// <param name="customers"></param>
+        private void ReCalculateEducationDays(List<Customer> customers)
         {
             var offDays = _context.OffDays.Where(x => x.Year == DateTime.Now.Year || x.Year == DateTime.Now.Year - 1 || x.Year == DateTime.Now.Year + 1).ToList();
             foreach (var customer in customers)
@@ -82,38 +119,29 @@ namespace NitelikliBilisim.Business.Repositories
 
                     if (studentEducationInfo.EducationDays != null && studentEducationInfo.EducationDays.Count > 0)
                     {
-                        var educationDays = studentEducationInfo.EducationDays.OrderBy(x => x.Day);
-                        var lastDay = educationDays.Last();
-                        var firstDay = educationDays.First();
-
-                        if (relatedOffDay.Date >= firstDay.Date && relatedOffDay.Date <= lastDay.Date)
+                        //Tekrar hesaplanacak olan günleri yenisini yazmak için db den siliyoruz
+                        var deletedItems = _context.EducationDays.Where(x => x.StudentEducationInfoId == studentEducationInfo.Id).ToList();
+                        if (deletedItems != null && deletedItems.Count > 0)
                         {
-                            var reCalculatedStartDate = educationDays.First(x => x.Date <= relatedOffDay.Date);
-                            //Tekrar hesaplanacak olan günleri yenisini yazmak için db den siliyoruz
-                            var deletedItems = _context.EducationDays.Where(x => x.StudentEducationInfoId == studentEducationInfo.Id && x.Date >= reCalculatedStartDate.Date).ToList();
-                            if (deletedItems != null && deletedItems.Count > 0)
+                            _context.EducationDays.RemoveRange(deletedItems);
+                        }
+                        //Yeni günleri oluşturuyoruz.
+                        DateTime activeDate = studentEducationInfo.StartedAt.Date;
+                        for (int i = 0; i < educationDayCount; i++)
+                        {
+                            activeDate = activeDate.AddDays(1);
+                            if (CheckWeekdays(activeDate) && CheckNotHoliday(activeDate, offDays))
                             {
-                                _context.EducationDays.RemoveRange(deletedItems);
+                                _context.EducationDays.Add(new EducationDay
+                                {
+                                    Date = activeDate,
+                                    Day = i + 1,
+                                    StudentEducationInfoId = studentEducationInfo.Id
+                                });
                             }
-
-                            //Yeni günleri oluşturuyoruz.
-                            DateTime activeDate = reCalculatedStartDate.Date;
-                            for (int i = reCalculatedStartDate.Day; i < educationDayCount; i++)
+                            else
                             {
-                                activeDate = activeDate.AddDays(1);
-                                if (CheckWeekdays(activeDate) && CheckNotHoliday(activeDate, offDays))
-                                {
-                                    _context.EducationDays.Add(new EducationDay
-                                    {
-                                        Date = activeDate,
-                                        Day = i + 1,
-                                        StudentEducationInfoId = studentEducationInfo.Id
-                                    });
-                                }
-                                else
-                                {
-                                    i--;
-                                }
+                                i--;
                             }
                         }
                         _context.SaveChanges();
@@ -121,70 +149,6 @@ namespace NitelikliBilisim.Business.Repositories
                 }
             }
         }
-
-
-        private void ReCalculateEducationDaysInsert(List<Customer> customers, OffDay relatedOffDay)
-        {
-            var offDays = _context.OffDays.Where(x => x.Year == DateTime.Now.Year || x.Year == DateTime.Now.Year - 1 || x.Year == DateTime.Now.Year + 1).ToList();
-            foreach (var customer in customers)
-            {
-                foreach (var studentEducationInfo in customer.StudentEducationInfos)
-                {
-                    var nbuyCategory = _context.EducationCategories.FirstOrDefault(x => x.Id == studentEducationInfo.CategoryId.GetValueOrDefault());
-                    var educationDayCount = nbuyCategory.EducationDayCount.HasValue ? nbuyCategory.EducationDayCount.Value : 0;
-                    EducationDay reCalculateStartDate = null;
-
-                    if (studentEducationInfo.EducationDays != null && studentEducationInfo.EducationDays.Count > 0)
-                    {
-                        foreach (var day in studentEducationInfo.EducationDays)
-                        {
-                            if (day.Date == relatedOffDay.Date)
-                            {
-                                reCalculateStartDate = day;
-                                break;
-                            }
-                        }
-                        if (reCalculateStartDate != null)
-                        {
-                            //tekrar hesaplanacak olan günden bir önceki eğitim gününü buluyorum. Bu günden başlayarak hesaplanacak.
-                            var lastDate = studentEducationInfo.EducationDays.OrderBy(x => x.Day).LastOrDefault(x => x.Date < reCalculateStartDate.Date);
-                            if (lastDate != null)
-                            {
-                                //Tekrar hesaplanacak olan günleri yenisini yazmak için db den siliyoruz
-                                var deletedItems = _context.EducationDays.Where(x => x.StudentEducationInfoId == studentEducationInfo.Id && x.Date >= reCalculateStartDate.Date).ToList();
-                                if (deletedItems != null && deletedItems.Count > 0)
-                                {
-                                    _context.EducationDays.RemoveRange(deletedItems);
-                                }
-
-                                //Yeni günleri oluşturuyoruz.
-                                DateTime activeDate = reCalculateStartDate.Date;
-                                for (int i = lastDate.Day; i < educationDayCount; i++)
-                                {
-                                    activeDate = activeDate.AddDays(1);
-                                    if (CheckWeekdays(activeDate) && CheckNotHoliday(activeDate, offDays))
-                                    {
-                                        _context.EducationDays.Add(new EducationDay
-                                        {
-                                            Date = activeDate,
-                                            Day = i + 1,
-                                            StudentEducationInfoId = studentEducationInfo.Id
-                                        });
-                                    }
-                                    else
-                                    {
-                                        i--;
-                                    }
-                                }
-                            }
-                            _context.SaveChanges();
-                        }
-                    }
-                }
-            }
-        }
-
-        #region Helper Methods
 
         /// <summary>
         /// Parametre olarak gönderilen tarihin hafta içi olması durumunu kontrol eder.
