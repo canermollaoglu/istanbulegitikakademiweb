@@ -87,5 +87,46 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Blog
 
         }
 
+        [HttpGet]
+        public IActionResult Update(Guid? categoryId)
+        {
+            if (categoryId == null)
+                return Redirect("/admin/blogcategory/list");
+            var category = _unitOfWork.BlogCategory.GetById(categoryId.Value);
+            return View(category);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Update(BlogCategory data)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelStateUtil.GetErrors(ModelState);
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = errors
+                });
+            }
+            try
+            {
+                _unitOfWork.BlogCategory.Update(data);
+                return Json(new ResponseModel
+                {
+                    isSuccess = true
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Hata " + ex.Message }
+                });
+            }
+        }
+
+
     }
 }
