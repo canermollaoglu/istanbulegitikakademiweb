@@ -19,7 +19,10 @@ function document_onLoad() {
     ClassicEditor
         .create(document.querySelector('#editor'),
             {
-                language: 'tr'
+                language: 'tr',
+                ckfinder: {
+                    uploadUrl:'/admin/blogpost/addpostimage'
+                }
             }
         )
         .then(newEditor => {
