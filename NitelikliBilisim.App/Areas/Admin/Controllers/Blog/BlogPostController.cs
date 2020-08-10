@@ -1,7 +1,20 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using NitelikliBilisim.App.Managers;
+using NitelikliBilisim.App.Models;
+using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.Entities.blog;
+using NitelikliBilisim.Core.Services.Abstracts;
+using NitelikliBilisim.Core.ViewModels.areas.admin.blog.blogpost;
+using NitelikliBilisim.Support.Text;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
@@ -9,9 +22,13 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
     public class BlogPostController : Controller
     {
         private readonly UnitOfWork _unitOfWork;
-        public BlogPostController(UnitOfWork unitOfWork)
+        private readonly FileUploadManager _fileManager;
+        private readonly IStorageService _storage;
+        public BlogPostController(UnitOfWork unitOfWork, IWebHostEnvironment hostingEnvironment, IStorageService storage)
         {
             _unitOfWork = unitOfWork;
+            _fileManager = new FileUploadManager(hostingEnvironment, "jpg", "jpeg", "png");
+            _storage = storage;
         }
 
         [HttpGet]
@@ -23,14 +40,49 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Add()
         {
-            return View();
+            var model = new BlogPostAddGetVM
+            {
+                BlogCategories = _unitOfWork.BlogCategory.Get().ToList()
+            };
+            return View(model);
         }
 
-        //[HttpPost]
-        //public IActionResult Add()
-        //{
+        [HttpPost]
+        public async Task<IActionResult> Add(BlogPostAddVM data)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelStateUtil.GetErrors(ModelState);
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = errors
+                });
+            }
+            var featuredImageStream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.FeaturedImage.Base64Content));
+            var featuredImageFileName = $"{data.Title.FormatForTag()}-featured";
+            var featuredImagePath = await _storage.UploadFile(featuredImageStream, $"{featuredImageFileName}.{data.FeaturedImage.Extension.ToLower()}", "blog-featured-images");
 
-        //}
+            var newBlogPost = new BlogPost
+            {
+                Title = data.Title,
+                CategoryId = data.CategoryId,
+                Content = data.Content,
+                FeaturedImageUrl = featuredImagePath,
+                IsActive = true,
+                ReadingTime = CalculateReadingTime(data.Content)
+            };
+
+            _unitOfWork.BlogPost.Insert(newBlogPost, data.Tags);
+
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                message = "Yazı başarıyla eklenmiştir"
+            });
+
+        }
+
 
         [HttpGet]
         public IActionResult UpdatePost(Guid? postId)
@@ -45,7 +97,45 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
         public IActionResult Delete(Guid? postId)
         {
-            return Json("a");
+            if (postId == null)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Yazı silinirken bir hata oluştu." }
+                });
+            try
+            {
+                _unitOfWork.BlogPost.Delete(postId.Value);
+
+                return Json(new ResponseModel
+                {
+                    isSuccess = true
+                });
+            }
+            catch (Exception ex)
+            { 
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> {"Hata : "+ex.Message }
+                });
+            }
+
         }
+
+
+        #region Helper Methods 
+        /// <summary>
+        /// Kelime sayısını 200 e bölerek ortalama okunma süresini döner.
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        private int CalculateReadingTime(string content)
+        {
+            int wordCount = Regex.Matches(content, @"[\S]+").Count();
+            return wordCount / 200;
+        }
+
+        #endregion
     }
 }
