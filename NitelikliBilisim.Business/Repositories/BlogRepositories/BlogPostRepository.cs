@@ -1,4 +1,5 @@
-﻿using NitelikliBilisim.Core.Entities.blog;
+﻿using Microsoft.EntityFrameworkCore;
+using NitelikliBilisim.Core.Entities.blog;
 using NitelikliBilisim.Data;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,11 @@ namespace NitelikliBilisim.Business.Repositories.BlogRepositories
         public BlogPostRepository(NbDataContext context) : base(context)
         {
             _context = context;
+        }
+
+        public BlogPost GetByIdWithCategoryandTags(Guid postId)
+        {
+            return _context.BlogPosts.Include(x => x.Category).First(x=>x.Id == postId);
         }
 
         public Guid? Insert(BlogPost blogPost, string[] tags)

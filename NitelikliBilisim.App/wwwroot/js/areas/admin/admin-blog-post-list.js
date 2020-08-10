@@ -107,12 +107,14 @@ function createGrid() {
                 caption: "Yönet",
                 cellTemplate: function (container, options) {
                     var current = options.data;
+                    $(`<a title="Önizle" class="btn btn-outline-primary btn-sm" href="/admin/blogpost/preview?postId=${current.id}"><i class="fa fa-eye"></i></a>`)
+                        .appendTo(container);
                     $(`<a title="Düzenle" class="btn btn-outline-warning btn-sm" href="/admin/blogpost/update?postId=${current.id}"><i class="fa fa-edit"></i></a>`)
                         .appendTo(container);
                     $(`<a title="Sil" class="btn btn-outline-danger btn-sm btn-confirmation-modal-trigger" data-url="/admin/blogpost/delete?postId=${current.id}" style="cursor:pointer;"><i class="fa fa-trash"></i></a>`)
                         .appendTo(container);
                 },
-                width: 100
+                width: 150
             }
         ]
     });

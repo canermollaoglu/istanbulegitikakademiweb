@@ -2,7 +2,7 @@
 var selectTags = $("#select-tags");
 var selectCategory = $("#select-categories");
 var btnSave = $("#btn-save");
-var editor;
+
 
 /* assignments */
 $(document).ready(document_onLoad);
@@ -15,23 +15,25 @@ function document_onLoad() {
         tags: true,
         tokenSeparators: [',', ' ']
     });
-    /*CK Editor*/
-    ClassicEditor
-        .create(document.querySelector('#editor'),
-            {
-                language: 'tr',
-                ckfinder: {
-                    uploadUrl:'/admin/blogpost/addpostimage'
-                }
-            }
-        )
-        .then(newEditor => {
-            editor = newEditor;
-        })
-        .catch(error => {
-            console.error(error);
-        });
+/*Summernote Editor*/
 
+    $('#summernote').summernote({
+        lang: 'tr-TR',
+        placeholder: 'İçerik giriniz...',
+        tabsize: 2,
+        height: 450,
+        toolbar: [
+            ['style', ['style']],
+            ['font', ['bold', 'underline', 'clear']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['table', ['table']],
+            ['insert', ['link', 'picture', 'video']],
+            ['view', ['fullscreen', 'codeview', 'help']]
+        ]
+       
+    });
+    
     fileManager1 = new UploadSupport.FileUploader();
     fileManager1.set({
         container: "file-upload-container-for-banner",
@@ -40,6 +42,9 @@ function document_onLoad() {
         style: { content: "Resim Yükle" }
     });
 }
+
+
+
 
 function btnSave_onClick() {
     btnSave.off("click");
@@ -59,7 +64,7 @@ function btnSave_onClick() {
     var featuredImage = fileManager1.getFile();
     var data = {
         Title: $("#input-title").val(),
-        Content: editor.getData(),
+        Content: $('#summernote').summernote('code'),
         CategoryId: selectCategory.val(),
         Tags: tags,
         FeaturedImage: {

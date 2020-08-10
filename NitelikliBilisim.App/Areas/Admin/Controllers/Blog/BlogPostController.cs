@@ -39,6 +39,21 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         }
 
         [HttpGet]
+        public IActionResult Preview(Guid postId)
+        {
+            var post = _unitOfWork.BlogPost.GetByIdWithCategoryandTags(postId);
+            BlogPostGetVM model = new BlogPostGetVM();
+            model.Title = post.Title;
+            model.FeaturedImageUrl = _storage.DownloadFile(Path.GetFileName(post.FeaturedImageUrl), "blog-featured-images").Result;
+            model.Category = post.Category;
+            model.Content = post.Content;
+            model.Id = post.Id;
+            model.CreatedDate = post.UpdatedDate ??= post.CreatedDate;
+
+            return View(model);
+        }
+
+        [HttpGet]
         public IActionResult Add()
         {
             var model = new BlogPostAddGetVM

@@ -5,13 +5,9 @@
 }
 @section styles{
     <link href="~/vendor\select2/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="~/vendor\summernote/dist/summernote-bs4.css" rel="stylesheet" />
     <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
     <link href="~/css/lib/file-uploader.css" rel="stylesheet" />
-<style>
-    .ck-editor__editable {
-        min-height: 500px !important;
-    }
-</style>
 }
 @section alerts{
     <partial name="partials/_Alert" />
@@ -19,7 +15,6 @@
 <div class="box_general padding_bottom">
     <div class="header_box version_2">
         <h2><i class="fa fa-file"></i>Yeni Yazı Ekle</h2>
-        <button id="btn-save" class="btn btn-sm btn-outline-primary pull-right"><i class="fa fa-save"></i>Kaydet</button>
     </div>
     <form id="form-add-education">
         @Html.AntiForgeryToken()
@@ -31,7 +26,7 @@
                 </div>
                 <div class="form-group">
                     <label>Yazı</label>
-                    <textarea id="editor"></textarea>
+                    <div id="summernote"></div>
                 </div>
             </div>
             <div class="col-md-4">
@@ -60,6 +55,13 @@
             </div>
         </div>
     </form>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <button id="btn-save" class="btn btn-sm btn-outline-primary pull-right"><i class="fa fa-save"></i>Kaydet</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section postScripts{
@@ -67,7 +69,7 @@
     <script src="~/js/sup/alert-sup.js"></script>
     <script src="~/js/lib/security-support.js"></script>
     <script src="~/js/lib/file-uploader.js"></script>
-    <script src="~/ckeditor5/ckeditor.js"></script>
-    <script src="~/ckeditor5/translations/tr.js"></script>
+    <script src="~/vendor\summernote/dist/summernote-bs4.js"></script>
+    <script src="~/vendor\summernote/dist/lang/summernote-tr-TR.min.js"></script>
     <script src="~/js/areas/admin/admin-blog-post-add.js"></script>
 }

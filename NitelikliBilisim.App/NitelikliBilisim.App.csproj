@@ -80,13 +80,6 @@
     <None Include="wwwroot\assets\css\style_overwritten.css" />
     <None Include="wwwroot\assets\css\vendors.css" />
     <None Include="wwwroot\assets\css\vendors.unminified.css" />
-    <None Include="wwwroot\ckeditor5\ckeditor.js" />
-    <None Include="wwwroot\ckeditor5\ckeditor.js.map" />
-    <None Include="wwwroot\ckeditor5\LICENSE.md" />
-    <None Include="wwwroot\ckeditor5\README.md" />
-    <None Include="wwwroot\ckeditor5\sample\img\github.svg" />
-    <None Include="wwwroot\ckeditor5\sample\img\logo.svg" />
-    <None Include="wwwroot\ckeditor5\translations\tr.js" />
   </ItemGroup>
 
   <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
