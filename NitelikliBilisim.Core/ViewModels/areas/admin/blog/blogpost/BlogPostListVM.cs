@@ -8,5 +8,6 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.blog.blogpost
         public string Title { get; set; }
         public string CategoryName { get; set; }
         public DateTime CreatedDate { get; set; }
+        public int ReadingTime { get; set; }
     }
 }

@@ -13,6 +13,7 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.blog.blogpost
         public string Content { get; set; }
         public string FeaturedImageUrl { get; set; }
         public DateTime CreatedDate { get; set; }
+        public int ReadingTime { get; set; }
 
     }
 }

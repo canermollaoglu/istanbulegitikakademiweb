@@ -63,6 +63,10 @@ function createGrid() {
         showBorders: true,
         showColumnLines: true,
         showRowLines: true,
+        headerFilter: {
+            visible:true
+        },
+        allowHeaderFiltering:true,
         filterRow: {
             visible: true,
             applyFilter: "auto"
@@ -93,7 +97,15 @@ function createGrid() {
             },
             {
                 caption: "Kategori",
-                dataField:"categoryName"
+                dataField: "categoryName",
+                width: 150
+            },
+            {
+                caption: "Okunma Süresi (dk)",
+                dataField: "readingTime",
+                width: 120,
+                alignment:"center",
+                width:180
             },
             {
                 caption: "Tarih",

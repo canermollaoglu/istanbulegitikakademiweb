@@ -49,6 +49,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             model.Content = post.Content;
             model.Id = post.Id;
             model.CreatedDate = post.UpdatedDate ??= post.CreatedDate;
+            model.ReadingTime = post.ReadingTime;
 
             return View(model);
         }

@@ -30,7 +30,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.WebAPI
                 Id = x.Id,
                 Title = x.Title,
                 CategoryName = x.Category.Name,
-                CreatedDate = x.CreatedDate
+                CreatedDate = x.CreatedDate,
+                ReadingTime = x.ReadingTime
             });
             return Ok(DataSourceLoader.Load(data, loadOptions));
 
