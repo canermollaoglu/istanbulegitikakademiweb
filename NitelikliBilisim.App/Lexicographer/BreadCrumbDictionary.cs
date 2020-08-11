@@ -112,6 +112,9 @@ namespace NitelikliBilisim.App.Lexicographer
               new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Tüm Blog Kategorileri", url: null) });
             _dictionary.Add("AdminBlogCategoryUpdate",
               new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Kategori Güncelle", url: null) });
+            /* Blog Tag*/
+            _dictionary.Add("AdminBlogTagList",
+             new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Blog Etiket Listesi", url: null) });
 
             
 
