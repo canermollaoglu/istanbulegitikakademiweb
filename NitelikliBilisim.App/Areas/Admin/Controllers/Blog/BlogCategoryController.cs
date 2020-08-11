@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
@@ -20,6 +21,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Blog
 
         public IActionResult List()
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminBlogCategoryList");
             return View();
         }
 
@@ -90,6 +92,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Blog
         [HttpGet]
         public IActionResult Update(Guid? categoryId)
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminBlogCategoryUpdate");
             if (categoryId == null)
                 return Redirect("/admin/blogcategory/list");
             var category = _unitOfWork.BlogCategory.GetById(categoryId.Value);

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Managers;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
@@ -35,12 +36,14 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult List()
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminBlogPostList");
             return View();
         }
 
         [HttpGet]
         public IActionResult Preview(Guid postId)
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminBlogPostView");
             var post = _unitOfWork.BlogPost.GetByIdWithCategory(postId);
             BlogPostGetVM model = new BlogPostGetVM();
             model.Title = post.Title;
@@ -57,6 +60,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Add()
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminBlogPostAdd");
             var model = new BlogPostAddGetVM
             {
                 BlogCategories = _unitOfWork.BlogCategory.Get().ToList()
@@ -131,6 +135,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Update(Guid postId)
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminBlogPostUpdate");
             var post = _unitOfWork.BlogPost.GetByIdWithCategory(postId);
             BlogPostUpdateGetVM model = new BlogPostUpdateGetVM
             {
