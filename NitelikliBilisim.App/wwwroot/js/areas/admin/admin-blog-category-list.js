@@ -140,12 +140,12 @@ function createGrid() {
             caption: "Yönet",
             cellTemplate: function (container, options) {
                 var current = options.data;
-                $(`<a title="Düzenle" class="btn btn-outline-warning btn-sm" href="/admin/blogcategory/update?categoryId=${current.id}"><i class="fa fa-edit"></i></a>`)
+                $(`<a title="Düzenle" class="btn btn-primary btn-sm" href="/admin/blogcategory/update?categoryId=${current.id}">Güncelle</a>`)
                     .appendTo(container);
-                $(`<a title="Sil" class="btn btn-outline-danger btn-sm btn-confirmation-modal-trigger" data-url="/admin/blogcategory/delete?categoryId=${current.id}" style="cursor:pointer;"><i class="fa fa-trash"></i></a>`)
+                $(`<a title="Sil" href="#" class="btn btn-danger btn-sm btn-confirmation-modal-trigger" data-url="/admin/blogcategory/delete?categoryId=${current.id}" style="cursor:pointer;">Sil</a>`)
                     .appendTo(container);
             },
-            width: 100
+            width: 150
         }
         ]
     });
