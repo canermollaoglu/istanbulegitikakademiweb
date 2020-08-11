@@ -4,7 +4,6 @@ var confirmModalBuilder = new AlertSupport.ConfirmModalBuilder();
 
 /* assignments */
 $(document).ready(document_onLoad);
-btnSave.on("click", btnSave_onClick);
 
 /* events */
 function document_onLoad() {

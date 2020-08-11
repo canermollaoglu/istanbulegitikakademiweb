@@ -41,7 +41,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Preview(Guid postId)
         {
-            var post = _unitOfWork.BlogPost.GetByIdWithCategoryandTags(postId);
+            var post = _unitOfWork.BlogPost.GetByIdWithCategory(postId);
             BlogPostGetVM model = new BlogPostGetVM();
             model.Title = post.Title;
             model.FeaturedImageUrl = _storage.DownloadFile(Path.GetFileName(post.FeaturedImageUrl), "blog-featured-images").Result;
@@ -126,18 +126,70 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             }
         }
 
-      
+
 
         [HttpGet]
-        public IActionResult UpdatePost(Guid? postId)
+        public IActionResult Update(Guid postId)
         {
-            return View();
-        }
-        //[HttpPost]
-        //public IActionResult Update()
-        //{
+            var post = _unitOfWork.BlogPost.GetByIdWithCategory(postId);
+            BlogPostUpdateGetVM model = new BlogPostUpdateGetVM
+            {
+                Id = post.Id,
+                Title = post.Title,
+                Content = post.Content,
+                FeaturedImageUrl = post.FeaturedImageUrl,
+                BlogCategories = _unitOfWork.BlogCategory.Get().ToList(),
+                Category = post.Category,
+                Tags = _unitOfWork.BlogPost.GetTagsByBlogPostId(postId)
+            };
 
-        //}
+            return View(model);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Update(BlogPostUpdatePostVM data)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelStateUtil.GetErrors(ModelState);
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = errors
+                });
+            }
+            try
+            {
+                var post = _unitOfWork.BlogPost.GetById(data.Id);
+                if (!string.IsNullOrEmpty(data.FeaturedImage.Base64Content))
+                {
+                    var stream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.FeaturedImage.Base64Content));
+                    var fileName = data.Title.FormatForTag();
+                    var dbPath = await _storage.UploadFile(stream, $"{fileName}.{data.FeaturedImage.Extension}", "blog-featured-images");
+                    post.FeaturedImageUrl = dbPath;
+                }
+                post.Title = data.Title;
+                post.Content = data.Content;
+                post.ReadingTime = CalculateReadingTime(data.Content);
+                post.CategoryId = data.CategoryId;
+
+                int retVal = _unitOfWork.BlogPost.Update(post, data.Tags);
+               
+                    return Json(new ResponseModel
+                    {
+                        isSuccess = true,
+                        message = "Yazı başarıyla güncellenmiştir."
+                    });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { ex.Message }
+                });
+            }
+        }
 
         public IActionResult Delete(Guid? postId)
         {
