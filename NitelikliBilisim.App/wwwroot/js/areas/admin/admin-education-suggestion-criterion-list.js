@@ -143,16 +143,20 @@ function createGrid() {
                                 for (var i = 0; i < res.data.length; i++) {
                                     var element = res.data[i];
                                     content +=
-                                        `<div class="col-md-3" >` +
+                                        `<div class="col-md-4" >` +
                                         `<div class="card flex-md-row mb-4 shadow-sm h-md-250" >` +
                                         `<div class="card-body d-flex flex-column align-items-start">` +
                                         ` <strong class="d-inline-block mb-2 text-primary">${element.criterionTypeName}</strong>`;
 
                                     if (element.criterionType == "1020" || element.criterionType == "1030") {
-                                        content += `<p class="card-text mb-auto">${element.charValue} </p></br></br>`;
+                                        var arr = element.charValue.split(',');
+                                        content += `<p class="card-text mb-auto"><ul>`;
+                                        $.each(arr, function (index, value) {
+                                            content += `<li>${value}</li> `;
+                                        });
+                                        content += `</ul></p>`;
                                     } else if (element.criterionType == "1010") {
-                                        content += `<p class="card-text mb-auto"><b>Minimum Gün :</b> ${element.minValue}</p>`;
-                                        content += `<p class="card-text mb-auto"><b>Maksimum Gün :</b> ${element.maxValue}</p></br>`;
+                                        content += `<p class="card-text mb-auto"><p><b>${element.minValue}.</b> ve <b>${element.maxValue}.</b> gün arasında.</p>`;
                                     }
                                     content +=
                                         `</div>` +
