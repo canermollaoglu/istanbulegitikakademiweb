@@ -19,7 +19,7 @@ namespace NitelikliBilisim.App.Controllers
 
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("kurs-detayi/{courseId}")]
-        public IActionResult Details(Guid? courseId)
+        public IActionResult Details(Guid? courseId,string searchKey)
         {
             if (!courseId.HasValue)
                 return Redirect("/");

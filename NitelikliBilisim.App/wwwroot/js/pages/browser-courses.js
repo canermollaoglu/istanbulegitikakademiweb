@@ -255,18 +255,26 @@ function getFilteredResults(isLoadMore, order) {
     getSearchResults(isLoadMore, filterOptions, order)
 }
 function prepareCourseBoxesAsGrid(data) {
+    var searchText = inputSearch.val();
+
     var boxes = "";
     for (var i = 0; i < data.length; i++) {
         var item = data[i];
+        var courseUrl = "";
+        if (searchText=="") {
+            courseUrl = `<a href="/kurs-detayi/${item.base.id}">`;
+        } else {
+            courseUrl = `<a href="/kurs-detayi/${item.base.id}?searchKey=${searchText}">`;
+        }
         boxes +=
             `<div class="col-xl-6 col-lg-6 col-md-6">` +
             `<div class="box_grid wow">` +
             `<figure class="block-reveal">` +
             `<div class="block-horizzontal"></div>` +
             `<a href="#0" class="wish_bt"></a>` +
-            `<a href="/kurs-detayi/${item.base.id}"><img src="${item.medias[0].fileUrl}" class="img-fluid preview-img" alt=""></a>` +
+        `${courseUrl}<img src="${item.medias[0].fileUrl}" class="img-fluid preview-img" alt=""></a>` +
             `<div class="price">${item.base.priceText}</div>` +
-            `<div class="preview"><span><a href="/kurs-detayi/${item.base.id}">Detaylar</a></span></div>` +
+        `<div class="preview"><span>${courseUrl}Detaylar</a></span></div>` +
             `</figure>` +
             `<div class="wrapper">` +
             `<small>${item.base.categoryName}</small>` +
