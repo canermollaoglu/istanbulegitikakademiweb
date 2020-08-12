@@ -52,21 +52,21 @@ namespace NitelikliBilisim.Business.Repositories
                 /*Müşterinin NBUY eğitimi aldığı kategoriye göre eğitim listesi.*/
                 var educations = _context.Educations.Include(c => c.Category).Where(x => x.Category.BaseCategoryId == studentEducationInfo.CategoryId.Value || x.Category.Id == studentEducationInfo.CategoryId.Value).Include(x => x.EducationSuggestionCriterions).Where(x => x.IsActive);
                 #region Favori eklenen eğitimler
-                List<string> userWishList = _context.Wishlist.Where(x => x.Id == customer.Id).Include(x => x.Education).Select(x => x.Education.Id.ToString()).ToList();
+                List<string> userWishList = _context.Wishlist.Where(x => x.Id == customer.Id).Include(x => x.Education).Select(x => x.Education.Id.ToString().ToLower()).ToList();
                 #endregion
                 #region Satın alınan eğitimler
                 List<string> userPurchasedEducations = new List<string>();
                 var tickets = _context.Tickets
                 .Where(x => x.OwnerId == customer.Id)
                 .ToList();
-                tickets.ForEach(x => userPurchasedEducations.Add(x.EducationId.ToString()));
+                tickets.ForEach(x => userPurchasedEducations.Add(x.EducationId.ToString().ToLower()));
                 #endregion
 
 
                 #region Kriterlerin uygunluğunun kontrolü
                 foreach (var education in educations)
                 {
-                    int appropriateCriterion = 1;
+                    int appropriateCriterion = 0;
                     #region Kriterlere göre eğitim önerileri
                     if (education.EducationSuggestionCriterions != null && education.EducationSuggestionCriterions.Count > 0)
                     {
@@ -76,21 +76,25 @@ namespace NitelikliBilisim.Business.Repositories
                             if (criterion.CriterionType == CriterionType.EducationDay)
                             {
                                 if (nearestDay <= criterion.MaxValue && nearestDay >= criterion.MinValue)
-                                    appropriateCriterion++;
+                                    appropriateCriterion+=50;//Eğitim günü kriteri %50 etkilediği için 100 puan üzerinden 50 puan ekleniyor.
+                                else if (nearestDay >criterion.MaxValue && nearestDay < criterion.MaxValue + 7)
+                                    appropriateCriterion += 30;//Eğitim günü kriteri iki hafta öncesine kadar 30 puan etkiliyor.
+                                else if (nearestDay < criterion.MinValue && nearestDay >= criterion.MinValue - 14)
+                                    appropriateCriterion += 30;//Eğitim günü kriteri bir hafta sonrasına kadar 30 puan etkiliyor.
                             }
                             #endregion
                             #region Favorilere Eklenmiş Eğitimler Kriteri
                             if (criterion.CriterionType == CriterionType.WishListEducations)
                             {
                                 List<string> wishListItemIds = JsonConvert.DeserializeObject<string[]>(criterion.CharValue).ToList();
-                                appropriateCriterion = appropriateCriterion + SameElementCount(wishListItemIds, userWishList);
+                                appropriateCriterion = appropriateCriterion + (int)TotalSameElementPoint(criterion.CriterionType,wishListItemIds, userWishList);
                             }
                             #endregion
                             #region Satın Alınmış Eğitimler Kriteri
                             if (criterion.CriterionType == CriterionType.PurchasedEducations)
                             {
                                 List<string> criterionItemIds = JsonConvert.DeserializeObject<string[]>(criterion.CharValue).ToList();
-                                appropriateCriterion = appropriateCriterion + SameElementCount(userPurchasedEducations, criterionItemIds);
+                                appropriateCriterion = appropriateCriterion + (int)TotalSameElementPoint(criterion.CriterionType, criterionItemIds,userPurchasedEducations);
                             }
                             #endregion
                         }
@@ -165,13 +169,25 @@ namespace NitelikliBilisim.Business.Repositories
         }
 
         #region Suggested Educations Helper Method
-        public int SameElementCount(List<string> first, List<string> second)
+        /// <summary>
+        /// Bu method eğitimde belirtilen Favori eğitim ve Satın alınan eğitim kriterlerindeki eğitimleri 
+        /// ve kullanıcının satın aldığı ve favoriye eklediği eğitimleri alarak 
+        /// bir puan dönderir.
+        /// </summary>
+        /// <param name="criterionType"></param>
+        /// <param name="criterionEducationList"></param>
+        /// <param name="studentEducationList"></param>
+        /// <returns></returns>
+        public double TotalSameElementPoint(CriterionType criterionType,List<string> criterionEducationList, List<string> studentEducationList)
         {
-            int count = 0;
-            for (int i = 0; i < first.Count; i++)
-                if (second.Contains(first[i].ToUpper()))
-                    count++;
-            return count;
+            //Her bir kriter uyumu için eklenecek puan
+            double criterionPoint = criterionType == CriterionType.WishListEducations ? 20 / criterionEducationList.Count : 30 / criterionEducationList.Count; 
+            //Toplam puan
+            double totalPoint = 0;
+            for (int i = 0; i < criterionEducationList.Count; i++)
+                if (studentEducationList.Contains(criterionEducationList[i].ToLower()))
+                    totalPoint += criterionPoint;
+            return totalPoint;
         }
 
         public List<SuggestedEducationVm> FillSuggestedEducationList(Dictionary<Guid, int> educationAndAppropriateCriterion)
