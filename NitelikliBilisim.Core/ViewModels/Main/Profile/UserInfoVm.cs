@@ -30,13 +30,17 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public City City { get; set; }
         public string WebSiteUrl { get; set; }
         public string LinkedInProfileUrl { get; set; }
-
     }
     public class _EducationInfo
     {
         public string EducationCenter { get; set; }
         public DateTime StartedAt { get; set; }
         public string EducationCategory { get; set; }
+
+        /// <summary>
+        /// Nbuy Eğitimi alan kullanıcılar için eğitimin kaçıncı gününde olduğu bilgisi.
+        /// </summary>
+        public int NBUYCurrentEducationDay { get; set; }
     }
     public class _Ticket
     {

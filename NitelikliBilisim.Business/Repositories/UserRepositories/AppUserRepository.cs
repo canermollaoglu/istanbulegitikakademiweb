@@ -66,7 +66,7 @@ namespace NitelikliBilisim.Business.Repositories
             #endregion
             if (customer == null)
                 return null;
-
+            
             var _personalAndAccount = new _PersonalAccountInfo
             {
                 FirstName = customer.User.Name,
@@ -85,11 +85,16 @@ namespace NitelikliBilisim.Business.Repositories
             if (customer.IsNbuyStudent)
             {
                 var studentEducationInfo = _context.StudentEducationInfos.First(x => x.CustomerId == customer.Id);
+                //Öğrencinin yalnız bir nbuy eğitimi aldığı varsayıldığı için first ile ilk eğitim çekildi.
+                var educationDays = _context.EducationDays.ToList();
+                var educationDay = educationDays.Where(x => x.StudentEducationInfoId == studentEducationInfo.Id && x.Date <= DateTime.Now).OrderByDescending(c => c.Date).First();
+
                 _educationInfo = new _EducationInfo
                 {
                     EducationCategory = _context.EducationCategories.First(x => x.Id == studentEducationInfo.CategoryId).Name,
                     EducationCenter = EnumSupport.GetDescription(studentEducationInfo.EducationCenter),
-                    StartedAt = studentEducationInfo.StartedAt
+                    StartedAt = studentEducationInfo.StartedAt,
+                    NBUYCurrentEducationDay = educationDay.Day
                 };
             }
 
