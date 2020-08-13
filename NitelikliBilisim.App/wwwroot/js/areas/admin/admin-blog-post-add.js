@@ -13,9 +13,31 @@ btnSave.on("click", btnSave_onClick);
 function document_onLoad() {
     selectTags.select2({
         tags: true,
-        tokenSeparators: [',', ' ']
+        placeholder: "Ara",
+        tokenSeparators: [',', ' '],
+        minimumInputLength: 3,
+        ajax: {
+            url: '/admin/blogtag/searchtag',
+            dataType: 'json',
+            type: "GET",
+            delay: 250,
+            data: function (params) {
+                return {
+                    q: params.term
+                };
+            },
+            processResults: function (data) {
+                var res = data.data.map(function (item) {
+                    return { id: item.id, text: item.name };
+                });
+                return {
+                    results: res
+                };
+            }
+        },
+
     });
-/*Summernote Editor*/
+    /*Summernote Editor*/
 
     $('#summernote').summernote({
         lang: 'tr-TR',
@@ -32,9 +54,9 @@ function document_onLoad() {
             ['insert', ['link', 'picture', 'video']],
             ['view', ['fullscreen', 'codeview', 'help']]
         ]
-       
+
     });
-    
+
     fileManager1 = new UploadSupport.FileUploader();
     fileManager1.set({
         container: "file-upload-container-for-banner",
@@ -49,9 +71,13 @@ function document_onLoad() {
 
 function btnSave_onClick() {
     btnSave.off("click");
+    var tags = [];
     var resultAlert = new AlertSupport.ResultAlert();
-    var tags = selectTags.val();
-    console.log(tags);
+    var data = selectTags.select2('data');
+    data.forEach(function (item) {
+        tags.push(item.text);
+    });
+
     if (tags.length == 0) {
         resultAlert.display({
             success: false,

@@ -13,7 +13,27 @@ btnSave.on("click", btnSave_onClick);
 function document_onLoad() {
     selectTags.select2({
         tags: true,
-        tokenSeparators: [',', ' ']
+        tokenSeparators: [',', ' '],
+        minimumInputLength: 3,
+        ajax: {
+            url: '/admin/blogtag/searchtag',
+            dataType: 'json',
+            type: "GET",
+            delay: 250,
+            data: function (params) {
+                return {
+                    q: params.term
+                };
+            },
+            processResults: function (data) {
+                var res = data.data.map(function (item) {
+                    return { id: item.id, text: item.name };
+                });
+                return {
+                    results: res
+                };
+            }
+        },
     });
     
     fileManager1 = new UploadSupport.FileUploader();
@@ -27,10 +47,15 @@ function document_onLoad() {
 
 
 function btnSave_onClick() {
+    var tags = [];
+    var resultAlert = new AlertSupport.ResultAlert();
+    var data = selectTags.select2('data');
+    data.forEach(function (item) {
+        tags.push(item.text);
+    });
+
     btnSave.off("click");
     var resultAlert = new AlertSupport.ResultAlert();
-    var tags = selectTags.val();
-    console.log(tags);
     if (tags.length == 0) {
         resultAlert.display({
             success: false,

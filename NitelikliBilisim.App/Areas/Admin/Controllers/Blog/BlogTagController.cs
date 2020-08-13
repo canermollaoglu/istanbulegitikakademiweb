@@ -6,6 +6,7 @@ using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities.blog;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers.Blog
 {
@@ -56,6 +57,27 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Blog
                 {
                     isSuccess = true,
                     message = "Etiket başarıyla silinmiştir."
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Hata " + ex.Message }
+                });
+            }
+        }
+        [HttpGet]
+        public IActionResult SearchTag(string q)
+        {
+            try
+           {
+                var tags = _unitOfWork.BlogTag.Get(x => x.Name.StartsWith(q)).ToList();
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    data =tags
                 });
             }
             catch (Exception ex)
