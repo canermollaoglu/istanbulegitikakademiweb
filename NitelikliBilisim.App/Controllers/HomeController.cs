@@ -59,6 +59,8 @@ namespace NitelikliBilisim.App.Controllers
         {
             string sessionId = _session.GetString("userSessionId");
             string userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            ViewData["edl"] = _unitOfWork.Suggestions.GetEducationDetailLogs(userId);
+
             ViewData["viewingCount"] = _unitOfWork.Suggestions.EducationDetailViewsCountByUserId(userId);
             ViewData["searchedTexts"] = _unitOfWork.Suggestions.GetSearchedTextsByUserId(userId);
             ViewData["userIdEducations"] = _unitOfWork.Suggestions.GetViewingEducationsByUserId(userId);

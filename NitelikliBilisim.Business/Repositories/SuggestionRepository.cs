@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Internal;
 using Nest;
 using Newtonsoft.Json;
 using NitelikliBilisim.Core.ComplexTypes;
+using NitelikliBilisim.Core.ComplexTypes.TransactionLogModels;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Enums.educations;
@@ -76,8 +77,8 @@ namespace NitelikliBilisim.Business.Repositories
                             if (criterion.CriterionType == CriterionType.EducationDay)
                             {
                                 if (nearestDay <= criterion.MaxValue && nearestDay >= criterion.MinValue)
-                                    appropriateCriterion+=50;//Eğitim günü kriteri %50 etkilediği için 100 puan üzerinden 50 puan ekleniyor.
-                                else if (nearestDay >criterion.MaxValue && nearestDay < criterion.MaxValue + 7)
+                                    appropriateCriterion += 50;//Eğitim günü kriteri %50 etkilediği için 100 puan üzerinden 50 puan ekleniyor.
+                                else if (nearestDay > criterion.MaxValue && nearestDay < criterion.MaxValue + 7)
                                     appropriateCriterion += 30;//Eğitim günü kriteri iki hafta öncesine kadar 30 puan etkiliyor.
                                 else if (nearestDay < criterion.MinValue && nearestDay >= criterion.MinValue - 14)
                                     appropriateCriterion += 30;//Eğitim günü kriteri bir hafta sonrasına kadar 30 puan etkiliyor.
@@ -87,14 +88,14 @@ namespace NitelikliBilisim.Business.Repositories
                             if (criterion.CriterionType == CriterionType.WishListEducations)
                             {
                                 List<string> wishListItemIds = JsonConvert.DeserializeObject<string[]>(criterion.CharValue).ToList();
-                                appropriateCriterion = appropriateCriterion + (int)TotalSameElementPoint(criterion.CriterionType,wishListItemIds, userWishList);
+                                appropriateCriterion = appropriateCriterion + (int)TotalSameElementPoint(criterion.CriterionType, wishListItemIds, userWishList);
                             }
                             #endregion
                             #region Satın Alınmış Eğitimler Kriteri
                             if (criterion.CriterionType == CriterionType.PurchasedEducations)
                             {
                                 List<string> criterionItemIds = JsonConvert.DeserializeObject<string[]>(criterion.CharValue).ToList();
-                                appropriateCriterion = appropriateCriterion + (int)TotalSameElementPoint(criterion.CriterionType, criterionItemIds,userPurchasedEducations);
+                                appropriateCriterion = appropriateCriterion + (int)TotalSameElementPoint(criterion.CriterionType, criterionItemIds, userPurchasedEducations);
                             }
                             #endregion
                         }
@@ -178,10 +179,10 @@ namespace NitelikliBilisim.Business.Repositories
         /// <param name="criterionEducationList"></param>
         /// <param name="studentEducationList"></param>
         /// <returns></returns>
-        public double TotalSameElementPoint(CriterionType criterionType,List<string> criterionEducationList, List<string> studentEducationList)
+        public double TotalSameElementPoint(CriterionType criterionType, List<string> criterionEducationList, List<string> studentEducationList)
         {
             //Her bir kriter uyumu için eklenecek puan
-            double criterionPoint = criterionType == CriterionType.WishListEducations ? 20 / criterionEducationList.Count : 30 / criterionEducationList.Count; 
+            double criterionPoint = criterionType == CriterionType.WishListEducations ? 20 / criterionEducationList.Count : 30 / criterionEducationList.Count;
             //Toplam puan
             double totalPoint = 0;
             for (int i = 0; i < criterionEducationList.Count; i++)
@@ -335,9 +336,9 @@ namespace NitelikliBilisim.Business.Repositories
             s.Size((int)count.Count)
             .Query(
                 q =>
-                q.Term(t => t.UserId,userId) &&
-                q.Term(t => t.ControllerName,"course") &&
-                q.Term(t => t.ActionName,"details")));
+                q.Term(t => t.UserId, userId) &&
+                q.Term(t => t.ControllerName, "course") &&
+                q.Term(t => t.ActionName, "details")));
 
             if (result.IsValid && result.Documents != null && result.Documents.Count > 0)
             {
@@ -402,7 +403,238 @@ namespace NitelikliBilisim.Business.Repositories
 
         }
 
+
+        public EducationDetailLog GetEducationDetailLogs(string userId)
+        {
+
+            EducationDetailLog model = new EducationDetailLog();
+            model.ViewingEducations = new List<ViewingEducation>();
+            model.SearchedEducations = new List<SearchedEducation>();
+
+            Dictionary<string, int> getAllSearching = GetAllSearchedKeyAndSearchCount(userId);
+
+            #region İncelenmiş Eğitimler  | Aranılarak incelenmiş ve direkt incelenmiş olarak ikiye ayrılıyor.
+
+            var result = GetViewedEducations(userId);
+            int totalEducationViewCount = GetEducationViewTotalCount(result);
+            model.TotalEducationSearchCount = CountOfEducationsSearchedAndViewed(result, getAllSearching);
+
+
+
+            if (result.IsValid && result.Documents != null && result.Documents.Count > 0)
+            {
+                foreach (var log in result.Documents)
+                {//Aranılarak incelenmiş eğitimler
+                    if (log.Parameters != null && log.Parameters.Any(x => x.ParameterName == "searchKey"))
+                    {
+                        string key = JsonConvert.DeserializeObject<string>(log.Parameters.First(x => x.ParameterName == "searchKey").ParameterValue);
+                        int totalKeySearched = getAllSearching[key];
+
+                        string Id = JsonConvert.DeserializeObject<string>(log.Parameters.First(x => x.ParameterName == "courseId").ParameterValue);
+                        if (model.SearchedEducations.Any(x => x.Key == key))
+                        {
+                            var eDetail = new EducationDetail();
+                            eDetail.Point = CalculateSearchedKeyPoint(totalKeySearched, model.TotalEducationSearchCount);
+                            eDetail.Id = Id;
+                            SearchedEducation ed = model.SearchedEducations.First(x => x.Key == key);
+                            ed.ViewedCount++;
+                            ed.EducationDetails.Add(eDetail);
+                        }
+                        else
+                        {
+                            var eDetail = new EducationDetail();
+                            eDetail.Point = CalculateSearchedKeyPoint(totalKeySearched, model.TotalEducationSearchCount);
+                            eDetail.Id = Id;
+
+                            var sE = new SearchedEducation();
+                            sE.Key = key;
+                            sE.ViewedCount = 1;
+                            sE.EducationDetails.Add(eDetail);
+                            model.SearchedEducations.Add(sE);
+                        }
+                    }
+                    //Direkt incelenmiş eğitimler
+                    else
+                    {
+                        string Id = JsonConvert.DeserializeObject<string>(log.Parameters.First(x => x.ParameterName == "courseId").ParameterValue);
+                        if (model.ViewingEducations.Any(x => x.EducationId == Id))
+                        {
+                            ViewingEducation current = model.ViewingEducations.First(x => x.EducationId == Id);
+                            current.ViewingCount++;
+                            current.Point = CalculateViewedEducationPoint(current.ViewingCount, totalEducationViewCount);
+                        }
+                        else
+                        {
+                            model.ViewingEducations.Add(new ViewingEducation
+                            {
+                                EducationId = Id,
+                                ViewingCount = 1,
+                                Point = CalculateViewedEducationPoint(1,totalEducationViewCount)
+                            });
+                        }
+                    }
+
+                }
+            }
+            #endregion
+
+            model.TotalEducationViewCount = totalEducationViewCount;
+            foreach (var item in model.SearchedEducations)
+            {
+                if (getAllSearching.ContainsKey(item.Key))
+                {
+                    item.SearchedCount = getAllSearching[item.Key];
+                }
+            }
+
+            return model;
+        }
+
+        private int CountOfEducationsSearchedAndViewed(ISearchResponse<TransactionLog> result, Dictionary<string, int> getAllSearching)
+        {
+            Dictionary<string, int> counter = new Dictionary<string, int>();
+            if (result.IsValid && result.Documents != null && result.Documents.Count > 0)
+            {
+                foreach (var log in result.Documents)
+                {//Aranılarak incelenmiş eğitimler
+                    if (log.Parameters != null && log.Parameters.Any(x => x.ParameterName == "searchKey"))
+                    {
+                        string key = JsonConvert.DeserializeObject<string>(log.Parameters.First(x => x.ParameterName == "searchKey").ParameterValue);
+                        if (!counter.ContainsKey(key))
+                        {
+                            counter.Add(key, getAllSearching[key]);
+                        }
+                    }
+                }
+            }
+            return counter.Sum(x=>x.Value);
+        }
+        private int GetEducationViewTotalCount(ISearchResponse<TransactionLog> result)
+        {
+            int total = 0;
+            if (result.IsValid && result.Documents != null && result.Documents.Count > 0)
+            {
+                foreach (var log in result.Documents)
+                {
+                    if (log.Parameters != null && !log.Parameters.Any(x => x.ParameterName == "searchKey"))
+                    {
+                        total++;
+                    }
+                }
+            }
+            return total;
+        }
+
+        private double CalculateSearchedKeyPoint(int totalKeySearched, int totalSearchedCount)
+        {
+
+            return Convert.ToDouble(totalKeySearched) / Convert.ToDouble(totalSearchedCount) * 70;
+        }
+        private double CalculateViewedEducationPoint(int totalEducationView, int totalAllEducationView)
+        {
+            return Convert.ToDouble(totalEducationView) / Convert.ToDouble(totalAllEducationView) * 30;
+        }
+
+
+        /// <summary>
+        /// Tüm incelenmiş eğitimleri döndürür.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        private ISearchResponse<TransactionLog> GetViewedEducations(string userId)
+        {
+            var count = _elasticClient.Count<TransactionLog>(s =>
+            s.Query(
+                q =>
+                q.Term(t => t.UserId, userId) &&
+                q.Term(t => t.ControllerName, "course") &&
+                q.Term(t => t.ActionName, "details")));
+
+            var result = _elasticClient.Search<TransactionLog>(s =>
+            s.Size((int)count.Count)
+            .Query(
+                q =>
+                q.Term(t => t.UserId, userId) &&
+                q.Term(t => t.ControllerName, "course") &&
+                q.Term(t => t.ActionName, "details")));
+            return result;
+        }
+
+
         #endregion
 
+        private Dictionary<string, int> GetAllSearchedKeyAndSearchCount(string userId)
+        {
+            Dictionary<string, int> allSearchings = new Dictionary<string, int>();
+            var searchedTextCount = _elasticClient.Count<TransactionLog>(s =>
+            s.Query(
+                q =>
+                q.Term(t => t.UserId, userId) &&
+                q.Term(t => t.ControllerName, "browser") &&
+                q.Term(t => t.ActionName, "getcourses")));
+            var searchedTexts = _elasticClient.Search<TransactionLog>(s =>
+            s.Size((int)searchedTextCount.Count)
+            .Query(q =>
+                q.Term(t => t.UserId, userId) &&
+                q.Term(t => t.ControllerName, "browser") &&
+                q.Term(t => t.ActionName, "getcourses")));
+
+            if (searchedTexts.IsValid && searchedTexts.Documents != null && searchedTexts.Documents.Count > 0)
+            {
+                foreach (var log in searchedTexts.Documents)
+                {
+                    if (log.Parameters != null && log.Parameters.Any(x => x.ParameterName == "searchText"))
+                    {
+                        string sText = JsonConvert.DeserializeObject<string>(log.Parameters.First(x => x.ParameterName == "searchText").ParameterValue);
+
+                        if (allSearchings.ContainsKey(sText))
+                            allSearchings[sText]++;
+                        else
+                            allSearchings.Add(sText, 1);
+                    }
+                }
+            }
+
+            return allSearchings;
+        }
     }
+
+
+
+
+
+}
+public class EducationDetailLog
+{
+    public List<SearchedEducation> SearchedEducations { get; set; }
+    public List<ViewingEducation> ViewingEducations { get; set; }
+    public int TotalEducationViewCount { get; set; }
+    public int TotalEducationSearchCount { get; set; }
+}
+
+public class SearchedEducation
+{
+    public string Key { get; set; }
+    public int ViewedCount { get; set; }
+    public int SearchedCount { get; set; }
+    public List<EducationDetail> EducationDetails { get; set; } = new List<EducationDetail>();
+}
+
+public class ViewingEducation
+{
+    public string EducationId { get; set; }
+    public int ViewingCount { get; set; }
+    public double Point { get; set; }
+}
+
+public class EducationDetail
+{
+    public string Id { get; set; }
+    public double Point { get; set; }
+}
+
+public class TotalViewAndSearchCountModel
+{
+    public int TotalEducationViewCount { get; set; }
+    public int TotalEducationSearchCount { get; set; }
 }
