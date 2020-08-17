@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
@@ -10,6 +11,7 @@ using NitelikliBilisim.Core.ViewModels.areas.admin.education_suggestion_criterio
 using NitelikliBilisim.Support.Enums;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
@@ -23,10 +25,18 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             _unitOfWork = unitOfWork;
         }
 
+        
+        [Route("admin/egitim-oneri-kriteri-listesi")]
+        public IActionResult List()
+        {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationSuggestionCriterionList");
+            return View();
+        }
+
         [Route("admin/egitim-oneri-kriteri-yonetimi")]
         public IActionResult Manage(Guid? educationId)
         {
-            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationSuggestionCriterion");
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationSuggestionCriterionManage");
             if (educationId == null)
                 return Redirect("/");
 
@@ -57,13 +67,22 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             }
             try
             {
-                _unitOfWork.EducationSuggestionCriterion.Insert(new EducationSuggestionCriterion
+                EducationSuggestionCriterion newCriterion = new EducationSuggestionCriterion();
+                newCriterion.CriterionType = (CriterionType)data.CriterionType;
+                newCriterion.EducationId = data.EducationId;
+                if (newCriterion.CriterionType == CriterionType.EducationDay)
                 {
-                    EducationId = data.EducationId,
-                    MinValue = data.MinValue,
-                    MaxValue = data.MaxValue,
-                    CriterionType = (CriterionType)data.CriterionType
-                });
+                    newCriterion.MinValue = data.MinValue;
+                    newCriterion.MaxValue = data.MaxValue;
+                }
+                else if(newCriterion.CriterionType == CriterionType.WishListEducations || newCriterion.CriterionType == CriterionType.PurchasedEducations)
+                {
+                    newCriterion.CharValue = JsonConvert.SerializeObject(data.CharValue);
+                }
+                
+                _unitOfWork.EducationSuggestionCriterion.Insert(newCriterion);
+
+
                 return Json(new ResponseModel
                 {
                     isSuccess = true,
@@ -78,10 +97,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     errors = new List<string> { "Hata " + ex.Message }
                 });
             }
-
-
-
-
         }
 
         [HttpGet]
@@ -98,7 +113,28 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
             try
             {
-                var data = _unitOfWork.EducationSuggestionCriterion.GetById(educationSuggestionCriterionId.Value);
+                var criterions = _unitOfWork.EducationSuggestionCriterion.GetById(educationSuggestionCriterionId.Value);
+                EducationSuggestionCriterionUpdateGetVM data = new EducationSuggestionCriterionUpdateGetVM()
+                {
+                    Id = criterions.Id,
+                    CriterionType = criterions.CriterionType,
+                    MaxValue = criterions.MaxValue,
+                    MinValue = criterions.MinValue,
+                    CharValue = criterions.CharValue,
+                    AllEducations = null,
+                    SelectedEducations = null
+                };
+                if (data.CriterionType == CriterionType.WishListEducations||data.CriterionType == CriterionType.PurchasedEducations)
+                {
+
+                    List<Guid> educationIds = JsonConvert.DeserializeObject<List<Guid>>(data.CharValue);
+                    data.AllEducations = _unitOfWork.Education.Get()
+                    .Select(x => new KeyValuePair<string, string>(x.Id.ToString(), x.Name))
+                    .ToDictionary(x => x.Key, x => x.Value);
+                    data.SelectedEducations = data.AllEducations.Where(x => educationIds.Contains(Guid.Parse(x.Key)))
+                    .ToDictionary(x => x.Key, x => x.Value);
+                }
+
                 return Json(new ResponseModel
                 {
                     isSuccess = true,
@@ -132,10 +168,17 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             try
             {
                 var suggestionCriterion = _unitOfWork.EducationSuggestionCriterion.GetById(data.Id);
-                suggestionCriterion.MinValue = data.MinValue;
-                if (data.MaxValue.HasValue && data.MaxValue.Value > 0)
+                if (suggestionCriterion.CriterionType == CriterionType.EducationDay)
+                {
+                    suggestionCriterion.MinValue = data.MinValue;
                     suggestionCriterion.MaxValue = data.MaxValue;
+                }
+                else if (suggestionCriterion.CriterionType == CriterionType.WishListEducations || suggestionCriterion.CriterionType == CriterionType.PurchasedEducations)
+                {
+                    suggestionCriterion.CharValue = JsonConvert.SerializeObject(data.CharValue);
+                }
                 _unitOfWork.EducationSuggestionCriterion.Update(suggestionCriterion);
+                
                 return Json(new ResponseModel
                 {
                     isSuccess = true,

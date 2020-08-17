@@ -1574,6 +1574,142 @@ namespace NitelikliBilisim.Data.Migrations
                     b.ToTable("Wishlist");
                 });
 
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.blog.BlogCategory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedUser")
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(512)")
+                        .HasMaxLength(512);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BlogCategories");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.blog.BlogPost", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedUser")
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
+
+                    b.Property<string>("FeaturedImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ReadingTime")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("BlogPosts");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.blog.BlogTag", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedUser")
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BlogTags");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.blog.Bridge_BlogPostTag", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("Id2")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedUser")
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
+
+                    b.HasKey("Id", "Id2");
+
+                    b.HasIndex("Id2");
+
+                    b.ToTable("Bridge_BlogTags");
+                });
+
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.educations.EducationHostImage", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1617,6 +1753,9 @@ namespace NitelikliBilisim.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("CharValue")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
@@ -1633,7 +1772,7 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<int?>("MaxValue")
                         .HasColumnType("int");
 
-                    b.Property<int>("MinValue")
+                    b.Property<int?>("MinValue")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedDate")
@@ -2141,7 +2280,7 @@ namespace NitelikliBilisim.Data.Migrations
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.StudentEducationInfo", b =>
                 {
                     b.HasOne("NitelikliBilisim.Core.Entities.Customer", "Customer")
-                        .WithMany()
+                        .WithMany("StudentEducationInfos")
                         .HasForeignKey("CustomerId");
                 });
 
@@ -2191,6 +2330,30 @@ namespace NitelikliBilisim.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("NitelikliBilisim.Core.Entities.Education", "Education")
+                        .WithMany()
+                        .HasForeignKey("Id2")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.blog.BlogPost", b =>
+                {
+                    b.HasOne("NitelikliBilisim.Core.Entities.blog.BlogCategory", "Category")
+                        .WithMany("BlogPosts")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.blog.Bridge_BlogPostTag", b =>
+                {
+                    b.HasOne("NitelikliBilisim.Core.Entities.blog.BlogPost", "BlogPost")
+                        .WithMany()
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NitelikliBilisim.Core.Entities.blog.BlogTag", "BlogTag")
                         .WithMany()
                         .HasForeignKey("Id2")
                         .OnDelete(DeleteBehavior.Cascade)

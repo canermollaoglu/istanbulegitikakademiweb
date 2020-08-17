@@ -145,7 +145,10 @@
                                     <ul class="list_3">
                                         <li>
                                             <strong>@Model.EducationInfo.EducationCategory</strong>
-                                            <p>@Model.EducationInfo.EducationCenter (@Model.EducationInfo.StartedAt.ToShortDateString())</p>
+                                            <p>
+                                                @Model.EducationInfo.EducationCenter (@Model.EducationInfo.StartedAt.ToShortDateString())<br />
+                                                Eğitiminizin @Model.EducationInfo.NBUYCurrentEducationDay. günündesiniz.
+                                            </p>
                                         </li>
                                     </ul>
                                 </div>
@@ -157,6 +160,37 @@
                                 <strong>Nitelikli Bilişim Uzman Yetiştirme eğitimi kayıtlı değildir.</strong> Eğer siteye kayıt esnasında eğitim bilgilerini boş geçtiyseniz aşağıdaki düğmeye tıklayarak bilgilerinizi girebilirsiniz.
                             </div>
                             <button class="btn btn-primary"><i class="icon-plus"></i> Eğitim Ekle</button>
+                        }
+                    </div>
+                    <hr class="styled_2">
+                    <div class="indent_title_in">
+                        <i class="pe-7s-key"></i>
+                        <h3 id="egitim-gecmisi">Favori Eğitimlerim</h3>
+                        <p>Mussum ipsum cacilds, vidis litro abertis.</p>
+                    </div>
+                    <div class="wrapper_indent">
+                        @if (Model.WishList != null && Model.WishList.Count > 0)
+                        {
+                            foreach (var education in Model.WishList)
+                            {
+                                <div class="row" id="wdiv_@education.Base.Id">
+                                    <div class="col-md-6">
+                                        <ul class="list_3">
+                                            <li>
+                                                <strong>@education.Base.Name</strong>
+                                                <p>@education.Base.DaysText gün @education.Base.HoursPerDayText saat  (@education.Base.PriceText) <a data-education-id="@education.Base.Id" class="btn btn-sm btn-default pull-right btn-removeWishListItem">x</a></p> 
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            }
+
+                        }
+                        else
+                        {
+                            <div class="alert alert-info">
+                                <strong>Favori eklenmiş eğitim bulunamadı.</strong>
+                            </div>
                         }
                     </div>
                 </div>

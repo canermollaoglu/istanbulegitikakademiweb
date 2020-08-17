@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using NitelikliBilisim.App.Controllers.Base;
+using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.App.VmCreator;
@@ -45,13 +46,13 @@ namespace NitelikliBilisim.App.Controllers
             _userUnitOfWork = userUnitOfWork;
             _emailSender = new EmailSender();
         }
-
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("sepet")]
         public IActionResult Cart()
         {
             return View();
         }
-
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [HttpPost, IgnoreAntiforgeryToken, Route("get-cart-items")]
         public IActionResult GetCartItems(GetCartItemsData data)
         {
@@ -85,7 +86,7 @@ namespace NitelikliBilisim.App.Controllers
                 data = model
             });
         }
-
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("odeme")]
         public IActionResult Payment()
         {
@@ -94,7 +95,7 @@ namespace NitelikliBilisim.App.Controllers
 
             return View();
         }
-
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [HttpPost, ValidateAntiForgeryToken, Route("pay")]
         public async Task<IActionResult> Pay(PayData data)
         {

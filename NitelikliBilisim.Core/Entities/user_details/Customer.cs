@@ -27,5 +27,6 @@ namespace NitelikliBilisim.Core.Entities
         public string LinkedInProfileUrl { get; set; }
 
         public virtual List<Address> Addresses { get; set; }
+        public virtual List<StudentEducationInfo> StudentEducationInfos { get; set; }
     }
 }

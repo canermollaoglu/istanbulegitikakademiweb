@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using NitelikliBilisim.App.Controllers.Base;
+using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Managers;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ComplexTypes;
@@ -16,7 +18,7 @@ using NitelikliBilisim.Support.Text;
 namespace NitelikliBilisim.App.Controllers
 {
     [Authorize]
-    public class UserProfileController : Controller
+    public class UserProfileController : BaseController
     {
         private readonly UserUnitOfWork _userUnitOfWork;
         private readonly UserManager<ApplicationUser> _userManager;
@@ -31,7 +33,7 @@ namespace NitelikliBilisim.App.Controllers
             _hostingEnvironment = hostingEnvironment;
             _fileManager = new FileUploadManager(_hostingEnvironment, "jpg", "jpeg");
         }
-
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("profil/{userId}")]
         public IActionResult Profile(string userId)
         {
@@ -66,7 +68,7 @@ namespace NitelikliBilisim.App.Controllers
                 Success = false
             });
         }
-
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("gruplarim/{ticketId?}")]
         public IActionResult MyGroup(Guid? ticketId)
         {
@@ -77,7 +79,7 @@ namespace NitelikliBilisim.App.Controllers
                 return Redirect($"/profil/{User.FindFirstValue(ClaimTypes.NameIdentifier)}");
             return View(model);
         }
-
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("faturalarim")]
         public IActionResult MyInvoices()
         {
@@ -87,7 +89,7 @@ namespace NitelikliBilisim.App.Controllers
                 return Redirect($"/profil/{userId}");
             return View(model);
         }
-
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         public IActionResult Cancellation(Guid? ticketId)
         {
             if (!ticketId.HasValue)

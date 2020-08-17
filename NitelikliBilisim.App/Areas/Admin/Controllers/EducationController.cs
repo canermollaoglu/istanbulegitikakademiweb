@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using NitelikliBilisim.App.Areas.Admin.Models.Education;
 using NitelikliBilisim.App.Areas.Admin.VmCreator.Education;
 using NitelikliBilisim.App.Lexicographer;
@@ -198,6 +199,34 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             {
                 isSuccess = true
             });
+        }
+
+        [Route("admin/education-list-fill-select")]
+        public IActionResult EducationListFillSelect()
+        {
+            try
+            {
+                List<SelectListItem> educationList = _unitOfWork.Education.Get().Select(e => new SelectListItem
+                {
+                    Text = e.Name,
+                    Value = e.Id.ToString()
+                }).ToList();
+
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    data = educationList
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Hata" + ex.Message }
+                }); ;
+            }
+            
         }
     }
 }

@@ -88,8 +88,36 @@ namespace NitelikliBilisim.App.Lexicographer
             _dictionary.Add("AdminOffDay",
                 new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Tatil Günleri Yönetimi", url: null) });
             /*Education Suggestion Criterion*/
-            _dictionary.Add("AdminEducationSuggestionCriterion",
+            _dictionary.Add("AdminEducationSuggestionCriterionManage",
               new BreadCrumbItem[] { new BreadCrumbItem(title: "Eğitimler Listesi", url: "/admin/egitimler"), new BreadCrumbItem(title: "Eğitim Öneri Kriterleri Yönetimi", url: null) });
+            _dictionary.Add("AdminEducationSuggestionCriterionList",
+              new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Eğitim Öneri Kriterleri Listesi", url: null) });
+
+            /*Student*/
+            _dictionary.Add("AdminStudentList",
+               new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Öğrenci Listele", url: null) });
+            _dictionary.Add("AdminStudentLogList",
+                 new BreadCrumbItem[] { new BreadCrumbItem(title: "Öğrenci Listesi", url: "/admin/ogrenci-yonetimi"), new BreadCrumbItem(title: "Öğrenci Hareketleri", url: null) });
+            /*Blog*/
+            _dictionary.Add("AdminBlogPostList",
+               new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Tüm Blog Yazıları", url: null) });
+            _dictionary.Add("AdminBlogPostAdd",
+               new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Yeni Yazı Ekle", url: null) });
+            _dictionary.Add("AdminBlogPostUpdate",
+                new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Yazı Güncelle", url: null) });
+            _dictionary.Add("AdminBlogPostView",
+               new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Yazı Görüntüle", url: null) });
+            /*Blog Category*/
+            _dictionary.Add("AdminBlogCategoryList",
+              new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Tüm Blog Kategorileri", url: null) });
+            _dictionary.Add("AdminBlogCategoryUpdate",
+              new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Kategori Güncelle", url: null) });
+            /* Blog Tag*/
+            _dictionary.Add("AdminBlogTagList",
+             new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Blog Etiket Listesi", url: null) });
+
+            
+
         }
 
         public static BreadCrumbItem[] ReadPart(string part)

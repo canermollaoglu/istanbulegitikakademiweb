@@ -12,6 +12,7 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public _PersonalAccountInfo PersonalAndAccountInfo { get; set; }
         public _EducationInfo EducationInfo { get; set; }
         public List<_Ticket> Tickets { get; set; }
+        public List<EducationVm> WishList { get; set; }
     }
 
     public class _PersonalAccountInfo
@@ -29,13 +30,17 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public City City { get; set; }
         public string WebSiteUrl { get; set; }
         public string LinkedInProfileUrl { get; set; }
-
     }
     public class _EducationInfo
     {
         public string EducationCenter { get; set; }
         public DateTime StartedAt { get; set; }
         public string EducationCategory { get; set; }
+
+        /// <summary>
+        /// Nbuy Eğitimi alan kullanıcılar için eğitimin kaçıncı gününde olduğu bilgisi.
+        /// </summary>
+        public int NBUYCurrentEducationDay { get; set; }
     }
     public class _Ticket
     {

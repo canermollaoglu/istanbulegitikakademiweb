@@ -4,10 +4,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Elasticsearch.Net;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Nest;
 using NitelikliBilisim.App.Controllers.Base;
+using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Models.Account;
 using NitelikliBilisim.App.Utility;
@@ -23,6 +26,7 @@ using NitelikliBilisim.Support.Enums;
 namespace NitelikliBilisim.App.Controllers
 {
     //[Authorize]
+
     public class AccountController : BaseController
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -38,6 +42,7 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [Route("kayit-ol")]
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         public IActionResult Register()
         {
             var model = new RegisterGetVm
@@ -50,6 +55,7 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [HttpPost, Route("kayit-ol")]
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         public async Task<IActionResult> Register(RegisterPostVm model)
         {
             if (!model.AcceptedTerms || !ModelState.IsValid)
@@ -114,7 +120,7 @@ namespace NitelikliBilisim.App.Controllers
                 isSuccess = true
             });
         }
-
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("giris-yap")]
         public async Task<IActionResult> Login(string returnUrl = null)
         {
@@ -124,7 +130,7 @@ namespace NitelikliBilisim.App.Controllers
             ViewBag.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             return View(new LoginViewModel() { ReturnUrl = returnUrl });
         }
-
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [HttpPost, Route("giris-yap")]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
@@ -290,7 +296,7 @@ namespace NitelikliBilisim.App.Controllers
             var educationDayCount = nbuyCategory.EducationDayCount.HasValue ? nbuyCategory.EducationDayCount.Value : 0;
             //Kullanıcının eğitime başlangıç tarihi 
             var activeDate = startDate;
-            for (int i = 0; i < nbuyCategory.EducationDayCount; i++)
+            for (int i = 0; i < educationDayCount; i++)
             {
                 activeDate = activeDate.AddDays(1);
                 if (checkWeekdays(activeDate) && checkNotHoliday(activeDate, offDays))

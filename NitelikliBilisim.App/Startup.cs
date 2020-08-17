@@ -64,7 +64,6 @@ namespace NitelikliBilisim.App
             //services.AddControllers(options => { options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()); });
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromSeconds(30);
                 options.Cookie.IsEssential = true;
             });
             services.AddCors(options=>

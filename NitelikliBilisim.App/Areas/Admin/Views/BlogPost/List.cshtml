@@ -1,0 +1,34 @@
+﻿
+@{
+    ViewData["Title"] = "Yazılar";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
+    <link href="~/vendor\devextreme\dist\css\dx.common.css" rel="stylesheet" />
+    <link href="~/vendor\devextreme\dist\css\dx.light.css" rel="stylesheet" />
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-table"></i> Yazılar
+    </div>
+    <div class="card-body">
+        <a href="@Url.Action("Add","BlogPost")" class="btn btn-success btn-sm">Yeni ekle</a>
+        <div id="blog-post-grid"></div>
+    </div>
+
+</div>
+<div class="card-footer small text-muted">Veri tarihi: @DateTime.Now</div>
+</div>
+
+@section postScripts{
+    <script src="~/js/sup/alert-sup.js"></script>
+    <script src="~/js/lib/security-support.js"></script>
+    <script src="~/vendor\devextreme\dist\js\dx.all.js"></script>
+    <script src="~/vendor\devextreme-aspnet-data\js\dx.aspnet.data.js"></script>
+    <script src="~/js/areas/admin/admin-blog-post-list.js"></script>
+}

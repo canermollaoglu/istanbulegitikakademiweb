@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Nest;
 using NitelikliBilisim.Business.Repositories;
+using NitelikliBilisim.Business.Repositories.BlogRepositories;
 using NitelikliBilisim.Core.Entities.helper;
 using NitelikliBilisim.Data;
 
@@ -17,7 +19,7 @@ namespace NitelikliBilisim.Business.UoW
         private EducatorRepository _educator;
         private EducatorSocialMediaRepository _educatorSocialMedia;
         private StudentEducationInfoRepository _studentEducationInfo;
-        private EducationSuggestionRepository _suggestionRepository;
+        private EducationSuggestionRepository _educationSuggestionRepository;
         private CustomerRepository _customerRepository;
         private BridgeEducationEducatorRepository _bridgeEducationEducatorRepository;
         private EducationGroupRepository _educationGroupRepository;
@@ -40,8 +42,16 @@ namespace NitelikliBilisim.Business.UoW
         private OffDayRepository _offDayRepository;
         private EducationDayRepository _educationDayRepository;
         private EducationSuggestionCriterionRepository _educationSuggestionCriterionRepository;
-        public UnitOfWork(NbDataContext context)
+        private WishListRepository _wishListItemRepository;
+        private SuggestionRepository _suggestionRepository;
+        private BlogPostRepository _blogPostRepository;
+        private BlogCategoryRepository _blogCategoryRepository;
+        private BlogTagRepository _blogTagRepository;
+
+        private IElasticClient _elasticClient;
+        public UnitOfWork(NbDataContext context, IElasticClient elasticClient)
         {
+            _elasticClient = elasticClient;
             _context = context;
         }
         public int Save()
@@ -49,6 +59,8 @@ namespace NitelikliBilisim.Business.UoW
             _context.EnsureAutoHistory();
             return _context.SaveChanges();
         }
+        
+        public SuggestionRepository Suggestions => _suggestionRepository ??= new SuggestionRepository(_context, _elasticClient);
         public EducationCategoryRepository EducationCategory => _educationCategoryRepository ??= new EducationCategoryRepository(_context);
 
         public EducationTagRepository EducationTag => _educationTagRepository ??= new EducationTagRepository(_context);
@@ -67,7 +79,7 @@ namespace NitelikliBilisim.Business.UoW
 
         public StudentEducationInfoRepository StudentEducationInfo => _studentEducationInfo ??= new StudentEducationInfoRepository(_context);
 
-        public EducationSuggestionRepository Suggestion => _suggestionRepository ??= new EducationSuggestionRepository(_context);
+        public EducationSuggestionRepository Suggestion => _educationSuggestionRepository ??= new EducationSuggestionRepository(_context);
 
         public CustomerRepository Customer => _customerRepository ??= new CustomerRepository(_context);
 
@@ -144,7 +156,7 @@ namespace NitelikliBilisim.Business.UoW
                 return _educatorCertificateRepository ?? (_educatorCertificateRepository = new EducatorCertificateRepository(_context));
             }
         }
-
+        
         public StateRepository State => _stateRepository ??= new StateRepository(_context);
         public CityRepository City => _cityRepository ??= new CityRepository(_context);
         public AddressRepository Address => _addressRepository ??= new AddressRepository(_context);
@@ -152,5 +164,9 @@ namespace NitelikliBilisim.Business.UoW
         public OffDayRepository OffDay => _offDayRepository ??= new OffDayRepository(_context);
         public EducationDayRepository EducationDay => _educationDayRepository ??= new EducationDayRepository(_context);
         public EducationSuggestionCriterionRepository EducationSuggestionCriterion => _educationSuggestionCriterionRepository ??= new EducationSuggestionCriterionRepository(_context);
-    }
+        public WishListRepository WishListItem => _wishListItemRepository ??= new WishListRepository(_context);
+        public BlogPostRepository BlogPost => _blogPostRepository ??= new BlogPostRepository(_context);
+        public BlogCategoryRepository BlogCategory => _blogCategoryRepository ??= new BlogCategoryRepository(_context);
+        public BlogTagRepository BlogTag => _blogTagRepository ??= new BlogTagRepository(_context);
+     }
 }

@@ -53,6 +53,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                             errors = new List<string> { "Tatil günü zaten kayıtlı." }
                         });
                     }
+                    
                     _unitOfWork.OffDay.Insert(data);
                 }
                 else
@@ -94,5 +95,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 });
             }
         }
+
+       
+
     }
 }

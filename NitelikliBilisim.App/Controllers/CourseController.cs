@@ -1,13 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using NitelikliBilisim.App.Controllers.Base;
+using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
-using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.Main.Course;
 using System;
-using NitelikliBilisim.App.Controllers.Base;
-using NitelikliBilisim.Support.Enums;
-using System.Collections.Generic;
-using System.Linq;
-using NitelikliBilisim.App.Models;
+using NitelikliBilisim.App.Filters;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -20,8 +17,9 @@ namespace NitelikliBilisim.App.Controllers
             _unitOfWork = unitOfWork;
         }
 
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("kurs-detayi/{courseId}")]
-        public IActionResult Details(Guid? courseId)
+        public IActionResult Details(Guid? courseId,string searchKey)
         {
             if (!courseId.HasValue)
                 return Redirect("/");

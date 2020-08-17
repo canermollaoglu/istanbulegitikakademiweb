@@ -1,0 +1,108 @@
+﻿@model NitelikliBilisim.Core.ViewModels.areas.admin.blog.blogpost.BlogPostUpdateGetVM
+@using NitelikliBilisim.Core.Services.Abstracts
+@inject IStorageService StorageService
+@{
+    ViewData["Title"] = "Yazı Düzenle";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@section styles{
+    <link href="~/vendor\select2/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="~/vendor\summernote/dist/summernote-bs4.css" rel="stylesheet" />
+    <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
+    <link href="~/css/lib/file-uploader.css" rel="stylesheet" />
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="box_general padding_bottom">
+    <div class="header_box version_2">
+        <h2><i class="fa fa-file"></i>Yazı Düzenle</h2>
+    </div>
+    <form id="form-update-education">
+        @Html.AntiForgeryToken()
+        <input type="text" hidden value="@Model.Id" id="input-postId" />
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label>Başlık</label>
+                    <input type="text" class="form-control" value="@Model.Title" id="input-title">
+                </div>
+                <div class="form-group">
+                    <label>Yazı</label>
+                    <div id="summernote"></div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Kategori Seçiniz</label>
+                    <select id="select-categories" class="form-control">
+                        @foreach (var category in Model.BlogCategories)
+                        {
+                            if (Model.Category.Id == category.Id)
+                            {
+                                <option selected value="@category.Id">@category.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@category.Id">@category.Name</option>
+
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Etiketlerini Seçiniz</label>
+                    <select id="select-tags" multiple="multiple" class="form-control">
+                        @foreach (var tag in Model.Tags)
+                        {
+                            <option selected>@tag.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Öne Çıkarılan Görsel</label>
+                    <div class="file-upload-container-blog-post-image" id="file-upload-container-for-banner">
+                        @{
+                            var filePath = "";
+                            try
+                            {
+                                filePath = StorageService.DownloadFile(System.IO.Path.GetFileName(Model.FeaturedImageUrl), "blog-featured-images").Result;
+                            }
+                            catch
+                            {
+                            }
+                        }
+                        <img src="@filePath" class="img-after-preview-with-blog-post-image" id="img-after-preview-for-banner" />
+                        <p><i class="fa fa-file"></i> Resim yüklemek için tıklayınız...</p>
+                        <input type="file" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <button id="btn-save" class="btn btn-sm btn-success pull-right">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section postScripts{
+    <script src="~/vendor\select2/dist/js/select2.min.js"></script>
+    <script src="~/js/sup/alert-sup.js"></script>
+    <script src="~/js/lib/security-support.js"></script>
+    <script src="~/js/lib/file-uploader.js"></script>
+    <script src="~/vendor\summernote/dist/summernote-bs4.js"></script>
+    <script src="~/vendor\summernote/dist/lang/summernote-tr-TR.min.js"></script>
+    <script>
+    /*Summernote Editor*/
+        $(document).ready(function () {
+            $('#summernote').summernote('code',`@Html.Raw(Model.Content)`);
+        });
+
+    </script>
+
+    <script src="~/js/areas/admin/admin-blog-post-update.js"></script>
+}

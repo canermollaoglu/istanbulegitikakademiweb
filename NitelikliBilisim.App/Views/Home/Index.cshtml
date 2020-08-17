@@ -66,7 +66,7 @@
                 <div class="item">
                     <div class="box_grid">
                         <figure>
-                            <a href="#0" class="wish_bt"></a>
+                            <a style="cursor:pointer;" data-education-id="@item.Base.Id" class="wish_bt btn-addwishlist"></a>
                             <a href="/kurs-detayi/@item.Base.Id">
                                 <div class="preview"><span>Detaylar</span></div>
                                 @{
@@ -87,7 +87,7 @@
                         </figure>
                         <div class="wrapper">
                             <small>@item.Base.CategoryName</small>
-                            <h3>@item.Base.Name</h3>
+                            <h3>@item.Base.Name (%@item.AppropriateCriterionCount)</h3>
                             <a href="/kurs-detayi/@item.Base.Id">
                                 <div class="desc-div"></div>
                             </a>
@@ -376,7 +376,14 @@
             for (var i = 0; i < btnBuys.length; i++) {
                 btnBuys[i].onclick = btnBuy_onClick;
             }
+
+            var btnWishLists = document.getElementsByClassName("btn-addwishlist");
+            for (var i = 0; i < btnWishLists.length; i++) {
+                btnWishLists[i].onclick = btnWishList_onClick;
+            }
+
         });
+
 
         btnIndexSearch.on("click", (e) => {
             e.preventDefault();
@@ -396,5 +403,25 @@
 
             location.href = "/sepet";
         }
+
+        function btnWishList_onClick() {
+            var educationId = this.getAttribute("data-education-id");
+
+            $.ajax({
+                url: "/Home/AddWishListItem",
+                method: "post",
+                data: {educationId},
+                success: (res) => {
+                    if (res.isSuccess) {
+                        console.log("ok");
+                    } else {
+                        //Todo
+                    }
+                }
+            });
+        }
+
+
+
     </script>
 }
