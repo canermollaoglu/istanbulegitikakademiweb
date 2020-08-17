@@ -419,8 +419,6 @@ namespace NitelikliBilisim.Business.Repositories
             int totalEducationViewCount = GetEducationViewTotalCount(result);
             model.TotalEducationSearchCount = CountOfEducationsSearchedAndViewed(result, getAllSearching);
 
-
-
             if (result.IsValid && result.Documents != null && result.Documents.Count > 0)
             {
                 foreach (var log in result.Documents)
@@ -454,7 +452,7 @@ namespace NitelikliBilisim.Business.Repositories
                         }
                     }
                     //Direkt incelenmiş eğitimler
-                    else
+                    if (log.Parameters != null && log.Parameters.Any(x => x.ParameterName == "courseId"))
                     {
                         string Id = JsonConvert.DeserializeObject<string>(log.Parameters.First(x => x.ParameterName == "courseId").ParameterValue);
                         if (model.ViewingEducations.Any(x => x.EducationId == Id))
@@ -487,8 +485,35 @@ namespace NitelikliBilisim.Business.Repositories
                 }
             }
 
+
+            //model.EducationTotalPoint = CalculateTotalPoint(model.SearchedEducations, model.ViewingEducations);
+
             return model;
         }
+        /// <summary>
+        /// Aranan ve incelenen eğitimlerin ortalamasını alan method.+
+        /// </summary>
+        /// <param name="searchedEducations"></param>
+        /// <param name="viewingEducations"></param>
+        /// <returns></returns>
+        //private List<EducationPoint> CalculateTotalPoint(List<SearchedEducation> searchedEducations, List<ViewingEducation> viewingEducations)
+        //{
+        //    List<EducationPoint> retVal = new List<EducationPoint>();
+        //    if (searchedEducations.Count>viewingEducations.Count)
+        //    {
+        //        foreach (var education in searchedEducations)
+        //        {
+        //            retVal.Add(new EducationPoint
+        //            {
+        //                EducationId = education.EducationDetails
+        //            })
+        //        }
+        //    }
+        //    else
+        //    {
+
+        //    }
+        //}
 
         private int CountOfEducationsSearchedAndViewed(ISearchResponse<TransactionLog> result, Dictionary<string, int> getAllSearching)
         {
@@ -598,18 +623,21 @@ namespace NitelikliBilisim.Business.Repositories
             return allSearchings;
         }
     }
-
-
-
-
-
 }
 public class EducationDetailLog
 {
     public List<SearchedEducation> SearchedEducations { get; set; }
     public List<ViewingEducation> ViewingEducations { get; set; }
+    public List<EducationPoint> EducationTotalPoint { get; set; }
     public int TotalEducationViewCount { get; set; }
     public int TotalEducationSearchCount { get; set; }
+}
+
+public class EducationPoint
+{
+    public Guid EducationId { get; set; }
+    public double Point { get; set; }
+
 }
 
 public class SearchedEducation
