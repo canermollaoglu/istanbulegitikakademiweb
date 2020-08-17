@@ -19,7 +19,6 @@ namespace NitelikliBilisim.Business.UoW
         private EducatorRepository _educator;
         private EducatorSocialMediaRepository _educatorSocialMedia;
         private StudentEducationInfoRepository _studentEducationInfo;
-        private EducationSuggestionRepository _educationSuggestionRepository;
         private CustomerRepository _customerRepository;
         private BridgeEducationEducatorRepository _bridgeEducationEducatorRepository;
         private EducationGroupRepository _educationGroupRepository;
@@ -78,8 +77,6 @@ namespace NitelikliBilisim.Business.UoW
         public EducatorSocialMediaRepository EducatorSocialMedia => _educatorSocialMedia ??= new EducatorSocialMediaRepository(_context);
 
         public StudentEducationInfoRepository StudentEducationInfo => _studentEducationInfo ??= new StudentEducationInfoRepository(_context);
-
-        public EducationSuggestionRepository Suggestion => _educationSuggestionRepository ??= new EducationSuggestionRepository(_context);
 
         public CustomerRepository Customer => _customerRepository ??= new CustomerRepository(_context);
 
