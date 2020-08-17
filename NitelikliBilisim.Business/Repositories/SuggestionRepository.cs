@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore.Internal;
 using Nest;
 using Newtonsoft.Json;
 using NitelikliBilisim.Core.ComplexTypes;
-using NitelikliBilisim.Core.ComplexTypes.TransactionLogModels;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Enums.educations;
 using NitelikliBilisim.Core.ViewModels;
+using NitelikliBilisim.Core.ViewModels.Suggestion;
 using NitelikliBilisim.Data;
 using NitelikliBilisim.Support.Enums;
 using System;
@@ -403,13 +403,12 @@ namespace NitelikliBilisim.Business.Repositories
 
         }
 
-
         public EducationDetailLog GetEducationDetailLogs(string userId)
         {
 
             EducationDetailLog model = new EducationDetailLog();
             model.ViewingEducations = new List<ViewingEducation>();
-            model.SearchedEducations = new List<SearchedEducation>();
+            model.SearchedEducations = new List<SearchedEducationList>();
 
             Dictionary<string, int> getAllSearching = GetAllSearchedKeyAndSearchCount(userId);
 
@@ -434,7 +433,7 @@ namespace NitelikliBilisim.Business.Repositories
                             var eDetail = new EducationDetail();
                             eDetail.Point = CalculateSearchedKeyPoint(totalKeySearched, model.TotalEducationSearchCount);
                             eDetail.Id = Id;
-                            SearchedEducation ed = model.SearchedEducations.First(x => x.Key == key);
+                            SearchedEducationList ed = model.SearchedEducations.First(x => x.Key == key);
                             ed.ViewedCount++;
                             ed.EducationDetails.Add(eDetail);
                         }
@@ -444,7 +443,7 @@ namespace NitelikliBilisim.Business.Repositories
                             eDetail.Point = CalculateSearchedKeyPoint(totalKeySearched, model.TotalEducationSearchCount);
                             eDetail.Id = Id;
 
-                            var sE = new SearchedEducation();
+                            var sE = new SearchedEducationList();
                             sE.Key = key;
                             sE.ViewedCount = 1;
                             sE.EducationDetails.Add(eDetail);
@@ -585,7 +584,6 @@ namespace NitelikliBilisim.Business.Repositories
             return result;
         }
 
-
         #endregion
 
         private Dictionary<string, int> GetAllSearchedKeyAndSearchCount(string userId)
@@ -624,45 +622,7 @@ namespace NitelikliBilisim.Business.Repositories
         }
     }
 }
-public class EducationDetailLog
-{
-    public List<SearchedEducation> SearchedEducations { get; set; }
-    public List<ViewingEducation> ViewingEducations { get; set; }
-    public List<EducationPoint> EducationTotalPoint { get; set; }
-    public int TotalEducationViewCount { get; set; }
-    public int TotalEducationSearchCount { get; set; }
-}
 
-public class EducationPoint
-{
-    public Guid EducationId { get; set; }
-    public double Point { get; set; }
 
-}
 
-public class SearchedEducation
-{
-    public string Key { get; set; }
-    public int ViewedCount { get; set; }
-    public int SearchedCount { get; set; }
-    public List<EducationDetail> EducationDetails { get; set; } = new List<EducationDetail>();
-}
 
-public class ViewingEducation
-{
-    public string EducationId { get; set; }
-    public int ViewingCount { get; set; }
-    public double Point { get; set; }
-}
-
-public class EducationDetail
-{
-    public string Id { get; set; }
-    public double Point { get; set; }
-}
-
-public class TotalViewAndSearchCountModel
-{
-    public int TotalEducationViewCount { get; set; }
-    public int TotalEducationSearchCount { get; set; }
-}
