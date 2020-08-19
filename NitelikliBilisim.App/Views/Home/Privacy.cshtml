@@ -88,3 +88,25 @@
 
     </table>
 }
+<br />
+<br />
+<h4>Toplam Puanlar</h4>
+<table>
+    <thead>
+        <tr>
+            <td>Eğitim Id</td>
+            <td>Toplam Puan</td>
+        </tr>
+    </thead>
+    @foreach (var item in ((EducationDetailLog)ViewData["edl"]).EducationTotalPoint)
+    {
+        <tr>
+            <td>
+                 @item.EducationId
+            </td>
+            <td>
+                @item.Point
+            </td>
+        </tr>
+    }
+</table>

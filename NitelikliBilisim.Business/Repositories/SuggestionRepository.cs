@@ -409,7 +409,7 @@ namespace NitelikliBilisim.Business.Repositories
             EducationDetailLog model = new EducationDetailLog();
             model.ViewingEducations = new List<ViewingEducation>();
             model.SearchedEducations = new List<SearchedEducationList>();
-
+            model.EducationTotalPoint = new List<EducationPoint>();
             Dictionary<string, int> getAllSearching = GetAllSearchedKeyAndSearchCount(userId);
 
             #region İncelenmiş Eğitimler  | Aranılarak incelenmiş ve direkt incelenmiş olarak ikiye ayrılıyor.
@@ -451,9 +451,9 @@ namespace NitelikliBilisim.Business.Repositories
                         }
                     }
                     //Direkt incelenmiş eğitimler
-                    if (log.Parameters != null && log.Parameters.Any(x => x.ParameterName == "courseId"))
+                    if (log.Parameters != null && log.Parameters.Any(x => x.ParameterName == "courseId") && !log.Parameters.Any(x=>x.ParameterName == "searchKey"))
                     {
-                        string Id = JsonConvert.DeserializeObject<string>(log.Parameters.First(x => x.ParameterName == "courseId").ParameterValue);
+                        Guid Id = JsonConvert.DeserializeObject<Guid>(log.Parameters.First(x => x.ParameterName == "courseId").ParameterValue);
                         if (model.ViewingEducations.Any(x => x.EducationId == Id))
                         {
                             ViewingEducation current = model.ViewingEducations.First(x => x.EducationId == Id);
@@ -485,7 +485,7 @@ namespace NitelikliBilisim.Business.Repositories
             }
 
 
-            //model.EducationTotalPoint = CalculateTotalPoint(model.SearchedEducations, model.ViewingEducations);
+            model.EducationTotalPoint = CalculateTotalPoint(model.SearchedEducations, model.ViewingEducations);
 
             return model;
         }
@@ -495,24 +495,30 @@ namespace NitelikliBilisim.Business.Repositories
         /// <param name="searchedEducations"></param>
         /// <param name="viewingEducations"></param>
         /// <returns></returns>
-        //private List<EducationPoint> CalculateTotalPoint(List<SearchedEducation> searchedEducations, List<ViewingEducation> viewingEducations)
-        //{
-        //    List<EducationPoint> retVal = new List<EducationPoint>();
-        //    if (searchedEducations.Count>viewingEducations.Count)
-        //    {
-        //        foreach (var education in searchedEducations)
-        //        {
-        //            retVal.Add(new EducationPoint
-        //            {
-        //                EducationId = education.EducationDetails
-        //            })
-        //        }
-        //    }
-        //    else
-        //    {
+        private List<EducationPoint> CalculateTotalPoint(List<SearchedEducationList> searchedEducations, List<ViewingEducation> viewingEducations)
+        {
+            List<EducationPoint> retVal = new List<EducationPoint>();
+            if (viewingEducations.Count>searchedEducations.Count)
+            {
+                foreach (var education in viewingEducations)
+                {
+                    if (retVal.Any(x => x.EducationId == education.EducationId))
+                    {
+                        retVal.First(x => x.EducationId == education.EducationId).Point += education.Point;
+                    }
+                    else
+                    {
+                        retVal.Add(new EducationPoint
+                        {
+                            EducationId = education.EducationId,
+                            Point = education.Point
+                        });
+                    }
+                }
+            }
 
-        //    }
-        //}
+            return retVal;
+        }
 
         private int CountOfEducationsSearchedAndViewed(ISearchResponse<TransactionLog> result, Dictionary<string, int> getAllSearching)
         {
