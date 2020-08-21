@@ -18,7 +18,7 @@ namespace NitelikliBilisim.Business.Repositories
 
         public Invoice GetByIdWithOnlinePaymentInfos(Guid invoiceId)
         {
-            return _context.Invoices.Include(x => x.OnlinePaymentInfos).First(x => x.Id == invoiceId);
+            return _context.Invoices.Include(x => x.OnlinePaymentInfo).First(x => x.Id == invoiceId);
         }
     }
 }

@@ -137,7 +137,7 @@ namespace NitelikliBilisim.Business.Repositories
             var invoices = _context.Invoices
                 .Include(x => x.InvoiceDetails)
                 .ThenInclude(x => x.OnlinePaymentDetailInfo)
-                .Include(x => x.OnlinePaymentInfos)
+                .Include(x => x.OnlinePaymentInfo)
                 .Where(x => x.CustomerId == userId);
             foreach (var invoice in invoices)
             {

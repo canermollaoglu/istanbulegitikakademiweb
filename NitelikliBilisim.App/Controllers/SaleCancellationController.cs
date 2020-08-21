@@ -39,7 +39,7 @@ namespace NitelikliBilisim.App.Controllers
         {
             var invoice = _unitOfWork.Invoice.GetByIdWithOnlinePaymentInfos(data.InvoiceId);
             var conversationId = Guid.NewGuid().ToString();
-            var cancelRequest = _paymentService.CreateCancelRequest(conversationId, invoice.OnlinePaymentInfos[0].PaymentId, "", RefundReason.BUYER_REQUEST, data.UserDescription);
+            var cancelRequest = _paymentService.CreateCancelRequest(conversationId, invoice.OnlinePaymentInfo.PaymentId, "", RefundReason.BUYER_REQUEST, data.UserDescription);
 
             if (cancelRequest.Status == "success")
             {

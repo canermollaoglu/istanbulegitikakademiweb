@@ -72,13 +72,13 @@
                                                             else
                                                             {
                                                                 <td>@details.Group.StartDateText tarihinde grup <b class="text-warning">başlayacaktır</b></td>
-                                                                <td><button data-ticket-id="@details.Group.TicketId" @(details.IsCancelled ? "disabled" : "") id="btn-refund-request" class="btn btn-danger text-light">İade Talebi</button></td>
+                                                                <td><button data-invoice-details-id="@details.Group.TicketId" @(details.IsCancelled ? "disabled" : "")  class="btn btn-danger text-light btn-refund-request">İade Talebi</button></td>
                                                             }
                                                         }
                                                         else
                                                         {
                                                             <td>Gruba atanmamıştır</td>
-                                                            <td><button @(details.IsCancelled ? "disabled" : "") class="btn btn-danger text-light">İade Talebi</button></td>
+                                                            <td><button data-invoice-details-id="@details.InvoiceDetailsId" @(details.IsCancelled ? "disabled" : "")  class="btn btn-danger text-light btn-refund-request">İade Talebi</button></td>
                                                         }
                                                     </tr>
                                                 }
@@ -120,7 +120,7 @@
         var btnCancelSale = $(".btn-cancel-sale");
         var btnModalYes = $("#btn-modal-yes");
         var btnModalNo = $("#btn-modal-no");
-        var btnRefundRequest = $("#btn-refund-request");
+        var btnRefundRequest = $(".btn-refund-request");
         var confirmCancelModal = $("#confirm-cancel-modal");
 
         btnCancelSale.on("click", btnCancelSale_onClick);
@@ -155,7 +155,8 @@
             confirmCancelModal.modal('hide');
         }
         function btnRefundRequest_onClick() {
-            var ticketId = $(this).data('ticket-id');
+            alert("Ok");
+            var ticketId = $(this).data('invoice-details-id');
             window.location.href = `/iptal-formu/${ticketId}`;
         }
     </script>

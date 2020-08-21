@@ -36,6 +36,6 @@ namespace NitelikliBilisim.Core.Entities
         public string UpdatedIp { get; set; }
         
         public virtual List<InvoiceDetail> InvoiceDetails { get; set; }
-        public virtual List<OnlinePaymentInfo> OnlinePaymentInfos{ get; set; }
+        public virtual OnlinePaymentInfo OnlinePaymentInfo { get; set; }
     }
 }
