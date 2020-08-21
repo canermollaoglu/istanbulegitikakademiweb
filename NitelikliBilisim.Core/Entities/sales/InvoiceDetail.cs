@@ -19,5 +19,6 @@ namespace NitelikliBilisim.Core.Entities
         [ForeignKey("Invoice")]
         public Guid InvoiceId { get; set; }
         public virtual Invoice Invoice { get; set; }
+        public virtual OnlinePaymentDetailsInfo OnlinePaymentDetailInfo { get; set; }
     }
 }

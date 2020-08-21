@@ -2,7 +2,6 @@
 using Nest;
 using NitelikliBilisim.Business.Repositories;
 using NitelikliBilisim.Business.Repositories.BlogRepositories;
-using NitelikliBilisim.Core.Entities.helper;
 using NitelikliBilisim.Data;
 
 namespace NitelikliBilisim.Business.UoW
@@ -46,6 +45,7 @@ namespace NitelikliBilisim.Business.UoW
         private BlogPostRepository _blogPostRepository;
         private BlogCategoryRepository _blogCategoryRepository;
         private BlogTagRepository _blogTagRepository;
+        private InvoiceRepository _invoiceRepository;
 
         private IElasticClient _elasticClient;
         public UnitOfWork(NbDataContext context, IElasticClient elasticClient)
@@ -58,7 +58,7 @@ namespace NitelikliBilisim.Business.UoW
             _context.EnsureAutoHistory();
             return _context.SaveChanges();
         }
-        
+        public InvoiceRepository Invoice => _invoiceRepository ??= new InvoiceRepository(_context);
         public SuggestionRepository Suggestions => _suggestionRepository ??= new SuggestionRepository(_context, _elasticClient);
         public EducationCategoryRepository EducationCategory => _educationCategoryRepository ??= new EducationCategoryRepository(_context);
 
