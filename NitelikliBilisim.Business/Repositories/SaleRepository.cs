@@ -148,17 +148,16 @@ namespace NitelikliBilisim.Business.Repositories
 
             return !(isGroupStarted || DateTime.Now.Date > invoiceDate.Date);
         }
-        public async void RefundPayment(Guid ticketId)
+        public async void RefundPayment(Guid invoiceDetailId)
         {
-            var invoiceDetailsId = _context.Tickets.First(x => x.Id == ticketId).InvoiceDetailsId;
-            var onlinePaymentDetailsInfo = _context.OnlinePaymentDetailsInfos.First(x => x.Id == invoiceDetailsId);
+            var onlinePaymentDetailsInfo = _context.OnlinePaymentDetailsInfos.First(x => x.Id == invoiceDetailId);
 
             onlinePaymentDetailsInfo.IsCancelled = true;
             onlinePaymentDetailsInfo.CancellationDate = DateTime.Now;
 
             _context.SaveChanges();
 
-            await Auto__UnassignTickets(new List<Guid>() { invoiceDetailsId });
+            await Auto__UnassignTickets(new List<Guid>() { invoiceDetailId });
         }
         public async void CancelPayment(Guid invoiceId)
         {

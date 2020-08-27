@@ -25,10 +25,10 @@ namespace NitelikliBilisim.App.Controllers
             _paymentService = paymentService;
         }
 
-        [Route("iptal-formu/{ticketId?}")]
-        public IActionResult CancellationForm(Guid? ticketId)
+        [Route("iptal-formu/{invoiceDetailId?}")]
+        public IActionResult CancellationForm(Guid? invoiceDetailId)
         {
-            if (!ticketId.HasValue)
+            if (!invoiceDetailId.HasValue)
                 return Redirect($"/profil/{User.FindFirstValue(ClaimTypes.NameIdentifier)}");
 
             return View();
@@ -63,14 +63,14 @@ namespace NitelikliBilisim.App.Controllers
         public IActionResult Refund(CancellationFormPostVm data)
         {
             var conversationId = Guid.NewGuid().ToString();
-            var invoiceDetail = _unitOfWork.InvoiceDetail.GetByIdWithOnlinePaymentDetailInfo(data.TicketId);
+            var invoiceDetail = _unitOfWork.InvoiceDetail.GetByIdWithOnlinePaymentDetailInfo(data.InvoiceDetailId.Value);
 
             
             var refundRequest = _paymentService.CreateRefundRequest(conversationId, invoiceDetail.OnlinePaymentDetailInfo.TransactionId, invoiceDetail.OnlinePaymentDetailInfo.Price, "", RefundReason.BUYER_REQUEST, data.UserDescription);
 
             if(refundRequest.Status == "success")
             {
-                _unitOfWork.Sale.RefundPayment(data.TicketId);
+                _unitOfWork.Sale.RefundPayment(data.InvoiceDetailId.Value);
 
                 return Json(new ResponseData
                 {
