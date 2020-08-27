@@ -64,7 +64,11 @@ namespace NitelikliBilisim.App.Controllers
         {
             var conversationId = Guid.NewGuid().ToString();
             var invoiceDetail = _unitOfWork.InvoiceDetail.GetByIdWithOnlinePaymentDetailInfo(data.InvoiceDetailId.Value);
-
+            if (invoiceDetail.IsUsedAsTicket)
+            {
+                var ticket = _unitOfWork.Ticket.GetByInvoiceDetailId(invoiceDetail.Id);
+                //TODO saatlik ücret hesaplaması yapılarak kalan günler için iade edilecek tutar bulunacak.
+            }
             
             var refundRequest = _paymentService.CreateRefundRequest(conversationId, invoiceDetail.OnlinePaymentDetailInfo.TransactionId, invoiceDetail.OnlinePaymentDetailInfo.Price, "", RefundReason.BUYER_REQUEST, data.UserDescription);
 

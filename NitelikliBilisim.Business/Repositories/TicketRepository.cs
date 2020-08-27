@@ -1,4 +1,6 @@
-﻿using NitelikliBilisim.Core.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_groups;
 using NitelikliBilisim.Data;
 using System;
@@ -12,6 +14,14 @@ namespace NitelikliBilisim.Business.Repositories
         public TicketRepository(NbDataContext context) : base(context)
         {
             _context = context;
+        }
+
+        public Ticket GetByInvoiceDetailId(Guid invoiceDetailId)
+        {
+            var ticket = _context.Tickets.Include(x => x.Education).First(x => x.InvoiceDetailsId == invoiceDetailId);
+            
+            return ticket;
+
         }
 
         public void AssignTicket(AssignPostVm data)
