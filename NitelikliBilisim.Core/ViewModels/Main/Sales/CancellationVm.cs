@@ -8,6 +8,10 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Sales
     {
         public Guid TicketId { get; set; }
         public Guid InvoiceId { get; set; }
+        /// <summary>
+        /// Tekil İptallerde kullanılmak üzere oluşturulmuştur.
+        /// </summary>
+        public Guid? InvoiceDetailId { get; set; }
         public string UserDescription { get; set; }
     }
 }

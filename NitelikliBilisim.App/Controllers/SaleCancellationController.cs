@@ -63,7 +63,10 @@ namespace NitelikliBilisim.App.Controllers
         public IActionResult Refund(CancellationFormPostVm data)
         {
             var conversationId = Guid.NewGuid().ToString();
-            var refundRequest = _paymentService.CreateRefundRequest(conversationId, "", 0m, "", RefundReason.BUYER_REQUEST, data.UserDescription);
+            var invoiceDetail = _unitOfWork.InvoiceDetail.GetByIdWithOnlinePaymentDetailInfo(data.TicketId);
+
+            
+            var refundRequest = _paymentService.CreateRefundRequest(conversationId, invoiceDetail.OnlinePaymentDetailInfo.TransactionId, invoiceDetail.OnlinePaymentDetailInfo.Price, "", RefundReason.BUYER_REQUEST, data.UserDescription);
 
             if(refundRequest.Status == "success")
             {

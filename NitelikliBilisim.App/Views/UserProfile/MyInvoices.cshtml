@@ -16,7 +16,7 @@
                     <div class="row">
                         <div class="offset-md-2 col-md-8">
                             <table class="table table-bordered">
-                                @if (item.Invoice.IsEligibleToFullyCancel)
+                                @if (DateTime.Now.Date==item.Invoice.CreatedDate.Date)
                                 {
                                     <tr>
                                         <td colspan="2"><button data-invoice-id="@item.Invoice.InvoiceId" class="btn btn-danger text-light btn-cancel-sale">Tüm satışı iptal et</button></td>
@@ -60,27 +60,29 @@
                                                 @foreach (var details in item.InvoiceDetails)
                                                 {
                                                     var rowStyle = details.IsCancelled ? "text-danger" : "text-success";
-                                                    <tr class="@rowStyle">
-                                                        <td>@details.Education</td>
-                                                        <td>@details.PaidPriceText</td>
-                                                        @if (details.Group != null)
+                                                <tr class="@rowStyle">
+                                                    <td>@details.Education</td>
+                                                    <td>@details.PaidPriceText</td>
+                                                    @if (details.Group != null)
+                                                    {
+                                                        if (details.Group.IsGroupStarted)
                                                         {
-                                                            if (details.Group.IsGroupStarted)
-                                                            {
-                                                                <td>@details.Group.StartDateText tarihinde grup <b class="text-success">başlamıştır</b></td>
-                                                            }
-                                                            else
-                                                            {
-                                                                <td>@details.Group.StartDateText tarihinde grup <b class="text-warning">başlayacaktır</b></td>
-                                                                <td><button data-invoice-details-id="@details.Group.TicketId" @(details.IsCancelled ? "disabled" : "")  class="btn btn-danger text-light btn-refund-request">İade Talebi</button></td>
-                                                            }
+                                                            <td>@details.Group.StartDateText tarihinde grup <b class="text-success">başlamıştır</b></td>
+                                                            <td><button data-invoice-details-id="@details.InvoiceDetailsId" @(details.IsCancelled ? "disabled" : "") class="btn btn-danger text-light btn-refund-request">İade Talebi</button></td>
+
                                                         }
                                                         else
                                                         {
-                                                            <td>Gruba atanmamıştır</td>
-                                                            <td><button data-invoice-details-id="@details.InvoiceDetailsId" @(details.IsCancelled ? "disabled" : "")  class="btn btn-danger text-light btn-refund-request">İade Talebi</button></td>
+                                                            <td>@details.Group.StartDateText tarihinde grup <b class="text-warning">başlayacaktır</b></td>
+                                                            <td><button data-invoice-details-id="@details.InvoiceDetailsId" @(details.IsCancelled ? "disabled" : "") class="btn btn-danger text-light btn-refund-request">İade Talebi</button></td>
                                                         }
-                                                    </tr>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td>Gruba atanmamıştır</td>
+                                                        <td><button data-invoice-details-id="@details.InvoiceDetailsId" @(details.IsCancelled ? "disabled" : "") class="btn btn-danger text-light btn-refund-request">İade Talebi</button></td>
+                                                    }
+                                                </tr>
                                                 }
                                             </tbody>
                                         </table>
@@ -155,9 +157,8 @@
             confirmCancelModal.modal('hide');
         }
         function btnRefundRequest_onClick() {
-            alert("Ok");
-            var ticketId = $(this).data('invoice-details-id');
-            window.location.href = `/iptal-formu/${ticketId}`;
+            var invoiceDetailId = $(this).data('invoice-details-id');
+            window.location.href = `/iptal-formu/${invoiceDetailId}`;
         }
     </script>
 }
