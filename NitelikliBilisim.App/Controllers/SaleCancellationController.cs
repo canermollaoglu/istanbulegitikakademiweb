@@ -66,7 +66,7 @@ namespace NitelikliBilisim.App.Controllers
             var conversationId = Guid.NewGuid().ToString();
             var invoiceDetail = _unitOfWork.InvoiceDetail.GetByIdWithOnlinePaymentDetailInfo(data.InvoiceDetailId.Value);
             var ticket = _unitOfWork.Ticket.GetByInvoiceDetailId(invoiceDetail.Id);
-            if (ticket!=null)
+            if (ticket!=null && ticket.IsUsed)
             {//Kısmi İptal (Kalan gün)
                 var education = ticket.Education;
                 decimal dailyPrice = education.NewPrice.Value / education.Days;
