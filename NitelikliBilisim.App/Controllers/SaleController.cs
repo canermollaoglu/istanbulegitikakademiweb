@@ -100,9 +100,10 @@ namespace NitelikliBilisim.App.Controllers
         [HttpPost,Route("getinstallmentinfo")]
         public IActionResult GetInstallmentInfo(InstallmentInfoVm data)
         {
+            var binNumber = data.BinNumber.Replace(" ", "").Substring(0, 6);
             InstallmentInfo info = _paymentService.CheckInstallment(
                 conversationId: data.ConversationId.ToString(),
-                binNumber: Regex.Replace(data.BinNumber, @"\s+", ""),
+                binNumber: binNumber,
                 price: GetPriceSumForCartItems(data.CartItems)
                 );
             return Json(new ResponseModel

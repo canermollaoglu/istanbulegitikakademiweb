@@ -18,6 +18,7 @@ var inputCvc = $("#input-cvc");
 var inputCompanyName = $("#input-company-name");
 var inputTaxNo = $("#input-tax-no");
 var inputTaxOffice = $("#input-tax-office");
+var inputInstallment = $("#_installmentCount"); 
 var isDistantSalesAgreementConfirmed = document.getElementById("_is-distant-sales-agreement-confirmed");
 var isIndividual = document.getElementById("_is-individual");
 var chkConfirmDistantSalesAgreement = document.getElementById("chk-confirm-distant-sales");
@@ -37,6 +38,7 @@ $("input[name='customer-type']").on('ifToggled', function () {
 $("#chk-confirm-distant-sales").on('ifToggled', function () {
     chkConfirmDistantSalesAgreement_onChange();
 });
+
 
 /* events */
 function document_onLoad() {
@@ -59,6 +61,11 @@ function customerType_onChange() {
         isIndividual.value = false;
     }
 }
+function installmentNumber_onChange() {
+    var retVal = $("input[name='installmentNumber']:checked").val();
+    inputInstallment.val(retVal);
+}
+
 function selectProvinces_onChange() {
     getDistricts($(this).val());
 }
@@ -69,6 +76,7 @@ function chkConfirmDistantSalesAgreement_onChange() {
 
 function btnBuy_onClick() {
     btnBuy.off("click");
+    debugger;
     var corporateInvoiceInfo = null;
     if (!chkCustomerTypeIndividual.checked)
         corporateInvoiceInfo = {
@@ -77,6 +85,8 @@ function btnBuy_onClick() {
             TaxOffice: inputTaxOffice.val()
         };
 
+    var installementCount = inputInstallment.val();
+    console.log(installementCount);
     var tokenVerifier = new SecuritySupport.TokenVerifier();
     var cart = new CartSupport.Cart();
     var data = tokenVerifier.addToken("form-buy", {
@@ -93,6 +103,9 @@ function btnBuy_onClick() {
             Address: inputAddress.val(),
             Phone: inputPhone.val(),
             IsIndividual: isIndividual
+        },
+        PaymentInfo: {
+            Installments: inputInstallment.val()
         },
         CorporateInvoiceInfo: corporateInvoiceInfo,
         IsDistantSalesAgreementConfirmed: isDistantSalesAgreementConfirmed,
@@ -111,9 +124,9 @@ function btnBuy_onClick() {
 }
 
 
-$('#input-card-number').keyup(function () {
+$('#input-card-number').focusout(function () {
     var inputVal = this.value;
-    if (inputVal.length == 7) {
+    if (inputVal.length > 7) {
         loadInstallmentsInfo(inputVal);
     }
 });
@@ -134,6 +147,9 @@ function loadInstallmentsInfo(inputVal) {
                 if (res.data.status == "success") {
                     installmentInfoDiv.empty();
                     createInstallmentsDiv(res.data);
+                    $("input[name='installmentNumber']").on('change', function () {
+                        installmentNumber_onChange();
+                    });
                 }
             }
         }
@@ -142,10 +158,10 @@ function loadInstallmentsInfo(inputVal) {
 
 
 function createInstallmentsDiv(data) {
-    var content = "";
+    var content = '<div class="form_title"><h3>Taksit Bilgileri</h3></div>';
     if (data.length != 0)
         $.each(data.installmentDetails[0].installmentPrices, function (index, info) {
-            content += `<p><input type="radio" name="installmenNumber" value="${info.installmentNumber}"> ${info.installmentNumber} Taksit :  ${info.price} X ${info.installmentNumber}  = ${info.totalPrice}</p>`
+            content += `<p><input type="radio" name="installmentNumber" value="${info.installmentNumber}"> ${info.installmentNumber} Taksit :  ${info.price} X ${info.installmentNumber}  = ${info.totalPrice}</p>`
         });
    installmentInfoDiv.append(content);
 }
