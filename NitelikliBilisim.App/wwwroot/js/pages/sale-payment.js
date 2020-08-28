@@ -25,6 +25,7 @@ var chkCustomerTypeIndividual = document.getElementById("chk-customer-type-indiv
 var divCorporateField = $("#div-corporate-field");
 var cartItems = $("#_cart-items");
 var btnBuy = $("#btn-buy");
+var installmentInfoDiv = $("#installmentInfo");
 
 /* assignments */
 $(document).ready(document_onLoad);
@@ -108,6 +109,47 @@ function btnBuy_onClick() {
         complete: () => { btnBuy.on("click", btnBuy_onClick); }
     });
 }
+
+
+$('#input-card-number').keyup(function () {
+    var inputVal = this.value;
+    if (inputVal.length == 7) {
+        loadInstallmentsInfo(inputVal);
+    }
+});
+
+function loadInstallmentsInfo(inputVal) {
+    var cart = new CartSupport.Cart();
+    var data = {
+        BinNumber: inputVal,
+        CartItems: cart.getItems()
+    };
+
+    $.ajax({
+        url: "/getinstallmentinfo",
+        method: "post",
+        data: data,
+        success: (res) => {
+            if (res.isSuccess) {
+                if (res.data.status == "success") {
+                    installmentInfoDiv.empty();
+                    createInstallmentsDiv(res.data);
+                }
+            }
+        }
+    });
+}
+
+
+function createInstallmentsDiv(data) {
+    var content = "";
+    if (data.length != 0)
+        $.each(data.installmentDetails[0].installmentPrices, function (index, info) {
+            content += `<p><input type="radio" name="installmenNumber" value="${info.installmentNumber}"> ${info.installmentNumber} Taksit :  ${info.price} X ${info.installmentNumber}  = ${info.totalPrice}</p>`
+        });
+   installmentInfoDiv.append(content);
+}
+
 
 /* functions */
 function getCartItems() {

@@ -16,6 +16,7 @@ using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.PaymentModels;
 using NitelikliBilisim.Core.Services.Payments;
 using NitelikliBilisim.Core.ViewModels.Cart;
+using NitelikliBilisim.Core.ViewModels.Main.Sales;
 using NitelikliBilisim.Core.ViewModels.Sales;
 using NitelikliBilisim.Notificator.Services;
 using System;
@@ -24,6 +25,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Controllers
@@ -95,6 +97,21 @@ namespace NitelikliBilisim.App.Controllers
 
             return View();
         }
+        [HttpPost,Route("getinstallmentinfo")]
+        public IActionResult GetInstallmentInfo(InstallmentInfoVm data)
+        {
+            InstallmentInfo info = _paymentService.CheckInstallment(
+                conversationId: data.ConversationId.ToString(),
+                binNumber: Regex.Replace(data.BinNumber, @"\s+", ""),
+                price: GetPriceSumForCartItems(data.CartItems)
+                );
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = info
+            });
+        }
+
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [HttpPost, ValidateAntiForgeryToken, Route("pay")]
         public async Task<IActionResult> Pay(PayData data)
@@ -160,7 +177,7 @@ namespace NitelikliBilisim.App.Controllers
             var city = cityTowns.data.FirstOrDefault(x => x._id == cityId);
             data.InvoiceInfo.City = city.name;
             data.InvoiceInfo.Town = city.towns.FirstOrDefault(x => x._id == townId).name;
-            
+
             var result = manager.Pay(_unitOfWork, data);
 
             if (result.TransactionType == TransactionType.Normal)
@@ -205,7 +222,7 @@ namespace NitelikliBilisim.App.Controllers
                     return Redirect("/secure3d");
                 }
             }
-            
+
             return Redirect("/");
         }
 
