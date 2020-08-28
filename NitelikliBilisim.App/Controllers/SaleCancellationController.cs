@@ -60,11 +60,11 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [HttpPost, Route("iade")]
-        public IActionResult Refund(CancellationFormPostVm data)
+        public IActionResult Refund(RefundVm data)
         {
             decimal refundPrice = 0;
             var conversationId = Guid.NewGuid().ToString();
-            var invoiceDetail = _unitOfWork.InvoiceDetail.GetByIdWithOnlinePaymentDetailInfo(data.InvoiceDetailId.Value);
+            var invoiceDetail = _unitOfWork.InvoiceDetail.GetByIdWithOnlinePaymentDetailInfo(data.InvoiceDetailId);
             var ticket = _unitOfWork.Ticket.GetByInvoiceDetailId(invoiceDetail.Id);
             if (ticket!=null && ticket.IsUsed)
             {//Kısmi İptal (Kalan gün)
@@ -82,7 +82,7 @@ namespace NitelikliBilisim.App.Controllers
 
             if (refundRequest.Status == "success")
             {
-                _unitOfWork.Sale.RefundPayment(data.InvoiceDetailId.Value);
+                _unitOfWork.Sale.RefundPayment(data.InvoiceDetailId);
 
                 return Json(new ResponseData
                 {

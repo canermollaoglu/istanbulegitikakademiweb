@@ -4,9 +4,9 @@ using System.Text;
 
 namespace NitelikliBilisim.Core.ViewModels.Main.Sales
 {
-    public class CancellationFormPostVm
+    public class RefundVm
     {
-        public Guid InvoiceId { get; set; }
+        public Guid InvoiceDetailId { get; set; }
         public string UserDescription { get; set; }
     }
 }
