@@ -62,17 +62,25 @@ namespace NitelikliBilisim.App.Controllers
         [HttpPost, Route("iade")]
         public IActionResult Refund(CancellationFormPostVm data)
         {
+            decimal refundPrice = 0;
             var conversationId = Guid.NewGuid().ToString();
             var invoiceDetail = _unitOfWork.InvoiceDetail.GetByIdWithOnlinePaymentDetailInfo(data.InvoiceDetailId.Value);
-            if (invoiceDetail.IsUsedAsTicket)
-            {
-                var ticket = _unitOfWork.Ticket.GetByInvoiceDetailId(invoiceDetail.Id);
-                //TODO saatlik ücret hesaplaması yapılarak kalan günler için iade edilecek tutar bulunacak.
+            var ticket = _unitOfWork.Ticket.GetByInvoiceDetailId(invoiceDetail.Id);
+            if (ticket!=null)
+            {//Kısmi İptal (Kalan gün)
+                var education = ticket.Education;
+                decimal dailyPrice = education.NewPrice.Value / education.Days;
+                var gStudent = _unitOfWork.EducationGroup.GetEducationGroupByTicketId(ticket.Id);
+                var daysLeft = gStudent.GroupLessonDays.Count(x => x.DateOfLesson.Date > DateTime.Now.Date);
+                refundPrice = daysLeft * dailyPrice;
             }
-            
-            var refundRequest = _paymentService.CreateRefundRequest(conversationId, invoiceDetail.OnlinePaymentDetailInfo.TransactionId, invoiceDetail.OnlinePaymentDetailInfo.Price, "", RefundReason.BUYER_REQUEST, data.UserDescription);
+            else//Tamamı iptal ediliyor.
+            {
+                refundPrice = invoiceDetail.OnlinePaymentDetailInfo.Price;
+            }
+            var refundRequest = _paymentService.CreateRefundRequest(conversationId, invoiceDetail.OnlinePaymentDetailInfo.TransactionId, refundPrice, "", RefundReason.BUYER_REQUEST, data.UserDescription);
 
-            if(refundRequest.Status == "success")
+            if (refundRequest.Status == "success")
             {
                 _unitOfWork.Sale.RefundPayment(data.InvoiceDetailId.Value);
 

@@ -85,6 +85,17 @@ namespace NitelikliBilisim.Business.Repositories
                 return true;
             }
         }
+
+        public EducationGroup GetEducationGroupByTicketId(Guid ticketId)
+        {
+            var groupStudent = _context.Bridge_GroupStudents.FirstOrDefault(x => x.TicketId == ticketId);
+            if (groupStudent == null)
+            {
+                throw new Exception($"{ticketId} Id ile ticket bulunamadı!");
+            }
+            return _context.EducationGroups.Include(x=>x.GroupLessonDays).FirstOrDefault(x => x.Id == groupStudent.Id);
+        }
+
         public List<DateTime> CreateGroupLessonDays(EducationGroup group, List<int> daysInt, List<DateTime> unwantedDays)
         {
             daysInt = MakeSureWeekDaysExists(group.Id, daysInt);
