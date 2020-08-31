@@ -25,7 +25,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Controllers
@@ -177,18 +176,18 @@ namespace NitelikliBilisim.App.Controllers
             var transactionType = cardInfoChecker.DecideTransactionType(info, data.Use3d);
 
             var manager = new PaymentManager(_paymentService, transactionType);
-            string content = "";
+            string content;
             var rootPath = _hostingEnvironment.WebRootPath;
             using (var sr = new StreamReader(Path.Combine(rootPath, "data/cities.json")))
             {
-                content = sr.ReadToEnd();
+                content = await sr.ReadToEndAsync();
             }
             var cityTowns = JsonConvert.DeserializeObject<CityTownModel>(content);
             var cityId = data.InvoiceInfo.City;
             var townId = data.InvoiceInfo.Town;
-            var city = cityTowns.data.FirstOrDefault(x => x._id == cityId);
+            var city = cityTowns.data.First(x => x._id == cityId);
             data.InvoiceInfo.City = city.name;
-            data.InvoiceInfo.Town = city.towns.FirstOrDefault(x => x._id == townId).name;
+            data.InvoiceInfo.Town = city.towns.First(x => x._id == townId).name;
 
             var result = manager.Pay(_unitOfWork, data);
             NormalPaymentResultVm paymentResultModel = new NormalPaymentResultVm();
@@ -208,7 +207,7 @@ namespace NitelikliBilisim.App.Controllers
                         {
                             Subject = "Eğitim ödemeniz alınmıştır | Nitelikli Bilişim",
                             Body = "Eğitim ödemeniz alınmıştır.",
-                            Contacts = new string[] { customerEmail }
+                            Contacts = new [] { customerEmail }
                         });
                     }
 
@@ -239,7 +238,7 @@ namespace NitelikliBilisim.App.Controllers
                         {
                             Subject = "Eğitim ödemeniz alınmıştır | Nitelikli Bilişim",
                             Body = "Eğitim ödemeniz alınmıştır.",
-                            Contacts = new string[] { customerEmail }
+                            Contacts = new [] { customerEmail }
                         });
                     }
                     return Redirect("/secure3d");
@@ -316,7 +315,7 @@ namespace NitelikliBilisim.App.Controllers
         public decimal GetPriceSumForCartItems(List<_CartItem> itemIds)
         {
             var educationIds = itemIds.Select(x => x.EducationId).ToList();
-            return _unitOfWork.Education.Get(x => educationIds.Contains(x.Id), null).Sum(x => x.NewPrice.Value);
+            return _unitOfWork.Education.Get(x => educationIds.Contains(x.Id), null).Sum(x => x.NewPrice.GetValueOrDefault());
         }
     }
 
