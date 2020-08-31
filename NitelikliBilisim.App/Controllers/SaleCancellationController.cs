@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ComplexTypes;
+using NitelikliBilisim.Core.PaymentModels;
 using NitelikliBilisim.Core.Services.Payments;
 using NitelikliBilisim.Core.ViewModels.Main.Sales;
 
@@ -41,7 +42,7 @@ namespace NitelikliBilisim.App.Controllers
             var conversationId = Guid.NewGuid().ToString();
             var cancelRequest = _paymentService.CreateCancelRequest(conversationId, invoice.OnlinePaymentInfo.PaymentId, "", RefundReason.BUYER_REQUEST, data.UserDescription);
 
-            if (cancelRequest.Status == "success")
+            if (cancelRequest.Status == PaymentServiceMessages.ResponseSuccess)
             {
                 _unitOfWork.Sale.CancelPayment(data.InvoiceId);
 
@@ -80,7 +81,7 @@ namespace NitelikliBilisim.App.Controllers
             }
             var refundRequest = _paymentService.CreateRefundRequest(conversationId, invoiceDetail.OnlinePaymentDetailInfo.TransactionId, refundPrice, "", RefundReason.BUYER_REQUEST, data.UserDescription);
 
-            if (refundRequest.Status == "success")
+            if (refundRequest.Status == PaymentServiceMessages.ResponseSuccess)
             {
                 _unitOfWork.Sale.RefundPayment(data.InvoiceDetailId);
 

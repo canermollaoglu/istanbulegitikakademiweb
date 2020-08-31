@@ -106,7 +106,7 @@ namespace NitelikliBilisim.App.Controllers
                 binNumber: binNumber,
                 price: GetPriceSumForCartItems(data.CartItems)
                 );
-            if (info.Status == "success")
+            if (info.Status == PaymentServiceMessages.ResponseSuccess)
             {
                 return Json(new ResponseModel
                 {
@@ -215,7 +215,7 @@ namespace NitelikliBilisim.App.Controllers
 
             if (result.TransactionType == TransactionType.Secure3d)
             {
-                if (result.Status == "success")
+                if (result.Status == PaymentServiceMessages.ResponseSuccess)
                 {
                     _unitOfWork.TempSaleData.Create(result.ConversationId, result.Success);
                     HttpContext.Session.SetString("html_content", result.HtmlContent);
