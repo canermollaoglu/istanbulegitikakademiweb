@@ -7,6 +7,11 @@
 @section styles{
     <link href="~/assets/css/grey.css" rel="stylesheet">
     <link href="~/assets/css/sale/payment.css" rel="stylesheet" />
+<style>
+    input[type="checkbox"][readonly] {
+        pointer-events: none;
+    }
+</style>
 }
 
 <main>
@@ -130,11 +135,22 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="row">
-                                    <div id="installmentInfo">
-
+                                    <div class="col-md-12">
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input" id="chc3DSecure" name="Use3d" value="true">
+                                            <label class="form-check-label" for="exampleCheck1">3D kullanmak istiyorum.</label>
+                                        </div>
                                     </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div id="installmentInfo">
+
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
                             <hr>

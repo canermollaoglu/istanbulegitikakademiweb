@@ -19,6 +19,7 @@ var inputCompanyName = $("#input-company-name");
 var inputTaxNo = $("#input-tax-no");
 var inputTaxOffice = $("#input-tax-office");
 var inputInstallment = $("#_installmentCount"); 
+var input3dSecure = $('#chc3DSecure');
 var isDistantSalesAgreementConfirmed = document.getElementById("_is-distant-sales-agreement-confirmed");
 var isIndividual = document.getElementById("_is-individual");
 var chkConfirmDistantSalesAgreement = document.getElementById("chk-confirm-distant-sales");
@@ -76,7 +77,6 @@ function chkConfirmDistantSalesAgreement_onChange() {
 
 function btnBuy_onClick() {
     btnBuy.off("click");
-    debugger;
     var corporateInvoiceInfo = null;
     if (!chkCustomerTypeIndividual.checked)
         corporateInvoiceInfo = {
@@ -85,11 +85,10 @@ function btnBuy_onClick() {
             TaxOffice: inputTaxOffice.val()
         };
 
-    var installementCount = inputInstallment.val();
-    console.log(installementCount);
     var tokenVerifier = new SecuritySupport.TokenVerifier();
     var cart = new CartSupport.Cart();
     var data = tokenVerifier.addToken("form-buy", {
+        Use3d: input3dSecure.prop("checked"),
         CardInfo: {
             NameOnCard: inputOwner.val(),
             NumberOnCard: inputCardNumber.val(),
@@ -111,6 +110,7 @@ function btnBuy_onClick() {
         IsDistantSalesAgreementConfirmed: isDistantSalesAgreementConfirmed,
         CartItems: cart.getItems()
     });
+
 
     $.ajax({
         url: "/pay",
@@ -147,6 +147,14 @@ function loadInstallmentsInfo(inputVal) {
                 if (res.data.status == "success") {
                     installmentInfoDiv.empty();
                     createInstallmentsDiv(res.data);
+                    if (res.data.installmentDetails[0].force3Ds == "1") {
+                        input3dSecure.prop("checked", true);
+                        input3dSecure.prop('readonly', true);
+                    } else {
+                        input3dSecure.prop("checked", false);
+                        input3dSecure.prop('readonly', false);
+                    }
+
                     $("input[name='installmentNumber']").on('change', function () {
                         installmentNumber_onChange();
                     });
@@ -158,7 +166,7 @@ function loadInstallmentsInfo(inputVal) {
 
 
 function createInstallmentsDiv(data) {
-    var content = '<div class="form_title"><h3>Taksit Bilgileri</h3></div>';
+    var content = '<div class="form_title"><h3>Taksit Seçenekleri</h3></div>';
     if (data.length != 0)
         $.each(data.installmentDetails[0].installmentPrices, function (index, info) {
             content += `<p><input type="radio" name="installmentNumber" value="${info.installmentNumber}"> ${info.installmentNumber} Taksit :  ${info.price} X ${info.installmentNumber}  = ${info.totalPrice}</p>`
