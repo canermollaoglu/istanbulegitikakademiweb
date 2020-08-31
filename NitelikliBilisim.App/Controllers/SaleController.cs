@@ -106,11 +106,23 @@ namespace NitelikliBilisim.App.Controllers
                 binNumber: binNumber,
                 price: GetPriceSumForCartItems(data.CartItems)
                 );
-            return Json(new ResponseModel
+            if (info.Status == "success")
             {
-                isSuccess = true,
-                data = info
-            });
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    data = info
+                });
+            }
+            else
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Taksit bilgileri alınamadı. Sayfayı yenileyerek tekrar deneyiniz." }
+                });
+            }
+            
         }
 
         [TypeFilter(typeof(UserLoggerFilterAttribute))]

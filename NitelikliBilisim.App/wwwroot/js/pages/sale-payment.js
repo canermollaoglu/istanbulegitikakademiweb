@@ -154,10 +154,11 @@ function loadInstallmentsInfo(inputVal) {
                         input3dSecure.prop("checked", false);
                         input3dSecure.prop('readonly', false);
                     }
-
                     $("input[name='installmentNumber']").on('change', function () {
                         installmentNumber_onChange();
                     });
+                } else {
+                    //TODO Taksit bilgileri hatası
                 }
             }
         }
