@@ -97,7 +97,7 @@ namespace NitelikliBilisim.App.Controllers
 
             return View();
         }
-        [HttpPost,Route("getinstallmentinfo")]
+        [HttpPost, Route("getinstallmentinfo")]
         public IActionResult GetInstallmentInfo(InstallmentInfoVm data)
         {
             var binNumber = data.BinNumber.Replace(" ", "").Substring(0, 6);
@@ -122,7 +122,7 @@ namespace NitelikliBilisim.App.Controllers
                     errors = new List<string> { "Taksit bilgileri alınamadı. Sayfayı yenileyerek tekrar deneyiniz." }
                 });
             }
-            
+
         }
 
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
@@ -195,22 +195,34 @@ namespace NitelikliBilisim.App.Controllers
 
             if (result.TransactionType == TransactionType.Normal)
             {
-                var model = manager.CreateCompletionModel(result.PaymentForNormal);
-                _unitOfWork.Sale.CompletePayment(model, result.Success.InvoiceId, result.Success.InvoiceDetailIds);
-
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var customerEmail = _userUnitOfWork.User.GetCustomerInfo(userId).PersonalAndAccountInfo.Email;
-                if (customerEmail != null)
+                NormalPaymentResultVm paymentResultModel = new NormalPaymentResultVm();
+                if (result.Status == PaymentServiceMessages.ResponseSuccess)
                 {
-                    await _emailSender.SendAsync(new EmailMessage
+                    var model = manager.CreateCompletionModel(result.PaymentForNormal);
+                    _unitOfWork.Sale.CompletePayment(model, result.Success.InvoiceId, result.Success.InvoiceDetailIds);
+
+                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    var customerEmail = _userUnitOfWork.User.GetCustomerInfo(userId).PersonalAndAccountInfo.Email;
+                    if (customerEmail != null)
                     {
-                        Subject = "Eğitim ödemeniz alınmıştır | Nitelikli Bilişim",
-                        Body = "Eğitim ödemeniz alınmıştır.",
-                        Contacts = new string[] { customerEmail }
-                    });
+                        await _emailSender.SendAsync(new EmailMessage
+                        {
+                            Subject = "Eğitim ödemeniz alınmıştır | Nitelikli Bilişim",
+                            Body = "Eğitim ödemeniz alınmıştır.",
+                            Contacts = new string[] { customerEmail }
+                        });
+                    }
+
+                    paymentResultModel.Status = PaymentResultStatus.Success;
+                    paymentResultModel.Message = "Ödemeniz başarılı bir şekilde gerçekleşmiştir.";
+                }
+                else
+                {
+                    paymentResultModel.Status = PaymentResultStatus.Failure;
+                    paymentResultModel.Message = result.Error.ErrorMessage;
                 }
 
-                return Redirect("/odeme-sonucunuz");
+                return RedirectToAction("NormalPaymentResult", "Sale", paymentResultModel);
             }
 
             if (result.TransactionType == TransactionType.Secure3d)
@@ -231,7 +243,6 @@ namespace NitelikliBilisim.App.Controllers
                             Contacts = new string[] { customerEmail }
                         });
                     }
-
                     return Redirect("/secure3d");
                 }
             }
@@ -249,9 +260,9 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [HttpGet, Route("odeme-sonucunuz")]
-        public IActionResult NormalPaymentResult()
+        public IActionResult NormalPaymentResult(NormalPaymentResultVm model)
         {
-            return View();
+            return View(model);
         }
 
         [HttpPost, Route("odeme-sonucu")]
