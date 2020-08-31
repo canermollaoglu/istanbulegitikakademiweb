@@ -192,10 +192,10 @@ namespace NitelikliBilisim.App.Controllers
             data.InvoiceInfo.Town = city.towns.FirstOrDefault(x => x._id == townId).name;
 
             var result = manager.Pay(_unitOfWork, data);
+            NormalPaymentResultVm paymentResultModel = new NormalPaymentResultVm();
 
             if (result.TransactionType == TransactionType.Normal)
             {
-                NormalPaymentResultVm paymentResultModel = new NormalPaymentResultVm();
                 if (result.Status == PaymentServiceMessages.ResponseSuccess)
                 {
                     var model = manager.CreateCompletionModel(result.PaymentForNormal);
@@ -244,6 +244,12 @@ namespace NitelikliBilisim.App.Controllers
                         });
                     }
                     return Redirect("/secure3d");
+                }
+                else
+                {
+                    paymentResultModel.Status = PaymentResultStatus.Failure;
+                    paymentResultModel.Message = result.Error.ErrorMessage;
+                    return RedirectToAction("NormalPaymentResult", "Sale", paymentResultModel);
                 }
             }
 
