@@ -18,7 +18,7 @@ var inputCvc = $("#input-cvc");
 var inputCompanyName = $("#input-company-name");
 var inputTaxNo = $("#input-tax-no");
 var inputTaxOffice = $("#input-tax-office");
-var inputInstallment = $("#_installmentCount"); 
+var inputInstallment = $("#_installmentCount");
 var input3dSecure = $('#chc3DSecure');
 var isDistantSalesAgreementConfirmed = document.getElementById("_is-distant-sales-agreement-confirmed");
 var isIndividual = document.getElementById("_is-individual");
@@ -136,7 +136,7 @@ $('#input-card-number').focusout(function () {
 function loadInstallmentsInfo(inputVal) {
     var cart = new CartSupport.Cart();
     var data = {
-        BinNumber: inputVal,
+        CardNumber: inputVal,
         CartItems: cart.getItems()
     };
 
@@ -146,23 +146,19 @@ function loadInstallmentsInfo(inputVal) {
         data: data,
         success: (res) => {
             if (res.isSuccess) {
-                if (res.data.status == "success") {
-                    installmentInfoDiv.empty();
-                    createInstallmentsDiv(res.data);
-
-                    if (res.data.installmentDetails[0].force3Ds == "1") {
-                        input3dSecure.prop("checked", true);
-                        input3dSecure.prop('readonly', true);
-                    } else {
-                        input3dSecure.prop("checked", false);
-                        input3dSecure.prop('readonly', false);
-                    }
-                    $("input[name='installmentNumber']").on('change', function () {
-                        installmentNumber_onChange();
-                    });
+                console.log(res);
+                installmentInfoDiv.empty();
+                createInstallmentsDiv(res.data);
+                if (res.data.installmentOptions.force3Ds == "1") {
+                    input3dSecure.prop("checked", true);
+                    input3dSecure.prop('readonly', true);
                 } else {
-                    //TODO Taksit bilgileri hatası
+                    input3dSecure.prop("checked", false);
+                    input3dSecure.prop('readonly', false);
                 }
+                $("input[name='installmentNumber']").on('change', function () {
+                    installmentNumber_onChange();
+                });
             }
         }
     });
@@ -172,13 +168,13 @@ function loadInstallmentsInfo(inputVal) {
 function createInstallmentsDiv(data) {
     var content = '<div class="form_title"><h3>Taksit Seçenekleri</h3></div>';
     if (data.length != 0)
-        $.each(data.installmentDetails[0].installmentPrices, function (index, info) {
+        $.each(data.installmentOptions.installmentPrices, function (index, info) {
             if (info.installmentNumber == 1) {
                 content += `<p><input type="radio" name="installmentNumber" value="${info.installmentNumber}" checked> ${info.installmentNumber} Taksit :  ${info.price} X ${info.installmentNumber}  = ${info.totalPrice}</p>`
             } else {
                 content += `<p><input type="radio" name="installmentNumber" value="${info.installmentNumber}"> ${info.installmentNumber} Taksit :  ${info.price} X ${info.installmentNumber}  = ${info.totalPrice}</p>`
             }
-             });
+        });
     installmentInfoDiv.append(content);
     inputInstallment.val(1);
 }

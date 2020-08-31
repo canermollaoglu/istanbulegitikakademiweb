@@ -100,18 +100,17 @@ namespace NitelikliBilisim.App.Controllers
         [HttpPost, Route("getinstallmentinfo")]
         public IActionResult GetInstallmentInfo(InstallmentInfoVm data)
         {
-            var binNumber = data.BinNumber.Replace(" ", "").Substring(0, 6);
-            InstallmentInfo info = _paymentService.CheckInstallment(
-                conversationId: data.ConversationId.ToString(),
-                binNumber: binNumber,
-                price: GetPriceSumForCartItems(data.CartItems)
-                );
+            var binNumber = FormatCardNumber(data.CardNumber).Substring(0, 6);
+            var info = _paymentService.CheckInstallment(data.ConversationId.ToString(), binNumber, GetPriceSumForCartItems(data.CartItems));
             if (info.Status == PaymentServiceMessages.ResponseSuccess)
             {
                 return Json(new ResponseModel
                 {
                     isSuccess = true,
-                    data = info
+                    data = new
+                    {
+                        installmentOptions = info.InstallmentDetails[0]
+                    }
                 });
             }
             else
@@ -306,19 +305,6 @@ namespace NitelikliBilisim.App.Controllers
             return View(retVal);
         }
 
-        public IActionResult GetCardInfo()
-        {
-            var conversationId = Guid.NewGuid().ToString();
-            var info = _paymentService.CheckInstallment(conversationId, "111111", 800);
-            return Json(new ResponseModel
-            {
-                isSuccess = true,
-                data = new
-                {
-                    installmentOptions = info.InstallmentDetails[0].InstallmentPrices
-                }
-            });
-        }
 
         [NonAction]
         public string FormatCardNumber(string cardNumber)

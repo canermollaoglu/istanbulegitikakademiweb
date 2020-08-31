@@ -8,7 +8,7 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Sales
     public class InstallmentInfoVm
     {
         public Guid ConversationId { get; set; } = Guid.NewGuid();
-        public string BinNumber { get; set; }
+        public string CardNumber { get; set; }
         public List<_CartItem> CartItems { get; set; }
     }
 }
