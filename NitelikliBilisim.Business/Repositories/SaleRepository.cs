@@ -232,7 +232,7 @@ namespace NitelikliBilisim.Business.Repositories
         {
             try
             {
-                var tickets = _context.Tickets.Include(x => x.Owner).ThenInclude(x => x.User)
+                var tickets = _context.Tickets.Include(x=>x.Education).Include(x => x.Owner).ThenInclude(x => x.User)
                     .Where(x => invoiceDetailsIds.Contains(x.InvoiceDetailsId))
                     .ToList();
 

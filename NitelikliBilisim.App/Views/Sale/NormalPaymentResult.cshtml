@@ -15,11 +15,11 @@
 
     <script src="~/js/sup/cart.js"></script>
     <script>
-        if (@Model.Status == "10") {
+        if ('@Model.Status' == "Success") {
             var _cart = new CartSupport.Cart();
             _cart.clearCart();
         }
-        
+
     </script>
 </body>
 </html>
