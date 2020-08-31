@@ -274,21 +274,36 @@ namespace NitelikliBilisim.App.Controllers
         [HttpPost, Route("odeme-sonucu")]
         public IActionResult PaymentResult(CreateThreedsPaymentRequest data)
         {
+            NormalPaymentResultVm retVal = new NormalPaymentResultVm();
             if (data != null)
             {
                 data.Locale = Locale.TR.ToString();
                 var result = _paymentService.Confirm3DsPayment(data);
-                var manager = new PaymentManager(_paymentService, TransactionType.Secure3d);
-                var model = manager.CreateCompletionModel(result);
-                if (model == null)
-                    return View();
-
-                var paymentModelSuccess = _unitOfWork.TempSaleData.Get(data.ConversationId);
-                _unitOfWork.TempSaleData.Remove(data.ConversationId);
-                _unitOfWork.Sale.CompletePayment(model, paymentModelSuccess.InvoiceId, paymentModelSuccess.InvoiceDetailIds);
+                if (result.Status == PaymentServiceMessages.ResponseSuccess)
+                {
+                    var manager = new PaymentManager(_paymentService, TransactionType.Secure3d);
+                    var model = manager.CreateCompletionModel(result);
+                    if (model == null)
+                        return View();
+                    retVal.Status = PaymentResultStatus.Success;
+                    retVal.Message = "Ödemeniz başarılı bir şekilde gerçekleşmiştir.";
+                    var paymentModelSuccess = _unitOfWork.TempSaleData.Get(data.ConversationId);
+                    _unitOfWork.TempSaleData.Remove(data.ConversationId);
+                    _unitOfWork.Sale.CompletePayment(model, paymentModelSuccess.InvoiceId, paymentModelSuccess.InvoiceDetailIds);
+                }
+                else
+                {
+                    retVal.Status = PaymentResultStatus.Failure;
+                    retVal.Message = result.ErrorMessage;
+                }
+            }
+            else
+            {
+                retVal.Status = PaymentResultStatus.Failure;
+                retVal.Message = "Ödeme servisinden cevap alınamamıştır. Lütfen yönetici ile iletişime geçiniz.";
             }
 
-            return View();
+            return View(retVal);
         }
 
         public IActionResult GetCardInfo()

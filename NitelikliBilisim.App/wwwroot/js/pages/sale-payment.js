@@ -173,7 +173,7 @@ function createInstallmentsDiv(data) {
     var content = '<div class="form_title"><h3>Taksit Seçenekleri</h3></div>';
     if (data.length != 0)
         $.each(data.installmentDetails[0].installmentPrices, function (index, info) {
-            if (info.installmentNumber) {
+            if (info.installmentNumber == 1) {
                 content += `<p><input type="radio" name="installmentNumber" value="${info.installmentNumber}" checked> ${info.installmentNumber} Taksit :  ${info.price} X ${info.installmentNumber}  = ${info.totalPrice}</p>`
             } else {
                 content += `<p><input type="radio" name="installmentNumber" value="${info.installmentNumber}"> ${info.installmentNumber} Taksit :  ${info.price} X ${info.installmentNumber}  = ${info.totalPrice}</p>`
