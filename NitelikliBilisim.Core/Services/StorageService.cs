@@ -1,4 +1,5 @@
-﻿using Microsoft.WindowsAzure.Storage;
+﻿using Microsoft.Azure.Storage;
+using Microsoft.Azure.Storage.File;
 using NitelikliBilisim.Core.Services.Abstracts;
 using System.IO;
 using System.Threading.Tasks;
