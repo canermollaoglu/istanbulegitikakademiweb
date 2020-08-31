@@ -97,7 +97,7 @@ namespace NitelikliBilisim.App.Controllers
 
             return View();
         }
-        [HttpPost,Route("getinstallmentinfo")]
+        [HttpPost, Route("getinstallmentinfo")]
         public IActionResult GetInstallmentInfo(InstallmentInfoVm data)
         {
             var binNumber = data.BinNumber.Replace(" ", "").Substring(0, 6);
@@ -122,7 +122,7 @@ namespace NitelikliBilisim.App.Controllers
                     errors = new List<string> { "Taksit bilgileri alınamadı. Sayfayı yenileyerek tekrar deneyiniz." }
                 });
             }
-            
+
         }
 
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
@@ -192,25 +192,37 @@ namespace NitelikliBilisim.App.Controllers
             data.InvoiceInfo.Town = city.towns.FirstOrDefault(x => x._id == townId).name;
 
             var result = manager.Pay(_unitOfWork, data);
+            NormalPaymentResultVm paymentResultModel = new NormalPaymentResultVm();
 
             if (result.TransactionType == TransactionType.Normal)
             {
-                var model = manager.CreateCompletionModel(result.PaymentForNormal);
-                _unitOfWork.Sale.CompletePayment(model, result.Success.InvoiceId, result.Success.InvoiceDetailIds);
-
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var customerEmail = _userUnitOfWork.User.GetCustomerInfo(userId).PersonalAndAccountInfo.Email;
-                if (customerEmail != null)
+                if (result.Status == PaymentServiceMessages.ResponseSuccess)
                 {
-                    await _emailSender.SendAsync(new EmailMessage
+                    var model = manager.CreateCompletionModel(result.PaymentForNormal);
+                    _unitOfWork.Sale.CompletePayment(model, result.Success.InvoiceId, result.Success.InvoiceDetailIds);
+
+                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    var customerEmail = _userUnitOfWork.User.GetCustomerInfo(userId).PersonalAndAccountInfo.Email;
+                    if (customerEmail != null)
                     {
-                        Subject = "Eğitim ödemeniz alınmıştır | Nitelikli Bilişim",
-                        Body = "Eğitim ödemeniz alınmıştır.",
-                        Contacts = new string[] { customerEmail }
-                    });
+                        await _emailSender.SendAsync(new EmailMessage
+                        {
+                            Subject = "Eğitim ödemeniz alınmıştır | Nitelikli Bilişim",
+                            Body = "Eğitim ödemeniz alınmıştır.",
+                            Contacts = new string[] { customerEmail }
+                        });
+                    }
+
+                    paymentResultModel.Status = PaymentResultStatus.Success;
+                    paymentResultModel.Message = "Ödemeniz başarılı bir şekilde gerçekleşmiştir.";
+                }
+                else
+                {
+                    paymentResultModel.Status = PaymentResultStatus.Failure;
+                    paymentResultModel.Message = result.Error.ErrorMessage;
                 }
 
-                return Redirect("/odeme-sonucunuz");
+                return RedirectToAction("NormalPaymentResult", "Sale", paymentResultModel);
             }
 
             if (result.TransactionType == TransactionType.Secure3d)
@@ -231,8 +243,13 @@ namespace NitelikliBilisim.App.Controllers
                             Contacts = new string[] { customerEmail }
                         });
                     }
-
                     return Redirect("/secure3d");
+                }
+                else
+                {
+                    paymentResultModel.Status = PaymentResultStatus.Failure;
+                    paymentResultModel.Message = result.Error.ErrorMessage;
+                    return RedirectToAction("NormalPaymentResult", "Sale", paymentResultModel);
                 }
             }
 
@@ -249,29 +266,44 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [HttpGet, Route("odeme-sonucunuz")]
-        public IActionResult NormalPaymentResult()
+        public IActionResult NormalPaymentResult(NormalPaymentResultVm model)
         {
-            return View();
+            return View(model);
         }
 
         [HttpPost, Route("odeme-sonucu")]
         public IActionResult PaymentResult(CreateThreedsPaymentRequest data)
         {
+            NormalPaymentResultVm retVal = new NormalPaymentResultVm();
             if (data != null)
             {
                 data.Locale = Locale.TR.ToString();
                 var result = _paymentService.Confirm3DsPayment(data);
-                var manager = new PaymentManager(_paymentService, TransactionType.Secure3d);
-                var model = manager.CreateCompletionModel(result);
-                if (model == null)
-                    return View();
-
-                var paymentModelSuccess = _unitOfWork.TempSaleData.Get(data.ConversationId);
-                _unitOfWork.TempSaleData.Remove(data.ConversationId);
-                _unitOfWork.Sale.CompletePayment(model, paymentModelSuccess.InvoiceId, paymentModelSuccess.InvoiceDetailIds);
+                if (result.Status == PaymentServiceMessages.ResponseSuccess)
+                {
+                    var manager = new PaymentManager(_paymentService, TransactionType.Secure3d);
+                    var model = manager.CreateCompletionModel(result);
+                    if (model == null)
+                        return View();
+                    retVal.Status = PaymentResultStatus.Success;
+                    retVal.Message = "Ödemeniz başarılı bir şekilde gerçekleşmiştir.";
+                    var paymentModelSuccess = _unitOfWork.TempSaleData.Get(data.ConversationId);
+                    _unitOfWork.TempSaleData.Remove(data.ConversationId);
+                    _unitOfWork.Sale.CompletePayment(model, paymentModelSuccess.InvoiceId, paymentModelSuccess.InvoiceDetailIds);
+                }
+                else
+                {
+                    retVal.Status = PaymentResultStatus.Failure;
+                    retVal.Message = result.ErrorMessage;
+                }
+            }
+            else
+            {
+                retVal.Status = PaymentResultStatus.Failure;
+                retVal.Message = "Ödeme servisinden cevap alınamamıştır. Lütfen yönetici ile iletişime geçiniz.";
             }
 
-            return View();
+            return View(retVal);
         }
 
         public IActionResult GetCardInfo()

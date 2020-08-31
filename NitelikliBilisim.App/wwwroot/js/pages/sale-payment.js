@@ -131,6 +131,8 @@ $('#input-card-number').focusout(function () {
     }
 });
 
+
+/* functions */
 function loadInstallmentsInfo(inputVal) {
     var cart = new CartSupport.Cart();
     var data = {
@@ -147,6 +149,7 @@ function loadInstallmentsInfo(inputVal) {
                 if (res.data.status == "success") {
                     installmentInfoDiv.empty();
                     createInstallmentsDiv(res.data);
+
                     if (res.data.installmentDetails[0].force3Ds == "1") {
                         input3dSecure.prop("checked", true);
                         input3dSecure.prop('readonly', true);
@@ -170,13 +173,18 @@ function createInstallmentsDiv(data) {
     var content = '<div class="form_title"><h3>Taksit Seçenekleri</h3></div>';
     if (data.length != 0)
         $.each(data.installmentDetails[0].installmentPrices, function (index, info) {
-            content += `<p><input type="radio" name="installmentNumber" value="${info.installmentNumber}"> ${info.installmentNumber} Taksit :  ${info.price} X ${info.installmentNumber}  = ${info.totalPrice}</p>`
-        });
-   installmentInfoDiv.append(content);
+            if (info.installmentNumber == 1) {
+                content += `<p><input type="radio" name="installmentNumber" value="${info.installmentNumber}" checked> ${info.installmentNumber} Taksit :  ${info.price} X ${info.installmentNumber}  = ${info.totalPrice}</p>`
+            } else {
+                content += `<p><input type="radio" name="installmentNumber" value="${info.installmentNumber}"> ${info.installmentNumber} Taksit :  ${info.price} X ${info.installmentNumber}  = ${info.totalPrice}</p>`
+            }
+             });
+    installmentInfoDiv.append(content);
+    inputInstallment.val(1);
 }
 
 
-/* functions */
+
 function getCartItems() {
     var items = _cart.getItems();
     cartItems.val(JSON.stringify(items));

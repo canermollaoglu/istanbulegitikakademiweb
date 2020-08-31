@@ -44,4 +44,9 @@ namespace NitelikliBilisim.Core.PaymentModels
         PARAF = 60,
         ADVANTAGE = 70
     }
+    public enum PaymentResultStatus
+    {
+        Success=10,
+        Failure = 20
+    }
 }
