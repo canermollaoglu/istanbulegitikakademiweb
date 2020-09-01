@@ -23,7 +23,7 @@ namespace NitelikliBilisim.Core.Entities.groups
         public virtual EducationGroup Group { get; set; }
 
         [ForeignKey("GroupExpenseType")]
-        public Guid GroupExpenseType { get; set; }
+        public Guid ExpenseTypeId { get; set; }
         public virtual GroupExpenseType ExpenseType { get; set; }
     }
 }

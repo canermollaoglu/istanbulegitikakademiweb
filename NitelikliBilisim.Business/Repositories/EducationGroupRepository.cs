@@ -29,7 +29,7 @@ namespace NitelikliBilisim.Business.Repositories
                 .Include(x => x.GroupLessonDays).First(x => x.Id == groupId);
 
             var studentIds = group.GroupStudents.Select(x => x.Id2).ToList();
-            var educator = _context.Educators.Include(x=>x.User).First(x => x.Id == group.EducatorId);
+            var educator = _context.Users.First(x => x.Id == group.EducatorId);
             var students = _context.Customers
                 .Include(x => x.User)
                 .Where(x => studentIds.Contains(x.Id))
@@ -37,6 +37,7 @@ namespace NitelikliBilisim.Business.Repositories
 
             var model = new GroupDetailVm
             {
+                GroupId = group.Id,
                 GroupName = group.GroupName,
                 Host = group.Host,
                 Quota = group.Quota,
@@ -47,9 +48,9 @@ namespace NitelikliBilisim.Business.Repositories
                 },
                 StartDate = group.StartDate,
                 LessonDays = group.GroupLessonDays,
-                Expenses = group.GroupExpenses,
                 Students = students,
-                Educator = educator
+                EducatorName = $"{educator.Name} {educator.Surname}",
+                GroupExpenseTypes = _context.GroupExpenseTypes.ToList()
             };
             return model;
 
