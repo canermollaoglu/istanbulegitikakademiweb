@@ -1,0 +1,160 @@
+﻿@model NitelikliBilisim.Core.ViewModels.areas.admin.education_groups.GroupDetailVm
+@{
+    ViewData["Title"] = "Grup Aç";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        .form-check-label {
+            cursor: pointer;
+        }
+    </style>
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+
+<div class="row">
+    <!--Genel Grup Bilgileri-->
+    <div class="col-md-12">
+        <div class="card mb-3">
+            <div class="card-header">
+                <i class="fa fa-list"></i> <strong></strong> Genel Grup Bilgileri
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>Grup Adı</b>
+                            </td>
+                            <td>
+                                @Model.GroupName
+                            </td>
+
+                            <td>
+                                <b>Eğitim Yeri</b>
+                            </td>
+                            <td>
+                                @Model.Host.HostName
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Eğitim</b>
+                            </td>
+                            <td>
+                                @Model.Education.Name
+                            </td>
+                            <td>
+                                <b>Başlangıç Tarihi</b>
+                            </td>
+                            <td>
+                                @Model.StartDate.GetValueOrDefault().ToShortDateString()
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Eğitmen</b>
+                            </td>
+                            <td>
+                                @Model.Educator.User.Name @Model.Educator.User.Surname
+                            </td>
+                            <td>
+                                <b>Başlangıç Tarihi</b>
+                            </td>
+                            <td>
+                                @Model.StartDate.GetValueOrDefault().ToShortDateString()
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!--Kayıtlı Öğrenciler-->
+    <div class="col-md-12">
+        <div class="card mb-3">
+            <div class="card-header">
+                <i class="fa fa-users"></i> <strong></strong> Öğrenci Listesi
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <td><strong>Ad Soyad</strong></td>
+                            <td><strong>Telefon</strong></td>
+                            <td><strong>Email</strong></td>
+                            <td><strong></strong></td>
+                            <td><strong></strong></td>
+                            <td><strong></strong></td>
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var student in Model.Students)
+                        {
+                        <tr>
+                            <td>@student.User.Name</td>
+                            <td>@student.User.PhoneNumber</td>
+                            <td>@student.User.Email</td>
+
+
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="row">
+    <!--Grup Giderleri-->
+    <div class="col-md-6">
+        <div class="card mb-3">
+            <div class="card-header">
+                <i class="fa fa-list"></i> <strong></strong> Grup Giderleri
+                <a href="#" class="btn btn-outline-primary btn-sm pull-right"><i class="fa fa-plus"></i> </a>
+            </div>
+            <div class="card-body"></div>
+
+        </div>
+    </div>
+    <!--Eğitim Günleri-->
+    <div class="col-md-6">
+        <div class="card mb-3">
+            <div class="card-header">
+                <i class="fa fa-list"></i> <strong>Eğitim</strong> Günleri
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <td><strong>Tarih</strong></td>
+                            <td><strong>Eğitmen Ücreti</strong></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var lessonDay in Model.LessonDays)
+                        {
+                            <tr>
+                                <td>@lessonDay.DateOfLesson.ToShortDateString()</td>
+                                <td>@lessonDay.EducatorSalary</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>

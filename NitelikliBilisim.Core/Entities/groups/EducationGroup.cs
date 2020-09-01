@@ -1,4 +1,5 @@
 ﻿using NitelikliBilisim.Core.Abstracts;
+using NitelikliBilisim.Core.Entities.groups;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -32,5 +33,6 @@ namespace NitelikliBilisim.Core.Entities
 
         public virtual List<Bridge_GroupStudent> GroupStudents { get; set; }
         public virtual List<GroupLessonDay> GroupLessonDays { get; set; }
+        public virtual List<GroupExpense> GroupExpenses { get; set; }
     }
 }

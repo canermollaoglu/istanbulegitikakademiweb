@@ -32,6 +32,13 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             return View();
         }
 
+        [Route("admin/grup-detay/{groupId?}")]
+        public IActionResult Detail(Guid groupId)
+        {
+            var groupDetail = _unitOfWork.EducationGroup.GetDetailByGroupId(groupId);
+
+            return View(groupDetail);
+        }
 
         [Route("admin/grup-olustur")]
         public IActionResult Add()

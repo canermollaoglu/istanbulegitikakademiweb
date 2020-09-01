@@ -125,7 +125,8 @@
                     cellTemplate: function (container, options) {
                         var current = options.data;
                         var div = $('<div class="btn-group" style="display: inline-flex; width:"auto"></div>');
-
+                        $(`<a title="Gruba Öğrenci Ata" class="btn btn-primary btn-sm" href="/admin/grup-detay/${current.id}"><i class=\"fa fa-info\"></i><span style="display: block"></span></a>`)
+                            .appendTo(div);
                         $(`<a title="Gruba Öğrenci Ata" class="btn btn-primary btn-sm" href="/admin/gruba-ogrenci-ata/${current.id}"><i class=\"fa fa-users\"></i><span style="display: block"></span></a>`)
                             .appendTo(div);
                         $(`<a title="Grup Ayarları" class="btn btn-warning btn-sm" href="/admin/grup/ayarlar/${current.id}"><i class=\"fa fa-cogs\"></i><span style="display: block"></span></a>`)

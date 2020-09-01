@@ -19,24 +19,61 @@ namespace NitelikliBilisim.Business.Repositories
             _context = context;
         }
 
+        public GroupDetailVm GetDetailByGroupId(Guid groupId)
+        {
+            var group = _context.EducationGroups
+                .Include(x => x.Education)
+                .Include(x => x.Host)
+                .Include(x => x.GroupStudents)
+                .Include(x=>x.GroupExpenses)
+                .Include(x => x.GroupLessonDays).First(x => x.Id == groupId);
+
+            var studentIds = group.GroupStudents.Select(x => x.Id2).ToList();
+            var educator = _context.Educators.Include(x=>x.User).First(x => x.Id == group.EducatorId);
+            var students = _context.Customers
+                .Include(x => x.User)
+                .Where(x => studentIds.Contains(x.Id))
+                .ToList();
+
+            var model = new GroupDetailVm
+            {
+                GroupName = group.GroupName,
+                Host = group.Host,
+                Quota = group.Quota,
+                Education = new _Education
+                {
+                    Id = group.Education.Id,
+                    Name = group.Education.Name
+                },
+                StartDate = group.StartDate,
+                LessonDays = group.GroupLessonDays,
+                Expenses = group.GroupExpenses,
+                Students = students,
+                Educator = educator
+            };
+            return model;
+
+        }
+
+
         public IQueryable<EducationGroupListVm> GetListQueryable()
         {
             var groups = _context.EducationGroups.Include(x => x.Education).Include(x => x.Host)
                 .Include(x => x.GroupStudents)
                 .Select(x => new EducationGroupListVm
-                         {
-                             Id = x.Id,
-                             EducationName = x.Education.Name,
-                             GroupName = x.GroupName,
-                             HostName = x.Host.HostName,
-                             HostCity = EnumSupport.GetDescription(x.Host.City),
-                             StartDate = x.StartDate
-                         });
+                {
+                    Id = x.Id,
+                    EducationName = x.Education.Name,
+                    GroupName = x.GroupName,
+                    HostName = x.Host.HostName,
+                    HostCity = EnumSupport.GetDescription(x.Host.City),
+                    StartDate = x.StartDate
+                });
 
             return groups;
         }
-       
-        public bool Insert(EducationGroup entity, List<int> days,Guid? classRoomId,decimal educatorSalary)
+
+        public bool Insert(EducationGroup entity, List<int> days, Guid? classRoomId, decimal educatorSalary)
         {
             using (var transation = _context.Database.BeginTransaction())
             {
@@ -75,7 +112,7 @@ namespace NitelikliBilisim.Business.Repositories
                     {
                         DateOfLesson = date,
                         GroupId = entity.Id,
-                        ClassroomId =classRoomId,
+                        ClassroomId = classRoomId,
                         HasAttendanceRecord = false,
                         IsImmuneToAutoChange = false,
                         EducatorId = entity.EducatorId,
@@ -95,7 +132,7 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 throw new Exception($"{ticketId} Id ile ticket bulunamadı!");
             }
-            return _context.EducationGroups.Include(x=>x.GroupLessonDays).FirstOrDefault(x => x.Id == groupStudent.Id);
+            return _context.EducationGroups.Include(x => x.GroupLessonDays).FirstOrDefault(x => x.Id == groupStudent.Id);
         }
 
         public List<DateTime> CreateGroupLessonDays(EducationGroup group, List<int> daysInt, List<DateTime> unwantedDays)
