@@ -5,6 +5,7 @@ using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities.groups;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
@@ -51,5 +52,31 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             }
 
         }
+
+        [HttpGet]
+        [Route("admin/get-expense-list-by-group-id")]
+        public IActionResult GetListByGroupId(Guid groupId)
+        {
+            try
+            {
+                List<GroupExpense> data = _unitOfWork.GroupExpense.GetListByGroupIdWidthExpenseType(groupId);
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Hata " + ex.Message }
+                });
+            }
+
+        }
+
+
     }
 }

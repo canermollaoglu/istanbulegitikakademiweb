@@ -233,6 +233,7 @@
 
         /* events */
         function document_onLoad() {
+            fillGroupExpenses();
         }
 
         function btnSave_onClick() {
@@ -257,7 +258,7 @@
                         resultAlert.display({
                             success: true,
                             message: "Kayıt işlemi başarılı!",
-                            
+
                         });
                     } else {
                         resultAlert.display({
@@ -266,6 +267,7 @@
                             message: "İşlem başarısız"
                         });
                     }
+                    fillGroupExpenses();
                     $('#form-add-groupexpense')[0].reset();
                     $("#addGroupExpenseModal").modal('hide');
                 },
@@ -277,7 +279,44 @@
 
         }
 
+        function fillGroupExpenses() {
+            var gId = groupId.val();
 
+            $.ajax({
+                url: `/admin/get-expense-list-by-group-id?groupId=${gId}`,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        groupExpensesDiv.empty();
+                        console.log(res.data);
+                        createExpensesList(res.data);
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors
+                        });
+                    }
+                }
+            });
 
+        }
+        function createExpensesList(data) {
+            var content = '<table class="table table-bordered"><thead><tr><td>Gider Tipi</td><td>Açıklama</td><td>Adet</td><td>Birim Fiyat</td></tr></thead><tbody>';
+            if (data.length > 0) {
+                for (var i = 0; i < data.length; i++) {
+                    var expense = data[i];
+                    content +=
+                        `<tr>` +
+                        `<td>${expense.expenseType.name}</td>` +
+                        `<td>${expense.description}</td>` +
+                        `<td>${expense.count}</td>` +
+                        `<td>${expense.price}</td>` +
+                        ` </tr>`;
+
+                }
+            }
+            content += '</tbody></table>';
+            groupExpensesDiv.append(content);
+        }
     </script>
 }
