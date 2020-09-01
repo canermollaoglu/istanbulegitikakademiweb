@@ -60,6 +60,22 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 data = model
             });
         }
+        [Route("admin/get-class-rooms-by-host-id/{hostId?}")]
+        public IActionResult GetClassRoomsByHostId(Guid? hostId)
+        {
+            if (!hostId.HasValue)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false
+                });
+
+            var model = _unitOfWork.EducationHost.GetClassRoomsByHostId(hostId.Value);
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = model
+            });
+        }
 
         [HttpPost, Route("admin/add-group")]
         public async Task<IActionResult> Add(AddPostVm data)
@@ -80,7 +96,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 HostId = data.HostId.Value,
                 StartDate = data.StartDate.Value,
                 Quota = data.Quota.Value
-            }, days: data.LessonDays);
+            }, days: data.LessonDays,data.ClassRoomId,data.EducatorPrice);
             var emails = _unitOfWork.EmailHelper.GetAdminEmails();
             await _emailSender.SendAsync(new Core.ComplexTypes.EmailMessage
             {

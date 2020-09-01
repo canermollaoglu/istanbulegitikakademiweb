@@ -36,7 +36,7 @@ namespace NitelikliBilisim.Business.Repositories
             return groups;
         }
        
-        public bool Insert(EducationGroup entity, List<int> days)
+        public bool Insert(EducationGroup entity, List<int> days,Guid? classRoomId,decimal educatorSalary)
         {
             using (var transation = _context.Database.BeginTransaction())
             {
@@ -75,9 +75,11 @@ namespace NitelikliBilisim.Business.Repositories
                     {
                         DateOfLesson = date,
                         GroupId = entity.Id,
+                        ClassroomId =classRoomId,
                         HasAttendanceRecord = false,
                         IsImmuneToAutoChange = false,
-                        EducatorId = entity.EducatorId
+                        EducatorId = entity.EducatorId,
+                        EducatorSalary = educatorSalary
                     });
 
                 _context.GroupLessonDays.AddRange(groupLessonDays);
