@@ -2,6 +2,7 @@
 using Nest;
 using NitelikliBilisim.Business.Repositories;
 using NitelikliBilisim.Business.Repositories.BlogRepositories;
+using NitelikliBilisim.Core.Entities.groups;
 using NitelikliBilisim.Data;
 
 namespace NitelikliBilisim.Business.UoW
@@ -47,6 +48,8 @@ namespace NitelikliBilisim.Business.UoW
         private BlogTagRepository _blogTagRepository;
         private InvoiceRepository _invoiceRepository;
         private InvoiceDetailRepository _invoiceDetailRepository;
+        private GroupExpenseRepository _groupExpenseRepository;
+        private GroupExpenseTypeRepository _groupExpenseTypeRepository;
 
         private IElasticClient _elasticClient;
         public UnitOfWork(NbDataContext context, IElasticClient elasticClient)
@@ -59,6 +62,8 @@ namespace NitelikliBilisim.Business.UoW
             _context.EnsureAutoHistory();
             return _context.SaveChanges();
         }
+        public GroupExpenseRepository GroupExpense => _groupExpenseRepository ??= new GroupExpenseRepository(_context);
+        public GroupExpenseTypeRepository GroupExpenseType => _groupExpenseTypeRepository ??= new GroupExpenseTypeRepository(_context);
         public InvoiceDetailRepository InvoiceDetail => _invoiceDetailRepository ??= new InvoiceDetailRepository(_context);
         public InvoiceRepository Invoice => _invoiceRepository ??= new InvoiceRepository(_context);
         public SuggestionRepository Suggestions => _suggestionRepository ??= new SuggestionRepository(_context, _elasticClient);

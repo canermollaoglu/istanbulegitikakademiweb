@@ -9,6 +9,7 @@ using NitelikliBilisim.Core.Abstracts;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Entities.blog;
 using NitelikliBilisim.Core.Entities.educations;
+using NitelikliBilisim.Core.Entities.groups;
 using NitelikliBilisim.Core.Entities.helper;
 using NitelikliBilisim.Core.Entities.user_details;
 
@@ -147,5 +148,8 @@ namespace NitelikliBilisim.Data
         public DbSet<BlogCategory> BlogCategories { get; set; }
         public DbSet<BlogTag> BlogTags { get; set; }
         public DbSet<Bridge_BlogPostTag> Bridge_BlogPostTags { get; set; }
+        public DbSet<GroupExpense> GroupExpenses { get; set; }
+        public DbSet<GroupExpenseType> GroupExpenseTypes { get; set; }
+
     }
 }
