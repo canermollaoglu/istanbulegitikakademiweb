@@ -4,6 +4,7 @@ using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.areas.admin.customer;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_groups;
+using NitelikliBilisim.Core.ViewModels.areas.admin.group_lesson_days;
 using NitelikliBilisim.Data;
 using NitelikliBilisim.Support.Enums;
 using System;
@@ -84,6 +85,24 @@ namespace NitelikliBilisim.Business.Repositories
             };
             return model;
 
+        }
+
+        public List<GroupLessonDayGetVm> GetLessonDaysByGroupId(Guid groupId)
+        {
+            var lessonDays = (from lessonDay in _context.GroupLessonDays
+                              join educator in _context.Users on lessonDay.EducatorId equals educator.Id into le
+                              from educator in le.DefaultIfEmpty()
+                              join classRoom in _context.Classrooms on lessonDay.ClassroomId equals classRoom.Id into lc
+                              from classRoom in lc.DefaultIfEmpty()
+                              where lessonDay.GroupId == groupId
+                              select new GroupLessonDayGetVm {
+                              ClassRoomName = classRoom.Name,
+                              DateOfLesson = lessonDay.DateOfLesson,
+                              EducatorFullName = $"{educator.Name} {educator.Surname}",
+                              EducatorSalary = lessonDay.EducatorSalary.GetValueOrDefault(),
+                              Id = lessonDay.Id
+                              }).OrderByDescending(x=>x.DateOfLesson).ToList();
+            return lessonDays;
         }
 
         public List<AssignedStudentVm> GetAssignedStudentsByGroupId(Guid groupId)

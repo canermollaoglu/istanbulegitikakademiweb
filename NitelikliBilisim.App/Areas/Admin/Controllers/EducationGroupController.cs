@@ -39,6 +39,16 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
             return View(groupDetail);
         }
+
+        public IActionResult GetLessonDaysByGroupId(Guid groupId)
+        {
+            var lessonDays = _unitOfWork.EducationGroup.GetLessonDaysByGroupId(groupId);
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = lessonDays
+            });
+        }
         public IActionResult AssignedUserByGroupId(Guid groupId)
         {
             var students = _unitOfWork.EducationGroup.GetAssignedStudentsByGroupId(groupId);

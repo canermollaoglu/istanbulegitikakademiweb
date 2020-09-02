@@ -83,6 +83,7 @@
         <div class="card mb-3">
             <div class="card-header">
                 <i class="fa fa-users"></i> <strong></strong> Öğrenci Listesi
+                <a title="Öğrenci Ataması Yap" href="#" class="btn btn-outline-success btn-sm pull-right" style="margin:0;"><i class="fa fa-arrow-circle-down"></i></a>
             </div>
             <div class="card-body">
                 <div id="grid-students"></div>
@@ -96,7 +97,7 @@
     <div class="col-md-6">
         <div class="card mb-3">
             <div class="card-header">
-                <i class="fa fa-list"></i> <strong></strong> Grup Giderleri
+                <i class="fa fa-money"></i> <strong></strong> Grup Giderleri
                 <a href="#" data-toggle="modal" data-target="#addGroupExpenseModal" class="btn btn-outline-primary btn-sm pull-right"><i class="fa fa-plus"></i> </a>
             </div>
             <div class="card-body" id="groupExpensesDiv">
@@ -109,26 +110,10 @@
     <div class="col-md-6">
         <div class="card mb-3">
             <div class="card-header">
-                <i class="fa fa-list"></i> <strong>Eğitim</strong> Günleri
+                <i class="fa fa-calendar"></i> <strong>Eğitim</strong> Günleri
             </div>
             <div class="card-body">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <td><strong>Tarih</strong></td>
-                            <td><strong>Eğitmen Ücreti</strong></td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var lessonDay in Model.LessonDays)
-                        {
-                            <tr>
-                                <td>@lessonDay.DateOfLesson.ToShortDateString()</td>
-                                <td>@lessonDay.EducatorSalary</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+                <div id="grid-lessonDays"></div>
             </div>
         </div>
 
@@ -139,7 +124,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Eğitim Öneri Kriteri Düzenle</h5>
+                <h5 class="modal-title">Grup Gideri Ekle</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -213,6 +198,7 @@
         function document_onLoad() {
             fillGroupExpenses();
             createStudentGrid();
+            createLessonDayGrid();
         }
 
         function btnSave_onClick() {
@@ -297,6 +283,67 @@
 
 
         /*DataGrid*/
+
+        function createLessonDayGrid() {
+            var gId = groupId.val();
+            $("#grid-lessonDays").dxDataGrid({
+                dataSource: `/admin/educationgroup/GetLessonDaysByGroupId?groupId=${gId}`,
+                showBorders: true,
+                showColumnLines: true,
+                showRowLines: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                searchPanel: {
+                    visible: false
+                },
+                paging: {
+                    pageSize: 10
+                },
+                onContentReady: function () {
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10, 20],
+                    showInfo: true
+                },
+                columns: [{
+                    caption: "Tarih",
+                    dataField: "dateOfLesson",
+                    width: 100,
+                    dataType: 'date',
+                    format: 'dd/MM/yyyy'
+                },
+                {
+                    caption: "Eğitmen Ad Soyad",
+                    dataField: "educatorFullName",
+                    width: 150
+                },
+                {
+                    caption: "Sınıf",
+                    dataField: "classRoomName"
+
+                },
+                {
+                    caption: "Eğitmen Ücreti",
+                    dataField: "educatorSalary"
+                },
+                {
+                    caption: "İşlem",
+                    allowSearch: false,
+                    cellTemplate: function (container, options) {
+                        var current = options.data;
+                        $(`<a title="Gruptan Çıkar" class="btn btn-outline-danger btn-sm" href="#"><i class="fa fa-remove"></i></a>`)
+                            .appendTo(container);
+                    },
+                    alignment: "center",
+                    width: "auto"
+                }
+                ]
+            });
+
+        }
         function createStudentGrid() {
             var gId = groupId.val();
             $("#grid-students").dxDataGrid({
