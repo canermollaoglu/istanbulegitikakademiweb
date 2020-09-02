@@ -2,7 +2,9 @@
 using Newtonsoft.Json;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.ViewModels;
+using NitelikliBilisim.Core.ViewModels.areas.admin.customer;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_groups;
+using NitelikliBilisim.Core.ViewModels.areas.admin.group_lesson_days;
 using NitelikliBilisim.Data;
 using NitelikliBilisim.Support.Enums;
 using System;
@@ -28,8 +30,37 @@ namespace NitelikliBilisim.Business.Repositories
                 .Include(x=>x.GroupExpenses)
                 .Include(x => x.GroupLessonDays).First(x => x.Id == groupId);
 
+            #region Eligible Tickets
+            var eligibleTickets = _context.Tickets
+                .Include(x => x.Owner)
+                .ThenInclude(x => x.User)
+                .Where(x => !x.IsUsed && x.EducationId == group.EducationId)
+                .Select(x => new _Ticket
+                {
+                    TicketId = x.Id,
+                    CustomerName = x.Owner.User.Name,
+                    CustomerSurname = x.Owner.User.Surname
+                })
+                .ToList();
+            #endregion
+
+            #region Assigned Tickets
+            var assignedTickets = _context.Bridge_GroupStudents
+                .Where(x => x.Id == groupId)
+                .Include(x => x.Customer)
+                .ThenInclude(x => x.User)
+                .Select(x => new _Ticket
+                {
+                    TicketId = x.TicketId,
+                    CustomerName = x.Customer.User.Name,
+                    CustomerSurname = x.Customer.User.Surname
+                })
+                .ToList();
+            #endregion
+
+
             var studentIds = group.GroupStudents.Select(x => x.Id2).ToList();
-            var educator = _context.Educators.Include(x=>x.User).First(x => x.Id == group.EducatorId);
+            var educator = _context.Users.First(x => x.Id == group.EducatorId);
             var students = _context.Customers
                 .Include(x => x.User)
                 .Where(x => studentIds.Contains(x.Id))
@@ -37,6 +68,7 @@ namespace NitelikliBilisim.Business.Repositories
 
             var model = new GroupDetailVm
             {
+                GroupId = group.Id,
                 GroupName = group.GroupName,
                 Host = group.Host,
                 Quota = group.Quota,
@@ -47,14 +79,50 @@ namespace NitelikliBilisim.Business.Repositories
                 },
                 StartDate = group.StartDate,
                 LessonDays = group.GroupLessonDays,
-                Expenses = group.GroupExpenses,
                 Students = students,
-                Educator = educator
+                EducatorName = $"{educator.Name} {educator.Surname}",
+                GroupExpenseTypes = _context.GroupExpenseTypes.ToList()
             };
             return model;
 
         }
 
+        public List<GroupLessonDayGetVm> GetLessonDaysByGroupId(Guid groupId)
+        {
+            var lessonDays = (from lessonDay in _context.GroupLessonDays
+                              join educator in _context.Users on lessonDay.EducatorId equals educator.Id into le
+                              from educator in le.DefaultIfEmpty()
+                              join classRoom in _context.Classrooms on lessonDay.ClassroomId equals classRoom.Id into lc
+                              from classRoom in lc.DefaultIfEmpty()
+                              where lessonDay.GroupId == groupId
+                              select new GroupLessonDayGetVm {
+                              ClassRoomName = classRoom.Name,
+                              DateOfLesson = lessonDay.DateOfLesson,
+                              EducatorFullName = $"{educator.Name} {educator.Surname}",
+                              EducatorSalary = lessonDay.EducatorSalary.GetValueOrDefault(),
+                              Id = lessonDay.Id
+                              }).OrderByDescending(x=>x.DateOfLesson).ToList();
+            return lessonDays;
+        }
+
+        public List<AssignedStudentVm> GetAssignedStudentsByGroupId(Guid groupId)
+        {
+            var assignedTickets = _context.Bridge_GroupStudents
+                .Where(x => x.Id == groupId)
+                .Include(x => x.Customer)
+                .ThenInclude(x => x.User)
+                .Select(x => new AssignedStudentVm
+                {
+                    TicketId = x.TicketId,
+                    CustomerFullName = $"{x.Customer.User.Name} {x.Customer.User.Surname}",
+                    CustomerId = x.Customer.User.Id,
+                    Email = x.Customer.User.Email,
+                    PhoneNumber = x.Customer.User.PhoneNumber
+
+                })
+                .ToList();
+            return assignedTickets;
+        }
 
         public IQueryable<EducationGroupListVm> GetListQueryable()
         {

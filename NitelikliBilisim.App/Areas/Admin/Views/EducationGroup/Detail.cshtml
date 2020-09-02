@@ -6,7 +6,8 @@
 
 @section styles{
     <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="~/vendor\devextreme\dist\css\dx.common.css" rel="stylesheet" />
+    <link href="~/vendor\devextreme\dist\css\dx.light.css" rel="stylesheet" />
     <style>
         .form-check-label {
             cursor: pointer;
@@ -24,6 +25,7 @@
             <div class="card-header">
                 <i class="fa fa-list"></i> <strong></strong> Genel Grup Bilgileri
             </div>
+            <input type="hidden" value="@Model.GroupId" id="groupId" />
             <div class="card-body">
                 <table class="table table-bordered">
                     <tbody>
@@ -61,7 +63,7 @@
                                 <b>Eğitmen</b>
                             </td>
                             <td>
-                                @Model.Educator.User.Name @Model.Educator.User.Surname
+                                @Model.EducatorName
                             </td>
                             <td>
                                 <b>Başlangıç Tarihi</b>
@@ -71,11 +73,8 @@
                             </td>
                         </tr>
                     </tbody>
-
                 </table>
-
             </div>
-
         </div>
     </div>
 
@@ -84,34 +83,10 @@
         <div class="card mb-3">
             <div class="card-header">
                 <i class="fa fa-users"></i> <strong></strong> Öğrenci Listesi
+                <a title="Öğrenci Ataması Yap" href="#" class="btn btn-outline-success btn-sm pull-right" style="margin:0;"><i class="fa fa-arrow-circle-down"></i></a>
             </div>
             <div class="card-body">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <td><strong>Ad Soyad</strong></td>
-                            <td><strong>Telefon</strong></td>
-                            <td><strong>Email</strong></td>
-                            <td><strong></strong></td>
-                            <td><strong></strong></td>
-                            <td><strong></strong></td>
-
-
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var student in Model.Students)
-                        {
-                        <tr>
-                            <td>@student.User.Name</td>
-                            <td>@student.User.PhoneNumber</td>
-                            <td>@student.User.Email</td>
-
-
-                        </tr>
-                        }
-                    </tbody>
-                </table>
+                <div id="grid-students"></div>
             </div>
         </div>
     </div>
@@ -122,10 +97,12 @@
     <div class="col-md-6">
         <div class="card mb-3">
             <div class="card-header">
-                <i class="fa fa-list"></i> <strong></strong> Grup Giderleri
-                <a href="#" class="btn btn-outline-primary btn-sm pull-right"><i class="fa fa-plus"></i> </a>
+                <i class="fa fa-money"></i> <strong></strong> Grup Giderleri
+                <a href="#" data-toggle="modal" data-target="#addGroupExpenseModal" class="btn btn-outline-primary btn-sm pull-right"><i class="fa fa-plus"></i> </a>
             </div>
-            <div class="card-body"></div>
+            <div class="card-body" id="groupExpensesDiv">
+
+            </div>
 
         </div>
     </div>
@@ -133,28 +110,298 @@
     <div class="col-md-6">
         <div class="card mb-3">
             <div class="card-header">
-                <i class="fa fa-list"></i> <strong>Eğitim</strong> Günleri
+                <i class="fa fa-calendar"></i> <strong>Eğitim</strong> Günleri
             </div>
             <div class="card-body">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <td><strong>Tarih</strong></td>
-                            <td><strong>Eğitmen Ücreti</strong></td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var lessonDay in Model.LessonDays)
-                        {
-                            <tr>
-                                <td>@lessonDay.DateOfLesson.ToShortDateString()</td>
-                                <td>@lessonDay.EducatorSalary</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+                <div id="grid-lessonDays"></div>
             </div>
         </div>
 
     </div>
 </div>
+
+<div class="modal fade" id="addGroupExpenseModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Grup Gideri Ekle</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="form-add-groupexpense">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="educationSuggestionCriterionId" />
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="col-form-label">Gider Tipi : </label>
+                                <select class="form-control" id="selectExpenseType">
+                                    @foreach (var item in Model.GroupExpenseTypes)
+                                    {
+                                        <option value="@item.Id">@item.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-form-label">Adet</label>
+                                <input type="number" class="form-control" id="inputCount" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-form-label">Birim Fiyat : </label>
+                                <input type="number" class="form-control" id="inputPrice" />
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="col-form-label">Açıklama : </label>
+                                <textarea type="text" class="form-control" id="inputDescription"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                <button type="button" class="btn btn-primary" id="btn-save">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section postScripts{
+    <script src="~/assets/js/area-admin/jquery.dataTables.js"></script>
+    <script src="~/assets/js/area-admin/dataTables.bootstrap4.js"></script>
+    <script src="~/js/sup/alert-sup.js"></script>
+    <script src="~/js/lib/security-support.js"></script>
+    <script src="~/vendor\devextreme\dist\js\dx.all.js"></script>
+    <script type="text/javascript">
+        /* elements */
+        var selectExpenseTypes = $("#selectExpenseType");
+        var inputPrice = $("#inputPrice");
+        var inputCount = $("#inputCount");
+        var inputDescription = $("#inputDescription");
+        var groupExpensesDiv = $("#groupExpensesDiv");
+        var groupId = $("#groupId");
+        var btnSave = $("#btn-save");
+
+        /* assignments */
+        $(document).ready(document_onLoad);
+        btnSave.on("click", btnSave_onClick);
+
+        /* events */
+        function document_onLoad() {
+            fillGroupExpenses();
+            createStudentGrid();
+            createLessonDayGrid();
+        }
+
+        function btnSave_onClick() {
+            btnSave.off("click");
+
+            var tokenVerifier = new SecuritySupport.TokenVerifier();
+            var data = tokenVerifier.addToken("form-add-groupexpense", {
+                GroupId: groupId.val(),
+                Description: inputDescription.val(),
+                Price: inputPrice.val(),
+                Count: inputCount.val(),
+                ExpenseTypeId: selectExpenseTypes.val()
+            });
+            var resultAlert = new AlertSupport.ResultAlert();
+            $.ajax({
+                url: "/admin/add-group-expense",
+                method: "post",
+                data: data,
+                success: (res) => {
+
+                    if (res.isSuccess) {
+                        resultAlert.display({
+                            success: true,
+                            message: "Kayıt işlemi başarılı!",
+
+                        });
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors,
+                            message: "İşlem başarısız"
+                        });
+                    }
+                    fillGroupExpenses();
+                    $('#form-add-groupexpense')[0].reset();
+                    $("#addGroupExpenseModal").modal('hide');
+                },
+                complete: () => {
+                    btnSave.on("click", btnSave_onClick);
+
+                }
+            });
+
+        }
+
+        function fillGroupExpenses() {
+            var gId = groupId.val();
+            $.ajax({
+                url: `/admin/get-expense-list-by-group-id?groupId=${gId}`,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        groupExpensesDiv.empty();
+                        createExpensesList(res.data);
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors
+                        });
+                    }
+                }
+            });
+        }
+        function createExpensesList(data) {
+            var content = '<table class="table table-bordered"><thead><tr><td>Gider Tipi</td><td>Açıklama</td><td>Adet</td><td>Birim Fiyat</td></tr></thead><tbody>';
+            if (data.length > 0) {
+                for (var i = 0; i < data.length; i++) {
+                    var expense = data[i];
+                    content +=
+                        `<tr>` +
+                        `<td>${expense.expenseType.name}</td>` +
+                        `<td>${expense.description}</td>` +
+                        `<td>${expense.count}</td>` +
+                        `<td>${expense.price}</td>` +
+                        ` </tr>`;
+
+                }
+            }
+            content += '</tbody></table>';
+            groupExpensesDiv.append(content);
+        }
+
+
+        /*DataGrid*/
+
+        function createLessonDayGrid() {
+            var gId = groupId.val();
+            $("#grid-lessonDays").dxDataGrid({
+                dataSource: `/admin/educationgroup/GetLessonDaysByGroupId?groupId=${gId}`,
+                showBorders: true,
+                showColumnLines: true,
+                showRowLines: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                searchPanel: {
+                    visible: false
+                },
+                paging: {
+                    pageSize: 10
+                },
+                onContentReady: function () {
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10, 20],
+                    showInfo: true
+                },
+                columns: [{
+                    caption: "Tarih",
+                    dataField: "dateOfLesson",
+                    width: 100,
+                    dataType: 'date',
+                    format: 'dd/MM/yyyy'
+                },
+                {
+                    caption: "Eğitmen Ad Soyad",
+                    dataField: "educatorFullName",
+                    width: 150
+                },
+                {
+                    caption: "Sınıf",
+                    dataField: "classRoomName"
+
+                },
+                {
+                    caption: "Eğitmen Ücreti",
+                    dataField: "educatorSalary"
+                },
+                {
+                    caption: "İşlem",
+                    allowSearch: false,
+                    cellTemplate: function (container, options) {
+                        var current = options.data;
+                        $(`<a title="Gruptan Çıkar" class="btn btn-outline-danger btn-sm" href="#"><i class="fa fa-remove"></i></a>`)
+                            .appendTo(container);
+                    },
+                    alignment: "center",
+                    width: "auto"
+                }
+                ]
+            });
+
+        }
+        function createStudentGrid() {
+            var gId = groupId.val();
+            $("#grid-students").dxDataGrid({
+                dataSource: `/admin/educationgroup/AssignedUserByGroupId?groupId=${gId}`,
+                showBorders: true,
+                showColumnLines: true,
+                showRowLines: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                searchPanel: {
+                    visible: false
+                },
+                paging: {
+                    pageSize: 10
+                },
+                onContentReady: function () {
+                    var deleteButtons = $(".btn-confirmation-modal-trigger");
+                    for (var i = 0; i < deleteButtons.length; i++) {
+                        var btn = deleteButtons[i];
+                        btn.onclick = btnConfirmationModalTrigger_onClick;
+                    }
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10, 20],
+                    showInfo: true
+                },
+                columns: [{
+                    caption: "Ad Soyad",
+                    dataField: "customerFullName",
+                    width: 150
+                },
+                {
+                    caption: "Email",
+                    dataField: "email",
+                    width: 150
+                },
+                {
+                    caption: "Telefon",
+                    dataField: "phoneNumber",
+
+                },
+                {
+                    caption: "İşlem",
+                    allowSearch: false,
+                    cellTemplate: function (container, options) {
+                        var current = options.data;
+                        $(`<a title="Gruptan Çıkar" class="btn btn-outline-danger btn-sm" href="#"><i class="fa fa-remove"></i></a>`)
+                            .appendTo(container);
+                    },
+                    alignment: "center",
+                    width: "auto"
+                }
+                ]
+            });
+
+        }
+    </script>
+}
