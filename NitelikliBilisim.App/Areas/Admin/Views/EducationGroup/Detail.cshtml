@@ -6,6 +6,8 @@
 
 @section styles{
     <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
+    <link href="~/vendor\devextreme\dist\css\dx.common.css" rel="stylesheet" />
+    <link href="~/vendor\devextreme\dist\css\dx.light.css" rel="stylesheet" />
     <style>
         .form-check-label {
             cursor: pointer;
@@ -83,32 +85,7 @@
                 <i class="fa fa-users"></i> <strong></strong> Öğrenci Listesi
             </div>
             <div class="card-body">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <td><strong>Ad Soyad</strong></td>
-                            <td><strong>Telefon</strong></td>
-                            <td><strong>Email</strong></td>
-                            <td><strong></strong></td>
-                            <td><strong></strong></td>
-                            <td><strong></strong></td>
-
-
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var student in Model.Students)
-                        {
-                            <tr>
-                                <td>@student.User.Name</td>
-                                <td>@student.User.PhoneNumber</td>
-                                <td>@student.User.Email</td>
-
-
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+                <div id="grid-students"></div>
             </div>
         </div>
     </div>
@@ -217,6 +194,7 @@
     <script src="~/assets/js/area-admin/dataTables.bootstrap4.js"></script>
     <script src="~/js/sup/alert-sup.js"></script>
     <script src="~/js/lib/security-support.js"></script>
+    <script src="~/vendor\devextreme\dist\js\dx.all.js"></script>
     <script type="text/javascript">
         /* elements */
         var selectExpenseTypes = $("#selectExpenseType");
@@ -234,6 +212,7 @@
         /* events */
         function document_onLoad() {
             fillGroupExpenses();
+            createStudentGrid();
         }
 
         function btnSave_onClick() {
@@ -281,14 +260,12 @@
 
         function fillGroupExpenses() {
             var gId = groupId.val();
-
             $.ajax({
                 url: `/admin/get-expense-list-by-group-id?groupId=${gId}`,
                 method: "get",
                 success: (res) => {
                     if (res.isSuccess) {
                         groupExpensesDiv.empty();
-                        console.log(res.data);
                         createExpensesList(res.data);
                     } else {
                         resultAlert.display({
@@ -298,7 +275,6 @@
                     }
                 }
             });
-
         }
         function createExpensesList(data) {
             var content = '<table class="table table-bordered"><thead><tr><td>Gider Tipi</td><td>Açıklama</td><td>Adet</td><td>Birim Fiyat</td></tr></thead><tbody>';
@@ -317,6 +293,68 @@
             }
             content += '</tbody></table>';
             groupExpensesDiv.append(content);
+        }
+
+
+        /*DataGrid*/
+        function createStudentGrid() {
+            var gId = groupId.val();
+            $("#grid-students").dxDataGrid({
+                dataSource: `/admin/educationgroup/AssignedUserByGroupId?groupId=${gId}`,
+                showBorders: true,
+                showColumnLines: true,
+                showRowLines: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                searchPanel: {
+                    visible: false
+                },
+                paging: {
+                    pageSize: 10
+                },
+                onContentReady: function () {
+                    var deleteButtons = $(".btn-confirmation-modal-trigger");
+                    for (var i = 0; i < deleteButtons.length; i++) {
+                        var btn = deleteButtons[i];
+                        btn.onclick = btnConfirmationModalTrigger_onClick;
+                    }
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10, 20],
+                    showInfo: true
+                },
+                columns: [{
+                    caption: "Ad Soyad",
+                    dataField: "customerFullName",
+                    width: 150
+                },
+                {
+                    caption: "Email",
+                    dataField: "email",
+                    width: 150
+                },
+                {
+                    caption: "Telefon",
+                    dataField: "phoneNumber",
+
+                },
+                {
+                    caption: "İşlem",
+                    allowSearch: false,
+                    cellTemplate: function (container, options) {
+                        var current = options.data;
+                        $(`<a title="Gruptan Çıkar" class="btn btn-outline-danger btn-sm" href="#"><i class="fa fa-remove"></i></a>`)
+                            .appendTo(container);
+                    },
+                    alignment: "center",
+                    width: "auto"
+                }
+                ]
+            });
+
         }
     </script>
 }
