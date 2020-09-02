@@ -11,5 +11,6 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.group_lesson_days
         public decimal EducatorSalary { get; set; }
         public string  EducatorFullName { get; set; }
         public string ClassRoomName { get; set; }
+        public bool HasAttendanceRecord { get; set; }
     }
 }

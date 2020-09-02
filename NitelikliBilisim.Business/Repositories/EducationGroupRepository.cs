@@ -29,7 +29,7 @@ namespace NitelikliBilisim.Business.Repositories
                 .Include(x => x.Education)
                 .Include(x => x.Host)
                 .Include(x => x.GroupStudents)
-                .Include(x=>x.GroupExpenses)
+                .Include(x => x.GroupExpenses)
                 .Include(x => x.GroupLessonDays).First(x => x.Id == groupId);
 
             #region Eligible Tickets
@@ -97,32 +97,36 @@ namespace NitelikliBilisim.Business.Repositories
                               join classRoom in _context.Classrooms on lessonDay.ClassroomId equals classRoom.Id into lc
                               from classRoom in lc.DefaultIfEmpty()
                               where lessonDay.GroupId == groupId
-                              select new GroupLessonDayGetVm {
-                              ClassRoomName = classRoom.Name,
-                              DateOfLesson = lessonDay.DateOfLesson,
-                              EducatorFullName = $"{educator.Name} {educator.Surname}",
-                              EducatorSalary = lessonDay.EducatorSalary.GetValueOrDefault(),
-                              Id = lessonDay.Id
-                              }).OrderByDescending(x=>x.DateOfLesson).ToList();
+                              select new GroupLessonDayGetVm
+                              {
+                                  ClassRoomName = classRoom.Name,
+                                  DateOfLesson = lessonDay.DateOfLesson,
+                                  EducatorFullName = $"{educator.Name} {educator.Surname}",
+                                  EducatorSalary = lessonDay.EducatorSalary.GetValueOrDefault(),
+                                  Id = lessonDay.Id,
+                                  HasAttendanceRecord = lessonDay.HasAttendanceRecord
+                              }).OrderByDescending(x => x.DateOfLesson).ToList();
             return lessonDays;
         }
 
         public List<GroupExpenseListGetVm> GetExpensesByGroupId(Guid groupId)
         {
-            var expenses = _context.GroupExpenses.Include(x=>x.ExpenseType).Where(x => x.GroupId == groupId)
-                .Select(x=> new GroupExpenseListGetVm { 
-                Id = x.Id,
-                CreatedDate = x.CreatedDate,
-                Price = x.Price,
-                Count = x.Count,
-                Description = x.Description,
-                ExpenseTypeName = x.ExpenseType.Name
-                }).OrderByDescending(x=>x.CreatedDate).ToList();
+            var expenses = _context.GroupExpenses.Include(x => x.ExpenseType).Where(x => x.GroupId == groupId)
+                .Select(x => new GroupExpenseListGetVm
+                {
+                    Id = x.Id,
+                    CreatedDate = x.CreatedDate,
+                    Price = x.Price,
+                    Count = x.Count,
+                    Description = x.Description,
+                    ExpenseTypeName = x.ExpenseType.Name
+                }).OrderByDescending(x => x.CreatedDate).ToList();
             return expenses;
         }
 
         public List<AssignedStudentVm> GetAssignedStudentsByGroupId(Guid groupId)
         {
+            var groupAttendances = _context.GroupAttendances.Where(x => x.GroupId == groupId);
             var assignedTickets = _context.Bridge_GroupStudents
                 .Where(x => x.Id == groupId)
                 .Include(x => x.Customer)
@@ -133,8 +137,9 @@ namespace NitelikliBilisim.Business.Repositories
                     CustomerFullName = $"{x.Customer.User.Name} {x.Customer.User.Surname}",
                     CustomerId = x.Customer.User.Id,
                     Email = x.Customer.User.Email,
-                    PhoneNumber = x.Customer.User.PhoneNumber
-
+                    Job = x.Customer.Job,
+                    PhoneNumber = x.Customer.User.PhoneNumber,
+                    NonAttendance = groupAttendances.Count(c => c.CustomerId == x.Customer.Id)
                 })
                 .ToList();
             return assignedTickets;

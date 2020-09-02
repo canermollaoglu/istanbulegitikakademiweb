@@ -18,109 +18,111 @@
     <partial name="partials/_Alert" />
 }
 
-<div class="row">
-    <!--Genel Grup Bilgileri-->
-    <div class="col-md-12">
-        <div class="card mb-3">
-            <div class="card-header">
-                <i class="fa fa-list"></i> <strong></strong> Genel Grup Bilgileri
-            </div>
-            <input type="hidden" value="@Model.GroupId" id="groupId" />
-            <div class="card-body">
-                <table class="table table-bordered">
-                    <tbody>
-                        <tr>
-                            <td>
-                                <b>Grup Adı</b>
-                            </td>
-                            <td>
-                                @Model.GroupName
-                            </td>
+<div class="panel-group">
 
-                            <td>
-                                <b>Eğitim Yeri</b>
-                            </td>
-                            <td>
-                                @Model.Host.HostName
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>Eğitim</b>
-                            </td>
-                            <td>
-                                @Model.Education.Name
-                            </td>
-                            <td>
-                                <b>Başlangıç Tarihi</b>
-                            </td>
-                            <td>
-                                @Model.StartDate.GetValueOrDefault().ToShortDateString()
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>Eğitmen</b>
-                            </td>
-                            <td>
-                                @Model.EducatorName
-                            </td>
-                            <td>
-                                <b>Başlangıç Tarihi</b>
-                            </td>
-                            <td>
-                                @Model.StartDate.GetValueOrDefault().ToShortDateString()
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+    <!--Genel Grup Bilgileri-->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <i class="fa fa-list"></i> <strong></strong> Genel Grup Bilgileri
+                </div>
+                <input type="hidden" value="@Model.GroupId" id="groupId" />
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <b>Grup Adı</b>
+                                </td>
+                                <td>
+                                    @Model.GroupName
+                                </td>
+
+                                <td>
+                                    <b>Eğitim Yeri</b>
+                                </td>
+                                <td>
+                                    @Model.Host.HostName
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Eğitim</b>
+                                </td>
+                                <td>
+                                    @Model.Education.Name
+                                </td>
+                                <td>
+                                    <b>Başlangıç Tarihi</b>
+                                </td>
+                                <td>
+                                    @Model.StartDate.GetValueOrDefault().ToShortDateString()
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Eğitmen</b>
+                                </td>
+                                <td>
+                                    @Model.EducatorName
+                                </td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
+
+
 
     <!--Kayıtlı Öğrenciler-->
-    <div class="col-md-12">
-        <div class="card mb-3">
-            <div class="card-header">
-                <i class="fa fa-users"></i> <strong></strong> Öğrenci Listesi
-                <a title="Öğrenci Ataması Yap" href="#" class="btn btn-outline-success btn-sm pull-right" style="margin:0;"><i class="fa fa-arrow-circle-down"></i></a>
-            </div>
-            <div class="card-body">
-                <div id="grid-students"></div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <i class="fa fa-users"></i> <strong></strong> Öğrenci Listesi
+                    <a title="Öğrenci Ataması Yap" href="#" class="btn btn-outline-success btn-sm pull-right" style="margin:0;"><i class="fa fa-arrow-circle-down"></i></a>
+                </div>
+                <div class="card-body">
+                    <div id="grid-students"></div>
+                </div>
             </div>
         </div>
     </div>
+    <div class="row">
+        <!--Grup Giderleri-->
+        <div class="col-md-12">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <i class="fa fa-money"></i> <strong></strong> Grup Giderleri
+                    <a href="#" data-toggle="modal" data-target="#addGroupExpenseModal" class="btn btn-outline-primary btn-sm pull-right"><i class="fa fa-plus"></i> </a>
+                </div>
+                <div class="card-body">
+                    <div id="grid-expenses"></div>
+                </div>
 
-</div>
-<div class="row">
-    <!--Grup Giderleri-->
-    <div class="col-md-12">
-        <div class="card mb-3">
-            <div class="card-header">
-                <i class="fa fa-money"></i> <strong></strong> Grup Giderleri
-                <a href="#" data-toggle="modal" data-target="#addGroupExpenseModal" class="btn btn-outline-primary btn-sm pull-right"><i class="fa fa-plus"></i> </a>
             </div>
-            <div class="card-body">
-                <div id="grid-expenses"></div>
+        </div>
+    </div>
+    <div class="row">
+        <!--Eğitim Günleri-->
+        <div class="col-md-12">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <i class="fa fa-calendar"></i> <strong>Eğitim</strong> Günleri
+                </div>
+                <div class="card-body">
+                    <div id="grid-lessonDays"></div>
+                </div>
             </div>
 
         </div>
     </div>
 </div>
-<div class="row">
-    <!--Eğitim Günleri-->
-    <div class="col-md-12">
-        <div class="card mb-3">
-            <div class="card-header">
-                <i class="fa fa-calendar"></i> <strong>Eğitim</strong> Günleri
-            </div>
-            <div class="card-body">
-                <div id="grid-lessonDays"></div>
-            </div>
-        </div>
 
-    </div>
-</div>
 
 <div class="modal fade" id="addGroupExpenseModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -345,7 +347,20 @@
                     alignment: "center",
                     width: "auto"
                 }
-                ]
+                ],
+                summary: {
+                    totalItems: [
+                        {
+                            column: "description",
+                            summaryType: "count",
+                            displayFormat: "Adet: {0}",
+                        },
+                        {
+                            column: "totalPrice",
+                            summaryType: "sum",
+                            displayFormat: "Toplam: {0} ₺"
+                        }]
+                }
             });
         }
         function createLessonDayGrid() {
@@ -394,11 +409,26 @@
                     dataField: "educatorSalary"
                 },
                 {
-                    caption: "İşlem",
+                    caption: "Yoklama Alındı Mı?",
+                    cellTemplate: function (container, options) {
+                        var current = options.data;
+                        if (current.hasAttendanceRecord) {
+                            $(`<span class="text-success"><i class="fa fa-check-circle"></i></span>`)
+                                .appendTo(container);
+                        } else {
+                            $(`<span class="text-danger"><i class="fa fa-times-circle"></i></span>`)
+                                .appendTo(container);
+                        }
+                    },
+                    alignment: "center",
+                    width: 150
+                },
+                {
+                    caption: "Yoklama",
                     allowSearch: false,
                     cellTemplate: function (container, options) {
                         var current = options.data;
-                        $(`<a title="Gruptan Çıkar" class="btn btn-outline-danger btn-sm" href="#"><i class="fa fa-remove"></i></a>`)
+                        $(`<a class="btn btn-outline-primary btn-sm" href="#">Yoklama</a>`)
                             .appendTo(container);
                     },
                     alignment: "center",
@@ -415,12 +445,9 @@
                 showBorders: true,
                 showColumnLines: true,
                 showRowLines: true,
-                filterRow: {
-                    visible: true,
-                    applyFilter: "auto"
-                },
                 searchPanel: {
-                    visible: false
+                    visible: true,
+                    placeholder: "Ara..."
                 },
                 paging: {
                     pageSize: 10
@@ -440,17 +467,26 @@
                 columns: [{
                     caption: "Ad Soyad",
                     dataField: "customerFullName",
-                    width: 150
+                    width: 200
                 },
                 {
                     caption: "Email",
                     dataField: "email",
-                    width: 150
+                    width: 250
                 },
                 {
                     caption: "Telefon",
                     dataField: "phoneNumber",
+                    width: 150
 
+                },
+                {
+                    caption: "Meslek",
+                    dataField: "job"
+                },
+                {
+                    caption: "Devamsızlık",
+                    dataField: "nonAttendance"
                 },
                 {
                     caption: "İşlem",
