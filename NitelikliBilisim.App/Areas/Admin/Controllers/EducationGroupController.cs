@@ -40,6 +40,16 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             return View(groupDetail);
         }
 
+        public IActionResult GetGroupExpensesByGroupId(Guid groupId)
+        {
+            var expenses = _unitOfWork.EducationGroup.GetExpensesByGroupId(groupId);
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = expenses
+            });
+        }
+
         public IActionResult GetLessonDaysByGroupId(Guid groupId)
         {
             var lessonDays = _unitOfWork.EducationGroup.GetLessonDaysByGroupId(groupId);

@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Entities.groups;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.areas.admin.customer;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_groups;
+using NitelikliBilisim.Core.ViewModels.areas.admin.group_expense;
 using NitelikliBilisim.Core.ViewModels.areas.admin.group_lesson_days;
 using NitelikliBilisim.Data;
 using NitelikliBilisim.Support.Enums;
@@ -103,6 +105,20 @@ namespace NitelikliBilisim.Business.Repositories
                               Id = lessonDay.Id
                               }).OrderByDescending(x=>x.DateOfLesson).ToList();
             return lessonDays;
+        }
+
+        public List<GroupExpenseListGetVm> GetExpensesByGroupId(Guid groupId)
+        {
+            var expenses = _context.GroupExpenses.Include(x=>x.ExpenseType).Where(x => x.GroupId == groupId)
+                .Select(x=> new GroupExpenseListGetVm { 
+                Id = x.Id,
+                CreatedDate = x.CreatedDate,
+                Price = x.Price,
+                Count = x.Count,
+                Description = x.Description,
+                ExpenseTypeName = x.ExpenseType.Name
+                }).OrderByDescending(x=>x.CreatedDate).ToList();
+            return expenses;
         }
 
         public List<AssignedStudentVm> GetAssignedStudentsByGroupId(Guid groupId)

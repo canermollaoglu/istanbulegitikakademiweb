@@ -53,6 +53,27 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
         }
 
+        [Route("admin/delete-group-expense")]
+        public IActionResult DeleteExpense(Guid expenseId)
+        {
+            try
+            {
+                _unitOfWork.GroupExpense.Delete(expenseId);
+                return Json(new ResponseModel
+                {
+                    isSuccess = true
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Hata " + ex.Message }
+                });
+            }
+        }
+
         [HttpGet]
         [Route("admin/get-expense-list-by-group-id")]
         public IActionResult GetListByGroupId(Guid groupId)
@@ -76,7 +97,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             }
 
         }
-
 
     }
 }

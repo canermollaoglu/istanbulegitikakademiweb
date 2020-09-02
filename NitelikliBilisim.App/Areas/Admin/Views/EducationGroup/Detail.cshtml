@@ -94,20 +94,22 @@
 </div>
 <div class="row">
     <!--Grup Giderleri-->
-    <div class="col-md-6">
+    <div class="col-md-12">
         <div class="card mb-3">
             <div class="card-header">
                 <i class="fa fa-money"></i> <strong></strong> Grup Giderleri
                 <a href="#" data-toggle="modal" data-target="#addGroupExpenseModal" class="btn btn-outline-primary btn-sm pull-right"><i class="fa fa-plus"></i> </a>
             </div>
-            <div class="card-body" id="groupExpensesDiv">
-
+            <div class="card-body">
+                <div id="grid-expenses"></div>
             </div>
 
         </div>
     </div>
+</div>
+<div class="row">
     <!--Eğitim Günleri-->
-    <div class="col-md-6">
+    <div class="col-md-12">
         <div class="card mb-3">
             <div class="card-header">
                 <i class="fa fa-calendar"></i> <strong>Eğitim</strong> Günleri
@@ -132,7 +134,6 @@
             <div class="modal-body">
                 <form id="form-add-groupexpense">
                     @Html.AntiForgeryToken()
-                    <input type="hidden" id="educationSuggestionCriterionId" />
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
@@ -190,17 +191,31 @@
         var groupId = $("#groupId");
         var btnSave = $("#btn-save");
 
+        /* fields */
+        var confirmModalBuilder = new AlertSupport.ConfirmModalBuilder();
+
         /* assignments */
         $(document).ready(document_onLoad);
         btnSave.on("click", btnSave_onClick);
 
         /* events */
         function document_onLoad() {
-            fillGroupExpenses();
+            confirmModalBuilder.buildModal({
+                title: "Emin misiniz?",
+                bodyText: "Seçmiş olduğunuz kayıt kalıcı olarak silinecektir.",
+                cancelText: "Hayır, iptal et",
+                confirmText: "Evet, eminim",
+                onConfirmClick: confirm_onClick
+            });
+            createGroupExpenseGrid();
             createStudentGrid();
             createLessonDayGrid();
         }
-
+        function btnConfirmationModalTrigger_onClick() {
+            var url = this.getAttribute("data-url");
+            confirmModalBuilder.setUrl(url);
+            confirmModalBuilder.display();
+        }
         function btnSave_onClick() {
             btnSave.off("click");
 
@@ -218,12 +233,10 @@
                 method: "post",
                 data: data,
                 success: (res) => {
-
                     if (res.isSuccess) {
                         resultAlert.display({
                             success: true,
                             message: "Kayıt işlemi başarılı!",
-
                         });
                     } else {
                         resultAlert.display({
@@ -232,58 +245,109 @@
                             message: "İşlem başarısız"
                         });
                     }
-                    fillGroupExpenses();
                     $('#form-add-groupexpense')[0].reset();
                     $("#addGroupExpenseModal").modal('hide');
                 },
                 complete: () => {
                     btnSave.on("click", btnSave_onClick);
-
                 }
             });
-
+            location.href = location.href;
         }
-
-        function fillGroupExpenses() {
-            var gId = groupId.val();
+        function confirm_onClick() {
+            var url = this.getAttribute("data-url");
             $.ajax({
-                url: `/admin/get-expense-list-by-group-id?groupId=${gId}`,
+                url: url,
                 method: "get",
                 success: (res) => {
                     if (res.isSuccess) {
-                        groupExpensesDiv.empty();
-                        createExpensesList(res.data);
+                        location.href = location.href;
                     } else {
+                        var resultAlert = new AlertSupport.ResultAlert();
                         resultAlert.display({
                             success: false,
-                            errors: res.errors
+                            errors: res.errors,
+                            message: "Hataları düzeltiniz"
                         });
                     }
                 }
             });
         }
-        function createExpensesList(data) {
-            var content = '<table class="table table-bordered"><thead><tr><td>Gider Tipi</td><td>Açıklama</td><td>Adet</td><td>Birim Fiyat</td></tr></thead><tbody>';
-            if (data.length > 0) {
-                for (var i = 0; i < data.length; i++) {
-                    var expense = data[i];
-                    content +=
-                        `<tr>` +
-                        `<td>${expense.expenseType.name}</td>` +
-                        `<td>${expense.description}</td>` +
-                        `<td>${expense.count}</td>` +
-                        `<td>${expense.price}</td>` +
-                        ` </tr>`;
-
-                }
-            }
-            content += '</tbody></table>';
-            groupExpensesDiv.append(content);
-        }
-
 
         /*DataGrid*/
+        function createGroupExpenseGrid() {
+            var gId = groupId.val();
+            $("#grid-expenses").dxDataGrid({
+                dataSource: `/admin/educationgroup/GetGroupExpensesByGroupId?groupId=${gId}`,
+                showBorders: true,
+                showColumnLines: true,
+                showRowLines: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                searchPanel: {
+                    visible: false
+                },
+                paging: {
+                    pageSize: 10
+                },
+                onContentReady: function () {
+                    var deleteButtons = $(".btn-confirmation-modal-trigger");
+                    for (var i = 0; i < deleteButtons.length; i++) {
+                        var btn = deleteButtons[i];
+                        btn.onclick = btnConfirmationModalTrigger_onClick;
+                    }
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10, 20],
+                    showInfo: true
+                },
+                columns: [{
+                    caption: "Tarih",
+                    dataField: "createdDate",
+                    width: 100,
+                    dataType: 'date',
+                    format: 'dd/MM/yyyy'
+                },
+                {
+                    caption: "Gider Tipi",
+                    dataField: "expenseTypeName",
+                    width: 200
+                },
+                {
+                    caption: "Açıklama",
+                    dataField: "description",
+                    width: 350
 
+                },
+                {
+                    caption: "Adet",
+                    dataField: "count"
+                },
+                {
+                    caption: "Tutar",
+                    dataField: "price"
+                },
+                {
+                    caption: "Toplam Tutar",
+                    dataField: "totalPrice"
+                },
+                {
+                    caption: "İşlem",
+                    allowSearch: false,
+                    cellTemplate: function (container, options) {
+                        var current = options.data;
+                        $(`<button type="button" title="Gideri Sil" class="btn btn-outline-danger btn-sm btn-confirmation-modal-trigger" data-url="/admin/delete-group-expense?expenseId=${current.id}" > Sil</button>`)
+                            .appendTo(container);
+                    },
+                    alignment: "center",
+                    width: "auto"
+                }
+                ]
+            });
+        }
         function createLessonDayGrid() {
             var gId = groupId.val();
             $("#grid-lessonDays").dxDataGrid({
