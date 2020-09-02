@@ -59,6 +59,12 @@ namespace NitelikliBilisim.Business.Repositories
                 })
                 .ToList();
             #endregion
+            var firstDay = group.GroupLessonDays.FirstOrDefault();
+            Classroom classRoom = null;
+            if (firstDay!=null)
+            {
+                classRoom = _context.Classrooms.FirstOrDefault(x => x.Id == firstDay.ClassroomId);
+            }
 
 
             var studentIds = group.GroupStudents.Select(x => x.Id2).ToList();
@@ -67,7 +73,6 @@ namespace NitelikliBilisim.Business.Repositories
                 .Include(x => x.User)
                 .Where(x => studentIds.Contains(x.Id))
                 .ToList();
-
             var model = new GroupDetailVm
             {
                 GroupId = group.Id,
@@ -80,8 +85,7 @@ namespace NitelikliBilisim.Business.Repositories
                     Name = group.Education.Name
                 },
                 StartDate = group.StartDate,
-                LessonDays = group.GroupLessonDays,
-                Students = students,
+                ClassRoomName= classRoom!=null?classRoom.Name:"Sınıf bilgisi girilmemiş.",
                 EducatorName = $"{educator.Name} {educator.Surname}",
                 GroupExpenseTypes = _context.GroupExpenseTypes.ToList()
             };
@@ -124,6 +128,25 @@ namespace NitelikliBilisim.Business.Repositories
             return expenses;
         }
 
+        public List<_Ticket> GetEligibleStudents(Guid groupId)
+        {
+            var group = _context.EducationGroups.FirstOrDefault(x => x.Id == groupId);
+            if (group == null)
+                return null;
+
+            var eligibleTickets = _context.Tickets
+                .Include(x => x.Owner)
+                .ThenInclude(x => x.User)
+                .Where(x => !x.IsUsed && x.EducationId == group.EducationId)
+                .Select(x => new _Ticket
+                {
+                    TicketId = x.Id,
+                    CustomerName = x.Owner.User.Name,
+                    CustomerSurname = x.Owner.User.Surname
+                })
+                .ToList();
+            return eligibleTickets;
+        }
         public List<AssignedStudentVm> GetAssignedStudentsByGroupId(Guid groupId)
         {
             var groupAttendances = _context.GroupAttendances.Where(x => x.GroupId == groupId);

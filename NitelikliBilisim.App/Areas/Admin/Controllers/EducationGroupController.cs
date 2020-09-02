@@ -68,6 +68,16 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 data = students
             });
         }
+        [Route("admin/get-eligible-student/{groupId?}")]
+        public IActionResult EligibleUserByGroupId(Guid groupId)
+        {
+            var model = _unitOfWork.EducationGroup.GetEligibleStudents(groupId);
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = model
+            });
+        }
 
 
         [Route("admin/grup-olustur")]

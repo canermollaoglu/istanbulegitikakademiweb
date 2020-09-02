@@ -54,10 +54,10 @@
                                     @Model.Education.Name
                                 </td>
                                 <td>
-                                    <b>Başlangıç Tarihi</b>
+                                    <b>Sınıf</b>
                                 </td>
                                 <td>
-                                    @Model.StartDate.GetValueOrDefault().ToShortDateString()
+                                    @Model.ClassRoomName
                                 </td>
                             </tr>
                             <tr>
@@ -67,7 +67,12 @@
                                 <td>
                                     @Model.EducatorName
                                 </td>
-
+                                <td>
+                                    <b>Başlangıç Tarihi</b>
+                                </td>
+                                <td>
+                                    @Model.StartDate.GetValueOrDefault().ToShortDateString()
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -83,8 +88,8 @@
         <div class="col-md-12">
             <div class="card mb-3">
                 <div class="card-header">
-                    <i class="fa fa-users"></i> <strong></strong> Öğrenci Listesi
-                    <a title="Öğrenci Ataması Yap" href="#" class="btn btn-outline-success btn-sm pull-right" style="margin:0;"><i class="fa fa-arrow-circle-down"></i></a>
+                    <i class="fa fa-users"></i> Öğrenci Listesi
+                    <button type="button" title="Öğrenci Ataması Yap" data-toggle="modal" data-target="#addStudent" class="btn btn-outline-primary btn-sm pull-right" style="margin:0;">Öğrenci Ata</button>
                 </div>
                 <div class="card-body">
                     <div id="grid-students"></div>
@@ -97,8 +102,8 @@
         <div class="col-md-12">
             <div class="card mb-3">
                 <div class="card-header">
-                    <i class="fa fa-money"></i> <strong></strong> Grup Giderleri
-                    <a href="#" data-toggle="modal" data-target="#addGroupExpenseModal" class="btn btn-outline-primary btn-sm pull-right"><i class="fa fa-plus"></i> </a>
+                    <i class="fa fa-money"></i> Grup Giderleri
+                    <button type="button" data-toggle="modal" data-target="#addGroupExpenseModal" class="btn btn-outline-primary btn-sm pull-right">Gider Ekle </button>
                 </div>
                 <div class="card-body">
                     <div id="grid-expenses"></div>
@@ -112,7 +117,7 @@
         <div class="col-md-12">
             <div class="card mb-3">
                 <div class="card-header">
-                    <i class="fa fa-calendar"></i> <strong>Eğitim</strong> Günleri
+                    <i class="fa fa-calendar"></i> Eğitim Günleri
                 </div>
                 <div class="card-body">
                     <div id="grid-lessonDays"></div>
@@ -177,6 +182,38 @@
     </div>
 </div>
 
+
+<div class="modal fade" id="addStudent" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Grup Gideri Ekle</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>İsim</th>
+                                <th>Soyisim</th>
+                                <th>İşlem</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-tickets">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section postScripts{
     <script src="~/assets/js/area-admin/jquery.dataTables.js"></script>
     <script src="~/assets/js/area-admin/dataTables.bootstrap4.js"></script>
@@ -192,7 +229,7 @@
         var groupExpensesDiv = $("#groupExpensesDiv");
         var groupId = $("#groupId");
         var btnSave = $("#btn-save");
-
+        var tbodyTickets = $("#tbody-tickets");
         /* fields */
         var confirmModalBuilder = new AlertSupport.ConfirmModalBuilder();
 
@@ -209,9 +246,11 @@
                 confirmText: "Evet, eminim",
                 onConfirmClick: confirm_onClick
             });
+
             createGroupExpenseGrid();
             createStudentGrid();
             createLessonDayGrid();
+            createEligibleTicketTable();
         }
         function btnConfirmationModalTrigger_onClick() {
             var url = this.getAttribute("data-url");
@@ -275,6 +314,65 @@
                 }
             });
         }
+        function btnUnassign_onClick() {
+            var ticketId = this.getAttribute("data-ticket-id");
+            $.ajax({
+                url: "/admin/unassign-ticket",
+                method: "post",
+                data: {
+                    TicketId: ticketId
+                },
+                success: (res) => { location.href = location.href; }
+            });
+        }
+        function btnAssign_onClick() {
+            var ticketId = this.getAttribute("data-ticket-id");
+            var gId = groupId.val();
+            $.ajax({
+                url: "/admin/assign-ticket",
+                method: "post",
+                data: {
+                    TicketId: ticketId,
+                    GroupId: gId
+                },
+                success: (res) => { location.href = location.href; }
+            });
+        }
+        function createEligibleTicketTable() {
+            var gId = groupId.val();
+            $.ajax({
+                url: `/admin/get-eligible-student/${gId}`,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        tbodyTickets.html("");
+                        var eligibleTickets = res.data;
+                        var eligibleAppend = "";
+                        if (eligibleTickets.length != 0)
+                            for (var i = 0; i < eligibleTickets.length; i++) {
+                                var item = eligibleTickets[i];
+                                eligibleAppend += "<tr>" +
+                                    `<td>${item.customerName}</td>` +
+                                    `<td>${item.customerSurname}</td>` +
+                                    `<td><button class="btn btn-sm btn-success btn-assign" data-ticket-id="${item.ticketId}"> Gruba Ata</button></td>` +
+                                    "<tr>";
+                            }
+                        else
+                            eligibleAppend = `<tr><td>Gruba atanabilecek öğrenci yoktur</td></tr>`;
+                        tbodyTickets.append(eligibleAppend);
+                        createAssignmentButtons();
+                    }
+                }
+            });
+        }
+        function createAssignmentButtons() {
+            var btnAssings = document.getElementsByClassName("btn-assign");
+            for (var i = 0; i < btnAssings.length; i++) {
+                var btn = btnAssings[i];
+                btn.onclick = btnAssign_onClick;
+            }
+        };
+
 
         /*DataGrid*/
         function createGroupExpenseGrid() {
@@ -321,20 +419,29 @@
                 {
                     caption: "Açıklama",
                     dataField: "description",
-                    width: 350
+                    width: 450
 
                 },
                 {
                     caption: "Adet",
-                    dataField: "count"
+                    dataField: "count",
+                    alignment: "center",
                 },
                 {
                     caption: "Tutar",
-                    dataField: "price"
+                    dataField: "price",
+                    customizeText: function (price) {
+                        return price.value + " ₺";
+                    },
+                    alignment: "center"
                 },
                 {
-                    caption: "Toplam Tutar",
-                    dataField: "totalPrice"
+                    caption: "Toplam",
+                    dataField: "totalPrice",
+                    customizeText: function (totalPrice) {
+                        return totalPrice.value + " ₺";
+                    },
+                    alignment: "center"
                 },
                 {
                     caption: "İşlem",
@@ -351,14 +458,14 @@
                 summary: {
                     totalItems: [
                         {
-                            column: "description",
+                            column: "expenseTypeName",
                             summaryType: "count",
                             displayFormat: "Adet: {0}",
                         },
                         {
                             column: "totalPrice",
                             summaryType: "sum",
-                            displayFormat: "Toplam: {0} ₺"
+                            displayFormat: "{0} ₺"
                         }]
                 }
             });
@@ -395,7 +502,7 @@
                     format: 'dd/MM/yyyy'
                 },
                 {
-                    caption: "Eğitmen Ad Soyad",
+                    caption: "Eğitmen",
                     dataField: "educatorFullName",
                     width: 150
                 },
@@ -434,7 +541,15 @@
                     alignment: "center",
                     width: "auto"
                 }
-                ]
+                ],
+                summary: {
+                    totalItems: [
+                        {
+                            column: "educatorSalary",
+                            summaryType: "sum",
+                            displayFormat: "{0} ₺"
+                        }]
+                }
             });
 
         }
@@ -457,6 +572,11 @@
                     for (var i = 0; i < deleteButtons.length; i++) {
                         var btn = deleteButtons[i];
                         btn.onclick = btnConfirmationModalTrigger_onClick;
+                    }
+                    var btnUnassings = document.getElementsByClassName("btn-unassign");
+                    for (var i = 0; i < btnUnassings.length; i++) {
+                        var btn = btnUnassings[i];
+                        btn.onclick = btnUnassign_onClick;
                     }
                 },
                 pager: {
@@ -493,7 +613,7 @@
                     allowSearch: false,
                     cellTemplate: function (container, options) {
                         var current = options.data;
-                        $(`<a title="Gruptan Çıkar" class="btn btn-outline-danger btn-sm" href="#"><i class="fa fa-remove"></i></a>`)
+                        $(`<button type="button" title="Gruptan Çıkar" class="btn btn-outline-danger btn-sm btn-unassign" data-ticket-id="${current.ticketId}" > Çıkar</button>`)
                             .appendTo(container);
                     },
                     alignment: "center",
