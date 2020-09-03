@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Enums.group;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_groups;
 using NitelikliBilisim.Core.ViewModels.areas.admin.group_lesson_days;
 using NitelikliBilisim.Data;
@@ -100,7 +101,7 @@ namespace NitelikliBilisim.Business.Repositories
                 .Include(x => x.Education)
                 .First(x => x.Id == groupId)
                 .Education.HoursPerDay;
-                
+
             var model = joined
                 .Select(x => new GroupLessonDayVm
                 {
@@ -159,6 +160,35 @@ namespace NitelikliBilisim.Business.Repositories
 
             return dates;
         }
+
+        public void ChangeClassroom(Guid groupId, DateTime? startDate, int updateType, Guid classroomId)
+        {
+            try
+            {
+                List<GroupLessonDay> educationDays = null;
+                if (updateType == (int)ChangeClassroomTypes.AllDays)
+                {
+                    educationDays = _context.GroupLessonDays.Where(x => x.GroupId == groupId).ToList();
+                }
+                else if (updateType == (int)ChangeClassroomTypes.WidthStartDate)
+                {
+                    educationDays = _context.GroupLessonDays.Where(x => x.GroupId == groupId && x.DateOfLesson.Date >= startDate.Value.Date).ToList();
+                }
+                foreach (var educationDay in educationDays)
+                {
+                    educationDay.ClassroomId = classroomId;
+                } 
+                _context.GroupLessonDays.UpdateRange(educationDays);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            
+        }
+
         public List<int> MakeSureWeekDaysExists(Guid groupId, List<int> daysInt)
         {
             if (daysInt == null || daysInt.Count == 0)

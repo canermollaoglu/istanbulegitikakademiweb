@@ -31,7 +31,7 @@ namespace NitelikliBilisim.Business.Repositories
                 .Include(x => x.GroupStudents)
                 .Include(x => x.GroupExpenses)
                 .Include(x => x.GroupLessonDays).First(x => x.Id == groupId);
-
+            var selectAllClassRooms = _context.Classrooms.Where(x => x.HostId == group.HostId).ToDictionary(x=>x.Id,x=>x.Name);
             var firstDay = group.GroupLessonDays.FirstOrDefault();
             Classroom classRoom = null;
             if (firstDay!=null)
@@ -59,7 +59,8 @@ namespace NitelikliBilisim.Business.Repositories
                 StartDate = group.StartDate,
                 ClassRoomName= classRoom!=null?classRoom.Name:"Sınıf bilgisi girilmemiş.",
                 EducatorName = $"{educator.Name} {educator.Surname}",
-                GroupExpenseTypes = _context.GroupExpenseTypes.ToList()
+                GroupExpenseTypes = _context.GroupExpenseTypes.ToList(),
+                SelectClassRooms = selectAllClassRooms
             };
             return model;
         }

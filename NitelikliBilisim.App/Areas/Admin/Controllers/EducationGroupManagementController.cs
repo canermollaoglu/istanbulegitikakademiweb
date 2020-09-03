@@ -155,6 +155,35 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 isSuccess = true
             });
         }
+        [HttpPost, Route("admin/change-classroom")]
+        public async Task<IActionResult> ChangeClassRoom(ChangeClassRoomVm data)
+        {
+            try
+            {
+                _unitOfWork.GroupLessonDay.ChangeClassroom(data.GroupId, data.StartDate, data.UpdateType, data.ClassroomId);
+                var studentEmails = _unitOfWork.EmailHelper.GetEmailsOfStudentsByGroup(data.GroupId);
+                if (studentEmails.Count != 0)
+                    await _emailSender.SendAsync(new EmailMessage
+                    {
+                        Body = "Sınıf değişmiştir",
+                        Contacts = studentEmails.ToArray()
+                    });
+                return Json(new ResponseModel
+                {
+                    isSuccess = true
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { $"Hata : {ex.Message}" }
+                }); ;
+            }
+        }
+
+
         [HttpPost, Route("admin/change-educator-salary")]
         public  IActionResult ChangeEducatorSalary(EducatorSalaryData data)
         {
@@ -170,6 +199,15 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             });
         }
     }
+
+    public class ChangeClassRoomVm
+    {
+        public Guid GroupId { get; set; }
+        public DateTime? StartDate { get; set; }
+        public Guid ClassroomId { get; set; }
+        public int UpdateType { get; set; }
+    }
+
     public class PostponeData
     {
         public Guid? groupId { get; set; }
