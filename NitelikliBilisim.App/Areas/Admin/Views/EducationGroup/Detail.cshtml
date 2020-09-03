@@ -358,7 +358,7 @@
                                     "<tr>";
                             }
                         else
-                            eligibleAppend = `<tr><td>Gruba atanabilecek öğrenci yoktur</td></tr>`;
+                            eligibleAppend = `<tr><td colspan="3">Gruba atanabilecek öğrenci yoktur</td></tr>`;
                         tbodyTickets.append(eligibleAppend);
                         createAssignmentButtons();
                     }
@@ -513,7 +513,11 @@
                 },
                 {
                     caption: "Eğitmen Ücreti",
-                    dataField: "educatorSalary"
+                    dataField: "educatorSalary",
+                    customizeText: function (price) {
+                        return price.value + " ₺";
+                    },
+                    alignment: "center"
                 },
                 {
                     caption: "Yoklama Alındı Mı?",
@@ -605,8 +609,27 @@
                     dataField: "job"
                 },
                 {
+                    caption: "NBUY Öğrencisi Mi?",
+                    cellTemplate: function (container, options) {
+                        var current = options.data;
+                        if (current.isNbuyStudent) {
+                            $(`<span class="text-success"><i class="fa fa-check-circle"></i></span>`)
+                                .appendTo(container);
+                        } else {
+                            $(`<span class="text-danger"><i class="fa fa-times-circle"></i></span>`)
+                                .appendTo(container);
+                        }
+                    },
+                    alignment: "center",
+
+                },
+                {
                     caption: "Devamsızlık",
-                    dataField: "nonAttendance"
+                    dataField: "nonAttendance",
+                    customizeText: function (price) {
+                        return price.value > 0 ? price.value + " Gün" : "Yok";
+                    },
+                    alignment: "center"
                 },
                 {
                     caption: "İşlem",

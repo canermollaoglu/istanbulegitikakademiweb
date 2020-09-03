@@ -35,6 +35,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/grup-detay/{groupId?}")]
         public IActionResult Detail(Guid groupId)
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationGrupDetail");
             var groupDetail = _unitOfWork.EducationGroup.GetDetailByGroupId(groupId);
 
             return View(groupDetail);

@@ -154,6 +154,7 @@ namespace NitelikliBilisim.Business.Repositories
                 .Where(x => x.Id == groupId)
                 .Include(x => x.Customer)
                 .ThenInclude(x => x.User)
+                .OrderByDescending(x=>x.CreatedDate)
                 .Select(x => new AssignedStudentVm
                 {
                     TicketId = x.TicketId,
@@ -162,7 +163,8 @@ namespace NitelikliBilisim.Business.Repositories
                     Email = x.Customer.User.Email,
                     Job = x.Customer.Job,
                     PhoneNumber = x.Customer.User.PhoneNumber,
-                    NonAttendance = groupAttendances.Count(c => c.CustomerId == x.Customer.Id)
+                    NonAttendance = groupAttendances.Count(c => c.CustomerId == x.Customer.Id),
+                    IsNbuyStudent = x.Customer.IsNbuyStudent
                 })
                 .ToList();
             return assignedTickets;

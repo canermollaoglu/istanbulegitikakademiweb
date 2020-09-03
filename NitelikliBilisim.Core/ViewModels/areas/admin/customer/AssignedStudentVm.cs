@@ -13,5 +13,6 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.customer
         public string PhoneNumber { get; set; }
         public int NonAttendance { get; set; } = 0;
         public string Job { get; set; }
+        public bool IsNbuyStudent { get; set; }
     }
 }
