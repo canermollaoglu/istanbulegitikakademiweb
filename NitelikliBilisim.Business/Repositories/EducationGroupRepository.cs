@@ -32,40 +32,12 @@ namespace NitelikliBilisim.Business.Repositories
                 .Include(x => x.GroupExpenses)
                 .Include(x => x.GroupLessonDays).First(x => x.Id == groupId);
 
-            #region Eligible Tickets
-            var eligibleTickets = _context.Tickets
-                .Include(x => x.Owner)
-                .ThenInclude(x => x.User)
-                .Where(x => !x.IsUsed && x.EducationId == group.EducationId)
-                .Select(x => new _Ticket
-                {
-                    TicketId = x.Id,
-                    CustomerName = x.Owner.User.Name,
-                    CustomerSurname = x.Owner.User.Surname
-                })
-                .ToList();
-            #endregion
-
-            #region Assigned Tickets
-            var assignedTickets = _context.Bridge_GroupStudents
-                .Where(x => x.Id == groupId)
-                .Include(x => x.Customer)
-                .ThenInclude(x => x.User)
-                .Select(x => new _Ticket
-                {
-                    TicketId = x.TicketId,
-                    CustomerName = x.Customer.User.Name,
-                    CustomerSurname = x.Customer.User.Surname
-                })
-                .ToList();
-            #endregion
             var firstDay = group.GroupLessonDays.FirstOrDefault();
             Classroom classRoom = null;
             if (firstDay!=null)
             {
                 classRoom = _context.Classrooms.FirstOrDefault(x => x.Id == firstDay.ClassroomId);
             }
-
 
             var studentIds = group.GroupStudents.Select(x => x.Id2).ToList();
             var educator = _context.Users.First(x => x.Id == group.EducatorId);
@@ -90,10 +62,9 @@ namespace NitelikliBilisim.Business.Repositories
                 GroupExpenseTypes = _context.GroupExpenseTypes.ToList()
             };
             return model;
-
         }
 
-        public List<GroupLessonDayGetVm> GetLessonDaysByGroupId(Guid groupId)
+        public List<GroupLessonDayGetListVm> GetLessonDaysByGroupId(Guid groupId)
         {
             var lessonDays = (from lessonDay in _context.GroupLessonDays
                               join educator in _context.Users on lessonDay.EducatorId equals educator.Id into le
@@ -101,7 +72,7 @@ namespace NitelikliBilisim.Business.Repositories
                               join classRoom in _context.Classrooms on lessonDay.ClassroomId equals classRoom.Id into lc
                               from classRoom in lc.DefaultIfEmpty()
                               where lessonDay.GroupId == groupId
-                              select new GroupLessonDayGetVm
+                              select new GroupLessonDayGetListVm
                               {
                                   ClassRoomName = classRoom.Name,
                                   DateOfLesson = lessonDay.DateOfLesson,
@@ -109,7 +80,7 @@ namespace NitelikliBilisim.Business.Repositories
                                   EducatorSalary = lessonDay.EducatorSalary.GetValueOrDefault(),
                                   Id = lessonDay.Id,
                                   HasAttendanceRecord = lessonDay.HasAttendanceRecord
-                              }).OrderByDescending(x => x.DateOfLesson).ToList();
+                              }).OrderBy(x => x.DateOfLesson).ToList();
             return lessonDays;
         }
 

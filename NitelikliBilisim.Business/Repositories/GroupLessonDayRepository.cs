@@ -51,6 +51,34 @@ namespace NitelikliBilisim.Business.Repositories
                 HoursPerDay = group.Education.HoursPerDay
             };
         }
+
+        public GroupLessonDayUpdateGetVm GetUpdateGetModel(Guid lessonDayId)
+        {
+            var lessonDay = _context.GroupLessonDays.Include(x => x.Group).ThenInclude(x=>x.Host).First(x=>x.Id == lessonDayId);
+
+            var educators = (from bridge in _context.Bridge_EducationEducators
+                             join educator in _context.Users on bridge.Educator.Id equals educator.Id
+                             where bridge.Education.Id == lessonDay.Group.EducationId
+                             select educator).ToDictionary(x => x.Id, x => x.Name + " " + x.Surname);
+
+            var classRooms = _context.Classrooms.Where(x => x.HostId == lessonDay.Group.Host.Id).ToDictionary(x=>x.Id,x=>x.Name);
+
+            GroupLessonDayUpdateGetVm model = new GroupLessonDayUpdateGetVm
+            {
+                Id = lessonDay.Id,
+                GroupId = lessonDay.GroupId,
+                GroupName = lessonDay.Group.GroupName,
+                ClassRoomId = lessonDay.ClassroomId,
+                DateOfLesson = lessonDay.DateOfLesson,
+                EducatorId = lessonDay.EducatorId,
+                EducatorSalary = lessonDay.EducatorSalary,
+                HasAttendanceRecord = lessonDay.HasAttendanceRecord,
+                Educators = educators,
+                ClassRooms = classRooms
+            };
+            return model;
+        }
+
         public List<GroupLessonDayVm> GetGroupLessonDays(Guid groupId)
         {
             var joined = (from groupLessonDay in _context.GroupLessonDays.Where(x => x.GroupId == groupId)

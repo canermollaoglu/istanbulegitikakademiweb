@@ -539,7 +539,10 @@
                     allowSearch: false,
                     cellTemplate: function (container, options) {
                         var current = options.data;
+                        console.log(current);
                         $(`<a class="btn btn-outline-primary btn-sm" href="/admin/yoklama-girisi/${gId}/${current.dateOfLesson}/${current.hasAttendanceRecord}"">Yoklama</a>`)
+                            .appendTo(container);
+                        $(`<a class="btn btn-outline-primary btn-sm" href="/admin/egitim-gunu-guncelle/${current.id}">Düzenle</a>`)
                             .appendTo(container);
                     },
                     alignment: "center",

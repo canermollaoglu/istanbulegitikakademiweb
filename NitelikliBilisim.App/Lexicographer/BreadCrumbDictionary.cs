@@ -71,6 +71,8 @@ namespace NitelikliBilisim.App.Lexicographer
             new BreadCrumbItem[] { new BreadCrumbItem(title: "Eğitim Grubu Listesi", url: "/admin/gruplar"), new BreadCrumbItem(title: "Eğitim Grubu Detayı", url: null) });
             _dictionary.Add("AdminEducationGrupEnterAttendance",
             new BreadCrumbItem[] { new BreadCrumbItem(title: "Eğitim Grubu Listesi", url: "/admin/gruplar"), new BreadCrumbItem(title: "Grup Yoklaması", url: null) });
+            _dictionary.Add("AdminEducationGroupLessonDayDetail",
+            new BreadCrumbItem[] { new BreadCrumbItem(title: "Eğitim Grubu Listesi", url: "/admin/gruplar"), new BreadCrumbItem(title: "Eğitim Günü Detayları", url: null) });
 
             
             /*Educator Certificate*/
