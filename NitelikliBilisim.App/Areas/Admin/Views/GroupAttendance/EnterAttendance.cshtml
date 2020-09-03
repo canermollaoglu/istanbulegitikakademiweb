@@ -3,6 +3,13 @@
     ViewData["Title"] = "Yoklama Girişi Yap";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
+@section styles{
+    <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+
 <input type="hidden" value="@Model.GroupId" id="_group-id" />
 <input type="hidden" value="@Model.Date" id="_date" />
 <div class="card mb-3">
@@ -62,13 +69,15 @@
 </div>
 
 @section postScripts{
+
+    <script src="~/js/sup/alert-sup.js"></script>
     <script>
         var _groupId = document.getElementById("_group-id").value;
         var _date = document.getElementById("_date").value;
         var btnSave = $("#btn-save");
 
         btnSave.on("click", btnSave_onClick);
-
+        var resultAlert = new AlertSupport.ResultAlert();
         function btnSave_onClick() {
             btnSave.off("click");
             var data = {
@@ -89,9 +98,6 @@
                     IsAttended: isAttended,
                     Reason: reason
                 });
-                //console.log(isAttended);
-                //console.log(reason);
-                //console.log(customerId);
             }
 
             $.ajax({
@@ -99,6 +105,25 @@
                 method: "post",
                 data: data,
                 success: (res) => {
+                    if (res.isSuccess) {
+                        resultAlert.display({
+                            success: true,
+                            message: "Yoklama kaydı başarılı!",
+                        });
+                        setTimeout(
+                            function () {
+                                window.location = "/admin/grup-detay/" + _groupId;
+                            }, 4000);
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors
+                        });
+                        setTimeout(
+                            function () {
+                                window.location = "/admin/grup-detay/" + _groupId;
+                            }, 4000);
+                    }
                     btnSave.on("click", btnSave_onClick);
                 }
             });
