@@ -494,60 +494,70 @@
                     allowedPageSizes: [5, 10, 20],
                     showInfo: true
                 },
-                columns: [{
-                    caption: "Tarih",
-                    dataField: "dateOfLesson",
-                    width: 100,
-                    dataType: 'date',
-                    format: 'dd/MM/yyyy'
-                },
-                {
-                    caption: "Eğitmen",
-                    dataField: "educatorFullName",
-                    width: 150
-                },
-                {
-                    caption: "Sınıf",
-                    dataField: "classRoomName"
+                columns: [
+                    {
+                        caption: "",
+                        allowSearch: false,
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            $(`<a class="btn btn-outline-primary btn-sm" href="/admin/egitim-gunu-guncelle/${current.id}"><i class="fa fa-edit"></i></a>`)
+                                .appendTo(container);
+                        },
+                        alignment: "center",
+                        width: "auto"
+                    },
+                    {
 
-                },
-                {
-                    caption: "Eğitmen Ücreti",
-                    dataField: "educatorSalary",
-                    customizeText: function (price) {
-                        return price.value + " ₺";
+                        caption: "Tarih",
+                        dataField: "dateOfLesson",
+                        width: 100,
+                        dataType: 'date',
+                        format: 'dd/MM/yyyy'
                     },
-                    alignment: "center"
-                },
-                {
-                    caption: "Yoklama Alındı Mı?",
-                    cellTemplate: function (container, options) {
-                        var current = options.data;
-                        if (current.hasAttendanceRecord) {
-                            $(`<span class="text-success"><i class="fa fa-check-circle"></i></span>`)
+                    {
+                        caption: "Eğitmen",
+                        dataField: "educatorFullName",
+                        width: 150
+                    },
+                    {
+                        caption: "Sınıf",
+                        dataField: "classRoomName"
+
+                    },
+                    {
+                        caption: "Eğitmen Ücreti",
+                        dataField: "educatorSalary",
+                        customizeText: function (price) {
+                            return price.value + " ₺";
+                        },
+                        alignment: "center"
+                    },
+                    {
+                        caption: "Yoklama Alındı Mı?",
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            if (current.hasAttendanceRecord) {
+                                $(`<span class="text-success"><i class="fa fa-check-circle"></i></span>`)
+                                    .appendTo(container);
+                            } else {
+                                $(`<span class="text-danger"><i class="fa fa-times-circle"></i></span>`)
+                                    .appendTo(container);
+                            }
+                        },
+                        alignment: "center",
+                        width: 150
+                    },
+                    {
+                        caption: "",
+                        allowSearch: false,
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            $(`<a class="btn btn-outline-primary btn-sm" href="/admin/yoklama-girisi/${gId}/${current.dateOfLesson}/${current.hasAttendanceRecord}"">Yoklama Al</a>`)
                                 .appendTo(container);
-                        } else {
-                            $(`<span class="text-danger"><i class="fa fa-times-circle"></i></span>`)
-                                .appendTo(container);
-                        }
-                    },
-                    alignment: "center",
-                    width: 150
-                },
-                {
-                    caption: "Yoklama",
-                    allowSearch: false,
-                    cellTemplate: function (container, options) {
-                        var current = options.data;
-                        console.log(current);
-                        $(`<a class="btn btn-outline-primary btn-sm" href="/admin/yoklama-girisi/${gId}/${current.dateOfLesson}/${current.hasAttendanceRecord}"">Yoklama</a>`)
-                            .appendTo(container);
-                        $(`<a class="btn btn-outline-primary btn-sm" href="/admin/egitim-gunu-guncelle/${current.id}">Düzenle</a>`)
-                            .appendTo(container);
-                    },
-                    alignment: "center",
-                    width: "auto"
-                }
+                        },
+                        alignment: "center",
+                        width: "auto"
+                    }
                 ],
                 summary: {
                     totalItems: [
