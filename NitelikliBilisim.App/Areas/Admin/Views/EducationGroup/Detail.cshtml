@@ -1,6 +1,6 @@
 ﻿@model NitelikliBilisim.Core.ViewModels.areas.admin.education_groups.GroupDetailVm
 @{
-    ViewData["Title"] = "Grup Aç";
+    ViewData["Title"] = "Grup Detayları";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
@@ -22,7 +22,7 @@
 
     <!--Genel Grup Bilgileri-->
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
             <div class="card mb-3">
                 <div class="card-header">
                     <i class="fa fa-list"></i> Genel Grup Bilgileri
@@ -40,7 +40,8 @@
                                 <td>
                                     @Model.GroupName
                                 </td>
-
+                            </tr>
+                            <tr>
                                 <td>
                                     <b>Eğitim Yeri</b>
                                 </td>
@@ -55,6 +56,8 @@
                                 <td>
                                     @Model.Education.Name
                                 </td>
+                            </tr>
+                            <tr>
                                 <td>
                                     <b>Sınıf</b>
                                 </td>
@@ -69,6 +72,9 @@
                                 <td>
                                     @Model.EducatorName
                                 </td>
+
+                            </tr>
+                            <tr>
                                 <td>
                                     <b>Başlangıç Tarihi</b>
                                 </td>
@@ -76,6 +82,25 @@
                                     @Model.StartDate.GetValueOrDefault().ToShortDateString()
                                 </td>
                             </tr>
+                            <tr>
+                                <td><b>Kontenjan</b></td>
+                                <td>@Model.AssignedStudentsCount / @Model.Quota</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <i class="fa fa-money"></i> Giderler ve Hesaplamalar
+                    <button class="btn btn-sm pull-right" data-target="#profitabilityratecalculation" data-toggle="modal" title="Kârlılık Hesabı"><i class="fa fa-money"></i></button>
+
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <tbody id="tbody-calculate-group-expense-and-income">
                         </tbody>
                     </table>
                 </div>
@@ -131,6 +156,7 @@
 </div>
 
 
+
 <div class="modal fade" id="addGroupExpenseModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -184,6 +210,36 @@
     </div>
 </div>
 
+<div class="modal fade" id="profitabilityratecalculation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Kârlılık Oranı Hesabı</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group row">
+                    <label style="margin:auto" class="col-md-5">Beklenen Kârlılık Oranı</label>
+                    <div class="input-group col-md-7 mb-2">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">%</div>
+                        </div>
+                        <input type="number" class="form-control" id="input-expected-rate-of-profitability" />
+                    </div>
+                </div>
+                <div id="div-calculate-expected-rat-of-profitability">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                    <button type="button" class="btn btn-primary" id="btn-calculate-expected-rate-of-profitability">Hesapla</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="modal fade" id="addStudent" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -236,19 +292,19 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    
-                        <input type="radio" id="male" checked name="changeClassroomType" value="10">
-                        <label>Tümü</label><br>
-                        <input type="radio" id="female" name="changeClassroomType" value="20">
-                        <label>Seçili tarihten itibaren</label><br>
-                        <input type="hidden" value="10" id="selectedType" />
-                    </div>
 
-                    <div class="form-group" style="display:none;" id="inputChangeClassroomStartDate">
-                        <label>Tarih</label>
-                        <input id="input-start-date" class="form-control" type="date" value="" />
-                    </div>
+                    <input type="radio" checked name="changeClassroomType" value="10">
+                    <label>Tümü</label><br>
+                    <input type="radio" name="changeClassroomType" value="20">
+                    <label>Seçili tarihten itibaren</label><br>
+                    <input type="hidden" value="10" id="selectedType" />
                 </div>
+
+                <div class="form-group" style="display:none;" id="inputChangeClassroomStartDate">
+                    <label>Tarih</label>
+                    <input id="input-start-date" class="form-control" type="date" value="" />
+                </div>
+            </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
                 <button type="button" class="btn btn-primary" id="btn-lessonday-classroom-save">Kaydet</button>
@@ -256,7 +312,6 @@
         </div>
     </div>
 </div>
-
 
 @section postScripts{
     <script src="~/assets/js/area-admin/jquery.dataTables.js"></script>

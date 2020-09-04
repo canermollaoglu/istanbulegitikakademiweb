@@ -32,6 +32,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             return View();
         }
 
+
+
         [Route("admin/grup-detay/{groupId?}")]
         public IActionResult Detail(Guid groupId)
         {
@@ -218,6 +220,41 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 isReset: true);
 
             return Json(true);
+        }
+
+
+        [Route("admin/calculate-group-expense-and-income/{groupId}")]
+        public IActionResult CalculateGroupExpensesAndIncome(Guid groupId)
+        {
+            try
+            {
+                var model = _unitOfWork.EducationGroup.CalculateGroupExpenseAndIncome(groupId);
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    data = model
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { $"Hata : {ex.Message}" }
+                }); ;
+            }
+           
+        }
+
+        [Route("admin/calculate-group-expected-profitability/")]
+        public IActionResult CalculateExpectedRateOfProfitability(CalculateExpectedProfitabilityVm data)
+        {
+            var retVal = _unitOfWork.EducationGroup.CalculateExpectedRateOfProfitability(data);
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = retVal
+            });
         }
     }
 }

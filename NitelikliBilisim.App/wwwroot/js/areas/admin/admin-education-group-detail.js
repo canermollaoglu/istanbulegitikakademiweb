@@ -1,13 +1,19 @@
 ﻿/* elements */
 var selectExpenseTypes = $("#selectExpenseType");
+
 var inputPrice = $("#inputPrice");
 var inputCount = $("#inputCount");
 var inputDescription = $("#inputDescription");
+var inputExpectedProfitability = $("#input-expected-rate-of-profitability");
 var groupExpensesDiv = $("#groupExpensesDiv");
+var ExpectedProfitabilityDiv = $("#div-calculate-expected-rat-of-profitability");
 var groupId = $("#groupId");
 var btnSave = $("#btn-save");
 var btnLessonDayClassroomChange = $("#btn-lessonday-classroom-save");
+var btnCalculate = $("#btn-calculate-expected-rate-of-profitability");
+
 var tbodyTickets = $("#tbody-tickets");
+var tbodyCalculateGroupExpenseAndIncome = $("#tbody-calculate-group-expense-and-income");
 var inputStartDateDiv = $("#inputChangeClassroomStartDate");
 var inputStartDate = $("#input-start-date");
 var selectClassrooms = $("#selectClassrooms");
@@ -19,6 +25,8 @@ var confirmModalBuilder = new AlertSupport.ConfirmModalBuilder();
 $(document).ready(document_onLoad);
 btnSave.on("click", btnSave_onClick);
 btnLessonDayClassroomChange.on("click", btnLessonDayClassroomChange_onClick);
+btnCalculate.on("click", btnCalculate_onClick);
+
 /* events */
 function document_onLoad() {
     confirmModalBuilder.buildModal({
@@ -28,7 +36,7 @@ function document_onLoad() {
         confirmText: "Evet, eminim",
         onConfirmClick: confirm_onClick
     });
-
+    calculateGroupExpenseAndIncome();
     createGroupExpenseGrid();
     createStudentGrid();
     createLessonDayGrid();
@@ -96,7 +104,6 @@ function btnLessonDayClassroomChange_onClick() {
 
 
 }
-
 function confirm_onClick() {
     var url = this.getAttribute("data-url");
     $.ajax({
@@ -140,6 +147,35 @@ function btnAssign_onClick() {
         success: (res) => { location.href = location.href; }
     });
 }
+function btnCalculate_onClick() {
+    btnCalculate.off("click");
+    
+    var data = {
+        GroupId: groupId.val(),
+        ExpectedRateOfProfitability: inputExpectedProfitability.val()
+    }
+    $.ajax({
+        url: `/admin/calculate-group-expected-profitability`,
+        method: "post",
+        data: data,
+        success: (res) => {
+            console.log(res);
+            if (res.isSuccess) {
+                ExpectedProfitabilityDiv.html("");
+                var item = res.data;
+                var content = `<p><b>%${item.expectedRateOfProfitability}</b> karlılık için beklenen tutar <b>${item.plannedAmount} ₺</b> bu tutar için minimum <b>${item.minStudentCount}</b> öğrencinin kaydolması gerekmektedir.</p>`;
+                
+                ExpectedProfitabilityDiv.append(content);
+            }
+            else {
+                console.log(res.errors);
+                alert("Hata");
+            }
+            btnCalculate.on("click", btnCalculate_onClick);
+        }
+    });
+}
+
 function createEligibleTicketTable() {
     var gId = groupId.val();
     $.ajax({
@@ -173,6 +209,46 @@ function createAssignmentButtons() {
         var btn = btnAssings[i];
         btn.onclick = btnAssign_onClick;
     }
+}
+
+function calculateGroupExpenseAndIncome() {
+    var gId = groupId.val();
+    $.ajax({
+        url: `/admin/calculate-group-expense-and-income/${gId}`,
+        method: "get",
+        success: (res) => {
+            if (res.isSuccess) {
+                tbodyCalculateGroupExpenseAndIncome.html("");
+                var item = res.data;
+                var table = "";
+                table += "<tr>" +
+                    `<td><b>Grup Giderleri Toplamı</b></td>` +
+                    `<td class="text-danger">${item.groupExpenses} ₺</td>` +
+                    "</tr>" +
+                    "<tr>" +
+                    `<td><b>Eğitmen Ücreti Toplamı</b></td>` +
+                    `<td class="text-danger">${item.educatorExpenses} ₺</td>` +
+                    "</tr>" +
+                    "<tr>" +
+                    `<td><b>Öğrenci Ödemeleri</b></td>` +
+                    `<td class="text-success">${item.totalStudentIncomes} ₺</td>` +
+                    "</tr>" +
+                    "<tr>" +
+                    `<td><b>Genel Toplam</b></td>` +
+                    `<td ${item.grandTotal > 0 ? "class='text-success'" : "class='text-danger'"}>${item.grandTotal} ₺</td>` +
+                    "</tr>"
+
+                    ;
+                tbodyCalculateGroupExpenseAndIncome.append(table);
+            }
+            else {
+                console.log(res.errors);
+                alert("Hata");
+            }
+        }
+    });
+
+
 }
 
 $('input[type=radio][name=changeClassroomType]').change(function () {
@@ -416,7 +492,7 @@ function createStudentGrid() {
         columns: [{
             caption: "Ad Soyad",
             dataField: "customerFullName",
-            width: 200
+            width: 170
         },
         {
             caption: "Email",

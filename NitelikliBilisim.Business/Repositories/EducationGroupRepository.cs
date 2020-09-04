@@ -31,33 +31,28 @@ namespace NitelikliBilisim.Business.Repositories
                 .Include(x => x.GroupStudents)
                 .Include(x => x.GroupExpenses)
                 .Include(x => x.GroupLessonDays).First(x => x.Id == groupId);
-            var selectAllClassRooms = _context.Classrooms.Where(x => x.HostId == group.HostId).ToDictionary(x=>x.Id,x=>x.Name);
+            var selectAllClassRooms = _context.Classrooms.Where(x => x.HostId == group.HostId).ToDictionary(x => x.Id, x => x.Name);
             var firstDay = group.GroupLessonDays.FirstOrDefault();
             Classroom classRoom = null;
-            if (firstDay!=null)
+            if (firstDay != null)
             {
                 classRoom = _context.Classrooms.FirstOrDefault(x => x.Id == firstDay.ClassroomId);
             }
-
-            var studentIds = group.GroupStudents.Select(x => x.Id2).ToList();
             var educator = _context.Users.First(x => x.Id == group.EducatorId);
-            var students = _context.Customers
-                .Include(x => x.User)
-                .Where(x => studentIds.Contains(x.Id))
-                .ToList();
             var model = new GroupDetailVm
             {
                 GroupId = group.Id,
                 GroupName = group.GroupName,
                 Host = group.Host,
                 Quota = group.Quota,
+                AssignedStudentsCount = group.GroupStudents.Count,
                 Education = new _Education
                 {
                     Id = group.Education.Id,
                     Name = group.Education.Name
                 },
                 StartDate = group.StartDate,
-                ClassRoomName= classRoom!=null?classRoom.Name:"Sınıf bilgisi girilmemiş.",
+                ClassRoomName = classRoom != null ? classRoom.Name : "Sınıf bilgisi girilmemiş.",
                 EducatorName = $"{educator.Name} {educator.Surname}",
                 GroupExpenseTypes = _context.GroupExpenseTypes.ToList(),
                 SelectClassRooms = selectAllClassRooms
@@ -126,7 +121,7 @@ namespace NitelikliBilisim.Business.Repositories
                 .Where(x => x.Id == groupId)
                 .Include(x => x.Customer)
                 .ThenInclude(x => x.User)
-                .OrderByDescending(x=>x.CreatedDate)
+                .OrderByDescending(x => x.CreatedDate)
                 .Select(x => new AssignedStudentVm
                 {
                     TicketId = x.TicketId,
@@ -209,6 +204,44 @@ namespace NitelikliBilisim.Business.Repositories
                 _context.SaveChanges();
                 return true;
             }
+        }
+
+        public CalculateExpectedProfitabilityReturnVm CalculateExpectedRateOfProfitability(CalculateExpectedProfitabilityVm data)
+        {
+            decimal totalExpenses = GetGroupTotalExpenses(data.GroupId);
+            decimal totalIncomes = GetGroupTotalIncomes(data.GroupId);
+            decimal newTotal = totalExpenses + (totalExpenses * data.ExpectedRateOfProfitability / 100);
+            var group = _context.EducationGroups.Include(x => x.Education).First(x => x.Id == data.GroupId);
+            decimal educationPrice = group.Education.NewPrice.GetValueOrDefault();
+
+
+            return new CalculateExpectedProfitabilityReturnVm
+            {
+                ExpectedRateOfProfitability = data.ExpectedRateOfProfitability,
+                PlannedAmount = newTotal,
+                MinStudentCount = CalculateMinimumStudentCount(newTotal-totalIncomes,educationPrice)
+            };
+
+        }
+
+
+        public GroupExpenseAndIncomeVm CalculateGroupExpenseAndIncome(Guid groupId)
+        {
+            decimal groupExpenses = _context.GroupExpenses.Where(x => x.GroupId == groupId).Sum(x => (x.Price * x.Count));
+            decimal educatorExpenses = _context.GroupLessonDays.Where(x => x.GroupId == groupId).Sum(x => x.EducatorSalary.GetValueOrDefault());
+            decimal studentIncomes = (from grupStudent in _context.Bridge_GroupStudents
+                                      join ticket in _context.Tickets on grupStudent.TicketId equals ticket.Id
+                                      join paymentDetailInfo in _context.OnlinePaymentDetailsInfos on ticket.InvoiceDetailsId equals paymentDetailInfo.Id
+                                      where grupStudent.Id == groupId
+                                      select paymentDetailInfo).Sum(x => x.PaidPrice);
+
+
+            return new GroupExpenseAndIncomeVm
+            {
+                GroupExpenses = groupExpenses,
+                EducatorExpenses = educatorExpenses,
+                TotalStudentIncomes = studentIncomes
+            };
         }
 
         public EducationGroup GetEducationGroupByTicketId(Guid ticketId)
@@ -375,5 +408,28 @@ namespace NitelikliBilisim.Business.Repositories
 
             return daysInt;
         }
+
+        #region Helper Methods
+        private decimal GetGroupTotalExpenses(Guid groupId)
+        {
+            decimal groupExpenses = _context.GroupExpenses.Where(x => x.GroupId == groupId).Sum(x => (x.Price * x.Count));
+            decimal educatorExpenses = _context.GroupLessonDays.Where(x => x.GroupId == groupId).Sum(x => x.EducatorSalary.GetValueOrDefault());
+            return groupExpenses + educatorExpenses;
+        }
+        private decimal GetGroupTotalIncomes(Guid groupId)
+        {
+            decimal studentIncomes = (from grupStudent in _context.Bridge_GroupStudents
+                                      join ticket in _context.Tickets on grupStudent.TicketId equals ticket.Id
+                                      join paymentDetailInfo in _context.OnlinePaymentDetailsInfos on ticket.InvoiceDetailsId equals paymentDetailInfo.Id
+                                      where grupStudent.Id == groupId
+                                      select paymentDetailInfo).Sum(x => x.PaidPrice);
+            return studentIncomes;
+        }
+
+        private int CalculateMinimumStudentCount(decimal difference, decimal educationPrice)
+        {
+            return (int)Math.Ceiling((difference / educationPrice));
+        }
+        #endregion
     }
 }

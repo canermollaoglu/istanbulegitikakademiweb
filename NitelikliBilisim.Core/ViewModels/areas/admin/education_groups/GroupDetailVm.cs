@@ -18,6 +18,7 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_groups
         public List<GroupExpenseType> GroupExpenseTypes { get; set; }
         public string ClassRoomName { get; set; }
         public Dictionary<Guid, string> SelectClassRooms { get; set; }
+        public int AssignedStudentsCount { get; set; }
     }
     
 }
