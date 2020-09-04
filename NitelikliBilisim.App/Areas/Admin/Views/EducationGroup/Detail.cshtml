@@ -12,6 +12,30 @@
         .form-check-label {
             cursor: pointer;
         }
+        .table td {
+            padding: .40rem !important;
+        }
+        #loading {
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            position: fixed;
+            display: block;
+            opacity: 0.7;
+            background-color: #fff;
+            z-index: 99999999;
+            text-align: center;
+        }
+
+        #loading-image {
+            position: absolute;
+            top: 45%;
+            left: 45%;
+            z-index: 99999999;
+            height:100px;
+            width:100px;
+        }
     </style>
 }
 @section alerts{
@@ -19,7 +43,9 @@
 }
 
 <div class="panel-group">
-
+    <div id="loading">
+        <img id="loading-image" src="~/img/loader.gif" alt="Loading..." />
+    </div>
     <!--Genel Grup Bilgileri-->
     <div class="row">
         <div class="col-md-6">
@@ -245,7 +271,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Grup Gideri Ekle</h5>
+                <h5 class="modal-title">Grup İçin Ödeme Yapmış Öğrenciler</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -282,28 +308,30 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="form-group">
-                    <label>Sınıf</label>
-                    <select id="selectClassrooms" class="form-control">
-                        @foreach (var classRoom in Model.SelectClassRooms)
-                        {
-                            <option value="@classRoom.Key">@classRoom.Value</option>
-                        }
-                    </select>
-                </div>
-                <div class="form-group">
+                <form id="form-change-lesson-day-classroom">
+                    <div class="form-group">
+                        <label>Sınıf</label>
+                        <select id="selectClassrooms" class="form-control">
+                            @foreach (var classRoom in Model.SelectClassRooms)
+                            {
+                                <option value="@classRoom.Key">@classRoom.Value</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
 
-                    <input type="radio" checked name="changeClassroomType" value="10">
-                    <label>Tümü</label><br>
-                    <input type="radio" name="changeClassroomType" value="20">
-                    <label>Seçili tarihten itibaren</label><br>
-                    <input type="hidden" value="10" id="selectedType" />
-                </div>
+                        <input type="radio" checked name="changeClassroomType" value="10">
+                        <label>Tümü</label><br>
+                        <input type="radio" name="changeClassroomType" value="20">
+                        <label>Seçili tarihten itibaren</label><br>
+                        <input type="hidden" value="10" id="selectedType" />
+                    </div>
 
-                <div class="form-group" style="display:none;" id="inputChangeClassroomStartDate">
-                    <label>Tarih</label>
-                    <input id="input-start-date" class="form-control" type="date" value="" />
-                </div>
+                    <div class="form-group" style="display:none;" id="inputChangeClassroomStartDate">
+                        <label>Tarih</label>
+                        <input id="input-start-date" class="form-control" type="date" value="" />
+                    </div>
+                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>

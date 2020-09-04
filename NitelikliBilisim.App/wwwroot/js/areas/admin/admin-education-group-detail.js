@@ -20,7 +20,6 @@ var selectClassrooms = $("#selectClassrooms");
 var radioLessonDayClassroomChangeType = $("#selectedType");
 /* fields */
 var confirmModalBuilder = new AlertSupport.ConfirmModalBuilder();
-
 /* assignments */
 $(document).ready(document_onLoad);
 btnSave.on("click", btnSave_onClick);
@@ -41,6 +40,11 @@ function document_onLoad() {
     createStudentGrid();
     createLessonDayGrid();
     createEligibleTicketTable();
+    $(document).ajaxStart(function () {
+        $("#loading").show();
+    }).ajaxStop(function () {
+        $("#loading").hide();
+    });
 }
 function btnConfirmationModalTrigger_onClick() {
     var url = this.getAttribute("data-url");
@@ -81,9 +85,10 @@ function btnSave_onClick() {
         },
         complete: () => {
             btnSave.on("click", btnSave_onClick);
+            $("#grid-expenses").dxDataGrid("instance").refresh();
         }
     });
-    location.href = location.href;
+
 }
 function btnLessonDayClassroomChange_onClick() {
     btnLessonDayClassroomChange.off("click");
@@ -93,12 +98,32 @@ function btnLessonDayClassroomChange_onClick() {
         ClassroomId: selectClassrooms.val(),
         UpdateType: radioLessonDayClassroomChangeType.val()
     }
+
     $.ajax({
         url: "/admin/change-classroom",
         method: "post",
         data: data,
         success: (res) => {
-            location.href = location.href;
+            if (res.isSuccess) {
+                var resultAlert = new AlertSupport.ResultAlert();
+                resultAlert.display({
+                    success: true,
+                    message: "Sınıf değiştirme işlemi başarılı!",
+                });
+                $('#changeLessonDays').modal('hide');
+                $('#form-change-lesson-day-classroom')[0].reset();
+            } else {
+                var resultAlert = new AlertSupport.ResultAlert();
+                resultAlert.display({
+                    success: false,
+                    errors: res.errors,
+                    message: "Hataları düzeltiniz"
+                });
+            }
+        },
+        complete: () => {
+            btnLessonDayClassroomChange.on("click", btnLessonDayClassroomChange_onClick);
+            $("#grid-lessonDays").dxDataGrid("instance").refresh();
         }
     });
 
@@ -111,7 +136,8 @@ function confirm_onClick() {
         method: "get",
         success: (res) => {
             if (res.isSuccess) {
-                location.href = location.href;
+                $("#grid-expenses").dxDataGrid("instance").refresh();
+                calculateGroupExpenseAndIncome();
             } else {
                 var resultAlert = new AlertSupport.ResultAlert();
                 resultAlert.display({
@@ -131,7 +157,10 @@ function btnUnassign_onClick() {
         data: {
             TicketId: ticketId
         },
-        success: (res) => { location.href = location.href; }
+        success: (res) => {
+            $("#grid-students").dxDataGrid("instance").refresh();
+            createEligibleTicketTable();
+        }
     });
 }
 function btnAssign_onClick() {
@@ -144,12 +173,15 @@ function btnAssign_onClick() {
             TicketId: ticketId,
             GroupId: gId
         },
-        success: (res) => { location.href = location.href; }
+        success: (res) => {
+            $("#grid-students").dxDataGrid("instance").refresh();
+            createEligibleTicketTable();
+        }
     });
 }
 function btnCalculate_onClick() {
     btnCalculate.off("click");
-    
+
     var data = {
         GroupId: groupId.val(),
         ExpectedRateOfProfitability: inputExpectedProfitability.val()
@@ -159,20 +191,22 @@ function btnCalculate_onClick() {
         method: "post",
         data: data,
         success: (res) => {
-            console.log(res);
             if (res.isSuccess) {
                 ExpectedProfitabilityDiv.html("");
                 var item = res.data;
-                var content = `<p><b>%${item.expectedRateOfProfitability}</b> karlılık için beklenen tutar <b>${item.plannedAmount} ₺</b> bu tutar için minimum <b>${item.minStudentCount}</b> öğrencinin kaydolması gerekmektedir.</p>`;
-                
+                var content = `<p><b>%${item.expectedRateOfProfitability}</b> karlılık için beklenen kâr tutarı <b>${item.plannedAmount} ₺</b>, bu tutar için minimum <b>${item.minStudentCount}</b> öğrencinin daha gruba katılması gerekmektedir.</p>`;
                 ExpectedProfitabilityDiv.append(content);
             }
             else {
                 console.log(res.errors);
                 alert("Hata");
             }
+           
+        },
+        complete: () => {
             btnCalculate.on("click", btnCalculate_onClick);
         }
+
     });
 }
 
@@ -222,20 +256,20 @@ function calculateGroupExpenseAndIncome() {
                 var item = res.data;
                 var table = "";
                 table += "<tr>" +
-                    `<td><b>Grup Giderleri Toplamı</b></td>` +
+                    `<td>Grup Giderleri Toplamı</td>` +
                     `<td class="text-danger">${item.groupExpenses} ₺</td>` +
                     "</tr>" +
                     "<tr>" +
-                    `<td><b>Eğitmen Ücreti Toplamı</b></td>` +
+                    `<td>Eğitmen Ücreti Toplamı</td>` +
                     `<td class="text-danger">${item.educatorExpenses} ₺</td>` +
                     "</tr>" +
                     "<tr>" +
-                    `<td><b>Öğrenci Ödemeleri</b></td>` +
+                    `<td>Ciro</td>` +
                     `<td class="text-success">${item.totalStudentIncomes} ₺</td>` +
                     "</tr>" +
                     "<tr>" +
                     `<td><b>Genel Toplam</b></td>` +
-                    `<td ${item.grandTotal > 0 ? "class='text-success'" : "class='text-danger'"}>${item.grandTotal} ₺</td>` +
+                    `<td ${item.grandTotal > 0 ? "class='text-success'" : "class='text-danger'"}><b>${item.grandTotal} ₺</b></td>` +
                     "</tr>"
 
                     ;
