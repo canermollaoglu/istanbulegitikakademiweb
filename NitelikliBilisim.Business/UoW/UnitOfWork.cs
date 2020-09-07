@@ -50,6 +50,7 @@ namespace NitelikliBilisim.Business.UoW
         private InvoiceDetailRepository _invoiceDetailRepository;
         private GroupExpenseRepository _groupExpenseRepository;
         private GroupExpenseTypeRepository _groupExpenseTypeRepository;
+        private EducationHostClassroomRepository _educationHostClassroomRepository;
 
         private IElasticClient _elasticClient;
         public UnitOfWork(NbDataContext context, IElasticClient elasticClient)
@@ -62,6 +63,7 @@ namespace NitelikliBilisim.Business.UoW
             _context.EnsureAutoHistory();
             return _context.SaveChanges();
         }
+        public EducationHostClassroomRepository ClassRoom => _educationHostClassroomRepository ??= new EducationHostClassroomRepository(_context);
         public GroupExpenseRepository GroupExpense => _groupExpenseRepository ??= new GroupExpenseRepository(_context);
         public GroupExpenseTypeRepository GroupExpenseType => _groupExpenseTypeRepository ??= new GroupExpenseTypeRepository(_context);
         public InvoiceDetailRepository InvoiceDetail => _invoiceDetailRepository ??= new InvoiceDetailRepository(_context);

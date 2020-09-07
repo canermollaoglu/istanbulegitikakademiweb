@@ -15,10 +15,6 @@ namespace NitelikliBilisim.Business.Repositories
             _context = context;
         }
 
-        public List<Classroom> GetClassRoomsByHostId(Guid hostId)
-        {
-            return _context.Classrooms.Where(x => x.HostId == hostId).ToList();
-        }
 
         public IQueryable<EducationHostListVm> GetListQueryable()
         {

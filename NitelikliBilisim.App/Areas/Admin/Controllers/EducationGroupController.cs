@@ -119,7 +119,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     isSuccess = false
                 });
 
-            var model = _unitOfWork.EducationHost.GetClassRoomsByHostId(hostId.Value);
+            var model = _unitOfWork.ClassRoom.GetClassRoomsByHostId(hostId.Value);
             return Json(new ResponseModel
             {
                 isSuccess = true,

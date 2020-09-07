@@ -91,7 +91,11 @@ namespace NitelikliBilisim.App.Lexicographer
                 new BreadCrumbItem[] { new BreadCrumbItem("Eğitim Kurumları Listesi", "/admin/egitim-kurumlari"), new BreadCrumbItem("Eğitim Kurumu Ekle", null) });
             _dictionary.Add("AdminEducationHostUpdate",
                 new BreadCrumbItem[] { new BreadCrumbItem("Eğitim Kurumları Listesi", "/admin/egitim-kurumlari"), new BreadCrumbItem("Eğitim Kurumu Güncelle", null) });
+            _dictionary.Add("AdminEducationClassRoomList",
+               new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Sınıf Listesi", url: null) });
 
+
+            
             /*OffDay Manage*/
             _dictionary.Add("AdminOffDay",
                 new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Tatil Günleri Yönetimi", url: null) });
