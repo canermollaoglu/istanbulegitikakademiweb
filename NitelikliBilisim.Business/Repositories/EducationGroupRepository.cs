@@ -23,7 +23,7 @@ namespace NitelikliBilisim.Business.Repositories
             _context = context;
         }
 
-        public GroupDetailVm GetDetailByGroupId(Guid groupId)
+        public GroupDetailVm GetDetailByGroupId(Guid groupId,int expectedProfitRate)
         {
             var group = _context.EducationGroups
                 .Include(x => x.Education)
@@ -48,6 +48,18 @@ namespace NitelikliBilisim.Business.Repositories
                 classRoom = _context.Classrooms.FirstOrDefault(x => x.Id == firstDay.ClassroomId);
             }
             var educator = _context.Users.First(x => x.Id == group.EducatorId);
+
+            #region Belirlenen kar için minimum kayıt olması gereken öğrenci sayısı
+
+            decimal totalExpenses = GetGroupTotalExpenses(groupId);
+            decimal totalIncomes = GetGroupTotalIncomes(groupId);
+            decimal newTotal = totalExpenses + (totalExpenses * expectedProfitRate / 100);
+            decimal educationPrice = group.Education.NewPrice.GetValueOrDefault();
+
+            var minimumStudent = CalculateMinimumStudentCount(newTotal - totalIncomes, educationPrice);
+            #endregion
+
+
             var model = new GroupDetailVm
             {
                 GroupId = group.Id,
@@ -65,7 +77,8 @@ namespace NitelikliBilisim.Business.Repositories
                 EducatorName = $"{educator.Name} {educator.Surname}",
                 GroupExpenseTypes = _context.GroupExpenseTypes.ToList(),
                 SelectClassRooms = selectAllClassRooms,
-                SelectEducators = educators
+                SelectEducators = educators,
+                MinimumStudentCount = minimumStudent
             };
             return model;
         }
@@ -234,6 +247,10 @@ namespace NitelikliBilisim.Business.Repositories
 
         }
 
+        public void PostponementOfGroup(PostponementGroupVm data)
+        {
+            //TODO : eğitimin hangi günlerde olduğu grup üzerinde kayıtlı olmadığı için bu bilgiye grup oluştuktan sonra ulaşılamıyor.
+        }
 
         public GroupExpenseAndIncomeVm CalculateGroupExpenseAndIncome(Guid groupId)
         {

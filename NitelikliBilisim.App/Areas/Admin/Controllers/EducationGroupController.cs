@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Models;
@@ -20,10 +21,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly EmailSender _emailSender;
-        public EducationGroupController(UnitOfWork unitOfWork)
+        private readonly IConfiguration _configuration;
+        public EducationGroupController(UnitOfWork unitOfWork,IConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
             _emailSender = new EmailSender();
+            _configuration = configuration;
         }
         [Route("admin/gruplar")]
         public IActionResult List()
@@ -37,8 +40,10 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/grup-detay/{groupId?}")]
         public IActionResult Detail(Guid groupId)
         {
+
             ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationGrupDetail");
-            var groupDetail = _unitOfWork.EducationGroup.GetDetailByGroupId(groupId);
+            var expectedProfitRate = _configuration.GetValue<int>("ApplicationSettings:ExpectedProfitRate");
+            var groupDetail = _unitOfWork.EducationGroup.GetDetailByGroupId(groupId,expectedProfitRate);
 
             return View(groupDetail);
         }
@@ -93,6 +98,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             };
             return View(model);
         }
+
+        
 
         [Route("admin/get-assigned-educators-for-group-add/{educationId?}")]
         public IActionResult GetEducatorsOfEducation(Guid? educationId)
@@ -241,7 +248,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 {
                     isSuccess = false,
                     errors = new List<string> { $"Hata : {ex.Message}" }
-                }); ;
+                });
             }
            
         }
@@ -284,8 +291,26 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     errors = new List<string> { $"Hata: {ex.Message}"}
                 });
             }
-            
-
         }
+
+        //[HttpPost]
+        //public IActionResult PostponementOfGroup(PostponementGroupVm data)
+        //{
+        //    try
+        //    {
+        //        _unitOfWork.EducationGroup.PostponementOfGroup(data);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new ResponseModel
+        //        {
+        //            isSuccess = false,
+        //            errors = new List<string> { $"Hata : {ex.Message}" }
+        //        }); ;
+        //    }
+
+
+        //}
+
     }
 }

@@ -20,6 +20,7 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_groups
         public Dictionary<Guid, string> SelectClassRooms { get; set; }
         public int AssignedStudentsCount { get; set; }
         public Dictionary<string, string> SelectEducators { get; set; }
+        public int MinimumStudentCount { get; set; }
     }
     
 }

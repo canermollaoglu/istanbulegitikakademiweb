@@ -14,6 +14,7 @@ var inputChangeEducatorStartDateDiv = $("#inputChangeEducatorStartDate");
 var inputStartDate = $("#input-start-date");
 var inputChangeEducatorStartDate = $("#input-change-educator-start-date");
 var inputGroupName = $("#input-group-name");
+var inputGroupNewDate = $("#input-group-new-date");
 
 var groupExpensesDiv = $("#groupExpensesDiv");
 var ExpectedProfitabilityDiv = $("#div-calculate-expected-rat-of-profitability");
@@ -24,6 +25,7 @@ var btnLessonDayClassroomChange = $("#btn-lessonday-classroom-save");
 var btnLessonDayEducatorChange = $("#btn-lessonday-educator-save");
 var btnGeneralInformationChange = $("#btn-general-group-information-save");
 var btnCalculate = $("#btn-calculate-expected-rate-of-profitability");
+var btnPostponementOfGroup = $("#btn-postponement-of-education-save");
 
 var tbodyTickets = $("#tbody-tickets");
 var tbodyCalculateGroupExpenseAndIncome = $("#tbody-calculate-group-expense-and-income");
@@ -39,6 +41,7 @@ btnLessonDayClassroomChange.on("click", btnLessonDayClassroomChange_onClick);
 btnCalculate.on("click", btnCalculate_onClick);
 btnLessonDayEducatorChange.on("click", btnLessonDayEducatorChange_onClick);
 btnGeneralInformationChange.on("click", btnGeneralInformationChange_onClick);
+btnPostponementOfGroup.on("click", btnPostponementOfGroup_onClick);
 /* events */
 function document_onLoad() {
     confirmModalBuilder.buildModal({
@@ -59,6 +62,7 @@ function document_onLoad() {
         $("#loading").hide();
     });
 }
+
 function btnConfirmationModalTrigger_onClick() {
     var url = this.getAttribute("data-url");
     confirmModalBuilder.setUrl(url);
@@ -290,7 +294,33 @@ function btnGeneralInformationChange_onClick() {
         }
     });
 }
+function btnPostponementOfGroup_onClick() {
+    
+    var data = {
+        GroupId: groupId.val(),
+        NewDate: inputGroupNewDate.val()
+    }
+    $.ajax({
+        url: "/admin/EducationGroup/PostponementOfGroup",
+        method: "post",
+        data: data,
+        success: (res) => {
+            if (res.isSuccess) {
+                location.href = location.href;
+            } else {
+                var resultAlert = new AlertSupport.ResultAlert();
+                resultAlert.display({
+                    success: false,
+                    errors: res.errors,
+                    message: "Hataları düzeltiniz"
+                });
+                $("#postponementOfEducation").modal('hide');
+                $('#form-postponement-of-group')[0].reset();
+            }
+        }
+    });
 
+}
 
 function createEligibleTicketTable() {
     var gId = groupId.val();
