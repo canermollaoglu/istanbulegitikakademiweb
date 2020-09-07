@@ -1,26 +1,33 @@
 ﻿/* elements */
+var groupId = $("#groupId");
+
 var selectExpenseTypes = $("#selectExpenseType");
+var selectClassrooms = $("#selectClassrooms");
+var selectEducators = $("#selectEducators");
 
 var inputPrice = $("#inputPrice");
 var inputCount = $("#inputCount");
 var inputDescription = $("#inputDescription");
 var inputDailyEducatorPrice = $("#dailyEducatorPrice");
 var inputExpectedProfitability = $("#input-expected-rate-of-profitability");
-var groupExpensesDiv = $("#groupExpensesDiv");
-var ExpectedProfitabilityDiv = $("#div-calculate-expected-rat-of-profitability");
-var groupId = $("#groupId");
-var btnSave = $("#btn-save");
-var btnLessonDayClassroomChange = $("#btn-lessonday-classroom-save");
-var btnLessonDayEducatorChange = $("#btn-lessonday-educator-save");
-var btnCalculate = $("#btn-calculate-expected-rate-of-profitability");
-var tbodyTickets = $("#tbody-tickets");
-var tbodyCalculateGroupExpenseAndIncome = $("#tbody-calculate-group-expense-and-income");
-var inputStartDateDiv = $("#inputChangeClassroomStartDate");
 var inputChangeEducatorStartDateDiv = $("#inputChangeEducatorStartDate");
 var inputStartDate = $("#input-start-date");
 var inputChangeEducatorStartDate = $("#input-change-educator-start-date");
-var selectClassrooms = $("#selectClassrooms");
-var selectEducators = $("#selectEducators");
+var inputGroupName = $("#input-group-name");
+
+var groupExpensesDiv = $("#groupExpensesDiv");
+var ExpectedProfitabilityDiv = $("#div-calculate-expected-rat-of-profitability");
+var inputStartDateDiv = $("#inputChangeClassroomStartDate");
+
+var btnSave = $("#btn-save");
+var btnLessonDayClassroomChange = $("#btn-lessonday-classroom-save");
+var btnLessonDayEducatorChange = $("#btn-lessonday-educator-save");
+var btnGeneralInformationChange = $("#btn-general-group-information-save");
+var btnCalculate = $("#btn-calculate-expected-rate-of-profitability");
+
+var tbodyTickets = $("#tbody-tickets");
+var tbodyCalculateGroupExpenseAndIncome = $("#tbody-calculate-group-expense-and-income");
+
 var radioLessonDayClassroomChangeType = $("#selectedType");
 var radioEducatorChangeType = $("#selectedEducatorChangeType");
 /* fields */
@@ -31,6 +38,7 @@ btnSave.on("click", btnSave_onClick);
 btnLessonDayClassroomChange.on("click", btnLessonDayClassroomChange_onClick);
 btnCalculate.on("click", btnCalculate_onClick);
 btnLessonDayEducatorChange.on("click", btnLessonDayEducatorChange_onClick);
+btnGeneralInformationChange.on("click", btnGeneralInformationChange_onClick);
 /* events */
 function document_onLoad() {
     confirmModalBuilder.buildModal({
@@ -255,6 +263,34 @@ function btnCalculate_onClick() {
 
     });
 }
+function btnGeneralInformationChange_onClick() {
+    btnGeneralInformationChange.off("click");
+    var data = {
+        GroupId: groupId.val(),
+        GroupName: inputGroupName.val()
+    }
+
+    $.ajax({
+        url: "/admin/EducationGroup/ChangeGeneralInformation",
+        method: "post",
+        data: data,
+        success: (res) => {
+            if (res.isSuccess) {
+                location.href = location.href;
+            } else {
+                var resultAlert = new AlertSupport.ResultAlert();
+                resultAlert.display({
+                    success: false,
+                    errors: res.errors,
+                    message: "Hataları düzeltiniz"
+                });
+                $("#changeGeneralInformation").modal('hide');
+                $('#form-change-general-information')[0].reset();
+            }
+        }
+    });
+}
+
 
 function createEligibleTicketTable() {
     var gId = groupId.val();

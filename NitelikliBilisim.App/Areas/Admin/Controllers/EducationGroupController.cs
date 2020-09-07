@@ -256,5 +256,36 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 data = retVal
             });
         }
+
+        public IActionResult ChangeGeneralInformation(UpdateGroupGeneralInformationVm data)
+        {
+            if (!ModelState.IsValid)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = ModelStateUtil.GetErrors(ModelState)
+                });
+
+            try
+            {
+                var group = _unitOfWork.EducationGroup.GetById(data.GroupId);
+                group.GroupName = data.GroupName;
+                _unitOfWork.EducationGroup.Update(group);
+                return Json(new ResponseModel
+                {
+                    isSuccess = true
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { $"Hata: {ex.Message}"}
+                });
+            }
+            
+
+        }
     }
 }
