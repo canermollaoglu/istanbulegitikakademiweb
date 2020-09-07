@@ -204,6 +204,7 @@ function btnUnassign_onClick() {
         success: (res) => {
             $("#grid-students").dxDataGrid("instance").refresh();
             createEligibleTicketTable();
+            calculateGroupExpenseAndIncome();
         }
     });
 }
@@ -220,6 +221,7 @@ function btnAssign_onClick() {
         success: (res) => {
             $("#grid-students").dxDataGrid("instance").refresh();
             createEligibleTicketTable();
+            calculateGroupExpenseAndIncome();
         }
     });
 }
@@ -238,7 +240,7 @@ function btnCalculate_onClick() {
             if (res.isSuccess) {
                 ExpectedProfitabilityDiv.html("");
                 var item = res.data;
-                var content = `<p><b>%${item.expectedRateOfProfitability}</b> karlılık için beklenen kâr tutarı <b>${item.plannedAmount} ₺</b>, bu tutar için minimum <b>${item.minStudentCount}</b> öğrencinin daha gruba katılması gerekmektedir.</p>`;
+                var content = `<p><b>%${item.expectedRateOfProfitability}</b> karlılık için beklenen ciro <b>${item.plannedAmount} ₺</b>, bu tutar için minimum <b>${item.minStudentCount}</b> öğrencinin daha gruba katılması gerekmektedir.</p>`;
                 ExpectedProfitabilityDiv.append(content);
             }
             else {

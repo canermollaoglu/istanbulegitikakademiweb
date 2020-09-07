@@ -229,7 +229,7 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 ExpectedRateOfProfitability = data.ExpectedRateOfProfitability,
                 PlannedAmount = newTotal,
-                MinStudentCount = CalculateMinimumStudentCount(newTotal-(totalIncomes-totalExpenses),educationPrice)
+                MinStudentCount = CalculateMinimumStudentCount(newTotal-totalIncomes,educationPrice)
             };
 
         }
