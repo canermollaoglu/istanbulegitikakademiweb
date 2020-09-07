@@ -31,6 +31,15 @@ namespace NitelikliBilisim.Business.Repositories
                 .Include(x => x.GroupStudents)
                 .Include(x => x.GroupExpenses)
                 .Include(x => x.GroupLessonDays).First(x => x.Id == groupId);
+            var educatorIds = _context.Bridge_EducationEducators.Where(x => x.Id == group.EducationId)
+                .Select(x => x.Id2)
+                .ToList();
+            var educators =new Dictionary<string,string>();
+            if (educatorIds!=null && educatorIds.Count>0)
+            {
+                educators = _context.Users.Where(x => educatorIds.Contains(x.Id)).ToDictionary(x=>x.Id,x=>$"{x.Name} {x.Surname}");
+            }
+
             var selectAllClassRooms = _context.Classrooms.Where(x => x.HostId == group.HostId).ToDictionary(x => x.Id, x => x.Name);
             var firstDay = group.GroupLessonDays.FirstOrDefault();
             Classroom classRoom = null;
@@ -55,7 +64,8 @@ namespace NitelikliBilisim.Business.Repositories
                 ClassRoomName = classRoom != null ? classRoom.Name : "Sınıf bilgisi girilmemiş.",
                 EducatorName = $"{educator.Name} {educator.Surname}",
                 GroupExpenseTypes = _context.GroupExpenseTypes.ToList(),
-                SelectClassRooms = selectAllClassRooms
+                SelectClassRooms = selectAllClassRooms,
+                SelectEducators = educators
             };
             return model;
         }

@@ -19,6 +19,7 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_groups
         public string ClassRoomName { get; set; }
         public Dictionary<Guid, string> SelectClassRooms { get; set; }
         public int AssignedStudentsCount { get; set; }
+        public Dictionary<string, string> SelectEducators { get; set; }
     }
     
 }

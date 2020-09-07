@@ -95,7 +95,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Update(Guid? expenseTypeId)
         {
-            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminBlogCategoryUpdate");
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminExpenseTypeUpdate");
             if (expenseTypeId == null)
                 return Redirect("/admin/GroupExpenseType/list");
             var expenseType = _unitOfWork.GroupExpenseType.GetById(expenseTypeId.Value);

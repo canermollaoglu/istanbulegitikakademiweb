@@ -4,7 +4,7 @@ using System.Text;
 
 namespace NitelikliBilisim.Core.Enums.group
 {
-    public enum ChangeClassroomTypes
+    public enum TypeOfChangeOperation
     {
         AllDays = 10,
         WidthStartDate =20

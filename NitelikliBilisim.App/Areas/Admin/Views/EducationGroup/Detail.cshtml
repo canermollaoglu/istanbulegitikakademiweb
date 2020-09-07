@@ -12,9 +12,11 @@
         .form-check-label {
             cursor: pointer;
         }
+
         .table td {
             padding: .40rem !important;
         }
+
         #loading {
             width: 100%;
             height: 100%;
@@ -33,8 +35,8 @@
             top: 45%;
             left: 45%;
             z-index: 99999999;
-            height:100px;
-            width:100px;
+            height: 100px;
+            width: 100px;
         }
     </style>
 }
@@ -53,6 +55,7 @@
                 <div class="card-header">
                     <i class="fa fa-list"></i> Genel Grup Bilgileri
                     <button class="btn btn-sm pull-right" data-target="#changeLessonDays" data-toggle="modal" title="Sınıf Değişikliği"><i class="fa fa-home"></i></button>
+                    <button class="btn btn-sm pull-right" data-target="#changeEducator" data-toggle="modal" title="Eğitmen Değişikliği"><i class="fa fa-user"></i></button>
                     <button class="btn btn-sm pull-right" title="Grup İsim Değişikliği"><i class="fa fa-edit"></i></button>
                 </div>
                 <input type="hidden" value="@Model.GroupId" id="groupId" />
@@ -340,6 +343,55 @@
         </div>
     </div>
 </div>
+
+
+<div class="modal fade" id="changeEducator" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Eğitmen Değişikliği</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="form-change-educator">
+                    <div class="form-group">
+                        <label>Eğitmen</label>
+                        <select id="selectEducators" class="form-control">
+                            @foreach (var educator in Model.SelectEducators)
+                            {
+                                <option value="@educator.Key">@educator.Value</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Eğitmen Günlük Ücreti</label>
+                        <input type="number" class="form-control" id="dailyEducatorPrice" />
+                    </div>
+                    <div class="form-group">
+
+                        <input type="radio" checked name="educatorChangeType" value="10">
+                        <label>Tümü</label><br>
+                        <input type="radio" name="educatorChangeType" value="20">
+                        <label>Seçili tarihten itibaren</label><br>
+                        <input type="hidden" value="10" id="selectedEducatorChangeType" />
+                    </div>
+
+                    <div class="form-group" style="display:none;" id="inputChangeEducatorStartDate">
+                        <label>Tarih</label>
+                        <input id="input-change-educator-start-date" class="form-control" type="date" value="" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                <button type="button" class="btn btn-primary" id="btn-lessonday-educator-save">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 @section postScripts{
     <script src="~/assets/js/area-admin/jquery.dataTables.js"></script>

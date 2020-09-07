@@ -4,20 +4,25 @@ var selectExpenseTypes = $("#selectExpenseType");
 var inputPrice = $("#inputPrice");
 var inputCount = $("#inputCount");
 var inputDescription = $("#inputDescription");
+var inputDailyEducatorPrice = $("#dailyEducatorPrice");
 var inputExpectedProfitability = $("#input-expected-rate-of-profitability");
 var groupExpensesDiv = $("#groupExpensesDiv");
 var ExpectedProfitabilityDiv = $("#div-calculate-expected-rat-of-profitability");
 var groupId = $("#groupId");
 var btnSave = $("#btn-save");
 var btnLessonDayClassroomChange = $("#btn-lessonday-classroom-save");
+var btnLessonDayEducatorChange = $("#btn-lessonday-educator-save");
 var btnCalculate = $("#btn-calculate-expected-rate-of-profitability");
-
 var tbodyTickets = $("#tbody-tickets");
 var tbodyCalculateGroupExpenseAndIncome = $("#tbody-calculate-group-expense-and-income");
 var inputStartDateDiv = $("#inputChangeClassroomStartDate");
+var inputChangeEducatorStartDateDiv = $("#inputChangeEducatorStartDate");
 var inputStartDate = $("#input-start-date");
+var inputChangeEducatorStartDate = $("#input-change-educator-start-date");
 var selectClassrooms = $("#selectClassrooms");
+var selectEducators = $("#selectEducators");
 var radioLessonDayClassroomChangeType = $("#selectedType");
+var radioEducatorChangeType = $("#selectedEducatorChangeType");
 /* fields */
 var confirmModalBuilder = new AlertSupport.ConfirmModalBuilder();
 /* assignments */
@@ -25,7 +30,7 @@ $(document).ready(document_onLoad);
 btnSave.on("click", btnSave_onClick);
 btnLessonDayClassroomChange.on("click", btnLessonDayClassroomChange_onClick);
 btnCalculate.on("click", btnCalculate_onClick);
-
+btnLessonDayEducatorChange.on("click", btnLessonDayEducatorChange_onClick);
 /* events */
 function document_onLoad() {
     confirmModalBuilder.buildModal({
@@ -86,6 +91,7 @@ function btnSave_onClick() {
         complete: () => {
             btnSave.on("click", btnSave_onClick);
             $("#grid-expenses").dxDataGrid("instance").refresh();
+            calculateGroupExpenseAndIncome();
         }
     });
 
@@ -128,6 +134,44 @@ function btnLessonDayClassroomChange_onClick() {
     });
 
 
+}
+function btnLessonDayEducatorChange_onClick() {
+    btnLessonDayEducatorChange.off("click");
+    var data = {
+        GroupId: groupId.val(),
+        StartDate: inputChangeEducatorStartDate.val(),
+        EducatorId: selectEducators.val(),
+        EducatorSalary: inputDailyEducatorPrice.val(),
+        UpdateType: radioEducatorChangeType.val()
+    }
+
+    $.ajax({
+        url: "/admin/change-educator",
+        method: "post",
+        data: data,
+        success: (res) => {
+            if (res.isSuccess) {
+                var resultAlert = new AlertSupport.ResultAlert();
+                resultAlert.display({
+                    success: true,
+                    message: "Eğitmen değiştirme işlemi başarılı!",
+                });
+                $('#changeEducator').modal('hide');
+                $('#form-change-educator')[0].reset();
+            } else {
+                var resultAlert = new AlertSupport.ResultAlert();
+                resultAlert.display({
+                    success: false,
+                    errors: res.errors,
+                    message: "Hataları düzeltiniz"
+                });
+            }
+        },
+        complete: () => {
+            btnLessonDayEducatorChange.on("click", btnLessonDayEducatorChange_onClick);
+            $("#grid-lessonDays").dxDataGrid("instance").refresh();
+        }
+    });
 }
 function confirm_onClick() {
     var url = this.getAttribute("data-url");
@@ -264,7 +308,7 @@ function calculateGroupExpenseAndIncome() {
                     `<td class="text-danger">${item.educatorExpenses} ₺</td>` +
                     "</tr>" +
                     "<tr>" +
-                    `<td>Ciro</td>` +
+                    `<td>Ciro (Öğrenci Ödemeleri)</td>` +
                     `<td class="text-success">${item.totalStudentIncomes} ₺</td>` +
                     "</tr>" +
                     "<tr>" +
@@ -293,6 +337,16 @@ $('input[type=radio][name=changeClassroomType]').change(function () {
     else if (this.value == '20') {
         radioLessonDayClassroomChangeType.val("20");
         inputStartDateDiv.show();
+    }
+});
+$('input[type=radio][name=educatorChangeType]').change(function () {
+    if (this.value == '10') {
+        radioEducatorChangeType.val("10");
+        inputChangeEducatorStartDateDiv.hide();
+    }
+    else if (this.value == '20') {
+        radioEducatorChangeType.val("20");
+        inputChangeEducatorStartDateDiv.show();
     }
 });
 
@@ -387,7 +441,7 @@ function createGroupExpenseGrid() {
                 {
                     column: "totalPrice",
                     summaryType: "sum",
-                    displayFormat: "{0} ₺"
+                    displayFormat: "T:{0} ₺"
                 }]
         }
     });
@@ -486,7 +540,7 @@ function createLessonDayGrid() {
                 {
                     column: "educatorSalary",
                     summaryType: "sum",
-                    displayFormat: "{0} ₺"
+                    displayFormat: "T: {0} ₺"
                 }]
         }
     });
