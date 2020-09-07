@@ -247,11 +247,6 @@ namespace NitelikliBilisim.Business.Repositories
 
         }
 
-        public void PostponementOfGroup(PostponementGroupVm data)
-        {
-            //TODO : eğitimin hangi günlerde olduğu grup üzerinde kayıtlı olmadığı için bu bilgiye grup oluştuktan sonra ulaşılamıyor.
-        }
-
         public GroupExpenseAndIncomeVm CalculateGroupExpenseAndIncome(Guid groupId)
         {
             decimal groupExpenses = _context.GroupExpenses.Where(x => x.GroupId == groupId).Sum(x => (x.Price * x.Count));
@@ -435,6 +430,7 @@ namespace NitelikliBilisim.Business.Repositories
 
             return daysInt;
         }
+
 
         #region Helper Methods
         private decimal GetGroupTotalExpenses(Guid groupId)

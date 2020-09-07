@@ -298,8 +298,10 @@ function btnPostponementOfGroup_onClick() {
     
     var data = {
         GroupId: groupId.val(),
-        NewDate: inputGroupNewDate.val()
+        StartDate: inputGroupNewDate.val()
     }
+    console.log(inputGroupNewDate.val());
+    console.log(data);
     $.ajax({
         url: "/admin/EducationGroup/PostponementOfGroup",
         method: "post",

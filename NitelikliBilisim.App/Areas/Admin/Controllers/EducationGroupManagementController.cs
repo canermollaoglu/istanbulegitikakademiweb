@@ -49,7 +49,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         }
 
         [Route("admin/determine-postpone-dates")]
-        public IActionResult DeterminePostponeDates(Guid? groupId, DateTime from, DateTime? to)
+        public IActionResult DeterminePostponeDates(Guid? groupId, DateTime from)
         {
             if (!groupId.HasValue)
                 return Json(new ResponseModel
@@ -57,7 +57,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     isSuccess = false
                 });
 
-            var model = _unitOfWork.GroupLessonDay.DeterminePostponeDates(groupId.Value, from, to);
+            var model = _unitOfWork.GroupLessonDay.DeterminePostponeDates(groupId.Value, from);
             return Json(new ResponseModel
             {
                 isSuccess = true,
@@ -90,10 +90,10 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     isSuccess = false
                 });
 
-            var newDates = _unitOfWork.GroupLessonDay.PostponeLessons(data.groupId.Value, data.from, data.to);
+            _unitOfWork.GroupLessonDay.PostponeLessons(data.groupId.Value, data.from);
 
             var emails = _unitOfWork.EmailHelper.GetEmailsOfStudentsByGroup(data.groupId.Value);
-            emails.Add(_unitOfWork.EmailHelper.GetEmailOfTeacherAtDate(data.groupId.Value, newDates.First()));
+           // emails.Add(_unitOfWork.EmailHelper.GetEmailOfTeacherAtDate(data.groupId.Value, newDates.First()));
             await _emailSender.SendAsync(new EmailMessage
             {
                 Contacts = emails.ToArray()

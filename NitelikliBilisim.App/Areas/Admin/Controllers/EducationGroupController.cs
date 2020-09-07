@@ -22,7 +22,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         private readonly UnitOfWork _unitOfWork;
         private readonly EmailSender _emailSender;
         private readonly IConfiguration _configuration;
-        public EducationGroupController(UnitOfWork unitOfWork,IConfiguration configuration)
+        public EducationGroupController(UnitOfWork unitOfWork, IConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
             _emailSender = new EmailSender();
@@ -43,7 +43,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
             ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationGrupDetail");
             var expectedProfitRate = _configuration.GetValue<int>("ApplicationSettings:ExpectedProfitRate");
-            var groupDetail = _unitOfWork.EducationGroup.GetDetailByGroupId(groupId,expectedProfitRate);
+            var groupDetail = _unitOfWork.EducationGroup.GetDetailByGroupId(groupId, expectedProfitRate);
 
             return View(groupDetail);
         }
@@ -99,7 +99,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             return View(model);
         }
 
-        
+
 
         [Route("admin/get-assigned-educators-for-group-add/{educationId?}")]
         public IActionResult GetEducatorsOfEducation(Guid? educationId)
@@ -153,7 +153,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 HostId = data.HostId.Value,
                 StartDate = data.StartDate.Value,
                 Quota = data.Quota.Value
-            }, days: data.LessonDays,data.ClassRoomId,data.EducatorPrice);
+            }, days: data.LessonDays, data.ClassRoomId, data.EducatorPrice);
             var emails = _unitOfWork.EmailHelper.GetAdminEmails();
             await _emailSender.SendAsync(new Core.ComplexTypes.EmailMessage
             {
@@ -250,7 +250,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     errors = new List<string> { $"Hata : {ex.Message}" }
                 });
             }
-           
+
         }
 
         [Route("admin/calculate-group-expected-profitability/")]
@@ -288,29 +288,39 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 return Json(new ResponseModel
                 {
                     isSuccess = false,
-                    errors = new List<string> { $"Hata: {ex.Message}"}
+                    errors = new List<string> { $"Hata: {ex.Message}" }
                 });
             }
         }
 
-        //[HttpPost]
-        //public IActionResult PostponementOfGroup(PostponementGroupVm data)
-        //{
-        //    try
-        //    {
-        //        _unitOfWork.EducationGroup.PostponementOfGroup(data);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Json(new ResponseModel
-        //        {
-        //            isSuccess = false,
-        //            errors = new List<string> { $"Hata : {ex.Message}" }
-        //        }); ;
-        //    }
+        [HttpPost]
+        public IActionResult PostponementOfGroup(PostponementGroupVm data)
+        {
+            try
+            {
+                var group = _unitOfWork.EducationGroup.GetById(data.GroupId);
+                if (group.StartDate.Date <= DateTime.Now.Date)
+                    return Json(new ResponseModel
+                    {
+                        isSuccess = false,
+                        errors = new List<string> { "Grup eğitime başladığı için erteleme yapılamaz. Lütfen yalnızca ilgili günleri güncelleyin!." }
+                    });
 
-
-        //}
+                _unitOfWork.GroupLessonDay.PostponeLessons(data.GroupId, data.StartDate);
+                return Json(new ResponseModel
+                {
+                    isSuccess = true
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { $"Hata : {ex.Message}" }
+                }); ;
+            }
+        }
 
     }
 }
