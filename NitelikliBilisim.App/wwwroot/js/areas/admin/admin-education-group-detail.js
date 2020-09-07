@@ -316,7 +316,7 @@ function btnPostponementOfGroup_onClick() {
                     errors: res.errors,
                     message: "Hataları düzeltiniz"
                 });
-                $("#postponementOfEducation").modal('hide');
+                $("#postponementOfGroup").modal('hide');
                 $('#form-postponement-of-group')[0].reset();
             }
         }
