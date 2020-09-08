@@ -7,6 +7,7 @@ using NitelikliBilisim.Core.ViewModels.areas.admin.customer;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_groups;
 using NitelikliBilisim.Core.ViewModels.areas.admin.group_expense;
 using NitelikliBilisim.Core.ViewModels.areas.admin.group_lesson_days;
+using NitelikliBilisim.Core.ViewModels.areas.admin.reports;
 using NitelikliBilisim.Data;
 using NitelikliBilisim.Support.Enums;
 using System;
@@ -23,7 +24,29 @@ namespace NitelikliBilisim.Business.Repositories
             _context = context;
         }
 
-        public GroupDetailVm GetDetailByGroupId(Guid groupId,int expectedProfitRate)
+        public IQueryable<GroupBasedSalesReportStudentsVm> GetGroupBasedSalesReportStudents(Guid groupId)
+        {
+            return from gs in _context.Bridge_GroupStudents
+                   join student in _context.Users on gs.Id2 equals student.Id
+                   join ticket in _context.Tickets on gs.TicketId equals ticket.Id
+                   join paymentDetailInfo in _context.OnlinePaymentDetailsInfos on ticket.InvoiceDetailsId equals paymentDetailInfo.Id
+                   where !paymentDetailInfo.IsCancelled
+                   orderby gs.CreatedDate
+                   where gs.Id  == groupId
+                   select new GroupBasedSalesReportStudentsVm
+                   {
+                       Id=student.Id,
+                       Name = student.Name,
+                       Surname = student.Surname,
+                       RegistrationDate = gs.CreatedDate,
+                       PaidPrice = paymentDetailInfo.PaidPrice,
+                       CommissionFee = paymentDetailInfo.CommissionFee,
+                       CommissionRate = paymentDetailInfo.CommisionRate,
+                       MerchantPayout = paymentDetailInfo.MerchantPayout
+                   };
+        }
+
+        public GroupDetailVm GetDetailByGroupId(Guid groupId, int expectedProfitRate)
         {
             var group = _context.EducationGroups
                 .Include(x => x.Education)
@@ -34,10 +57,10 @@ namespace NitelikliBilisim.Business.Repositories
             var educatorIds = _context.Bridge_EducationEducators.Where(x => x.Id == group.EducationId)
                 .Select(x => x.Id2)
                 .ToList();
-            var educators =new Dictionary<string,string>();
-            if (educatorIds!=null && educatorIds.Count>0)
+            var educators = new Dictionary<string, string>();
+            if (educatorIds != null && educatorIds.Count > 0)
             {
-                educators = _context.Users.Where(x => educatorIds.Contains(x.Id)).ToDictionary(x=>x.Id,x=>$"{x.Name} {x.Surname}");
+                educators = _context.Users.Where(x => educatorIds.Contains(x.Id)).ToDictionary(x => x.Id, x => $"{x.Name} {x.Surname}");
             }
 
             var selectAllClassRooms = _context.Classrooms.Where(x => x.HostId == group.HostId).ToDictionary(x => x.Id, x => x.Name);
@@ -81,6 +104,11 @@ namespace NitelikliBilisim.Business.Repositories
                 MinimumStudentCount = minimumStudent
             };
             return model;
+        }
+
+        public Dictionary<Guid, string> GetAllGroupsDictionary()
+        {
+            return _context.EducationGroups.OrderBy(x => x.GroupName).ToDictionary(x => x.Id, x => x.GroupName + " - " + x.StartDate.ToShortDateString());
         }
 
         public List<GroupLessonDayGetListVm> GetLessonDaysByGroupId(Guid groupId)
@@ -242,7 +270,7 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 ExpectedRateOfProfitability = data.ExpectedRateOfProfitability,
                 PlannedAmount = newTotal,
-                MinStudentCount = CalculateMinimumStudentCount(newTotal-totalIncomes,educationPrice)
+                MinStudentCount = CalculateMinimumStudentCount(newTotal - totalIncomes, educationPrice)
             };
 
         }

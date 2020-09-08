@@ -130,8 +130,7 @@
                         var div = $('<div class="btn-group" style="display: inline-flex; width:"auto"></div>');
                         $(`<a class="btn btn-outline-primary btn-sm" href="/admin/grup-detay/${current.id}">Detay</a>`)
                             .appendTo(div);
-                        $(`<a title="Grup Ayarları" class="btn btn-outline-warning btn-sm" href="/admin/grup/ayarlar/${current.id}"><i class=\"fa fa-cogs\"></i><span style="display: block"></span></a>`)
-                            .appendTo(div);
+                        $(`<a title="Grup Ayarları" class="btn btn-outline-warning btn-sm" href="/admin/grup/ayarlar/${current.id}"><i class=\"fa fa-cogs\"></i><span style="display: block"></span></a>`);
                         $(`<a title="Eğitim günlerini sıfırla" class="btn btn-dark btn-sm" href="/make-sure-lesson-days-created/${current.id}"><i class=\"fa fa-archive\"></i><span style="display: block"></span></a>`);
 
                         div.appendTo(container);

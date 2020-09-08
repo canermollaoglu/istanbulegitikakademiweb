@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.ViewModels.areas.admin.reports;
+using System;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
@@ -34,5 +36,16 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 data = model
             });
         }
+
+        [Route("raporlar/grup-bazli-satis-raporu")]
+        public IActionResult GroupBasedSalesReport(Guid groupId)
+        {
+            var model = new GroupBasedSalesReportGetVm
+            {
+                AllGroups = _unitOfWork.EducationGroup.GetAllGroupsDictionary()
+            };
+            return View(model);
+        }
+
     }
 }

@@ -1,0 +1,229 @@
+﻿@model NitelikliBilisim.Core.ViewModels.areas.admin.reports.GroupBasedSalesReportGetVm
+@{
+    ViewData["Title"] = "Gelir Raporu";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@section styles{
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
+    <link href="~/vendor\devextreme\dist\css\dx.common.css" rel="stylesheet" />
+    <link href="~/vendor\devextreme\dist\css\dx.light.css" rel="stylesheet" />
+    <style>
+        .table th, .table td {
+            padding: 0.5rem;
+        }
+    </style>
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-list"></i> <strong>Grup Bazlı Satış Raporu</strong>
+    </div>
+    <div class="card-body">
+        <div class="row" style="margin-bottom:1%;">
+            <div class="offset-md-3 col-md-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Group Seçiniz</label>
+                            <select class="form-control" id="select-groups">
+                                @foreach (var group in Model.AllGroups)
+                                {
+                                    <option value="@group.Key">@group.Value</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="offset-md-4 col-md-4">
+                        <button id="btn-fetch" class="btn btn-outline-success">Getir</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="report" style="display:none">
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fa fa-list"></i>Kayıtlı Öğrenciler
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="group-based-sales-report-grid">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section postScripts{
+    <script src="~/js/sup/alert-sup.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+    <script src="~/vendor\devextreme\dist\js\dx.all.js"></script>
+    <script src="~/vendor\devextreme-aspnet-data\js\dx.aspnet.data.js"></script>
+    <script src="https://cdn3.devexpress.com/jslib/20.1.7/js/localization/dx.messages.tr.js"></script>
+
+    <script>
+        DevExpress.localization.locale(navigator.language);
+        /* elements */
+        var btnFetch = $("#btn-fetch");
+        var selectGroups = $("#select-groups");
+
+        /* assignments */
+        btnFetch.on("click", btnFetch_onClick);
+        /* assignments */
+        $(document).ready(document_onLoad);
+
+        /* events */
+        function document_onLoad() {
+            $(selectGroups).select2();
+        }
+
+        function btnFetch_onClick() {
+            createGeneralInformationTable();
+            createReportGrid();
+
+        }
+        function createGeneralInformationTable() {
+
+        }
+        function createReportGrid() {
+            var SERVICE_URL = "../../api/earningsreport/get-group-based-sales-report?groupId=" + selectGroups.val();
+            $("#group-based-sales-report-grid").dxDataGrid({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    key: "id",
+                    loadUrl: SERVICE_URL
+                }),
+                remoteOperations: {
+                    paging: true,
+                    filtering: true,
+                    sorting: true,
+                    grouping: true,
+                    summary: true,
+                    groupPaging: true
+                },
+                showBorders: true,
+                showColumnLines: true,
+                rowAlternationEnabled: true,
+                showRowLines: true,
+                wordWrapEnabled: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                searchPanel: {
+                    visible: true,
+                    width: 240,
+                    placeholder: "Ara..."
+                },
+                grouping: {
+                    autoExpandAll: true
+                },
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                headerFilter: {
+                    visible: true
+                },
+                paging: {
+                    pageSize: 10
+                },
+                groupPanel: {
+                    visible: true
+                },
+                "export": {
+                    enabled: true,
+                    fileName: "Grup Bazlı Satış Raporu_" + parseInt(Math.random() * 1000000000),
+                    allowExportSelectedData: true
+                },
+                onContentReady: function () {
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10, 20],
+                    showInfo: true
+                },
+                columns: [
+                    {
+                        caption: "Kayıt Tarihi",
+                        dataField: "registrationDate",
+                        dataType: 'date',
+                        format: 'dd/MM/yyyy',
+                        width: 130
+                    }, {
+                        caption: "Ad",
+                        dataField: "name",
+                        width: 140
+
+                    }, {
+                        caption: "Soyad",
+                        dataField: "surname"
+                    },
+                    {
+                        caption: "Ödenen Tutar",
+                        dataField: "paidPrice",
+                        customizeText: function (paidPrice) {
+                            return paidPrice.value + " ₺";
+                        }
+                    },
+                    {
+                        caption: "İşlem Ücreti",
+                        dataField: "commissionFee",
+                        customizeText: function (commissionFee) {
+                            return commissionFee.value + " ₺";
+                        }
+                    },
+                    {
+                        caption: "Komisyon",
+                        dataField: "commissionRate",
+                        customizeText: function (commissionRate) {
+                            return commissionRate.value + " ₺";
+                        }
+                    },
+                    {
+                        caption: "Kalan Tutar",
+                        dataField: "merchantPayout",
+                        customizeText: function (merchantPayout) {
+                            return merchantPayout.value + " ₺";
+                        }
+                    }
+
+                ],
+                summary: {
+                    totalItems: [
+                        {
+                            column: "name",
+                            summaryType: "count",
+                            displayFormat: "Toplam Kayıt: {0}"
+                        }, {
+                            column: "paidPrice",
+                            summaryType: "sum",
+                            displayFormat: "T: {0} ₺"
+                        }, {
+                            column: "commissionFee",
+                            summaryType: "sum",
+                            displayFormat: "T: {0} ₺"
+                        }, {
+                            column: "commissionRate",
+                            summaryType: "sum",
+                            displayFormat: "T: {0} ₺"
+                        }, {
+                            column: "merchantPayout",
+                            summaryType: "sum",
+                            displayFormat: "T: {0} ₺"
+                        }
+                    ]
+                }
+            });
+        }
+        
+
+    </script>
+}
