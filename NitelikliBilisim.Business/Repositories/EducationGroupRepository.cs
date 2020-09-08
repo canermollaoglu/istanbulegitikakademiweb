@@ -46,6 +46,7 @@ namespace NitelikliBilisim.Business.Repositories
                    };
         }
 
+
         public GroupDetailVm GetDetailByGroupId(Guid groupId, int expectedProfitRate)
         {
             var group = _context.EducationGroups
@@ -105,7 +106,34 @@ namespace NitelikliBilisim.Business.Repositories
             };
             return model;
         }
+        public GroupGeneralInformationVm GetGroupGeneralInformation(Guid groupId)
+        {
+            var group = _context.EducationGroups
+                .Include(x=>x.GroupStudents)
+                .Include(x => x.Education)
+                .Include(x => x.Host).First(x=>x.Id == groupId);
+            string classRoomName = string.Empty;
+            var firstLessonDay = _context.GroupLessonDays.FirstOrDefault(x => x.GroupId == groupId);
+            if (firstLessonDay!=null && firstLessonDay.ClassroomId!=null)
+            {
+                classRoomName = _context.Classrooms.First(x => x.Id == firstLessonDay.ClassroomId).Name;
+            }
+            var educator = _context.Users.First(x => x.Id == group.EducatorId);
 
+            var model = new GroupGeneralInformationVm
+            {
+                GroupId = group.Id,
+                GroupName = group.GroupName,
+                Quota = group.Quota,
+                StartDate = group.StartDate.ToShortDateString(),
+                EducationHost = group.Host.HostName,
+                Classroom = classRoomName,
+                EducationName = group.Education.Name,
+                EducatorName = $"{educator.Name} {educator.Surname}",
+                AssignedStudentsCount = group.GroupStudents.Count
+            };
+            return model;
+        }
         public Dictionary<Guid, string> GetAllGroupsDictionary()
         {
             return _context.EducationGroups.OrderBy(x => x.GroupName).ToDictionary(x => x.Id, x => x.GroupName + " - " + x.StartDate.ToShortDateString());

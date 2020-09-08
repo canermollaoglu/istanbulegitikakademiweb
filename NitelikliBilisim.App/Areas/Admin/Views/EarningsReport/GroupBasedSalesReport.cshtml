@@ -47,9 +47,35 @@
     </div>
 </div>
 <div id="report" style="display:none">
+    <!--Genel Grup Bilgileri-->
     <div class="card mb-4">
         <div class="card-header">
-            <i class="fa fa-list"></i>Kayıtlı Öğrenciler
+            Genel Grup Bilgileri
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <td>Grup Adı</td>
+                                <td>Eğitim</td>
+                                <td>Eğitim Yeri</td>
+                                <td>Başlangıç Tarihi</td>
+                                <td>Eğitmen</td>
+                                <td>Kontenjan</td>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-group-general-info"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Öğrenciler-->
+    <div class="card mb-4">
+        <div class="card-header">
+            Kayıtlı Öğrenciler
         </div>
         <div class="card-body">
             <div class="row">
@@ -61,6 +87,21 @@
             </div>
         </div>
     </div>
+
+    <!--Grup Giderleri-->
+
+    <div class="card mb-4">
+        <div class="card-header">
+            Grup Giderleri
+        </div>
+        <div class="card-body">
+            <div id="grid-expenses">
+
+            </div>
+        </div>
+    </div>
+
+  
 </div>
 @section postScripts{
     <script src="~/js/sup/alert-sup.js"></script>
@@ -74,7 +115,11 @@
         /* elements */
         var btnFetch = $("#btn-fetch");
         var selectGroups = $("#select-groups");
+        var tbodyGroupGeneralInfo = $("#tbody-group-general-info");
+        var tbodyGroupExpensesInfo = $("#tbody-group-expenses-info");
 
+        var reportDiv = $("#report");
+        var generalGroupInfoDiv = $("#generalGroupInfo");
         /* assignments */
         btnFetch.on("click", btnFetch_onClick);
         /* assignments */
@@ -87,13 +132,41 @@
 
         function btnFetch_onClick() {
             createGeneralInformationTable();
-            createReportGrid();
+            createStudentsGrid();
+            createGroupExpenseGrid();
+            reportDiv.slideDown("slow");
 
         }
         function createGeneralInformationTable() {
+            var gId = selectGroups.val();
+            $.ajax({
+                url: `/admin/get-group-general-information?groupId=${gId}`,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        console.log(res);
+                        tbodyGroupGeneralInfo.html("");
+                        var item = res.data;
+                        var table = "";
+                        table += "<tr>" +
+                            `<td>${item.groupName} </td>` +
+                            `<td>${item.educationName} </td>` +
+                            `<td>${item.educationHost} - ${item.classroom} </td>` +
+                            `<td>${item.startDate} </td>` +
+                            `<td>${item.educatorName} </td>` +
+                            `<td>${item.assignedStudentsCount}/${item.quota} </td>`;
+
+                        tbodyGroupGeneralInfo.append(table);
+                    }
+                    else {
+                        console.log(res.errors);
+                        alert("Hata");
+                    }
+                }
+            });
 
         }
-        function createReportGrid() {
+        function createStudentsGrid() {
             var SERVICE_URL = "../../api/earningsreport/get-group-based-sales-report?groupId=" + selectGroups.val();
             $("#group-based-sales-report-grid").dxDataGrid({
                 dataSource: DevExpress.data.AspNet.createStore({
@@ -223,7 +296,106 @@
                 }
             });
         }
-        
+        function createGroupExpenseGrid() {
+            $("#grid-expenses").dxDataGrid({
+                dataSource: `/admin/educationgroup/GetGroupExpensesByGroupId?groupId=${selectGroups.val()}`,
+                showBorders: true,
+                showColumnLines: true,
+                rowAlternationEnabled: true,
+                showRowLines: true,
+                wordWrapEnabled: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                searchPanel: {
+                    visible: true,
+                    width: 240,
+                    placeholder: "Ara..."
+                },
+                grouping: {
+                    autoExpandAll: true
+                },
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                headerFilter: {
+                    visible: true
+                },
+                paging: {
+                    pageSize: 10
+                },
+                groupPanel: {
+                    visible: true
+                },
+                "export": {
+                    enabled: true,
+                    fileName: "Grup Bazlı Satış Raporu_" + parseInt(Math.random() * 1000000000),
+                    allowExportSelectedData: true
+                },
+                onContentReady: function () {
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10, 20],
+                    showInfo: true
+                },
+                columns: [{
+                    caption: "Tarih",
+                    dataField: "createdDate",
+                    width: 100,
+                    dataType: 'date',
+                    format: 'dd/MM/yyyy'
+                },
+                {
+                    caption: "Gider Tipi",
+                    dataField: "expenseTypeName",
+                    width: 200
+                },
+                {
+                    caption: "Açıklama",
+                    dataField: "description",
+                    width: 350
+
+                },
+                {
+                    caption: "Adet",
+                    dataField: "count",
+                    alignment: "center",
+                },
+                {
+                    caption: "Tutar",
+                    dataField: "price",
+                    customizeText: function (price) {
+                        return price.value + " ₺";
+                    },
+                    alignment: "center"
+                },
+                {
+                    caption: "Toplam",
+                    dataField: "totalPrice",
+                    customizeText: function (totalPrice) {
+                        return totalPrice.value + " ₺";
+                    },
+                    alignment: "center"
+                }
+                ],
+                summary: {
+                    totalItems: [
+                        {
+                            column: "expenseTypeName",
+                            summaryType: "count",
+                            displayFormat: "Adet: {0}",
+                        },
+                        {
+                            column: "totalPrice",
+                            summaryType: "sum",
+                            displayFormat: "T:{0} ₺"
+                        }]
+                }
+            });
+        }
 
     </script>
 }

@@ -36,7 +36,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         }
 
 
-
         [Route("admin/grup-detay/{groupId?}")]
         public IActionResult Detail(Guid groupId)
         {
@@ -46,6 +45,28 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             var groupDetail = _unitOfWork.EducationGroup.GetDetailByGroupId(groupId, expectedProfitRate);
 
             return View(groupDetail);
+        }
+
+        [Route("admin/get-group-general-information/{groupId?}")]
+        public IActionResult GetGroupGeneralInformation(Guid groupId)
+        {
+            try
+            {
+                var model = _unitOfWork.EducationGroup.GetGroupGeneralInformation(groupId);
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    data = model
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { $"Hata : {ex.Message}" }
+                });
+            }
         }
 
         public IActionResult GetGroupExpensesByGroupId(Guid groupId)
