@@ -57,6 +57,7 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-12">
+                    <h6>Genel Bilgiler</h6>
                     <table class="table table-bordered">
                         <thead>
                             <tr>
@@ -69,6 +70,25 @@
                             </tr>
                         </thead>
                         <tbody id="tbody-group-general-info"></tbody>
+                    </table>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-12">
+                    <h6>Bütçe</h6>
+                    <table class="table table-bordered">
+                        <thed>
+                            <tr>
+                                <td><b>Grup Giderleri</b></td>
+                                <td><b>Eğitmen Ücreti</b></td>
+                                <td><b>Toplam Gelir (Ciro)</b></td>
+                                <td><b>Genel Toplam</b></td>
+                            </tr>
+                        </thed>
+                        <tbody id="tbody-group-expenses-incomes">
+
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -118,7 +138,7 @@
         var btnFetch = $("#btn-fetch");
         var selectGroups = $("#select-groups");
         var tbodyGroupGeneralInfo = $("#tbody-group-general-info");
-        var tbodyGroupExpensesInfo = $("#tbody-group-expenses-info");
+        var tbodyGroupExpensesIncomes = $("#tbody-group-expenses-incomes");
 
         var reportDiv = $("#report");
         var generalGroupInfoDiv = $("#generalGroupInfo");
@@ -134,10 +154,10 @@
 
         function btnFetch_onClick() {
             createGeneralInformationTable();
+            calculateGroupExpenseAndIncome();
             createStudentsGrid();
             createGroupExpenseGrid();
             reportDiv.slideDown("slow");
-
         }
         function createGeneralInformationTable() {
             var gId = selectGroups.val();
@@ -431,5 +451,32 @@
             });
         }
 
+        function calculateGroupExpenseAndIncome() {
+            var gId = selectGroups.val();
+            $.ajax({
+                url: `/admin/calculate-group-expense-and-income/${gId}`,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        tbodyGroupExpensesIncomes.html("");
+                        var item = res.data;
+                        var table = "";
+                        table += 
+                            `<td class="text-danger">${item.groupExpenses} ₺</td>` +
+                            `<td class="text-danger">${item.educatorExpenses} ₺</td>` +
+                            `<td class="text-success">${item.totalStudentIncomes} ₺</td>` +
+                            `<td ${item.grandTotal > 0 ? "class='text-success'" : "class='text-danger'"}><b>${item.grandTotal} ₺</b></td>`
+                            ;
+                        tbodyGroupExpensesIncomes.append(table);
+                    }
+                    else {
+                        console.log(res.errors);
+                        alert("Hata");
+                    }
+                }
+            });
+
+
+        }
     </script>
 }
