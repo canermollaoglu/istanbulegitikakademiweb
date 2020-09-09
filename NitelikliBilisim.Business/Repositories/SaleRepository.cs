@@ -131,13 +131,14 @@ namespace NitelikliBilisim.Business.Repositories
 
                 _context.SaveChanges();
                 transaction.Commit();
+                Auto__AssignTickets(invoiceDetailsIds);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
                 transaction.Rollback();
             }
-            Task.Run(() => Auto__AssignTickets(invoiceDetailsIds));
+            
         }
         public bool GetIfCustomerEligibleToFullyCancel(Guid ticketId)
         {
@@ -148,18 +149,15 @@ namespace NitelikliBilisim.Business.Repositories
 
             return !(isGroupStarted || DateTime.Now.Date > invoiceDate.Date);
         }
-        public async void RefundPayment(Guid invoiceDetailId)
+        public void RefundPayment(Guid invoiceDetailId)
         {
             var onlinePaymentDetailsInfo = _context.OnlinePaymentDetailsInfos.First(x => x.Id == invoiceDetailId);
-
             onlinePaymentDetailsInfo.IsCancelled = true;
             onlinePaymentDetailsInfo.CancellationDate = DateTime.Now;
-
             _context.SaveChanges();
-
-            await Auto__UnassignTickets(new List<Guid>() { invoiceDetailId });
+            Auto__UnassignTickets(new List<Guid>() { invoiceDetailId });
         }
-        public async void CancelPayment(Guid invoiceId)
+        public void CancelPayment(Guid invoiceId)
         {
             var invoiceDetailsIds = _context.InvoiceDetails.Where(x => x.InvoiceId == invoiceId).Select(x => x.Id).ToList();
             var onlinePaymentDetails = _context.OnlinePaymentDetailsInfos.Where(x => invoiceDetailsIds.Contains(x.Id));
@@ -169,10 +167,8 @@ namespace NitelikliBilisim.Business.Repositories
                 item.IsCancelled = true;
                 item.CancellationDate = DateTime.Now;
             }
-
             _context.SaveChanges();
-
-            await Auto__UnassignTickets(invoiceDetailsIds);
+            Auto__UnassignTickets(invoiceDetailsIds);
         }
         private List<InvoiceDetail> CreateInvoiceDetails(List<CartItem> cartItems)
         {
@@ -228,7 +224,7 @@ namespace NitelikliBilisim.Business.Repositories
 
             return tickets;
         }
-        private async Task<bool> Auto__AssignTickets(List<Guid> invoiceDetailsIds)
+        private bool Auto__AssignTickets(List<Guid> invoiceDetailsIds)
         {
             try
             {
@@ -247,12 +243,12 @@ namespace NitelikliBilisim.Business.Repositories
                         .FirstOrDefault();
                     if (firstGroup == null)
                     {
-                        await _emailSender.SendAsync(new EmailMessage
+                        Task.Run(()=> _emailSender.SendAsync(new EmailMessage
                         {
                             Subject = "Grup Atamanız Yapılamamıştır | Nitelikli Bilişim",
                             Body = $"{ticket.Education.Name} eğitimine yönelik grupların kontenjanları dolduğu için gruba atamanız yapılamamıştır.",
                             Contacts = new string[]{ ticket.Owner.User.Email }
-                        });
+                        }));
                         return false;
                     }
 
@@ -263,12 +259,12 @@ namespace NitelikliBilisim.Business.Repositories
                         TicketId = ticket.Id
                     });
 
-                    await _emailSender.SendAsync(new EmailMessage
+                    Task.Run(()=> _emailSender.SendAsync(new EmailMessage
                     {
                         Subject = "Grup Atamanız Yapılmıştır | Nitelikli Bilişim",
                         Body = $"{ticket.Education.Name} eğitimi için {firstGroup.StartDate.ToShortDateString()} tarihinde başlayacak olan {firstGroup.GroupName} grubuna atamanız yapılmıştır.",
                         Contacts = new string[] { ticket.Owner.User.Email }
-                    });
+                    }));
 
                     ticket.IsUsed = true;
                     _context.SaveChanges();
@@ -280,7 +276,7 @@ namespace NitelikliBilisim.Business.Repositories
                 return false;
             }
         }
-        private async Task<bool> Auto__UnassignTickets(List<Guid> invoiceDetailsIds)
+        private bool Auto__UnassignTickets(List<Guid> invoiceDetailsIds)
         {
             try
             {
@@ -293,12 +289,12 @@ namespace NitelikliBilisim.Business.Repositories
                     .ToList();
                 foreach (var ticket in tickets)
                 {
-                    await _emailSender.SendAsync(new EmailMessage
+                   Task.Run(()=> _emailSender.SendAsync(new EmailMessage
                     {
                         Subject = "Gruptan Ayrıldınız | Nitelikli Bilişim",
                         Body = $"{ticket.Education.Name} eğitimini iptal ettiğiniz için atandığınız gruptan ayrıldınız.",
                         Contacts = new string[] { ticket.Owner.User.Email }
-                    });
+                    }));
 
                     ticket.IsUsed = true;
                 }
