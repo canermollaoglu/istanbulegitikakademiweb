@@ -258,6 +258,12 @@ namespace NitelikliBilisim.Business.Repositories
                         Id2 = ticket.OwnerId,
                         TicketId = ticket.Id
                     });
+                    //grup kontenjanının dolması durumunda IsGroupOpenForAssigment false olarak değiştiriliyor.
+                    var groupStudentsCount = _context.Bridge_GroupStudents.Count(x => x.Id == firstGroup.Id) + 1;
+                    ticket.IsUsed = true;
+                    if (groupStudentsCount == firstGroup.Quota)
+                        firstGroup.IsGroupOpenForAssignment = false;
+                    _context.SaveChanges();
 
                     Task.Run(()=> _emailSender.SendAsync(new EmailMessage
                     {
@@ -265,9 +271,6 @@ namespace NitelikliBilisim.Business.Repositories
                         Body = $"{ticket.Education.Name} eğitimi için {firstGroup.StartDate.ToShortDateString()} tarihinde başlayacak olan {firstGroup.GroupName} grubuna atamanız yapılmıştır.",
                         Contacts = new string[] { ticket.Owner.User.Email }
                     }));
-
-                    ticket.IsUsed = true;
-                    _context.SaveChanges();
                 }
                 return true;
             }
@@ -283,12 +286,12 @@ namespace NitelikliBilisim.Business.Repositories
                 var tickets = _context.Tickets.Include(x => x.Education).Include(x => x.Owner).ThenInclude(x => x.User)
                     .Where(x => invoiceDetailsIds.Contains(x.InvoiceDetailsId))
                     .ToList();
-
                 var bridges = _context.Bridge_GroupStudents
                     .Where(x => tickets.Select(x => x.Id).Contains(x.TicketId))
                     .ToList();
                 foreach (var ticket in tickets)
                 {
+                    
                    Task.Run(()=> _emailSender.SendAsync(new EmailMessage
                     {
                         Subject = "Gruptan Ayrıldınız | Nitelikli Bilişim",
@@ -296,7 +299,7 @@ namespace NitelikliBilisim.Business.Repositories
                         Contacts = new string[] { ticket.Owner.User.Email }
                     }));
 
-                    ticket.IsUsed = true;
+                    ticket.IsUsed = false;
                 }
                     
                 _context.RemoveRange(bridges);
