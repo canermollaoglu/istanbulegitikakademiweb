@@ -289,20 +289,26 @@ namespace NitelikliBilisim.Business.Repositories
                 var bridges = _context.Bridge_GroupStudents
                     .Where(x => tickets.Select(x => x.Id).Contains(x.TicketId))
                     .ToList();
+                var groups = _context.EducationGroups.Where(x => bridges.Select(s => s.Id).Contains(x.Id));
+
+                foreach (var bridge in bridges)
+                {
+                    var group = groups.First(x => x.Id == bridge.Id);
+                    group.IsGroupOpenForAssignment = true;
+                    _context.EducationGroups.Update(group);
+                }
                 foreach (var ticket in tickets)
                 {
                     
+                    ticket.IsUsed = false;
                    Task.Run(()=> _emailSender.SendAsync(new EmailMessage
                     {
                         Subject = "Gruptan Ayrıldınız | Nitelikli Bilişim",
                         Body = $"{ticket.Education.Name} eğitimini iptal ettiğiniz için atandığınız gruptan ayrıldınız.",
                         Contacts = new string[] { ticket.Owner.User.Email }
                     }));
-
-                    ticket.IsUsed = false;
                 }
-                    
-                _context.RemoveRange(bridges);
+                _context.Bridge_GroupStudents.RemoveRange(bridges);
                 _context.SaveChanges();
             }
             catch
