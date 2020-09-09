@@ -126,42 +126,57 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 }
                 using (var rng = worksheet.Cells[2, 1, 2, 6])
                 {
-                    rng.Style.Border.Top.Style = ExcelBorderStyle.Thick;
+                    rng.Style.Border.Top.Style = ExcelBorderStyle.Thin;
                     rng.Style.Border.Top.Color.SetColor(Color.Black);
-                    rng.Style.Border.Left.Style = ExcelBorderStyle.Thick;
+                    rng.Style.Border.Left.Style = ExcelBorderStyle.Thin;
                     rng.Style.Border.Left.Color.SetColor(Color.Black);
-                    rng.Style.Border.Right.Style = ExcelBorderStyle.Thick;
+                    rng.Style.Border.Right.Style = ExcelBorderStyle.Thin;
                     rng.Style.Border.Right.Color.SetColor(Color.Black);
-                    rng.Style.Border.Bottom.Style = ExcelBorderStyle.Thick;
+                    rng.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                     rng.Style.Border.Bottom.Color.SetColor(Color.Black);
                     rng.Style.Font.Bold = true;
+                    rng.Style.Font.Color.SetColor(Color.Red);
+                    rng.Style.Font.Size = 12;
+                }
+                using (var rng = worksheet.Cells[3, 1, 3, 6])
+                {
+                    rng.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    rng.Style.Border.Top.Color.SetColor(Color.Black);
+                    rng.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    rng.Style.Border.Left.Color.SetColor(Color.Black);
+                    rng.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    rng.Style.Border.Right.Color.SetColor(Color.Black);
+                    rng.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    rng.Style.Border.Bottom.Color.SetColor(Color.Black);
+                    rng.Style.Font.Bold = false;
                     rng.Style.Font.Size = 12;
                 }
                 using (var rng = worksheet.Cells[2, 9, 5, 10])
                 {
-                    rng.Style.Border.Top.Style = ExcelBorderStyle.Thick;
+                    rng.Style.Border.Top.Style = ExcelBorderStyle.Thin;
                     rng.Style.Border.Top.Color.SetColor(Color.Black);
-                    rng.Style.Border.Left.Style = ExcelBorderStyle.Thick;
+                    rng.Style.Border.Left.Style = ExcelBorderStyle.Thin;
                     rng.Style.Border.Left.Color.SetColor(Color.Black);
-                    rng.Style.Border.Right.Style = ExcelBorderStyle.Thick;
+                    rng.Style.Border.Right.Style = ExcelBorderStyle.Thin;
                     rng.Style.Border.Right.Color.SetColor(Color.Black);
-                    rng.Style.Border.Bottom.Style = ExcelBorderStyle.Thick;
+                    rng.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                     rng.Style.Border.Bottom.Color.SetColor(Color.Black);
                     rng.Style.Font.Bold = true;
                     rng.Style.Font.Size = 12;
                 }
                 using (var rng = worksheet.Cells[6, 1, 6, 6])
                 {
-                    rng.Style.Border.Top.Style = ExcelBorderStyle.Thick;
+                    rng.Style.Border.Top.Style = ExcelBorderStyle.Thin;
                     rng.Style.Border.Top.Color.SetColor(Color.Black);
-                    rng.Style.Border.Left.Style = ExcelBorderStyle.Thick;
+                    rng.Style.Border.Left.Style = ExcelBorderStyle.Thin;
                     rng.Style.Border.Left.Color.SetColor(Color.Black);
-                    rng.Style.Border.Right.Style = ExcelBorderStyle.Thick;
+                    rng.Style.Border.Right.Style = ExcelBorderStyle.Thin;
                     rng.Style.Border.Right.Color.SetColor(Color.Black);
-                    rng.Style.Border.Bottom.Style = ExcelBorderStyle.Thick;
+                    rng.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                     rng.Style.Border.Bottom.Color.SetColor(Color.Black);
                     rng.Style.Font.Bold = true;
                     rng.Style.Font.Size = 12;
+                    rng.Style.Font.Color.SetColor(Color.Red);
                 }
 
                 //Genel Bilgiler
@@ -249,16 +264,17 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 }
                 using (var rng = worksheet2.Cells[2, 1, 2, 6])
                 {
-                    rng.Style.Border.Top.Style = ExcelBorderStyle.Thick;
+                    rng.Style.Border.Top.Style = ExcelBorderStyle.Thin;
                     rng.Style.Border.Top.Color.SetColor(Color.Black);
-                    rng.Style.Border.Left.Style = ExcelBorderStyle.Thick;
+                    rng.Style.Border.Left.Style = ExcelBorderStyle.Thin;
                     rng.Style.Border.Left.Color.SetColor(Color.Black);
-                    rng.Style.Border.Right.Style = ExcelBorderStyle.Thick;
+                    rng.Style.Border.Right.Style = ExcelBorderStyle.Thin;
                     rng.Style.Border.Right.Color.SetColor(Color.Black);
-                    rng.Style.Border.Bottom.Style = ExcelBorderStyle.Thick;
+                    rng.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                     rng.Style.Border.Bottom.Color.SetColor(Color.Black);
                     rng.Style.Font.Bold = true;
                     rng.Style.Font.Size = 12;
+                    rng.Style.Font.Color.SetColor(Color.Red);
                 }
                 worksheet2.Cells[2, 1].Value = "Tarih";
                 worksheet2.Cells[2, 2].Value = "Gider Tipi";

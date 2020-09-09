@@ -157,7 +157,7 @@ namespace NitelikliBilisim.Business.Repositories
         }
         public Dictionary<Guid, string> GetAllGroupsDictionary()
         {
-            return _context.EducationGroups.OrderBy(x => x.GroupName).ToDictionary(x => x.Id, x => x.GroupName + " - " + x.StartDate.ToShortDateString());
+            return _context.EducationGroups.OrderByDescending(x => x.StartDate).ToDictionary(x => x.Id, x => x.GroupName + " - " + x.StartDate.ToShortDateString());
         }
 
         public List<GroupLessonDayGetListVm> GetLessonDaysByGroupId(Guid groupId)
