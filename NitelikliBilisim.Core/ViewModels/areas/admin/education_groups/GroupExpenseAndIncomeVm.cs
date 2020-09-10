@@ -14,5 +14,7 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_groups
 
         public decimal GrandTotal => TotalStudentIncomes - (GroupExpenses + EducatorExpenses);
 
+        public int TotalEducationHours { get; set; }
+        public decimal EducatorExpensesAverage { get; set; }
     }
 }

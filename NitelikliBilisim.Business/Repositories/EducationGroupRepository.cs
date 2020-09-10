@@ -87,6 +87,7 @@ namespace NitelikliBilisim.Business.Repositories
 
             var selectAllClassRooms = _context.Classrooms.Where(x => x.HostId == group.HostId).ToDictionary(x => x.Id, x => x.Name);
             var firstDay = group.GroupLessonDays.FirstOrDefault();
+            var lastDay = group.GroupLessonDays.LastOrDefault();
             Classroom classRoom = null;
             if (firstDay != null)
             {
@@ -111,6 +112,8 @@ namespace NitelikliBilisim.Business.Repositories
                 GroupName = group.GroupName,
                 Host = group.Host,
                 Quota = group.Quota,
+                EducationDays = group.Education.Days.ToString(),
+                EducationHoursPerDay = group.Education.HoursPerDay.ToString(),
                 AssignedStudentsCount = group.GroupStudents.Count,
                 Education = new _Education
                 {
@@ -118,6 +121,7 @@ namespace NitelikliBilisim.Business.Repositories
                     Name = group.Education.Name
                 },
                 StartDate = group.StartDate,
+                EndDate = lastDay!=null?lastDay.DateOfLesson.Date:group.StartDate,
                 ClassRoomName = classRoom != null ? classRoom.Name : "Sınıf bilgisi girilmemiş.",
                 EducatorName = $"{educator.Name} {educator.Surname}",
                 GroupExpenseTypes = _context.GroupExpenseTypes.ToList(),
@@ -151,7 +155,9 @@ namespace NitelikliBilisim.Business.Repositories
                 Classroom = classRoomName,
                 EducationName = group.Education.Name,
                 EducatorName = $"{educator.Name} {educator.Surname}",
-                AssignedStudentsCount = group.GroupStudents.Count
+                AssignedStudentsCount = group.GroupStudents.Count,
+                EducationDays = group.Education.Days.ToString(),
+                EducationHoursPerDay = group.Education.HoursPerDay.ToString()
             };
             return model;
         }
@@ -326,8 +332,12 @@ namespace NitelikliBilisim.Business.Repositories
 
         public GroupExpenseAndIncomeVm CalculateGroupExpenseAndIncome(Guid groupId)
         {
+            var education = _context.EducationGroups.Include(x => x.Education).First(x => x.Id == groupId).Education;
+            var totalHours = education.HoursPerDay * education.Days;
+
+
             decimal groupExpenses = _context.GroupExpenses.Where(x => x.GroupId == groupId).Sum(x => (x.Price * x.Count));
-            decimal educatorExpenses = _context.GroupLessonDays.Where(x => x.GroupId == groupId).Sum(x => x.EducatorSalary.GetValueOrDefault());
+            decimal educatorExpensesAverage = _context.GroupLessonDays.Where(x => x.GroupId == groupId).Average(x => x.EducatorSalary.GetValueOrDefault());
             decimal studentIncomes = (from grupStudent in _context.Bridge_GroupStudents
                                       join ticket in _context.Tickets on grupStudent.TicketId equals ticket.Id
                                       join paymentDetailInfo in _context.OnlinePaymentDetailsInfos on ticket.InvoiceDetailsId equals paymentDetailInfo.Id
@@ -335,10 +345,14 @@ namespace NitelikliBilisim.Business.Repositories
                                       select paymentDetailInfo).Sum(x => x.PaidPrice);
 
 
+            decimal totalEducatorExpense = totalHours * educatorExpensesAverage;
+
             return new GroupExpenseAndIncomeVm
             {
+                TotalEducationHours = totalHours,
+                EducatorExpensesAverage = educatorExpensesAverage,
                 GroupExpenses = groupExpenses,
-                EducatorExpenses = educatorExpenses,
+                EducatorExpenses = totalEducatorExpense,
                 TotalStudentIncomes = studentIncomes
             };
         }

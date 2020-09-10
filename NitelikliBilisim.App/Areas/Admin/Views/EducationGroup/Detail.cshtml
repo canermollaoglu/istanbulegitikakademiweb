@@ -113,8 +113,20 @@
                                 </td>
                             </tr>
                             <tr>
+                                <td>
+                                    <b>Bitiş Tarihi</b>
+                                </td>
+                                <td>
+                                    @Model.EndDate.GetValueOrDefault().ToShortDateString()
+                                </td>
+                            </tr>
+                            <tr>
                                 <td><b>Kontenjan</b></td>
                                 <td>@Model.AssignedStudentsCount / @Model.Quota</td>
+                            </tr>
+                            <tr>
+                                <td><b>Eğitim Günleri</b></td>
+                                <td>@Model.EducationDays gün, günde @Model.EducationHoursPerDay saat</td>
                             </tr>
                         </tbody>
                     </table>

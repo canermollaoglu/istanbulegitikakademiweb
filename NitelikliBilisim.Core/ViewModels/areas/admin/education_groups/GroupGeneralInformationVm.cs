@@ -15,5 +15,7 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_groups
         public int Quota { get; set; }
         public int AssignedStudentsCount { get; set; }
         public string EducationName { get; set; }
+        public string EducationHoursPerDay { get; set; }
+        public string EducationDays { get; set; }
     }
 }

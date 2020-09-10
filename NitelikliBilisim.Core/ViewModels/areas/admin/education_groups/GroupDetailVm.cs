@@ -21,6 +21,9 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_groups
         public int AssignedStudentsCount { get; set; }
         public Dictionary<string, string> SelectEducators { get; set; }
         public int MinimumStudentCount { get; set; }
+        public string EducationDays { get; set; }
+        public string EducationHoursPerDay { get; set; }
+        public DateTime? EndDate { get; set; }
     }
     
 }
