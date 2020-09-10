@@ -334,10 +334,10 @@ namespace NitelikliBilisim.Business.Repositories
         {
             var education = _context.EducationGroups.Include(x => x.Education).First(x => x.Id == groupId).Education;
             var totalHours = education.HoursPerDay * education.Days;
-
+            var lessonDays = _context.GroupLessonDays.Where(x => x.GroupId == groupId).ToList();
 
             decimal groupExpenses = _context.GroupExpenses.Where(x => x.GroupId == groupId).Sum(x => (x.Price * x.Count));
-            decimal educatorExpensesAverage = _context.GroupLessonDays.Where(x => x.GroupId == groupId).Average(x => x.EducatorSalary.GetValueOrDefault());
+            decimal educatorExpensesAverage = lessonDays!=null && lessonDays.Count>0?lessonDays.Average(x => x.EducatorSalary.GetValueOrDefault()):0;
             decimal studentIncomes = (from grupStudent in _context.Bridge_GroupStudents
                                       join ticket in _context.Tickets on grupStudent.TicketId equals ticket.Id
                                       join paymentDetailInfo in _context.OnlinePaymentDetailsInfos on ticket.InvoiceDetailsId equals paymentDetailInfo.Id
