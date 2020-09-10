@@ -7,6 +7,7 @@ using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using System;
 using System.Drawing;
+using System.Globalization;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
@@ -90,7 +91,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     rng.Style.Border.Bottom.Color.SetColor(Color.Black);
                 }
 
-                using (var rng = worksheet.Cells[1, 9, 1, 10])
+                using (var rng = worksheet.Cells[1, 8, 1, 9])
                 {
                     rng.Style.Font.Name = "Calibri";
                     rng.Style.Font.Bold = true;
@@ -151,17 +152,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     rng.Style.Font.Bold = false;
                     rng.Style.Font.Size = 12;
                 }
-                using (var rng = worksheet.Cells[2, 9, 5, 10])
+                using (var rng = worksheet.Cells[2, 8, 5, 9])
                 {
                     rng.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                    rng.Style.Border.Top.Color.SetColor(Color.Black);
                     rng.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                    rng.Style.Border.Left.Color.SetColor(Color.Black);
                     rng.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                    rng.Style.Border.Right.Color.SetColor(Color.Black);
                     rng.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                    rng.Style.Border.Bottom.Color.SetColor(Color.Black);
-                    rng.Style.Font.Bold = true;
                     rng.Style.Font.Size = 12;
                 }
                 using (var rng = worksheet.Cells[6, 1, 6, 6])
@@ -194,14 +190,14 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 worksheet.Cells[3, 6].Value = $"{generalInformation.AssignedStudentsCount}/{generalInformation.Quota}";
 
 
-                worksheet.Cells[2, 9].Value = "Grup Giderleri";
-                worksheet.Cells[3, 9].Value = "Eğitmen Ücreti";
-                worksheet.Cells[4, 9].Value = "Toplam Gelir(Ciro)";
-                worksheet.Cells[5, 9].Value = "Genel Toplam";
-                worksheet.Cells[2, 10].Value = groupExpenseAndIncome.GroupExpenses;
-                worksheet.Cells[3, 10].Value = groupExpenseAndIncome.EducatorExpenses;
-                worksheet.Cells[4, 10].Value = groupExpenseAndIncome.TotalStudentIncomes;
-                worksheet.Cells[5, 10].Value = groupExpenseAndIncome.GrandTotal;
+                worksheet.Cells[2, 8].Value = "Grup Giderleri";
+                worksheet.Cells[3, 8].Value = $"Eğitmen Ücreti ({groupExpenseAndIncome.TotalEducationHours} s X {groupExpenseAndIncome.EducatorExpensesAverage.ToString("F")} ₺)";
+                worksheet.Cells[4, 8].Value = "Toplam Gelir(Ciro)";
+                worksheet.Cells[5, 8].Value = "Genel Toplam";
+                worksheet.Cells[2, 9].Value = groupExpenseAndIncome.GroupExpenses.ToString("C",CultureInfo.CreateSpecificCulture("tr-TR"));
+                worksheet.Cells[3, 9].Value = groupExpenseAndIncome.EducatorExpenses.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"));
+                worksheet.Cells[4, 9].Value = groupExpenseAndIncome.TotalStudentIncomes.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"));
+                worksheet.Cells[5, 9].Value = groupExpenseAndIncome.GrandTotal.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"));
 
 
                 //Öğrenci Listesi Başlıklar
@@ -217,10 +213,10 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     var current = studentList[i];
                     worksheet.Cells[rowIndex, 1].Value = current.RegistrationDate.ToShortDateString();
                     worksheet.Cells[rowIndex, 2].Value = $"{current.Name} {current.Surname}";
-                    worksheet.Cells[rowIndex, 3].Value = current.PaidPrice;
-                    worksheet.Cells[rowIndex, 4].Value = current.CommissionFee;
-                    worksheet.Cells[rowIndex, 5].Value = current.CommissionRate;
-                    worksheet.Cells[rowIndex, 6].Value = current.MerchantPayout;
+                    worksheet.Cells[rowIndex, 3].Value = current.PaidPrice.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"));
+                    worksheet.Cells[rowIndex, 4].Value = current.CommissionFee.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"));
+                    worksheet.Cells[rowIndex, 5].Value = current.CommissionRate.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"));
+                    worksheet.Cells[rowIndex, 6].Value = current.MerchantPayout.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"));
                 }
                 worksheet.Column(1).Width = 18;
                 worksheet.Column(2).Width = 45;
@@ -228,8 +224,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 worksheet.Column(4).Width = 18;
                 worksheet.Column(5).Width = 18;
                 worksheet.Column(6).Width = 15;
-                worksheet.Column(9).Width = 19;
-                worksheet.Column(10).Width = 8;
+                worksheet.Column(8).Width = 30;
+                worksheet.Column(9).Width = 12;
 
                 #endregion
 
@@ -291,8 +287,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     worksheet2.Cells[rowIndex, 2].Value = current.ExpenseTypeName;
                     worksheet2.Cells[rowIndex, 3].Value = current.Description;
                     worksheet2.Cells[rowIndex, 4].Value = current.Count;
-                    worksheet2.Cells[rowIndex, 5].Value = current.Price;
-                    worksheet2.Cells[rowIndex, 6].Value = current.TotalPrice;
+                    worksheet2.Cells[rowIndex, 5].Value = current.Price.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"));
+                    worksheet2.Cells[rowIndex, 6].Value = current.TotalPrice.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"));
                 }
                 worksheet2.Column(1).Width = 18;
                 worksheet2.Column(2).Width = 28;
