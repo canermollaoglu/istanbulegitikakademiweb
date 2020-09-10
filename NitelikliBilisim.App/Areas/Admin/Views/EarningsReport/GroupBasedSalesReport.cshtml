@@ -59,38 +59,17 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <h6>Genel Bilgiler</h6>
                     <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <td><b>Grup Adı</b></td>
-                                <td><b>Eğitim</b></td>
-                                <td><b>Eğitim Yeri</b></td>
-                                <td><b>Başlangıç Tarihi</b></td>
-                                <td><b>Eğitmen</b></td>
-                                <td><b>Kontenjan</b></td>
-                            </tr>
-                        </thead>
                         <tbody id="tbody-group-general-info"></tbody>
                     </table>
                 </div>
-            </div>
-            <hr />
-            <div class="row">
-                <div class="col-md-12">
+
+                <div class="col-md-6">
                     <h6>Bütçe</h6>
                     <table class="table table-bordered">
-                        <thed>
-                            <tr>
-                                <td><b>Grup Giderleri</b></td>
-                                <td><b>Eğitmen Ücreti</b></td>
-                                <td><b>Toplam Gelir (Ciro)</b></td>
-                                <td><b>Genel Toplam</b></td>
-                            </tr>
-                        </thed>
                         <tbody id="tbody-group-expenses-incomes">
-
                         </tbody>
                     </table>
                 </div>
@@ -125,8 +104,6 @@
             </div>
         </div>
     </div>
-
-
 </div>
 @section postScripts{
     <script src="~/js/sup/alert-sup.js"></script>
@@ -180,14 +157,14 @@
                         tbodyGroupGeneralInfo.html("");
                         var item = res.data;
                         var table = "";
-                        table += "<tr>" +
-                            `<td>${item.groupName} </td>` +
-                            `<td>${item.educationName} </td>` +
-                            `<td>${item.educationHost} - ${item.classroom} </td>` +
-                            `<td>${item.startDate} </td>` +
-                            `<td>${item.educatorName} </td>` +
-                            `<td>${item.assignedStudentsCount}/${item.quota} </td>`;
-
+                        table =
+                            `<tr> <td><b>Grup Adı</b></td><td>${item.groupName} </td></tr>` +
+                            `<tr><td><b>Eğitim</b></td><td>${item.educationName} </td></tr>` +
+                            `<tr><td><b>Eğitim Yeri</b></td><td>${item.educationHost} - ${item.classroom} </td></tr>` +
+                            `<tr><td><b>Başlangıç Tarihi</b></td><td>${item.startDate} </td></tr>` +
+                            `<tr><td><b>Eğitmen</b></td><td>${item.educatorName} </td></tr>` +
+                            `<tr><td><b>Kontenjan</b></td><td>${item.assignedStudentsCount}/${item.quota} </td></tr>` +
+                            `<tr><td><b>Eğitim Günü</b></td><td>${item.educationDays} gün, günde ${item.educationHoursPerDay} saat</td></tr>`;
                         tbodyGroupGeneralInfo.append(table);
                     }
                     else {
@@ -471,11 +448,11 @@
                         tbodyGroupExpensesIncomes.html("");
                         var item = res.data;
                         var table = "";
-                        table += 
-                            `<td class="text-danger">${item.groupExpenses} ₺</td>` +
-                            `<td class="text-danger">${item.educatorExpenses} ₺</td>` +
-                            `<td class="text-success">${item.totalStudentIncomes} ₺</td>` +
-                            `<td ${item.grandTotal > 0 ? "class='text-success'" : "class='text-danger'"}><b>${item.grandTotal} ₺</b></td>`
+                        table +=
+                            `<tr><td><b>Grup Giderleri</b></td><td class="text-danger text-right" colspan="3" >${item.groupExpenses} ₺</td></tr>` +
+                        `<tr><td><b>Eğitmen Ücreti</b></td><td>${item.totalEducationHours} saat</td><td>Ort: ${item.educatorExpensesAverage} ₺</td><td class="text-danger  text-right">${item.educatorExpenses} ₺</td></tr>` +
+                            `<tr><td><b>Toplam Gelir (Ciro)</b></td><td class="text-success  text-right" colspan="3">${item.totalStudentIncomes} ₺</td></tr>` +
+                        `<tr><td><b>Genel Toplam</b></td><td colspan="3" ${item.grandTotal > 0 ? "class='text-success  text-right'" : "class='text-danger  text-right'"}><b>${item.grandTotal} ₺</b></td></tr>`
                             ;
                         tbodyGroupExpensesIncomes.append(table);
                     }
