@@ -90,8 +90,8 @@
 }
 <br />
 <br />
-<h4>Toplam Puanlar</h4>
-<table>
+<h4>Kullanıcı hareketleri bazlı öneri sistemi puanı toplamı</h4>
+<table style="border: 1px solid black;">
     <thead>
         <tr>
             <td>Eğitim Id</td>
@@ -102,11 +102,35 @@
     {
         <tr>
             <td>
-                 @item.EducationId
+                @item.EducationId
             </td>
             <td>
                 @item.Point
             </td>
         </tr>
     }
+
 </table>
+<br />
+<br />
+<h4>Kriter ve Kullanıcı Hareketleri Bazlı öneri sistemlerinin toplamı</h4>
+<table style="border: 1px solid black;">
+    <thead>
+        <tr>
+            <td>Eğitim Id</td>
+            <td>Toplam Puan</td>
+        </tr>
+    </thead>
+    @foreach (var item in ((List<EducationPoint>)ViewData["TotalRecommendationPoints"]))
+    {
+        <tr>
+            <td>
+                @item.EducationId
+            </td>
+            <td>
+                @item.Point
+            </td>
+        </tr>
+    }
+
+</table> 

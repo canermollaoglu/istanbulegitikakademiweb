@@ -65,6 +65,8 @@ namespace NitelikliBilisim.App.Controllers
             ViewData["searchedTexts"] = _unitOfWork.Suggestions.GetSearchedTextsByUserId(userId);
             ViewData["userIdEducations"] = _unitOfWork.Suggestions.GetViewingEducationsByUserId(userId);
             ViewData["sessionIdEducations"] = _unitOfWork.Suggestions.GetViewingEducationsBySessionId(sessionId);
+
+            ViewData["TotalRecommendationPoints"] = _unitOfWork.Suggestions.GetEducationRecommendationRate(userId);
             return View();
         }
 

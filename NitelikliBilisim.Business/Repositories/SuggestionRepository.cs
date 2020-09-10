@@ -27,6 +27,31 @@ namespace NitelikliBilisim.Business.Repositories
             _elasticClient = elasticClient;
         }
 
+        public List<EducationPoint> GetEducationRecommendationRate(string userId)
+        {
+            var result = GetViewedEducations(userId);
+
+            var searched = GetSearchedEducations(result, userId);
+            var viewed = GetViewingEducations(result);
+
+            var criterionBased = GetCriteriaBasedRecommendations(userId);
+            var userActionBased = CalculateUserActionBasedRecommendationTotalPoint(searched, viewed);
+
+            List<EducationPoint> totalRecommendationPoint = CalculateTotalRecommendationPoint(criterionBased, userActionBased);
+            return totalRecommendationPoint;
+        }
+
+        private List<EducationPoint> CalculateTotalRecommendationPoint(List<EducationPoint> criterionBased, List<EducationPoint> userActionBased)
+        {
+            List<EducationPoint> retVal = new List<EducationPoint>();
+            retVal.AddRange(criterionBased);
+            retVal.AddRange(userActionBased);
+            retVal = retVal.GroupBy(x => x.EducationId).Select(y => new EducationPoint { EducationId = y.Key, Point = y.Sum(x => x.Point) }).ToList();
+            return retVal;
+        }
+
+
+
         #region 1 KRİTERLERE GÖRE EĞİTİM ÖNERİLERİ
 
         /// <summary>
@@ -37,8 +62,8 @@ namespace NitelikliBilisim.Business.Repositories
         /// <returns></returns>
         public List<SuggestedEducationVm> GetSuggestedEducationList(bool isLoggedIn, string userId)
         {
-            //Eğitim Id ve uygun kriterlerin sayısı. Eğitimler uygun kriter sayısına göre listelenecek.
-            Dictionary<Guid, int> educationAndAppropriateCriterion = new Dictionary<Guid, int>();
+            //Dictionary<Guid, int> educationAndAppropriateCriterion = new Dictionary<Guid, int>();
+            List<EducationPoint> educationAppropriateCriterionRate = new List<EducationPoint>();
             //Kullanıcının NBUY eğitimi alıp almadığını kontrol ediyoruz.
             var studentEducationInfo = _context.StudentEducationInfos.FirstOrDefault(x => x.CustomerId == userId);
             //Kullanıcı kayıtlı ise ve NBUY öğrencisi ise 
@@ -104,14 +129,16 @@ namespace NitelikliBilisim.Business.Repositories
                     #region Kullanıcı davranışlarına göre eğitim önerileri
                     //Bu alanda en çok incelenen eğitime veya en çok aranan eğitime +1 uygunluk puanı verilebilir.
                     #endregion
-                    educationAndAppropriateCriterion.Add(education.Id, appropriateCriterion);
+                    educationAppropriateCriterionRate.Add(
+                        new EducationPoint { EducationId = education.Id, Point = appropriateCriterion }
+                        );
                 }
                 #endregion
 
                 //Yukarıda seçilen eğitimler içerisinden en çok kritere uyan 5 eğitim seçiliyor.
-                var selectedEducations = educationAndAppropriateCriterion.OrderByDescending(entry => entry.Value)
+                var selectedEducations = educationAppropriateCriterionRate.OrderByDescending(x => x.Point)
                      .Take(5)
-                     .ToDictionary(pair => pair.Key, pair => pair.Value);
+                     .ToDictionary(pair => pair.EducationId, pair => pair.Point);
 
                 //Eğer seçilmiş eğitimler 5 taneyi tamamlayamıyorsa son eklenen 5 eğitim ile doldurulacak.
                 var lastEducations = _context.Educations.OrderByDescending(x => x.CreatedDate).Where(x => x.IsActive).Take(10).ToList();
@@ -169,6 +196,82 @@ namespace NitelikliBilisim.Business.Repositories
             }
         }
 
+        public List<EducationPoint> GetCriteriaBasedRecommendations(string userId)
+        {
+            List<EducationPoint> educationAppropriateCriterionRate = new List<EducationPoint>();
+            //Kullanıcının NBUY eğitimi alıp almadığını kontrol ediyoruz.
+            var studentEducationInfo = _context.StudentEducationInfos.FirstOrDefault(x => x.CustomerId == userId);
+            //Kullanıcı kayıtlı ise ve NBUY öğrencisi ise 
+            if (studentEducationInfo != null)
+            {
+                var customer = _context.Customers.FirstOrDefault(x => x.Id == userId);
+                //Müşterinin en yakın eğitim günü. (Müşteri hafta sonu veya tatil günü sisteme giriş yaptığını varsayarak geçmiş en yakın gün baz alındı.)
+                int nearestDay = 0;
+                var educationDay = _context.EducationDays.Where(x => x.StudentEducationInfoId == studentEducationInfo.Id && x.Date <= DateTime.Now).OrderByDescending(c => c.Date).First();
+                nearestDay = educationDay.Day;
+
+                /*Müşterinin NBUY eğitimi aldığı kategoriye göre eğitim listesi.*/
+                var educations = _context.Educations.Include(c => c.Category).Where(x => x.Category.BaseCategoryId == studentEducationInfo.CategoryId.Value || x.Category.Id == studentEducationInfo.CategoryId.Value).Include(x => x.EducationSuggestionCriterions).Where(x => x.IsActive);
+                #region Favori eklenen eğitimler
+                List<string> userWishList = _context.Wishlist.Where(x => x.Id == customer.Id).Include(x => x.Education).Select(x => x.Education.Id.ToString().ToLower()).ToList();
+                #endregion
+                #region Satın alınan eğitimler
+                List<string> userPurchasedEducations = new List<string>();
+                var tickets = _context.Tickets
+                .Where(x => x.OwnerId == customer.Id)
+                .ToList();
+                tickets.ForEach(x => userPurchasedEducations.Add(x.EducationId.ToString().ToLower()));
+                #endregion
+
+                #region Kriterlerin uygunluğunun kontrolü
+                foreach (var education in educations)
+                {
+                    int appropriateCriterion = 0;
+                    #region Kriterlere göre eğitim önerileri
+                    if (education.EducationSuggestionCriterions != null && education.EducationSuggestionCriterions.Count > 0)
+                    {
+                        foreach (var criterion in education.EducationSuggestionCriterions)
+                        {
+                            #region Eğitim Günü Kriteri
+                            if (criterion.CriterionType == CriterionType.EducationDay)
+                            {
+                                if (nearestDay <= criterion.MaxValue && nearestDay >= criterion.MinValue)
+                                    appropriateCriterion += 50;//Eğitim günü kriteri %50 etkilediği için 100 puan üzerinden 50 puan ekleniyor.
+                                else if (nearestDay > criterion.MaxValue && nearestDay < criterion.MaxValue + 7)
+                                    appropriateCriterion += 30;//Eğitim günü kriteri iki hafta öncesine kadar 30 puan etkiliyor.
+                                else if (nearestDay < criterion.MinValue && nearestDay >= criterion.MinValue - 14)
+                                    appropriateCriterion += 30;//Eğitim günü kriteri bir hafta sonrasına kadar 30 puan etkiliyor.
+                            }
+                            #endregion
+                            #region Favorilere Eklenmiş Eğitimler Kriteri
+                            if (criterion.CriterionType == CriterionType.WishListEducations)
+                            {
+                                List<string> wishListItemIds = JsonConvert.DeserializeObject<string[]>(criterion.CharValue).ToList();
+                                appropriateCriterion = appropriateCriterion + (int)TotalSameElementPoint(criterion.CriterionType, wishListItemIds, userWishList);
+                            }
+                            #endregion
+                            #region Satın Alınmış Eğitimler Kriteri
+                            if (criterion.CriterionType == CriterionType.PurchasedEducations)
+                            {
+                                List<string> criterionItemIds = JsonConvert.DeserializeObject<string[]>(criterion.CharValue).ToList();
+                                appropriateCriterion = appropriateCriterion + (int)TotalSameElementPoint(criterion.CriterionType, criterionItemIds, userPurchasedEducations);
+                            }
+                            #endregion
+                        }
+                    }
+                    #endregion
+                    #region Kullanıcı davranışlarına göre eğitim önerileri
+                    //Bu alanda en çok incelenen eğitime veya en çok aranan eğitime +1 uygunluk puanı verilebilir.
+                    #endregion
+                    educationAppropriateCriterionRate.Add(
+                        new EducationPoint { EducationId = education.Id, Point = appropriateCriterion }
+                        );
+                }
+                #endregion
+            }
+            return educationAppropriateCriterionRate;
+        }
+
         #region Suggested Educations Helper Method
         /// <summary>
         /// Bu method eğitimde belirtilen Favori eğitim ve Satın alınan eğitim kriterlerindeki eğitimleri 
@@ -191,7 +294,7 @@ namespace NitelikliBilisim.Business.Repositories
             return totalPoint;
         }
 
-        public List<SuggestedEducationVm> FillSuggestedEducationList(Dictionary<Guid, int> educationAndAppropriateCriterion)
+        public List<SuggestedEducationVm> FillSuggestedEducationList(Dictionary<Guid, double> educationAndAppropriateCriterion)
         {
             var educationsList = _context.Educations.Where(x => educationAndAppropriateCriterion.Keys.Contains(x.Id) && x.IsActive)
                .Join(_context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Id, r => r.EducationId, (x, y) => new
@@ -236,7 +339,6 @@ namespace NitelikliBilisim.Business.Repositories
         #endregion
 
         #endregion
-
 
         #region 2 KULLANICI DAVRANIŞLARINA GÖRE EĞİTİM ÖNERİLERİ
 
@@ -418,61 +520,64 @@ namespace NitelikliBilisim.Business.Repositories
             int totalEducationViewCount = GetEducationViewTotalCount(result);
             model.TotalEducationSearchCount = CountOfEducationsSearchedAndViewed(result, getAllSearching);
 
-            if (result.IsValid && result.Documents != null && result.Documents.Count > 0)
-            {
-                foreach (var log in result.Documents)
-                {//Aranılarak incelenmiş eğitimler
-                    if (log.Parameters != null && log.Parameters.Any(x => x.ParameterName == "searchKey"))
-                    {
-                        string key = JsonConvert.DeserializeObject<string>(log.Parameters.First(x => x.ParameterName == "searchKey").ParameterValue);
-                        int totalKeySearched = getAllSearching[key];
+            model.ViewingEducations = GetViewingEducations(result);
+            model.SearchedEducations = GetSearchedEducations(result, userId);
+            #region Clear
+            //if (result.IsValid && result.Documents != null && result.Documents.Count > 0)
+            //{
+            //    foreach (var log in result.Documents)
+            //    {//Aranılarak incelenmiş eğitimler
+            //        if (log.Parameters != null && log.Parameters.Any(x => x.ParameterName == "searchKey"))
+            //        {
+            //            string key = JsonConvert.DeserializeObject<string>(log.Parameters.First(x => x.ParameterName == "searchKey").ParameterValue);
+            //            int totalKeySearched = getAllSearching[key];
 
-                        string Id = JsonConvert.DeserializeObject<string>(log.Parameters.First(x => x.ParameterName == "courseId").ParameterValue);
-                        if (model.SearchedEducations.Any(x => x.Key == key))
-                        {
-                            var eDetail = new EducationDetail();
-                            eDetail.Point = CalculateSearchedKeyPoint(totalKeySearched, model.TotalEducationSearchCount);
-                            eDetail.Id = Id;
-                            SearchedEducationList ed = model.SearchedEducations.First(x => x.Key == key);
-                            ed.ViewedCount++;
-                            ed.EducationDetails.Add(eDetail);
-                        }
-                        else
-                        {
-                            var eDetail = new EducationDetail();
-                            eDetail.Point = CalculateSearchedKeyPoint(totalKeySearched, model.TotalEducationSearchCount);
-                            eDetail.Id = Id;
+            //            Guid Id = JsonConvert.DeserializeObject<Guid>(log.Parameters.First(x => x.ParameterName == "courseId").ParameterValue);
+            //            if (model.SearchedEducations.Any(x => x.Key == key))
+            //            {
+            //                var eDetail = new EducationDetail();
+            //                eDetail.Point = CalculateSearchedKeyPoint(totalKeySearched, model.TotalEducationSearchCount);
+            //                eDetail.Id = Id;
+            //                SearchedEducationList ed = model.SearchedEducations.First(x => x.Key == key);
+            //                ed.ViewedCount++;
+            //                ed.EducationDetails.Add(eDetail);
+            //            }
+            //            else
+            //            {
+            //                var eDetail = new EducationDetail();
+            //                eDetail.Point = CalculateSearchedKeyPoint(totalKeySearched, model.TotalEducationSearchCount);
+            //                eDetail.Id = Id;
+            //                var sE = new SearchedEducationList();
+            //                sE.Key = key;
+            //                sE.ViewedCount = 1;
+            //                sE.EducationDetails.Add(eDetail);
+            //                model.SearchedEducations.Add(sE);
+            //            }
+            //        }
+            //        //Direkt incelenmiş eğitimler
+            //        if (log.Parameters != null && log.Parameters.Any(x => x.ParameterName == "courseId") && !log.Parameters.Any(x => x.ParameterName == "searchKey"))
+            //        {
+            //            Guid Id = JsonConvert.DeserializeObject<Guid>(log.Parameters.First(x => x.ParameterName == "courseId").ParameterValue);
+            //            if (model.ViewingEducations.Any(x => x.EducationId == Id))
+            //            {
+            //                ViewingEducation current = model.ViewingEducations.First(x => x.EducationId == Id);
+            //                current.ViewingCount++;
+            //                current.Point = CalculateViewedEducationPoint(current.ViewingCount, totalEducationViewCount);
+            //            }
+            //            else
+            //            {
+            //                model.ViewingEducations.Add(new ViewingEducation
+            //                {
+            //                    EducationId = Id,
+            //                    ViewingCount = 1,
+            //                    Point = CalculateViewedEducationPoint(1, totalEducationViewCount)
+            //                });
+            //            }
+            //        }
 
-                            var sE = new SearchedEducationList();
-                            sE.Key = key;
-                            sE.ViewedCount = 1;
-                            sE.EducationDetails.Add(eDetail);
-                            model.SearchedEducations.Add(sE);
-                        }
-                    }
-                    //Direkt incelenmiş eğitimler
-                    if (log.Parameters != null && log.Parameters.Any(x => x.ParameterName == "courseId") && !log.Parameters.Any(x=>x.ParameterName == "searchKey"))
-                    {
-                        Guid Id = JsonConvert.DeserializeObject<Guid>(log.Parameters.First(x => x.ParameterName == "courseId").ParameterValue);
-                        if (model.ViewingEducations.Any(x => x.EducationId == Id))
-                        {
-                            ViewingEducation current = model.ViewingEducations.First(x => x.EducationId == Id);
-                            current.ViewingCount++;
-                            current.Point = CalculateViewedEducationPoint(current.ViewingCount, totalEducationViewCount);
-                        }
-                        else
-                        {
-                            model.ViewingEducations.Add(new ViewingEducation
-                            {
-                                EducationId = Id,
-                                ViewingCount = 1,
-                                Point = CalculateViewedEducationPoint(1,totalEducationViewCount)
-                            });
-                        }
-                    }
-
-                }
-            }
+            //    }
+            //}
+            #endregion
             #endregion
 
             model.TotalEducationViewCount = totalEducationViewCount;
@@ -485,37 +590,139 @@ namespace NitelikliBilisim.Business.Repositories
             }
 
 
-            model.EducationTotalPoint = CalculateTotalPoint(model.SearchedEducations, model.ViewingEducations);
+            model.EducationTotalPoint = CalculateUserActionBasedRecommendationTotalPoint(model.SearchedEducations, model.ViewingEducations);
 
             return model;
         }
+
+        private List<SearchedEducationList> GetSearchedEducations(ISearchResponse<TransactionLog> result, string userId)
+        {
+            List<SearchedEducationList> model = new List<SearchedEducationList>();
+            Dictionary<string, int> getAllSearching = GetAllSearchedKeyAndSearchCount(userId);
+            int totalEducationSearchCount = CountOfEducationsSearchedAndViewed(result, getAllSearching);
+            if (result.IsValid && result.Documents != null && result.Documents.Count > 0)
+            {
+                foreach (var log in result.Documents)
+                {//Aranılarak incelenmiş eğitimler
+                    if (log.Parameters != null && log.Parameters.Any(x => x.ParameterName == "searchKey"))
+                    {
+                        string key = JsonConvert.DeserializeObject<string>(log.Parameters.First(x => x.ParameterName == "searchKey").ParameterValue);
+                        int totalKeySearched = getAllSearching[key];
+
+                        Guid Id = JsonConvert.DeserializeObject<Guid>(log.Parameters.First(x => x.ParameterName == "courseId").ParameterValue);
+                        if (model.Any(x => x.Key == key))
+                        {
+                            var eDetail = new EducationDetail();
+                            eDetail.Point = CalculateSearchedKeyPoint(totalKeySearched, totalEducationSearchCount);
+                            eDetail.Id = Id;
+                            SearchedEducationList ed = model.First(x => x.Key == key);
+                            ed.ViewedCount++;
+                            ed.EducationDetails.Add(eDetail);
+                        }
+                        else
+                        {
+                            var eDetail = new EducationDetail();
+                            eDetail.Point = CalculateSearchedKeyPoint(totalKeySearched, totalEducationSearchCount);
+                            eDetail.Id = Id;
+                            var sE = new SearchedEducationList();
+                            sE.Key = key;
+                            sE.ViewedCount = 1;
+                            sE.EducationDetails.Add(eDetail);
+                            model.Add(sE);
+                        }
+                    }
+                }
+
+
+            }
+
+
+            return model;
+        }
+
+
+        private List<ViewingEducation> GetViewingEducations(ISearchResponse<TransactionLog> result)
+        {
+            List<ViewingEducation> model = new List<ViewingEducation>();
+            int totalEducationViewCount = GetEducationViewTotalCount(result);
+            if (result.IsValid && result.Documents != null && result.Documents.Count > 0)
+            {
+                foreach (var log in result.Documents)
+                {
+                    if (log.Parameters != null && log.Parameters.Any(x => x.ParameterName == "courseId") && !log.Parameters.Any(x => x.ParameterName == "searchKey"))
+                    {
+                        Guid Id = JsonConvert.DeserializeObject<Guid>(log.Parameters.First(x => x.ParameterName == "courseId").ParameterValue);
+                        if (model.Any(x => x.EducationId == Id))
+                        {
+                            ViewingEducation current = model.First(x => x.EducationId == Id);
+                            current.ViewingCount++;
+                            current.Point = CalculateViewedEducationPoint(current.ViewingCount, totalEducationViewCount);
+                        }
+                        else
+                        {
+                            model.Add(new ViewingEducation
+                            {
+                                EducationId = Id,
+                                ViewingCount = 1,
+                                Point = CalculateViewedEducationPoint(1, totalEducationViewCount)
+                            });
+                        }
+                    }
+                }
+            }
+            return model;
+        }
+
+
         /// <summary>
-        /// Aranan ve incelenen eğitimlerin ortalamasını alan method.+
+        /// Kullanıcı davranışlarına göre eğitim puanlarını döner
         /// </summary>
         /// <param name="searchedEducations"></param>
         /// <param name="viewingEducations"></param>
         /// <returns></returns>
-        private List<EducationPoint> CalculateTotalPoint(List<SearchedEducationList> searchedEducations, List<ViewingEducation> viewingEducations)
+        private List<EducationPoint> CalculateUserActionBasedRecommendationTotalPoint(List<SearchedEducationList> searchedEducations, List<ViewingEducation> viewingEducations)
         {
             List<EducationPoint> retVal = new List<EducationPoint>();
-            if (viewingEducations.Count>searchedEducations.Count)
+            List<EducationPoint> viewingEducationPoints = new List<EducationPoint>();
+            List<EducationPoint> searchedEducationPoints = new List<EducationPoint>();
+
+            //İncelenmiş eğitimler ve puanları
+            foreach (var education in viewingEducations)
             {
-                foreach (var education in viewingEducations)
+                viewingEducationPoints.Add(new EducationPoint
                 {
-                    if (retVal.Any(x => x.EducationId == education.EducationId))
+                    EducationId = education.EducationId,
+                    Point = education.Point
+                });
+            }
+            //Aranılarak incelenmiş eğitimler ve puanları
+            foreach (var key in searchedEducations)
+            {
+                foreach (var detail in key.EducationDetails)
+                {
+                    var education = searchedEducationPoints.FirstOrDefault(x => x.EducationId == detail.Id);
+
+                    if (education == null)
                     {
-                        retVal.First(x => x.EducationId == education.EducationId).Point += education.Point;
+                        searchedEducationPoints.Add(new EducationPoint
+                        {
+                            EducationId = detail.Id,
+                            Point = detail.Point
+                        });
                     }
                     else
                     {
-                        retVal.Add(new EducationPoint
+                        if (detail.Point > education.Point)
                         {
-                            EducationId = education.EducationId,
-                            Point = education.Point
-                        });
+                            searchedEducationPoints.First(x => x.EducationId == detail.Id).Point = detail.Point;
+                        }
                     }
                 }
             }
+
+            retVal.AddRange(viewingEducationPoints);
+            retVal.AddRange(searchedEducationPoints);
+            retVal = retVal.GroupBy(x => x.EducationId).Select(y => new EducationPoint { EducationId = y.Key, Point = y.Sum(x => x.Point) }).ToList();
 
             return retVal;
         }
@@ -537,7 +744,7 @@ namespace NitelikliBilisim.Business.Repositories
                     }
                 }
             }
-            return counter.Sum(x=>x.Value);
+            return counter.Sum(x => x.Value);
         }
         private int GetEducationViewTotalCount(ISearchResponse<TransactionLog> result)
         {

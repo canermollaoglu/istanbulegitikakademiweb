@@ -8,9 +8,9 @@ namespace NitelikliBilisim.Core.ViewModels
     public class SuggestedEducationVm : EducationVm
     {
         /// <summary>
-        /// Uygun kriter adedi
+        /// Kriterlere uygunluk puanı
         /// </summary>
-        public int AppropriateCriterionCount { get; set; }
+        public double AppropriateCriterionCount { get; set; }
     }
     public class EducationVm
     {
