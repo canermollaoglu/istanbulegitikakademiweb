@@ -620,7 +620,6 @@ namespace NitelikliBilisim.Business.Repositories
                             eDetail.Point = CalculateSearchedKeyPoint(totalKeySearched, totalEducationSearchCount);
                             eDetail.Id = Id;
                             SearchedEducationList ed = model.First(x => x.Key == key);
-                            ed.ViewedCount++;
                             ed.EducationDetails.Add(eDetail);
                         }
                         else
@@ -630,7 +629,6 @@ namespace NitelikliBilisim.Business.Repositories
                             eDetail.Id = Id;
                             var sE = new SearchedEducationList();
                             sE.Key = key;
-                            sE.ViewedCount = 1;
                             sE.EducationDetails.Add(eDetail);
                             model.Add(sE);
                         }
