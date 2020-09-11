@@ -37,11 +37,11 @@ namespace NitelikliBilisim.App.Controllers
             model.EducationCountByCategory = _unitOfWork.EducationCategory.GetEducationCountForCategories();
             var isLoggedIn = HttpContext.User.Identity.IsAuthenticated;
             if (!isLoggedIn)
-                model.SuggestedEducations = _unitOfWork.Suggestions.GetSuggestedEducationList(false, null);
+                model.SuggestedEducations = _unitOfWork.Suggestions.GetGuestUserSuggestedEducations();
             else
             {
                 var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                model.SuggestedEducations = _unitOfWork.Suggestions.GetSuggestedEducationList(true, userId);
+                model.SuggestedEducations = _unitOfWork.Suggestions.GetUserSuggestedEducations(userId, 5);
             }
 
             return View(model);
