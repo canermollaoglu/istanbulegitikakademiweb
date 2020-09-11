@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Nest;
 using NitelikliBilisim.Business.Repositories;
 using NitelikliBilisim.Business.Repositories.BlogRepositories;
@@ -53,10 +54,12 @@ namespace NitelikliBilisim.Business.UoW
         private EducationHostClassroomRepository _educationHostClassroomRepository;
 
         private IElasticClient _elasticClient;
-        public UnitOfWork(NbDataContext context, IElasticClient elasticClient)
+        private IConfiguration _configuration;
+        public UnitOfWork(NbDataContext context, IElasticClient elasticClient,IConfiguration configuration)
         {
             _elasticClient = elasticClient;
             _context = context;
+            _configuration = configuration;
         }
         public int Save()
         {
@@ -68,7 +71,7 @@ namespace NitelikliBilisim.Business.UoW
         public GroupExpenseTypeRepository GroupExpenseType => _groupExpenseTypeRepository ??= new GroupExpenseTypeRepository(_context);
         public InvoiceDetailRepository InvoiceDetail => _invoiceDetailRepository ??= new InvoiceDetailRepository(_context);
         public InvoiceRepository Invoice => _invoiceRepository ??= new InvoiceRepository(_context);
-        public SuggestionRepository Suggestions => _suggestionRepository ??= new SuggestionRepository(_context, _elasticClient);
+        public SuggestionRepository Suggestions => _suggestionRepository ??= new SuggestionRepository(_context, _elasticClient,_configuration);
         public EducationCategoryRepository EducationCategory => _educationCategoryRepository ??= new EducationCategoryRepository(_context);
 
         public EducationTagRepository EducationTag => _educationTagRepository ??= new EducationTagRepository(_context);

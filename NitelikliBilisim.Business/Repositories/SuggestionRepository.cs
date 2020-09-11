@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.Extensions.Configuration;
 using Nest;
 using Newtonsoft.Json;
 using NitelikliBilisim.Core.ComplexTypes;
@@ -21,10 +22,13 @@ namespace NitelikliBilisim.Business.Repositories
     {
         private readonly NbDataContext _context;
         private readonly IElasticClient _elasticClient;
-        public SuggestionRepository(NbDataContext context, IElasticClient elasticClient)
+        private readonly SuggestionSystemOptions _options;
+
+        public SuggestionRepository(NbDataContext context, IElasticClient elasticClient,IConfiguration configuration)
         {
             _context = context;
             _elasticClient = elasticClient;
+            _options = configuration.GetSection("EducationSuggestionSystemOptions").Get<SuggestionSystemOptions>(); ;
         }
 
         public List<EducationPoint> GetEducationRecommendationRate(string userId)
@@ -102,11 +106,11 @@ namespace NitelikliBilisim.Business.Repositories
                             if (criterion.CriterionType == CriterionType.EducationDay)
                             {
                                 if (nearestDay <= criterion.MaxValue && nearestDay >= criterion.MinValue)
-                                    appropriateCriterion += 50;//Eğitim günü kriteri %50 etkilediği için 100 puan üzerinden 50 puan ekleniyor.
+                                    appropriateCriterion += _options.EducationDayCriterion;//Eğitim günü kriteri %50 etkilediği için 100 puan üzerinden 50 puan ekleniyor.
                                 else if (nearestDay > criterion.MaxValue && nearestDay < criterion.MaxValue + 7)
-                                    appropriateCriterion += 30;//Eğitim günü kriteri iki hafta öncesine kadar 30 puan etkiliyor.
+                                    appropriateCriterion += _options.EducationDayOneWeekAfter;//Eğitim günü kriteri iki hafta öncesine kadar 30 puan etkiliyor.
                                 else if (nearestDay < criterion.MinValue && nearestDay >= criterion.MinValue - 14)
-                                    appropriateCriterion += 30;//Eğitim günü kriteri bir hafta sonrasına kadar 30 puan etkiliyor.
+                                    appropriateCriterion += _options.EducationDayOneWeekAfter;//Eğitim günü kriteri bir hafta sonrasına kadar 30 puan etkiliyor.
                             }
                             #endregion
                             #region Favorilere Eklenmiş Eğitimler Kriteri
@@ -236,11 +240,11 @@ namespace NitelikliBilisim.Business.Repositories
                             if (criterion.CriterionType == CriterionType.EducationDay)
                             {
                                 if (nearestDay <= criterion.MaxValue && nearestDay >= criterion.MinValue)
-                                    appropriateCriterion += 50;//Eğitim günü kriteri %50 etkilediği için 100 puan üzerinden 50 puan ekleniyor.
+                                    appropriateCriterion += _options.EducationDayCriterion;//Eğitim günü kriteri %50 etkilediği için 100 puan üzerinden 50 puan ekleniyor.
                                 else if (nearestDay > criterion.MaxValue && nearestDay < criterion.MaxValue + 7)
-                                    appropriateCriterion += 30;//Eğitim günü kriteri iki hafta öncesine kadar 30 puan etkiliyor.
+                                    appropriateCriterion += _options.EducationDayTwoWeeksBefore;//Eğitim günü kriteri iki hafta öncesine kadar 30 puan etkiliyor.
                                 else if (nearestDay < criterion.MinValue && nearestDay >= criterion.MinValue - 14)
-                                    appropriateCriterion += 30;//Eğitim günü kriteri bir hafta sonrasına kadar 30 puan etkiliyor.
+                                    appropriateCriterion += _options.EducationDayOneWeekAfter;//Eğitim günü kriteri bir hafta sonrasına kadar 30 puan etkiliyor.
                             }
                             #endregion
                             #region Favorilere Eklenmiş Eğitimler Kriteri
@@ -285,7 +289,7 @@ namespace NitelikliBilisim.Business.Repositories
         public double TotalSameElementPoint(CriterionType criterionType, List<string> criterionEducationList, List<string> studentEducationList)
         {
             //Her bir kriter uyumu için eklenecek puan
-            double criterionPoint = criterionType == CriterionType.WishListEducations ? 20 / criterionEducationList.Count : 30 / criterionEducationList.Count;
+            double criterionPoint = criterionType == CriterionType.WishListEducations ? _options.WishlistEducationsCriterion / criterionEducationList.Count : _options.PurchasedEducationsCriterion / criterionEducationList.Count;
             //Toplam puan
             double totalPoint = 0;
             for (int i = 0; i < criterionEducationList.Count; i++)
@@ -765,11 +769,11 @@ namespace NitelikliBilisim.Business.Repositories
         private double CalculateSearchedKeyPoint(int totalKeySearched, int totalSearchedCount)
         {
 
-            return Convert.ToDouble(totalKeySearched) / Convert.ToDouble(totalSearchedCount) * 70;
+            return Convert.ToDouble(totalKeySearched) / Convert.ToDouble(totalSearchedCount) * _options.SearchedEducation;
         }
         private double CalculateViewedEducationPoint(int totalEducationView, int totalAllEducationView)
         {
-            return Convert.ToDouble(totalEducationView) / Convert.ToDouble(totalAllEducationView) * 30;
+            return Convert.ToDouble(totalEducationView) / Convert.ToDouble(totalAllEducationView) * _options.ViewedEducation;
         }
 
 
