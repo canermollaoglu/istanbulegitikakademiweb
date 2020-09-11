@@ -6,33 +6,6 @@
 }
 
 
-
-<h3>SessionId ile incelenmiş eğitimler</h3>
-<ul>
-    @foreach (var education in ((List<Education>)ViewData["sessionIdEducations"]))
-    {
-        <li><b>@education.Name</b></li>
-
-    }
-</ul>
-<br />
-<hr />
-<br />
-<br />
-<h3>User Id ile incelenmiş Eğitim Adı ve incelenme sayısı</h3>
-<ul>
-    @if (ViewData["viewingCount"] != null)
-    {
-        @foreach (var item in ((Dictionary<Education, int>)ViewData["viewingCount"]))
-        {
-            <li><b>@item.Key.Name</b> : @item.Value</li>
-        }
-    }
-</ul>
-<br />
-<hr />
-<br />
-
 <h3> Son Bilgiler </h3>
 
 @if (ViewData["edl"] != null)
