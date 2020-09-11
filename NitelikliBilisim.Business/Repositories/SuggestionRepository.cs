@@ -31,6 +31,11 @@ namespace NitelikliBilisim.Business.Repositories
             _options = configuration.GetSection("EducationSuggestionSystemOptions").Get<SuggestionSystemOptions>(); ;
         }
 
+        /// <summary>
+        /// Öneri sisteminde eğitimlere verilen nihai puanları döner.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public List<EducationPoint> GetEducationRecommendationRate(string userId)
         {
             var result = GetViewedEducations(userId);
@@ -44,7 +49,12 @@ namespace NitelikliBilisim.Business.Repositories
             List<EducationPoint> totalRecommendationPoint = CalculateTotalRecommendationPoint(criterionBased, userActionBased);
             return totalRecommendationPoint;
         }
-
+        /// <summary>
+        /// Kriter bazlı ve Kullanıcı davranışları bazlı eğitim puanlarını alarak nihai puanları hesaplar.
+        /// </summary>
+        /// <param name="criterionBased"></param>
+        /// <param name="userActionBased"></param>
+        /// <returns></returns>
         private List<EducationPoint> CalculateTotalRecommendationPoint(List<EducationPoint> criterionBased, List<EducationPoint> userActionBased)
         {
             List<EducationPoint> retVal = new List<EducationPoint>();
@@ -66,99 +76,94 @@ namespace NitelikliBilisim.Business.Repositories
         /// <returns></returns>
         public List<SuggestedEducationVm> GetSuggestedEducationList(bool isLoggedIn, string userId)
         {
-            //Dictionary<Guid, int> educationAndAppropriateCriterion = new Dictionary<Guid, int>();
             List<EducationPoint> educationAppropriateCriterionRate = new List<EducationPoint>();
-            //Kullanıcının NBUY eğitimi alıp almadığını kontrol ediyoruz.
             var studentEducationInfo = _context.StudentEducationInfos.FirstOrDefault(x => x.CustomerId == userId);
-            //Kullanıcı kayıtlı ise ve NBUY öğrencisi ise 
-            if (isLoggedIn && studentEducationInfo != null)
+            if (isLoggedIn)
             {
                 var customer = _context.Customers.FirstOrDefault(x => x.Id == userId);
-                //Müşterinin en yakın eğitim günü. (Müşteri hafta sonu veya tatil günü sisteme giriş yaptığını varsayarak geçmiş en yakın gün baz alındı.)
-                int nearestDay = 0;
-                var educationDay = _context.EducationDays.Where(x => x.StudentEducationInfoId == studentEducationInfo.Id && x.Date <= DateTime.Now).OrderByDescending(c => c.Date).First();
-                nearestDay = educationDay.Day;
-
-                /*Müşterinin NBUY eğitimi aldığı kategoriye göre eğitim listesi.*/
-                var educations = _context.Educations.Include(c => c.Category).Where(x => x.Category.BaseCategoryId == studentEducationInfo.CategoryId.Value || x.Category.Id == studentEducationInfo.CategoryId.Value).Include(x => x.EducationSuggestionCriterions).Where(x => x.IsActive);
-                #region Favori eklenen eğitimler
-                List<string> userWishList = _context.Wishlist.Where(x => x.Id == customer.Id).Include(x => x.Education).Select(x => x.Education.Id.ToString().ToLower()).ToList();
-                #endregion
-                #region Satın alınan eğitimler
-                List<string> userPurchasedEducations = new List<string>();
-                var tickets = _context.Tickets
-                .Where(x => x.OwnerId == customer.Id)
-                .ToList();
-                tickets.ForEach(x => userPurchasedEducations.Add(x.EducationId.ToString().ToLower()));
-                #endregion
-
-
-                #region Kriterlerin uygunluğunun kontrolü
-                foreach (var education in educations)
+                if (customer!=null)
                 {
-                    int appropriateCriterion = 0;
-                    #region Kriterlere göre eğitim önerileri
-                    if (education.EducationSuggestionCriterions != null && education.EducationSuggestionCriterions.Count > 0)
+                    //Öğrencinin en yakın eğitim günü. (Müşteri hafta sonu veya tatil günü sisteme giriş yaptığını varsayarak geçmiş en yakın gün baz alındı.)
+                    int nearestDay = 0;
+                    var educationDay = studentEducationInfo != null ? _context.EducationDays.Where(x => x.StudentEducationInfoId == studentEducationInfo.Id && x.Date <= DateTime.Now).OrderByDescending(c => c.Date).First().Day : 0;
+                    nearestDay = educationDay;
+                    var allEducations = _context.Educations.Include(x => x.Category).Include(x => x.EducationSuggestionCriterions).Where(x => x.IsActive);
+                    /*Öğrencinin NBUY eğitimi varsa o kategorideki eğitimler yoksa tüm eğitimler.*/
+                    var educations = studentEducationInfo != null ? allEducations.Where(x => x.Category.BaseCategoryId == studentEducationInfo.CategoryId.Value || x.Category.Id == studentEducationInfo.CategoryId.Value) : allEducations;
+                    #region Favori eklenen eğitimler
+                    List<string> userWishList = _context.Wishlist.Where(x => x.Id == customer.Id).Include(x => x.Education).Select(x => x.Education.Id.ToString().ToLower()).ToList();
+                    #endregion
+                    #region Satın alınan eğitimler
+                    List<string> userPurchasedEducations = new List<string>();
+                    var tickets = _context.Tickets
+                    .Where(x => x.OwnerId == customer.Id)
+                    .ToList();
+                    tickets.ForEach(x => userPurchasedEducations.Add(x.EducationId.ToString().ToLower()));
+                    #endregion
+
+
+                    #region Kriterlerin uygunluğunun kontrolü
+                    foreach (var education in educations)
                     {
-                        foreach (var criterion in education.EducationSuggestionCriterions)
+                        int appropriateCriterion = 0;
+                        if (education.EducationSuggestionCriterions != null && education.EducationSuggestionCriterions.Count > 0)
                         {
-                            #region Eğitim Günü Kriteri
-                            if (criterion.CriterionType == CriterionType.EducationDay)
+                            foreach (var criterion in education.EducationSuggestionCriterions)
                             {
-                                if (nearestDay <= criterion.MaxValue && nearestDay >= criterion.MinValue)
-                                    appropriateCriterion += _options.EducationDayCriterion;//Eğitim günü kriteri %50 etkilediği için 100 puan üzerinden 50 puan ekleniyor.
-                                else if (nearestDay > criterion.MaxValue && nearestDay < criterion.MaxValue + 7)
-                                    appropriateCriterion += _options.EducationDayOneWeekAfter;//Eğitim günü kriteri iki hafta öncesine kadar 30 puan etkiliyor.
-                                else if (nearestDay < criterion.MinValue && nearestDay >= criterion.MinValue - 14)
-                                    appropriateCriterion += _options.EducationDayOneWeekAfter;//Eğitim günü kriteri bir hafta sonrasına kadar 30 puan etkiliyor.
+                                #region Eğitim Günü Kriteri
+                                if (studentEducationInfo!=null && criterion.CriterionType == CriterionType.EducationDay)
+                                {
+                                    if (nearestDay <= criterion.MaxValue && nearestDay >= criterion.MinValue)
+                                        appropriateCriterion += _options.EducationDayCriterion;//Eğitim günü kriteri %50 etkilediği için 100 puan üzerinden 50 puan ekleniyor.
+                                    else if (nearestDay > criterion.MaxValue && nearestDay < criterion.MaxValue + 7)
+                                        appropriateCriterion += _options.EducationDayOneWeekAfter;//Eğitim günü kriteri iki hafta öncesine kadar 30 puan etkiliyor.
+                                    else if (nearestDay < criterion.MinValue && nearestDay >= criterion.MinValue - 14)
+                                        appropriateCriterion += _options.EducationDayOneWeekAfter;//Eğitim günü kriteri bir hafta sonrasına kadar 30 puan etkiliyor.
+                                }
+                                #endregion
+                                #region Favorilere Eklenmiş Eğitimler Kriteri
+                                if (criterion.CriterionType == CriterionType.WishListEducations)
+                                {
+                                    List<string> wishListItemIds = JsonConvert.DeserializeObject<string[]>(criterion.CharValue).ToList();
+                                    appropriateCriterion = appropriateCriterion + (int)TotalSameElementPoint(criterion.CriterionType, wishListItemIds, userWishList);
+                                }
+                                #endregion
+                                #region Satın Alınmış Eğitimler Kriteri
+                                if (criterion.CriterionType == CriterionType.PurchasedEducations)
+                                {
+                                    List<string> criterionItemIds = JsonConvert.DeserializeObject<string[]>(criterion.CharValue).ToList();
+                                    appropriateCriterion = appropriateCriterion + (int)TotalSameElementPoint(criterion.CriterionType, criterionItemIds, userPurchasedEducations);
+                                }
+                                #endregion
                             }
-                            #endregion
-                            #region Favorilere Eklenmiş Eğitimler Kriteri
-                            if (criterion.CriterionType == CriterionType.WishListEducations)
-                            {
-                                List<string> wishListItemIds = JsonConvert.DeserializeObject<string[]>(criterion.CharValue).ToList();
-                                appropriateCriterion = appropriateCriterion + (int)TotalSameElementPoint(criterion.CriterionType, wishListItemIds, userWishList);
-                            }
-                            #endregion
-                            #region Satın Alınmış Eğitimler Kriteri
-                            if (criterion.CriterionType == CriterionType.PurchasedEducations)
-                            {
-                                List<string> criterionItemIds = JsonConvert.DeserializeObject<string[]>(criterion.CharValue).ToList();
-                                appropriateCriterion = appropriateCriterion + (int)TotalSameElementPoint(criterion.CriterionType, criterionItemIds, userPurchasedEducations);
-                            }
-                            #endregion
                         }
+                        educationAppropriateCriterionRate.Add(
+                            new EducationPoint { EducationId = education.Id, Point = appropriateCriterion }
+                            );
                     }
                     #endregion
-                    #region Kullanıcı davranışlarına göre eğitim önerileri
-                    //Bu alanda en çok incelenen eğitime veya en çok aranan eğitime +1 uygunluk puanı verilebilir.
-                    #endregion
-                    educationAppropriateCriterionRate.Add(
-                        new EducationPoint { EducationId = education.Id, Point = appropriateCriterion }
-                        );
-                }
-                #endregion
 
-                //Yukarıda seçilen eğitimler içerisinden en çok kritere uyan 5 eğitim seçiliyor.
-                var selectedEducations = educationAppropriateCriterionRate.OrderByDescending(x => x.Point)
-                     .Take(5)
-                     .ToDictionary(pair => pair.EducationId, pair => pair.Point);
+                    //Yukarıda seçilen eğitimler içerisinden en çok kritere uyan 5 eğitim seçiliyor.
+                    var selectedEducations = educationAppropriateCriterionRate.OrderByDescending(x => x.Point)
+                         .Take(5)
+                         .ToDictionary(pair => pair.EducationId, pair => pair.Point);
 
-                //Eğer seçilmiş eğitimler 5 taneyi tamamlayamıyorsa son eklenen 5 eğitim ile doldurulacak.
-                var lastEducations = _context.Educations.OrderByDescending(x => x.CreatedDate).Where(x => x.IsActive).Take(10).ToList();
-                int i = 0;
-                int educationCount = _context.Educations.Count(x => x.IsActive);
-                while (educationCount > 5 && selectedEducations.Count < 5)
-                {
-                    if (!selectedEducations.ContainsKey(lastEducations[i].Id))
+                    //Eğer seçilmiş eğitimler 5 taneyi tamamlayamıyorsa son eklenen 5 eğitim ile doldurulacak.
+                    var lastEducations = _context.Educations.OrderByDescending(x => x.CreatedDate).Where(x => x.IsActive).Take(10).ToList();
+                    int i = 0;
+                    int educationCount = _context.Educations.Count(x => x.IsActive);
+                    while (educationCount > 5 && selectedEducations.Count < 5)
                     {
-                        selectedEducations.Add(lastEducations[i].Id, 0);
+                        if (!selectedEducations.ContainsKey(lastEducations[i].Id))
+                        {
+                            selectedEducations.Add(lastEducations[i].Id, 0);
+                        }
+                        i++;
                     }
-                    i++;
+
+                    return FillSuggestedEducationList(selectedEducations);
                 }
-
-
-                return FillSuggestedEducationList(selectedEducations);
+                return new List<SuggestedEducationVm>();
             }
             else
             {
@@ -599,6 +604,12 @@ namespace NitelikliBilisim.Business.Repositories
             return model;
         }
 
+        /// <summary>
+        /// Arama kelimesi, arama sayısı ve bu arama ile incelenmiş eğitimlerin id ve puanlarını döner
+        /// </summary>
+        /// <param name="result"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         private List<SearchedEducationList> GetSearchedEducations(ISearchResponse<TransactionLog> result, string userId)
         {
             List<SearchedEducationList> model = new List<SearchedEducationList>();
@@ -634,15 +645,15 @@ namespace NitelikliBilisim.Business.Repositories
                         }
                     }
                 }
-
-
             }
-
-
             return model;
         }
 
-
+        /// <summary>
+        /// İncelenmiş eğitimleri, incelenme sayısını ve puanlarını döner.
+        /// </summary>
+        /// <param name="result">Elastic search üzerinden dönen veriler.</param>
+        /// <returns></returns>
         private List<ViewingEducation> GetViewingEducations(ISearchResponse<TransactionLog> result)
         {
             List<ViewingEducation> model = new List<ViewingEducation>();
@@ -679,8 +690,8 @@ namespace NitelikliBilisim.Business.Repositories
         /// <summary>
         /// Kullanıcı davranışlarına göre eğitim puanlarını döner
         /// </summary>
-        /// <param name="searchedEducations"></param>
-        /// <param name="viewingEducations"></param>
+        /// <param name="searchedEducations">Aranılarak incelenen eğitimler</param>
+        /// <param name="viewingEducations">Direkt incelenen eğitimler</param>
         /// <returns></returns>
         private List<EducationPoint> CalculateUserActionBasedRecommendationTotalPoint(List<SearchedEducationList> searchedEducations, List<ViewingEducation> viewingEducations)
         {
@@ -776,7 +787,7 @@ namespace NitelikliBilisim.Business.Repositories
 
 
         /// <summary>
-        /// Tüm incelenmiş eğitimleri döndürür.
+        /// UserId ile elasticsearch üzerinde yapılan sorgu ile tüm incelenmiş eğitimleri döner.
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
@@ -801,6 +812,11 @@ namespace NitelikliBilisim.Business.Repositories
 
         #endregion
 
+        /// <summary>
+        /// userId bazında arama yapılan kelimeleri ve arama sayılarını döner.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         private Dictionary<string, int> GetAllSearchedKeyAndSearchCount(string userId)
         {
             Dictionary<string, int> allSearchings = new Dictionary<string, int>();
