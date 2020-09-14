@@ -29,7 +29,7 @@
                     <ul>
                         @foreach (var e in item.EducationDetails)
                         {
-                            <li><b>EğitimId :</b> @e.Id  ---- <b>Puan : </b>@e.Point)</li>
+                            <li><b>EğitimId :</b> @e.Education.Name  ---- <b>Puan : </b>@e.Point)</li>
                         }
                     </ul>
                 </td>
@@ -50,7 +50,7 @@
         @foreach (var item in ((EducationDetailLog)ViewData["edl"]).ViewingEducations)
         {
             <tr style="border: 1px solid black;">
-                <td style="border: 1px solid black;">@item.EducationId</td>
+                <td style="border: 1px solid black;">@item.Education.Name</td>
                 <td style="border: 1px solid black;">@item.ViewingCount</td>
                 <td style="border: 1px solid black;">@item.Point</td>
             </tr>
@@ -72,7 +72,7 @@
     {
         <tr>
             <td>
-                @item.EducationId
+                @item.Education.Name
             </td>
             <td>
                 @item.Point
@@ -95,7 +95,7 @@
     {
         <tr>
             <td>
-                @item.EducationId
+                @item.Education.Name
             </td>
             <td>
                 @item.Point

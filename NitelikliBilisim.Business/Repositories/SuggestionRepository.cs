@@ -132,10 +132,11 @@ namespace NitelikliBilisim.Business.Repositories
         /// <returns></returns>
         private List<EducationPoint> CalculateTotalSuggestionPoint(List<EducationPoint> criterionBased, List<EducationPoint> userActionBased)
         {
+            var educations = _context.Educations.Where(x => x.IsActive).ToList();
             List<EducationPoint> retVal = new List<EducationPoint>();
             retVal.AddRange(criterionBased);
             retVal.AddRange(userActionBased);
-            retVal = retVal.GroupBy(x => x.EducationId).Select(y => new EducationPoint { EducationId = y.Key, Point = y.Sum(x => x.Point) }).ToList();
+            retVal = retVal.GroupBy(x => x.EducationId).Select(y => new EducationPoint { EducationId = y.Key, Point = Math.Round(y.Sum(x => x.Point),2),Education=educations.First(x=>x.Id == y.Key) }).ToList();
             return retVal;
         }
 
@@ -296,7 +297,8 @@ namespace NitelikliBilisim.Business.Repositories
                 nearestDay = educationDay.Day;
 
                 /*Müşterinin NBUY eğitimi aldığı kategoriye göre eğitim listesi.*/
-                var educations = _context.Educations.Include(c => c.Category).Where(x => x.Category.BaseCategoryId == studentEducationInfo.CategoryId.Value || x.Category.Id == studentEducationInfo.CategoryId.Value).Include(x => x.EducationSuggestionCriterions).Where(x => x.IsActive);
+                //Todo burada yalnızca nbuy kategorisi mi geçerli olacak yoksa tüm kategorilerdeki eğitimler dikkate alınacak mı konusunun netleştirilmesi gerekli.
+                var educations = _context.Educations.Include(c => c.Category).Include(x => x.EducationSuggestionCriterions).Where(x => x.IsActive);//.Where(x => x.Category.BaseCategoryId == studentEducationInfo.CategoryId.Value || x.Category.Id == studentEducationInfo.CategoryId.Value);
                 #region Favori eklenen eğitimler
                 List<string> userWishList = _context.Wishlist.Where(x => x.Id == customer.Id).Include(x => x.Education).Select(x => x.Education.Id.ToString().ToLower()).ToList();
                 #endregion
@@ -345,10 +347,12 @@ namespace NitelikliBilisim.Business.Repositories
                         }
                     }
                     #endregion
-                    
-                    educationAppropriateCriterionRate.Add(
-                        new EducationPoint { EducationId = education.Id, Point = appropriateCriterion/2 }
-                        );
+                    if (appropriateCriterion > 0)
+                    {
+                        educationAppropriateCriterionRate.Add(
+                                                new EducationPoint { EducationId = education.Id, Point = appropriateCriterion / 2 }
+                                                );
+                    }
                 }
                 #endregion
             }
@@ -704,6 +708,7 @@ namespace NitelikliBilisim.Business.Repositories
                             var eDetail = new EducationDetail();
                             eDetail.Point = CalculateSearchedKeyPoint(totalKeySearched, totalEducationSearchCount);
                             eDetail.Id = Id;
+                            eDetail.Education = _context.Educations.FirstOrDefault(x => x.Id == Id);
                             SearchedEducationList ed = model.First(x => x.Key == key);
                             ed.EducationDetails.Add(eDetail);
                         }
@@ -712,6 +717,7 @@ namespace NitelikliBilisim.Business.Repositories
                             var eDetail = new EducationDetail();
                             eDetail.Point = CalculateSearchedKeyPoint(totalKeySearched, totalEducationSearchCount);
                             eDetail.Id = Id;
+                            eDetail.Education = _context.Educations.FirstOrDefault(x => x.Id == Id);
                             var sE = new SearchedEducationList();
                             sE.Key = key;
                             sE.EducationDetails.Add(eDetail);
@@ -742,6 +748,7 @@ namespace NitelikliBilisim.Business.Repositories
                         if (model.Any(x => x.EducationId == Id))
                         {
                             ViewingEducation current = model.First(x => x.EducationId == Id);
+                            current.Education = _context.Educations.FirstOrDefault(x => x.Id == Id);
                             current.ViewingCount++;
                             current.Point = CalculateViewedEducationPoint(current.ViewingCount, totalEducationViewCount);
                         }
@@ -750,6 +757,7 @@ namespace NitelikliBilisim.Business.Repositories
                             model.Add(new ViewingEducation
                             {
                                 EducationId = Id,
+                                Education =_context.Educations.FirstOrDefault(x=>x.Id == Id),
                                 ViewingCount = 1,
                                 Point = CalculateViewedEducationPoint(1, totalEducationViewCount)
                             });
@@ -772,7 +780,7 @@ namespace NitelikliBilisim.Business.Repositories
             List<EducationPoint> retVal = new List<EducationPoint>();
             List<EducationPoint> viewingEducationPoints = new List<EducationPoint>();
             List<EducationPoint> searchedEducationPoints = new List<EducationPoint>();
-
+            var educations = _context.Educations.Where(x => x.IsActive).ToList();
             //İncelenmiş eğitimler ve puanları
             foreach (var education in viewingEducations)
             {
@@ -809,7 +817,7 @@ namespace NitelikliBilisim.Business.Repositories
 
             retVal.AddRange(viewingEducationPoints);
             retVal.AddRange(searchedEducationPoints);
-            retVal = retVal.GroupBy(x => x.EducationId).Select(y => new EducationPoint { EducationId = y.Key, Point = (y.Sum(x => x.Point))/2 }).ToList();
+            retVal = retVal.GroupBy(x => x.EducationId).Select(y => new EducationPoint { EducationId = y.Key,Education = educations.First(x=>x.Id ==y.Key), Point = (y.Sum(x => x.Point)) / 2 }).ToList();
 
             return retVal;
         }
