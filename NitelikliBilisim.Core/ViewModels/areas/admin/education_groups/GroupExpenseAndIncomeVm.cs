@@ -16,5 +16,6 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_groups
 
         public int TotalEducationHours { get; set; }
         public decimal EducatorExpensesAverage { get; set; }
+        public decimal ProfitRate { get; set; }
     }
 }

@@ -325,27 +325,29 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 ExpectedRateOfProfitability = data.ExpectedRateOfProfitability,
                 PlannedAmount = newTotal,
-                MinStudentCount = CalculateMinimumStudentCount(newTotal - totalIncomes, educationPrice)
+                MinStudentCount = CalculateMinimumStudentCount(newTotal - totalIncomes , educationPrice)
             };
 
         }
 
         public GroupExpenseAndIncomeVm CalculateGroupExpenseAndIncome(Guid groupId)
         {
-            var education = _context.EducationGroups.Include(x => x.Education).First(x => x.Id == groupId).Education;
+            var group = _context.EducationGroups.Include(x => x.GroupLessonDays).Include(x => x.Education).Include(x=>x.GroupExpenses).First(x=>x.Id == groupId);
+            var education = group.Education;
             var totalHours = education.HoursPerDay * education.Days;
-            var lessonDays = _context.GroupLessonDays.Where(x => x.GroupId == groupId).ToList();
+            var lessonDays = group.GroupLessonDays.ToList();
 
-            decimal groupExpenses = _context.GroupExpenses.Where(x => x.GroupId == groupId).Sum(x => (x.Price * x.Count));
+            decimal groupExpenses = group.GroupExpenses.Sum(x => (x.Price * x.Count));
             decimal educatorExpensesAverage = lessonDays!=null && lessonDays.Count>0?lessonDays.Average(x => x.EducatorSalary.GetValueOrDefault()):0;
             decimal studentIncomes = (from grupStudent in _context.Bridge_GroupStudents
                                       join ticket in _context.Tickets on grupStudent.TicketId equals ticket.Id
                                       join paymentDetailInfo in _context.OnlinePaymentDetailsInfos on ticket.InvoiceDetailsId equals paymentDetailInfo.Id
-                                      where grupStudent.Id == groupId
+                                      where grupStudent.Id == groupId && !paymentDetailInfo.IsCancelled
                                       select paymentDetailInfo).Sum(x => x.PaidPrice);
 
-
             decimal totalEducatorExpense = totalHours * educatorExpensesAverage;
+            decimal profitRate = Math.Round(studentIncomes / (groupExpenses + totalEducatorExpense),2);
+            
 
             return new GroupExpenseAndIncomeVm
             {
@@ -353,7 +355,8 @@ namespace NitelikliBilisim.Business.Repositories
                 EducatorExpensesAverage = educatorExpensesAverage,
                 GroupExpenses = groupExpenses,
                 EducatorExpenses = totalEducatorExpense,
-                TotalStudentIncomes = studentIncomes
+                TotalStudentIncomes = studentIncomes,
+                ProfitRate = (profitRate*100)-100
             };
         }
 
@@ -524,24 +527,35 @@ namespace NitelikliBilisim.Business.Repositories
 
 
         #region Helper Methods
+        /// <summary>
+        /// Grup giderleri ve eğitmen ücreti gideri toplamını döner
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
         private decimal GetGroupTotalExpenses(Guid groupId)
         {
             var group = _context.EducationGroups.Include(x => x.Education).Include(x => x.GroupLessonDays).Include(x => x.GroupExpenses).First(x => x.Id == groupId);
 
+            //Grup Giderleri
             decimal groupExpenses = group.GroupExpenses.Sum(x => (x.Price * x.Count));
             var totalHours = group.Education.HoursPerDay * group.Education.Days;
-            //decimal educatorExpenses = _context.GroupLessonDays.Where(x => x.GroupId == groupId).Sum(x => x.EducatorSalary.GetValueOrDefault());
             var lessonDays = group.GroupLessonDays.ToList();
             decimal educatorExpensesAverage = lessonDays != null && lessonDays.Count > 0 ? lessonDays.Average(x => x.EducatorSalary.GetValueOrDefault()) : 0;
             var educatorExpenses = educatorExpensesAverage * totalHours;
             return groupExpenses + educatorExpenses;
         }
+
+        /// <summary>
+        /// Grup gelirleri yalnızca öğrenci ödemeleri olduğu için öğrenci ödemeleri toplamını döner.
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
         private decimal GetGroupTotalIncomes(Guid groupId)
         {
             decimal studentIncomes = (from grupStudent in _context.Bridge_GroupStudents
                                       join ticket in _context.Tickets on grupStudent.TicketId equals ticket.Id
                                       join paymentDetailInfo in _context.OnlinePaymentDetailsInfos on ticket.InvoiceDetailsId equals paymentDetailInfo.Id
-                                      where grupStudent.Id == groupId
+                                      where grupStudent.Id == groupId && !paymentDetailInfo.IsCancelled
                                       select paymentDetailInfo).Sum(x => x.PaidPrice);
             return studentIncomes;
         }

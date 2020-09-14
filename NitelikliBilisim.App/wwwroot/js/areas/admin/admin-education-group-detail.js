@@ -252,7 +252,7 @@ function btnCalculate_onClick() {
             if (res.isSuccess) {
                 ExpectedProfitabilityDiv.html("");
                 var item = res.data;
-                var content = `<p><b>%${item.expectedRateOfProfitability}</b> karlılık için beklenen ciro <b>${item.plannedAmount} ₺</b>, bu tutar için minimum <b>${item.minStudentCount}</b> öğrencinin daha gruba katılması gerekmektedir.</p>`;
+                var content = `<p><b>%${item.expectedRateOfProfitability}</b> karlılık için hedef ciro <b>${item.plannedAmount} ₺</b>, bu tutar için minimum <b>${item.minStudentCount}</b> öğrencinin daha gruba katılması gerekmektedir.</p>`;
                 ExpectedProfitabilityDiv.append(content);
             }
             else {
@@ -384,9 +384,11 @@ function calculateGroupExpenseAndIncome() {
                     "<tr>" +
                     `<td><b>Genel Toplam</b></td>` +
                     `<td ${item.grandTotal > 0 ? "class='text-success'" : "class='text-danger'"}><b>${item.grandTotal} ₺</b></td>` +
-                    "</tr>"
-
-                    ;
+                    "</tr>" +
+                    "<tr>" +
+                    `<td><b>Kâr Oranı</b></td>` +
+                    `<td ${item.profitRate > 1 ? "class='text-success'" : "class='text-danger'"}><b>%${item.profitRate}</b></td>` +
+                    "</tr>";
                 tbodyCalculateGroupExpenseAndIncome.append(table);
             }
             else {
