@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Nest;
@@ -16,6 +17,7 @@ using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Controllers
 {
+    [Authorize]
     public class HomeController : BaseController
     {
         private readonly RoleManager<ApplicationRole> _roleManager;
@@ -60,7 +62,7 @@ namespace NitelikliBilisim.App.Controllers
             string sessionId = _session.GetString("userSessionId");
             string userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             ViewData["edl"] = _unitOfWork.Suggestions.GetEducationDetailLogs(userId);
-            ViewData["TotalRecommendationPoints"] = _unitOfWork.Suggestions.GetEducationRecommendationRate(userId);
+            ViewData["TotalRecommendationPoints"] = _unitOfWork.Suggestions.GetEducationSuggestionRate(userId);
             return View();
         }
 
