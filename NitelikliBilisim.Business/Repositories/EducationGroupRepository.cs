@@ -346,7 +346,7 @@ namespace NitelikliBilisim.Business.Repositories
                                       select paymentDetailInfo).Sum(x => x.PaidPrice);
 
             decimal totalEducatorExpense = totalHours * educatorExpensesAverage;
-            decimal profitRate = Math.Round(studentIncomes / (groupExpenses + totalEducatorExpense),2);
+            decimal profitRate = studentIncomes>0 && (groupExpenses + totalEducatorExpense) > 0?  Math.Round(studentIncomes / (groupExpenses + totalEducatorExpense), 2) : 0 ;
             
 
             return new GroupExpenseAndIncomeVm
