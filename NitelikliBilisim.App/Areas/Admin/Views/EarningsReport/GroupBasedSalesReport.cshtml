@@ -452,7 +452,8 @@
                             `<tr><td><b>Grup Giderleri</b></td><td class="text-danger text-right" colspan="3" >${item.groupExpenses} ₺</td></tr>` +
                         `<tr><td><b>Eğitmen Ücreti</b></td><td>${item.totalEducationHours} saat</td><td>Ort: ${item.educatorExpensesAverage} ₺</td><td class="text-danger  text-right">${item.educatorExpenses} ₺</td></tr>` +
                             `<tr><td><b>Toplam Gelir (Ciro)</b></td><td class="text-success  text-right" colspan="3">${item.totalStudentIncomes} ₺</td></tr>` +
-                        `<tr><td><b>Genel Toplam</b></td><td colspan="3" ${item.grandTotal > 0 ? "class='text-success  text-right'" : "class='text-danger  text-right'"}><b>${item.grandTotal} ₺</b></td></tr>`
+                            `<tr><td><b>Genel Toplam</b></td><td colspan="3" ${item.grandTotal > 0 ? "class='text-success  text-right'" : "class='text-danger  text-right'"}><b>${item.grandTotal} ₺</b></td></tr>`+
+                            `<tr><td><b>Kâr Oranı</b></td><td colspan="3" ${item.profitRate > 0 ? "class='text-success  text-right'" : "class='text-danger  text-right'"}><b>%${item.profitRate}</b></td></tr>`
                             ;
                         tbodyGroupExpensesIncomes.append(table);
                     }
