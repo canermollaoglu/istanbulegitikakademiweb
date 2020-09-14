@@ -36,20 +36,20 @@ namespace NitelikliBilisim.Business.Repositories
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public List<EducationPoint> GetEducationRecommendationRate(string userId)
+        public List<EducationPoint> GetEducationSuggestionRate(string userId)
         {
             var result = GetViewedEducations(userId);
 
             var searched = GetSearchedEducations(result, userId);
             var viewed = GetViewingEducations(result);
 
-            var criterionBased = GetCriteriaBasedRecommendations(userId);
+            var criterionBased = GetCriteriaBasedSuggestions(userId);
 
-            var userActionBased = CalculateUserActionBasedRecommendationTotalPoint(searched, viewed);
+            var userActionBased = CalculateUserActionBasedSuggestionTotalPoint(searched, viewed);
 
-            List<EducationPoint> totalRecommendationPoint = CalculateTotalRecommendationPoint(criterionBased, userActionBased);
+            List<EducationPoint> totalSuggestionPoint = CalculateTotalSuggestionPoint(criterionBased, userActionBased);
 
-            return totalRecommendationPoint;
+            return totalSuggestionPoint;
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace NitelikliBilisim.Business.Repositories
         public List<SuggestedEducationVm> GetUserSuggestedEducations(string userId, int count)
         {
 
-            var educationPoints = GetEducationRecommendationRate(userId);
+            var educationPoints = GetEducationSuggestionRate(userId);
             var selectedEducations = educationPoints.OrderByDescending(x => x.Point)
                          .Take(count)
                          .ToDictionary(pair => pair.EducationId, pair => pair.Point);
@@ -130,7 +130,7 @@ namespace NitelikliBilisim.Business.Repositories
         /// <param name="criterionBased"></param>
         /// <param name="userActionBased"></param>
         /// <returns></returns>
-        private List<EducationPoint> CalculateTotalRecommendationPoint(List<EducationPoint> criterionBased, List<EducationPoint> userActionBased)
+        private List<EducationPoint> CalculateTotalSuggestionPoint(List<EducationPoint> criterionBased, List<EducationPoint> userActionBased)
         {
             List<EducationPoint> retVal = new List<EducationPoint>();
             retVal.AddRange(criterionBased);
@@ -281,7 +281,7 @@ namespace NitelikliBilisim.Business.Repositories
         //    }
         //}
 
-        public List<EducationPoint> GetCriteriaBasedRecommendations(string userId)
+        public List<EducationPoint> GetCriteriaBasedSuggestions(string userId)
         {
             List<EducationPoint> educationAppropriateCriterionRate = new List<EducationPoint>();
             //Kullanıcının NBUY eğitimi alıp almadığını kontrol ediyoruz.
@@ -673,7 +673,7 @@ namespace NitelikliBilisim.Business.Repositories
             }
 
 
-            model.EducationTotalPoint = CalculateUserActionBasedRecommendationTotalPoint(model.SearchedEducations, model.ViewingEducations);
+            model.EducationTotalPoint = CalculateUserActionBasedSuggestionTotalPoint(model.SearchedEducations, model.ViewingEducations);
 
             return model;
         }
@@ -767,7 +767,7 @@ namespace NitelikliBilisim.Business.Repositories
         /// <param name="searchedEducations">Aranılarak incelenen eğitimler</param>
         /// <param name="viewingEducations">Direkt incelenen eğitimler</param>
         /// <returns></returns>
-        private List<EducationPoint> CalculateUserActionBasedRecommendationTotalPoint(List<SearchedEducationList> searchedEducations, List<ViewingEducation> viewingEducations)
+        private List<EducationPoint> CalculateUserActionBasedSuggestionTotalPoint(List<SearchedEducationList> searchedEducations, List<ViewingEducation> viewingEducations)
         {
             List<EducationPoint> retVal = new List<EducationPoint>();
             List<EducationPoint> viewingEducationPoints = new List<EducationPoint>();
