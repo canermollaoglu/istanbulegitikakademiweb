@@ -526,8 +526,14 @@ namespace NitelikliBilisim.Business.Repositories
         #region Helper Methods
         private decimal GetGroupTotalExpenses(Guid groupId)
         {
-            decimal groupExpenses = _context.GroupExpenses.Where(x => x.GroupId == groupId).Sum(x => (x.Price * x.Count));
-            decimal educatorExpenses = _context.GroupLessonDays.Where(x => x.GroupId == groupId).Sum(x => x.EducatorSalary.GetValueOrDefault());
+            var group = _context.EducationGroups.Include(x => x.Education).Include(x => x.GroupLessonDays).Include(x => x.GroupExpenses).First(x => x.Id == groupId);
+
+            decimal groupExpenses = group.GroupExpenses.Sum(x => (x.Price * x.Count));
+            var totalHours = group.Education.HoursPerDay * group.Education.Days;
+            //decimal educatorExpenses = _context.GroupLessonDays.Where(x => x.GroupId == groupId).Sum(x => x.EducatorSalary.GetValueOrDefault());
+            var lessonDays = group.GroupLessonDays.ToList();
+            decimal educatorExpensesAverage = lessonDays != null && lessonDays.Count > 0 ? lessonDays.Average(x => x.EducatorSalary.GetValueOrDefault()) : 0;
+            var educatorExpenses = educatorExpensesAverage * totalHours;
             return groupExpenses + educatorExpenses;
         }
         private decimal GetGroupTotalIncomes(Guid groupId)
