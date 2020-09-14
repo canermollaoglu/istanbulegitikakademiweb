@@ -387,7 +387,7 @@ function calculateGroupExpenseAndIncome() {
                     "</tr>" +
                     "<tr>" +
                     `<td><b>Kâr Oranı</b></td>` +
-                    `<td ${item.profitRate > 1 ? "class='text-success'" : "class='text-danger'"}><b>%${item.profitRate}</b></td>` +
+                    `<td ${item.profitRate > 0 ? "class='text-success'" : "class='text-danger'"}><b>%${item.profitRate}</b></td>` +
                     "</tr>";
                 tbodyCalculateGroupExpenseAndIncome.append(table);
             }
