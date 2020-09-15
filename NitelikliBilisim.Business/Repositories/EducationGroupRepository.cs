@@ -2,16 +2,20 @@
 using Newtonsoft.Json;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Entities.groups;
+using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.areas.admin.customer;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_groups;
 using NitelikliBilisim.Core.ViewModels.areas.admin.group_expense;
 using NitelikliBilisim.Core.ViewModels.areas.admin.group_lesson_days;
 using NitelikliBilisim.Core.ViewModels.areas.admin.reports;
+using NitelikliBilisim.Core.ViewModels.Cart;
+using NitelikliBilisim.Core.ViewModels.Sales;
 using NitelikliBilisim.Data;
 using NitelikliBilisim.Support.Enums;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace NitelikliBilisim.Business.Repositories
@@ -423,7 +427,9 @@ namespace NitelikliBilisim.Business.Repositories
                             HostName = item.Host.HostName,
                             Latitude = item.Host.Latitude,
                             Longitude = item.Host.Longitude
-                        }
+                        },
+                        OldPrice = item.OldPrice,
+                        NewPrice = item.NewPrice
                     });
                 }
 
@@ -563,6 +569,21 @@ namespace NitelikliBilisim.Business.Repositories
         private int CalculateMinimumStudentCount(decimal difference, decimal educationPrice)
         {
             return (int)Math.Ceiling((difference / educationPrice));
+        }
+
+        public List<CartItemVm> GetGroupCartItems(List<_CartItem> items)
+        {
+            var groups = _context.EducationGroups.Include(x => x.Education).Where(x => items.Select(x => x.GroupId).Contains(x.Id)).OrderBy(x => x.Education.Name);
+            //var educations = _unitOfWork.Education.Get(x => items.Select(x => x.EducationId).Contains(x.Id), x => x.OrderBy(o => o.Name));
+            var model = groups.Select(x => new CartItemVm
+            {
+                EducationId = x.Education.Id,
+                EducationName = x.Education.Name,
+                PreviewPhoto = _context.EducationMedias.First(y => y.EducationId == x.Id && y.MediaType == EducationMediaType.PreviewPhoto).FileUrl,
+                PriceNumeric = x.NewPrice.GetValueOrDefault(0),
+                PriceText = x.NewPrice.GetValueOrDefault(0).ToString()
+            }).ToList();
+            return model;
         }
         #endregion
     }

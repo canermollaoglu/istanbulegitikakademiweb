@@ -77,6 +77,7 @@ namespace NitelikliBilisim.Core.ViewModels.Sales
     }
     public class _CartItem
     {
+        public Guid GroupId { get; set; }
         public Guid EducationId { get; set; }
         public Guid HostId { get; set; }
     }

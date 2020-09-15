@@ -391,7 +391,7 @@ namespace NitelikliBilisim.Business.Repositories
                     Description = x.Education.Description,
                     CategoryName = x.CategoryName,
                     Level = EnumSupport.GetDescription(x.Education.Level),
-                    PriceText = x.Education.NewPrice.GetValueOrDefault().ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
+                    //PriceText = x.Education.NewPrice.GetValueOrDefault().ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
                     HoursPerDayText = x.Education.HoursPerDay.ToString(),
                     DaysText = x.Education.Days.ToString(),
                     DaysNumeric = x.Education.Days,
@@ -467,7 +467,7 @@ namespace NitelikliBilisim.Business.Repositories
                     Description = x.Education.Description,
                     CategoryName = x.CategoryName,
                     Level = EnumSupport.GetDescription(x.Education.Level),
-                    PriceText = x.Education.NewPrice.GetValueOrDefault().ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
+                    //PriceText = x.Education.NewPrice.GetValueOrDefault().ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
                     HoursPerDayText = x.Education.HoursPerDay.ToString(),
                     DaysText = x.Education.Days.ToString(),
                     DaysNumeric = x.Education.Days,
@@ -497,9 +497,9 @@ namespace NitelikliBilisim.Business.Repositories
                     HoursPerDayText = education.HoursPerDay.ToString(),
                     Description = education.Description,
                     Description2 = education.Description2,
-                    PriceNumeric = education.NewPrice.GetValueOrDefault(0),
+                    //PriceNumeric = education.NewPrice.GetValueOrDefault(0),
                     Level = EnumSupport.GetDescription(education.Level),
-                    PriceText = education.NewPrice.GetValueOrDefault(0).ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"))
+                    //PriceText = education.NewPrice.GetValueOrDefault(0).ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"))
                 },
                 Gains = Context.EducationGains.Where(x => x.EducationId == id)
                 .Select(x => new EducationGainVm

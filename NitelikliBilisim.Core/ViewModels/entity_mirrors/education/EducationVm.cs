@@ -28,8 +28,6 @@ namespace NitelikliBilisim.Core.ViewModels
         public string CategoryName { get; set; }
         public string Description { get; set; }
         public string Description2 { get; set; }
-        public decimal PriceNumeric { get; set; }
-        public string PriceText { get; set; }
         public byte DaysNumeric { get; set; }
         public string DaysText { get; set; }
         public byte HoursPerDayNumeric { get; set; }
