@@ -24,11 +24,18 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.WebAPI
         public IActionResult GetGroupBasedSalesReport(DataSourceLoadOptions loadOptions,Guid groupId)
         {
             loadOptions.PrimaryKey = new[] { "Id" };
-            var data = _unitOfWork.EducationGroup.GetGroupBasedSalesReportStudents(groupId);
+            var data = _unitOfWork.Report.GetGroupBasedSalesReportStudents(groupId);
             return Ok(DataSourceLoader.Load(data, loadOptions));
 
         }
 
+        [HttpGet]
+        [Route("get-general-sales-report")]
+        public IActionResult GetGeneralSalesReport(DataSourceLoadOptions loadOptions)
+        {
+            var data = _unitOfWork.Report.GetGeneralSalesReport();
+            return Ok(DataSourceLoader.Load(data, loadOptions));
 
+        }
     }
 }

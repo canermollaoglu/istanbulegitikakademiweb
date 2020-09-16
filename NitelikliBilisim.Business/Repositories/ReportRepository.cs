@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NitelikliBilisim.Core.ViewModels.areas.admin.reports;
 using NitelikliBilisim.Data;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -62,5 +63,53 @@ namespace NitelikliBilisim.Business.Repositories
 
             return model;
         }
+
+        public IQueryable<GroupBasedSalesReportStudentsVm> GetGroupBasedSalesReportStudents(Guid groupId)
+        {
+            return (from gs in _context.Bridge_GroupStudents
+                    join student in _context.Users on gs.Id2 equals student.Id
+                    join ticket in _context.Tickets on gs.TicketId equals ticket.Id
+                    join paymentDetailInfo in _context.OnlinePaymentDetailsInfos on ticket.InvoiceDetailsId equals paymentDetailInfo.Id
+                    where !paymentDetailInfo.IsCancelled
+                    orderby gs.CreatedDate
+                    where gs.Id == groupId
+                    select new GroupBasedSalesReportStudentsVm
+                    {
+                        Id = student.Id,
+                        Name = student.Name,
+                        Surname = student.Surname,
+                        RegistrationDate = gs.CreatedDate,
+                        PaidPrice = paymentDetailInfo.PaidPrice,
+                        CommissionFee = paymentDetailInfo.CommissionFee,
+                        CommissionRate = paymentDetailInfo.CommisionRate,
+                        MerchantPayout = paymentDetailInfo.MerchantPayout
+                    });
+        }
+
+        public IQueryable<GeneralSalesReportVm> GetGeneralSalesReport()
+        {
+            //Todo yalnızca aktarılmış olan ücretleri göstermek için datetime kontrolü BlockageResolveDate üzerinden yapılabilir.
+            return (from paymentDetailInfo in _context.OnlinePaymentDetailsInfos
+                    join ticket in _context.Tickets on paymentDetailInfo.Id equals ticket.InvoiceDetailsId
+                    join education in _context.Educations on ticket.EducationId equals education.Id
+                    join groupStudent in _context.Bridge_GroupStudents on ticket.Id equals groupStudent.TicketId
+                    join student in _context.Users on groupStudent.Id2 equals student.Id
+                    orderby paymentDetailInfo.CreatedDate descending
+                    select new GeneralSalesReportVm
+                    {
+                        BlockageResolveDate= paymentDetailInfo.BlockageResolveDate,
+                        EducationName = education.Name,
+                        Name = student.Name,
+                        Surname = student.Surname,
+                        Phone = student.PhoneNumber,
+                        PaidPrice = paymentDetailInfo.PaidPrice,
+                        CommissionFee = paymentDetailInfo.CommissionFee,
+                        CommissionRate = paymentDetailInfo.CommisionRate,
+                        MerchantPayout = paymentDetailInfo.MerchantPayout
+                    });
+
+
+        }
+
     }
 }

@@ -124,8 +124,11 @@
                     <li>
                         <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseReports" data-parent="#exampleAccordion">Raporlar</a>
                         <ul class="sidenav-third-level collapse" id="collapseReports">
-                            <li>
+                            @*<li>
                                 <a href="/raporlar/satis">Satış Raporları</a>
+                            </li>*@
+                            <li>
+                                <a href="@Url.Action("SalesReport","EarningsReport")">Tahsilat Raporu</a>
                             </li>
                             <li>
                                 <a href="@Url.Action("GroupBasedSalesReport","EarningsReport")">Grup Bazlı Satış Raporu</a>

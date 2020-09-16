@@ -50,6 +50,13 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             };
             return View(model);
         }
+
+        [Route("raporlar/genel-satis-raporu")]
+        public IActionResult SalesReport()
+        {
+            return View();
+        }
+
         [Route("raporlar/grup-bazli-satis-raporu-excel-export")]
         public IActionResult GroupBasedSalesReportExport(Guid groupId)
         {

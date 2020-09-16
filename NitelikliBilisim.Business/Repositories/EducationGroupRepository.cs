@@ -28,28 +28,7 @@ namespace NitelikliBilisim.Business.Repositories
             _context = context;
         }
 
-        public IQueryable<GroupBasedSalesReportStudentsVm> GetGroupBasedSalesReportStudents(Guid groupId)
-        {
-            return (from gs in _context.Bridge_GroupStudents
-                   join student in _context.Users on gs.Id2 equals student.Id
-                   join ticket in _context.Tickets on gs.TicketId equals ticket.Id
-                   join paymentDetailInfo in _context.OnlinePaymentDetailsInfos on ticket.InvoiceDetailsId equals paymentDetailInfo.Id
-                   where !paymentDetailInfo.IsCancelled
-                   orderby gs.CreatedDate
-                   where gs.Id  == groupId
-                   select new GroupBasedSalesReportStudentsVm
-                   {
-                       Id=student.Id,
-                       Name = student.Name,
-                       Surname = student.Surname,
-                       RegistrationDate = gs.CreatedDate,
-                       PaidPrice = paymentDetailInfo.PaidPrice,
-                       CommissionFee = paymentDetailInfo.CommissionFee,
-                       CommissionRate = paymentDetailInfo.CommisionRate,
-                       MerchantPayout = paymentDetailInfo.MerchantPayout
-                   });
-        }
-
+      
         public List<GroupBasedSalesReportStudentsVm> GetGroupBasedSalesReportStudentsToList(Guid groupId)
         {
             return (from gs in _context.Bridge_GroupStudents
