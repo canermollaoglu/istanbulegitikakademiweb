@@ -95,6 +95,7 @@ namespace NitelikliBilisim.Business.Repositories
                     join groupStudent in _context.Bridge_GroupStudents on ticket.Id equals groupStudent.TicketId
                     join student in _context.Users on groupStudent.Id2 equals student.Id
                     orderby paymentDetailInfo.CreatedDate descending
+                    where !paymentDetailInfo.IsCancelled
                     select new GeneralSalesReportVm
                     {
                         BlockageResolveDate= paymentDetailInfo.BlockageResolveDate,
