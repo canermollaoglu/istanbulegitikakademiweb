@@ -29,18 +29,19 @@ namespace NitelikliBilisim.Business.Repositories
         }
         public List<CartItem> PrepareCartItems(PayData data)
         {
-            var educations = _context.Educations
-               .Where(x => data.CartItems.Select(cartItem => cartItem.EducationId).Contains(x.Id))
-               .Include(x => x.Category)
-               .ThenInclude(x => x.BaseCategory)
+            var groups = _context.EducationGroups
+               .Include(x=>x.Education)
+               .ThenInclude(x=>x.Category)
+               .ThenInclude(x=>x.BaseCategory)
+               .Where(x => data.CartItems.Select(cartItem => cartItem.GroupId).Contains(x.Id))
                .ToList();
 
             var cartItems = new List<CartItem>();
 
-            foreach (var item in educations)
+            foreach (var item in groups)
                 cartItems.Add(new CartItem
                 {
-                    Education = item,
+                    EducationGroup = item,
                     InvoiceDetailsId = Guid.NewGuid()
                 });
 
@@ -178,8 +179,9 @@ namespace NitelikliBilisim.Business.Repositories
                 invoiceDetails.Add(new InvoiceDetail
                 {
                     Id = cartItem.InvoiceDetailsId,
-                    EducationId = cartItem.Education.Id,
-                    PriceAtCurrentDate = cartItem.Education.NewPrice.GetValueOrDefault()
+                    EducationId = cartItem.EducationGroup.Education.Id,
+                    GroupId = cartItem.EducationGroup.Id,
+                    PriceAtCurrentDate = cartItem.EducationGroup.NewPrice.GetValueOrDefault()
                 });
             }
 
@@ -228,6 +230,7 @@ namespace NitelikliBilisim.Business.Repositories
         {
             try
             {
+
                 var tickets = _context.Tickets.Include(x=>x.Education).Include(x => x.Owner).ThenInclude(x => x.User)
                     .Where(x => invoiceDetailsIds.Contains(x.InvoiceDetailsId))
                     .ToList();

@@ -58,7 +58,6 @@ function btnSave_onClick() {
         Name: $("#input-name").val(),
         Description: $("#input-description").val(),
         Description2: $("#input-description2").val(),
-        Price: $("#input-price").val(),
         Days: $("#input-days").val(),
         HoursPerDay: $("#input-hours-per-day").val(),
         EducationLevel: selectLevels.options[selectLevels.selectedIndex].value,

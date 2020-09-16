@@ -21,10 +21,6 @@ namespace NitelikliBilisim.Core.Entities
         public string Description { get; set; }
         [MaxLength(512)]
         public string Description2 { get; set; }
-        [Column(TypeName = "decimal(8, 2)")]
-        public decimal? NewPrice { get; set; }
-        [Column(TypeName = "decimal(8, 2)")]
-        public decimal? OldPrice { get; set; }
         public byte Days { get; set; }
         public byte HoursPerDay { get; set; }
         public EducationLevel Level { get; set; }

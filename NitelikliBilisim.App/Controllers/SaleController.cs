@@ -314,8 +314,8 @@ namespace NitelikliBilisim.App.Controllers
         [NonAction]
         public decimal GetPriceSumForCartItems(List<_CartItem> itemIds)
         {
-            var educationIds = itemIds.Select(x => x.EducationId).ToList();
-            return _unitOfWork.Education.Get(x => educationIds.Contains(x.Id), null).Sum(x => x.NewPrice.GetValueOrDefault());
+            var groupIds = itemIds.Select(x => x.GroupId).ToList();
+            return _unitOfWork.EducationGroup.Get(x => groupIds.Contains(x.Id), null).Sum(x => x.NewPrice.GetValueOrDefault());
         }
     }
 

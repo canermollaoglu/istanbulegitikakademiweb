@@ -18,10 +18,9 @@ namespace NitelikliBilisim.Business.Repositories
 
         public Ticket GetByInvoiceDetailId(Guid invoiceDetailId)
         {
-            var ticket = _context.Tickets.Include(x => x.Education).First(x => x.InvoiceDetailsId == invoiceDetailId);
+            var ticket = _context.Tickets.Include(x => x.Education).FirstOrDefault(x => x.InvoiceDetailsId == invoiceDetailId);
             
             return ticket;
-
         }
 
         public void AssignTicket(AssignPostVm data)

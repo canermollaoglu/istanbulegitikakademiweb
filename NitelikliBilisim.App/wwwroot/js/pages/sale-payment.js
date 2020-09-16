@@ -87,6 +87,7 @@ function btnBuy_onClick() {
 
     var tokenVerifier = new SecuritySupport.TokenVerifier();
     var cart = new CartSupport.Cart();
+    var cartItems = cart.getItems();
     var data = tokenVerifier.addToken("form-buy", {
         Use3d: input3dSecure.prop("checked"),
         CardInfo: {
@@ -108,7 +109,7 @@ function btnBuy_onClick() {
         },
         CorporateInvoiceInfo: corporateInvoiceInfo,
         IsDistantSalesAgreementConfirmed: isDistantSalesAgreementConfirmed,
-        CartItems: cart.getItems()
+        CartItems: cartItems
     });
 
 
@@ -184,28 +185,26 @@ function createInstallmentsDiv(data) {
 function getCartItems() {
     var items = _cart.getItems();
     cartItems.val(JSON.stringify(items));
-    console.log(cartItems.val());
-    //var data = {
-    //    Items: items
-    //};
-    //$.ajax({
-    //    url: "/get-cart-items",
-    //    method: "post",
-    //    data: data,
-    //    success: (res) => {
-    //        if (res.isSuccess) {
-    //            appendCartItems(res.data.items);
-    //            txtTotal.text(res.data.total);
-    //            var cartItemIds = [];
-    //            for (var i = 0; i < res.data.items.length; i++) {
-    //                var item = res.data.items[i];
-    //                cartItemIds.push(item);
-    //            }
-    //            console.log(cartItemIds);
-    //            cartItems.val(JSON.stringify(cartItemIds));
-    //        }
-    //    }
-    //});
+    var data = {
+        Items: items
+    };
+    $.ajax({
+        url: "/get-cart-items",
+        method: "post",
+        data: data,
+        success: (res) => {
+            if (res.isSuccess) {
+                appendCartItems(res.data.items);
+                txtTotal.text(res.data.total);
+                var cartItemIds = [];
+                for (var i = 0; i < res.data.items.length; i++) {
+                    var item = res.data.items[i];
+                    cartItemIds.push(item);
+                }
+                //cartItems.val(JSON.stringify(cartItemIds));
+            }
+        }
+    });
 }
 function appendCartItems(data) {
     tbodyCartItems.html("");

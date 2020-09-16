@@ -84,7 +84,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 Description = data.Description,
                 Description2 = data.Description2,
                 Level = (EducationLevel)data.EducationLevel.GetValueOrDefault(),
-                NewPrice = data.Price.GetValueOrDefault(),
                 Days = data.Days.GetValueOrDefault(),
                 HoursPerDay = data.HoursPerDay.GetValueOrDefault(),
                 CategoryId = data.CategoryId

@@ -104,7 +104,7 @@ namespace NitelikliBilisim.Business.Repositories
             decimal totalExpenses = GetGroupTotalExpenses(groupId);
             decimal totalIncomes = GetGroupTotalIncomes(groupId);
             decimal newTotal = totalExpenses + (totalExpenses * expectedProfitRate / 100);
-            decimal educationPrice = group.Education.NewPrice.GetValueOrDefault();
+            decimal educationPrice = group.NewPrice.GetValueOrDefault();
 
             var minimumStudent = CalculateMinimumStudentCount(newTotal - totalIncomes, educationPrice);
             #endregion
@@ -131,7 +131,9 @@ namespace NitelikliBilisim.Business.Repositories
                 GroupExpenseTypes = _context.GroupExpenseTypes.ToList(),
                 SelectClassRooms = selectAllClassRooms,
                 SelectEducators = educators,
-                MinimumStudentCount = minimumStudent
+                MinimumStudentCount = minimumStudent,
+                OldPrice = group.OldPrice,
+                NewPrice = group.NewPrice
             };
             return model;
         }
@@ -322,7 +324,7 @@ namespace NitelikliBilisim.Business.Repositories
             decimal totalIncomes = GetGroupTotalIncomes(data.GroupId);
             decimal newTotal = totalExpenses + (totalExpenses * data.ExpectedRateOfProfitability / 100);
             var group = _context.EducationGroups.Include(x => x.Education).First(x => x.Id == data.GroupId);
-            decimal educationPrice = group.Education.NewPrice.GetValueOrDefault();
+            decimal educationPrice = group.NewPrice.GetValueOrDefault();
 
 
             return new CalculateExpectedProfitabilityReturnVm

@@ -128,6 +128,14 @@
                                 <td><b>Eğitim Günleri</b></td>
                                 <td>@Model.EducationDays gün, günde @Model.EducationHoursPerDay saat</td>
                             </tr>
+                            <tr>
+                                <td><b>Eski Fiyat</b></td>
+                                <td>@Model.OldPrice.GetValueOrDefault() ₺</td>
+                            </tr>
+                            <tr>
+                                <td><b>Yeni Fiyat</b></td>
+                                <td>@Model.NewPrice.GetValueOrDefault() ₺</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

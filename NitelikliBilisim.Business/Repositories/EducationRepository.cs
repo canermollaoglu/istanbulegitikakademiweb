@@ -155,7 +155,6 @@ namespace NitelikliBilisim.Business.Repositories
                     Days = item.Days,
                     HoursPerDay = item.HoursPerDay,
                     Level = EnumSupport.GetDescription(item.Level),
-                    NewPrice = item.NewPrice,
                     IsActive = item.IsActive,
                     MediaCount = mediaCount.Where(x => x.EducationId == item.Id).Sum(x => x.Count),
                     PartCount = partCount.Where(x => x.EducationId == item.Id).Sum(x => x.Count),

@@ -24,6 +24,8 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_groups
         public string EducationDays { get; set; }
         public string EducationHoursPerDay { get; set; }
         public DateTime? EndDate { get; set; }
+        public decimal? OldPrice { get; set; }
+        public decimal? NewPrice { get; set; }
     }
     
 }

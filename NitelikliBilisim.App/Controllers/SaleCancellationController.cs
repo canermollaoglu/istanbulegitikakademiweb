@@ -66,11 +66,12 @@ namespace NitelikliBilisim.App.Controllers
             decimal refundPrice = 0;
             var conversationId = Guid.NewGuid().ToString();
             var invoiceDetail = _unitOfWork.InvoiceDetail.GetByIdWithOnlinePaymentDetailInfo(data.InvoiceDetailId);
+            var group = _unitOfWork.EducationGroup.GetById(invoiceDetail.GroupId);
             var ticket = _unitOfWork.Ticket.GetByInvoiceDetailId(invoiceDetail.Id);
             if (ticket!=null && ticket.IsUsed)
             {//Kısmi İptal (Kalan gün)
                 var education = ticket.Education;
-                decimal dailyPrice = education.NewPrice.Value / education.Days;
+                decimal dailyPrice = group.NewPrice.Value / education.Days;
                 var gStudent = _unitOfWork.EducationGroup.GetEducationGroupByTicketId(ticket.Id);
                 var daysLeft = gStudent.GroupLessonDays.Count(x => x.DateOfLesson.Date > DateTime.Now.Date);
                 refundPrice = daysLeft * dailyPrice;

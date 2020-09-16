@@ -173,6 +173,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 EducatorId = data.EducatorId,
                 HostId = data.HostId.Value,
                 StartDate = data.StartDate.Value,
+                NewPrice = data.Price.Value,
                 Quota = data.Quota.Value
             }, days: data.LessonDays, data.ClassRoomId, data.EducatorPrice);
             var emails = _unitOfWork.EmailHelper.GetAdminEmails();
