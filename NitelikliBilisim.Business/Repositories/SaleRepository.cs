@@ -220,7 +220,8 @@ namespace NitelikliBilisim.Business.Repositories
                     HostId = hostIds[i],
                     InvoiceDetailsId = item.Id,
                     IsUsed = false,
-                    OwnerId = userId
+                    OwnerId = userId,
+                    GroupId = item.GroupId
                 });
             }
 
@@ -239,11 +240,10 @@ namespace NitelikliBilisim.Business.Repositories
                 {
                     var firstGroup = _context.EducationGroups
                         .Where(x => x.StartDate.Date > DateTime.Now.Date
-                        && x.EducationId == ticket.EducationId
-                        && x.IsGroupOpenForAssignment
-                        && x.HostId == ticket.HostId)
-                        .OrderBy(o => o.StartDate)
+                        && x.Id == ticket.GroupId
+                        && x.IsGroupOpenForAssignment)
                         .FirstOrDefault();
+
                     if (firstGroup == null)
                     {
                         Task.Run(()=> _emailSender.SendAsync(new EmailMessage
