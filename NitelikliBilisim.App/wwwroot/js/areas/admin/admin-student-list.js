@@ -101,6 +101,7 @@ function createGrid() {
         {
             caption: "Email",
             dataField: "user.email",
+            width:300
 
         },
         {
@@ -121,11 +122,8 @@ function createGrid() {
                 var current = options.data;
                 $(`<a title="Öğrenci Detay" class="btn btn-outline-primary btn-sm" href="/admin/ogrenci-detay?studentId=${current.id}">Detay</a>`)
                     .appendTo(container);
-                $(`<a title="Log Listesi" class="btn btn-outline-primary btn-sm" href="/admin/ogrenci-hareketleri?studentId=${current.id}">Log</a>`)
-                    .appendTo(container);
             },
             alignment: "center",
-            width: "auto"
         }
         ]
 

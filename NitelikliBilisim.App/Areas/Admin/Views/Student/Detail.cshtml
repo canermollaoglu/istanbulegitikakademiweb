@@ -42,6 +42,7 @@
                     Öğrenci Detayları
                     <a class="btn btn-sm pull-right" target="_blank" href="@Model.Website" title="Web Sitesi"><i class="fa fa-id-card"></i></a>
                     <a class="btn btn-sm pull-right" target="_blank" href="@Model.LinkedInProfile" title="LinkedIn Profili"><i class="fa fa-linkedin"></i></a>
+                    <a class="btn btn-sm pull-right" target="_blank" href="/admin/ogrenci-hareketleri?studentId=@(Model.Id)" title="Log Listesi"><i class="fa fa-list"></i></a>
                 </div>
                 <input type="hidden" value="@Model.Id" id="studentId" />
                 <div class="card-body">
