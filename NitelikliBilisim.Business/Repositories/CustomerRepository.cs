@@ -42,10 +42,28 @@ namespace NitelikliBilisim.Business.Repositories
                 Website = student.WebSiteUrl,
                 DateOfBirth = student.DateOfBirth,
                 IsNBUYStudent = student.IsNbuyStudent,
-                AvatarPath = student.User.AvatarPath?? "/img/nb_letter_logo_sm.png",
+                AvatarPath = student.User.AvatarPath,
                 Addresses = student.Addresses,
                 Job = student.Job
             };
+        }
+
+        public IQueryable<JoinedGroupVm> GetJoinedGroups(string studentId)
+        {
+            var groups = from gs in _context.Bridge_GroupStudents
+                         join g in _context.EducationGroups.Include(x => x.Education).Include(x => x.Host)
+                         on gs.Id equals g.Id
+                         where gs.Id2 == studentId
+                         select new JoinedGroupVm
+                         {
+                             GroupId = g.Id,
+                             JoinedDate= gs.CreatedDate,
+                             GroupStartDate = g.StartDate,
+                             GroupName = g.GroupName,
+                             HostName = g.Host.HostName,
+                             EducationName = g.Education.Name,
+                         };
+            return groups;
         }
     }
 }

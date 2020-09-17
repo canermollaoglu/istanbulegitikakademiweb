@@ -55,5 +55,15 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.WebAPI
             return Ok(lastData);
         }
 
+
+        [HttpGet]
+        [Route("get-student-joined-groups")]
+        public IActionResult GetJoinedGroups(DataSourceLoadOptions loadOptions, string studentId)
+        {
+            var data = _unitOfWork.Customer.GetJoinedGroups(studentId);
+            return Ok(DataSourceLoader.Load(data, loadOptions));
+
+        }
+
     }
 }

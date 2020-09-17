@@ -68,7 +68,7 @@ namespace NitelikliBilisim.App.Controllers
             var invoiceDetail = _unitOfWork.InvoiceDetail.GetByIdWithOnlinePaymentDetailInfo(data.InvoiceDetailId);
             var group = _unitOfWork.EducationGroup.GetById(invoiceDetail.GroupId);
             var ticket = _unitOfWork.Ticket.GetByInvoiceDetailId(invoiceDetail.Id);
-            if (ticket!=null && ticket.IsUsed)
+            if (ticket!=null && ticket.IsUsed && DateTime.Now.Date>group.StartDate.Date)
             {//Kısmi İptal (Kalan gün)
                 var education = ticket.Education;
                 decimal dailyPrice = group.NewPrice.Value / education.Days;

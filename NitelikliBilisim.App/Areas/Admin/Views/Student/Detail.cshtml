@@ -48,7 +48,7 @@
                     <table class="table table-bordered">
                         <tbody>
                             <tr>
-                                <td style="text-align:center;" colspan="2"><img src="@filePath" class="img-thumbnail" width="150" height="150" /></td>
+                                <td style="text-align:center;" colspan="2"><img src="@(string.IsNullOrEmpty(filePath)?"/img/nb_letter_logo_sm.png":filePath)" class="img-thumbnail" width="150" height="150" /></td>
                             </tr>
                             <tr>
                                 <td>
@@ -150,7 +150,21 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-3">
+                <div class="card-header">
+                    Katıldığı Gruplar
+                </div>
+                <div class="card-body">
+                    <div id="grid-joined-groups">
 
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
 
 
     <!--Kayıtlı Öğrenciler-->
@@ -169,54 +183,106 @@
 </div>
 
 
-
-<div class="modal fade" id="changeEducator" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Eğitmen Değişikliği</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="form-change-educator">
-                    <div class="form-group">
-                        <label>Eğitmen</label>
-                        <select id="selectEducators" class="form-control">
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Eğitmen Saatlik Ücreti</label>
-                        <input type="number" class="form-control" id="dailyEducatorPrice" />
-                    </div>
-                    <div class="form-group">
-
-                        <input type="radio" checked name="educatorChangeType" value="10">
-                        <label>Tümü</label><br>
-                        <input type="radio" name="educatorChangeType" value="20">
-                        <label>Seçili tarihten itibaren</label><br>
-                        <input type="hidden" value="10" id="selectedEducatorChangeType" />
-                    </div>
-
-                    <div class="form-group" style="display:none;" id="inputChangeEducatorStartDate">
-                        <label>Tarih</label>
-                        <input id="input-change-educator-start-date" class="form-control" type="date" value="" />
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
-                <button type="button" class="btn btn-primary" id="btn-lessonday-educator-save">Kaydet</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 @section postScripts{
     <script src="~/assets/js/area-admin/jquery.dataTables.js"></script>
     <script src="~/assets/js/area-admin/dataTables.bootstrap4.js"></script>
     <script src="~/js/sup/alert-sup.js"></script>
     <script src="~/js/lib/security-support.js"></script>
     <script src="~/vendor\devextreme\dist\js\dx.all.js"></script>
+    <script src="~/vendor\devextreme-aspnet-data\js\dx.aspnet.data.js"></script>
+
+    <script type="text/javascript">
+
+        /* elements */
+        var studentId = $("#studentId");
+
+        /* assignments */
+        $(document).ready(document_onLoad);
+
+        /* events */
+        function document_onLoad() {
+            createJoinedGroupsGrid();
+        }
+
+        /* DataGrid */
+        function createJoinedGroupsGrid() {
+            var SERVICE_URL = `../../api/student/get-student-joined-groups?studentId=${studentId.val()}`
+            $("#grid-joined-groups").dxDataGrid({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    loadUrl: SERVICE_URL
+                }),
+                remoteOperations: {
+                    paging: true,
+                    filtering: true,
+                    sorting: true,
+                    grouping: true,
+                    summary: true,
+                    groupPaging: true
+                },
+                showBorders: true,
+                showColumnLines: true,
+                rowAlternationEnabled: true,
+                showRowLines: true,
+                wordWrapEnabled: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                searchPanel: {
+                    visible: true,
+                    placeholder: "Ara..."
+                },
+                paging: {
+                    pageSize: 10
+                },
+                grouping: {
+                    autoExpandAll: true
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10, 20],
+                    showInfo: true
+                },
+                columns: [
+                    {
+                        caption: "Katılış Tarihi",
+                        dataField: "joinedDate",
+                        dataType: "date",
+                        format: "dd/MM/yyyy",
+                    },
+                    {
+                        caption: "Grup Başlangıç Tarihi",
+                        dataField: "groupStartDate",
+                        dataType: "date",
+                        format: "dd/MM/yyyy",
+                    },
+                    {
+                        caption: "Grup Adı",
+                        dataField: "groupName"
+                    },
+                    {
+                        caption: "Kurum",
+                        dataField: "hostName"
+                    },
+                    {
+                        caption: "Eğitim Adı",
+                        dataField: "educationName"
+                    },
+                    {
+                        caption: "Detay",
+                        allowSearch: false,
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            var div = $('<div class="btn-group" style="display: inline-flex; width:"auto"></div>');
+                            $(`<a class="btn btn-outline-primary btn-sm" href="/admin/grup-detay/${current.groupId}">Detay</a>`)
+                                .appendTo(div);
+                            div.appendTo(container);
+                        },
+                        alignment: "center",
+                        width: 110
+                    }
+                ]
+            });
+        }
+    </script>
 }
