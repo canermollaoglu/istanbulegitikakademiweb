@@ -64,6 +64,23 @@ namespace NitelikliBilisim.Business.Repositories
             return model;
         }
 
+        public IQueryable<StudentBasedSalesReport> GetStudentBasedSalesReport(string studentId)
+        {
+            var data = (from paymentDetailInfo in _context.OnlinePaymentDetailsInfos
+                    where paymentDetailInfo.CreatedUser == studentId
+                    select new StudentBasedSalesReport
+                    {
+                        IsCancelled = paymentDetailInfo.IsCancelled,
+                        CancellationDate = paymentDetailInfo.CancellationDate,
+                        PaymentDate = paymentDetailInfo.CreatedDate,
+                        PaidPrice = paymentDetailInfo.PaidPrice,
+                        CommissionFee = paymentDetailInfo.CommissionFee,
+                        CommissionRate = paymentDetailInfo.CommisionRate,
+                        MerchantPayout = paymentDetailInfo.MerchantPayout
+                    });
+            return data;
+        }
+
         public IQueryable<GroupBasedSalesReportStudentsVm> GetGroupBasedSalesReportStudents(Guid groupId)
         {
             return (from gs in _context.Bridge_GroupStudents

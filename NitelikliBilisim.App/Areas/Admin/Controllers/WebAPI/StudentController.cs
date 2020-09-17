@@ -65,5 +65,14 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.WebAPI
 
         }
 
+        [HttpGet]
+        [Route("get-student-payments")]
+        public IActionResult GetStudentPayments(DataSourceLoadOptions loadOptions, string studentId)
+        {
+            var data = _unitOfWork.Report.GetStudentBasedSalesReport(studentId);
+            return Ok(DataSourceLoader.Load(data, loadOptions));
+
+        }
+
     }
 }

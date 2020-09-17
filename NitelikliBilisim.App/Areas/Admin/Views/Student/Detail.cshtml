@@ -34,7 +34,7 @@
     }
 }
 <div class="panel-group">
-    <!--Genel Grup Bilgileri-->
+    <!--Genel Bilgileri-->
     <div class="row">
         <div class="col-md-6">
             <div class="card mb-3">
@@ -150,11 +150,13 @@
             </div>
         </div>
     </div>
+
+    <!--Gruplar-->
     <div class="row">
         <div class="col-md-12">
             <div class="card mb-3">
                 <div class="card-header">
-                    Katıldığı Gruplar
+                    <i class="fa fa-users"></i>  Gruplar
                 </div>
                 <div class="card-body">
                     <div id="grid-joined-groups">
@@ -167,20 +169,21 @@
     </div>
 
 
-    <!--Kayıtlı Öğrenciler-->
+    <!--Ödemeler-->
     <div class="row">
         <div class="col-md-12">
             <div class="card mb-3">
                 <div class="card-header">
-                    <i class="fa fa-users"></i> Katıldığı Gruplar
+                    <i class="fa fa-money"></i> Tahsilatlar
                 </div>
                 <div class="card-body">
-                    <div id="grid-students"></div>
+                    <div id="grid-student-payment-report"></div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 
 
 @section postScripts{
@@ -202,6 +205,7 @@
         /* events */
         function document_onLoad() {
             createJoinedGroupsGrid();
+            createPaymentReportGrid();
         }
 
         /* DataGrid */
@@ -282,6 +286,122 @@
                         width: 110
                     }
                 ]
+            });
+        }
+
+        function createPaymentReportGrid() {
+            var SERVICE_URL = `../../api/student/get-student-payments?studentId=${studentId.val()}`
+            $("#grid-student-payment-report").dxDataGrid({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    loadUrl: SERVICE_URL
+                }),
+                remoteOperations: {
+                    paging: true,
+                    filtering: true,
+                    sorting: true,
+                    grouping: true,
+                    summary: true,
+                    groupPaging: true
+                },
+                showBorders: true,
+                showColumnLines: true,
+                rowAlternationEnabled: true,
+                showRowLines: true,
+                wordWrapEnabled: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                searchPanel: {
+                    visible: true,
+                    placeholder: "Ara..."
+                },
+                paging: {
+                    pageSize: 10
+                },
+                grouping: {
+                    autoExpandAll: true
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10, 20],
+                    showInfo: true
+                },
+                onCellPrepared: function (e) {
+                    if (e.rowType === 'data') {
+                        var isCancelled = e.data.isCancelled;
+                        if (isCancelled) {
+                            e.cellElement.css({ "background-color": '#ffa6a6' });
+                        }
+
+                    }
+
+                },
+                columns: [
+                    {
+                        caption: "Tahsilat Tarihi",
+                        dataField: "paymentDate",
+                        dataType: "date",
+                        format: "dd/MM/yyyy",
+                    },
+                    {
+                        caption: "Satış Tutarı",
+                        dataField: "paidPrice",
+                        customizeText: function (paidPrice) {
+                            return paidPrice.value + " ₺";
+                        }
+                    },
+                    {
+                        caption: "İşlem Ücreti",
+                        dataField: "commissionFee",
+                        customizeText: function (commissionFee) {
+                            return commissionFee.value + " ₺";
+                        }
+                    },
+                    {
+                        caption: "Komisyon",
+                        dataField: "commissionRate",
+                        customizeText: function (commissionRate) {
+                            return commissionRate.value + " ₺";
+                        }
+                    },
+                    {
+                        caption: "Kalan",
+                        dataField: "merchantPayout",
+                        customizeText: function (merchantPayout) {
+                            return merchantPayout.value + " ₺";
+                        }
+                    },
+                    {
+                        caption: "İptal Edildi Mi?",
+                        dataField: "isCancelled"
+                    }
+                ],
+                summary: {
+                    totalItems: [
+                        {
+                            column: "name",
+                            summaryType: "count",
+                            displayFormat: "Toplam Kayıt: {0}"
+                        }, {
+                            column: "paidPrice",
+                            summaryType: "sum",
+                            displayFormat: "T: {0} ₺"
+                        }, {
+                            column: "commissionFee",
+                            summaryType: "sum",
+                            displayFormat: "T: {0} ₺"
+                        }, {
+                            column: "commissionRate",
+                            summaryType: "sum",
+                            displayFormat: "T: {0} ₺"
+                        }, {
+                            column: "merchantPayout",
+                            summaryType: "sum",
+                            displayFormat: "T: {0} ₺"
+                        }
+                    ]
+                }
             });
         }
     </script>

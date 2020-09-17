@@ -26,7 +26,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.WebAPI
             loadOptions.PrimaryKey = new[] { "Id" };
             var data = _unitOfWork.Report.GetGroupBasedSalesReportStudents(groupId);
             return Ok(DataSourceLoader.Load(data, loadOptions));
+        }
 
+        public IActionResult GetStudentBasedSalesReport(DataSourceLoadOptions loadOptions, string studentId)
+        {
+            var data = _unitOfWork.Report.GetStudentBasedSalesReport(studentId);
+            return Ok(DataSourceLoader.Load(data, loadOptions));
         }
 
         [HttpGet]
@@ -35,7 +40,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.WebAPI
         {
             var data = _unitOfWork.Report.GetGeneralSalesReport();
             return Ok(DataSourceLoader.Load(data, loadOptions));
-
         }
     }
 }
