@@ -39,6 +39,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/ogrenci-detay")]
         public IActionResult Detail(string studentId)
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminStudentDetail");
             var model = _unitOfWork.Customer.GetCustomerDetail(studentId);
 
             return View(model);
