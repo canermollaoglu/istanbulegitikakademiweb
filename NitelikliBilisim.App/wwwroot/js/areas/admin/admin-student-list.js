@@ -119,7 +119,9 @@ function createGrid() {
             allowSearch: false,
             cellTemplate: function (container, options) {
                 var current = options.data;
-                $(`<a title="Log Listesi" class="btn btn-primary btn-sm" href="/admin/ogrenci-hareketleri?studentId=${current.id}"><i class="fa fa-list"></i></a>`)
+                $(`<a title="Öğrenci Detay" class="btn btn-outline-primary btn-sm" href="/admin/ogrenci-detay?studentId=${current.id}">Detay</a>`)
+                    .appendTo(container);
+                $(`<a title="Log Listesi" class="btn btn-outline-primary btn-sm" href="/admin/ogrenci-hareketleri?studentId=${current.id}">Log</a>`)
                     .appendTo(container);
             },
             alignment: "center",

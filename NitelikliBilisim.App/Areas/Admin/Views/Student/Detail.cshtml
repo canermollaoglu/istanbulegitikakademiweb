@@ -1,0 +1,222 @@
+﻿@model NitelikliBilisim.Core.ViewModels.areas.admin.student.StudentDetailVm
+@using NitelikliBilisim.Core.Services.Abstracts
+@inject IStorageService StorageService
+@{
+    ViewData["Title"] = "Grup Detayları";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
+    <link href="~/vendor\devextreme\dist\css\dx.common.css" rel="stylesheet" />
+    <link href="~/vendor\devextreme\dist\css\dx.light.css" rel="stylesheet" />
+    <style>
+        .form-check-label {
+            cursor: pointer;
+        }
+
+        .table td {
+            padding: .40rem !important;
+        }
+    </style>
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+@{
+    var filePath = "";
+    try
+    {
+        filePath = StorageService.DownloadFile(System.IO.Path.GetFileName(Model.AvatarPath), "user-avatars").Result;
+    }
+    catch
+    {
+    }
+}
+<div class="panel-group">
+    <!--Genel Grup Bilgileri-->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header">
+                    Öğrenci Detayları
+                    <a class="btn btn-sm pull-right" target="_blank" href="@Model.Website" title="Web Sitesi"><i class="fa fa-id-card"></i></a>
+                    <a class="btn btn-sm pull-right" target="_blank" href="@Model.LinkedInProfile" title="LinkedIn Profili"><i class="fa fa-linkedin"></i></a>
+                </div>
+                <input type="hidden" value="@Model.Id" id="studentId" />
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td style="text-align:center;" colspan="2"><img src="@filePath" class="img-thumbnail" width="150" height="150" /></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Kullanıcı Adı</b>
+                                </td>
+                                <td>
+                                    @Model.UserName
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Adı</b>
+                                </td>
+                                <td>
+                                    @Model.Name
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Soyadı</b>
+                                </td>
+                                <td>
+                                    @Model.Surname
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Telefon</b>
+                                </td>
+                                <td>@Model.Phone</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Email</b>
+                                </td>
+                                <td>@Model.Email</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Doğum Tarihi</b>
+                                </td>
+                                <td>
+                                    @(Model.DateOfBirth.HasValue?Model.DateOfBirth.Value.ToShortDateString():"Girilmemiş")
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Meslek</b>
+                                </td>
+                                <td>@Model.Job</td>
+
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>NBUY Öğrencisi mi?</b>
+                                </td>
+                                <td> @(Model.IsNBUYStudent?"Evet":"Hayır")</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Kayıt Tarihi</b>
+                                </td>
+                                <td> @Model.RegistrationDate.ToShortDateString()</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header">
+                    Adresler
+                </div>
+                <div class="card-body">
+
+                    <div class="accordion" id="accordionAddress">
+                        @foreach (var address in Model.Addresses)
+                        {
+                            <div class="card">
+                                <div class="card-header" style="padding:0px 5px 0px 5px;" id="heading@(Model.Id)">
+                                    <h5 style="margin-bottom:0px;">
+                                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse@(Model.Id)" aria-expanded="true" aria-controls="collapseOne">
+                                            @address.Name
+                                        </button>
+                                    </h5>
+                                </div>
+
+                                <div id="collapse@(Model.Id)" class="collapse show" aria-labelledby="heading@(Model.Id)" data-parent="#accordionAddress">
+                                    <div class="card-body">
+                                        @address.Content<br />
+                                        @address.State.Name / @address.City.Name
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!--Kayıtlı Öğrenciler-->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <i class="fa fa-users"></i> Katıldığı Gruplar
+                </div>
+                <div class="card-body">
+                    <div id="grid-students"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="changeEducator" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Eğitmen Değişikliği</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="form-change-educator">
+                    <div class="form-group">
+                        <label>Eğitmen</label>
+                        <select id="selectEducators" class="form-control">
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Eğitmen Saatlik Ücreti</label>
+                        <input type="number" class="form-control" id="dailyEducatorPrice" />
+                    </div>
+                    <div class="form-group">
+
+                        <input type="radio" checked name="educatorChangeType" value="10">
+                        <label>Tümü</label><br>
+                        <input type="radio" name="educatorChangeType" value="20">
+                        <label>Seçili tarihten itibaren</label><br>
+                        <input type="hidden" value="10" id="selectedEducatorChangeType" />
+                    </div>
+
+                    <div class="form-group" style="display:none;" id="inputChangeEducatorStartDate">
+                        <label>Tarih</label>
+                        <input id="input-change-educator-start-date" class="form-control" type="date" value="" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                <button type="button" class="btn btn-primary" id="btn-lessonday-educator-save">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section postScripts{
+    <script src="~/assets/js/area-admin/jquery.dataTables.js"></script>
+    <script src="~/assets/js/area-admin/dataTables.bootstrap4.js"></script>
+    <script src="~/js/sup/alert-sup.js"></script>
+    <script src="~/js/lib/security-support.js"></script>
+    <script src="~/vendor\devextreme\dist\js\dx.all.js"></script>
+}
