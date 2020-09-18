@@ -74,5 +74,13 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.WebAPI
 
         }
 
+        [HttpGet]
+        [Route("get-student-tickets")]
+        public IActionResult GetStudentTickets(DataSourceLoadOptions loadOptions, string studentId)
+        {
+            var data = _unitOfWork.Report.GetStudentTickets(studentId);
+            return Ok(DataSourceLoader.Load(data, loadOptions));
+
+        }
     }
 }

@@ -149,6 +149,17 @@
                     </div>
                 </div>
             </div>
+
+            <div class="card mb-3">
+                <div class="card-header">
+                    Biletler
+                </div>
+                <div class="card-body">
+                    <div id="grid-student-tickets">
+
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -211,6 +222,7 @@
         function document_onLoad() {
             createJoinedGroupsGrid();
             createPaymentReportGrid();
+            createStudentTicketsGrid();
         }
 
         /* DataGrid */
@@ -294,6 +306,67 @@
             });
         }
 
+        function createStudentTicketsGrid() {
+            var SERVICE_URL = `../../api/student/get-student-tickets?studentId=${studentId.val()}`
+            $("#grid-student-tickets").dxDataGrid({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    loadUrl: SERVICE_URL
+                }),
+                remoteOperations: {
+                    paging: true,
+                    filtering: true,
+                    sorting: true,
+                    grouping: true,
+                    summary: true,
+                    groupPaging: true
+                },
+                showBorders: true,
+                showColumnLines: true,
+                rowAlternationEnabled: true,
+                showRowLines: true,
+                wordWrapEnabled: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                searchPanel: {
+                    visible: true,
+                    placeholder: "Ara..."
+                },
+                paging: {
+                    pageSize: 10
+                },
+                grouping: {
+                    autoExpandAll: true
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10, 20],
+                    showInfo: true
+                },
+                columns: [
+                    {
+                        caption: "Tarih",
+                        dataField: "createdDate",
+                        dataType: "date",
+                        format: "dd/MM/yyyy",
+                    },
+                    {
+                        caption: "Eğitim",
+                        dataField: "educationName"
+                    },
+                    {
+                        caption: "Kurum",
+                        dataField: "hostName"
+                    },
+                    
+                    {
+                        caption: "Atandı Mı?",
+                        dataField: "isUsed"
+                    }
+                ]
+            });
+        }
         function createPaymentReportGrid() {
             var SERVICE_URL = `../../api/student/get-student-payments?studentId=${studentId.val()}`
             $("#grid-student-payment-report").dxDataGrid({

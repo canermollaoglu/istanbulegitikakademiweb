@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NitelikliBilisim.Core.ViewModels.areas.admin.reports;
+using NitelikliBilisim.Core.ViewModels.areas.admin.student;
 using NitelikliBilisim.Data;
 using System;
 using System.Collections.Generic;
@@ -26,7 +27,7 @@ namespace NitelikliBilisim.Business.Repositories
                 .Where(x => x.BlockageResolveDate.Year == year - 1 || x.BlockageResolveDate.Year == year)
                 .ToList();
 
-//TODO: eğitim bilgisi de ekleyelim
+            //TODO: eğitim bilgisi de ekleyelim
 
             var payouts = new List<_Payout>();
             foreach (var item in data)
@@ -67,17 +68,35 @@ namespace NitelikliBilisim.Business.Repositories
         public IQueryable<StudentBasedSalesReport> GetStudentBasedSalesReport(string studentId)
         {
             var data = (from paymentDetailInfo in _context.OnlinePaymentDetailsInfos
-                    where paymentDetailInfo.CreatedUser == studentId
-                    select new StudentBasedSalesReport
-                    {
-                        IsCancelled = paymentDetailInfo.IsCancelled,
-                        CancellationDate = paymentDetailInfo.CancellationDate,
-                        PaymentDate = paymentDetailInfo.CreatedDate,
-                        PaidPrice = paymentDetailInfo.PaidPrice,
-                        CommissionFee = paymentDetailInfo.CommissionFee,
-                        CommissionRate = paymentDetailInfo.CommisionRate,
-                        MerchantPayout = paymentDetailInfo.MerchantPayout
-                    });
+                        where paymentDetailInfo.CreatedUser == studentId
+                        select new StudentBasedSalesReport
+                        {
+                            IsCancelled = paymentDetailInfo.IsCancelled,
+                            CancellationDate = paymentDetailInfo.CancellationDate,
+                            PaymentDate = paymentDetailInfo.CreatedDate,
+                            PaidPrice = paymentDetailInfo.PaidPrice,
+                            CommissionFee = paymentDetailInfo.CommissionFee,
+                            CommissionRate = paymentDetailInfo.CommisionRate,
+                            MerchantPayout = paymentDetailInfo.MerchantPayout
+                        });
+            return data;
+        }
+
+        public IQueryable<StudentTicketsVm> GetStudentTickets(string studentId)
+        {
+            var data = (from ticket in _context.Tickets
+                        join education in _context.Educations on ticket.EducationId equals education.Id
+                        join host in _context.EducationHosts on ticket.HostId equals host.Id
+                        where ticket.OwnerId == studentId
+                        select new StudentTicketsVm
+                        {
+                            TicketId = ticket.Id,
+                            CreatedDate = ticket.CreatedDate,
+                            EducationName = education.Name,
+                            HostName = host.HostName,
+                            IsUsed = ticket.IsUsed
+                        });
+
             return data;
         }
 
@@ -115,7 +134,7 @@ namespace NitelikliBilisim.Business.Repositories
                     where !paymentDetailInfo.IsCancelled
                     select new GeneralSalesReportVm
                     {
-                        BlockageResolveDate= paymentDetailInfo.BlockageResolveDate,
+                        BlockageResolveDate = paymentDetailInfo.BlockageResolveDate,
                         EducationName = education.Name,
                         Name = student.Name,
                         Surname = student.Surname,
