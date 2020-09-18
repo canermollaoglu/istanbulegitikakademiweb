@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ViewModels.areas.admin.reports;
@@ -44,6 +45,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("raporlar/grup-bazli-satis-raporu")]
         public IActionResult GroupBasedSalesReport()
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminGroupBasedSalesReport");
             var model = new GroupBasedSalesReportGetVm
             {
                 AllGroups = _unitOfWork.EducationGroup.GetAllGroupsDictionary()
@@ -54,6 +56,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("raporlar/genel-satis-raporu")]
         public IActionResult SalesReport()
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminGeneralSalesReport");
             return View();
         }
 

@@ -24,7 +24,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
         public IActionResult List()
         {
-            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminBlogCategoryList");
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminExpenseTypeList");
             return View();
         }
 

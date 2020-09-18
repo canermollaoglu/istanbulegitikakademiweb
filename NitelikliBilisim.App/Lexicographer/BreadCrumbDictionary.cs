@@ -134,10 +134,19 @@ namespace NitelikliBilisim.App.Lexicographer
              new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Blog Etiket Listesi", url: null) });
 
             /*Expense*/
+            _dictionary.Add("AdminExpenseTypeList",
+             new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Grup Gider Tipleri", url: null) });
+
             _dictionary.Add("AdminExpenseTypeUpdate",
-             new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Grup Gideri Güncelle", url: null) });
+             new BreadCrumbItem[] { new BreadCrumbItem(title: "Grup Gider Tipleri", url: "/admin/GroupExpenseType/List"), new BreadCrumbItem(title: "Grup Gideri Güncelle", url: null) });
 
+            /*Reports*/
+            _dictionary.Add("AdminGeneralSalesReport",
+             new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Genel Tahsilat Raporu", url: null) });
+            _dictionary.Add("AdminGroupBasedSalesReport",
+             new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Grup Bazlı Satış Raporu", url: null) });
 
+            
         }
 
         public static BreadCrumbItem[] ReadPart(string part)
