@@ -235,6 +235,7 @@ namespace NitelikliBilisim.Business.Repositories
                 .Select(x => new EducationGroupListVm
                 {
                     Id = x.Id,
+                    NewPrice = x.NewPrice,
                     EducationName = x.Education.Name,
                     GroupName = x.GroupName,
                     HostName = x.Host.HostName,

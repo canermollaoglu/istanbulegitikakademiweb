@@ -95,27 +95,27 @@
                     showInfo: true
                 },
                 columns: [{
-                    caption:"Grup İsmi",
+                    caption: "Grup İsmi",
                     dataField: "groupName",
                     width: 140
 
                 }, {
-                    caption:"Eğitim İsmi",
+                    caption: "Eğitim İsmi",
                     dataField: "educationName"
                 }, {
-                    caption:"Başlangıç Tarihi",
+                    caption: "Başlangıç Tarihi",
                     dataField: "startDate",
                     dataType: 'date',
                     format: 'dd/MM/yyyy',
                     width: 130
                 },
                 {
-                   caption:"Konum",
+                    caption: "Konum",
                     dataField: "hostName",
-                    width:200
+                    width: 200
                 },
                 {
-                    caption:"Şehir",
+                    caption: "Şehir",
                     dataField: "hostCity",
                     allowSorting: false,
                     allowSearch: false,
@@ -123,7 +123,14 @@
                     width: 90
                 },
                 {
-                    caption:"İşlem",
+                    caption: "Fiyat",
+                    dataField: "newPrice",
+                    customizeText: function (newPrice) {
+                        return newPrice.value + " ₺";
+                    }
+                },
+                {
+                    caption: "İşlem",
                     allowSearch: false,
                     cellTemplate: function (container, options) {
                         var current = options.data;
@@ -137,7 +144,7 @@
 
                     },
                     alignment: "center",
-                    width:110
+                    width: 110
                 }
                 ]
             });
