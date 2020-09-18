@@ -302,8 +302,6 @@ namespace NitelikliBilisim.Business.Repositories
                 }
                 foreach (var ticket in tickets)
                 {
-                    
-                    ticket.IsUsed = false;
                    Task.Run(()=> _emailSender.SendAsync(new EmailMessage
                     {
                         Subject = "Gruptan Ayrıldınız | Nitelikli Bilişim",
