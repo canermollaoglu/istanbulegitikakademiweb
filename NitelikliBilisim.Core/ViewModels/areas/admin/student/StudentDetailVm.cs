@@ -20,5 +20,6 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.student
         public List<Address> Addresses { get; set; }
         public string Job { get; set; }
         public DateTime RegistrationDate { get; set; }
+        public StudentNBUYEducationInfoVm StudentNBUYEducationInfo { get; set; }
     }
 }

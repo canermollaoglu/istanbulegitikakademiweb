@@ -33,166 +33,196 @@
     {
     }
 }
-    <!--Genel Bilgileri-->
-    <div class="row">
-        <div class="col-md-6">
+<!--Genel Bilgileri-->
+<div class="row">
+    <div class="col-md-5">
+        <div class="card border-info mb-3">
+            <div class="card-header">
+                <i class="fa fa-info-circle"></i> Öğrenci Detayları
+                <a class="btn btn-sm pull-right" target="_blank" href="@Model.Website" title="Web Sitesi"><i class="fa fa-id-card"></i></a>
+                <a class="btn btn-sm pull-right" target="_blank" href="@Model.LinkedInProfile" title="LinkedIn Profili"><i class="fa fa-linkedin"></i></a>
+                <a class="btn btn-sm pull-right" target="_blank" href="/admin/ogrenci-hareketleri?studentId=@(Model.Id)" title="Log Listesi"><i class="fa fa-list"></i></a>
+            </div>
+            <input type="hidden" value="@Model.Id" id="studentId" />
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <td style="text-align:center;" colspan="2"><img src="@(string.IsNullOrEmpty(filePath)?"/img/nb_letter_logo_sm.png":filePath)" class="img-thumbnail" width="150" height="150" /></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Kullanıcı Adı</b>
+                            </td>
+                            <td>
+                                @Model.UserName
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Adı</b>
+                            </td>
+                            <td>
+                                @Model.Name
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Soyadı</b>
+                            </td>
+                            <td>
+                                @Model.Surname
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Telefon</b>
+                            </td>
+                            <td>@Model.Phone</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Email</b>
+                            </td>
+                            <td>@Model.Email</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Doğum Tarihi</b>
+                            </td>
+                            <td>
+                                @(Model.DateOfBirth.HasValue?Model.DateOfBirth.Value.ToShortDateString():"Girilmemiş")
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Meslek</b>
+                            </td>
+                            <td>@Model.Job</td>
+
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>NBUY Öğrencisi mi?</b>
+                            </td>
+                            <td> @(Model.IsNBUYStudent?"Evet":"Hayır")</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Kayıt Tarihi</b>
+                            </td>
+                            <td> @Model.RegistrationDate.ToShortDateString()</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-7">
+        @if (Model.IsNBUYStudent && Model.StudentNBUYEducationInfo != null)
+        {
             <div class="card border-info mb-3">
                 <div class="card-header">
-                    <i class="fa fa-info-circle"></i> Öğrenci Detayları
-                    <a class="btn btn-sm pull-right" target="_blank" href="@Model.Website" title="Web Sitesi"><i class="fa fa-id-card"></i></a>
-                    <a class="btn btn-sm pull-right" target="_blank" href="@Model.LinkedInProfile" title="LinkedIn Profili"><i class="fa fa-linkedin"></i></a>
-                    <a class="btn btn-sm pull-right" target="_blank" href="/admin/ogrenci-hareketleri?studentId=@(Model.Id)" title="Log Listesi"><i class="fa fa-list"></i></a>
+                    <i class="fa fa-university"></i> NBUY Eğitim Bilgileri
                 </div>
-                <input type="hidden" value="@Model.Id" id="studentId" />
                 <div class="card-body">
                     <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <td>Başlangıç Tarihi</td>
+                                <td>Kurum</td>
+                                <td>Kategori</td>
+                                <td>Gün</td>
+                            </tr>
+                        </thead>
                         <tbody>
-                            <tr>
-                                <td style="text-align:center;" colspan="2"><img src="@(string.IsNullOrEmpty(filePath)?"/img/nb_letter_logo_sm.png":filePath)" class="img-thumbnail" width="150" height="150" /></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <b>Kullanıcı Adı</b>
-                                </td>
-                                <td>
-                                    @Model.UserName
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <b>Adı</b>
-                                </td>
-                                <td>
-                                    @Model.Name
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <b>Soyadı</b>
-                                </td>
-                                <td>
-                                    @Model.Surname
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <b>Telefon</b>
-                                </td>
-                                <td>@Model.Phone</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <b>Email</b>
-                                </td>
-                                <td>@Model.Email</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <b>Doğum Tarihi</b>
-                                </td>
-                                <td>
-                                    @(Model.DateOfBirth.HasValue?Model.DateOfBirth.Value.ToShortDateString():"Girilmemiş")
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <b>Meslek</b>
-                                </td>
-                                <td>@Model.Job</td>
-
-                            </tr>
-                            <tr>
-                                <td>
-                                    <b>NBUY Öğrencisi mi?</b>
-                                </td>
-                                <td> @(Model.IsNBUYStudent?"Evet":"Hayır")</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <b>Kayıt Tarihi</b>
-                                </td>
-                                <td> @Model.RegistrationDate.ToShortDateString()</td>
-                            </tr>
+                                <tr>
+                                    <td>@Model.StudentNBUYEducationInfo.StartDate.ToShortDateString()</td>
+                                    <td>@Model.StudentNBUYEducationInfo.EducationCenter</td>
+                                    <td>@Model.StudentNBUYEducationInfo.CategoryName</td>
+                                    <td>@Model.StudentNBUYEducationInfo.EducationDay</td>
+                                </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card border-info mb-3">
-                <div class="card-header">
-                    <i class="fa fa-address-card"></i>  Adresler
+        }
+
+
+        <div class="card border-info mb-3">
+            <div class="card-header">
+                <i class="fa fa-ticket"></i> Biletler
+            </div>
+            <div class="card-body">
+                <div id="grid-student-tickets">
+
                 </div>
-                <div class="card-body">
+            </div>
+        </div>
+        <div class="card border-info mb-3">
+            <div class="card-header">
+                <i class="fa fa-address-card"></i>  Adresler
+            </div>
+            <div class="card-body">
 
-                    <div class="accordion" id="accordionAddress">
-                        @foreach (var address in Model.Addresses)
-                        {
-                            <div class="card">
-                                <div class="card-header" style="padding:0px 5px 0px 5px;" id="heading@(Model.Id)">
-                                    <h5 style="margin-bottom:0px;">
-                                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse@(Model.Id)" aria-expanded="true" aria-controls="collapseOne">
-                                            @address.Name
-                                        </button>
-                                    </h5>
-                                </div>
+                <div class="accordion" id="accordionAddress">
+                    @foreach (var address in Model.Addresses)
+                    {
+                        <div class="card">
+                            <div class="card-header" style="padding:0px 5px 0px 5px;" id="heading@(Model.Id)">
+                                <h5 style="margin-bottom:0px;">
+                                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse@(Model.Id)" aria-expanded="true" aria-controls="collapseOne">
+                                        @address.Name
+                                    </button>
+                                </h5>
+                            </div>
 
-                                <div id="collapse@(Model.Id)" class="collapse show" aria-labelledby="heading@(Model.Id)" data-parent="#accordionAddress">
-                                    <div class="card-body">
-                                        @address.Content<br />
-                                        @address.State.Name / @address.City.Name
-                                    </div>
+                            <div id="collapse@(Model.Id)" class="collapse show" aria-labelledby="heading@(Model.Id)" data-parent="#accordionAddress">
+                                <div class="card-body">
+                                    @address.Content<br />
+                                    @address.State.Name / @address.City.Name
                                 </div>
                             </div>
-                        }
-                    </div>
-                </div>
-            </div>
-
-            <div class="card border-info">
-                <div class="card-header">
-                    <i class="fa fa-ticket"></i> Biletler
-                </div>
-                <div class="card-body">
-                    <div id="grid-student-tickets">
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!--Gruplar-->
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card border-info mb-3">
-                <div class="card-header">
-                    <i class="fa fa-users"></i>  Gruplar
-                </div>
-                <div class="card-body">
-                    <div id="grid-joined-groups">
-
-                    </div>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
 
     </div>
+</div>
 
+<!--Gruplar-->
+<div class="row">
+    <div class="col-md-12">
+        <div class="card border-info mb-3">
+            <div class="card-header">
+                <i class="fa fa-users"></i>  Gruplar
+            </div>
+            <div class="card-body">
+                <div id="grid-joined-groups">
 
-    <!--Ödemeler-->
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card border-info mb-3">
-                <div class="card-header">
-                    <i class="fa fa-money"></i> Tahsilatlar
-                </div>
-                <div class="card-body">
-                    <div id="grid-student-payment-report"></div>
                 </div>
             </div>
         </div>
     </div>
+
+</div>
+
+
+<!--Ödemeler-->
+<div class="row">
+    <div class="col-md-12">
+        <div class="card border-info mb-3">
+            <div class="card-header">
+                <i class="fa fa-money"></i> Tahsilatlar
+            </div>
+            <div class="card-body">
+                <div id="grid-student-payment-report"></div>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
@@ -269,24 +299,24 @@
                         dataField: "joinedDate",
                         dataType: "date",
                         format: "dd/MM/yyyy",
-                        width:120
+                        width: 120
                     },
                     {
                         caption: "Başlangıç Tarihi",
                         dataField: "groupStartDate",
                         dataType: "date",
                         format: "dd/MM/yyyy",
-                        width:120
+                        width: 120
                     },
                     {
                         caption: "Grup Adı",
                         dataField: "groupName",
-                        width:100
+                        width: 100
                     },
                     {
                         caption: "Kurum",
                         dataField: "hostName",
-                        width:250
+                        width: 250
                     },
                     {
                         caption: "Eğitim Adı",
@@ -443,7 +473,7 @@
                         dataField: "paymentDate",
                         dataType: "date",
                         format: "dd/MM/yyyy",
-                        width:120
+                        width: 120
                     },
                     {
                         caption: "Eğitim",
@@ -479,7 +509,7 @@
                         customizeText: function (merchantPayout) {
                             return merchantPayout.value + " ₺";
                         },
-                        width:100
+                        width: 100
 
                     },
                     {
