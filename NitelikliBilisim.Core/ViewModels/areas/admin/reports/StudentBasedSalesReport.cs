@@ -13,5 +13,6 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.reports
         public bool IsCancelled { get; set; }
         public DateTime PaymentDate { get; set; }
         public DateTime? CancellationDate { get; set; }
+        public string EducationName { get; set; }
     }
 }

@@ -68,10 +68,13 @@ namespace NitelikliBilisim.Business.Repositories
         public IQueryable<StudentBasedSalesReport> GetStudentBasedSalesReport(string studentId)
         {
             var data = (from paymentDetailInfo in _context.OnlinePaymentDetailsInfos
+                        join invoicedetails in _context.InvoiceDetails on paymentDetailInfo.Id equals invoicedetails.Id
+                        join education in _context.Educations on invoicedetails.EducationId equals education.Id
                         where paymentDetailInfo.CreatedUser == studentId
                         select new StudentBasedSalesReport
                         {
                             IsCancelled = paymentDetailInfo.IsCancelled,
+                            EducationName = education.Name,
                             CancellationDate = paymentDetailInfo.CancellationDate,
                             PaymentDate = paymentDetailInfo.CreatedDate,
                             PaidPrice = paymentDetailInfo.PaidPrice,
