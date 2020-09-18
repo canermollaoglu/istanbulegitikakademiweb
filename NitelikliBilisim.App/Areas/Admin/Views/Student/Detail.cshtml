@@ -39,7 +39,7 @@
         <div class="col-md-6">
             <div class="card mb-3">
                 <div class="card-header">
-                    Öğrenci Detayları
+                    <i class="fa fa-info-circle"></i> Öğrenci Detayları
                     <a class="btn btn-sm pull-right" target="_blank" href="@Model.Website" title="Web Sitesi"><i class="fa fa-id-card"></i></a>
                     <a class="btn btn-sm pull-right" target="_blank" href="@Model.LinkedInProfile" title="LinkedIn Profili"><i class="fa fa-linkedin"></i></a>
                     <a class="btn btn-sm pull-right" target="_blank" href="/admin/ogrenci-hareketleri?studentId=@(Model.Id)" title="Log Listesi"><i class="fa fa-list"></i></a>
@@ -122,7 +122,7 @@
         <div class="col-md-6">
             <div class="card mb-3">
                 <div class="card-header">
-                    Adresler
+                    <i class="fa fa-address-card"></i>  Adresler
                 </div>
                 <div class="card-body">
 
@@ -152,7 +152,7 @@
 
             <div class="card mb-3">
                 <div class="card-header">
-                    Biletler
+                    <i class="fa fa-ticket"></i> Biletler
                 </div>
                 <div class="card-body">
                     <div id="grid-student-tickets">
@@ -270,20 +270,24 @@
                         dataField: "joinedDate",
                         dataType: "date",
                         format: "dd/MM/yyyy",
+                        width:120
                     },
                     {
-                        caption: "Grup Başlangıç Tarihi",
+                        caption: "Başlangıç Tarihi",
                         dataField: "groupStartDate",
                         dataType: "date",
                         format: "dd/MM/yyyy",
+                        width:120
                     },
                     {
                         caption: "Grup Adı",
-                        dataField: "groupName"
+                        dataField: "groupName",
+                        width:100
                     },
                     {
                         caption: "Kurum",
-                        dataField: "hostName"
+                        dataField: "hostName",
+                        width:250
                     },
                     {
                         caption: "Eğitim Adı",
@@ -440,6 +444,7 @@
                         dataField: "paymentDate",
                         dataType: "date",
                         format: "dd/MM/yyyy",
+                        width:120
                     },
                     {
                         caption: "Eğitim",
@@ -450,34 +455,40 @@
                         dataField: "paidPrice",
                         customizeText: function (paidPrice) {
                             return paidPrice.value + " ₺";
-                        }
+                        },
+                        width: 100
                     },
                     {
                         caption: "İşlem Ücreti",
                         dataField: "commissionFee",
                         customizeText: function (commissionFee) {
                             return commissionFee.value + " ₺";
-                        }
+                        },
+                        width: 100
                     },
                     {
                         caption: "Komisyon",
                         dataField: "commissionRate",
                         customizeText: function (commissionRate) {
                             return commissionRate.value + " ₺";
-                        }
+                        },
+                        width: 100
                     },
                     {
                         caption: "Kalan",
                         dataField: "merchantPayout",
                         customizeText: function (merchantPayout) {
                             return merchantPayout.value + " ₺";
-                        }
+                        },
+                        width:100
+
                     },
                     {
                         caption: "İptal Edildi Mi?",
                         dataField: "isCancelled",
                         selectedFilterOperation: "=",
-                        filterValue: false
+                        filterValue: false,
+                        width: 120
                     }
                 ],
                 summary: {
