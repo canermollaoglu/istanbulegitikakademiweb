@@ -55,7 +55,7 @@
     <!--Genel Grup Bilgileri-->
     <div class="card mb-4">
         <div class="card-header">
-            <b>Genel Grup Bilgileri</b>
+            Genel Grup Bilgileri
         </div>
         <div class="card-body">
             <div class="row">
@@ -79,7 +79,7 @@
     <!--Öğrenciler-->
     <div class="card mb-4">
         <div class="card-header">
-            <b>Kayıtlı Öğrenciler</b>
+           Kayıtlı Öğrenciler
         </div>
         <div class="card-body">
             <div class="row">
@@ -96,11 +96,34 @@
 
     <div class="card mb-4">
         <div class="card-header">
-            <b>Grup Giderleri</b>
+           Grup Giderleri
         </div>
         <div class="card-body">
             <div id="grid-expenses">
 
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    Eğitmen Ücret Tablosu
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <td>Eğitmen İsmi</td>
+                                <td>Ortalam Ücret</td>
+                                <td>Ders Sayısı</td>
+                                <td>Toplam</td>
+                            </tr>
+                        </thead>
+
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -250,8 +273,8 @@
                 },
                 columns: [
                     {
-                        caption: "Kayıt Tarihi",
-                        dataField: "registrationDate",
+                        caption: "Satış Tarihi",
+                        dataField: "paymentDate",
                         dataType: 'date',
                         format: 'dd/MM/yyyy',
                         width: 130
@@ -265,28 +288,28 @@
                         dataField: "surname"
                     },
                     {
-                        caption: "Ödenen Tutar",
+                        caption: "Liste Fiyatı",
+                        dataField: "listPrice",
+                        customizeText: function (listPrice) {
+                            return listPrice.value + " ₺";
+                        }
+                    },
+                    {
+                        caption: "Satış Fiyatı",
                         dataField: "paidPrice",
                         customizeText: function (paidPrice) {
                             return paidPrice.value + " ₺";
                         }
                     },
                     {
-                        caption: "İşlem Ücreti",
-                        dataField: "commissionFee",
+                        caption: "Pos Komisyonu",
+                        dataField: "commission",
                         customizeText: function (commissionFee) {
                             return commissionFee.value + " ₺";
                         }
                     },
                     {
-                        caption: "Komisyon",
-                        dataField: "commissionRate",
-                        customizeText: function (commissionRate) {
-                            return commissionRate.value + " ₺";
-                        }
-                    },
-                    {
-                        caption: "Kalan Tutar",
+                        caption: "Ödenen Tutar",
                         dataField: "merchantPayout",
                         customizeText: function (merchantPayout) {
                             return merchantPayout.value + " ₺";

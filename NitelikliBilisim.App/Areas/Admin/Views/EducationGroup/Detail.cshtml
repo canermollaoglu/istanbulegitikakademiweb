@@ -57,7 +57,9 @@
                     <button class="btn btn-sm pull-right" data-target="#changeLessonDays" data-toggle="modal" title="Sınıf Değişikliği"><i class="fa fa-home"></i></button>
                     <button class="btn btn-sm pull-right" data-target="#changeEducator" data-toggle="modal" title="Eğitmen Değişikliği"><i class="fa fa-user"></i></button>
                     <button class="btn btn-sm pull-right" data-target="#changeGeneralInformation" data-toggle="modal" title="Grup İsim Değişikliği"><i class="fa fa-edit"></i></button>
-                    <button class="btn btn-sm pull-right" @(Model.StartDate.GetValueOrDefault() < DateTime.Now.Date  ? "disabled":"enabled") data-target="#postponementOfGroup" data-toggle="modal" title="@(Model.StartDate.GetValueOrDefault() < DateTime.Now.Date  ? "Başlayan gruplar ertelenemez.":"Grup Erteleme")"><i class="fa fa-share"></i></button>
+                    <button class="btn btn-sm pull-right" @(Model.StartDate.GetValueOrDefault() < DateTime.Now.Date ? "disabled" : "enabled") data-target="#postponementOfGroup" data-toggle="modal" title="@(Model.StartDate.GetValueOrDefault() < DateTime.Now.Date  ? "Başlayan gruplar ertelenemez.":"Grup Erteleme")"><i class="fa fa-share"></i></button>
+                    <a class="btn btn-sm pull-right" href="@Url.Action("GroupBasedSalesReport","EarningReport")" ><i class="fa fa-bar-chart"></i></a>
+
                 </div>
                 <input type="hidden" value="@Model.GroupId" id="groupId" />
                 <div class="card-body">
@@ -154,7 +156,7 @@
                         </tbody>
                     </table>
                     <div class="alert alert-warning">
-                        <small> Belirlenen kârlılık için minimum <b>@Model.MinimumStudentCount</b> öğrenci daha gruba katılmalıdır.</small>
+                        <small> Belirlenen kârlılık(%@(Model.ExpectedProfitRate)) için minimum <b>@Model.MinimumStudentCount</b> öğrenci daha gruba katılmalıdır.</small>
                     </div>
                 </div>
             </div>

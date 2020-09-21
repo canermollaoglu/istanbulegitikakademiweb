@@ -211,7 +211,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
 
                 //Öğrenci Listesi Başlıklar
-                worksheet.Cells[6, 1].Value = "Kayıt Tarihi";
+                worksheet.Cells[6, 1].Value = "Satış Tarihi";
                 worksheet.Cells[6, 2].Value = "Adı Soyadı";
                 worksheet.Cells[6, 3].Value = "Ödenen";
                 worksheet.Cells[6, 4].Value = "İşlem Ücreti";
@@ -221,7 +221,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 {
                     int rowIndex = i + 7;
                     var current = studentList[i];
-                    worksheet.Cells[rowIndex, 1].Value = current.RegistrationDate.ToShortDateString();
+                    worksheet.Cells[rowIndex, 1].Value = current.PaymentDate.ToShortDateString();
                     worksheet.Cells[rowIndex, 2].Value = $"{current.Name} {current.Surname}";
                     worksheet.Cells[rowIndex, 3].Value = current.PaidPrice.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"));
                     worksheet.Cells[rowIndex, 4].Value = current.CommissionFee.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"));
@@ -315,5 +315,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
             }
         }
+
+        //public IActionResult GetGroupBasedSalesReportEducatorPriceTable(Guid groupId)
+        //{
+        //    var model = _unitOfWork.Report.GetGroupBasedSalesReportEducatorPriceTable(groupId);
+
+        //}
     }
 }

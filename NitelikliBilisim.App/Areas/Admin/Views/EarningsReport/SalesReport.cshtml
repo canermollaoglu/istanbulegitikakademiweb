@@ -22,7 +22,7 @@
 }
 <div class="card mb-4">
     <div class="card-header">
-       <i class="fa fa-list"></i> Genel Tahsilat Raporu
+        <i class="fa fa-list"></i> Genel Tahsilat Raporu
     </div>
     <div class="card-body">
         <div class="row">
@@ -45,7 +45,7 @@
     <script>
         DevExpress.localization.locale(navigator.language);
         /* elements */
-        
+
         /* assignments */
         $(document).ready(document_onLoad);
 
@@ -126,31 +126,41 @@
                 },
                 columns: [
                     {
-                        caption: "Aktarım Tarihi",
-                        dataField: "blockageResolveDate",
+                        caption: "Satış Tarihi",
+                        dataField: "salesDate",
                         dataType: 'date',
                         format: 'dd/MM/yyyy',
-                        width: 130,
-                        selectedFilterOperation: "<=",
-                        filterValue: dateNow
-                    }, {
-                        caption: "Ad",
-                        dataField: "name",
+                        width: 110,
+                    },
+                    {
+                        caption: "Öğrenci",
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            $(`<span>${current.name} ${current.surname}</span>`).appendTo(container);
+                        },
                         width: 100
 
-                    }, {
-                        caption: "Soyad",
-                        dataField: "surname",
-                        width: 100
                     },
                     {
                         caption: "Telefon",
                         dataField: "phone",
-                        width:110
+                        width: 110
                     },
                     {
                         caption: "Eğitim",
-                        dataField:"educationName"
+                        dataField: "educationName"
+                    },
+                    {
+                        caption: "Grup",
+                        dataField: "groupName",
+                        width:80
+                    },
+                    {
+                        caption: "Eğitmen",
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            $(`<span>${current.educatorName} ${current.educatorSurname}</span>`).appendTo(container);
+                        }
                     },
                     {
                         caption: "Ücret",
@@ -158,23 +168,15 @@
                         customizeText: function (paidPrice) {
                             return paidPrice.value + " ₺";
                         },
-                        width:75
+                        width: 75
                     },
                     {
-                        caption: "İşlem Ücreti",
-                        dataField: "commissionFee",
-                        customizeText: function (commissionFee) {
-                            return commissionFee.value + " ₺";
+                        caption: "Pos Komisyonu",
+                        dataField: "commission",
+                        customizeText: function (commission) {
+                            return commission.value + " ₺";
                         },
-                        width:110
-                    },
-                    {
-                        caption: "Komisyon",
-                        dataField: "commissionRate",
-                        customizeText: function (commissionRate) {
-                            return commissionRate.value + " ₺";
-                        },
-                        width:100
+                        width: 100
                     },
                     {
                         caption: "Kalan",
@@ -182,8 +184,20 @@
                         customizeText: function (merchantPayout) {
                             return merchantPayout.value + " ₺";
                         },
+                        width: 100
+                    },
+                    {
+                        caption: "Durum",
+                        dataField: "status",
                         width:100
-                    }
+                    },
+                    {
+                        caption: "Çözülme Tarihi",
+                        dataField: "blockageResolveDate",
+                        dataType: 'date',
+                        format: 'dd/MM/yyyy',
+                        width: 130
+                    },
 
                 ],
                 summary: {

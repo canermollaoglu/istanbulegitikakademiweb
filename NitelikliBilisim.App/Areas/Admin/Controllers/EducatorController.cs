@@ -9,8 +9,10 @@ using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Enums.user_details;
 using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels.areas.admin.educator;
+using NitelikliBilisim.Support.Enums;
 using NitelikliBilisim.Support.Text;
 using System;
 using System.IO;
@@ -44,7 +46,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducatorAdd");
             var model = new AddGetVm
             {
-                Certificates = _unitOfWork.EducatorCertificate.Get(null, order => order.OrderBy(x => x.Name))
+                Certificates = _unitOfWork.EducatorCertificate.Get(null, order => order.OrderBy(x => x.Name)),
+                BankNames = EnumSupport.ToKeyValuePair<BankNames>()
             };
             return View(model);
         }
@@ -112,7 +115,9 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     Id = newUser.Id,
                     Title = data.Title,
                     Biography = data.Biography,
-                    ShortDescription = data.ShortDescription
+                    ShortDescription = data.ShortDescription,
+                    Bank = data.Bank,
+                    IBAN = data.IBAN
                 };
                 _unitOfWork.Educator.Insert(newEducator, data.CertificateIds);
 
@@ -177,8 +182,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 FilePath = educator.User.AvatarPath,
                 Biography = educator.Biography,
                 ShortDescription = educator.ShortDescription,
+                Bank = educator.Bank,
+                IBAN = educator.IBAN,
                 Certificates = _unitOfWork.EducatorCertificate.Get(null, o => o.OrderBy(x => x.Name)),
-                RelatedCertificates = _unitOfWork.Educator.GetCertificates(educator.Id)
+                RelatedCertificates = _unitOfWork.Educator.GetCertificates(educator.Id),
+                BankNames = EnumSupport.ToKeyValuePair<BankNames>(),
+
             };
             return View(model);
         }
@@ -215,6 +224,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             educator.User.Surname = data.Surname;
             educator.User.PhoneNumber = data.Phone;
             educator.User.Email = data.Email;
+            educator.Bank = data.Bank;
+            educator.IBAN = data.IBAN;
             //Test 
             _unitOfWork.Educator.Update(educator, data.CertificateIds);
 

@@ -77,20 +77,47 @@
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Banka</label>
+                                <select class="form-control" id="select-bank">
+                                    @foreach (var bank in Model.BankNames)
+                                    {
+                                        if (bank.Key == Model.Bank)
+                                        {
+                                            <option selected value="@bank.Key">@bank.Value</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@bank.Key">@bank.Value</option>
+                                        }
+
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>IBAN No</label>
+                                <input type="text" class="form-control" required placeholder="IBAN Numarası" id="input-iban" value="@Model.IBAN" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Eğitmenin Sahip Olduğu Sertifikalar</label>
                                 <select id="select-certificates" multiple="multiple" class="form-control">
                                     @foreach (var item in Model.Certificates)
                                     {
-                                        if (Model.RelatedCertificates.Any(x=>x.Id == item.Id))
+                                        if (Model.RelatedCertificates.Any(x => x.Id == item.Id))
                                         {
                                             <option selected data-image="@StorageService.DownloadFile(System.IO.Path.GetFileName(item.CertificateImagePath), "educator-certificate-images").Result" value="@item.Id">@item.Name</option>
 
                                         }
                                         else
                                         {
-                                        <option data-image="@StorageService.DownloadFile(System.IO.Path.GetFileName(item.CertificateImagePath), "educator-certificate-images").Result" value="@item.Id">@item.Name</option>
+                                            <option data-image="@StorageService.DownloadFile(System.IO.Path.GetFileName(item.CertificateImagePath), "educator-certificate-images").Result" value="@item.Id">@item.Name</option>
                                         }
                                     }
                                 </select>

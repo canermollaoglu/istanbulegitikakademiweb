@@ -43,7 +43,7 @@ namespace NitelikliBilisim.Business.Repositories
                         Id = student.Id,
                         Name = student.Name,
                         Surname = student.Surname,
-                        RegistrationDate = gs.CreatedDate,
+                        PaymentDate = paymentDetailInfo.CreatedDate,
                         PaidPrice = paymentDetailInfo.PaidPrice,
                         CommissionFee = paymentDetailInfo.CommissionFee,
                         CommissionRate = paymentDetailInfo.CommisionRate,
@@ -112,7 +112,8 @@ namespace NitelikliBilisim.Business.Repositories
                 SelectEducators = educators,
                 MinimumStudentCount = minimumStudent,
                 OldPrice = group.OldPrice,
-                NewPrice = group.NewPrice
+                NewPrice = group.NewPrice,
+                ExpectedProfitRate = expectedProfitRate
             };
             return model;
         }
@@ -331,7 +332,7 @@ namespace NitelikliBilisim.Business.Repositories
                                       where grupStudent.Id == groupId && !paymentDetailInfo.IsCancelled
                                       select paymentDetailInfo).Sum(x => x.PaidPrice);
 
-            decimal totalEducatorExpense = totalHours * educatorExpensesAverage;
+            decimal totalEducatorExpense = (totalHours * educatorExpensesAverage) * (decimal)1.45;
             decimal profitRate = studentIncomes>0 && (groupExpenses + totalEducatorExpense) > 0?  Math.Round(studentIncomes / (groupExpenses + totalEducatorExpense), 2) : 0 ;
             
 

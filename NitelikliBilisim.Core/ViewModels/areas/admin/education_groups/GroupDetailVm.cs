@@ -26,6 +26,7 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_groups
         public DateTime? EndDate { get; set; }
         public decimal? OldPrice { get; set; }
         public decimal? NewPrice { get; set; }
+        public int ExpectedProfitRate { get; set; }
     }
     
 }

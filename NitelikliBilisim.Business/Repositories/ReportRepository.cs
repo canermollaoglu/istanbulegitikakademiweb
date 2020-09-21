@@ -108,6 +108,7 @@ namespace NitelikliBilisim.Business.Repositories
             return (from gs in _context.Bridge_GroupStudents
                     join student in _context.Users on gs.Id2 equals student.Id
                     join ticket in _context.Tickets on gs.TicketId equals ticket.Id
+                    join educationGroup in _context.EducationGroups on gs.Id equals educationGroup.Id
                     join paymentDetailInfo in _context.OnlinePaymentDetailsInfos on ticket.InvoiceDetailsId equals paymentDetailInfo.Id
                     where !paymentDetailInfo.IsCancelled
                     orderby gs.CreatedDate
@@ -117,13 +118,40 @@ namespace NitelikliBilisim.Business.Repositories
                         Id = student.Id,
                         Name = student.Name,
                         Surname = student.Surname,
-                        RegistrationDate = gs.CreatedDate,
+                        PaymentDate = paymentDetailInfo.CreatedDate,
+                        ListPrice = educationGroup.NewPrice,
                         PaidPrice = paymentDetailInfo.PaidPrice,
                         CommissionFee = paymentDetailInfo.CommissionFee,
                         CommissionRate = paymentDetailInfo.CommisionRate,
+                        Commission = paymentDetailInfo.CommissionFee+paymentDetailInfo.CommisionRate,
                         MerchantPayout = paymentDetailInfo.MerchantPayout
                     });
         }
+        public IQueryable<GroupBasedSalesReportStudentsVm> GetGroupBasedSalesReportCancellationPaymentStudents(Guid groupId)
+        {
+            return (from gs in _context.Bridge_GroupStudents
+                    join student in _context.Users on gs.Id2 equals student.Id
+                    join ticket in _context.Tickets on gs.TicketId equals ticket.Id
+                    join educationGroup in _context.EducationGroups on gs.Id equals educationGroup.Id
+                    join paymentDetailInfo in _context.OnlinePaymentDetailsInfos on ticket.InvoiceDetailsId equals paymentDetailInfo.Id
+                    where paymentDetailInfo.IsCancelled
+                    orderby gs.CreatedDate
+                    where gs.Id == groupId
+                    select new GroupBasedSalesReportStudentsVm
+                    {
+                        Id = student.Id,
+                        Name = student.Name,
+                        Surname = student.Surname,
+                        PaymentDate = paymentDetailInfo.CreatedDate,
+                        ListPrice = educationGroup.NewPrice,
+                        PaidPrice = paymentDetailInfo.PaidPrice,
+                        CommissionFee = paymentDetailInfo.CommissionFee,
+                        CommissionRate = paymentDetailInfo.CommisionRate,
+                        Commission = paymentDetailInfo.CommissionFee + paymentDetailInfo.CommisionRate,
+                        MerchantPayout = paymentDetailInfo.MerchantPayout
+                    });
+        }
+
 
         public IQueryable<GeneralSalesReportVm> GetGeneralSalesReport()
         {
@@ -132,24 +160,46 @@ namespace NitelikliBilisim.Business.Repositories
                     join ticket in _context.Tickets on paymentDetailInfo.Id equals ticket.InvoiceDetailsId
                     join education in _context.Educations on ticket.EducationId equals education.Id
                     join groupStudent in _context.Bridge_GroupStudents on ticket.Id equals groupStudent.TicketId
+                    join educationGroup in _context.EducationGroups on groupStudent.Id equals educationGroup.Id 
+                    join educator in _context.Users on educationGroup.EducatorId equals educator.Id
                     join student in _context.Users on groupStudent.Id2 equals student.Id
                     orderby paymentDetailInfo.CreatedDate descending
                     where !paymentDetailInfo.IsCancelled
                     select new GeneralSalesReportVm
                     {
+                        SalesDate = paymentDetailInfo.CreatedDate,
                         BlockageResolveDate = paymentDetailInfo.BlockageResolveDate,
                         EducationName = education.Name,
+                        GroupName = educationGroup.GroupName,
+                        EducatorName = educator.Name,
+                        EducatorSurname = educator.Surname,
                         Name = student.Name,
                         Surname = student.Surname,
                         Phone = student.PhoneNumber,
                         PaidPrice = paymentDetailInfo.PaidPrice,
                         CommissionFee = paymentDetailInfo.CommissionFee,
                         CommissionRate = paymentDetailInfo.CommisionRate,
-                        MerchantPayout = paymentDetailInfo.MerchantPayout
+                        Commission = paymentDetailInfo.CommissionFee + paymentDetailInfo.CommisionRate,
+                        MerchantPayout = paymentDetailInfo.MerchantPayout,
+                        Status =paymentDetailInfo.BlockageResolveDate.Date<DateTime.Now.Date?"Ödendi":"Ödenmedi",
                     });
 
 
         }
 
+        public object GetGroupBasedSalesReportEducatorPriceTable(Guid groupId)
+        {
+            var educators = _context.Educators.Include(x=>x.User).ToList();
+            var data = _context.GroupLessonDays.Where(x => x.GroupId == groupId).GroupBy(x => x.EducatorId)
+                .Select(x => new EducatorPriceTableVm
+                {
+                    EducatorName = educators.First(e => e.Id == x.Key).User.Name,
+                    AvgPrice = x.Average(p => p.EducatorSalary.GetValueOrDefault()),
+                    
+
+                });
+
+            throw new NotImplementedException();
+        }
     }
 }

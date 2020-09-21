@@ -65,6 +65,25 @@
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Banka</label>
+                                <select class="form-control" id="select-bank">
+                                    @foreach (var bank in Model.BankNames)
+                                    {
+                                        <option value="@bank.Key">@bank.Value</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>IBAN No</label>
+                                <input type="text" class="form-control" required placeholder="IBAN Numarası" id="input-iban" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Eğitmenin Sahip Olduğu Sertifikalar</label>

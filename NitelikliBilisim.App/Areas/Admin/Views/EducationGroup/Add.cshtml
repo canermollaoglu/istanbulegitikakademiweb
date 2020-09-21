@@ -146,7 +146,9 @@
                         </div>
                     </div>
                     <!-- /Ders günleri seçimi -->
+                    <div class="alert alert-warning" id="education-days-info" style="display:none">
 
+                    </div>
                     <div class="row">
                         <div class="offset-md-10 col-md-2">
                             <button id="btn-save" type="button" class="btn_1 form-control">Kaydet</button>
@@ -158,14 +160,7 @@
     </div>
 </div>
 
-<div class="card mb-3">
-    <div class="card-header">
-        <i class="fa fa-list"></i><strong>Grup</strong> Giderleri
-    </div>
-    <div class="card-body">
 
-    </div>
-</div>
 
 @section postScripts{
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
@@ -189,6 +184,7 @@
         var inputEducatorPrice = $('#input-educator-price');
         var inputQuota = $("#input-quota");
         var btnSave = $("#btn-save");
+        var educationDaysInfoDiv = $("#education-days-info");
 
         /* assignments */
         $(document).ready(document_onLoad);
@@ -215,6 +211,17 @@
 
             var educationId = selectEducations.options[selectEducations.selectedIndex].value;
             $.ajax({
+                url: `/admin/get-education-days-info/${educationId}`,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        educationDaysInfoDiv.html(`<span>Seçtiğiniz eğitim toplam ${res.data.days} gün sürmektedir.</span>`).show();
+                    } else {
+                        educationDaysInfoDiv.hide();
+                    }
+                }
+            });
+            $.ajax({
                 url: `/admin/get-assigned-educators-for-group-add/${educationId}`,
                 method: "get",
                 success: (res) => {
@@ -230,6 +237,7 @@
                     }
                 }
             });
+
         }
         function selectHost_onChange() {
             var hostId = selectHosts.options[selectHosts.selectedIndex].value;

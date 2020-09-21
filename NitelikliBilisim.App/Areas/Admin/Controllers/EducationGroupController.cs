@@ -138,6 +138,16 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 data = model
             });
         }
+        [Route("admin/get-education-days-info/{educationId?}")]
+        public IActionResult GetEducationDaysInfo(Guid educationId)
+        {
+            var model = _unitOfWork.Education.GetById(educationId);
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = model
+            });
+        }
         [Route("admin/get-class-rooms-by-host-id/{hostId?}")]
         public IActionResult GetClassRoomsByHostId(Guid? hostId)
         {
