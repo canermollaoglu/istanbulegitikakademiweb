@@ -167,9 +167,9 @@ namespace NitelikliBilisim.Business.Repositories
             return educationDtos;
         }
 
-        public Guid? Insert(Education entity, List<Guid> tagIds, List<EducationMedia> medias, bool isSaveLater = false)
+        public Guid? Insert(Education entity, string[] tags, List<EducationMedia> medias, bool isSaveLater = false)
         {
-            if (tagIds == null || tagIds.Count == 0)
+            if (tags == null || tags.Length == 0)
                 return null;
             if (Context.Educations.Any(x => x.Name == entity.Name))
                 return null;
@@ -186,14 +186,31 @@ namespace NitelikliBilisim.Business.Repositories
 
                     Context.EducationMedias.AddRange(medias);
                     //_context.SaveChanges();
-
+                    var dbTags = Context.EducationTags.ToList();
                     var bridge = new List<Bridge_EducationTag>();
-                    foreach (var tagId in tagIds)
-                        bridge.Add(new Bridge_EducationTag
+                    foreach (var tagName in tags)
+                    {
+                        if (!dbTags.Any(x => x.Name == tagName))
                         {
-                            Id = tagId,
-                            Id2 = educationId
-                        });
+
+                            var educationTag = new EducationTag { Name = tagName };
+                            var model = Context.EducationTags.Add(educationTag);
+                            Context.SaveChanges();
+                            bridge.Add(new Bridge_EducationTag
+                            {
+                                Id = educationTag.Id,
+                                Id2 = educationId
+                            });
+                        }
+                        else
+                        {
+                            bridge.Add(new Bridge_EducationTag
+                            {
+                                Id = dbTags.First(x => x.Name == tagName).Id,
+                                Id2 = educationId
+                            });
+                        }
+                    }
                     var tag = entity.Name.FormatForTag();
                     EducationTag autoTag = null;
                     if (!Context.EducationTags.Any(x => x.Name == tag))
@@ -266,24 +283,54 @@ namespace NitelikliBilisim.Business.Repositories
             return education.IsActive;
         }
 
-        public int Update(Education entity, List<Guid> tagIds, bool isSaveLater = false)
+        public int Update(Education entity, string[] tags, bool isSaveLater = false)
         {
-            var currentCategories = Context.Bridge_EducationTags.Where(x => x.Id2 == entity.Id).ToList();
-
-            Context.Bridge_EducationTags.RemoveRange(currentCategories);
-
-            var newItems = new List<Bridge_EducationTag>();
-            foreach (var tagId in tagIds)
-                newItems.Add(new Bridge_EducationTag
+            using (var transaction = Context.Database.BeginTransaction())
+            {
+                try
                 {
-                    Id = tagId,
-                    Id2 = entity.Id
-                });
+                    var currentTags = Context.Bridge_EducationTags.Where(x => x.Id2 == entity.Id).ToList();
+                    Context.Bridge_EducationTags.RemoveRange(currentTags);
+                    Context.SaveChanges();
+                    var educationId = base.Update(entity);
+                    Context.SaveChanges();
+                    var newItems = new List<Bridge_EducationTag>();
+                    var dbTags = Context.EducationTags.ToList();
+                    foreach (var tagName in tags)
+                    {
+                        if (!dbTags.Any(x => x.Name == tagName))
+                        {
 
-            Context.Bridge_EducationTags.AddRange(newItems);
-            Context.SaveChanges();
-
-            return base.Update(entity, isSaveLater);
+                            var educationTag = new EducationTag { Name = tagName };
+                            var model = Context.EducationTags.Add(educationTag);
+                            Context.SaveChanges();
+                            newItems.Add(new Bridge_EducationTag
+                            {
+                                Id = educationTag.Id,
+                                Id2 = entity.Id
+                            });
+                        }
+                        else
+                        {
+                            newItems.Add(new Bridge_EducationTag
+                            {
+                                Id = dbTags.First(x => x.Name == tagName).Id,
+                                Id2 = entity.Id
+                            });
+                        }
+                    }
+                    Context.Bridge_EducationTags.AddRange(newItems);
+                    Context.SaveChanges();
+                    transaction.Commit();
+                    return educationId;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw new Exception(ex.Message);
+                }
+                
+            }
         }
 
         public List<EducationVm> GetInfiniteScrollSearchResults(string categoryName, string searchText = "", int page = 0, OrderCriteria order = OrderCriteria.Latest, FiltersVm filter = null)
