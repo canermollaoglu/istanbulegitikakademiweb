@@ -28,7 +28,7 @@ namespace NitelikliBilisim.Business.Repositories
             _context = context;
         }
 
-      
+
         public List<GroupBasedSalesReportStudentsVm> GetGroupBasedSalesReportStudentsToList(Guid groupId)
         {
             return (from gs in _context.Bridge_GroupStudents
@@ -104,7 +104,7 @@ namespace NitelikliBilisim.Business.Repositories
                     Name = group.Education.Name
                 },
                 StartDate = group.StartDate,
-                EndDate = lastDay!=null?lastDay.DateOfLesson.Date:group.StartDate,
+                EndDate = lastDay != null ? lastDay.DateOfLesson.Date : group.StartDate,
                 ClassRoomName = classRoom != null ? classRoom.Name : "Sınıf bilgisi girilmemiş.",
                 EducatorName = $"{educator.Name} {educator.Surname}",
                 GroupExpenseTypes = _context.GroupExpenseTypes.ToList(),
@@ -120,12 +120,12 @@ namespace NitelikliBilisim.Business.Repositories
         public GroupGeneralInformationVm GetGroupGeneralInformation(Guid groupId)
         {
             var group = _context.EducationGroups
-                .Include(x=>x.GroupStudents)
+                .Include(x => x.GroupStudents)
                 .Include(x => x.Education)
-                .Include(x => x.Host).First(x=>x.Id == groupId);
+                .Include(x => x.Host).First(x => x.Id == groupId);
             string classRoomName = string.Empty;
             var firstLessonDay = _context.GroupLessonDays.FirstOrDefault(x => x.GroupId == groupId);
-            if (firstLessonDay!=null && firstLessonDay.ClassroomId!=null)
+            if (firstLessonDay != null && firstLessonDay.ClassroomId != null)
             {
                 classRoomName = _context.Classrooms.First(x => x.Id == firstLessonDay.ClassroomId).Name;
             }
@@ -236,7 +236,7 @@ namespace NitelikliBilisim.Business.Repositories
                 .Select(x => new EducationGroupListVm
                 {
                     Id = x.Id,
-                    NewPrice = x.NewPrice,
+                    NewPrice = x.NewPrice.HasValue ? x.NewPrice : 0,
                     EducationName = x.Education.Name,
                     GroupName = x.GroupName,
                     HostName = x.Host.HostName,
@@ -312,20 +312,20 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 ExpectedRateOfProfitability = data.ExpectedRateOfProfitability,
                 PlannedAmount = newTotal,
-                MinStudentCount = CalculateMinimumStudentCount(newTotal - totalIncomes , educationPrice)
+                MinStudentCount = CalculateMinimumStudentCount(newTotal - totalIncomes, educationPrice)
             };
 
         }
 
         public GroupExpenseAndIncomeVm CalculateGroupExpenseAndIncome(Guid groupId)
         {
-            var group = _context.EducationGroups.Include(x => x.GroupLessonDays).Include(x => x.Education).Include(x=>x.GroupExpenses).First(x=>x.Id == groupId);
+            var group = _context.EducationGroups.Include(x => x.GroupLessonDays).Include(x => x.Education).Include(x => x.GroupExpenses).First(x => x.Id == groupId);
             var education = group.Education;
             var totalHours = education.HoursPerDay * education.Days;
             var lessonDays = group.GroupLessonDays.ToList();
 
             decimal groupExpenses = group.GroupExpenses.Sum(x => (x.Price * x.Count));
-            decimal educatorExpensesAverage = lessonDays!=null && lessonDays.Count>0?lessonDays.Average(x => x.EducatorSalary.GetValueOrDefault()):0;
+            decimal educatorExpensesAverage = lessonDays != null && lessonDays.Count > 0 ? lessonDays.Average(x => x.EducatorSalary.GetValueOrDefault()) : 0;
             decimal studentIncomes = (from grupStudent in _context.Bridge_GroupStudents
                                       join ticket in _context.Tickets on grupStudent.TicketId equals ticket.Id
                                       join paymentDetailInfo in _context.OnlinePaymentDetailsInfos on ticket.InvoiceDetailsId equals paymentDetailInfo.Id
@@ -333,8 +333,8 @@ namespace NitelikliBilisim.Business.Repositories
                                       select paymentDetailInfo).Sum(x => x.PaidPrice);
 
             decimal totalEducatorExpense = (totalHours * educatorExpensesAverage) * (decimal)1.45;
-            decimal profitRate = studentIncomes>0 && (groupExpenses + totalEducatorExpense) > 0?  Math.Round(studentIncomes / (groupExpenses + totalEducatorExpense), 2) : 0 ;
-            
+            decimal profitRate = studentIncomes > 0 && (groupExpenses + totalEducatorExpense) > 0 ? Math.Round(studentIncomes / (groupExpenses + totalEducatorExpense), 2) : 0;
+
 
             return new GroupExpenseAndIncomeVm
             {
@@ -343,7 +343,7 @@ namespace NitelikliBilisim.Business.Repositories
                 GroupExpenses = groupExpenses,
                 EducatorExpenses = totalEducatorExpense,
                 TotalStudentIncomes = studentIncomes,
-                ProfitRate = (profitRate*100)-100
+                ProfitRate = (profitRate * 100) - 100
             };
         }
 
@@ -551,7 +551,7 @@ namespace NitelikliBilisim.Business.Repositories
 
         private int CalculateMinimumStudentCount(decimal difference, decimal educationPrice)
         {
-            return (int)Math.Ceiling((difference / educationPrice));
+            return educationPrice == 0 ? 0 : (int)Math.Ceiling((difference / educationPrice));
         }
 
         public List<CartItemVm> GetGroupCartItems(List<_CartItem> items)

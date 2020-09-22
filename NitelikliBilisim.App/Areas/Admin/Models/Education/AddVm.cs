@@ -9,7 +9,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Models.Education
 {
     public class AddGetVm
     {
-        public List<EducationTag> Tags { get; set; }
         public List<EducationCategory> Categories { get; set; }
         public Dictionary<int, string> Levels { get; set; }
     }
@@ -31,7 +30,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Models.Education
         public int? EducationLevel { get; set; }
         [Required(ErrorMessage = "Eğitim en az 1 kategoriye ait olmalıdır")]
         public Guid CategoryId { get; set; }
-        public List<Guid> TagIds { get; set; }
+        public string[] Tags { get; set; }
     }
     public class AddPostVm : EducationCrudVm
     {

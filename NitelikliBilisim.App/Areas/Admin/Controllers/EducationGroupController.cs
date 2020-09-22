@@ -175,7 +175,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     errors = ModelStateUtil.GetErrors(ModelState)
                 });
 
-            var isSuccess = _unitOfWork.EducationGroup.Insert(entity: new EducationGroup
+            var group = new EducationGroup
             {
                 IsGroupOpenForAssignment = true,
                 GroupName = data.Name,
@@ -183,9 +183,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 EducatorId = data.EducatorId,
                 HostId = data.HostId.Value,
                 StartDate = data.StartDate.Value,
-                NewPrice = data.Price.Value,
+                NewPrice = data.Price,
                 Quota = data.Quota.Value
-            }, days: data.LessonDays, data.ClassRoomId, data.EducatorPrice);
+            };
+
+            var isSuccess = _unitOfWork.EducationGroup.Insert(group,data.LessonDays, data.ClassRoomId, data.EducatorPrice);
             var emails = _unitOfWork.EmailHelper.GetAdminEmails();
             await _emailSender.SendAsync(new Core.ComplexTypes.EmailMessage
             {

@@ -26,7 +26,6 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_groups
         public Guid? HostId { get; set; }
         [Required]
         public byte? Quota { get; set; }
-        [Required(ErrorMessage = "Fiyat alanı boş geçilemez")]
         public decimal? Price { get; set; }
         public Guid? ClassRoomId { get; set; }
         public decimal EducatorPrice { get; set; } = 0;
