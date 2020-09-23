@@ -27,7 +27,15 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.WebAPI
             var data = _unitOfWork.Report.GetGroupBasedSalesReportStudents(groupId);
             return Ok(DataSourceLoader.Load(data, loadOptions));
         }
-
+        
+            [HttpGet]
+        [Route("get-group-based-cancellation-sales-report")]
+        public IActionResult GetGroupBasedCancellationSalesReport(DataSourceLoadOptions loadOptions, Guid groupId)
+        {
+            loadOptions.PrimaryKey = new[] { "Id" };
+            var data = _unitOfWork.Report.GetGroupBasedCancellationSalesReport(groupId);
+            return Ok(DataSourceLoader.Load(data, loadOptions));
+        }
         public IActionResult GetStudentBasedSalesReport(DataSourceLoadOptions loadOptions, string studentId)
         {
             var data = _unitOfWork.Report.GetStudentBasedSalesReport(studentId);

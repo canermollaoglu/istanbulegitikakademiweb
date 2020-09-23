@@ -64,6 +64,7 @@ namespace NitelikliBilisim.Business.Repositories
 
             return model;
         }
+        
 
         public IQueryable<StudentBasedSalesReport> GetStudentBasedSalesReport(string studentId)
         {
@@ -101,6 +102,31 @@ namespace NitelikliBilisim.Business.Repositories
                         });
 
             return data;
+        }
+
+
+        public IQueryable<GroupBasedCancellationSalesReport> GetGroupBasedCancellationSalesReport(Guid groupId)
+        {
+            return (from onlinePaymentDetailInfo in _context.OnlinePaymentDetailsInfos
+                    join invoiceDetail in _context.InvoiceDetails on onlinePaymentDetailInfo.Id equals invoiceDetail.Id
+                    join invoice in _context.Invoices on invoiceDetail.InvoiceId equals invoice.Id
+                    join student in _context.Users on invoice.CustomerId equals student.Id
+                    join educationGroup in _context.EducationGroups on invoiceDetail.GroupId equals educationGroup.Id
+                    where onlinePaymentDetailInfo.IsCancelled
+                    where educationGroup.Id == groupId
+                    select new GroupBasedCancellationSalesReport
+                    {
+                        Id = student.Id,
+                        Name = student.Name,
+                        Surname = student.Surname,
+                        CancellationDate = onlinePaymentDetailInfo.CancellationDate,
+                        ListPrice = invoiceDetail.PriceAtCurrentDate,
+                        PaidPrice = onlinePaymentDetailInfo.PaidPrice,
+                        CommissionFee = onlinePaymentDetailInfo.CommissionFee,
+                        CommissionRate = onlinePaymentDetailInfo.CommisionRate,
+                        Commission = onlinePaymentDetailInfo.CommissionFee + onlinePaymentDetailInfo.CommisionRate,
+                        MerchantPayout = onlinePaymentDetailInfo.MerchantPayout
+                    });
         }
 
         public IQueryable<GroupBasedSalesReportStudentsVm> GetGroupBasedSalesReportStudents(Guid groupId)
@@ -182,8 +208,6 @@ namespace NitelikliBilisim.Business.Repositories
                         MerchantPayout = paymentDetailInfo.MerchantPayout,
                         Status =paymentDetailInfo.IsCancelled?"İade":paymentDetailInfo.BlockageResolveDate.Date<DateTime.Now.Date?"Aktarıldı":"Bekliyor",
                     });
-
-
         }
 
         public List<EducatorPriceTableVm> GetGroupBasedSalesReportEducatorSalaryTable(Guid groupId)
@@ -202,8 +226,6 @@ namespace NitelikliBilisim.Business.Repositories
                     SumPrice = (decimal)1.45* educator.Value * group.GroupLessonDays.Count(x => x.EducatorId == educator.Key) * group.Education.HoursPerDay
                 });
             }    
-
-
             return model;
         }
     }
