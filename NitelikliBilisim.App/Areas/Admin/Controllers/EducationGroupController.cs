@@ -160,6 +160,43 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 data = model
             });
         }
+
+        [Route("admin/get-assigned-educators-for-group-detail/{gId?}")]
+        public IActionResult GetEducatorsOfGroup(Guid? gId)
+        {
+            if (!gId.HasValue)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false
+                });
+            var group = _unitOfWork.EducationGroup.GetById(gId.Value);
+            var model = _unitOfWork.Bridge_EducationEducator.GetAssignedEducators(group.EducationId);
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = model
+            });
+        }
+
+        [Route("admin/get-assigned-class-rooms-for-group-detail/{gId?}")]
+        public IActionResult GetClassRoomsOfGroup(Guid? gId)
+        {
+            if (!gId.HasValue)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false
+                });
+            var group = _unitOfWork.EducationGroup.GetById(gId.Value);
+            var model = _unitOfWork.ClassRoom.GetClassRoomsByHostId(group.HostId);
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = model
+            });
+        }
+
+
+
         [Route("admin/get-education-days-info/{educationId?}")]
         public IActionResult GetEducationDaysInfo(Guid educationId)
         {

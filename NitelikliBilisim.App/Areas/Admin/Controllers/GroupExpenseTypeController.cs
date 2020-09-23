@@ -132,5 +132,17 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 });
             }
         }
+
+
+        [Route("admin/get-expense-types")]
+        public IActionResult GetExpenseTypes()
+        {
+            var model = _unitOfWork.GroupExpenseType.Get().ToList();
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = model
+            });
+        }
     }
 }

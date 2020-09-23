@@ -62,6 +62,9 @@ function document_onLoad() {
     createStudentGrid();
     createLessonDayGrid();
     createEligibleTicketTable();
+    loadEducatorsSelect();
+    loadClassRoomsSelect();
+    loadExpenseTypesSelect();
 
     $(document).ajaxStart(function () {
         $("#loading").show();
@@ -766,4 +769,82 @@ function createStudentGrid() {
         ]
     });
 
+}
+
+/*Select */
+function loadEducatorsSelect() {
+    var gId = groupId.val();
+    $.ajax({
+        url: `/admin/get-assigned-educators-for-group-detail/${gId}`,
+        method: "get",
+        success: (res) => {
+            if (res.isSuccess) {
+                getEducators(res.data);
+                if (!res.data.length)
+                    $(selectEducators).prop("disabled", true);
+            }
+        }
+    });
+}
+function getEducators(data) {
+    var jquerySelectEducators = $(selectEducators);
+    jquerySelectEducators.html(`<option value="">Eğitmen seçiniz...</option>`);
+    var appended = "";
+    for (var i = 0; i < data.length; i++) {
+        var item = data[i];
+        appended += `<option value="${item.educatorId}">${item.name} ${item.surname}</option>`;
+    }
+
+    $(selectEducators).append(appended);
+}
+
+function loadClassRoomsSelect() {
+    var gId = groupId.val();
+    $.ajax({
+        url: `/admin/get-assigned-class-rooms-for-group-detail/${gId}`,
+        method: "get",
+        success: (res) => {
+            if (res.isSuccess) {
+                getClassRooms(res.data);
+                if (!res.data.length)
+                    $(selectClassrooms).prop("disabled", true);
+            }
+        }
+    });
+}
+function getClassRooms(data) {
+    var jquerySelectClassRooms = $(selectClassrooms);
+    jquerySelectClassRooms.html(`<option value="">Sınıf seçiniz...</option>`);
+    var appended = "";
+    for (var i = 0; i < data.length; i++) {
+        var item = data[i];
+        appended += `<option value="${item.id}">${item.name}</option>`;
+    }
+
+    $(selectClassrooms).append(appended);
+}
+
+function loadExpenseTypesSelect() {
+    $.ajax({
+        url: `/admin/get-expense-types`,
+        method: "get",
+        success: (res) => {
+            if (res.isSuccess) {
+                getExpenseTypes(res.data);
+                if (!res.data.length)
+                    $(selectExpenseTypes).prop("disabled", true);
+            }
+        }
+    });
+}
+function getExpenseTypes(data) {
+    var jquerySelectExpenseTypes = $(selectExpenseTypes);
+    jquerySelectExpenseTypes.html(`<option value="">Gider tipi seçiniz...</option>`);
+    var appended = "";
+    for (var i = 0; i < data.length; i++) {
+        var item = data[i];
+        appended += `<option value="${item.id}">${item.name}</option>`;
+    }
+
+    $(selectExpenseTypes).append(appended);
 }
