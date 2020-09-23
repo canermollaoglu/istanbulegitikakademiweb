@@ -142,7 +142,7 @@ namespace NitelikliBilisim.App.Lexicographer
 
             /*Reports*/
             _dictionary.Add("AdminGeneralSalesReport",
-             new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Genel Tahsilat Raporu", url: null) });
+             new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Genel Satış Raporu", url: null) });
             _dictionary.Add("AdminGroupBasedSalesReport",
              new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Grup Bazlı Satış Raporu", url: null) });
 

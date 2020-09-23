@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Tahsilat Raporu";
+    ViewData["Title"] = "Genel Satış Raporu";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 @section styles{
@@ -22,7 +22,37 @@
 }
 <div class="card mb-4">
     <div class="card-header">
-        <i class="fa fa-list"></i> Genel Tahsilat Raporu
+        <i class="fa fa-list"></i> Tarih Aralığı
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label>Başlangıç Tarihi</label>
+                            <input type="date" value="" class="form-control" id="input-start-date" />
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label>Bitiş Tarihi</label>
+                            <input type="date" value="" class="form-control" id="input-end-date" />
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button onclick="applyDateFilter()" class="btn btn-outline-primary no-label">Getir</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fa fa-list"></i> Genel Satış Raporu
     </div>
     <div class="card-body">
         <div class="row">
@@ -54,9 +84,17 @@
             createGeneralSalesReportGrid();
         }
 
+        function applyDateFilter() {
+            $("#sales-report-grid").dxDataGrid("instance").filter(
+                [
+                    ["salesDate", ">=", $("#input-start-date").val()],
+                    "and",
+                    ["salesDate", "<=", $("#input-end-date").val()]
+                ]);
+
+        }
+
         function createGeneralSalesReportGrid() {
-            var dt = new Date();
-            var dateNow = dt;
             var SERVICE_URL = "../../api/earningsreport/get-general-sales-report"
             $("#sales-report-grid").dxDataGrid({
                 dataSource: DevExpress.data.AspNet.createStore({
@@ -153,7 +191,7 @@
                     {
                         caption: "Grup",
                         dataField: "groupName",
-                        width:80
+                        width: 80
                     },
                     {
                         caption: "Eğitmen",
@@ -163,7 +201,7 @@
                         }
                     },
                     {
-                        caption: "Ücret",
+                        caption: "Satış Fiyatı",
                         dataField: "paidPrice",
                         customizeText: function (paidPrice) {
                             return paidPrice.value + " ₺";
@@ -176,10 +214,10 @@
                         customizeText: function (commission) {
                             return commission.value + " ₺";
                         },
-                        width: 100
+                        width: 110
                     },
                     {
-                        caption: "Kalan",
+                        caption: "Ödenen Tutar",
                         dataField: "merchantPayout",
                         customizeText: function (merchantPayout) {
                             return merchantPayout.value + " ₺";
@@ -187,9 +225,9 @@
                         width: 100
                     },
                     {
-                        caption: "Durum",
+                        caption: "Kasa Durumu",
                         dataField: "status",
-                        width:100
+                        width: 100
                     },
                     {
                         caption: "Çözülme Tarihi",

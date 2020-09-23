@@ -155,18 +155,16 @@ namespace NitelikliBilisim.Business.Repositories
 
         public IQueryable<GeneralSalesReportVm> GetGeneralSalesReport()
         {
-            //Todo yalnızca aktarılmış olan ücretleri göstermek için datetime kontrolü BlockageResolveDate üzerinden yapılabilir.
-            return (from paymentDetailInfo in _context.OnlinePaymentDetailsInfos
-                    join ticket in _context.Tickets on paymentDetailInfo.Id equals ticket.InvoiceDetailsId
-                    join education in _context.Educations on ticket.EducationId equals education.Id
-                    join groupStudent in _context.Bridge_GroupStudents on ticket.Id equals groupStudent.TicketId
-                    join educationGroup in _context.EducationGroups on groupStudent.Id equals educationGroup.Id 
+             return (from paymentDetailInfo in _context.OnlinePaymentDetailsInfos
+                    join invoiceDetail in _context.InvoiceDetails on paymentDetailInfo.Id equals invoiceDetail.Id
+                    join invoice in _context.Invoices on invoiceDetail.InvoiceId equals invoice.Id
+                    join education in _context.Educations on invoiceDetail.EducationId equals education.Id
+                    join educationGroup in _context.EducationGroups on invoiceDetail.GroupId equals educationGroup.Id 
                     join educator in _context.Users on educationGroup.EducatorId equals educator.Id
-                    join student in _context.Users on groupStudent.Id2 equals student.Id
+                    join student in _context.Users on invoice.CustomerId equals student.Id
                     orderby paymentDetailInfo.CreatedDate descending
-                    where !paymentDetailInfo.IsCancelled
                     select new GeneralSalesReportVm
-                    {
+                    { 
                         SalesDate = paymentDetailInfo.CreatedDate,
                         BlockageResolveDate = paymentDetailInfo.BlockageResolveDate,
                         EducationName = education.Name,
@@ -181,7 +179,7 @@ namespace NitelikliBilisim.Business.Repositories
                         CommissionRate = paymentDetailInfo.CommisionRate,
                         Commission = paymentDetailInfo.CommissionFee + paymentDetailInfo.CommisionRate,
                         MerchantPayout = paymentDetailInfo.MerchantPayout,
-                        Status =paymentDetailInfo.BlockageResolveDate.Date<DateTime.Now.Date?"Ödendi":"Ödenmedi",
+                        Status =paymentDetailInfo.IsCancelled?"İade":paymentDetailInfo.BlockageResolveDate.Date<DateTime.Now.Date?"Aktarıldı":"Bekliyor",
                     });
 
 
