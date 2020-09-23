@@ -7,6 +7,7 @@ using NitelikliBilisim.Core.ViewModels.areas.admin.reports;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 
@@ -316,10 +317,28 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             }
         }
 
-        //public IActionResult GetGroupBasedSalesReportEducatorPriceTable(Guid groupId)
-        //{
-        //    var model = _unitOfWork.Report.GetGroupBasedSalesReportEducatorPriceTable(groupId);
+        [Route("raporlar/grup-bazli-satis-raporu-egitmen-ucret-tablosu")]
+        public IActionResult GetGroupBasedSalesReportEducatorSalaryTable(Guid groupId)
+        {
+            try
+            {
+                var model = _unitOfWork.Report.GetGroupBasedSalesReportEducatorSalaryTable(groupId);
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    data = model
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { $"Hata : {ex.Message}" }
+                });
+            }
+            
 
-        //}
+        }
     }
 }

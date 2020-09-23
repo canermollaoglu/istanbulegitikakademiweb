@@ -115,13 +115,16 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
+                                <td></td>
                                 <td>Eğitmen İsmi</td>
-                                <td>Ortalam Ücret</td>
+                                <td>Ortalma Ücret</td>
                                 <td>Ders Sayısı</td>
                                 <td>Toplam</td>
                             </tr>
                         </thead>
+                        <tbody id="tbody-educator-salary">
 
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -143,6 +146,7 @@
         var selectGroups = $("#select-groups");
         var tbodyGroupGeneralInfo = $("#tbody-group-general-info");
         var tbodyGroupExpensesIncomes = $("#tbody-group-expenses-incomes");
+        var tbodyEducatorSalaryTable = $("#tbody-educator-salary");
 
         var reportDiv = $("#report");
         var generalGroupInfoDiv = $("#generalGroupInfo");
@@ -160,6 +164,7 @@
             createGeneralInformationTable();
             calculateGroupExpenseAndIncome();
             createStudentsGrid();
+            createEducatorSalaryTable();
             createGroupExpenseGrid();
             reportDiv.slideDown("slow");
         }
@@ -168,7 +173,32 @@
             var url = `/raporlar/grup-bazli-satis-raporu-excel-export?groupId=${gId}`
             window.location.href = url;
         }
+        function createEducatorSalaryTable() {
+            var gId = selectGroups.val();
+            $.ajax({
+                url: `/raporlar/grup-bazli-satis-raporu-egitmen-ucret-tablosu?groupId=${gId}`,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        tbodyEducatorSalaryTable.html("");
+                        console.log(res);
+                        var item = res.data;
+                        var table = "";
 
+                        $.each(item, function (index, value) {
+                            table += `<tr><td>${index+1}</td><td>${value.educatorName}</td><td>${value.avgPrice}</td><td>${value.totalHours}</td><td>${value.sumPrice}</td></tr>`;
+                        });
+                       
+                        tbodyEducatorSalaryTable.append(table);
+                    }
+                    else {
+                        console.log(res.errors);
+                        alert("Hata");
+                    }
+                }
+            });
+            
+        }
         function createGeneralInformationTable() {
             var gId = selectGroups.val();
             $.ajax({

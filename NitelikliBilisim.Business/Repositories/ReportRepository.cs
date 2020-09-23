@@ -186,19 +186,25 @@ namespace NitelikliBilisim.Business.Repositories
 
         }
 
-        public object GetGroupBasedSalesReportEducatorPriceTable(Guid groupId)
+        public List<EducatorPriceTableVm> GetGroupBasedSalesReportEducatorSalaryTable(Guid groupId)
         {
+            List<EducatorPriceTableVm> model = new List<EducatorPriceTableVm>();
+            var group = _context.EducationGroups.Include(x=>x.Education).Include(x=>x.GroupLessonDays).First(x => x.Id == groupId);
             var educators = _context.Educators.Include(x=>x.User).ToList();
-            var data = _context.GroupLessonDays.Where(x => x.GroupId == groupId).GroupBy(x => x.EducatorId)
-                .Select(x => new EducatorPriceTableVm
+            var educatorsAverageSalary = group.GroupLessonDays.GroupBy(x => x.EducatorId).ToDictionary(t => t.Key, t => t.Average(p => p.EducatorSalary.GetValueOrDefault()));
+            foreach (var educator in educatorsAverageSalary)
+            {
+                model.Add(new EducatorPriceTableVm
                 {
-                    EducatorName = educators.First(e => e.Id == x.Key).User.Name,
-                    AvgPrice = x.Average(p => p.EducatorSalary.GetValueOrDefault()),
-                    
-
+                    EducatorName = $"{educators.First(x => x.Id == educator.Key).User.Name} {educators.First(x => x.Id == educator.Key).User.Surname} ",
+                    AvgPrice = educator.Value,
+                    TotalHours = group.GroupLessonDays.Count(x => x.EducatorId == educator.Key) * group.Education.HoursPerDay,
+                    SumPrice = (decimal)1.45* educator.Value * group.GroupLessonDays.Count(x => x.EducatorId == educator.Key) * group.Education.HoursPerDay
                 });
+            }    
 
-            throw new NotImplementedException();
+
+            return model;
         }
     }
 }
