@@ -17,7 +17,6 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_groups
         public string EducatorName { get; set; }
         public List<GroupExpenseType> GroupExpenseTypes { get; set; }
         public string ClassRoomName { get; set; }
-        public Dictionary<Guid, string> SelectClassRooms { get; set; }
         public int AssignedStudentsCount { get; set; }
         public Dictionary<string, string> SelectEducators { get; set; }
         public int MinimumStudentCount { get; set; }

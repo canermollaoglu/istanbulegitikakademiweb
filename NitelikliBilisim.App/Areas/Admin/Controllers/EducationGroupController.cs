@@ -39,13 +39,34 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/grup-detay/{groupId?}")]
         public IActionResult Detail(Guid groupId)
         {
-
+            ViewData["groupId"] = groupId;
             ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationGrupDetail");
-            var expectedProfitRate = _configuration.GetValue<int>("ApplicationSettings:ExpectedProfitRate");
-            var groupDetail = _unitOfWork.EducationGroup.GetDetailByGroupId(groupId, expectedProfitRate);
-
-            return View(groupDetail);
+            return View();
         }
+
+        [Route("admin/get-group-detail/{groupId?}")]
+        public IActionResult GetGroupDetail(Guid groupId)
+        {
+            try
+            {
+                var expectedProfitRate = _configuration.GetValue<int>("ApplicationSettings:ExpectedProfitRate");
+                var groupDetail = _unitOfWork.EducationGroup.GetDetailByGroupId(groupId, expectedProfitRate);
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    data = groupDetail
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { $"Hata : {ex.Message}" }
+                });
+            }
+        }
+
 
         [Route("admin/get-group-general-information/{groupId?}")]
         public IActionResult GetGroupGeneralInformation(Guid groupId)
@@ -69,6 +90,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             }
         }
 
+        
         public IActionResult GetGroupExpensesByGroupId(Guid groupId)
         {
             var expenses = _unitOfWork.EducationGroup.GetExpensesByGroupId(groupId);
@@ -187,7 +209,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 Quota = data.Quota.Value
             };
 
-            var isSuccess = _unitOfWork.EducationGroup.Insert(group,data.LessonDays, data.ClassRoomId, data.EducatorPrice);
+            var isSuccess = _unitOfWork.EducationGroup.Insert(group, data.LessonDays, data.ClassRoomId, data.EducatorPrice);
             var emails = _unitOfWork.EmailHelper.GetAdminEmails();
             await _emailSender.SendAsync(new Core.ComplexTypes.EmailMessage
             {
@@ -311,6 +333,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             {
                 var group = _unitOfWork.EducationGroup.GetById(data.GroupId);
                 group.GroupName = data.GroupName;
+                group.NewPrice = data.NewPrice;
                 _unitOfWork.EducationGroup.Update(group);
                 return Json(new ResponseModel
                 {

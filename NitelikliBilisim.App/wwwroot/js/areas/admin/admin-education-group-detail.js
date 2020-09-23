@@ -14,7 +14,12 @@ var inputChangeEducatorStartDateDiv = $("#inputChangeEducatorStartDate");
 var inputStartDate = $("#input-start-date");
 var inputChangeEducatorStartDate = $("#input-change-educator-start-date");
 var inputGroupName = $("#input-group-name");
+var inputnewPrice = $("#input-new-price");
 var inputGroupNewDate = $("#input-group-new-date");
+
+var divNewPrice = $("#div-new-price");
+var divGroupName = $("#div-group-name");
+var divGroupEditSaveButton = $("#div-group-edit-save-button");
 
 var groupExpensesDiv = $("#groupExpensesDiv");
 var ExpectedProfitabilityDiv = $("#div-calculate-expected-rat-of-profitability");
@@ -23,9 +28,9 @@ var inputStartDateDiv = $("#inputChangeClassroomStartDate");
 var btnSave = $("#btn-save");
 var btnLessonDayClassroomChange = $("#btn-lessonday-classroom-save");
 var btnLessonDayEducatorChange = $("#btn-lessonday-educator-save");
-var btnGeneralInformationChange = $("#btn-general-group-information-save");
 var btnCalculate = $("#btn-calculate-expected-rate-of-profitability");
 var btnPostponementOfGroup = $("#btn-postponement-of-education-save");
+var btnSaveGeneralInformation = $("#btn-save-general-information");
 
 var tbodyTickets = $("#tbody-tickets");
 var tbodyCalculateGroupExpenseAndIncome = $("#tbody-calculate-group-expense-and-income");
@@ -37,13 +42,14 @@ var confirmModalBuilder = new AlertSupport.ConfirmModalBuilder();
 /* assignments */
 $(document).ready(document_onLoad);
 btnSave.on("click", btnSave_onClick);
+btnSaveGeneralInformation.on("click", btnSaveGeneralInformation_onClick);
 btnLessonDayClassroomChange.on("click", btnLessonDayClassroomChange_onClick);
 btnCalculate.on("click", btnCalculate_onClick);
 btnLessonDayEducatorChange.on("click", btnLessonDayEducatorChange_onClick);
-btnGeneralInformationChange.on("click", btnGeneralInformationChange_onClick);
 btnPostponementOfGroup.on("click", btnPostponementOfGroup_onClick);
 /* events */
 function document_onLoad() {
+    getGroupDetailInfo();
     confirmModalBuilder.buildModal({
         title: "Emin misiniz?",
         bodyText: "Seçmiş olduğunuz kayıt kalıcı olarak silinecektir.",
@@ -56,6 +62,7 @@ function document_onLoad() {
     createStudentGrid();
     createLessonDayGrid();
     createEligibleTicketTable();
+
     $(document).ajaxStart(function () {
         $("#loading").show();
     }).ajaxStop(function () {
@@ -267,48 +274,25 @@ function btnCalculate_onClick() {
 
     });
 }
-function btnGeneralInformationChange_onClick() {
-    btnGeneralInformationChange.off("click");
-    var data = {
-        GroupId: groupId.val(),
-        GroupName: inputGroupName.val()
-    }
 
-    $.ajax({
-        url: "/admin/EducationGroup/ChangeGeneralInformation",
-        method: "post",
-        data: data,
-        success: (res) => {
-            if (res.isSuccess) {
-                location.href = location.href;
-            } else {
-                var resultAlert = new AlertSupport.ResultAlert();
-                resultAlert.display({
-                    success: false,
-                    errors: res.errors,
-                    message: "Hataları düzeltiniz"
-                });
-                $("#changeGeneralInformation").modal('hide');
-                $('#form-change-general-information')[0].reset();
-            }
-        }
-    });
-}
 function btnPostponementOfGroup_onClick() {
     
     var data = {
-        GroupId: groupId.val(),
-        StartDate: inputGroupNewDate.val()
+        GroupId: inputGroupName.val(),
+        Price: inputnewPrice.val()
     }
-    console.log(inputGroupNewDate.val());
     console.log(data);
     $.ajax({
-        url: "/admin/EducationGroup/PostponementOfGroup",
+        url: "/admin/EducationGroup/UpdateGeneralInformation",
         method: "post",
         data: data,
         success: (res) => {
             if (res.isSuccess) {
-                location.href = location.href;
+                var resultAlert = new AlertSupport.ResultAlert();
+                resultAlert.display({
+                    success: true,
+                    message: "Genel bilgiler güncellendi.",
+                });
             } else {
                 var resultAlert = new AlertSupport.ResultAlert();
                 resultAlert.display({
@@ -323,7 +307,83 @@ function btnPostponementOfGroup_onClick() {
     });
 
 }
+function btnSaveGeneralInformation_onClick() {
+    btnSaveGeneralInformation.off("click");
+    var data = {
+        GroupId: groupId.val(),
+        GroupName: inputGroupName.val(),
+        NewPrice: inputnewPrice.val()
+    }
 
+    $.ajax({
+        url: "/admin/EducationGroup/ChangeGeneralInformation",
+        method: "post",
+        data: data,
+        success: (res) => {
+            if (res.isSuccess) {
+                saveGroup();
+                getGroupDetailInfo();
+                calculateGroupExpenseAndIncome();
+            } else {
+                var resultAlert = new AlertSupport.ResultAlert();
+                resultAlert.display({
+                    success: false,
+                    errors: res.errors,
+                    message: "Hataları düzeltiniz"
+                });
+                $("#changeGeneralInformation").modal('hide');
+                $('#form-change-general-information')[0].reset();
+            }
+        },
+        complete: () => {
+            btnSaveGeneralInformation.on("click", btnSaveGeneralInformation_onClick);
+        }
+    });
+}
+
+
+function editGroup() {
+    $("#groupName").hide();
+    divGroupName.show();
+    $("#newPrice").hide();
+    divNewPrice.show();
+    divGroupEditSaveButton.show();
+}
+function saveGroup() {
+    $("#groupName").show();
+    divGroupName.hide();
+    $("#newPrice").show();
+    divNewPrice.hide();
+    divGroupEditSaveButton.hide();
+}
+
+function getGroupDetailInfo() {
+    var gId = groupId.val();
+    $.ajax({
+        url: `/admin/get-group-detail/${gId}`,
+        method: "get",
+        success: (res) => {
+
+            if (res.isSuccess) {
+                $("#groupName").html(res.data.groupName);
+                inputGroupName.val(res.data.groupName);
+
+                $("#hostName").html(res.data.host.hostName);
+                $("#educationName").html(res.data.education.name);
+                $("#classRoomName").html(res.data.classRoomName);
+                $("#educatorName").html(res.data.educatorName);
+                $("#startDate").html(res.data.startDate);
+                $("#endDate").html(res.data.endDate);
+                $("#quota").html(res.data.assignedStudentsCount + "/"+res.data.quota);
+                $("#educationDays").html(res.data.educationDays + " gün, günde " + res.data.educationHoursPerDay+" saat");
+                $("#oldPrice").html(res.data.oldPrice!=null?res.data.oldPrice+" ₺":"0 ₺");
+                $("#newPrice").html(res.data.newPrice + " ₺");
+                $("#alertMinimumStudent").html(`%${res.data.expectedProfitRate} kârlılık için minimum ${res.data.minimumStudentCount} öğrencinin daha gruba katılması gereklidir.`)
+                inputnewPrice.val(res.data.newPrice);
+            }
+        }
+    });
+}
 function createEligibleTicketTable() {
     var gId = groupId.val();
     $.ajax({

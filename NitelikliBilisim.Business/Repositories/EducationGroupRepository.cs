@@ -68,7 +68,6 @@ namespace NitelikliBilisim.Business.Repositories
                 educators = _context.Users.Where(x => educatorIds.Contains(x.Id)).ToDictionary(x => x.Id, x => $"{x.Name} {x.Surname}");
             }
 
-            var selectAllClassRooms = _context.Classrooms.Where(x => x.HostId == group.HostId).ToDictionary(x => x.Id, x => x.Name);
             var firstDay = group.GroupLessonDays.FirstOrDefault();
             var lastDay = group.GroupLessonDays.LastOrDefault();
             Classroom classRoom = null;
@@ -108,7 +107,6 @@ namespace NitelikliBilisim.Business.Repositories
                 ClassRoomName = classRoom != null ? classRoom.Name : "Sınıf bilgisi girilmemiş.",
                 EducatorName = $"{educator.Name} {educator.Surname}",
                 GroupExpenseTypes = _context.GroupExpenseTypes.ToList(),
-                SelectClassRooms = selectAllClassRooms,
                 SelectEducators = educators,
                 MinimumStudentCount = minimumStudent,
                 OldPrice = group.OldPrice,

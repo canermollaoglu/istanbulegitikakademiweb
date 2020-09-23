@@ -12,6 +12,8 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_groups
         [Required]
         [MinLength(3,ErrorMessage ="Grup adı minimum 3 karakterden oluşmalıdır.")]
         public string GroupName { get; set; }
+        [Required]
+        public decimal NewPrice { get; set; }
 
     }
 }

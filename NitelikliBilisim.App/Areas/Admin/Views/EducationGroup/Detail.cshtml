@@ -1,4 +1,4 @@
-﻿@model NitelikliBilisim.Core.ViewModels.areas.admin.education_groups.GroupDetailVm
+﻿@*@model NitelikliBilisim.Core.ViewModels.areas.admin.education_groups.GroupDetailVm*@
 @{
     ViewData["Title"] = "Grup Detayları";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -56,12 +56,12 @@
                     Genel Grup Bilgileri
                     <button class="btn btn-sm pull-right" data-target="#changeLessonDays" data-toggle="modal" title="Sınıf Değişikliği"><i class="fa fa-home"></i></button>
                     <button class="btn btn-sm pull-right" data-target="#changeEducator" data-toggle="modal" title="Eğitmen Değişikliği"><i class="fa fa-user"></i></button>
-                    <button class="btn btn-sm pull-right" data-target="#changeGeneralInformation" data-toggle="modal" title="Grup İsim Değişikliği"><i class="fa fa-edit"></i></button>
-                    <button class="btn btn-sm pull-right" @(Model.StartDate.GetValueOrDefault() < DateTime.Now.Date ? "disabled" : "enabled") data-target="#postponementOfGroup" data-toggle="modal" title="@(Model.StartDate.GetValueOrDefault() < DateTime.Now.Date  ? "Başlayan gruplar ertelenemez.":"Grup Erteleme")"><i class="fa fa-share"></i></button>
-                    <a class="btn btn-sm pull-right" href="@Url.Action("GroupBasedSalesReport","EarningReport")" ><i class="fa fa-bar-chart"></i></a>
+                    <button class="btn btn-sm pull-right" onclick="editGroup()"><i class="fa fa-edit"></i></button>
+                    <button class="btn btn-sm pull-right" data-target="#postponementOfGroup" data-toggle="modal"><i class="fa fa-share"></i></button>
+                    <a class="btn btn-sm pull-right" href="@Url.Action("GroupBasedSalesReport","EarningReport")"><i class="fa fa-bar-chart"></i></a>
 
                 </div>
-                <input type="hidden" value="@Model.GroupId" id="groupId" />
+                <input type="hidden" value="@ViewData["groupId"]" id="groupId" />
                 <div class="card-body">
                     <table class="table table-bordered">
                         <tbody>
@@ -70,39 +70,38 @@
                                     <b>Grup Adı</b>
                                 </td>
                                 <td>
-                                    @Model.GroupName
+                                    <div id="groupName"></div>
+                                    <div id="div-group-name" style="display:none;">
+                                        <input type="text" class="form-control" id="input-group-name" />
+                                    </div>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <b>Eğitim Yeri</b>
                                 </td>
-                                <td>
-                                    @Model.Host.HostName
+                                <td id="hostName">
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <b>Eğitim</b>
                                 </td>
-                                <td>
-                                    @Model.Education.Name
+                                <td id="educationName">
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <b>Sınıf</b>
                                 </td>
-                                <td>
-                                    @Model.ClassRoomName
+                                <td id="classRoomName">
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <b>Eğitmen</b>
                                 </td>
-                                <td>
-                                    @Model.EducatorName
+                                <td id="educatorName">
                                 </td>
 
                             </tr>
@@ -110,36 +109,39 @@
                                 <td>
                                     <b>Başlangıç Tarihi</b>
                                 </td>
-                                <td>
-                                    @Model.StartDate.GetValueOrDefault().ToShortDateString()
+                                <td id="startDate">
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <b>Bitiş Tarihi</b>
                                 </td>
-                                <td>
-                                    @Model.EndDate.GetValueOrDefault().ToShortDateString()
+                                <td id="endDate">
                                 </td>
                             </tr>
                             <tr>
                                 <td><b>Kontenjan</b></td>
-                                <td>@Model.AssignedStudentsCount / @Model.Quota</td>
+                                <td id="quota"></td>
                             </tr>
                             <tr>
                                 <td><b>Eğitim Günleri</b></td>
-                                <td>@Model.EducationDays gün, günde @Model.EducationHoursPerDay saat</td>
+                                <td id="educationDays"></td>
                             </tr>
+
                             <tr>
-                                <td><b>Eski Fiyat</b></td>
-                                <td>@Model.OldPrice.GetValueOrDefault() ₺</td>
-                            </tr>
-                            <tr>
-                                <td><b>Yeni Fiyat</b></td>
-                                <td>@Model.NewPrice.GetValueOrDefault() ₺</td>
+                                <td><b>Fiyat</b></td>
+                                <td>
+                                    <div id="newPrice"></div>
+                                    <div id="div-new-price" style="display:none;">
+                                        <input type="number" class="form-control" id="input-new-price" />
+                                    </div>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
+                    <div id="div-group-edit-save-button" style="display:none;">
+                        <button type="button" id="btn-save-general-information" class="btn btn-outline-success pull-right">Kaydet</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -156,7 +158,7 @@
                         </tbody>
                     </table>
                     <div class="alert alert-warning">
-                        <small> Belirlenen kârlılık(%@(Model.ExpectedProfitRate)) için minimum <b>@Model.MinimumStudentCount</b> öğrenci daha gruba katılmalıdır.</small>
+                        <small id="alertMinimumStudent"> </small>
                     </div>
                 </div>
             </div>
@@ -229,10 +231,10 @@
                             <div class="form-group">
                                 <label class="col-form-label">Gider Tipi : </label>
                                 <select class="form-control" id="selectExpenseType">
-                                    @foreach (var item in Model.GroupExpenseTypes)
-                                    {
-                                        <option value="@item.Id">@item.Name</option>
-                                    }
+                                    @*@foreach (var item in Model.GroupExpenseTypes)
+                                        {
+                                            <option value="@item.Id">@item.Name</option>
+                                        }*@
                                 </select>
                             </div>
                         </div>
@@ -341,10 +343,10 @@
                     <div class="form-group">
                         <label>Sınıf</label>
                         <select id="selectClassrooms" class="form-control">
-                            @foreach (var classRoom in Model.SelectClassRooms)
-                            {
-                                <option value="@classRoom.Key">@classRoom.Value</option>
-                            }
+                            @*@foreach (var classRoom in Model.SelectClassRooms)
+                                {
+                                    <option value="@classRoom.Key">@classRoom.Value</option>
+                                }*@
                         </select>
                     </div>
                     <div class="form-group">
@@ -384,10 +386,10 @@
                     <div class="form-group">
                         <label>Eğitmen</label>
                         <select id="selectEducators" class="form-control">
-                            @foreach (var educator in Model.SelectEducators)
-                            {
-                                <option value="@educator.Key">@educator.Value</option>
-                            }
+                            @*@foreach (var educator in Model.SelectEducators)
+                                {
+                                    <option value="@educator.Key">@educator.Value</option>
+                                }*@
                         </select>
                     </div>
                     <div class="form-group">
@@ -417,30 +419,6 @@
     </div>
 </div>
 
-<div class="modal fade" id="changeGeneralInformation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Genel Grup Bilgileri Değişikliği</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="form-change-general-information">
-                    <div class="form-group">
-                        <label>Grup Adı</label>
-                        <input type="text" id="input-group-name" class="form-control" value="@Model.GroupName" />
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
-                <button type="button" class="btn btn-primary" id="btn-general-group-information-save">Kaydet</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div class="modal fade" id="postponementOfGroup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -455,7 +433,7 @@
                 <form id="form-postponement-of-group">
                     <div class="form-group">
                         <label>Başlangıç Tarihi</label>
-                        <input type="date" id="input-group-new-date" class="form-control" asp-for="StartDate" />
+                        <input type="date" id="input-group-new-date" class="form-control" />
                     </div>
                 </form>
             </div>
