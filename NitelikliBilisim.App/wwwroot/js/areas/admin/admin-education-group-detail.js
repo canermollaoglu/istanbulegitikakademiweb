@@ -436,12 +436,16 @@ function calculateGroupExpenseAndIncome() {
                 var item = res.data;
                 var table = "";
                 table += "<tr>" +
-                    `<td>Grup Giderleri Toplamı</td>` +
+                    `<td>Grup Giderleri</td>` +
                     `<td class="text-danger">${item.groupExpenses} ₺</td>` +
                     "</tr>" +
                     "<tr>" +
                     `<td>Eğitmen Ücreti Toplamı</td>` +
                     `<td class="text-danger">${item.educatorExpenses} ₺</td>` +
+                    "</tr>" +
+                    "<tr>" +
+                    `<td>Toplam Gider</td>` +
+                    `<td class="text-danger">${item.totalExpenses} ₺</td>` +
                     "</tr>" +
                     "<tr>" +
                     `<td>Ciro (Öğrenci Ödemeleri)</td>` +

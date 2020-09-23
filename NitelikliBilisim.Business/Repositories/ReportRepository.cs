@@ -110,6 +110,7 @@ namespace NitelikliBilisim.Business.Repositories
                     join ticket in _context.Tickets on gs.TicketId equals ticket.Id
                     join educationGroup in _context.EducationGroups on gs.Id equals educationGroup.Id
                     join paymentDetailInfo in _context.OnlinePaymentDetailsInfos on ticket.InvoiceDetailsId equals paymentDetailInfo.Id
+                    join invoiceDetail in _context.InvoiceDetails on ticket.InvoiceDetailsId equals invoiceDetail.Id
                     where !paymentDetailInfo.IsCancelled
                     orderby gs.CreatedDate
                     where gs.Id == groupId
@@ -119,7 +120,7 @@ namespace NitelikliBilisim.Business.Repositories
                         Name = student.Name,
                         Surname = student.Surname,
                         PaymentDate = paymentDetailInfo.CreatedDate,
-                        ListPrice = educationGroup.NewPrice,
+                        ListPrice = invoiceDetail.PriceAtCurrentDate,
                         PaidPrice = paymentDetailInfo.PaidPrice,
                         CommissionFee = paymentDetailInfo.CommissionFee,
                         CommissionRate = paymentDetailInfo.CommisionRate,

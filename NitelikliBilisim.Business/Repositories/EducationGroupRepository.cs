@@ -341,6 +341,7 @@ namespace NitelikliBilisim.Business.Repositories
                 EducatorExpensesAverage = educatorExpensesAverage,
                 GroupExpenses = groupExpenses,
                 EducatorExpenses = totalEducatorExpense,
+                TotalExpenses = groupExpenses+totalEducatorExpense,
                 TotalStudentIncomes = studentIncomes,
                 ProfitRate = (profitRate * 100) - 100
             };
