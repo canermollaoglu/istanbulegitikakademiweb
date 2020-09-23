@@ -224,6 +224,7 @@ function btnUnassign_onClick() {
             TicketId: ticketId
         },
         success: (res) => {
+            getGroupDetailInfo();
             $("#grid-students").dxDataGrid("instance").refresh();
             createEligibleTicketTable();
             calculateGroupExpenseAndIncome();
@@ -241,6 +242,7 @@ function btnAssign_onClick() {
             GroupId: gId
         },
         success: (res) => {
+            getGroupDetailInfo();
             $("#grid-students").dxDataGrid("instance").refresh();
             createEligibleTicketTable();
             calculateGroupExpenseAndIncome();
@@ -366,7 +368,6 @@ function getGroupDetailInfo() {
         url: `/admin/get-group-detail/${gId}`,
         method: "get",
         success: (res) => {
-
             if (res.isSuccess) {
                 $("#groupName").html(res.data.groupName);
                 inputGroupName.val(res.data.groupName);
@@ -379,9 +380,11 @@ function getGroupDetailInfo() {
                 $("#endDate").html(res.data.endDate);
                 $("#quota").html(res.data.assignedStudentsCount + "/"+res.data.quota);
                 $("#educationDays").html(res.data.educationDays + " gün, günde " + res.data.educationHoursPerDay+" saat");
-                $("#oldPrice").html(res.data.oldPrice!=null?res.data.oldPrice+" ₺":"0 ₺");
-                $("#newPrice").html(res.data.newPrice + " ₺");
-                $("#alertMinimumStudent").html(`%${res.data.expectedProfitRate} kârlılık için minimum ${res.data.minimumStudentCount} öğrencinin daha gruba katılması gereklidir.`)
+                $("#oldPrice").html(res.data.oldPrice != null ? res.data.oldPrice + " ₺" :"Fiyat belirtilmemiş.");
+                $("#newPrice").html(res.data.newPrice!=null?res.data.newPrice+ " ₺":"Fiyat belirtilmemiş.");
+                $("#alertMinimumStudent").html(`%${res.data.expectedProfitRate} kârlılık için minimum ${res.data.minimumStudentCount} öğrencinin daha gruba katılması gereklidir.`);
+                $("#alertExpectedSellingPrice").html(`Tahmini satış fiyatı ${res.data.expectedSellingPrice} ₺.`);
+                
                 inputnewPrice.val(res.data.newPrice);
             }
         }
@@ -771,6 +774,9 @@ function createStudentGrid() {
 
 }
 
+
+
+
 /*Select */
 function loadEducatorsSelect() {
     var gId = groupId.val();
@@ -848,3 +854,4 @@ function getExpenseTypes(data) {
 
     $(selectExpenseTypes).append(appended);
 }
+

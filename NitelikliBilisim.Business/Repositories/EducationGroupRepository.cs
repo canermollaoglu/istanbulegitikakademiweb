@@ -83,8 +83,8 @@ namespace NitelikliBilisim.Business.Repositories
             decimal totalIncomes = GetGroupTotalIncomes(groupId);
             decimal newTotal = totalExpenses + (totalExpenses * expectedProfitRate / 100);
             decimal educationPrice = group.NewPrice.GetValueOrDefault();
-
             var minimumStudent = CalculateMinimumStudentCount(newTotal - totalIncomes, educationPrice);
+            var expectedSellingPrice = newTotal / group.Quota;
             #endregion
 
 
@@ -111,7 +111,8 @@ namespace NitelikliBilisim.Business.Repositories
                 MinimumStudentCount = minimumStudent,
                 OldPrice = group.OldPrice,
                 NewPrice = group.NewPrice,
-                ExpectedProfitRate = expectedProfitRate
+                ExpectedProfitRate = expectedProfitRate,
+                ExpectedSellingPrice = expectedSellingPrice>0? Math.Ceiling(expectedSellingPrice):0
             };
             return model;
         }
@@ -528,7 +529,7 @@ namespace NitelikliBilisim.Business.Repositories
             var totalHours = group.Education.HoursPerDay * group.Education.Days;
             var lessonDays = group.GroupLessonDays.ToList();
             decimal educatorExpensesAverage = lessonDays != null && lessonDays.Count > 0 ? lessonDays.Average(x => x.EducatorSalary.GetValueOrDefault()) : 0;
-            var educatorExpenses = educatorExpensesAverage * totalHours;
+            var educatorExpenses = (educatorExpensesAverage* (decimal)1.45) * totalHours;
             return groupExpenses + educatorExpenses;
         }
 
