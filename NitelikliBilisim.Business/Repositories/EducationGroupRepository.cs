@@ -323,11 +323,7 @@ namespace NitelikliBilisim.Business.Repositories
 
             decimal groupExpenses = group.GroupExpenses.Sum(x => (x.Price * x.Count));
             decimal educatorExpensesAverage = lessonDays != null && lessonDays.Count > 0 ? lessonDays.Average(x => x.EducatorSalary.GetValueOrDefault()) : 0;
-            decimal studentIncomes = (from grupStudent in _context.Bridge_GroupStudents
-                                      join ticket in _context.Tickets on grupStudent.TicketId equals ticket.Id
-                                      join paymentDetailInfo in _context.OnlinePaymentDetailsInfos on ticket.InvoiceDetailsId equals paymentDetailInfo.Id
-                                      where grupStudent.Id == groupId && !paymentDetailInfo.IsCancelled
-                                      select paymentDetailInfo).Sum(x => x.PaidPrice);
+            decimal studentIncomes = GetGroupTotalIncomes(groupId);
 
             decimal totalEducatorExpense = (totalHours * educatorExpensesAverage) * (decimal)1.45;
             decimal profitRate = studentIncomes > 0 && (groupExpenses + totalEducatorExpense) > 0 ? Math.Round(studentIncomes / (groupExpenses + totalEducatorExpense), 2) : 0;
@@ -539,12 +535,11 @@ namespace NitelikliBilisim.Business.Repositories
         /// <returns></returns>
         private decimal GetGroupTotalIncomes(Guid groupId)
         {
-            decimal studentIncomes = (from grupStudent in _context.Bridge_GroupStudents
-                                      join ticket in _context.Tickets on grupStudent.TicketId equals ticket.Id
-                                      join paymentDetailInfo in _context.OnlinePaymentDetailsInfos on ticket.InvoiceDetailsId equals paymentDetailInfo.Id
-                                      where grupStudent.Id == groupId && !paymentDetailInfo.IsCancelled
-                                      select paymentDetailInfo).Sum(x => x.PaidPrice);
-            return studentIncomes;
+            return (from onlinePaymentDetailInfo in _context.OnlinePaymentDetailsInfos
+                    join invoiceDetail in _context.InvoiceDetails on onlinePaymentDetailInfo.Id equals invoiceDetail.Id
+                    join educationGroup in _context.EducationGroups on invoiceDetail.GroupId equals educationGroup.Id
+                    where educationGroup.Id == groupId && !onlinePaymentDetailInfo.IsCancelled
+                    select onlinePaymentDetailInfo).Sum(x => x.MerchantPayout);
         }
 
         private int CalculateMinimumStudentCount(decimal difference, decimal educationPrice)
