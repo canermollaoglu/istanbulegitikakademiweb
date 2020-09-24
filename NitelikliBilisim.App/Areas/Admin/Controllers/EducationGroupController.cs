@@ -234,29 +234,44 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     errors = ModelStateUtil.GetErrors(ModelState)
                 });
 
-            var group = new EducationGroup
+            try
             {
-                IsGroupOpenForAssignment = true,
-                GroupName = data.Name,
-                EducationId = data.EducationId.Value,
-                EducatorId = data.EducatorId,
-                HostId = data.HostId.Value,
-                StartDate = data.StartDate.Value,
-                NewPrice = data.Price,
-                Quota = data.Quota.Value
-            };
+                var group = new EducationGroup
+                {
+                    IsGroupOpenForAssignment = true,
+                    GroupName = data.Name,
+                    EducationId = data.EducationId.Value,
+                    EducatorId = data.EducatorId,
+                    HostId = data.HostId.Value,
+                    StartDate = data.StartDate.Value,
+                    Quota = data.Quota.Value
+                };
 
-            var isSuccess = _unitOfWork.EducationGroup.Insert(group, data.LessonDays, data.ClassRoomId, data.EducatorPrice);
-            var emails = _unitOfWork.EmailHelper.GetAdminEmails();
-            await _emailSender.SendAsync(new Core.ComplexTypes.EmailMessage
+                var groupId = _unitOfWork.EducationGroup.Insert(group, data.LessonDays, data.ClassRoomId, data.EducatorPrice);
+                var emails = _unitOfWork.EmailHelper.GetAdminEmails();
+                await _emailSender.SendAsync(new Core.ComplexTypes.EmailMessage
+                {
+                    Body = "Grup açılmıştır",
+                    Contacts = emails.ToArray()
+                });
+
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    data = groupId
+                });
+                
+                
+            }
+            catch (Exception ex)
             {
-                Body = "Grup açılmıştır",
-                Contacts = emails.ToArray()
-            });
-            return Json(new ResponseModel
-            {
-                isSuccess = isSuccess
-            });
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Hata : "+ ex.Message }
+                }) ;
+            }
+            
         }
 
         [Route("admin/gruba-ogrenci-ata/{groupId?}")]

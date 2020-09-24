@@ -326,11 +326,12 @@
                     }, {
                         caption: "Ad",
                         dataField: "name",
-                        width: 140
+                        width: 120
 
                     }, {
                         caption: "Soyad",
-                        dataField: "surname"
+                        dataField: "surname",
+                        width:120
                     },
                     {
                         caption: "Liste Fiyatı",
@@ -359,6 +360,15 @@
                         customizeText: function (merchantPayout) {
                             return merchantPayout.value + " ₺";
                         }
+                    },
+                    {
+                        caption: "",
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            $(`<a title="Profili Görüntüle" class="btn btn-outline-primary btn-sm" href="/admin/ogrenci-detay?studentId=${current.id}">Görüntüle</a>`)
+                                .appendTo(container);
+                        },
+                        alignment: "center",
                     }
 
                 ],
@@ -588,10 +598,11 @@
                     }, {
                         caption: "Ad",
                         dataField: "name",
-                        width: 140
+                        width: 120
                     }, {
                         caption: "Soyad",
-                        dataField: "surname"
+                        dataField: "surname",
+                        width:120
                     },
                     {
                         caption: "Liste Fiyatı",
@@ -627,6 +638,15 @@
                         customizeText: function (paidPrice) {
                             return paidPrice.value + " ₺";
                         }
+                    },
+                    {
+                        caption: "",
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            $(`<a title="Profili Görüntüle" class="btn btn-outline-primary btn-sm" href="/admin/ogrenci-detay?studentId=${current.id}">Görüntüle</a>`)
+                                .appendTo(container);
+                        },
+                        alignment: "center",
                     }
 
                 ],

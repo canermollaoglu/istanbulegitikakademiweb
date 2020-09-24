@@ -246,7 +246,7 @@ namespace NitelikliBilisim.Business.Repositories
             return groups;
         }
 
-        public bool Insert(EducationGroup entity, List<int> days, Guid? classRoomId, decimal educatorSalary)
+        public Guid Insert(EducationGroup entity, List<int> days, Guid? classRoomId, decimal educatorSalary)
         {
             using (var transation = _context.Database.BeginTransaction())
             {
@@ -254,7 +254,7 @@ namespace NitelikliBilisim.Business.Repositories
                 {
                     var daysJson = SerializeDays(days);
                     if (daysJson == null)
-                        return false;
+                        throw new Exception("Eğitim günlerini giriniz!");
 
                     _context.EducationGroups.Add(entity);
                     _context.SaveChanges();
@@ -264,37 +264,35 @@ namespace NitelikliBilisim.Business.Repositories
                         GroupId = entity.Id
                     });
                     _context.SaveChanges();
-                    transation.Commit();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                    transation.Rollback();
-                    return false;
-                }
-
-                // to transaction?
-                var dates = CreateGroupLessonDays(
+                    var dates = CreateGroupLessonDays(
                     group: _context.EducationGroups.Include(x => x.Education).FirstOrDefault(x => x.Id == entity.Id),
                     daysInt: days,
                     unwantedDays: new List<DateTime>());
-                entity.StartDate = dates[0];
-                var groupLessonDays = new List<GroupLessonDay>();
-                foreach (var date in dates)
-                    groupLessonDays.Add(new GroupLessonDay
-                    {
-                        DateOfLesson = date,
-                        GroupId = entity.Id,
-                        ClassroomId = classRoomId,
-                        HasAttendanceRecord = false,
-                        IsImmuneToAutoChange = false,
-                        EducatorId = entity.EducatorId,
-                        EducatorSalary = educatorSalary
-                    });
+                    entity.StartDate = dates[0];
+                    var groupLessonDays = new List<GroupLessonDay>();
+                    foreach (var date in dates)
+                        groupLessonDays.Add(new GroupLessonDay
+                        {
+                            DateOfLesson = date,
+                            GroupId = entity.Id,
+                            ClassroomId = classRoomId,
+                            HasAttendanceRecord = false,
+                            IsImmuneToAutoChange = false,
+                            EducatorId = entity.EducatorId,
+                            EducatorSalary = educatorSalary
+                        });
 
-                _context.GroupLessonDays.AddRange(groupLessonDays);
-                _context.SaveChanges();
-                return true;
+                    _context.GroupLessonDays.AddRange(groupLessonDays);
+                    _context.SaveChanges();
+                    transation.Commit();
+
+                    return entity.Id;
+                }
+                catch (Exception ex)
+                {
+                    transation.Rollback();
+                    throw ex;
+                }
             }
         }
 

@@ -96,12 +96,12 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        @*<div class="col-md-4">
                             <div class="form-group">
                                 <label>Satış Fiyatı</label>
                                 <input type="number" class="form-control" id="input-price">
                             </div>
-                        </div>
+                        </div>*@
                     </div>
 
                     <!-- Ders günleri seçimi -->
@@ -180,7 +180,6 @@
         var dayCheckboxes = document.getElementsByClassName("form-check-input");
         var inputStartDate = $("#input-start-date");
         var inputName = $("#input-name");
-        var inputPrice = $("#input-price");
         var inputEducatorPrice = $('#input-educator-price');
         var inputQuota = $("#input-quota");
         var btnSave = $("#btn-save");
@@ -281,8 +280,7 @@
                 LessonDays: lessonDays,
                 Quota: inputQuota.val(),
                 EducatorPrice: inputEducatorPrice.val(),
-                ClassRoomId: selectClassRoom.options[selectClassRoom.selectedIndex].value,
-                Price: inputPrice.val()
+                ClassRoomId: selectClassRoom.options[selectClassRoom.selectedIndex].value
             });
             var resultAlert = new AlertSupport.ResultAlert();
             $.ajax({
@@ -291,14 +289,7 @@
                 data: data,
                 success: (res) => {
                     if (res.isSuccess) {
-                        resultAlert.display({
-                            success: true,
-                            message: "Kayıt işlemi başarılı! Listeye gitmek için {link}",
-                            redirectElement: {
-                                content: "tıklayınız",
-                                link: "/admin/gruplar"
-                            }
-                        });
+                        window.location = `/admin/grup-detay/${res.data}`;
                     } else {
                         resultAlert.display({
                             success: false,
