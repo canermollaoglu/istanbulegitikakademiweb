@@ -125,7 +125,8 @@ namespace NitelikliBilisim.Business.Repositories
                         CommissionFee = onlinePaymentDetailInfo.CommissionFee,
                         CommissionRate = onlinePaymentDetailInfo.CommisionRate,
                         Commission = onlinePaymentDetailInfo.CommissionFee + onlinePaymentDetailInfo.CommisionRate,
-                        MerchantPayout = onlinePaymentDetailInfo.MerchantPayout
+                        MerchantPayout = onlinePaymentDetailInfo.MerchantPayout,
+                        RefundPrice = onlinePaymentDetailInfo.RefundPrice
                     });
         }
 
@@ -175,7 +176,8 @@ namespace NitelikliBilisim.Business.Repositories
                         CommissionFee = paymentDetailInfo.CommissionFee,
                         CommissionRate = paymentDetailInfo.CommisionRate,
                         Commission = paymentDetailInfo.CommissionFee + paymentDetailInfo.CommisionRate,
-                        MerchantPayout = paymentDetailInfo.MerchantPayout
+                        MerchantPayout = paymentDetailInfo.MerchantPayout,
+                        RefundPrice = paymentDetailInfo.RefundPrice
                     });
         }
 

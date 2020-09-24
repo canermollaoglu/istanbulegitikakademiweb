@@ -167,11 +167,12 @@ namespace NitelikliBilisim.Business.Repositories
 
             return !(isGroupStarted || DateTime.Now.Date > invoiceDate.Date);
         }
-        public void RefundPayment(Guid invoiceDetailId)
+        public void RefundPayment(Guid invoiceDetailId,decimal refundPrice)
         {
             var onlinePaymentDetailsInfo = _context.OnlinePaymentDetailsInfos.First(x => x.Id == invoiceDetailId);
             onlinePaymentDetailsInfo.IsCancelled = true;
             onlinePaymentDetailsInfo.CancellationDate = DateTime.Now;
+            onlinePaymentDetailsInfo.RefundPrice = refundPrice;
             _context.SaveChanges();
             Auto__UnassignTickets(new List<Guid>() { invoiceDetailId });
         }
@@ -184,6 +185,7 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 item.IsCancelled = true;
                 item.CancellationDate = DateTime.Now;
+                item.RefundPrice = item.PaidPrice;
             }
             _context.SaveChanges();
             Auto__UnassignTickets(invoiceDetailsIds);

@@ -84,7 +84,7 @@ namespace NitelikliBilisim.App.Controllers
 
             if (refundRequest.Status == PaymentServiceMessages.ResponseSuccess)
             {
-                _unitOfWork.Sale.RefundPayment(data.InvoiceDetailId);
+                _unitOfWork.Sale.RefundPayment(data.InvoiceDetailId,refundPrice);
 
                 return Json(new ResponseData
                 {

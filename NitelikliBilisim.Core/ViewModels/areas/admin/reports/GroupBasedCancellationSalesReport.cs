@@ -16,5 +16,6 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.reports
         public decimal CommissionRate { get; set; }
         public decimal Commission { get; set; }
         public decimal MerchantPayout { get; set; }
+        public decimal RefundPrice { get; set; }
     }
 }

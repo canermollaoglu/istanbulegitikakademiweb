@@ -20,5 +20,7 @@ namespace NitelikliBilisim.Core.Entities
         public DateTime BlockageResolveDate { get; set; }
         public bool IsCancelled { get; set; }
         public DateTime? CancellationDate { get; set; }
+        public decimal RefundPrice { get; set; } = 0;
+
     }
 }
