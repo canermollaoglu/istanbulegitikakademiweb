@@ -292,9 +292,9 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 var customer = _context.Customers.FirstOrDefault(x => x.Id == userId);
                 //Müşterinin en yakın eğitim günü. (Müşteri hafta sonu veya tatil günü sisteme giriş yaptığını varsayarak geçmiş en yakın gün baz alındı.)
-                int nearestDay = 0;
-                var educationDay = _context.EducationDays.Where(x => x.StudentEducationInfoId == studentEducationInfo.Id && x.Date <= DateTime.Now).OrderByDescending(c => c.Date).First();
-                nearestDay = educationDay.Day;
+                
+                var educationDay = _context.EducationDays.Where(x => x.StudentEducationInfoId == studentEducationInfo.Id && x.Date <= DateTime.Now).OrderByDescending(c => c.Date).FirstOrDefault();
+                int nearestDay = educationDay!=null?educationDay.Day: 0;
 
                 /*Müşterinin NBUY eğitimi aldığı kategoriye göre eğitim listesi.*/
                 //Todo burada yalnızca nbuy kategorisi mi geçerli olacak yoksa tüm kategorilerdeki eğitimler dikkate alınacak mı konusunun netleştirilmesi gerekli.
@@ -320,7 +320,7 @@ namespace NitelikliBilisim.Business.Repositories
                         foreach (var criterion in education.EducationSuggestionCriterions)
                         {
                             #region Eğitim Günü Kriteri
-                            if (criterion.CriterionType == CriterionType.EducationDay)
+                            if (criterion.CriterionType == CriterionType.EducationDay && education.Category.BaseCategoryId == studentEducationInfo.CategoryId)
                             {
                                 if (nearestDay <= criterion.MaxValue && nearestDay >= criterion.MinValue)
                                     appropriateCriterion += _options.EducationDayCriterion;//Eğitim günü kriteri %50 etkilediği için 100 puan üzerinden 50 puan ekleniyor.

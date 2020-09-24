@@ -444,8 +444,8 @@ function calculateGroupExpenseAndIncome() {
                     `<td class="text-danger">${item.educatorExpenses} ₺</td>` +
                     "</tr>" +
                     "<tr>" +
-                    `<td>Toplam Gider</td>` +
-                    `<td class="text-danger">${item.totalExpenses} ₺</td>` +
+                    `<td><b>Toplam Gider</b></td>` +
+                    `<td class="text-danger"><b>${item.totalExpenses} ₺</b></td>` +
                     "</tr>" +
                     "<tr>" +
                     `<td>Ciro (Öğrenci Ödemeleri)</td>` +
