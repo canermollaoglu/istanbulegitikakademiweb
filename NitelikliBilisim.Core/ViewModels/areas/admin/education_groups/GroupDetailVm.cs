@@ -10,7 +10,7 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_groups
     {
         public Guid GroupId { get; set; }
         public string GroupName { get; set; }
-        public DateTime? StartDate { get; set; }
+        public string StartDate { get; set; }
         public byte Quota { get; set; } = 0;
         public _Education Education { get; set; }
         public EducationHost Host { get; set; }
@@ -22,7 +22,7 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_groups
         public int MinimumStudentCount { get; set; }
         public string EducationDays { get; set; }
         public string EducationHoursPerDay { get; set; }
-        public DateTime? EndDate { get; set; }
+        public string EndDate { get; set; }
         public decimal? OldPrice { get; set; }
         public decimal? NewPrice { get; set; }
         public int ExpectedProfitRate { get; set; }

@@ -69,7 +69,6 @@ namespace NitelikliBilisim.Business.Repositories
             }
 
             var firstDay = group.GroupLessonDays.FirstOrDefault();
-            var lastDay = group.GroupLessonDays.LastOrDefault();
             Classroom classRoom = null;
             if (firstDay != null)
             {
@@ -102,8 +101,8 @@ namespace NitelikliBilisim.Business.Repositories
                     Id = group.Education.Id,
                     Name = group.Education.Name
                 },
-                StartDate = group.StartDate,
-                EndDate = lastDay != null ? lastDay.DateOfLesson.Date : group.StartDate,
+                StartDate = group.StartDate.ToShortDateString(),
+                EndDate = group.GroupLessonDays!=null? group.GroupLessonDays.OrderBy(x=>x.DateOfLesson).Last().DateOfLesson.ToShortDateString():group.StartDate.ToShortDateString(),
                 ClassRoomName = classRoom != null ? classRoom.Name : "Sınıf bilgisi girilmemiş.",
                 EducatorName = $"{educator.Name} {educator.Surname}",
                 GroupExpenseTypes = _context.GroupExpenseTypes.ToList(),
