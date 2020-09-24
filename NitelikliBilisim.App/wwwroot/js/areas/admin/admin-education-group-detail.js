@@ -31,6 +31,7 @@ var btnLessonDayEducatorChange = $("#btn-lessonday-educator-save");
 var btnCalculate = $("#btn-calculate-expected-rate-of-profitability");
 var btnPostponementOfGroup = $("#btn-postponement-of-education-save");
 var btnSaveGeneralInformation = $("#btn-save-general-information");
+var btnCancelGeneralInformation = $("#btn-cancel-general-information");
 
 var tbodyTickets = $("#tbody-tickets");
 var tbodyCalculateGroupExpenseAndIncome = $("#tbody-calculate-group-expense-and-income");
@@ -43,6 +44,7 @@ var confirmModalBuilder = new AlertSupport.ConfirmModalBuilder();
 $(document).ready(document_onLoad);
 btnSave.on("click", btnSave_onClick);
 btnSaveGeneralInformation.on("click", btnSaveGeneralInformation_onClick);
+btnCancelGeneralInformation.on("click", btnCancelGeneralInformation_onClick);
 btnLessonDayClassroomChange.on("click", btnLessonDayClassroomChange_onClick);
 btnCalculate.on("click", btnCalculate_onClick);
 btnLessonDayEducatorChange.on("click", btnLessonDayEducatorChange_onClick);
@@ -345,7 +347,9 @@ function btnSaveGeneralInformation_onClick() {
         }
     });
 }
-
+function btnCancelGeneralInformation_onClick() {
+    saveGroup();
+}
 
 function editGroup() {
     $("#groupName").hide();
