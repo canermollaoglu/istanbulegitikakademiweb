@@ -64,7 +64,7 @@ namespace NitelikliBilisim.Business.Repositories
 
             return model;
         }
-        
+
 
         public IQueryable<StudentBasedSalesReport> GetStudentBasedSalesReport(string studentId)
         {
@@ -150,7 +150,7 @@ namespace NitelikliBilisim.Business.Repositories
                         PaidPrice = paymentDetailInfo.PaidPrice,
                         CommissionFee = paymentDetailInfo.CommissionFee,
                         CommissionRate = paymentDetailInfo.CommisionRate,
-                        Commission = paymentDetailInfo.CommissionFee+paymentDetailInfo.CommisionRate,
+                        Commission = paymentDetailInfo.CommissionFee + paymentDetailInfo.CommisionRate,
                         MerchantPayout = paymentDetailInfo.MerchantPayout
                     });
         }
@@ -182,18 +182,17 @@ namespace NitelikliBilisim.Business.Repositories
 
         public IQueryable<GeneralSalesReportVm> GetGeneralSalesReport()
         {
-             return (from paymentDetailInfo in _context.OnlinePaymentDetailsInfos
+            return (from paymentDetailInfo in _context.OnlinePaymentDetailsInfos
                     join invoiceDetail in _context.InvoiceDetails on paymentDetailInfo.Id equals invoiceDetail.Id
                     join invoice in _context.Invoices on invoiceDetail.InvoiceId equals invoice.Id
                     join education in _context.Educations on invoiceDetail.EducationId equals education.Id
-                    join educationGroup in _context.EducationGroups on invoiceDetail.GroupId equals educationGroup.Id 
+                    join educationGroup in _context.EducationGroups on invoiceDetail.GroupId equals educationGroup.Id
                     join educator in _context.Users on educationGroup.EducatorId equals educator.Id
                     join student in _context.Users on invoice.CustomerId equals student.Id
-                    orderby paymentDetailInfo.CreatedDate descending
                     select new GeneralSalesReportVm
-                    { 
+                    {
                         SalesDate = paymentDetailInfo.CreatedDate,
-                        BlockageResolveDate = paymentDetailInfo.BlockageResolveDate,
+                        TransferDate = paymentDetailInfo.BlockageResolveDate,
                         EducationName = education.Name,
                         GroupName = educationGroup.GroupName,
                         EducatorName = educator.Name,
@@ -206,15 +205,15 @@ namespace NitelikliBilisim.Business.Repositories
                         CommissionRate = paymentDetailInfo.CommisionRate,
                         Commission = paymentDetailInfo.CommissionFee + paymentDetailInfo.CommisionRate,
                         MerchantPayout = paymentDetailInfo.MerchantPayout,
-                        Status =paymentDetailInfo.IsCancelled?"İade":paymentDetailInfo.BlockageResolveDate.Date<DateTime.Now.Date?"Aktarıldı":"Bekliyor",
-                    });
+                        Status = paymentDetailInfo.IsCancelled ? "İade" : paymentDetailInfo.BlockageResolveDate < DateTime.Now ? "Aktarıldı" : "Bekliyor",
+                    }).OrderByDescending(x=>x.SalesDate);
         }
 
         public List<EducatorPriceTableVm> GetGroupBasedSalesReportEducatorSalaryTable(Guid groupId)
         {
             List<EducatorPriceTableVm> model = new List<EducatorPriceTableVm>();
-            var group = _context.EducationGroups.Include(x=>x.Education).Include(x=>x.GroupLessonDays).First(x => x.Id == groupId);
-            var educators = _context.Educators.Include(x=>x.User).ToList();
+            var group = _context.EducationGroups.Include(x => x.Education).Include(x => x.GroupLessonDays).First(x => x.Id == groupId);
+            var educators = _context.Educators.Include(x => x.User).ToList();
             var educatorsAverageSalary = group.GroupLessonDays.GroupBy(x => x.EducatorId).ToDictionary(t => t.Key, t => t.Average(p => p.EducatorSalary.GetValueOrDefault()));
             foreach (var educator in educatorsAverageSalary)
             {
@@ -223,9 +222,9 @@ namespace NitelikliBilisim.Business.Repositories
                     EducatorName = $"{educators.First(x => x.Id == educator.Key).User.Name} {educators.First(x => x.Id == educator.Key).User.Surname} ",
                     AvgPrice = educator.Value,
                     TotalHours = group.GroupLessonDays.Count(x => x.EducatorId == educator.Key) * group.Education.HoursPerDay,
-                    SumPrice = (decimal)1.45* educator.Value * group.GroupLessonDays.Count(x => x.EducatorId == educator.Key) * group.Education.HoursPerDay
+                    SumPrice = (decimal)1.45 * educator.Value * group.GroupLessonDays.Count(x => x.EducatorId == educator.Key) * group.Education.HoursPerDay
                 });
-            }    
+            }
             return model;
         }
     }

@@ -125,7 +125,7 @@ namespace NitelikliBilisim.Business.Repositories
                         MerchantPayout = item.MerchantPayout,
                         PaidPrice = item.PaidPrice,
                         Price = item.Price,
-                        BlockageResolveDate = item.BlockageDate
+                        BlockageResolveDate = CalculateTransferDate(DateTime.Now.Date)
                     });
                 }
                 _context.OnlinePaymentDetailsInfos.AddRange(onlinePaymentDetailInfos);
@@ -141,6 +141,23 @@ namespace NitelikliBilisim.Business.Repositories
             }
             
         }
+
+        private DateTime CalculateTransferDate(DateTime paymentDate)
+        {
+            switch (paymentDate.DayOfWeek)
+            {
+                case DayOfWeek.Monday: return paymentDate.AddDays(9).AddHours(17);
+                case DayOfWeek.Tuesday: return paymentDate.AddDays(8).AddHours(17);
+                case DayOfWeek.Wednesday: return paymentDate.AddDays(7).AddHours(17);
+                case DayOfWeek.Thursday: return paymentDate.AddDays(6).AddHours(17);
+                case DayOfWeek.Friday: return paymentDate.AddDays(5).AddHours(17);
+                case DayOfWeek.Saturday: return paymentDate.AddDays(4).AddHours(17);
+                case DayOfWeek.Sunday: return paymentDate.AddDays(3).AddHours(17);
+                default: return paymentDate.AddDays(9).AddHours(17);
+            }
+
+        }
+
         public bool GetIfCustomerEligibleToFullyCancel(Guid ticketId)
         {
             var groupStartDate = _context.Bridge_GroupStudents.Include(x=>x.Group).First(x => x.TicketId == ticketId).Group.StartDate;
