@@ -57,7 +57,7 @@
                     <button class="btn btn-sm pull-right" data-target="#changeLessonDays" data-toggle="modal" title="Sınıf Değişikliği"><i class="fa fa-home"></i></button>
                     <button class="btn btn-sm pull-right" data-target="#changeEducator" data-toggle="modal" title="Eğitmen Değişikliği"><i class="fa fa-user"></i></button>
                     <button class="btn btn-sm pull-right" data-target="#postponementOfGroup" data-toggle="modal"><i class="fa fa-share"></i></button>
-                    <a class="btn btn-sm pull-right" href="/raporlar/grup-bazli-satis-raporu"><i class="fa fa-bar-chart"></i></a>
+                    <a class="btn btn-sm pull-right" href="/raporlar/grup-bazli-satis-raporu2?groupId=@(ViewData["groupId"])"><i class="fa fa-bar-chart"></i></a>
                     <button class="btn btn-sm pull-right" onclick="editGroup()"><i class="fa fa-edit"></i></button>
 
                 </div>
@@ -161,7 +161,7 @@
                     <div class="alert alert-warning">
                         <small id="alertMinimumStudent"> </small>
                     </div>
-                    <div class="alert alert-warning">
+                    <div class="alert alert-success">
                         <small id="alertExpectedSellingPrice"> </small>
                     </div>
                 </div>

@@ -54,6 +54,14 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             return View(model);
         }
 
+        [Route("raporlar/grup-bazli-satis-raporu2")]
+        public IActionResult GroupBasedSalesReportByGroupId(Guid groupId)
+        {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminGroupBasedSalesReport");
+            ViewData["GroupId"] = groupId;
+            return View();
+        }
+
         [Route("raporlar/genel-satis-raporu")]
         public IActionResult SalesReport()
         {

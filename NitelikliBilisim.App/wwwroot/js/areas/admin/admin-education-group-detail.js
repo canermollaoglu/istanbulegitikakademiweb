@@ -116,6 +116,7 @@ function btnSave_onClick() {
             btnSave.on("click", btnSave_onClick);
             $("#grid-expenses").dxDataGrid("instance").refresh();
             calculateGroupExpenseAndIncome();
+            getGroupDetailInfo();
         }
     });
 
@@ -386,8 +387,8 @@ function getGroupDetailInfo() {
                 $("#educationDays").html(res.data.educationDays + " gün, günde " + res.data.educationHoursPerDay+" saat");
                 $("#oldPrice").html(res.data.oldPrice != null ? res.data.oldPrice + " ₺" :"Fiyat belirtilmemiş.");
                 $("#newPrice").html(res.data.newPrice!=null?res.data.newPrice+ " ₺":"Fiyat belirtilmemiş.");
-                $("#alertMinimumStudent").html(`%${res.data.expectedProfitRate} kârlılık için minimum ${res.data.minimumStudentCount} öğrencinin daha gruba katılması gereklidir.`);
-                $("#alertExpectedSellingPrice").html(`Tahmini satış fiyatı ${res.data.expectedSellingPrice} ₺.`);
+                $("#alertMinimumStudent").html(`<b>%${res.data.expectedProfitRate}</b> kârlılık için minimum <b>${res.data.minimumStudentCount}</b> öğrencinin daha gruba katılması gereklidir.`);
+                $("#alertExpectedSellingPrice").html(`Tahmini satış fiyatı <b>${res.data.expectedSellingPrice} ₺</b>.`);
                 
                 inputnewPrice.val(res.data.newPrice);
             }
