@@ -15,5 +15,6 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_groups
         /// Toplam Gider
         /// </summary>
         public decimal TotalExpenses { get; set; }
+        public int ExpectedStudentCount { get; set; }
     }
 }

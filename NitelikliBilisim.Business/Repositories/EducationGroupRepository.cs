@@ -116,10 +116,14 @@ namespace NitelikliBilisim.Business.Repositories
 
         public CalculateSalesPriceGetVm GetCalculateSalesPriceInformation(Guid groupId, int expectedProfitRate)
         {
+            var group = _context.EducationGroups.First(x => x.Id == groupId);
+            var quota = group.Quota;
+            decimal expectedStudentCount = Math.Ceiling(Convert.ToDecimal(quota * 70.0/100.0));
             return new CalculateSalesPriceGetVm
             {
                 ExpectedProfitRate = expectedProfitRate,
-                TotalExpenses = GetGroupTotalExpenses(groupId)
+                TotalExpenses = GetGroupTotalExpenses(groupId),
+                ExpectedStudentCount = (int)expectedStudentCount
             };
         }
 

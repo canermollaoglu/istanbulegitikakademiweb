@@ -17,6 +17,7 @@ var inputnewPrice = $("#input-new-price");
 var inputGroupNewDate = $("#input-group-new-date");
 
 var inputExpectedProfitability = $("#input-expected-rate-of-profitability");
+var inputExpectedStudentCount = $("#input-expected-student-count");
 var inputTotalExpenses = $("#input-total-expense");
 
 var divNewPrice = $("#div-new-price");
@@ -78,10 +79,10 @@ function document_onLoad() {
     });
 
     
-    $('input').keyup(function () {
+    $('#calculateSalesPriceForm input').keyup(function () {
         calculateSalesPrice();
     });
-    $('input').change(function () {
+    $('#calculateSalesPriceForm input').change(function () {
         calculateSalesPrice();
     });
 }
@@ -272,6 +273,8 @@ function btnCalculateSalesPrice_onClick() {
             if (res.isSuccess) {
                 inputTotalExpenses.val(res.data.totalExpenses);
                 inputExpectedProfitability.val(res.data.expectedProfitRate);
+                inputExpectedStudentCount.val(res.data.expectedStudentCount);
+                calculateSalesPrice();
                 $('#calculateSalesPriceModal').modal('show'); 
             } else {
                 var resultAlert = new AlertSupport.ResultAlert();
