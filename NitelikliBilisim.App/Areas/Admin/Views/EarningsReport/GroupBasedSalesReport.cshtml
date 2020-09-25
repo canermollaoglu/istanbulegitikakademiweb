@@ -552,7 +552,7 @@
                         }
                     }).then(function () {
                         workbook.xlsx.writeBuffer().then(function (buffer) {
-                            saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'GrupBazliSatisRaporuOgrenciListesi' + parseInt(Math.random() * 1000000000) + '.xlsx');
+                            saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'GrupBazliSatisRaporuİptalİadeOgrenciListesi' + parseInt(Math.random() * 1000000000) + '.xlsx');
                         });
                     });
                     e.cancel = true;
