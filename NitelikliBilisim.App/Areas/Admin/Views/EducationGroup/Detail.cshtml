@@ -150,7 +150,7 @@
             <div class="card border-info mb-3">
                 <div class="card-header">
                     Giderler ve Hesaplamalar
-                    <button class="btn btn-sm pull-right" data-target="#profitabilityratecalculation" data-toggle="modal" title="Kârlılık Hesabı"><i class="fa fa-money"></i></button>
+                    <button class="btn btn-sm pull-right" id="calculateSalesPriceModalOpen" title="Grup Ücreti Hesaplama Sihirbazı"><i class="fa fa-money"></i></button>
 
                 </div>
                 <div class="card-body">
@@ -160,9 +160,6 @@
                     </table>
                     <div class="alert alert-warning">
                         <small id="alertMinimumStudent"> </small>
-                    </div>
-                    <div class="alert alert-success">
-                        <small id="alertExpectedSellingPrice"> </small>
                     </div>
                 </div>
             </div>
@@ -271,31 +268,82 @@
     </div>
 </div>
 
-<div class="modal fade" id="profitabilityratecalculation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="calculateSalesPriceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Kârlılık Oranı Hesabı</h5>
+                <h5 class="modal-title">Grup Ücreti Hesaplama Sihirbazı</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <div class="form-group row">
-                    <label style="margin:auto" class="col-md-5">Beklenen Kârlılık Oranı</label>
-                    <div class="input-group col-md-7 mb-2">
-                        <div class="input-group-prepend">
-                            <div class="input-group-text">%</div>
+                <form id="calculateSalesPriceForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label style="margin:auto">Tahmini Katılımcı Sayısı</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="input-expected-student-count" />
+                                </div>
+                            </div>
                         </div>
-                        <input type="number" class="form-control" id="input-expected-rate-of-profitability" />
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label style="margin:auto">Kar Oranı</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="input-expected-rate-of-profitability" />
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div id="div-calculate-expected-rat-of-profitability">
-
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label style="margin:auto">Kayıp Oranı</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="input-expected-rate-of-profitability" value="0" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label style="margin:auto">Toplam Gider</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control input-sm" id="input-total-expense" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label style="margin:auto">Pos Komisyon Oranı</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="input-commission-rate" value="0" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label style="margin:auto">KDV Oranı</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="input-kdv" value="8" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>Hesaplanan Tutar</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="input-sales-price" />
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
-                    <button type="button" class="btn btn-primary" id="btn-calculate-expected-rate-of-profitability">Hesapla</button>
                 </div>
             </div>
         </div>

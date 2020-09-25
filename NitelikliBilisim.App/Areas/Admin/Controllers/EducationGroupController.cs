@@ -44,6 +44,35 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             return View();
         }
 
+
+
+        [Route("admin/get-calculate-sales-price-model/{groupId?}")]
+        public IActionResult GetCalculateSalesPriceInformation(Guid groupId)
+        {
+            try
+            {
+                var expectedProfitRate = _configuration.GetValue<int>("ApplicationSettings:ExpectedProfitRate");
+                var data = _unitOfWork.EducationGroup.GetCalculateSalesPriceInformation(groupId, expectedProfitRate);
+
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { $"Hata : {ex.Message}" }
+                });
+            }
+
+
+        }
+
+
         [Route("admin/get-group-detail/{groupId?}")]
         public IActionResult GetGroupDetail(Guid groupId)
         {
@@ -90,7 +119,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             }
         }
 
-        
+
         public IActionResult GetGroupExpensesByGroupId(Guid groupId)
         {
             var expenses = _unitOfWork.EducationGroup.GetExpensesByGroupId(groupId);
@@ -260,18 +289,18 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     isSuccess = true,
                     data = groupId
                 });
-                
-                
+
+
             }
             catch (Exception ex)
             {
                 return Json(new ResponseModel
                 {
                     isSuccess = false,
-                    errors = new List<string> { "Hata : "+ ex.Message }
-                }) ;
+                    errors = new List<string> { "Hata : " + ex.Message }
+                });
             }
-            
+
         }
 
         [Route("admin/gruba-ogrenci-ata/{groupId?}")]

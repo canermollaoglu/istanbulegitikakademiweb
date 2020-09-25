@@ -6,17 +6,17 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_groups
 {
     public class GroupExpenseAndIncomeVm
     {
-        public decimal GroupExpenses { get; set; } = 0;
-        public decimal EducatorExpenses { get; set; } = 0;
+        public string GroupExpenses { get; set; } 
+        public string EducatorExpenses { get; set; } 
 
-        public decimal TotalStudentIncomes { get; set; } = 0;
+        public string TotalStudentIncomes { get; set; } 
 
 
-        public decimal GrandTotal => TotalStudentIncomes - (GroupExpenses + EducatorExpenses);
+        public string GrandTotal { get; set; }
 
         public int TotalEducationHours { get; set; }
         public decimal EducatorExpensesAverage { get; set; }
         public decimal ProfitRate { get; set; }
-        public decimal TotalExpenses { get; set; }
+        public string TotalExpenses { get; set; }
     }
 }

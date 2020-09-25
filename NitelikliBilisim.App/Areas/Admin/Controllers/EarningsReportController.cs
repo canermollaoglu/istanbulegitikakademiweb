@@ -213,10 +213,10 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 worksheet.Cells[3, 8].Value = $"Eğitmen Ücreti ({groupExpenseAndIncome.TotalEducationHours} s X {groupExpenseAndIncome.EducatorExpensesAverage.ToString("F")} ₺)";
                 worksheet.Cells[4, 8].Value = "Toplam Gelir(Ciro)";
                 worksheet.Cells[5, 8].Value = "Genel Toplam";
-                worksheet.Cells[2, 9].Value = groupExpenseAndIncome.GroupExpenses.ToString("C",CultureInfo.CreateSpecificCulture("tr-TR"));
-                worksheet.Cells[3, 9].Value = groupExpenseAndIncome.EducatorExpenses.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"));
-                worksheet.Cells[4, 9].Value = groupExpenseAndIncome.TotalStudentIncomes.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"));
-                worksheet.Cells[5, 9].Value = groupExpenseAndIncome.GrandTotal.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"));
+                worksheet.Cells[2, 9].Value = groupExpenseAndIncome.GroupExpenses;
+                worksheet.Cells[3, 9].Value = groupExpenseAndIncome.EducatorExpenses;
+                worksheet.Cells[4, 9].Value = groupExpenseAndIncome.TotalStudentIncomes;
+                worksheet.Cells[5, 9].Value = groupExpenseAndIncome.GrandTotal;
 
 
                 //Öğrenci Listesi Başlıklar

@@ -9,7 +9,6 @@ var inputPrice = $("#inputPrice");
 var inputCount = $("#inputCount");
 var inputDescription = $("#inputDescription");
 var inputDailyEducatorPrice = $("#dailyEducatorPrice");
-var inputExpectedProfitability = $("#input-expected-rate-of-profitability");
 var inputChangeEducatorStartDateDiv = $("#inputChangeEducatorStartDate");
 var inputStartDate = $("#input-start-date");
 var inputChangeEducatorStartDate = $("#input-change-educator-start-date");
@@ -17,21 +16,23 @@ var inputGroupName = $("#input-group-name");
 var inputnewPrice = $("#input-new-price");
 var inputGroupNewDate = $("#input-group-new-date");
 
+var inputExpectedProfitability = $("#input-expected-rate-of-profitability");
+var inputTotalExpenses = $("#input-total-expense");
+
 var divNewPrice = $("#div-new-price");
 var divGroupName = $("#div-group-name");
 var divGroupEditSaveButton = $("#div-group-edit-save-button");
 
 var groupExpensesDiv = $("#groupExpensesDiv");
-var ExpectedProfitabilityDiv = $("#div-calculate-expected-rat-of-profitability");
 var inputStartDateDiv = $("#inputChangeClassroomStartDate");
 
 var btnSave = $("#btn-save");
 var btnLessonDayClassroomChange = $("#btn-lessonday-classroom-save");
 var btnLessonDayEducatorChange = $("#btn-lessonday-educator-save");
-var btnCalculate = $("#btn-calculate-expected-rate-of-profitability");
 var btnPostponementOfGroup = $("#btn-postponement-of-education-save");
 var btnSaveGeneralInformation = $("#btn-save-general-information");
 var btnCancelGeneralInformation = $("#btn-cancel-general-information");
+var btnCalculateSalesPrice = $("#calculateSalesPriceModalOpen");
 
 var tbodyTickets = $("#tbody-tickets");
 var tbodyCalculateGroupExpenseAndIncome = $("#tbody-calculate-group-expense-and-income");
@@ -46,11 +47,13 @@ btnSave.on("click", btnSave_onClick);
 btnSaveGeneralInformation.on("click", btnSaveGeneralInformation_onClick);
 btnCancelGeneralInformation.on("click", btnCancelGeneralInformation_onClick);
 btnLessonDayClassroomChange.on("click", btnLessonDayClassroomChange_onClick);
-btnCalculate.on("click", btnCalculate_onClick);
 btnLessonDayEducatorChange.on("click", btnLessonDayEducatorChange_onClick);
 btnPostponementOfGroup.on("click", btnPostponementOfGroup_onClick);
+btnCalculateSalesPrice.on("click", btnCalculateSalesPrice_onClick);
 /* events */
 function document_onLoad() {
+
+
     getGroupDetailInfo();
     confirmModalBuilder.buildModal({
         title: "Emin misiniz?",
@@ -72,6 +75,14 @@ function document_onLoad() {
         $("#loading").show();
     }).ajaxStop(function () {
         $("#loading").hide();
+    });
+
+    
+    $('input').keyup(function () {
+        calculateSalesPrice();
+    });
+    $('input').change(function () {
+        calculateSalesPrice();
     });
 }
 
@@ -252,37 +263,84 @@ function btnAssign_onClick() {
         }
     });
 }
-function btnCalculate_onClick() {
-    btnCalculate.off("click");
-
-    var data = {
-        GroupId: groupId.val(),
-        ExpectedRateOfProfitability: inputExpectedProfitability.val()
-    }
+function btnCalculateSalesPrice_onClick() {
+    var gId = groupId.val();
     $.ajax({
-        url: `/admin/calculate-group-expected-profitability`,
-        method: "post",
-        data: data,
+        url: `/admin/get-calculate-sales-price-model/${gId}`,
+        method: "get",
         success: (res) => {
             if (res.isSuccess) {
-                ExpectedProfitabilityDiv.html("");
-                var item = res.data;
-                var content = `<p><b>%${item.expectedRateOfProfitability}</b> karlılık için hedef ciro <b>${item.plannedAmount} ₺</b>, bu tutar için minimum <b>${item.minStudentCount}</b> öğrencinin daha gruba katılması gerekmektedir.</p>`;
-                ExpectedProfitabilityDiv.append(content);
+                inputTotalExpenses.val(res.data.totalExpenses);
+                inputExpectedProfitability.val(res.data.expectedProfitRate);
+                $('#calculateSalesPriceModal').modal('show'); 
+            } else {
+                var resultAlert = new AlertSupport.ResultAlert();
+                resultAlert.display({
+                    success: false,
+                    errors: res.errors,
+                    message: "Hataları düzeltiniz"
+                });
             }
-            else {
-                console.log(res.errors);
-                alert("Hata");
-            }
-           
-        },
-        complete: () => {
-            btnCalculate.on("click", btnCalculate_onClick);
         }
-
     });
+
 }
 
+
+//function btnCalculate_onClick() {
+//    btnCalculate.off("click");
+
+//    var data = {
+//        GroupId: groupId.val(),
+//        ExpectedRateOfProfitability: inputExpectedProfitability.val()
+//    }
+//    $.ajax({
+//        url: `/admin/calculate-group-expected-profitability`,
+//        method: "post",
+//        data: data,
+//        success: (res) => {
+//            if (res.isSuccess) {
+//                ExpectedProfitabilityDiv.html("");
+//                var item = res.data;
+//                var content = `<p><b>%${item.expectedRateOfProfitability}</b> karlılık için hedef ciro <b>${item.plannedAmount} ₺</b>, bu tutar için minimum <b>${item.minStudentCount}</b> öğrencinin daha gruba katılması gerekmektedir.</p>`;
+//                ExpectedProfitabilityDiv.append(content);
+//            }
+//            else {
+//                console.log(res.errors);
+//                alert("Hata");
+//            }
+           
+//        },
+//        complete: () => {
+//            btnCalculate.on("click", btnCalculate_onClick);
+//        }
+
+//    });
+//}
+
+function calculateSalesPrice() {
+    var expectedStudentCount = parseFloat($("#input-expected-student-count").val());
+    var expectedRateOfProfitability = parseFloat($("#input-expected-rate-of-profitability").val());
+    var totalExpense = parseFloat($("#input-total-expense").val());
+    var posComissionRate = parseFloat($("input-commission-rate").val());
+    var kdvProfitability = parseFloat($("#input-kdv").val());
+    var salesPrice = $("#input-sales-price");
+
+    var profitability = totalExpense * expectedRateOfProfitability / 100;
+     
+    var sonuc = 0;
+    sonuc = (profitability + totalExpense) / expectedStudentCount;
+    var kdvPrice = sonuc * kdvProfitability / 100;
+
+    console.clear();
+    console.log("Kar Tutarı (ToplamGider*KarOranı/100) :" + profitability);
+    console.log("Karlı Toplam  (ToplamGider+KarTutarı) :" + (profitability + totalExpense));
+    console.log("Kişi Başı Ücret (Karlı Toplam/BeklenenKişiSayısı) :" + (profitability + totalExpense) / expectedStudentCount);
+
+    sonuc = sonuc + kdvPrice;
+    salesPrice.val(Number((sonuc).toFixed(0)));
+
+}
 function btnPostponementOfGroup_onClick() {
     
     var data = {
@@ -388,8 +446,6 @@ function getGroupDetailInfo() {
                 $("#oldPrice").html(res.data.oldPrice != null ? res.data.oldPrice + " ₺" :"Fiyat belirtilmemiş.");
                 $("#newPrice").html(res.data.newPrice!=null?res.data.newPrice+ " ₺":"Fiyat belirtilmemiş.");
                 $("#alertMinimumStudent").html(`<b>%${res.data.expectedProfitRate}</b> kârlılık için minimum <b>${res.data.minimumStudentCount}</b> öğrencinin daha gruba katılması gereklidir.`);
-                $("#alertExpectedSellingPrice").html(`Tahmini satış fiyatı <b>${res.data.expectedSellingPrice} ₺</b>.`);
-                
                 inputnewPrice.val(res.data.newPrice);
             }
         }
@@ -442,27 +498,27 @@ function calculateGroupExpenseAndIncome() {
                 var table = "";
                 table += "<tr>" +
                     `<td>Grup Giderleri</td>` +
-                    `<td class="text-danger">${item.groupExpenses} ₺</td>` +
+                    `<td class="text-right text-danger">${item.groupExpenses}</td>` +
                     "</tr>" +
                     "<tr>" +
                     `<td>Eğitmen Ücreti Toplamı</td>` +
-                    `<td class="text-danger">${item.educatorExpenses} ₺</td>` +
+                    `<td class="text-right text-danger">${item.educatorExpenses}</td>` +
                     "</tr>" +
                     "<tr>" +
                     `<td><b>Toplam Gider</b></td>` +
-                    `<td class="text-danger"><b>${item.totalExpenses} ₺</b></td>` +
+                    `<td class="text-right text-danger"><b>${item.totalExpenses}</b></td>` +
                     "</tr>" +
                     "<tr>" +
                     `<td>Ciro (Öğrenci Ödemeleri)</td>` +
-                    `<td class="text-success">${item.totalStudentIncomes} ₺</td>` +
+                    `<td class="text-right text-success">${item.totalStudentIncomes}</td>` +
                     "</tr>" +
                     "<tr>" +
                     `<td><b>Genel Toplam</b></td>` +
-                    `<td ${item.grandTotal > 0 ? "class='text-success'" : "class='text-danger'"}><b>${item.grandTotal} ₺</b></td>` +
+                    `<td class="text-right"><b>${item.grandTotal} </b></td>` +
                     "</tr>" +
                     "<tr>" +
-                    `<td><b>Kâr Oranı</b></td>` +
-                    `<td ${item.profitRate > 0 ? "class='text-success'" : "class='text-danger'"}><b>%${item.profitRate}</b></td>` +
+                    `<td ><b>Kâr Oranı</b></td>` +
+                    `<td class="text-right"><b>%${item.profitRate}</b></td>` +
                     "</tr>";
                 tbodyCalculateGroupExpenseAndIncome.append(table);
             }

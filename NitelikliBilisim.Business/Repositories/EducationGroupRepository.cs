@@ -83,7 +83,6 @@ namespace NitelikliBilisim.Business.Repositories
             decimal newTotal = totalExpenses + (totalExpenses * expectedProfitRate / 100);
             decimal educationPrice = group.NewPrice.GetValueOrDefault();
             var minimumStudent = CalculateMinimumStudentCount(newTotal - totalIncomes, educationPrice);
-            var expectedSellingPrice = newTotal / group.Quota;
             #endregion
 
 
@@ -110,11 +109,20 @@ namespace NitelikliBilisim.Business.Repositories
                 MinimumStudentCount = minimumStudent,
                 OldPrice = group.OldPrice,
                 NewPrice = group.NewPrice,
-                ExpectedProfitRate = expectedProfitRate,
-                ExpectedSellingPrice = expectedSellingPrice>0? Math.Ceiling(expectedSellingPrice):0
+                ExpectedProfitRate = expectedProfitRate
             };
             return model;
         }
+
+        public CalculateSalesPriceGetVm GetCalculateSalesPriceInformation(Guid groupId, int expectedProfitRate)
+        {
+            return new CalculateSalesPriceGetVm
+            {
+                ExpectedProfitRate = expectedProfitRate,
+                TotalExpenses = GetGroupTotalExpenses(groupId)
+            };
+        }
+
         public GroupGeneralInformationVm GetGroupGeneralInformation(Guid groupId)
         {
             var group = _context.EducationGroups
@@ -326,16 +334,17 @@ namespace NitelikliBilisim.Business.Repositories
 
             decimal totalEducatorExpense = (totalHours * educatorExpensesAverage) * (decimal)1.45;
             decimal profitRate = studentIncomes > 0 && (groupExpenses + totalEducatorExpense) > 0 ? Math.Round(studentIncomes / (groupExpenses + totalEducatorExpense), 2) : 0;
-
+            var culture = CultureInfo.CreateSpecificCulture("tr-TR");
 
             return new GroupExpenseAndIncomeVm
             {
                 TotalEducationHours = totalHours,
                 EducatorExpensesAverage = educatorExpensesAverage,
-                GroupExpenses = groupExpenses,
-                EducatorExpenses = totalEducatorExpense,
-                TotalExpenses = groupExpenses+totalEducatorExpense,
-                TotalStudentIncomes = studentIncomes,
+                GroupExpenses = groupExpenses.ToString("c", culture),
+                EducatorExpenses = totalEducatorExpense.ToString("c", culture),
+                TotalExpenses = (groupExpenses+totalEducatorExpense).ToString("c", culture),
+                TotalStudentIncomes = studentIncomes.ToString("c", culture),
+                GrandTotal = (studentIncomes-(groupExpenses+totalEducatorExpense)).ToString("c", culture),
                 ProfitRate = (profitRate * 100) - 100
             };
         }
