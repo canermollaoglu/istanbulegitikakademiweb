@@ -15,6 +15,7 @@ var inputChangeEducatorStartDate = $("#input-change-educator-start-date");
 var inputGroupName = $("#input-group-name");
 var inputnewPrice = $("#input-new-price");
 var inputGroupNewDate = $("#input-group-new-date");
+var inputNewSalesPrice = $("#input-sales-price");
 
 var inputExpectedProfitability = $("#input-expected-rate-of-profitability");
 var inputExpectedStudentCount = $("#input-expected-student-count");
@@ -34,6 +35,7 @@ var btnPostponementOfGroup = $("#btn-postponement-of-education-save");
 var btnSaveGeneralInformation = $("#btn-save-general-information");
 var btnCancelGeneralInformation = $("#btn-cancel-general-information");
 var btnCalculateSalesPrice = $("#calculateSalesPriceModalOpen");
+var btnEducationPriceSave = $("#btn-education-price-save");
 
 var tbodyTickets = $("#tbody-tickets");
 var tbodyCalculateGroupExpenseAndIncome = $("#tbody-calculate-group-expense-and-income");
@@ -51,6 +53,7 @@ btnLessonDayClassroomChange.on("click", btnLessonDayClassroomChange_onClick);
 btnLessonDayEducatorChange.on("click", btnLessonDayEducatorChange_onClick);
 btnPostponementOfGroup.on("click", btnPostponementOfGroup_onClick);
 btnCalculateSalesPrice.on("click", btnCalculateSalesPrice_onClick);
+btnEducationPriceSave.on("click", btnEducationPriceSave_onClick);
 /* events */
 function document_onLoad() {
 
@@ -288,7 +291,35 @@ function btnCalculateSalesPrice_onClick() {
     });
 
 }
-
+function btnEducationPriceSave_onClick() {
+    btnEducationPriceSave.off("click");
+    var data = {
+        GroupId: groupId.val(),
+        GroupName: $("#groupName").text(),
+        NewPrice: inputNewSalesPrice.val()
+    }
+    $.ajax({
+        url: "/admin/EducationGroup/ChangeGeneralInformation",
+        method: "post",
+        data: data,
+        success: (res) => {
+            if (res.isSuccess) {
+                getGroupDetailInfo();
+            } else {
+                var resultAlert = new AlertSupport.ResultAlert();
+                resultAlert.display({
+                    success: false,
+                    errors: res.errors,
+                    message: "Hataları düzeltiniz"
+                });
+                $("#calculateSalesPriceModal").modal('hide');
+            }
+        },
+        complete: () => {
+            btnEducationPriceSave.on("click", btnEducationPriceSave_onClick);
+        }
+    });
+}
 
 //function btnCalculate_onClick() {
 //    btnCalculate.off("click");
