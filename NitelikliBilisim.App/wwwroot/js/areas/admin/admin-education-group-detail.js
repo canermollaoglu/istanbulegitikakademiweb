@@ -330,23 +330,22 @@ function calculateSalesPrice() {
     var expectedRateOfProfitability = parseFloat($("#input-expected-rate-of-profitability").val());
     var salesPrice = $("#input-sales-price");
     var kayipOncesi = (100 * expectedStudentCount) / (100 - estimatedLossRate);
-    var kayip = Math.ceil(kayipOncesi - expectedStudentCount);
+    
     var profitability = totalExpense * expectedRateOfProfitability / 100;
     var operasyonKarTutari = totalExpense + profitability;
     console.clear();
     console.log("Operasyon Kar Tutarı : " + operasyonKarTutari);
     console.log("Beklenen Kar Tutarı : " + profitability);
-
     //--------//
     var sonuc = 0;
     var posCommissionPrice = (profitability + totalExpense) / kayipOncesi * (posComissionRate / 100);
     console.log("Pos komisyon tutarı: " + posCommissionPrice);
 
-    var kayipBedel = posCommissionPrice * kayip;
-    console.log("Pos komisyon tutarı X kayip: " + kayipBedel);
+    var posKomisyonTutari = posCommissionPrice * kayipOncesi;
+    console.log("Pos komisyon tutarı X kayip: " + posKomisyonTutari);
 
 
-    sonuc = (operasyonKarTutari + kayipBedel) / expectedStudentCount;
+    sonuc = (operasyonKarTutari + posKomisyonTutari) / expectedStudentCount;
     console.log("Kişi başı kdv siz fiyat : " + sonuc);
 
     
