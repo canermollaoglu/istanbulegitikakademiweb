@@ -323,26 +323,39 @@ function btnCalculateSalesPrice_onClick() {
 
 function calculateSalesPrice() {
     var expectedStudentCount = parseFloat($("#input-expected-student-count").val());
-    var expectedRateOfProfitability = parseFloat($("#input-expected-rate-of-profitability").val());
+    var estimatedLossRate = parseFloat($("#input-estimated-loss-rate").val());
     var totalExpense = parseFloat($("#input-total-expense").val());
-    var posComissionRate = parseFloat($("input-commission-rate").val());
+    var posComissionRate = parseFloat($("#input-commission-rate").val());
     var kdvProfitability = parseFloat($("#input-kdv").val());
+    var expectedRateOfProfitability = parseFloat($("#input-expected-rate-of-profitability").val());
     var salesPrice = $("#input-sales-price");
-
+    var kayipOncesi = (100 * expectedStudentCount) / (100 - estimatedLossRate);
+    var kayip = Math.ceil(kayipOncesi - expectedStudentCount);
     var profitability = totalExpense * expectedRateOfProfitability / 100;
-     
-    var sonuc = 0;
-    sonuc = (profitability + totalExpense) / expectedStudentCount;
-    var kdvPrice = sonuc * kdvProfitability / 100;
-
+    var operasyonKarTutari = totalExpense + profitability;
     console.clear();
-    console.log("Kar Tutarı (ToplamGider*KarOranı/100) :" + profitability);
-    console.log("Karlı Toplam  (ToplamGider+KarTutarı) :" + (profitability + totalExpense));
-    console.log("Kişi Başı Ücret (Karlı Toplam/BeklenenKişiSayısı) :" + (profitability + totalExpense) / expectedStudentCount);
+    console.log("Operasyon Kar Tutarı : " + operasyonKarTutari);
+    console.log("Beklenen Kar Tutarı : " + profitability);
+
+    //--------//
+    var sonuc = 0;
+    var posCommissionPrice = (profitability + totalExpense) / kayipOncesi * (posComissionRate / 100);
+    console.log("Pos komisyon tutarı: " + posCommissionPrice);
+
+    var kayipBedel = posCommissionPrice * kayip;
+    console.log("Pos komisyon tutarı X kayip: " + kayipBedel);
+
+
+    sonuc = (operasyonKarTutari + kayipBedel) / expectedStudentCount;
+    console.log("Kişi başı kdv siz fiyat : " + sonuc);
+
+    
+    var kdvPrice = sonuc * kdvProfitability / 100;
+    console.log("KDV : " + kdvPrice);
 
     sonuc = sonuc + kdvPrice;
-    salesPrice.val(Number((sonuc).toFixed(0)));
-
+    console.log("Genel Toplam : " + sonuc);
+    salesPrice.val(Math.ceil(sonuc));
 }
 function btnPostponementOfGroup_onClick() {
     
