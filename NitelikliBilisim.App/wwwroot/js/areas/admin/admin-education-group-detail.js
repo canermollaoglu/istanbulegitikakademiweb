@@ -312,10 +312,11 @@ function btnEducationPriceSave_onClick() {
                     errors: res.errors,
                     message: "Hataları düzeltiniz"
                 });
-                $("#calculateSalesPriceModal").modal('hide');
+                
             }
         },
         complete: () => {
+            $("#calculateSalesPriceModal").modal('hide');
             btnEducationPriceSave.on("click", btnEducationPriceSave_onClick);
         }
     });
@@ -354,7 +355,7 @@ function btnEducationPriceSave_onClick() {
 
 function calculateSalesPrice() {
     var expectedStudentCount = parseFloat($("#input-expected-student-count").val());
-    var estimatedLossRate = parseFloat($("#input-estimated-loss-rate").val());
+    var estimatedLossRate = 0;//parseFloat($("#input-estimated-loss-rate").val());
     var totalExpense = parseFloat($("#input-total-expense").val());
     var posComissionRate = parseFloat($("#input-commission-rate").val());
     var kdvProfitability = parseFloat($("#input-kdv").val());
@@ -490,8 +491,20 @@ function getGroupDetailInfo() {
                 $("#quota").html(res.data.assignedStudentsCount + "/"+res.data.quota);
                 $("#educationDays").html(res.data.educationDays + " gün, günde " + res.data.educationHoursPerDay+" saat");
                 $("#oldPrice").html(res.data.oldPrice != null ? res.data.oldPrice + " ₺" :"Fiyat belirtilmemiş.");
-                $("#newPrice").html(res.data.newPrice!=null?res.data.newPrice+ " ₺":"Fiyat belirtilmemiş.");
-                $("#alertMinimumStudent").html(`<b>%${res.data.expectedProfitRate}</b> kârlılık için minimum <b>${res.data.minimumStudentCount}</b> öğrencinin daha gruba katılması gereklidir.`);
+                $("#newPrice").html(res.data.newPrice != null ? res.data.newPrice + " ₺" : "Fiyat belirtilmemiş.");
+
+                var alertStyle ="";
+                if ((res.data.minimumStudentCount / res.data.quota)>0.5) {
+                    alertStyle = "alert-danger";
+                } else if (res.data.minimumStudentCount==0) {
+                    alertStyle = "alert-success";
+                } else {
+                    alertStyle = "alert-warning";
+                }
+
+                $("#alertDiv").addClass(alertStyle);
+
+                $("#alertMinimumStudent").html(`<b>%${res.data.expectedProfitRate}</b> kârlılık için <b>${res.data.minimumStudentCount}</b> satış daha yapman lazım.`);
                 inputnewPrice.val(res.data.newPrice);
             }
         }
