@@ -81,7 +81,7 @@ function document_onLoad() {
         $("#loading").hide();
     });
 
-    
+
     $('#calculateSalesPriceForm input').keyup(function () {
         calculateSalesPrice();
     });
@@ -278,7 +278,7 @@ function btnCalculateSalesPrice_onClick() {
                 inputExpectedProfitability.val(res.data.expectedProfitRate);
                 inputExpectedStudentCount.val(res.data.expectedStudentCount);
                 calculateSalesPrice();
-                $('#calculateSalesPriceModal').modal('show'); 
+                $('#calculateSalesPriceModal').modal('show');
             } else {
                 var resultAlert = new AlertSupport.ResultAlert();
                 resultAlert.display({
@@ -312,7 +312,7 @@ function btnEducationPriceSave_onClick() {
                     errors: res.errors,
                     message: "Hataları düzeltiniz"
                 });
-                
+
             }
         },
         complete: () => {
@@ -344,7 +344,7 @@ function btnEducationPriceSave_onClick() {
 //                console.log(res.errors);
 //                alert("Hata");
 //            }
-           
+
 //        },
 //        complete: () => {
 //            btnCalculate.on("click", btnCalculate_onClick);
@@ -362,7 +362,7 @@ function calculateSalesPrice() {
     var expectedRateOfProfitability = parseFloat($("#input-expected-rate-of-profitability").val());
     var salesPrice = $("#input-sales-price");
     var kayipOncesi = (100 * expectedStudentCount) / (100 - estimatedLossRate);
-    
+
     var profitability = totalExpense * expectedRateOfProfitability / 100;
     var operasyonKarTutari = totalExpense + profitability;
     console.clear();
@@ -380,7 +380,7 @@ function calculateSalesPrice() {
     sonuc = (operasyonKarTutari + posKomisyonTutari) / expectedStudentCount;
     console.log("Kişi başı kdv siz fiyat : " + sonuc);
 
-    
+
     var kdvPrice = sonuc * kdvProfitability / 100;
     console.log("KDV : " + kdvPrice);
 
@@ -420,7 +420,7 @@ function btnPostponementOfGroup_onClick() {
             btnPostponementOfGroup.on("click", btnPostponementOfGroup_onClick);
             $("#postponementOfGroup").modal('hide');
             $('#form-postponement-of-group')[0].reset();
-    }
+        }
     });
 
 }
@@ -492,28 +492,36 @@ function getGroupDetailInfo() {
                 $("#educatorName").html(res.data.educatorName);
                 $("#startDate").html(res.data.startDate);
                 $("#endDate").html(res.data.endDate);
-                $("#quota").html(res.data.assignedStudentsCount + "/"+res.data.quota);
-                $("#educationDays").html(res.data.educationDays + " gün, günde " + res.data.educationHoursPerDay+" saat");
-                $("#oldPrice").html(res.data.oldPrice != null ? res.data.oldPrice + " ₺" :"Fiyat belirtilmemiş.");
+                $("#quota").html(res.data.assignedStudentsCount + "/" + res.data.quota);
+                $("#educationDays").html(res.data.educationDays + " gün, günde " + res.data.educationHoursPerDay + " saat");
+                $("#oldPrice").html(res.data.oldPrice != null ? res.data.oldPrice + " ₺" : "Fiyat belirtilmemiş.");
                 $("#newPrice").html(res.data.newPrice != null ? res.data.newPrice + " ₺" : "Fiyat belirtilmemiş.");
 
-                var alertStyle ="";
-                if ((res.data.minimumStudentCount / res.data.quota)>0.5) {
+                var alertStyle = "";
+                if ((res.data.minimumStudentCount / res.data.quota) > 0.5) {
                     alertStyle = "alert-danger";
                     $("#alertMinimumStudent").html(`<b>%${res.data.expectedProfitRate}</b> kârlılık için <b>${res.data.minimumStudentCount}</b> satış daha yapman lazım.`);
-                } else if (res.data.minimumStudentCount<=0) {
+                } else if (res.data.minimumStudentCount <= 0) {
                     alertStyle = "alert-success";
                     $("#alertMinimumStudent").html(`<b>%${res.data.expectedProfitRate}</b> kârlılık sağlanmıştır.`);
                 } else {
                     alertStyle = "alert-warning";
                     $("#alertMinimumStudent").html(`<b>%${res.data.expectedProfitRate}</b> kârlılık için <b>${res.data.minimumStudentCount}</b> satış daha yapman lazım.`);
                 }
+                var weekDays = "";
+                $(res.data.weekdayNames).each(function (index, element) {
+                    if (index == 0) {
+                        weekDays += element;
+                    } else {
+                        weekDays += ',' + element;
+                    }
 
-
+                });
+                $("#educationWeekDays").html(weekDays);
 
                 $("#alertDiv").addClass(alertStyle);
 
-               
+
                 inputnewPrice.val(res.data.newPrice);
             }
         }
