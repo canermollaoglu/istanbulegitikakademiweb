@@ -14,6 +14,11 @@ services:
       - "9300:9300"
     environment:
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+<<<<<<< HEAD
+=======
+    networks:
+      - devbox
+>>>>>>> parent of c3fa381... niteliklitest.azurecr.io
 
   logstash:
     build:
@@ -27,6 +32,11 @@ services:
       - "5000:5000"
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+<<<<<<< HEAD
+=======
+    networks:
+      - devbox
+>>>>>>> parent of c3fa381... niteliklitest.azurecr.io
     depends_on:
       - elasticsearch
 
@@ -39,7 +49,18 @@ services:
       - ./kibana/config/:/usr/share/kibana/config:ro
     ports:
       - "5601:5601"
+<<<<<<< HEAD
     depends_on:
       - elasticsearch
 
+=======
+    networks:
+      - devbox
+    depends_on:
+      - elasticsearch
+
+networks:
+  devbox:
+    driver: bridge
+>>>>>>> parent of c3fa381... niteliklitest.azurecr.io
 
