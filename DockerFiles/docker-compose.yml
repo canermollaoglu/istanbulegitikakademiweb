@@ -15,7 +15,7 @@ services:
     environment:
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
     networks:
-      - devbox
+      - niteliklitest.azurecr.io
 
   logstash:
     build:
@@ -30,7 +30,7 @@ services:
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
     networks:
-      - devbox
+      - niteliklitest.azurecr.io
     depends_on:
       - elasticsearch
 
@@ -44,11 +44,11 @@ services:
     ports:
       - "5601:5601"
     networks:
-      - devbox
+      - niteliklitest.azurecr.io
     depends_on:
       - elasticsearch
 
 networks:
   devbox:
-    driver: bridge
+    driver: niteliklitest.azurecr.io
 
