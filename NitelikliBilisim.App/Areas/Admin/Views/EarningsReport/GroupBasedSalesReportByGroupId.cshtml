@@ -649,12 +649,12 @@
                         var item = res.data;
                         var table = "";
                         table +=
-                            `<tr><td>Grup Giderleri</td><td class="text-danger text-right" colspan="3" >${item.groupExpenses} ₺</td></tr>` +
-                        `<tr><td>Eğitmen Ücreti</td><td>${item.totalEducationHours} saat</td><td>Ort: ${item.educatorExpensesAverage} ₺</td><td class="text-danger  text-right">${item.educatorExpenses} ₺</td></tr>` +
-                        `<tr><td><b>Toplam Gider</b></td><td class="text-danger  text-right" colspan="3"><b>${item.totalExpenses} ₺</b></td></tr>` +
-                            `<tr><td>Ciro (Öğrenci Ödemeleri)</td><td class="text-success  text-right" colspan="3">${item.totalStudentIncomes} ₺</td></tr>` +
-                            `<tr><td><b>Genel Toplam</b></td><td colspan="3" ${item.grandTotal > 0 ? "class='text-success  text-right'" : "class='text-danger  text-right'"}><b>${item.grandTotal} ₺</b></td></tr>`+
-                            `<tr><td><b>Kâr Oranı</b></td><td colspan="3" ${item.profitRate > 0 ? "class='text-success  text-right'" : "class='text-danger  text-right'"}><b>%${item.profitRate}</b></td></tr>`
+                            `<tr><td>Grup Giderleri</td><td class="text-danger text-right" colspan="3" >${item.groupExpenses} </td></tr>` +
+                        `<tr><td>Eğitmen Ücreti</td><td>${item.totalEducationHours} saat</td><td>Ort: ${item.educatorExpensesAverage} </td><td class="text-danger  text-right">${item.educatorExpenses} </td></tr>` +
+                        `<tr><td><b>Toplam Gider</b></td><td class="text-danger  text-right" colspan="3"><b>${item.totalExpenses} </b></td></tr>` +
+                            `<tr><td>Ciro (Öğrenci Ödemeleri)</td><td class="text-success  text-right" colspan="3">${item.totalStudentIncomes} </td></tr>` +
+                            `<tr><td><b>Genel Toplam</b></td><td colspan="3" class="text-right"><b>${item.grandTotal} </b></td></tr>`+
+                            `<tr><td><b>Kâr Oranı</b></td><td colspan="3" class="text-right"  ><b>%${item.profitRate}</b></td></tr>`
                             ;
                         tbodyGroupExpensesIncomes.append(table);
                     }

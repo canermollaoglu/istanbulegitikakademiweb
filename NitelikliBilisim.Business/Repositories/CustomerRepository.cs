@@ -44,7 +44,7 @@ namespace NitelikliBilisim.Business.Repositories
                     StartDate = studentNBUYEducationDetails.StartedAt,
                     CategoryName = studentNBUYEducationDetails.Category.Name,
                     EducationCenter = EnumSupport.GetDescription(studentNBUYEducationDetails.EducationCenter),
-                    EducationDay = educationDay!=null?educationDay.OrderBy(x => x.Date).LastOrDefault().Day:0
+                    EducationDay = educationDay!=null&&educationDay.Count()>0?educationDay.OrderBy(x => x.Date).LastOrDefault().Day:0
                 };
             }
             #endregion
