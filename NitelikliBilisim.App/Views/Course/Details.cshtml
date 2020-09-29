@@ -162,6 +162,7 @@
                                 <li id="text-group-host-address"></li>
                                 <li id="text-group-joined"></li>
                                 <li id="text-group-quota"></li>
+                                <li id="text-group-price"></li>
                             </ul>
                         </div>
                     </div>
@@ -187,7 +188,7 @@
                     </div>
                 </div>
                 <div class="col-md-2">
-                    <p style="font-size:1.3em">@Model.Details.Base.PriceText</p>
+                    @*<p style="font-size:1.3em">@Model.Details.Base.PriceText</p>*@
                 </div>
                 <div class="col-md-3">
                     <button class="btn_1 rounded" id="btn-buy2">Katıl</button>
@@ -218,6 +219,7 @@
         var textGroupJoined = $("#text-group-joined");
         var textGroupStartDate = $("#text-group-start-date");
         var textGroupNameAndCity = $("#text-group-name-and-city");
+        var textGroupPrice = $("#text-group-price");
 
         /* assignments */
         $(document).ready(document_onLoad);
@@ -263,7 +265,7 @@
         function selectGroups_onChange() {
             var index = selectGroups.selectedIndex;
             var group = groups[index];
-            //console.log(group);
+            console.log(group);
             latitude = group.host.latitude;
             longitude = group.host.longitude;
             initMap();
@@ -273,11 +275,15 @@
             textGroupQuota.html(`<i class="icon-users-2"></i> Kontenjan: ${group.quota}`);
             textGroupStartDate.html(`${group.startDateText}, `);
             textGroupNameAndCity.html(`${group.host.hostName} (${group.host.city})`);
+            textGroupPrice.html(`<i class="icon-money"></i> Fiyat: ${group.newPrice} ₺`);
         }
         function btnBuy_onClick() {
+            var index = selectGroups.selectedIndex;
+            var group = groups[index];
             var cart = new CartSupport.Cart();
             var hostId = selectGroups.options[selectGroups.selectedIndex].value;
-            cart.addToCart(_educationId, hostId);
+            var groupId = group.groupId;
+            cart.addToCart(_educationId, hostId,groupId);
 
             location.href = "/sepet";
         }

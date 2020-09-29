@@ -305,7 +305,7 @@
         }
         function prePostponeOperation() {
             $.ajax({
-                url: `/admin/determine-postpone-dates?groupId=${groupId}&from=${inputStartDate.val()}&to=${inputEndDate.val()}`,
+                url: `/admin/determine-postpone-dates?groupId=${groupId}&from=${inputStartDate.val()}`,
                 method: "get",
                 success: (res) => {
                     var data = res.data;

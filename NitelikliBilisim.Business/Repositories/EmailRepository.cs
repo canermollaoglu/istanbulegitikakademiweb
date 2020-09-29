@@ -51,5 +51,10 @@ namespace NitelikliBilisim.Business.Repositories
                 .Select(x => x.Customer.User.Email)
                 .ToList();
         }
+
+        public string GetEmailByEducatorId(string educatorId)
+        {
+            return _context.Users.First(x => x.Id == educatorId).Email;
+        }
     }
 }

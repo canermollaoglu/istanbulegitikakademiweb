@@ -82,7 +82,7 @@ function createGrid() {
             {
                 headerCellTemplate: $('<b style="color: black;">Kurum Adı</b>'),
                 dataField: "hostName",
-                width: 300
+                width: 200
             }, {
                 headerCellTemplate: $('<b style="color: black;">Adres</b>'),
                 dataField: "address",
@@ -99,11 +99,13 @@ function createGrid() {
                  allowSearch: false,
                 cellTemplate: function (container, options) {
                     var current = options.data;
-                    $(`<a title="Görsel Yönetimi" class="btn btn-primary btn-sm" href="/admin/egitim-kurumlari/gorsel-yonetimi?educationHostId=${current.id}"><i class=\"fa fa-picture-o\"></i></a>`)
+                    $(`<a title="Görsel Yönetimi" class="btn btn-outline-primary btn-sm" href="/admin/egitim-kurumlari/gorsel-yonetimi?educationHostId=${current.id}"><i class="fa fa-image"></i></a>`)
                         .appendTo(container);
-                    $(`<a title="Güncelle" class="btn btn-warning btn-sm" href="/admin/egitim-kurumlari/guncelle?educationHostId=${current.id}"><i class=\"fa fa-edit\"></i></a>`)
+                    $(`<a title="Eğitim Sınıfları" class="btn btn-outline-success btn-sm" href="/admin/egitim-kurumlari/sinif-yonetimi?educationHostId=${current.id}"><i class="fa fa-list"></i></a>`)
                         .appendTo(container);
-                    $(`<button title="Sil" class="btn btn-danger btn-sm" onClick="btnConfirmationModalTrigger_onClick(this)" data-url="/admin/egitim-kurumlari/sil?educationHostId=${current.id}" style="cursor:pointer;"><i class=\"fa fa-trash\"></i></button>`)
+                    $(`<a title="Güncelle" class="btn btn-outline-warning btn-sm" href="/admin/egitim-kurumlari/guncelle?educationHostId=${current.id}"><i class="fa fa-edit"></i></a>`)
+                        .appendTo(container);
+                    $(`<button title="Sil" class="btn btn-outline-danger btn-sm" onClick="btnConfirmationModalTrigger_onClick(this)" data-url="/admin/egitim-kurumlari/sil?educationHostId=${current.id}" style="cursor:pointer;"><i class="fa fa-trash"></i></button>`)
                         .appendTo(container);
                 },
                 alignment: "center",

@@ -67,7 +67,7 @@ namespace NitelikliBilisim.Core.ViewModels.Sales
     {
         public PaymentChannel PaymentChannel { get; set; } = PaymentChannel.WEB;
         public PaymentGroup PaymentGroup { get; set; } = PaymentGroup.PRODUCT;
-        public byte Installments { get; set; } = 3;
+        public byte Installments { get; set; }
     }
     public class _SpecialInfo
     {
@@ -77,6 +77,7 @@ namespace NitelikliBilisim.Core.ViewModels.Sales
     }
     public class _CartItem
     {
+        public Guid GroupId { get; set; }
         public Guid EducationId { get; set; }
         public Guid HostId { get; set; }
     }

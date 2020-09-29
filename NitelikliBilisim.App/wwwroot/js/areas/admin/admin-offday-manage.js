@@ -327,7 +327,7 @@ function createGrid() {
                     {
                         name: "delete",
                         text: "Sil",
-                        cssClass : "btn btn-danger btn-sm",
+                        cssClass: "btn btn-danger btn-sm",
                         visible: function (e) {
                             return !e.row.isEditing;
                         },

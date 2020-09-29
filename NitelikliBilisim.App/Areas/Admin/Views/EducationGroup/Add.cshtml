@@ -27,27 +27,13 @@
                 <form id="form-add-group">
                     @Html.AntiForgeryToken()
                     <div class="row" style="margin-bottom: 1%;">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
-                                <label>Yer</label>
-                                <select class="form-control" id="select-hosts">
-                                    <option value="">Kursun yapılacağı yeri seçiniz...</option>
-                                    @foreach (var item in Model.Hosts)
-                                    {
-                                        <option value="@item.Id">@item.HostName (@EnumSupport.GetDescription(item.City))</option>
-                                    }
-                                </select>
+                                <label>Grup Adı</label>
+                                <input class="form-control" type="text" value="" id="input-name" />
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Kontenjan</label>
-                                <input type="text" class="form-control" value="15" id="input-quota" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row" style="margin-bottom:1%;">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label>Eğitimler</label>
                                 <select class="form-control" id="select-educations">
@@ -59,7 +45,22 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Yer</label>
+                                <select class="form-control" id="select-hosts">
+                                    <option value="">Kursun yapılacağı yeri seçiniz...</option>
+                                    @foreach (var item in Model.Hosts)
+                                    {
+                                        <option value="@item.Id">@item.HostName (@EnumSupport.GetDescription(item.City))</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-bottom: 1%;">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label>Eğitmenler</label>
                                 <select class="form-control" id="select-educators" disabled>
@@ -67,21 +68,42 @@
                                 </select>
                             </div>
                         </div>
-                    </div>
-                    <div class="row" style="margin-bottom: 1%;">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
-                                <label>Grup Adı</label>
-                                <input class="form-control" type="text" value="" id="input-name" />
+                                <label title="Saatlik eğitmen ücreti">Eğitmen Ücreti</label>
+                                <input type="number" value="0" class="form-control" id="input-educator-price" />
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Kontenjan</label>
+                                <input type="text" class="form-control" value="15" id="input-quota" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom:1%;">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label>Açılış Zamanı</label>
                                 <input class="form-control" type="date" value="" id="input-start-date" />
                             </div>
                         </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Sınıflar</label>
+                                <select class="form-control" id="select-class-room" disabled>
+                                    <option value="">Sınıf seçiniz...</option>
+                                </select>
+                            </div>
+                        </div>
+                        @*<div class="col-md-4">
+                            <div class="form-group">
+                                <label>Satış Fiyatı</label>
+                                <input type="number" class="form-control" id="input-price">
+                            </div>
+                        </div>*@
                     </div>
+
                     <!-- Ders günleri seçimi -->
                     <div class="row" style="margin-bottom: 1%;">
                         <div class="col-md-12">
@@ -124,6 +146,9 @@
                         </div>
                     </div>
                     <!-- /Ders günleri seçimi -->
+                    <div class="alert alert-warning" id="education-days-info" style="display:none">
+
+                    </div>
                     <div class="row">
                         <div class="offset-md-10 col-md-2">
                             <button id="btn-save" type="button" class="btn_1 form-control">Kaydet</button>
@@ -134,6 +159,9 @@
         </div>
     </div>
 </div>
+
+
+
 @section postScripts{
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
     <script src="~/js/sup/alert-sup.js"></script>
@@ -147,22 +175,27 @@
         /* elements */
         var selectEducations = document.getElementById("select-educations");
         var selectEducators = document.getElementById("select-educators");
+        var selectClassRoom = document.getElementById("select-class-room");
         var selectHosts = document.getElementById("select-hosts");
         var dayCheckboxes = document.getElementsByClassName("form-check-input");
         var inputStartDate = $("#input-start-date");
         var inputName = $("#input-name");
+        var inputEducatorPrice = $('#input-educator-price');
         var inputQuota = $("#input-quota");
         var btnSave = $("#btn-save");
+        var educationDaysInfoDiv = $("#education-days-info");
 
         /* assignments */
         $(document).ready(document_onLoad);
         selectEducations.onchange = selectEducations_onChange;
+        selectHosts.onchange = selectHost_onChange;
         btnSave.on("click", btnSave_onClick);
 
         /* events */
         function document_onLoad() {
             $(selectEducations).select2();
             $(selectEducators).select2();
+            $(selectClassRoom).select2();
             $(selectHosts).select2();
 
             var dateManager = new DateTimeSupport.Manager();
@@ -176,6 +209,17 @@
         function selectEducations_onChange() {
 
             var educationId = selectEducations.options[selectEducations.selectedIndex].value;
+            $.ajax({
+                url: `/admin/get-education-days-info/${educationId}`,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        educationDaysInfoDiv.html(`<span>Seçtiğiniz eğitim toplam ${res.data.days} gün sürmektedir.</span>`).show();
+                    } else {
+                        educationDaysInfoDiv.hide();
+                    }
+                }
+            });
             $.ajax({
                 url: `/admin/get-assigned-educators-for-group-add/${educationId}`,
                 method: "get",
@@ -192,6 +236,27 @@
                     }
                 }
             });
+
+        }
+        function selectHost_onChange() {
+            var hostId = selectHosts.options[selectHosts.selectedIndex].value;
+            $.ajax({
+                url: `/admin/get-class-rooms-by-host-id/${hostId}`,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        getClassRooms(res.data);
+                        $(selectClassRoom).prop("disabled", false);
+                        if (!res.data.length)
+                            $(selectClassRoom).prop("disabled", true);
+                    } else {
+                        var jqueryselectClassRoom = $(selectClassRoom);
+                        jqueryselectClassRoom.html(`<option value="">Sınıf seçiniz...</option>`);
+                        $(selectClassRoom).prop("disabled", true);
+                    }
+                }
+            });
+
         }
         function dayCheckbox_onChange() {
             lessonDays = [];
@@ -213,7 +278,9 @@
                 EducatorId: selectEducators.options[selectEducators.selectedIndex].value,
                 HostId: selectHosts.options[selectHosts.selectedIndex].value,
                 LessonDays: lessonDays,
-                Quota: inputQuota.val()
+                Quota: inputQuota.val(),
+                EducatorPrice: inputEducatorPrice.val(),
+                ClassRoomId: selectClassRoom.options[selectClassRoom.selectedIndex].value
             });
             var resultAlert = new AlertSupport.ResultAlert();
             $.ajax({
@@ -222,14 +289,7 @@
                 data: data,
                 success: (res) => {
                     if (res.isSuccess) {
-                        resultAlert.display({
-                            success: true,
-                            message: "Kayıt işlemi başarılı! Listeye gitmek için {link}",
-                            redirectElement: {
-                                content: "tıklayınız",
-                                link: "/admin/gruplar"
-                            }
-                        });
+                        window.location = `/admin/grup-detay/${res.data}`;
                     } else {
                         resultAlert.display({
                             success: false,
@@ -254,8 +314,22 @@
 
             $(selectEducators).append(appended);
         }
+        function getClassRooms(data) {
+            var jquerySelectClassRooms = $(selectClassRoom);
+            jquerySelectClassRooms.html(`<option value="">Sınıf seçiniz...</option>`);
+            var appended = "";
+            for (var i = 0; i < data.length; i++) {
+                var item = data[i];
+                appended += `<option value="${item.id}">${item.name}</option>`;
+            }
+            $(selectClassRoom).append(appended);
+        }
+
+
         function validateData() {
             // ?
         }
+
+
     </script>
 }

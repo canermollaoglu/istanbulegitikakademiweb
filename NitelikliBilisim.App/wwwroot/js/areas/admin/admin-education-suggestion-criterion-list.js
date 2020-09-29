@@ -117,7 +117,7 @@ function createGrid() {
             caption: "Yönet",
             cellTemplate: function (container, options) {
                 var current = options.data;
-                $(`<a class="btn btn-primary btn-sm" href="/admin/egitim-oneri-kriteri-yonetimi?educationId=${current.id}"><i class="fa fa-tasks"></i></a>`)
+                $(`<a class="btn btn-outline-primary btn-sm" href="/admin/egitim-oneri-kriteri-yonetimi?educationId=${current.id}">Yönet</a>`)
                     .appendTo(container);
             },
             width:75

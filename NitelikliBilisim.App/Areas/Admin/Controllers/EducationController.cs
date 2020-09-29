@@ -84,13 +84,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 Description = data.Description,
                 Description2 = data.Description2,
                 Level = (EducationLevel)data.EducationLevel.GetValueOrDefault(),
-                NewPrice = data.Price.GetValueOrDefault(),
                 Days = data.Days.GetValueOrDefault(),
                 HoursPerDay = data.HoursPerDay.GetValueOrDefault(),
                 CategoryId = data.CategoryId
             };
 
-            _unitOfWork.Education.Insert(education, data.TagIds, new List<EducationMedia> { banner, preview });
+            _unitOfWork.Education.Insert(education, data.Tags, new List<EducationMedia> { banner, preview });
 
             _unitOfWork.Education.CheckEducationState(education.Id);
 
@@ -134,7 +133,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [HttpPost, Route("admin/egitim-guncelle")]
         public IActionResult Update(UpdatePostVm data)
         {
-            if (!ModelState.IsValid || data.TagIds.Count == 0)
+            if (!ModelState.IsValid || data.Tags.Length== 0)
                 return Json(new ResponseModel
                 {
                     isSuccess = false,

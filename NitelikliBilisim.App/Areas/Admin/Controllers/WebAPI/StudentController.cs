@@ -55,5 +55,32 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.WebAPI
             return Ok(lastData);
         }
 
+
+        [HttpGet]
+        [Route("get-student-joined-groups")]
+        public IActionResult GetJoinedGroups(DataSourceLoadOptions loadOptions, string studentId)
+        {
+            var data = _unitOfWork.Customer.GetJoinedGroups(studentId);
+            return Ok(DataSourceLoader.Load(data, loadOptions));
+
+        }
+
+        [HttpGet]
+        [Route("get-student-payments")]
+        public IActionResult GetStudentPayments(DataSourceLoadOptions loadOptions, string studentId)
+        {
+            var data = _unitOfWork.Report.GetStudentBasedSalesReport(studentId);
+            return Ok(DataSourceLoader.Load(data, loadOptions));
+
+        }
+
+        [HttpGet]
+        [Route("get-student-tickets")]
+        public IActionResult GetStudentTickets(DataSourceLoadOptions loadOptions, string studentId)
+        {
+            var data = _unitOfWork.Report.GetStudentTickets(studentId);
+            return Ok(DataSourceLoader.Load(data, loadOptions));
+
+        }
     }
 }

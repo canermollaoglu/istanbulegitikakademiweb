@@ -30,7 +30,27 @@
                     <input type="text" class="form-control" placeholder="Eğitim ismini giriniz..." id="input-name" value="@Model.Education.Name">
                 </div>
             </div>
-            <div class="col-md-12">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Seviyeyi Seçiniz</label>
+                    <select id="select-levels" class="form-control">
+                        @foreach (var item in Model.Levels)
+                        {
+                            if (Model.Education.Level == (EducationLevel)item.Key)
+                            {
+                                <option value="@item.Key" selected>@item.Value</option>
+                            }
+                            else
+                            {
+                                <option value="@item.Key">@item.Value</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            </div>
+        <div class="row">
+            <div class="col-md-6">
                 <div class="form-group">
                     @{
                         var isChecked = Model.Education.IsActive ? "checked" : "";
@@ -51,17 +71,10 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Etiketlerini Seçiniz</label>
-                    <select id="select-categories" multiple="multiple" class="form-control">
-                        @foreach (var item in Model.Tags)
+                    <select id="select-tags" multiple="multiple" class="form-control">
+                        @foreach (var item in Model.RelatedTags)
                         {
-                            if (Model.RelatedCategories.Count(x => x.Id == item.Id) > 0)
-                            {
                                 <option value="@item.Id" selected>@item.Name</option>
-                            }
-                            else
-                            {
-                                <option value="@item.Id">@item.Name</option>
-                            }
                         }
                     </select>
                 </div>
@@ -92,32 +105,6 @@
                 <div class="form-group">
                     <label>Günde Kaç Saat</label>
                     <input type="text" class="form-control" placeholder="Derslerin günlük kaç saat işleneceğinizi giriniz..." id="input-hours-per-day" value="@Model.Education.HoursPerDay">
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>Fiyatı</label>
-                    <input type="text" class="form-control" placeholder="Fiyatı..." id="input-price" value="@Model.Education.NewPrice">
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>Seviyeyi Seçiniz</label>
-                    <select id="select-levels" class="form-control">
-                        @foreach (var item in Model.Levels)
-                        {
-                            if (Model.Education.Level == (EducationLevel)item.Key)
-                            {
-                                <option value="@item.Key" selected>@item.Value</option>
-                            }
-                            else
-                            {
-                                <option value="@item.Key">@item.Value</option>
-                            }
-                        }
-                    </select>
                 </div>
             </div>
         </div>

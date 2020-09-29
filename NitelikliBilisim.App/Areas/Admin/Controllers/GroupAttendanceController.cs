@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_group_attendances;
@@ -24,6 +25,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         {
             if (!groupId.HasValue || !date.HasValue || !hasAttendanceRecord.HasValue)
                 return Redirect($"/admin/grup/ayarlar/{groupId.Value}");
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationGrupEnterAttendance");
             var model = _unitOfWork.GroupAttendance.GetAttendances(groupId.Value, date.Value);
             return View(model);
         }
@@ -37,11 +39,24 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     isSuccess = false,
                     message = "Yoklama girişinin zamanı geçmiştir"
                 });
-            _unitOfWork.GroupAttendance.SaveAttendances(data);
-            return Json(new ResponseModel
+
+            try
             {
-                isSuccess = true
-            });
+                _unitOfWork.GroupAttendance.SaveAttendances(data);
+                return Json(new ResponseModel
+                {
+                    isSuccess = true
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { $"Hata : {ex.Message}" }
+                }); 
+            }
+           
         }
     }
 }

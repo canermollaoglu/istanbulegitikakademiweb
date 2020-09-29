@@ -67,7 +67,15 @@ namespace NitelikliBilisim.App.Lexicographer
             /*EducationGrup*/
             _dictionary.Add("AdminEducationGrupList",
             new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Eğitim Grupları Listele", url: null) });
-       
+            _dictionary.Add("AdminEducationGrupDetail",
+            new BreadCrumbItem[] { new BreadCrumbItem(title: "Eğitim Grubu Listesi", url: "/admin/gruplar"), new BreadCrumbItem(title: "Eğitim Grubu Detayı", url: null) });
+            _dictionary.Add("AdminEducationGrupEnterAttendance",
+            new BreadCrumbItem[] { new BreadCrumbItem(title: "Eğitim Grubu Listesi", url: "/admin/gruplar"), new BreadCrumbItem(title: "Grup Yoklaması", url: null) });
+            _dictionary.Add("AdminEducationGroupLessonDayDetail",
+            new BreadCrumbItem[] { new BreadCrumbItem(title: "Eğitim Grubu Listesi", url: "/admin/gruplar"), new BreadCrumbItem(title: "Eğitim Günü Detayları", url: null) });
+
+
+            
             /*Educator Certificate*/
             _dictionary.Add("AdminEducatorCertificateList",
                 new BreadCrumbItem[] {new BreadCrumbItem(title:"Admin Panel",url:"/admin/panel"),new BreadCrumbItem(title:"Eğitmen Sertifikası Listele",url:null)});
@@ -83,10 +91,15 @@ namespace NitelikliBilisim.App.Lexicographer
                 new BreadCrumbItem[] { new BreadCrumbItem("Eğitim Kurumları Listesi", "/admin/egitim-kurumlari"), new BreadCrumbItem("Eğitim Kurumu Ekle", null) });
             _dictionary.Add("AdminEducationHostUpdate",
                 new BreadCrumbItem[] { new BreadCrumbItem("Eğitim Kurumları Listesi", "/admin/egitim-kurumlari"), new BreadCrumbItem("Eğitim Kurumu Güncelle", null) });
+            _dictionary.Add("AdminEducationClassRoomList",
+               new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Sınıf Listesi", url: null) });
 
+
+            
             /*OffDay Manage*/
             _dictionary.Add("AdminOffDay",
                 new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Tatil Günleri Yönetimi", url: null) });
+            
             /*Education Suggestion Criterion*/
             _dictionary.Add("AdminEducationSuggestionCriterionManage",
               new BreadCrumbItem[] { new BreadCrumbItem(title: "Eğitimler Listesi", url: "/admin/egitimler"), new BreadCrumbItem(title: "Eğitim Öneri Kriterleri Yönetimi", url: null) });
@@ -98,6 +111,10 @@ namespace NitelikliBilisim.App.Lexicographer
                new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Öğrenci Listele", url: null) });
             _dictionary.Add("AdminStudentLogList",
                  new BreadCrumbItem[] { new BreadCrumbItem(title: "Öğrenci Listesi", url: "/admin/ogrenci-yonetimi"), new BreadCrumbItem(title: "Öğrenci Hareketleri", url: null) });
+            _dictionary.Add("AdminStudentDetail",
+                new BreadCrumbItem[] { new BreadCrumbItem(title: "Öğrenci Listesi", url: "/admin/ogrenci-yonetimi"), new BreadCrumbItem(title: "Öğrenci Detay", url: null) });
+
+            
             /*Blog*/
             _dictionary.Add("AdminBlogPostList",
                new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Tüm Blog Yazıları", url: null) });
@@ -116,8 +133,20 @@ namespace NitelikliBilisim.App.Lexicographer
             _dictionary.Add("AdminBlogTagList",
              new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Blog Etiket Listesi", url: null) });
 
-            
+            /*Expense*/
+            _dictionary.Add("AdminExpenseTypeList",
+             new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Grup Gider Tipleri", url: null) });
 
+            _dictionary.Add("AdminExpenseTypeUpdate",
+             new BreadCrumbItem[] { new BreadCrumbItem(title: "Grup Gider Tipleri", url: "/admin/GroupExpenseType/List"), new BreadCrumbItem(title: "Grup Gideri Güncelle", url: null) });
+
+            /*Reports*/
+            _dictionary.Add("AdminGeneralSalesReport",
+             new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Genel Satış Raporu", url: null) });
+            _dictionary.Add("AdminGroupBasedSalesReport",
+             new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Grup Bazlı Satış Raporu", url: null) });
+
+            
         }
 
         public static BreadCrumbItem[] ReadPart(string part)

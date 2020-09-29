@@ -11,6 +11,8 @@ namespace NitelikliBilisim.Core.ViewModels
         public int Joined { get; set; }
         public byte Quota { get; set; }
         public HostVm Host { get; set; }
+        public decimal? OldPrice { get; set; }
+        public decimal? NewPrice { get; set; }
     }
 
     public class EducationGroupListVm
@@ -21,6 +23,6 @@ namespace NitelikliBilisim.Core.ViewModels
         public  string EducationName { get; set; }
         public  string HostName { get; set; }
         public string HostCity { get; set; }
-
+        public decimal? NewPrice { get; set; }
     }
 }

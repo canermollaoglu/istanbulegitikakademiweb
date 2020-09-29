@@ -123,10 +123,9 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     return Json(new { uploaded = false });
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 return Json(new { uploaded = false });
-                Console.Write(ex.Message);
             }
         }
 

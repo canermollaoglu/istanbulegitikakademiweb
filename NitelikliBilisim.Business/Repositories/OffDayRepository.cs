@@ -114,7 +114,7 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 foreach (var studentEducationInfo in customer.StudentEducationInfos)
                 {
-                    var nbuyCategory = _context.EducationCategories.FirstOrDefault(x => x.Id == studentEducationInfo.CategoryId.GetValueOrDefault());
+                    var nbuyCategory = _context.EducationCategories.FirstOrDefault(x => x.Id == studentEducationInfo.CategoryId);
                     var educationDayCount = nbuyCategory.EducationDayCount.HasValue ? nbuyCategory.EducationDayCount.Value : 0;
 
                     if (studentEducationInfo.EducationDays != null && studentEducationInfo.EducationDays.Count > 0)

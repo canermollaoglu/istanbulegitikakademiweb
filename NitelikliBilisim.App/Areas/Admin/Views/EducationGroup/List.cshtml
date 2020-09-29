@@ -95,50 +95,57 @@
                     showInfo: true
                 },
                 columns: [{
-                    headerCellTemplate: $('<b style="color: black; font-weight: bold">Grup İsmi</b>'),
+                    caption: "Grup İsmi",
                     dataField: "groupName",
                     width: 140
 
                 }, {
-                    headerCellTemplate: $('<b style="color: black; font-weight: bold">Eğitim İsmi</b>'),
-                    dataField: "educationName",
-                    width: 270
+                    caption: "Eğitim İsmi",
+                    dataField: "educationName"
                 }, {
-                    headerCellTemplate: $('<b style="color: black; font-weight: bold">Başlangıç Tarihi</b>'),
+                    caption: "Başlangıç Tarihi",
                     dataField: "startDate",
                     dataType: 'date',
-                    format: 'dd/MM/yyyy'
-                }, {
-                    headerCellTemplate: $('<b style="color: black; font-weight: bold">Konum</b>'),
+                    format: 'dd/MM/yyyy',
+                    width: 130
+                },
+                {
+                    caption: "Konum",
                     dataField: "hostName",
+                    width: 200
+                },
+                {
+                    caption: "Şehir",
+                    dataField: "hostCity",
+                    allowSorting: false,
+                    allowSearch: false,
+                    allowFiltering: false,
+                    width: 90
+                },
+                {
+                    caption: "Fiyat",
+                    dataField: "newPrice",
+                    customizeText: function (newPrice) {
+                        return newPrice.value + " ₺";
                     },
-                    {
-                        headerCellTemplate: $('<b style="color: black; font-weight: bold">Şehir</b>'),
-                        dataField: "hostCity",
-                        allowSorting: false,
-                        allowSearch: false,
-                        allowFiltering: false
-                    },
-                    {
-                    headerCellTemplate: $('<b style="vertical-align:middle; color: black; font-weight: bold">İşlem</b>'),
+                    width:90
+                },
+                {
+                    caption: "İşlem",
                     allowSearch: false,
                     cellTemplate: function (container, options) {
                         var current = options.data;
                         var div = $('<div class="btn-group" style="display: inline-flex; width:"auto"></div>');
-
-                        $(`<a title="Gruba Öğrenci Ata" class="btn btn-primary btn-sm" href="/admin/gruba-ogrenci-ata/${current.id}"><i class=\"fa fa-users\"></i><span style="display: block"></span></a>`)
+                        $(`<a class="btn btn-outline-primary btn-sm" href="/admin/grup-detay/${current.id}">Detay</a>`)
                             .appendTo(div);
-                        $(`<a title="Grup Ayarları" class="btn btn-warning btn-sm" href="/admin/grup/ayarlar/${current.id}"><i class=\"fa fa-cogs\"></i><span style="display: block"></span></a>`)
-                            .appendTo(div);
-                        $(`<a title="Grup Materyalleri" class="btn btn-success btn-sm" href="/admin/grup-materyalleri/${current.id}"><i class=\"fa fa-dollar\"></i><span style="display: block"></span></a>`)
-                            .appendTo(div);
-                        $(`<a title="Eğitim günlerini sıfırla" class="btn btn-dark btn-sm" href="/make-sure-lesson-days-created/${current.id}"><i class=\"fa fa-archive\"></i><span style="display: block"></span></a>`)
-                            .appendTo(div);
+                        $(`<a title="Grup Ayarları" class="btn btn-outline-warning btn-sm" href="/admin/grup/ayarlar/${current.id}"><i class=\"fa fa-cogs\"></i><span style="display: block"></span></a>`);
+                        $(`<a title="Eğitim günlerini sıfırla" class="btn btn-dark btn-sm" href="/make-sure-lesson-days-created/${current.id}"><i class=\"fa fa-archive\"></i><span style="display: block"></span></a>`);
 
                         div.appendTo(container);
 
                     },
-                    alignment: "center"
+                    alignment: "center",
+                    width: 110
                 }
                 ]
             });

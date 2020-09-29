@@ -46,7 +46,9 @@ function btnSave_onClick() {
             Base64Content: file.base64content,
             Extension: file.extension
         },
-        CertificateIds: certificateIds
+        CertificateIds: certificateIds,
+        Bank: $("#select-bank").val(),
+        IBAN: $("#input-iban").val()
     }
     var tokenVerifier = new SecuritySupport.TokenVerifier();
     data = tokenVerifier.addToken("form-add-educator", data);

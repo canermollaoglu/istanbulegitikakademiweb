@@ -28,7 +28,7 @@ namespace NitelikliBilisim.Core.Services.Payments
         {
             var totalPrice = 0.0m;
             foreach (var item in cartItems)
-                totalPrice += item.Education.NewPrice.GetValueOrDefault();
+                totalPrice += item.EducationGroup.NewPrice.GetValueOrDefault();
 
             var request = new CreatePaymentRequest
             {
@@ -88,11 +88,11 @@ namespace NitelikliBilisim.Core.Services.Payments
                 var basketItem = new BasketItem
                 {
                     Id = cartItem.InvoiceDetailsId.ToString(),
-                    Name = cartItem.Education.Name,
-                    Category1 = cartItem.Education.Category.BaseCategory.Name,
-                    Category2 = cartItem.Education.Category.Name,
+                    Name = cartItem.EducationGroup.Education.Name,
+                    Category1 = cartItem.EducationGroup.Education.Category.BaseCategory.Name,
+                    Category2 = cartItem.EducationGroup.Education.Category.Name,
                     ItemType = BasketItemType.VIRTUAL.ToString(),
-                    Price = cartItem.Education.NewPrice.GetValueOrDefault().ToString(new CultureInfo("en-US"))
+                    Price = cartItem.EducationGroup.NewPrice.GetValueOrDefault().ToString(new CultureInfo("en-US"))
                 };
                 basketItems.Add(basketItem);
             }

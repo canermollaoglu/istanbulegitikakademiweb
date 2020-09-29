@@ -95,7 +95,7 @@ namespace NitelikliBilisim.App.Controllers
                         CustomerId = user.Id,
                         StartedAt = model.StartedAt.GetValueOrDefault(),
                         EducationCenter = (EducationCenter)model.EducationCenter,
-                        CategoryId = model.EducationCategory
+                        CategoryId = model.EducationCategory.Value
                     };
                     var studentEducationInfoId = _unitOfWork.StudentEducationInfo.Insert(studentEducationInformation);
                     if (model.EducationCategory.HasValue && model.StartedAt.HasValue)

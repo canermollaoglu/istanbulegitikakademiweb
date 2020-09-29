@@ -1,87 +1,106 @@
-﻿@using NitelikliBilisim.Core.Entities
+﻿@using NitelikliBilisim.Core.ViewModels.Suggestion
+@using NitelikliBilisim.Core.Entities
+
 @{
     ViewData["Title"] = "Privacy Policy";
 }
 
 
-
-<h3>SessionId ile incelenmiş eğitimler</h3>
-<ul>
-    @foreach (var education in ((List<Education>)ViewData["sessionIdEducations"]))
-    {
-        <li><b>@education.Name</b></li>
-
-    }
-</ul>
-<br />
-<hr />
-<br />
-<br />
-<h3>User Id ile incelenmiş Eğitim Adı ve incelenme sayısı</h3>
-<ul>
-    @if (ViewData["viewingCount"] != null)
-    {
-        @foreach (var item in ((Dictionary<Education, int>)ViewData["viewingCount"]))
-        {
-            <li><b>@item.Key.Name</b> : @item.Value</li>
-        }
-    }
-</ul>
-<br />
-<hr />
-<br />
-
 <h3> Son Bilgiler </h3>
 
-    @if (ViewData["edl"] != null)
-    {
-        <h4>ARAMA SAYISI (Toplam:@(((EducationDetailLog)ViewData["edl"]).TotalEducationSearchCount) )</h4>
-        <table style="border: 1px solid black;">
-            <thead>
-                <tr>
-                    <td style="border: 1px solid black;">Kelime</td>
-                    <td style="border: 1px solid black;">Arama Sayısı</td>
-                    <td style="border: 1px solid black;">İncelenme Sayısı</td>
-                    <td style="border: 1px solid black;">İncelenen Eğitimler ve Puanları</td>
+@if (ViewData["edl"] != null)
+{
+    <h4>ARAMA SAYISI (Toplam:@(((EducationDetailLog)ViewData["edl"]).TotalEducationSearchCount) )</h4>
+    <table style="border: 1px solid black;">
+        <thead>
+            <tr>
+                <td style="border: 1px solid black;">Kelime</td>
+                <td style="border: 1px solid black;">Arama Sayısı</td>
+                <td style="border: 1px solid black;">İncelenen Eğitimler ve Puanları</td>
 
-                </tr>
-            </thead>
-            @foreach (var item in ((EducationDetailLog)ViewData["edl"]).SearchedEducations)
-            {
-                <tr style="border: 1px solid black;">
-                    <td style="border: 1px solid black;"> @item.Key </td>
-                    
-                    <td style="border: 1px solid black;">@item.SearchedCount</td>
-                    <td style="border: 1px solid black;">@item.ViewedCount</td>
-                    <td style="border: 1px solid black;">
-                        <ul>
-                            @foreach (var e in item.EducationDetails)
-                            {
-                            <li><b>EğitimId :</b> @e.Id  ---- <b>Puan : </b>@e.Point)</li>
-                            }
-                        </ul>
-                    </td>
-
-                </tr>
-            }
-        </table>
-
-        <h4>İNCELENEN (Toplam:@(((EducationDetailLog)ViewData["edl"]).TotalEducationViewCount) )</h4>
-        <table style="border: 1px solid black;">
-            <thead>
-                <tr>
-                    <td>Eğitim Id</td>
-                    <td>İncelenme Sayısı</td>
-                    <td>Puan</td>
-                </tr>
-            </thead>
-            @foreach (var item in ((EducationDetailLog)ViewData["edl"]).ViewingEducations)
-            {<tr style="border: 1px solid black;">
-                 <td style="border: 1px solid black;">@item.EducationId</td>
-                 <td style="border: 1px solid black;">@item.ViewingCount</td>
-                 <td style="border: 1px solid black;">@item.Point</td>
             </tr>
-            }
-            
-            </table>
+        </thead>
+        @foreach (var item in ((EducationDetailLog)ViewData["edl"]).SearchedEducations)
+        {
+            <tr style="border: 1px solid black;">
+                <td style="border: 1px solid black;"> @item.Key </td>
+                <td style="border: 1px solid black;">@item.SearchedCount</td>
+                <td style="border: 1px solid black;">
+                    <ul>
+                        @foreach (var e in item.EducationDetails)
+                        {
+                            <li><b>EğitimId :</b> @e.Education.Name  ---- <b>Puan : </b>@e.Point)</li>
+                        }
+                    </ul>
+                </td>
+
+            </tr>
+        }
+    </table>
+
+    <h4>İNCELENEN (Toplam:@(((EducationDetailLog)ViewData["edl"]).TotalEducationViewCount) )</h4>
+    <table style="border: 1px solid black;">
+        <thead>
+            <tr>
+                <td>Eğitim Id</td>
+                <td>İncelenme Sayısı</td>
+                <td>Puan</td>
+            </tr>
+        </thead>
+        @foreach (var item in ((EducationDetailLog)ViewData["edl"]).ViewingEducations)
+        {
+            <tr style="border: 1px solid black;">
+                <td style="border: 1px solid black;">@item.Education.Name</td>
+                <td style="border: 1px solid black;">@item.ViewingCount</td>
+                <td style="border: 1px solid black;">@item.Point</td>
+            </tr>
+        }
+
+    </table>
+}
+<br />
+<br />
+<h4>Kullanıcı hareketleri bazlı öneri sistemi puanı toplamı</h4>
+<table style="border: 1px solid black;">
+    <thead>
+        <tr>
+            <td>Eğitim Id</td>
+            <td>Toplam Puan</td>
+        </tr>
+    </thead>
+    @foreach (var item in ((EducationDetailLog)ViewData["edl"]).EducationTotalPoint)
+    {
+        <tr>
+            <td>
+                @item.Education.Name
+            </td>
+            <td>
+                @item.Point
+            </td>
+        </tr>
     }
+
+</table>
+<br />
+<br />
+<h4>Kriter ve Kullanıcı Hareketleri Bazlı öneri sistemlerinin toplamı</h4>
+<table style="border: 1px solid black;">
+    <thead>
+        <tr>
+            <td>Eğitim Id</td>
+            <td>Toplam Puan</td>
+        </tr>
+    </thead>
+    @foreach (var item in ((List<EducationPoint>)ViewData["TotalRecommendationPoints"]))
+    {
+        <tr>
+            <td>
+                @item.Education.Name
+            </td>
+            <td>
+                @item.Point
+            </td>
+        </tr>
+    }
+
+</table> 

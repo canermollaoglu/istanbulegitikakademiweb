@@ -1,0 +1,711 @@
+﻿@model NitelikliBilisim.Core.ViewModels.areas.admin.reports.GroupBasedSalesReportGetVm
+@{
+    ViewData["Title"] = "Gelir Raporu";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@section styles{
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
+    <link href="~/vendor\devextreme\dist\css\dx.common.css" rel="stylesheet" />
+    <link href="~/vendor\devextreme\dist\css\dx.light.css" rel="stylesheet" />
+    <style>
+        .table td {
+            padding: .40rem !important;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.4.0/polyfill.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/3.3.1/exceljs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-list"></i> <strong>Grup Bazlı Satış Raporu</strong>
+    </div>
+    <div class="card-body">
+        <div class="row" style="margin-bottom:1%;">
+            <div class="offset-md-2 col-md-8">
+                <div class="row">
+                    <div class="col-md-2">
+                        <label>Grup Seçiniz</label>
+                    </div>
+                    <div class="col-md-4">
+                        <select class="form-control" id="select-groups">
+                            @foreach (var group in Model.AllGroups)
+                            {
+                                <option value="@group.Key">@group.Value</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button id="btn-fetch" class="btn btn-outline-success btn-sm">Görüntüle</button>
+                    </div>
+                    <div class="col-md-3">
+                        <button id="btn-excel-export" class="btn btn-outline-primary btn-sm">Excel Export</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="report" style="display:none">
+    <!--Genel Grup Bilgileri-->
+    <div class="card mb-4">
+        <div class="card-header">
+            Genel Grup Bilgileri
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>Genel Bilgiler</h6>
+                    <table class="table table-bordered">
+                        <tbody id="tbody-group-general-info"></tbody>
+                    </table>
+                </div>
+
+                <div class="col-md-6">
+                    <h6>Bütçe</h6>
+                    <table class="table table-bordered">
+                        <tbody id="tbody-group-expenses-incomes">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Öğrenciler-->
+    <div class="card mb-4">
+        <div class="card-header">
+            Kayıtlı Öğrenciler
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="group-based-sales-report-grid">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--İptal İade Raporu-->
+    <div class="card mb-4">
+        <div class="card-header">
+            İptal/İade Eden Öğrenciler
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="group-based-cancellation-sales-report-grid">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Grup Giderleri-->
+
+    <div class="card mb-4">
+        <div class="card-header">
+            Grup Giderleri
+        </div>
+        <div class="card-body">
+            <div id="grid-expenses">
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    Eğitmen Ücret Tablosu
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <td></td>
+                                <td>Eğitmen İsmi</td>
+                                <td>Ortalma Ücret</td>
+                                <td>Ders Sayısı</td>
+                                <td>Toplam</td>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-educator-salary">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section postScripts{
+    <script src="~/js/sup/alert-sup.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+    <script src="~/vendor\devextreme\dist\js\dx.all.js"></script>
+    <script src="~/vendor\devextreme-aspnet-data\js\dx.aspnet.data.js"></script>
+    <script src="https://cdn3.devexpress.com/jslib/20.1.7/js/localization/dx.messages.tr.js"></script>
+
+    <script>
+        DevExpress.localization.locale(navigator.language);
+        /* elements */
+        var btnFetch = $("#btn-fetch");
+        var btnExcelExport = $("#btn-excel-export");
+        var selectGroups = $("#select-groups");
+        var tbodyGroupGeneralInfo = $("#tbody-group-general-info");
+        var tbodyGroupExpensesIncomes = $("#tbody-group-expenses-incomes");
+        var tbodyEducatorSalaryTable = $("#tbody-educator-salary");
+
+        var reportDiv = $("#report");
+        var generalGroupInfoDiv = $("#generalGroupInfo");
+        /* assignments */
+        btnFetch.on("click", btnFetch_onClick);
+        btnExcelExport.on("click", btnExcelExport_onClick);
+        $(document).ready(document_onLoad);
+
+        /* events */
+        function document_onLoad() {
+            $(selectGroups).select2();
+        }
+
+        function btnFetch_onClick() {
+            createGeneralInformationTable();
+            calculateGroupExpenseAndIncome();
+            createStudentsGrid();
+            createEducatorSalaryTable();
+            createGroupExpenseGrid();
+            createCancellationSalesGrid();
+            reportDiv.slideDown("slow");
+        }
+        function btnExcelExport_onClick() {
+            var gId = selectGroups.val();
+            var url = `/raporlar/grup-bazli-satis-raporu-excel-export?groupId=${gId}`
+            window.location.href = url;
+        }
+        function createEducatorSalaryTable() {
+            var gId = selectGroups.val();
+            $.ajax({
+                url: `/raporlar/grup-bazli-satis-raporu-egitmen-ucret-tablosu?groupId=${gId}`,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        tbodyEducatorSalaryTable.html("");
+                        console.log(res);
+                        var item = res.data;
+                        var table = "";
+
+                        $.each(item, function (index, value) {
+                            table += `<tr><td>${index+1}</td><td>${value.educatorName}</td><td>${value.avgPrice}</td><td>${value.totalHours}</td><td>${value.sumPrice}</td></tr>`;
+                        });
+                       
+                        tbodyEducatorSalaryTable.append(table);
+                    }
+                    else {
+                        console.log(res.errors);
+                        alert("Hata");
+                    }
+                }
+            });
+            
+        }
+        function createGeneralInformationTable() {
+            var gId = selectGroups.val();
+            $.ajax({
+                url: `/admin/get-group-general-information?groupId=${gId}`,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        console.log(res);
+                        tbodyGroupGeneralInfo.html("");
+                        var item = res.data;
+                        var table = "";
+                        table =
+                            `<tr> <td><b>Grup Adı</b></td><td>${item.groupName} </td></tr>` +
+                            `<tr><td><b>Eğitim</b></td><td>${item.educationName} </td></tr>` +
+                            `<tr><td><b>Eğitim Yeri</b></td><td>${item.educationHost} - ${item.classroom} </td></tr>` +
+                            `<tr><td><b>Başlangıç Tarihi</b></td><td>${item.startDate} </td></tr>` +
+                            `<tr><td><b>Eğitmen</b></td><td>${item.educatorName} </td></tr>` +
+                            `<tr><td><b>Kontenjan</b></td><td>${item.assignedStudentsCount}/${item.quota} </td></tr>` +
+                            `<tr><td><b>Eğitim Günü</b></td><td>${item.educationDays} gün, günde ${item.educationHoursPerDay} saat</td></tr>`;
+                        tbodyGroupGeneralInfo.append(table);
+                    }
+                    else {
+                        console.log(res.errors);
+                        alert("Hata");
+                    }
+                }
+            });
+
+        }
+        function createStudentsGrid() {
+            var SERVICE_URL = "../../api/earningsreport/get-group-based-sales-report?groupId=" + selectGroups.val();
+            $("#group-based-sales-report-grid").dxDataGrid({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    key: "id",
+                    loadUrl: SERVICE_URL
+                }),
+                remoteOperations: {
+                    paging: true,
+                    filtering: true,
+                    sorting: true,
+                    grouping: true,
+                    summary: true,
+                    groupPaging: true
+                },
+                showBorders: true,
+                showColumnLines: true,
+                rowAlternationEnabled: true,
+                showRowLines: true,
+                wordWrapEnabled: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                onExporting: function (e) {
+                    var workbook = new ExcelJS.Workbook();
+                    var worksheet = workbook.addWorksheet('Ogrenci Listesi');
+                    DevExpress.excelExporter.exportDataGrid({
+                        worksheet: worksheet,
+                        component: e.component,
+                        customizeCell: function (options) {
+                            var excelCell = options;
+                            excelCell.font = { name: 'Arial', size: 12 };
+                            excelCell.alignment = { horizontal: 'left' };
+                        }
+                    }).then(function () {
+                        workbook.xlsx.writeBuffer().then(function (buffer) {
+                            saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'GrupBazliSatisRaporuOgrenciListesi' + parseInt(Math.random() * 1000000000) + '.xlsx');
+                        });
+                    });
+                    e.cancel = true;
+                },
+                searchPanel: {
+                    visible: true,
+                    width: 240,
+                    placeholder: "Ara..."
+                },
+                grouping: {
+                    autoExpandAll: true
+                },
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                headerFilter: {
+                    visible: true
+                },
+                paging: {
+                    pageSize: 10
+                },
+                groupPanel: {
+                    visible: true
+                },
+                export: {
+                    enabled: true
+                },
+                onContentReady: function () {
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10, 20],
+                    showInfo: true
+                },
+                columns: [
+                    {
+                        caption: "Satış Tarihi",
+                        dataField: "paymentDate",
+                        dataType: 'date',
+                        format: 'dd/MM/yyyy',
+                        width: 130
+                    }, {
+                        caption: "Ad",
+                        dataField: "name",
+                        width: 120
+
+                    }, {
+                        caption: "Soyad",
+                        dataField: "surname",
+                        width:120
+                    },
+                    {
+                        caption: "Liste Fiyatı",
+                        dataField: "listPrice",
+                        customizeText: function (listPrice) {
+                            return listPrice.value + " ₺";
+                        }
+                    },
+                    {
+                        caption: "Satış Fiyatı",
+                        dataField: "paidPrice",
+                        customizeText: function (paidPrice) {
+                            return paidPrice.value + " ₺";
+                        }
+                    },
+                    {
+                        caption: "Pos Komisyonu",
+                        dataField: "commission",
+                        customizeText: function (commissionFee) {
+                            return commissionFee.value + " ₺";
+                        }
+                    },
+                    {
+                        caption: "Ödenen Tutar",
+                        dataField: "merchantPayout",
+                        customizeText: function (merchantPayout) {
+                            return merchantPayout.value + " ₺";
+                        }
+                    },
+                    {
+                        caption: "",
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            $(`<a title="Profili Görüntüle" class="btn btn-outline-primary btn-sm" href="/admin/ogrenci-detay?studentId=${current.id}">Görüntüle</a>`)
+                                .appendTo(container);
+                        },
+                        alignment: "center",
+                    }
+
+                ],
+                summary: {
+                    totalItems: [
+                        {
+                            column: "name",
+                            summaryType: "count",
+                            displayFormat: "Toplam Kayıt: {0}"
+                        }, {
+                            column: "paidPrice",
+                            summaryType: "sum",
+                            displayFormat: "T: {0} ₺"
+                        }, {
+                            column: "commissionFee",
+                            summaryType: "sum",
+                            displayFormat: "T: {0} ₺"
+                        }, {
+                            column: "commissionRate",
+                            summaryType: "sum",
+                            displayFormat: "T: {0} ₺"
+                        }, {
+                            column: "merchantPayout",
+                            summaryType: "sum",
+                            displayFormat: "T: {0} ₺"
+                        }
+                    ]
+                }
+            });
+        }
+        function createGroupExpenseGrid() {
+            $("#grid-expenses").dxDataGrid({
+                dataSource: `/admin/educationgroup/GetGroupExpensesByGroupId?groupId=${selectGroups.val()}`,
+                showBorders: true,
+                showColumnLines: true,
+                rowAlternationEnabled: true,
+                showRowLines: true,
+                wordWrapEnabled: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                searchPanel: {
+                    visible: true,
+                    width: 240,
+                    placeholder: "Ara..."
+                },
+                grouping: {
+                    autoExpandAll: true
+                },
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                headerFilter: {
+                    visible: true
+                },
+                paging: {
+                    pageSize: 10
+                },
+                groupPanel: {
+                    visible: true
+                },
+                export: {
+                    enabled: true,
+                },
+                onExporting: function (e) {
+                    var workbook = new ExcelJS.Workbook();
+                    var worksheet = workbook.addWorksheet('Grup Gider Listesi');
+                    DevExpress.excelExporter.exportDataGrid({
+                        worksheet: worksheet,
+                        component: e.component,
+                        customizeCell: function (options) {
+                            var excelCell = options;
+                            excelCell.font = { name: 'Arial', size: 12 };
+                            excelCell.alignment = { horizontal: 'left' };
+                        }
+                    }).then(function () {
+                        workbook.xlsx.writeBuffer().then(function (buffer) {
+                            saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'GrupBazliSatisRaporuGiderListesi' + parseInt(Math.random() * 1000000000) + '.xlsx');
+                        });
+                    });
+                    e.cancel = true;
+                },
+                onContentReady: function () {
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10, 20],
+                    showInfo: true
+                },
+                columns: [{
+                    caption: "Tarih",
+                    dataField: "createdDate",
+                    width: 100,
+                    dataType: 'date',
+                    format: 'dd/MM/yyyy'
+                },
+                {
+                    caption: "Gider Tipi",
+                    dataField: "expenseTypeName",
+                    width: 200
+                },
+                {
+                    caption: "Açıklama",
+                    dataField: "description",
+                    width: 350
+
+                },
+                {
+                    caption: "Adet",
+                    dataField: "count",
+                    alignment: "center",
+                },
+                {
+                    caption: "Tutar",
+                    dataField: "price",
+                    customizeText: function (price) {
+                        return price.value + " ₺";
+                    },
+                    alignment: "center"
+                },
+                {
+                    caption: "Toplam",
+                    dataField: "totalPrice",
+                    customizeText: function (totalPrice) {
+                        return totalPrice.value + " ₺";
+                    },
+                    alignment: "center"
+                }
+                ],
+                summary: {
+                    totalItems: [
+                        {
+                            column: "expenseTypeName",
+                            summaryType: "count",
+                            displayFormat: "Adet: {0}",
+                        },
+                        {
+                            column: "totalPrice",
+                            summaryType: "sum",
+                            displayFormat: "T:{0} ₺"
+                        }]
+                }
+            });
+        }
+        function createCancellationSalesGrid() {
+            var SERVICE_URL = "../../api/earningsreport/get-group-based-cancellation-sales-report?groupId=" + selectGroups.val();
+            $("#group-based-cancellation-sales-report-grid").dxDataGrid({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    key: "id",
+                    loadUrl: SERVICE_URL
+                }),
+                remoteOperations: {
+                    paging: true,
+                    filtering: true,
+                    sorting: true,
+                    grouping: true,
+                    summary: true,
+                    groupPaging: true
+                },
+                showBorders: true,
+                showColumnLines: true,
+                rowAlternationEnabled: true,
+                showRowLines: true,
+                wordWrapEnabled: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                onExporting: function (e) {
+                    var workbook = new ExcelJS.Workbook();
+                    var worksheet = workbook.addWorksheet('Ogrenci Listesi');
+                    DevExpress.excelExporter.exportDataGrid({
+                        worksheet: worksheet,
+                        component: e.component,
+                        customizeCell: function (options) {
+                            var excelCell = options;
+                            excelCell.font = { name: 'Arial', size: 12 };
+                            excelCell.alignment = { horizontal: 'left' };
+                        }
+                    }).then(function () {
+                        workbook.xlsx.writeBuffer().then(function (buffer) {
+                            saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'GrupBazliSatisRaporuİptalİadeOgrenciListesi' + parseInt(Math.random() * 1000000000) + '.xlsx');
+                        });
+                    });
+                    e.cancel = true;
+                },
+                searchPanel: {
+                    visible: true,
+                    width: 240,
+                    placeholder: "Ara..."
+                },
+                grouping: {
+                    autoExpandAll: true
+                },
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                headerFilter: {
+                    visible: true
+                },
+                paging: {
+                    pageSize: 10
+                },
+                groupPanel: {
+                    visible: true
+                },
+                export: {
+                    enabled: true
+                },
+                onContentReady: function () {
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10, 20],
+                    showInfo: true
+                },
+                columns: [
+                    {
+                        caption: "İptal Tarihi",
+                        dataField: "cancellationDate",
+                        dataType: 'date',
+                        format: 'dd/MM/yyyy',
+                        width: 130
+                    }, {
+                        caption: "Ad",
+                        dataField: "name",
+                        width: 120
+                    }, {
+                        caption: "Soyad",
+                        dataField: "surname",
+                        width:120
+                    },
+                    {
+                        caption: "Liste Fiyatı",
+                        dataField: "listPrice",
+                        customizeText: function (listPrice) {
+                            return listPrice.value + " ₺";
+                        }
+                    },
+                    {
+                        caption: "Satış Fiyatı",
+                        dataField: "paidPrice",
+                        customizeText: function (paidPrice) {
+                            return paidPrice.value + " ₺";
+                        }
+                    },
+                    {
+                        caption: "Pos Komisyonu",
+                        dataField: "commission",
+                        customizeText: function (commissionFee) {
+                            return commissionFee.value + " ₺";
+                        }
+                    },
+                    {
+                        caption: "Ödenen Tutar",
+                        dataField: "merchantPayout",
+                        customizeText: function (merchantPayout) {
+                            return merchantPayout.value + " ₺";
+                        }
+                    },
+                    {
+                        caption: "İade Tutarı",
+                        dataField: "refundPrice",
+                        customizeText: function (refundPrice) {
+                            return refundPrice.value + " ₺";
+                        }
+                    },
+                    {
+                        caption: "",
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            $(`<a title="Profili Görüntüle" class="btn btn-outline-primary btn-sm" href="/admin/ogrenci-detay?studentId=${current.id}">Görüntüle</a>`)
+                                .appendTo(container);
+                        },
+                        alignment: "center",
+                    }
+
+                ],
+                summary: {
+                    totalItems: [
+                        {
+                            column: "name",
+                            summaryType: "count",
+                            displayFormat: "Toplam Kayıt: {0}"
+                        }, {
+                            column: "paidPrice",
+                            summaryType: "sum",
+                            displayFormat: "T: {0} ₺"
+                        }, {
+                            column: "commissionFee",
+                            summaryType: "sum",
+                            displayFormat: "T: {0} ₺"
+                        }, {
+                            column: "commissionRate",
+                            summaryType: "sum",
+                            displayFormat: "T: {0} ₺"
+                        }, {
+                            column: "merchantPayout",
+                            summaryType: "sum",
+                            displayFormat: "T: {0} ₺"
+                        }
+                    ]
+                }
+            });
+        }
+        function calculateGroupExpenseAndIncome() {
+            var gId = selectGroups.val();
+            $.ajax({
+                url: `/admin/calculate-group-expense-and-income/${gId}`,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        console.log(res.data);
+                        tbodyGroupExpensesIncomes.html("");
+                        var item = res.data;
+                        var table = "";
+                        table +=
+                            `<tr><td>Grup Giderleri</td><td class="text-danger text-right" colspan="3" >${item.groupExpenses} </td></tr>` +
+                        `<tr><td>Eğitmen Ücreti</td><td>${item.totalEducationHours} saat</td><td>Ort: ${item.educatorExpensesAverage} </td><td class="text-danger  text-right">${item.educatorExpenses} </td></tr>` +
+                        `<tr><td><b>Toplam Gider</b></td><td class="text-danger  text-right" colspan="3"><b>${item.totalExpenses} </b></td></tr>` +
+                            `<tr><td>Ciro (Öğrenci Ödemeleri)</td><td class="text-success  text-right" colspan="3">${item.totalStudentIncomes} </td></tr>` +
+                            `<tr><td><b>Genel Toplam</b></td><td colspan="3" class="text-right"}><b>${item.grandTotal} </b></td></tr>`+
+                            `<tr><td><b>Kâr Oranı</b></td><td colspan="3" class="text-right"}><b>%${item.profitRate}</b></td></tr>`
+                            ;
+                        tbodyGroupExpensesIncomes.append(table);
+                    }
+                    else {
+                        console.log(res.errors);
+                        alert("Hata");
+                    }
+                }
+            });
+
+
+        }
+    </script>
+}

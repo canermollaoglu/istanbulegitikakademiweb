@@ -102,6 +102,104 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             return View(educationHostVm);
         }
 
+        [HttpGet]
+        [Route("admin/egitim-kurumlari/sinif-yonetimi")]
+        public IActionResult ClassList(Guid educationHostId)
+        {
+            var host = _unitOfWork.EducationHost.GetById(educationHostId);
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationClassRoomList");
+            ViewData["educationHostId"] = educationHostId;
+            ViewData["educationHostName"] = host.HostName;
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddClassRoom(Classroom data)
+        {
+            if (string.IsNullOrEmpty(data.Name))
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Sınıf için geçerli bir isim girmelisiniz." }
+                });
+            }
+
+            try
+            {
+                 _unitOfWork.ClassRoom.Insert(data);
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    message = "Sınıf başarıyla güncellenmiştir."
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Hata " + ex.Message }
+                });
+            }
+
+        }
+
+        [HttpPost]
+        public IActionResult DeleteClassRoom(Guid id)
+        {
+            try
+            {
+                _unitOfWork.ClassRoom.Delete(id);
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    message = "Sınıf başarıyla silinmiştir."
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Hata " + ex.Message }
+                });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult UpdateClassRoom(Classroom data)
+        {
+            if (string.IsNullOrEmpty(data.Name))
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Sınıf için geçerli bir isim girmelisiniz." }
+                });
+            }
+            try
+            {
+                var classRoom = _unitOfWork.ClassRoom.GetById(data.Id);
+                classRoom.Name = data.Name;
+                _unitOfWork.ClassRoom.Update(classRoom);
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    message = "Sınıf başarıyla güncellenmiştir."
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Hata " + ex.Message }
+                });
+            }
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("admin/egitim-kurumlari/guncelle")]

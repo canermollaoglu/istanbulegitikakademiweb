@@ -1,0 +1,132 @@
+﻿@model NitelikliBilisim.Core.ViewModels.areas.admin.group_lesson_days.GroupLessonDayUpdateGetVm
+@{
+    ViewData["Title"] = "Eğitim Günü Bilgileri Düzenle";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    <link href="~/assets/css/area-admin/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-list"></i> @Model.GroupName Grubu @Model.DateOfLesson.ToShortDateString() Tarihli Eğitim Günü Bilgileri
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <form id="form-update-lessonDay">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="_lessonDayId" value="@Model.Id" />
+                    <input type="hidden" id="_groupId" value="@Model.GroupId" />
+
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <td>Tarih</td>
+                                <td>Eğitmen</td>
+                                <td>Eğitmen Ücreti</td>
+                                <td>Sınıf</td>
+                                <td>Yoklama</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="date" id="dateDateOfLesson" class="form-control" name="DateOfLesson" asp-for="DateOfLesson" asp-format="{0:yyyy-MM-dd}" /> </td>
+                                <td>
+                                    <select id="selectEducator" class="form-control">
+                                        @foreach (var educator in Model.Educators)
+                                        {
+                                            if (educator.Key == Model.EducatorId)
+                                            {
+                                                <option selected value="@educator.Key">@educator.Value</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@educator.Key">@educator.Value</option>
+                                            }
+                                        }
+                                    </select>
+                                </td>
+                                <td>
+                                    <input class="form-control" id="inputEducatorSalary" type="number" value="@Model.EducatorSalary" />
+                                </td>
+                                <td>
+                                    <select id="selectClassRoom" class="form-control">
+                                        @foreach (var classRoom in Model.ClassRooms)
+                                        {
+                                            if (classRoom.Key == Model.ClassRoomId)
+                                            {
+                                                <option selected value="@classRoom.Key">@classRoom.Value</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@classRoom.Key">@classRoom.Value</option>
+                                            }
+                                        }
+                                    </select>
+                                </td>
+                                <td>
+                                    <div class="form-check">
+                                        <input id="chcHasAttendanceRecord" type="checkbox" checked="@Model.HasAttendanceRecord" />
+                                        <label class="form-check-label">Yoklama Yapıldı</label>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <button type="button" id="btn-save" class="btn btn-outline-success pull-right">Kaydet</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section postScripts{
+    <script src="~/js/sup/alert-sup.js"></script>
+    <script src="~/js/lib/security-support.js"></script>
+    <script type="text/javascript">
+        /* fields */
+        var lessonDayId = $("#_lessonDayId").val();
+        var groupId = $("#_groupId").val();
+
+        /* elements */
+        var selectEducator = $("#selectEducator");
+        var selectClassRoom = $("#selectClassRoom");
+        var chcHasAttendanceRecord = $("#chcHasAttendanceRecord");
+        var dateDateOfLesson = $("#dateDateOfLesson");
+        var inputEducatorSalary = $("#inputEducatorSalary");
+        var btnSave = $("#btn-save");
+
+        /* assignments */
+        btnSave.on("click", btnSave_onClick);
+
+        /* events */
+        function btnSave_onClick() {
+            btnSave.off("click");
+            var data = {
+                Id: lessonDayId,
+                GroupId: groupId,
+                EducatorId: selectEducator.val(),
+                ClassroomId: selectClassRoom.val(),
+                HasAttendanceRecord: chcHasAttendanceRecord.is(':checked'),
+                EducatorSalary: inputEducatorSalary.val(),
+                DateOfLesson: dateDateOfLesson.val()
+            };
+            console.log(data);
+            var tokenVerifier = new SecuritySupport.TokenVerifier();
+            data = tokenVerifier.addToken("form-update-lessonDay", data);
+            $.ajax({
+                url: "/admin/GroupLessonDay/Update",
+                method: "post",
+                data: data,
+                success: (res) => {
+                    location.href = `/admin/grup-detay?groupId=${groupId}`;
+                }
+            });
+        }
+    </script>
+}

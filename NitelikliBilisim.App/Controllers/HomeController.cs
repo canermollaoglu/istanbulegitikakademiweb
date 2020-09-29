@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Nest;
@@ -16,6 +17,7 @@ using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Controllers
 {
+    [Authorize]
     public class HomeController : BaseController
     {
         private readonly RoleManager<ApplicationRole> _roleManager;
@@ -37,11 +39,11 @@ namespace NitelikliBilisim.App.Controllers
             model.EducationCountByCategory = _unitOfWork.EducationCategory.GetEducationCountForCategories();
             var isLoggedIn = HttpContext.User.Identity.IsAuthenticated;
             if (!isLoggedIn)
-                model.SuggestedEducations = _unitOfWork.Suggestions.GetSuggestedEducationList(false, null);
+                model.SuggestedEducations = _unitOfWork.Suggestions.GetGuestUserSuggestedEducations();
             else
             {
                 var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                model.SuggestedEducations = _unitOfWork.Suggestions.GetSuggestedEducationList(true, userId);
+                model.SuggestedEducations = _unitOfWork.Suggestions.GetUserSuggestedEducations(userId, 5);
             }
 
             return View(model);
@@ -60,11 +62,7 @@ namespace NitelikliBilisim.App.Controllers
             string sessionId = _session.GetString("userSessionId");
             string userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             ViewData["edl"] = _unitOfWork.Suggestions.GetEducationDetailLogs(userId);
-
-            ViewData["viewingCount"] = _unitOfWork.Suggestions.EducationDetailViewsCountByUserId(userId);
-            ViewData["searchedTexts"] = _unitOfWork.Suggestions.GetSearchedTextsByUserId(userId);
-            ViewData["userIdEducations"] = _unitOfWork.Suggestions.GetViewingEducationsByUserId(userId);
-            ViewData["sessionIdEducations"] = _unitOfWork.Suggestions.GetViewingEducationsBySessionId(sessionId);
+            ViewData["TotalRecommendationPoints"] = _unitOfWork.Suggestions.GetEducationSuggestionRate(userId);
             return View();
         }
 

@@ -9,6 +9,7 @@ using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_tags;
 using NitelikliBilisim.Support.Text;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
@@ -147,6 +148,29 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 isSuccess = true,
                 message = "Silme işlemi başarılı"
             });
+        }
+
+
+        [HttpGet]
+        public IActionResult SearchTag(string q)
+        {
+            try
+            {
+                var tags = _unitOfWork.EducationTag.Get(x => x.Name.StartsWith(q)).ToList();
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    data = tags
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Hata " + ex.Message }
+                });
+            }
         }
     }
 }

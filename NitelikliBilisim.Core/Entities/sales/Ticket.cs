@@ -27,5 +27,6 @@ namespace NitelikliBilisim.Core.Entities
         public Guid HostId { get; set; }
         public virtual EducationHost Host { get; set; }
         public Guid InvoiceDetailsId { get; set; }
+        public Guid GroupId { get; set; }
     }
 }

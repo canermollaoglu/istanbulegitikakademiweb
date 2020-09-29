@@ -1,0 +1,551 @@
+﻿@model NitelikliBilisim.Core.ViewModels.areas.admin.student.StudentDetailVm
+@using NitelikliBilisim.Core.Services.Abstracts
+@inject IStorageService StorageService
+@{
+    ViewData["Title"] = "Grup Detayları";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
+    <link href="~/vendor\devextreme\dist\css\dx.common.css" rel="stylesheet" />
+    <link href="~/vendor\devextreme\dist\css\dx.light.css" rel="stylesheet" />
+    <style>
+        .form-check-label {
+            cursor: pointer;
+        }
+
+        .table td {
+            padding: .40rem !important;
+        }
+    </style>
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+@{
+    var filePath = "";
+    try
+    {
+        filePath = StorageService.DownloadFile(System.IO.Path.GetFileName(Model.AvatarPath), "user-avatars").Result;
+    }
+    catch
+    {
+    }
+}
+<!--Genel Bilgileri-->
+<div class="row">
+    <div class="col-md-5">
+        <div class="card border-info mb-3">
+            <div class="card-header">
+                <i class="fa fa-info-circle"></i> Öğrenci Detayları
+                <a class="btn btn-sm pull-right" target="_blank" href="@Model.Website" title="Web Sitesi"><i class="fa fa-id-card"></i></a>
+                <a class="btn btn-sm pull-right" target="_blank" href="@Model.LinkedInProfile" title="LinkedIn Profili"><i class="fa fa-linkedin"></i></a>
+                <a class="btn btn-sm pull-right" target="_blank" href="/admin/ogrenci-hareketleri?studentId=@(Model.Id)" title="Log Listesi"><i class="fa fa-list"></i></a>
+            </div>
+            <input type="hidden" value="@Model.Id" id="studentId" />
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <td style="text-align:center;" colspan="2"><img src="@(string.IsNullOrEmpty(filePath)?"/img/nb_letter_logo_sm.png":filePath)" class="img-thumbnail" width="150" height="150" /></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Kullanıcı Adı</b>
+                            </td>
+                            <td>
+                                @Model.UserName
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Adı</b>
+                            </td>
+                            <td>
+                                @Model.Name
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Soyadı</b>
+                            </td>
+                            <td>
+                                @Model.Surname
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Telefon</b>
+                            </td>
+                            <td>@Model.Phone</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Email</b>
+                            </td>
+                            <td>@Model.Email</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Doğum Tarihi</b>
+                            </td>
+                            <td>
+                                @(Model.DateOfBirth.HasValue?Model.DateOfBirth.Value.ToShortDateString():"Girilmemiş")
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Meslek</b>
+                            </td>
+                            <td>@Model.Job</td>
+
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>NBUY Öğrencisi mi?</b>
+                            </td>
+                            <td> @(Model.IsNBUYStudent?"Evet":"Hayır")</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Kayıt Tarihi</b>
+                            </td>
+                            <td> @Model.RegistrationDate.ToShortDateString()</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-7">
+        @if (Model.IsNBUYStudent && Model.StudentNBUYEducationInfo != null)
+        {
+            <div class="card border-info mb-3">
+                <div class="card-header">
+                    <i class="fa fa-university"></i> NBUY Eğitim Bilgileri
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <td>Başlangıç Tarihi</td>
+                                <td>Kurum</td>
+                                <td>Kategori</td>
+                                <td>Gün</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                <tr>
+                                    <td>@Model.StudentNBUYEducationInfo.StartDate.ToShortDateString()</td>
+                                    <td>@Model.StudentNBUYEducationInfo.EducationCenter</td>
+                                    <td>@Model.StudentNBUYEducationInfo.CategoryName</td>
+                                    <td>@Model.StudentNBUYEducationInfo.EducationDay</td>
+                                </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+
+
+        <div class="card border-info mb-3">
+            <div class="card-header">
+                <i class="fa fa-link"></i> Grup-Atama Listesi
+            </div>
+            <div class="card-body">
+                <div id="grid-student-tickets">
+
+                </div>
+            </div>
+        </div>
+        <div class="card border-info mb-3">
+            <div class="card-header">
+                <i class="fa fa-address-card"></i>  Adresler
+            </div>
+            <div class="card-body">
+
+                <div class="accordion" id="accordionAddress">
+                    @foreach (var address in Model.Addresses)
+                    {
+                        <div class="card">
+                            <div class="card-header" style="padding:0px 5px 0px 5px;" id="heading@(Model.Id)">
+                                <h5 style="margin-bottom:0px;">
+                                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse@(Model.Id)" aria-expanded="true" aria-controls="collapseOne">
+                                        @address.Name
+                                    </button>
+                                </h5>
+                            </div>
+
+                            <div id="collapse@(Model.Id)" class="collapse show" aria-labelledby="heading@(Model.Id)" data-parent="#accordionAddress">
+                                <div class="card-body">
+                                    @address.Content<br />
+                                    @address.State.Name / @address.City.Name
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!--Gruplar-->
+<div class="row">
+    <div class="col-md-12">
+        <div class="card border-info mb-3">
+            <div class="card-header">
+                <i class="fa fa-users"></i>  Gruplar
+            </div>
+            <div class="card-body">
+                <div id="grid-joined-groups">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<!--Ödemeler-->
+<div class="row">
+    <div class="col-md-12">
+        <div class="card border-info mb-3">
+            <div class="card-header">
+                <i class="fa fa-money"></i> Ödeme Geçmişi
+            </div>
+            <div class="card-body">
+                <div id="grid-student-payment-report"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section postScripts{
+    <script src="~/assets/js/area-admin/jquery.dataTables.js"></script>
+    <script src="~/assets/js/area-admin/dataTables.bootstrap4.js"></script>
+    <script src="~/js/sup/alert-sup.js"></script>
+    <script src="~/js/lib/security-support.js"></script>
+    <script src="~/vendor\devextreme\dist\js\dx.all.js"></script>
+    <script src="~/vendor\devextreme-aspnet-data\js\dx.aspnet.data.js"></script>
+    <script src="https://cdn3.devexpress.com/jslib/20.1.7/js/localization/dx.messages.tr.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.4.0/polyfill.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/3.3.1/exceljs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
+    <script type="text/javascript">
+        DevExpress.localization.locale(navigator.language);
+        /* elements */
+        var studentId = $("#studentId");
+
+        /* assignments */
+        $(document).ready(document_onLoad);
+
+        /* events */
+        function document_onLoad() {
+            createJoinedGroupsGrid();
+            createPaymentReportGrid();
+            createStudentTicketsGrid();
+        }
+
+        /* DataGrid */
+        function createJoinedGroupsGrid() {
+            var SERVICE_URL = `../../api/student/get-student-joined-groups?studentId=${studentId.val()}`
+            $("#grid-joined-groups").dxDataGrid({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    loadUrl: SERVICE_URL
+                }),
+                remoteOperations: {
+                    paging: true,
+                    filtering: true,
+                    sorting: true,
+                    grouping: true,
+                    summary: true,
+                    groupPaging: true
+                },
+                showBorders: true,
+                showColumnLines: true,
+                rowAlternationEnabled: true,
+                showRowLines: true,
+                wordWrapEnabled: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                searchPanel: {
+                    visible: true,
+                    placeholder: "Ara..."
+                },
+                paging: {
+                    pageSize: 10
+                },
+                grouping: {
+                    autoExpandAll: true
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10, 20],
+                    showInfo: true
+                },
+                columns: [
+                    {
+                        caption: "Katılış Tarihi",
+                        dataField: "joinedDate",
+                        dataType: "date",
+                        format: "dd/MM/yyyy",
+                        width: 120
+                    },
+                    {
+                        caption: "Başlangıç Tarihi",
+                        dataField: "groupStartDate",
+                        dataType: "date",
+                        format: "dd/MM/yyyy",
+                        width: 120
+                    },
+                    {
+                        caption: "Grup Adı",
+                        dataField: "groupName",
+                        width: 100
+                    },
+                    {
+                        caption: "Kurum",
+                        dataField: "hostName",
+                        width: 250
+                    },
+                    {
+                        caption: "Eğitim Adı",
+                        dataField: "educationName"
+                    },
+                    {
+                        caption: "Detay",
+                        allowSearch: false,
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            var div = $('<div class="btn-group" style="display: inline-flex; width:"auto"></div>');
+                            $(`<a class="btn btn-outline-primary btn-sm" href="/admin/grup-detay/${current.groupId}">Detay</a>`)
+                                .appendTo(div);
+                            div.appendTo(container);
+                        },
+                        alignment: "center",
+                        width: 110
+                    }
+                ]
+            });
+        }
+
+        function createStudentTicketsGrid() {
+            var SERVICE_URL = `../../api/student/get-student-tickets?studentId=${studentId.val()}`
+            $("#grid-student-tickets").dxDataGrid({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    loadUrl: SERVICE_URL
+                }),
+                remoteOperations: {
+                    paging: true,
+                    filtering: true,
+                    sorting: true,
+                    grouping: true,
+                    summary: true,
+                    groupPaging: true
+                },
+                showBorders: true,
+                showColumnLines: true,
+                rowAlternationEnabled: true,
+                showRowLines: true,
+                wordWrapEnabled: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                searchPanel: {
+                    visible: true,
+                    placeholder: "Ara..."
+                },
+                paging: {
+                    pageSize: 10
+                },
+                grouping: {
+                    autoExpandAll: true
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10, 20],
+                    showInfo: true
+                },
+                columns: [
+                    {
+                        caption: "Tarih",
+                        dataField: "createdDate",
+                        dataType: "date",
+                        format: "dd/MM/yyyy",
+                    },
+                    {
+                        caption: "Eğitim",
+                        dataField: "educationName"
+                    },
+                    {
+                        caption: "Kurum",
+                        dataField: "hostName"
+                    },
+
+                    {
+                        caption: "Atandı Mı?",
+                        dataField: "isUsed"
+                    }
+                ]
+            });
+        }
+        function createPaymentReportGrid() {
+            var SERVICE_URL = `../../api/student/get-student-payments?studentId=${studentId.val()}`
+            $("#grid-student-payment-report").dxDataGrid({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    loadUrl: SERVICE_URL
+                }),
+                remoteOperations: {
+                    paging: true,
+                    filtering: true,
+                    sorting: true,
+                    grouping: true,
+                    summary: true,
+                    groupPaging: true
+                },
+                showBorders: true,
+                showColumnLines: true,
+                rowAlternationEnabled: true,
+                showRowLines: true,
+                wordWrapEnabled: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                searchPanel: {
+                    visible: true,
+                    placeholder: "Ara..."
+                },
+                paging: {
+                    pageSize: 10
+                },
+                grouping: {
+                    autoExpandAll: true
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10, 20],
+                    showInfo: true
+                },
+                onCellPrepared: function (e) {
+                    if (e.rowType === 'data') {
+                        var isCancelled = e.data.isCancelled;
+                        if (isCancelled) {
+                            e.cellElement.css({ "background-color": '#ffa6a6' });
+                        }
+                    }
+                },
+                export: {
+                    enabled: true
+                },
+                onExporting: function (e) {
+                    var workbook = new ExcelJS.Workbook();
+                    var worksheet = workbook.addWorksheet('Tahsilat Listesi');
+                    DevExpress.excelExporter.exportDataGrid({
+                        worksheet: worksheet,
+                        component: e.component,
+                        customizeCell: function (options) {
+                            var excelCell = options;
+                            excelCell.font = { name: 'Arial', size: 12 };
+                            excelCell.alignment = { horizontal: 'left' };
+                        }
+                    }).then(function () {
+                        workbook.xlsx.writeBuffer().then(function (buffer) {
+                            saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'TahsilatRaporu' + parseInt(Math.random() * 1000000000) + '.xlsx');
+                        });
+                    });
+                    e.cancel = true;
+                },
+                columns: [
+                    {
+                        caption: "Ödeme Tarihi",
+                        dataField: "paymentDate",
+                        dataType: "date",
+                        format: "dd/MM/yyyy",
+                        width: 120
+                    },
+                    {
+                        caption: "Eğitim",
+                        dataField: "educationName"
+                    },
+                    {
+                        caption: "Satış Tutarı",
+                        dataField: "paidPrice",
+                        customizeText: function (paidPrice) {
+                            return paidPrice.value + " ₺";
+                        },
+                        width: 100
+                    },
+                    {
+                        caption: "İşlem Ücreti",
+                        dataField: "commissionFee",
+                        customizeText: function (commissionFee) {
+                            return commissionFee.value + " ₺";
+                        },
+                        width: 100
+                    },
+                    {
+                        caption: "Komisyon",
+                        dataField: "commissionRate",
+                        customizeText: function (commissionRate) {
+                            return commissionRate.value + " ₺";
+                        },
+                        width: 100
+                    },
+                    {
+                        caption: "Kalan",
+                        dataField: "merchantPayout",
+                        customizeText: function (merchantPayout) {
+                            return merchantPayout.value + " ₺";
+                        },
+                        width: 100
+
+                    },
+                    {
+                        caption: "İptal Edildi Mi?",
+                        dataField: "isCancelled",
+                        selectedFilterOperation: "=",
+                        filterValue: false,
+                        width: 120
+                    }
+                ],
+                summary: {
+                    totalItems: [
+                        {
+                            column: "name",
+                            summaryType: "count",
+                            displayFormat: "Toplam Kayıt: {0}"
+                        }, {
+                            column: "paidPrice",
+                            summaryType: "sum",
+                            displayFormat: "T: {0} ₺"
+                        }, {
+                            column: "commissionFee",
+                            summaryType: "sum",
+                            displayFormat: "T: {0} ₺"
+                        }, {
+                            column: "commissionRate",
+                            summaryType: "sum",
+                            displayFormat: "T: {0} ₺"
+                        }, {
+                            column: "merchantPayout",
+                            summaryType: "sum",
+                            displayFormat: "T: {0} ₺"
+                        }
+                    ]
+                }
+            });
+        }
+    </script>
+}

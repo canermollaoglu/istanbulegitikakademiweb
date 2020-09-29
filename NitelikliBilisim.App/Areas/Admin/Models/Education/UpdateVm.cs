@@ -9,7 +9,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Models.Education
     public class UpdateGetVm : AddGetVm
     {
         public Core.Entities.Education Education { get; set; }
-        public List<EducationTag> RelatedCategories { get; set; }
+        public List<EducationTag> RelatedTags { get; set; }
     }
 
     public class UpdatePostVm : EducationCrudVm

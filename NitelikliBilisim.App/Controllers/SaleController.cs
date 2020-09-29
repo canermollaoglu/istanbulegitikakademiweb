@@ -16,6 +16,7 @@ using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.PaymentModels;
 using NitelikliBilisim.Core.Services.Payments;
 using NitelikliBilisim.Core.ViewModels.Cart;
+using NitelikliBilisim.Core.ViewModels.Main.Sales;
 using NitelikliBilisim.Core.ViewModels.Sales;
 using NitelikliBilisim.Notificator.Services;
 using System;
@@ -95,6 +96,33 @@ namespace NitelikliBilisim.App.Controllers
 
             return View();
         }
+        [HttpPost, Route("getinstallmentinfo")]
+        public IActionResult GetInstallmentInfo(InstallmentInfoVm data)
+        {
+            var binNumber = FormatCardNumber(data.CardNumber).Substring(0, 6);
+            var info = _paymentService.CheckInstallment(data.ConversationId.ToString(), binNumber, GetPriceSumForCartItems(data.CartItems));
+            if (info.Status == PaymentServiceMessages.ResponseSuccess)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    data = new
+                    {
+                        installmentOptions = info.InstallmentDetails[0]
+                    }
+                });
+            }
+            else
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Taksit bilgileri alınamadı. Sayfayı yenileyerek tekrar deneyiniz." }
+                });
+            }
+
+        }
+
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [HttpPost, ValidateAntiForgeryToken, Route("pay")]
         public async Task<IActionResult> Pay(PayData data)
@@ -148,44 +176,56 @@ namespace NitelikliBilisim.App.Controllers
             var transactionType = cardInfoChecker.DecideTransactionType(info, data.Use3d);
 
             var manager = new PaymentManager(_paymentService, transactionType);
-            string content = "";
+            string content;
             var rootPath = _hostingEnvironment.WebRootPath;
             using (var sr = new StreamReader(Path.Combine(rootPath, "data/cities.json")))
             {
-                content = sr.ReadToEnd();
+                content = await sr.ReadToEndAsync();
             }
             var cityTowns = JsonConvert.DeserializeObject<CityTownModel>(content);
             var cityId = data.InvoiceInfo.City;
             var townId = data.InvoiceInfo.Town;
-            var city = cityTowns.data.FirstOrDefault(x => x._id == cityId);
+            var city = cityTowns.data.First(x => x._id == cityId);
             data.InvoiceInfo.City = city.name;
-            data.InvoiceInfo.Town = city.towns.FirstOrDefault(x => x._id == townId).name;
-            
+            data.InvoiceInfo.Town = city.towns.First(x => x._id == townId).name;
+
             var result = manager.Pay(_unitOfWork, data);
+            NormalPaymentResultVm paymentResultModel = new NormalPaymentResultVm();
 
             if (result.TransactionType == TransactionType.Normal)
             {
-                var model = manager.CreateCompletionModel(result.PaymentForNormal);
-                _unitOfWork.Sale.CompletePayment(model, result.Success.InvoiceId, result.Success.InvoiceDetailIds);
-
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var customerEmail = _userUnitOfWork.User.GetCustomerInfo(userId).PersonalAndAccountInfo.Email;
-                if (customerEmail != null)
+                if (result.Status == PaymentServiceMessages.ResponseSuccess)
                 {
-                    await _emailSender.SendAsync(new EmailMessage
+                    var model = manager.CreateCompletionModel(result.PaymentForNormal);
+                    _unitOfWork.Sale.CompletePayment(model, result.Success.InvoiceId, result.Success.InvoiceDetailIds);
+
+                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    var customerEmail = _userUnitOfWork.User.GetCustomerInfo(userId).PersonalAndAccountInfo.Email;
+                    if (customerEmail != null)
                     {
-                        Subject = "Eğitim ödemeniz alınmıştır | Nitelikli Bilişim",
-                        Body = "Eğitim ödemeniz alınmıştır.",
-                        Contacts = new string[] { customerEmail }
-                    });
+                        await _emailSender.SendAsync(new EmailMessage
+                        {
+                            Subject = "Eğitim ödemeniz alınmıştır | Nitelikli Bilişim",
+                            Body = "Eğitim ödemeniz alınmıştır.",
+                            Contacts = new [] { customerEmail }
+                        });
+                    }
+
+                    paymentResultModel.Status = PaymentResultStatus.Success;
+                    paymentResultModel.Message = "Ödemeniz başarılı bir şekilde gerçekleşmiştir.";
+                }
+                else
+                {
+                    paymentResultModel.Status = PaymentResultStatus.Failure;
+                    paymentResultModel.Message = result.Error.ErrorMessage;
                 }
 
-                return Redirect("/odeme-sonucunuz");
+                return RedirectToAction("NormalPaymentResult", "Sale", paymentResultModel);
             }
 
             if (result.TransactionType == TransactionType.Secure3d)
             {
-                if (result.Status == "success")
+                if (result.Status == PaymentServiceMessages.ResponseSuccess)
                 {
                     _unitOfWork.TempSaleData.Create(result.ConversationId, result.Success);
                     HttpContext.Session.SetString("html_content", result.HtmlContent);
@@ -198,14 +238,19 @@ namespace NitelikliBilisim.App.Controllers
                         {
                             Subject = "Eğitim ödemeniz alınmıştır | Nitelikli Bilişim",
                             Body = "Eğitim ödemeniz alınmıştır.",
-                            Contacts = new string[] { customerEmail }
+                            Contacts = new [] { customerEmail }
                         });
                     }
-
                     return Redirect("/secure3d");
                 }
+                else
+                {
+                    paymentResultModel.Status = PaymentResultStatus.Failure;
+                    paymentResultModel.Message = result.Error.ErrorMessage;
+                    return RedirectToAction("NormalPaymentResult", "Sale", paymentResultModel);
+                }
             }
-            
+
             return Redirect("/");
         }
 
@@ -219,44 +264,46 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [HttpGet, Route("odeme-sonucunuz")]
-        public IActionResult NormalPaymentResult()
+        public IActionResult NormalPaymentResult(NormalPaymentResultVm model)
         {
-            return View();
+            return View(model);
         }
 
         [HttpPost, Route("odeme-sonucu")]
         public IActionResult PaymentResult(CreateThreedsPaymentRequest data)
         {
+            NormalPaymentResultVm retVal = new NormalPaymentResultVm();
             if (data != null)
             {
                 data.Locale = Locale.TR.ToString();
                 var result = _paymentService.Confirm3DsPayment(data);
-                var manager = new PaymentManager(_paymentService, TransactionType.Secure3d);
-                var model = manager.CreateCompletionModel(result);
-                if (model == null)
-                    return View();
-
-                var paymentModelSuccess = _unitOfWork.TempSaleData.Get(data.ConversationId);
-                _unitOfWork.TempSaleData.Remove(data.ConversationId);
-                _unitOfWork.Sale.CompletePayment(model, paymentModelSuccess.InvoiceId, paymentModelSuccess.InvoiceDetailIds);
+                if (result.Status == PaymentServiceMessages.ResponseSuccess)
+                {
+                    var manager = new PaymentManager(_paymentService, TransactionType.Secure3d);
+                    var model = manager.CreateCompletionModel(result);
+                    if (model == null)
+                        return View();
+                    retVal.Status = PaymentResultStatus.Success;
+                    retVal.Message = "Ödemeniz başarılı bir şekilde gerçekleşmiştir.";
+                    var paymentModelSuccess = _unitOfWork.TempSaleData.Get(data.ConversationId);
+                    _unitOfWork.TempSaleData.Remove(data.ConversationId);
+                    _unitOfWork.Sale.CompletePayment(model, paymentModelSuccess.InvoiceId, paymentModelSuccess.InvoiceDetailIds);
+                }
+                else
+                {
+                    retVal.Status = PaymentResultStatus.Failure;
+                    retVal.Message = result.ErrorMessage;
+                }
+            }
+            else
+            {
+                retVal.Status = PaymentResultStatus.Failure;
+                retVal.Message = "Ödeme servisinden cevap alınamamıştır. Lütfen yönetici ile iletişime geçiniz.";
             }
 
-            return View();
+            return View(retVal);
         }
 
-        public IActionResult GetCardInfo()
-        {
-            var conversationId = Guid.NewGuid().ToString();
-            var info = _paymentService.CheckInstallment(conversationId, "111111", 800);
-            return Json(new ResponseModel
-            {
-                isSuccess = true,
-                data = new
-                {
-                    installmentOptions = info.InstallmentDetails[0].InstallmentPrices
-                }
-            });
-        }
 
         [NonAction]
         public string FormatCardNumber(string cardNumber)
@@ -267,8 +314,8 @@ namespace NitelikliBilisim.App.Controllers
         [NonAction]
         public decimal GetPriceSumForCartItems(List<_CartItem> itemIds)
         {
-            var educationIds = itemIds.Select(x => x.EducationId).ToList();
-            return _unitOfWork.Education.Get(x => educationIds.Contains(x.Id), null).Sum(x => x.NewPrice.Value);
+            var groupIds = itemIds.Select(x => x.GroupId).ToList();
+            return _unitOfWork.EducationGroup.Get(x => groupIds.Contains(x.Id), null).Sum(x => x.NewPrice.GetValueOrDefault());
         }
     }
 

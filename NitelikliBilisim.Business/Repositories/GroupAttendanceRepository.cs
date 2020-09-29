@@ -53,7 +53,7 @@ namespace NitelikliBilisim.Business.Repositories
         public void SaveAttendances(AttendanceData data)
         {
             if (data.Date.Date > DateTime.Now.Date)
-                return;
+                throw new Exception("Yoklama kaydı sonraki günler için girilemez!");
 
             var attendanceRecords = _context.GroupAttendances
                 .Where(x => x.GroupId == data.GroupId && x.Date == data.Date)

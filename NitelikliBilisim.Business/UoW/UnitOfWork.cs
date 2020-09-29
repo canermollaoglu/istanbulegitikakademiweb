@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Nest;
 using NitelikliBilisim.Business.Repositories;
 using NitelikliBilisim.Business.Repositories.BlogRepositories;
-using NitelikliBilisim.Core.Entities.helper;
+using NitelikliBilisim.Core.Entities.groups;
 using NitelikliBilisim.Data;
 
 namespace NitelikliBilisim.Business.UoW
@@ -19,7 +20,6 @@ namespace NitelikliBilisim.Business.UoW
         private EducatorRepository _educator;
         private EducatorSocialMediaRepository _educatorSocialMedia;
         private StudentEducationInfoRepository _studentEducationInfo;
-        private EducationSuggestionRepository _educationSuggestionRepository;
         private CustomerRepository _customerRepository;
         private BridgeEducationEducatorRepository _bridgeEducationEducatorRepository;
         private EducationGroupRepository _educationGroupRepository;
@@ -47,20 +47,31 @@ namespace NitelikliBilisim.Business.UoW
         private BlogPostRepository _blogPostRepository;
         private BlogCategoryRepository _blogCategoryRepository;
         private BlogTagRepository _blogTagRepository;
+        private InvoiceRepository _invoiceRepository;
+        private InvoiceDetailRepository _invoiceDetailRepository;
+        private GroupExpenseRepository _groupExpenseRepository;
+        private GroupExpenseTypeRepository _groupExpenseTypeRepository;
+        private EducationHostClassroomRepository _educationHostClassroomRepository;
 
         private IElasticClient _elasticClient;
-        public UnitOfWork(NbDataContext context, IElasticClient elasticClient)
+        private IConfiguration _configuration;
+        public UnitOfWork(NbDataContext context, IElasticClient elasticClient,IConfiguration configuration)
         {
             _elasticClient = elasticClient;
             _context = context;
+            _configuration = configuration;
         }
         public int Save()
         {
             _context.EnsureAutoHistory();
             return _context.SaveChanges();
         }
-        
-        public SuggestionRepository Suggestions => _suggestionRepository ??= new SuggestionRepository(_context, _elasticClient);
+        public EducationHostClassroomRepository ClassRoom => _educationHostClassroomRepository ??= new EducationHostClassroomRepository(_context);
+        public GroupExpenseRepository GroupExpense => _groupExpenseRepository ??= new GroupExpenseRepository(_context);
+        public GroupExpenseTypeRepository GroupExpenseType => _groupExpenseTypeRepository ??= new GroupExpenseTypeRepository(_context);
+        public InvoiceDetailRepository InvoiceDetail => _invoiceDetailRepository ??= new InvoiceDetailRepository(_context);
+        public InvoiceRepository Invoice => _invoiceRepository ??= new InvoiceRepository(_context);
+        public SuggestionRepository Suggestions => _suggestionRepository ??= new SuggestionRepository(_context, _elasticClient,_configuration);
         public EducationCategoryRepository EducationCategory => _educationCategoryRepository ??= new EducationCategoryRepository(_context);
 
         public EducationTagRepository EducationTag => _educationTagRepository ??= new EducationTagRepository(_context);
@@ -78,8 +89,6 @@ namespace NitelikliBilisim.Business.UoW
         public EducatorSocialMediaRepository EducatorSocialMedia => _educatorSocialMedia ??= new EducatorSocialMediaRepository(_context);
 
         public StudentEducationInfoRepository StudentEducationInfo => _studentEducationInfo ??= new StudentEducationInfoRepository(_context);
-
-        public EducationSuggestionRepository Suggestion => _educationSuggestionRepository ??= new EducationSuggestionRepository(_context);
 
         public CustomerRepository Customer => _customerRepository ??= new CustomerRepository(_context);
 
