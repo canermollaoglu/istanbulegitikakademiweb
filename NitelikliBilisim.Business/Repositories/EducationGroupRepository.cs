@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Entities.groups;
 using NitelikliBilisim.Core.Enums;
+using NitelikliBilisim.Core.Enums.group;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.areas.admin.customer;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_groups;
@@ -62,6 +63,16 @@ namespace NitelikliBilisim.Business.Repositories
             var educatorIds = _context.Bridge_EducationEducators.Where(x => x.Id == group.EducationId)
                 .Select(x => x.Id2)
                 .ToList();
+
+            var weekDays = _context.WeekDaysOfGroups.First(x => x.GroupId == groupId);
+            List<string> weekDaysNames = new List<string>();
+            int[] days = JsonConvert.DeserializeObject<int[]>(weekDays.DaysJson);
+            foreach (var item in days)
+            {
+                weekDaysNames.Add(EnumSupport.GetDescription((Weekdays)item));
+            }
+
+
             var educators = new Dictionary<string, string>();
             if (educatorIds != null && educatorIds.Count > 0)
             {
@@ -111,7 +122,8 @@ namespace NitelikliBilisim.Business.Repositories
                 MinimumStudentCount = minimumStudent,
                 OldPrice = group.OldPrice,
                 NewPrice = group.NewPrice,
-                ExpectedProfitRate = expectedProfitRate
+                ExpectedProfitRate = expectedProfitRate,
+                WeekdayNames = weekDaysNames
             };
             return model;
         }
@@ -135,6 +147,8 @@ namespace NitelikliBilisim.Business.Repositories
                 .Include(x => x.GroupStudents)
                 .Include(x => x.Education)
                 .Include(x => x.Host).First(x => x.Id == groupId);
+
+           
             string classRoomName = string.Empty;
             var firstLessonDay = _context.GroupLessonDays.FirstOrDefault(x => x.GroupId == groupId);
             if (firstLessonDay != null && firstLessonDay.ClassroomId != null)
