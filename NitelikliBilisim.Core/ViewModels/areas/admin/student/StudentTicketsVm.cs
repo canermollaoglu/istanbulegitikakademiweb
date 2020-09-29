@@ -9,5 +9,6 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.student
         public string HostName { get; set; }
         public DateTime CreatedDate { get; set; }
         public bool IsUsed { get; set; }
+        public string IsCancelled { get; set; }
     }
 }
