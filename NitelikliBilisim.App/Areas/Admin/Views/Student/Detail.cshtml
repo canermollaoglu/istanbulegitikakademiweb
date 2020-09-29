@@ -377,12 +377,21 @@
                     allowedPageSizes: [5, 10, 20],
                     showInfo: true
                 },
+                onCellPrepared: function (e) {
+                    if (e.rowType === 'data') {
+                        var isCancelled = e.data.isCancelled;
+                        if (isCancelled == 'İptal Edildi') {
+                            e.cellElement.css({ "background-color": '#ffa6a6' });
+                        }
+                    }
+                },
                 columns: [
                     {
                         caption: "Tarih",
                         dataField: "createdDate",
                         dataType: "date",
                         format: "dd/MM/yyyy",
+                        width:100
                     },
                     {
                         caption: "Eğitim",
@@ -396,6 +405,10 @@
                     {
                         caption: "Atandı Mı?",
                         dataField: "isUsed"
+                    },
+                    {
+                        caption: "İptal Durumu",
+                        dataField: "isCancelled"
                     }
                 ]
             });

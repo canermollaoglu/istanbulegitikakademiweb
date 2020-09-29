@@ -81,6 +81,8 @@ namespace NitelikliBilisim.Business.Repositories
             decimal totalExpenses = GetGroupTotalExpenses(groupId);
             decimal totalIncomes = GetGroupTotalIncomes(groupId);
             decimal newTotal = totalExpenses + (totalExpenses * expectedProfitRate / 100);
+            decimal kdv = newTotal * 8 / 100;
+            newTotal = newTotal - kdv;
             decimal educationPrice = group.NewPrice.GetValueOrDefault();
             var minimumStudent = CalculateMinimumStudentCount(newTotal - totalIncomes, educationPrice);
             #endregion
@@ -312,6 +314,8 @@ namespace NitelikliBilisim.Business.Repositories
             decimal totalExpenses = GetGroupTotalExpenses(data.GroupId);
             decimal totalIncomes = GetGroupTotalIncomes(data.GroupId);
             decimal newTotal = totalExpenses + (totalExpenses * data.ExpectedRateOfProfitability / 100);
+            decimal kdv = newTotal * 8 / 100;
+            newTotal = newTotal - kdv;
             var group = _context.EducationGroups.Include(x => x.Education).First(x => x.Id == data.GroupId);
             decimal educationPrice = group.NewPrice.GetValueOrDefault();
 
@@ -320,7 +324,7 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 ExpectedRateOfProfitability = data.ExpectedRateOfProfitability,
                 PlannedAmount = newTotal,
-                MinStudentCount = CalculateMinimumStudentCount(newTotal - totalIncomes, educationPrice)
+                MinStudentCount = CalculateMinimumStudentCount(newTotal- totalIncomes, educationPrice)
             };
 
         }

@@ -14,7 +14,7 @@ var inputStartDate = $("#input-start-date");
 var inputChangeEducatorStartDate = $("#input-change-educator-start-date");
 var inputGroupName = $("#input-group-name");
 var inputnewPrice = $("#input-new-price");
-var inputGroupNewDate = $("#input-group-new-date");
+var inputGroupNewDate = $("#input-group-new-start-date");
 var inputNewSalesPrice = $("#input-sales-price");
 
 var inputExpectedProfitability = $("#input-expected-rate-of-profitability");
@@ -389,14 +389,13 @@ function calculateSalesPrice() {
     salesPrice.val(Math.ceil(sonuc));
 }
 function btnPostponementOfGroup_onClick() {
-    
+    btnPostponementOfGroup.off("click");
     var data = {
-        GroupId: inputGroupName.val(),
-        Price: inputnewPrice.val()
+        GroupId: groupId.val(),
+        StartDate: inputGroupNewDate.val()
     }
-    console.log(data);
     $.ajax({
-        url: "/admin/EducationGroup/UpdateGeneralInformation",
+        url: "/admin/EducationGroup/PostponementOfGroup",
         method: "post",
         data: data,
         success: (res) => {
@@ -404,8 +403,10 @@ function btnPostponementOfGroup_onClick() {
                 var resultAlert = new AlertSupport.ResultAlert();
                 resultAlert.display({
                     success: true,
-                    message: "Genel bilgiler güncellendi.",
+                    message: "Grup erteleme işlemi başarılı.",
                 });
+                getGroupDetailInfo();
+                createLessonDayGrid();
             } else {
                 var resultAlert = new AlertSupport.ResultAlert();
                 resultAlert.display({
@@ -413,10 +414,13 @@ function btnPostponementOfGroup_onClick() {
                     errors: res.errors,
                     message: "Hataları düzeltiniz"
                 });
-                $("#postponementOfGroup").modal('hide');
-                $('#form-postponement-of-group')[0].reset();
             }
-        }
+        },
+        complete: () => {
+            btnPostponementOfGroup.on("click", btnPostponementOfGroup_onClick);
+            $("#postponementOfGroup").modal('hide');
+            $('#form-postponement-of-group')[0].reset();
+    }
     });
 
 }
@@ -496,15 +500,20 @@ function getGroupDetailInfo() {
                 var alertStyle ="";
                 if ((res.data.minimumStudentCount / res.data.quota)>0.5) {
                     alertStyle = "alert-danger";
-                } else if (res.data.minimumStudentCount==0) {
+                    $("#alertMinimumStudent").html(`<b>%${res.data.expectedProfitRate}</b> kârlılık için <b>${res.data.minimumStudentCount}</b> satış daha yapman lazım.`);
+                } else if (res.data.minimumStudentCount<=0) {
                     alertStyle = "alert-success";
+                    $("#alertMinimumStudent").html(`<b>%${res.data.expectedProfitRate}</b> kârlılık sağlanmıştır.`);
                 } else {
                     alertStyle = "alert-warning";
+                    $("#alertMinimumStudent").html(`<b>%${res.data.expectedProfitRate}</b> kârlılık için <b>${res.data.minimumStudentCount}</b> satış daha yapman lazım.`);
                 }
+
+
 
                 $("#alertDiv").addClass(alertStyle);
 
-                $("#alertMinimumStudent").html(`<b>%${res.data.expectedProfitRate}</b> kârlılık için <b>${res.data.minimumStudentCount}</b> satış daha yapman lazım.`);
+               
                 inputnewPrice.val(res.data.newPrice);
             }
         }

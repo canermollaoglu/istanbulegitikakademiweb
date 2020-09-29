@@ -89,6 +89,7 @@ namespace NitelikliBilisim.Business.Repositories
         public IQueryable<StudentTicketsVm> GetStudentTickets(string studentId)
         {
             var data = (from ticket in _context.Tickets
+                        join opdInfo in _context.OnlinePaymentDetailsInfos on ticket.InvoiceDetailsId equals opdInfo.Id
                         join education in _context.Educations on ticket.EducationId equals education.Id
                         join host in _context.EducationHosts on ticket.HostId equals host.Id
                         where ticket.OwnerId == studentId
@@ -98,7 +99,8 @@ namespace NitelikliBilisim.Business.Repositories
                             CreatedDate = ticket.CreatedDate,
                             EducationName = education.Name,
                             HostName = host.HostName,
-                            IsUsed = ticket.IsUsed
+                            IsUsed = ticket.IsUsed,
+                            IsCancelled = opdInfo.IsCancelled?"İptal Edildi":"Devam Ediyor"
                         });
 
             return data;
