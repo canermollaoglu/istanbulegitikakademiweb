@@ -20,6 +20,6 @@ namespace NitelikliBilisim.Core.Enums.group
         [Description("Cumartesi")]
         Cumartesi =6,
         [Description("Pazar")]
-        Pazar =7
+        Pazar =0
     }
 }
