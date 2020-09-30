@@ -52,7 +52,7 @@ namespace NitelikliBilisim.Business.Repositories
                     }).ToList();
         }
 
-        public GroupDetailVm GetDetailByGroupId(Guid groupId, int expectedProfitRate)
+        public GroupDetailVm GetDetailByGroupId(Guid groupId, int expectedProfitRate,decimal posComissionRate)
         {
             var group = _context.EducationGroups
                 .Include(x => x.Education)
@@ -92,8 +92,8 @@ namespace NitelikliBilisim.Business.Repositories
             decimal totalExpenses = GetGroupTotalExpenses(groupId);
             decimal totalIncomes = GetGroupTotalIncomes(groupId);
             decimal newTotal = totalExpenses + (totalExpenses * expectedProfitRate / 100);
-            decimal kdv = newTotal * 8 / 100;
-            newTotal = newTotal - kdv;
+            newTotal = newTotal + (newTotal * posComissionRate / 100);
+            newTotal = newTotal + (newTotal * 8 / 100);
             decimal educationPrice = group.NewPrice.GetValueOrDefault();
             var minimumStudent = CalculateMinimumStudentCount(newTotal - totalIncomes, educationPrice);
             #endregion
@@ -148,12 +148,12 @@ namespace NitelikliBilisim.Business.Repositories
                 .Include(x => x.Education)
                 .Include(x => x.Host).First(x => x.Id == groupId);
 
-           
-            string classRoomName = string.Empty;
+
+            Classroom classRoom = null;
             var firstLessonDay = _context.GroupLessonDays.FirstOrDefault(x => x.GroupId == groupId);
             if (firstLessonDay != null && firstLessonDay.ClassroomId != null)
             {
-                classRoomName = _context.Classrooms.First(x => x.Id == firstLessonDay.ClassroomId).Name;
+                classRoom = _context.Classrooms.FirstOrDefault(x => x.Id == firstLessonDay.ClassroomId);
             }
             var educator = _context.Users.First(x => x.Id == group.EducatorId);
 
@@ -164,7 +164,7 @@ namespace NitelikliBilisim.Business.Repositories
                 Quota = group.Quota,
                 StartDate = group.StartDate.ToShortDateString(),
                 EducationHost = group.Host.HostName,
-                Classroom = classRoomName,
+                Classroom = classRoom != null? classRoom.Name:"Sınıf bilgisi girilmemiş.",
                 EducationName = group.Education.Name,
                 EducatorName = $"{educator.Name} {educator.Surname}",
                 AssignedStudentsCount = group.GroupStudents.Count,
