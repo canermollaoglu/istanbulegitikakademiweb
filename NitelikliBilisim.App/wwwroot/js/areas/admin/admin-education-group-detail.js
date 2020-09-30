@@ -904,6 +904,8 @@ function createStudentGrid() {
             allowSearch: false,
             cellTemplate: function (container, options) {
                 var current = options.data;
+                $(`<a title="Detay" class="btn btn-outline-primary btn-sm" style="margin-right:5px;" href="/admin/ogrenci-detay?studentId=${current.id}"> Detay</a>`)
+                    .appendTo(container);
                 $(`<button type="button" title="Gruptan Çıkar" class="btn btn-outline-danger btn-sm btn-unassign" data-ticket-id="${current.ticketId}" > Çıkar</button>`)
                     .appendTo(container);
             },
