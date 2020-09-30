@@ -581,6 +581,10 @@ function calculateGroupExpenseAndIncome() {
                     `<td class="text-right text-danger">${item.educatorExpenses}</td>` +
                     "</tr>" +
                     "<tr>" +
+                    `<td>K.D.V.</td>` +
+                    `<td class="text-right text-danger">${item.kdv}</td>` +
+                    "</tr>" +
+                    "<tr>" +
                     `<td><b>Toplam Gider</b></td>` +
                     `<td class="text-right text-danger"><b>${item.totalExpenses}</b></td>` +
                     "</tr>" +
@@ -788,7 +792,7 @@ function createLessonDayGrid() {
                 alignment: "center"
             },
             {
-                caption: "Yoklama Alındı Mı?",
+                caption: "Yoklama",
                 cellTemplate: function (container, options) {
                     var current = options.data;
                     if (current.hasAttendanceRecord) {
@@ -800,7 +804,7 @@ function createLessonDayGrid() {
                     }
                 },
                 alignment: "center",
-                width: 150
+                width:70
             },
             {
                 caption: "",

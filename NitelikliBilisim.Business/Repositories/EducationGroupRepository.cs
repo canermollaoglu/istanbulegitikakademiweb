@@ -354,9 +354,13 @@ namespace NitelikliBilisim.Business.Repositories
             decimal groupExpenses = group.GroupExpenses.Sum(x => (x.Price * x.Count));
             decimal educatorExpensesAverage = lessonDays != null && lessonDays.Count > 0 ? lessonDays.Average(x => x.EducatorSalary.GetValueOrDefault()) : 0;
             decimal studentIncomes = GetGroupTotalIncomes(groupId);
-
+            
             decimal totalEducatorExpense = (totalHours * educatorExpensesAverage) * (decimal)1.45;
-            decimal profitRate = studentIncomes > 0 && (groupExpenses + totalEducatorExpense) > 0 ? Math.Round(studentIncomes / (groupExpenses + totalEducatorExpense), 2) : 0;
+            decimal totalExpense = groupExpenses + totalEducatorExpense;
+            decimal kdv = totalExpense * 8 / 100;
+            totalExpense = totalExpense + kdv;
+            decimal profitRate = studentIncomes > 0 && totalExpense > 0 ? Math.Round(studentIncomes / totalExpense, 2) : 0;
+            //KDV
             var culture = CultureInfo.CreateSpecificCulture("tr-TR");
 
             return new GroupExpenseAndIncomeVm
@@ -365,10 +369,11 @@ namespace NitelikliBilisim.Business.Repositories
                 EducatorExpensesAverage = educatorExpensesAverage,
                 GroupExpenses = groupExpenses.ToString("c", culture),
                 EducatorExpenses = totalEducatorExpense.ToString("c", culture),
-                TotalExpenses = (groupExpenses+totalEducatorExpense).ToString("c", culture),
+                TotalExpenses = totalExpense.ToString("c", culture),
                 TotalStudentIncomes = studentIncomes.ToString("c", culture),
-                GrandTotal = (studentIncomes-(groupExpenses+totalEducatorExpense)).ToString("c", culture),
-                ProfitRate = (profitRate * 100) - 100
+                GrandTotal = (studentIncomes- totalExpense).ToString("c", culture),
+                ProfitRate = (profitRate * 100) - 100,
+                KDV = kdv.ToString("c", culture)
             };
         }
 
