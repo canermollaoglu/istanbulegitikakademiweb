@@ -18,5 +18,6 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_groups
         public decimal EducatorExpensesAverage { get; set; }
         public decimal ProfitRate { get; set; }
         public string TotalExpenses { get; set; }
+        public string KDV { get; set; }
     }
 }
