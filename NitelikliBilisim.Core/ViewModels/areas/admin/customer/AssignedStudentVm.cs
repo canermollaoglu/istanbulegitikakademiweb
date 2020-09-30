@@ -14,5 +14,6 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.customer
         public int NonAttendance { get; set; } = 0;
         public string Job { get; set; }
         public bool IsNbuyStudent { get; set; }
+        public string Id { get; set; }
     }
 }

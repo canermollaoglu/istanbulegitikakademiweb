@@ -242,6 +242,7 @@ namespace NitelikliBilisim.Business.Repositories
                 .OrderByDescending(x => x.CreatedDate)
                 .Select(x => new AssignedStudentVm
                 {
+                    Id=x.Customer.Id,
                     TicketId = x.TicketId,
                     CustomerFullName = $"{x.Customer.User.Name} {x.Customer.User.Surname}",
                     CustomerId = x.Customer.User.Id,
