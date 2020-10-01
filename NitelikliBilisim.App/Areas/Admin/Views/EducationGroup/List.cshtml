@@ -44,10 +44,10 @@
         var newCities = [{ key: 1010, value: "İstanbul" }];
         /* assignments */
         $(document).ready(document_onLoad);
-        
+
         /* events */
         function document_onLoad() {
-           loadCities();
+            loadCities();
         }
 
         function loadCities() {
@@ -112,6 +112,27 @@
                     showPageSizeSelector: true,
                     allowedPageSizes: [5, 10, 20],
                     showInfo: true
+                },
+                onExporting: function (e) {
+                    var workbook = new ExcelJS.Workbook();
+                    var worksheet = workbook.addWorksheet('Egitim Grupları');
+                    DevExpress.excelExporter.exportDataGrid({
+                        worksheet: worksheet,
+                        component: e.component,
+                        customizeCell: function (options) {
+                            var excelCell = options;
+                            excelCell.font = { name: 'Arial', size: 12 };
+                            excelCell.alignment = { horizontal: 'left' };
+                        }
+                    }).then(function () {
+                        workbook.xlsx.writeBuffer().then(function (buffer) {
+                            saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'Egitim Grupları Listesi' + parseInt(Math.random() * 1000000000) + '.xlsx');
+                        });
+                    });
+                    e.cancel = true;
+                },
+                export: {
+                    enabled: true
                 },
                 columns: [{
                     caption: "Grup İsmi",
