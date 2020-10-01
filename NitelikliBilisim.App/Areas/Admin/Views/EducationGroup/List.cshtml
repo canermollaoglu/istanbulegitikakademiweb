@@ -134,62 +134,64 @@
                 export: {
                     enabled: true
                 },
-                columns: [{
-                    caption: "Grup İsmi",
-                    dataField: "groupName",
-                    width: 140
-
-                }, {
-                    caption: "Eğitim İsmi",
-                    dataField: "educationName"
-                }, {
-                    caption: "Başlangıç Tarihi",
-                    dataField: "startDate",
-                    dataType: 'date',
-                    format: 'dd/MM/yyyy',
-                    width: 130
-                },
-
-                {
-                    caption: "Konum",
-                    dataField: "hostName",
-                    width: 200
-                },
-                {
-                    caption: "Şehir",
-                    dataField: "hostCity",
-                    lookup: {
-                        dataSource: cities,
-                        displayExpr: "value",
-                        valueExpr: "key"
+                columns: [
+                    {
+                        caption: "Başlangıç Tarihi",
+                        dataField: "startDate",
+                        dataType: 'date',
+                        format: 'dd/MM/yyyy',
+                        width: 130
                     },
-                    width: 120
-                },
-                {
-                    caption: "Fiyat",
-                    dataField: "newPrice",
-                    customizeText: function (newPrice) {
-                        return newPrice.value + " ₺";
-                    },
-                    width: 90
-                },
-                {
-                    caption: "İşlem",
-                    allowSearch: false,
-                    cellTemplate: function (container, options) {
-                        var current = options.data;
-                        var div = $('<div class="btn-group" style="display: inline-flex; width:"auto"></div>');
-                        $(`<a class="btn btn-outline-primary btn-sm" href="/admin/grup-detay/${current.id}">Detay</a>`)
-                            .appendTo(div);
-                        $(`<a title="Grup Ayarları" class="btn btn-outline-warning btn-sm" href="/admin/grup/ayarlar/${current.id}"><i class=\"fa fa-cogs\"></i><span style="display: block"></span></a>`);
-                        $(`<a title="Eğitim günlerini sıfırla" class="btn btn-dark btn-sm" href="/make-sure-lesson-days-created/${current.id}"><i class=\"fa fa-archive\"></i><span style="display: block"></span></a>`);
+                    {
+                        caption: "Grup İsmi",
+                        dataField: "groupName",
+                        width: 140
 
-                        div.appendTo(container);
-
+                    }, {
+                        caption: "Eğitim İsmi",
+                        dataField: "educationName"
                     },
-                    alignment: "center",
-                    width: 110
-                }
+
+                    {
+                        caption: "Konum",
+                        dataField: "hostName",
+                        width: 200
+                    },
+                    {
+                        caption: "Şehir",
+                        dataField: "hostCity",
+                        lookup: {
+                            dataSource: cities,
+                            displayExpr: "value",
+                            valueExpr: "key"
+                        },
+                        width: 120
+                    },
+                    {
+                        caption: "Fiyat",
+                        dataField: "newPrice",
+                        customizeText: function (newPrice) {
+                            return newPrice.value + " ₺";
+                        },
+                        width: 90
+                    },
+                    {
+                        caption: "İşlem",
+                        allowSearch: false,
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            var div = $('<div class="btn-group" style="display: inline-flex; width:"auto"></div>');
+                            $(`<a class="btn btn-outline-primary btn-sm" href="/admin/grup-detay/${current.id}">Detay</a>`)
+                                .appendTo(div);
+                            $(`<a title="Grup Ayarları" class="btn btn-outline-warning btn-sm" href="/admin/grup/ayarlar/${current.id}"><i class=\"fa fa-cogs\"></i><span style="display: block"></span></a>`);
+                            $(`<a title="Eğitim günlerini sıfırla" class="btn btn-dark btn-sm" href="/make-sure-lesson-days-created/${current.id}"><i class=\"fa fa-archive\"></i><span style="display: block"></span></a>`);
+
+                            div.appendTo(container);
+
+                        },
+                        alignment: "center",
+                        width: 110
+                    }
                 ]
             });
         }
