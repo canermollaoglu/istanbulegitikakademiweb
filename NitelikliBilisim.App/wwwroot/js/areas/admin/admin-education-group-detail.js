@@ -322,36 +322,6 @@ function btnEducationPriceSave_onClick() {
     });
 }
 
-//function btnCalculate_onClick() {
-//    btnCalculate.off("click");
-
-//    var data = {
-//        GroupId: groupId.val(),
-//        ExpectedRateOfProfitability: inputExpectedProfitability.val()
-//    }
-//    $.ajax({
-//        url: `/admin/calculate-group-expected-profitability`,
-//        method: "post",
-//        data: data,
-//        success: (res) => {
-//            if (res.isSuccess) {
-//                ExpectedProfitabilityDiv.html("");
-//                var item = res.data;
-//                var content = `<p><b>%${item.expectedRateOfProfitability}</b> karlılık için hedef ciro <b>${item.plannedAmount} ₺</b>, bu tutar için minimum <b>${item.minStudentCount}</b> öğrencinin daha gruba katılması gerekmektedir.</p>`;
-//                ExpectedProfitabilityDiv.append(content);
-//            }
-//            else {
-//                console.log(res.errors);
-//                alert("Hata");
-//            }
-
-//        },
-//        complete: () => {
-//            btnCalculate.on("click", btnCalculate_onClick);
-//        }
-
-//    });
-//}
 
 function calculateSalesPrice() {
     var expectedStudentCount = parseFloat($("#input-expected-student-count").val());
@@ -572,16 +542,29 @@ function calculateGroupExpenseAndIncome() {
                 tbodyCalculateGroupExpenseAndIncome.html("");
                 var item = res.data;
                 var table = "";
-                table += "<tr>" +
+                table +=
+                    "<tr>" +
+                    `<td>Ciro <i class="fa fa-info-circle" title="Toplam satınalım tutarı."></i></td>` +
+                    `<td class="text-right text-success"><b>${item.totalStudentIncomes}</b></td>` +
+                    "</tr>" +
+                    "<tr>" +
+                    `<td>İptal/İade Toplamı <i class="fa fa-info-circle" title="İade edilen toplam tutar."></i></td>` +
+                    `<td class="text-right text-danger">${item.totalRefundAmount}</td>` +
+                    "</tr>" +
+                    "<tr>" +
                     `<td>Grup Giderleri</td>` +
                     `<td class="text-right text-danger">${item.groupExpenses}</td>` +
                     "</tr>" +
                     "<tr>" +
-                    `<td>Eğitmen Ücreti Toplamı</td>` +
+                    `<td>Eğitmen Ücreti Toplamı <i class="fa fa-info-circle" title="${item.educatorExpensesAverage} (Ort Saatlik Ücret) X ${item.totalEducationHours} (Toplam Eğitim Saati)X 1.45"></i></td>` +
                     `<td class="text-right text-danger">${item.educatorExpenses}</td>` +
                     "</tr>" +
                     "<tr>" +
-                    `<td>K.D.V.</td>` +
+                    `<td>Pos Komisyonu <i class="fa fa-info-circle" title="Satışlardan kesilen toplam komisyon"></i></td>` +
+                    `<td class="text-right text-danger">${item.totalPosCommissionAmount}</td>` +
+                    "</tr>" +
+                    "<tr>" +
+                    `<td>K.D.V. <i class="fa fa-info-circle" title="(Grup Giderleri(İptal-İade ve Pos Komisyonu Hariç) + Eğitmen Ücreti Toplamı) X 0.08"></i></td>` +
                     `<td class="text-right text-danger">${item.kdv}</td>` +
                     "</tr>" +
                     "<tr>" +
@@ -589,15 +572,11 @@ function calculateGroupExpenseAndIncome() {
                     `<td class="text-right text-danger"><b>${item.totalExpenses}</b></td>` +
                     "</tr>" +
                     "<tr>" +
-                    `<td>Ciro (Öğrenci Ödemeleri)</td>` +
-                    `<td class="text-right text-success">${item.totalStudentIncomes}</td>` +
-                    "</tr>" +
-                    "<tr>" +
-                    `<td><b>Genel Toplam</b></td>` +
+                    `<td><b>Genel Toplam</b> <i class="fa fa-info-circle" title="Ciro-(Grup Giderleri+Eğitmen Ücreti Toplamı+KDV)"></i></td>` +
                     `<td class="text-right"><b>${item.grandTotal} </b></td>` +
                     "</tr>" +
                     "<tr>" +
-                    `<td ><b>Kâr Oranı</b></td>` +
+                    `<td ><b>Kâr Oranı</b> <i class="fa fa-info-circle" title="(Ciro/Toplam GiderX100)-100"></i></td>` +
                     `<td class="text-right"><b>%${item.profitRate}</b></td>` +
                     "</tr>";
                 tbodyCalculateGroupExpenseAndIncome.append(table);
@@ -804,7 +783,7 @@ function createLessonDayGrid() {
                     }
                 },
                 alignment: "center",
-                width:70
+                width: 70
             },
             {
                 caption: "",

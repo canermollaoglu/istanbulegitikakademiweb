@@ -75,6 +75,14 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.WebAPI
         }
 
         [HttpGet]
+        [Route("get-student-absences")]
+        public IActionResult GetStudentAbsences(DataSourceLoadOptions loadOptions, string studentId)
+        {
+            var data = _unitOfWork.Report.GetStudentAbsences(studentId);
+            return Ok(DataSourceLoader.Load(data, loadOptions));
+        }
+
+        [HttpGet]
         [Route("get-student-tickets")]
         public IActionResult GetStudentTickets(DataSourceLoadOptions loadOptions, string studentId)
         {

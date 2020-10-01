@@ -258,20 +258,20 @@ namespace NitelikliBilisim.Business.Repositories
 
         public IQueryable<EducationGroupListVm> GetListQueryable()
         {
-            var groups = _context.EducationGroups.Include(x => x.Education).Include(x => x.Host)
-                .Include(x => x.GroupStudents)
-                .Select(x => new EducationGroupListVm
-                {
-                    Id = x.Id,
-                    NewPrice = x.NewPrice.HasValue ? x.NewPrice : 0,
-                    EducationName = x.Education.Name,
-                    GroupName = x.GroupName,
-                    HostName = x.Host.HostName,
-                    HostCity = EnumSupport.GetDescription(x.Host.City),
-                    StartDate = x.StartDate
-                });
-
-            return groups;
+            return (from egroup in _context.EducationGroups
+                    join education in _context.Educations on egroup.EducationId equals education.Id
+                    join host in _context.EducationHosts on egroup.HostId equals host.Id
+                    select new EducationGroupListVm
+                    {
+                        Id = egroup.Id,
+                        CreatedDate = egroup.CreatedDate,
+                        StartDate = egroup.StartDate,
+                        NewPrice = egroup.NewPrice.HasValue ? egroup.NewPrice : 0,
+                        EducationName = education.Name,
+                        GroupName = egroup.GroupName,
+                        HostName = host.HostName,
+                        HostCity = (int)host.City
+                    });
         }
 
         public Guid Insert(EducationGroup entity, List<int> days, Guid? classRoomId, decimal educatorSalary)
@@ -324,26 +324,7 @@ namespace NitelikliBilisim.Business.Repositories
             }
         }
 
-        public CalculateExpectedProfitabilityReturnVm CalculateExpectedRateOfProfitability(CalculateExpectedProfitabilityVm data)
-        {
-            decimal totalExpenses = GetGroupTotalExpenses(data.GroupId);
-            decimal totalIncomes = GetGroupTotalIncomes(data.GroupId);
-            decimal newTotal = totalExpenses + (totalExpenses * data.ExpectedRateOfProfitability / 100);
-            decimal kdv = newTotal * 8 / 100;
-            newTotal = newTotal - kdv;
-            var group = _context.EducationGroups.Include(x => x.Education).First(x => x.Id == data.GroupId);
-            decimal educationPrice = group.NewPrice.GetValueOrDefault();
-
-
-            return new CalculateExpectedProfitabilityReturnVm
-            {
-                ExpectedRateOfProfitability = data.ExpectedRateOfProfitability,
-                PlannedAmount = newTotal,
-                MinStudentCount = CalculateMinimumStudentCount(newTotal- totalIncomes, educationPrice)
-            };
-
-        }
-
+       
         public GroupExpenseAndIncomeVm CalculateGroupExpenseAndIncome(Guid groupId)
         {
             var group = _context.EducationGroups.Include(x => x.GroupLessonDays).Include(x => x.Education).Include(x => x.GroupExpenses).First(x => x.Id == groupId);
@@ -353,14 +334,18 @@ namespace NitelikliBilisim.Business.Repositories
 
             decimal groupExpenses = group.GroupExpenses.Sum(x => (x.Price * x.Count));
             decimal educatorExpensesAverage = lessonDays != null && lessonDays.Count > 0 ? lessonDays.Average(x => x.EducatorSalary.GetValueOrDefault()) : 0;
-            decimal studentIncomes = GetGroupTotalIncomes(groupId);
             
+            decimal studentIncomes = GetGroupTotalIncomes(groupId);
+            decimal totalRefundAmount = GetGroupTotalRefundAmount(groupId);
+            decimal totalPosCommissionAmount = GetGroupTotalPosCommission(groupId);
+
             decimal totalEducatorExpense = (totalHours * educatorExpensesAverage) * (decimal)1.45;
             decimal totalExpense = groupExpenses + totalEducatorExpense;
             decimal kdv = totalExpense * 8 / 100;
             totalExpense = totalExpense + kdv;
+            totalExpense += totalRefundAmount;
+            totalExpense += totalPosCommissionAmount;
             decimal profitRate = studentIncomes > 0 && totalExpense > 0 ? Math.Round(studentIncomes / totalExpense, 2) : 0;
-            //KDV
             var culture = CultureInfo.CreateSpecificCulture("tr-TR");
 
             return new GroupExpenseAndIncomeVm
@@ -373,7 +358,9 @@ namespace NitelikliBilisim.Business.Repositories
                 TotalStudentIncomes = studentIncomes.ToString("c", culture),
                 GrandTotal = (studentIncomes- totalExpense).ToString("c", culture),
                 ProfitRate = (profitRate * 100) - 100,
-                KDV = kdv.ToString("c", culture)
+                KDV = kdv.ToString("c", culture),
+                TotalRefundAmount = totalRefundAmount.ToString("c", culture),
+                TotalPosCommissionAmount = totalPosCommissionAmount.ToString("c", culture)
             };
         }
 
@@ -563,7 +550,19 @@ namespace NitelikliBilisim.Business.Repositories
             var educatorExpenses = (educatorExpensesAverage* (decimal)1.45) * totalHours;
             return groupExpenses + educatorExpenses;
         }
-
+        /// <summary>
+        /// İade edilen eğitim ücretleri toplamını döner
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
+        private decimal GetGroupTotalRefundAmount(Guid groupId)
+        {
+            return (from onlinePaymentDetailInfo in _context.OnlinePaymentDetailsInfos
+                    join invoiceDetail in _context.InvoiceDetails on onlinePaymentDetailInfo.Id equals invoiceDetail.Id
+                    join educationGroup in _context.EducationGroups on invoiceDetail.GroupId equals educationGroup.Id
+                    where educationGroup.Id == groupId && onlinePaymentDetailInfo.IsCancelled
+                    select onlinePaymentDetailInfo).Sum(x => x.RefundPrice);
+        }
         /// <summary>
         /// Grup gelirleri yalnızca öğrenci ödemeleri olduğu için öğrenci ödemeleri toplamını döner.
         /// </summary>
@@ -574,8 +573,21 @@ namespace NitelikliBilisim.Business.Repositories
             return (from onlinePaymentDetailInfo in _context.OnlinePaymentDetailsInfos
                     join invoiceDetail in _context.InvoiceDetails on onlinePaymentDetailInfo.Id equals invoiceDetail.Id
                     join educationGroup in _context.EducationGroups on invoiceDetail.GroupId equals educationGroup.Id
+                    where educationGroup.Id == groupId
+                    select onlinePaymentDetailInfo).Sum(x => x.PaidPrice);
+        }
+        /// <summary>
+        /// Grup ödemelerindeki İyzico tarafından kesilen işlem ücreti ve komisyon tutarı toplamını döner.
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
+        private decimal GetGroupTotalPosCommission(Guid groupId)
+        {
+            return (from onlinePaymentDetailInfo in _context.OnlinePaymentDetailsInfos
+                    join invoiceDetail in _context.InvoiceDetails on onlinePaymentDetailInfo.Id equals invoiceDetail.Id
+                    join educationGroup in _context.EducationGroups on invoiceDetail.GroupId equals educationGroup.Id
                     where educationGroup.Id == groupId && !onlinePaymentDetailInfo.IsCancelled
-                    select onlinePaymentDetailInfo).Sum(x => x.MerchantPayout);
+                    select onlinePaymentDetailInfo).Sum(x => x.CommisionRate+x.CommissionFee);
         }
 
         private int CalculateMinimumStudentCount(decimal difference, decimal educationPrice)
@@ -597,6 +609,9 @@ namespace NitelikliBilisim.Business.Repositories
             }).ToList();
             return model;
         }
+
+        
+
         #endregion
     }
 }

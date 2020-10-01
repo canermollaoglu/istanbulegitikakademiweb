@@ -5,10 +5,6 @@
 }
 
 @section styles{
-    <link href="~/assets/css/area-admin/dataTables.bootstrap4.css" rel="stylesheet" />
-    <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
-    <link href="~/vendor\devextreme\dist\css\dx.common.css" rel="stylesheet" />
-    <link href="~/vendor\devextreme\dist\css\dx.light.css" rel="stylesheet" />
 
     <style>
         .dx-datagrid-content .dx-datagrid-table .dx-row > td:first-child, .dx-datagrid-content .dx-datagrid-table .dx-row > tr > td:first-child {
@@ -39,21 +35,37 @@
 </div>
 
 @section postScripts{
-    <script src="~/assets/js/area-admin/jquery.dataTables.js"></script>
-    <script src="~/assets/js/area-admin/dataTables.bootstrap4.js"></script>
-    <script src="~/js/sup/alert-sup.js"></script>
-    <script src="~/vendor\devextreme\dist\js\dx.all.js"></script>
-    <script src="~/vendor\devextreme-aspnet-data\js\dx.aspnet.data.js"></script>
+
     <script>
         /* fields */
         var confirmModalBuilder = new AlertSupport.ConfirmModalBuilder();
-
+        var resultAlert = new AlertSupport.ResultAlert();
+        var cities = [];
+        var newCities = [{ key: 1010, value: "İstanbul" }];
         /* assignments */
         $(document).ready(document_onLoad);
 
         /* events */
         function document_onLoad() {
-            createGrid();
+            loadCities();
+        }
+
+        function loadCities() {
+            $.ajax({
+                url: "/admin/get-host-city-enums/",
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        cities = res.data;
+                        createGrid();
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: errors
+                        });
+                    }
+                }
+            });
         }
 
         /*DataGrid*/
@@ -87,66 +99,99 @@
                 paging: {
                     pageSize: 10
                 },
-                onContentReady: function () {
+                groupPanel: {
+                    visible: true
+                },
+                grouping: {
+                    autoExpandAll: true
+                },
+                headerFilter: {
+                    visible: true
                 },
                 pager: {
                     showPageSizeSelector: true,
                     allowedPageSizes: [5, 10, 20],
                     showInfo: true
                 },
-                columns: [{
-                    caption: "Grup İsmi",
-                    dataField: "groupName",
-                    width: 140
-
-                }, {
-                    caption: "Eğitim İsmi",
-                    dataField: "educationName"
-                }, {
-                    caption: "Başlangıç Tarihi",
-                    dataField: "startDate",
-                    dataType: 'date',
-                    format: 'dd/MM/yyyy',
-                    width: 130
+                onExporting: function (e) {
+                    var workbook = new ExcelJS.Workbook();
+                    var worksheet = workbook.addWorksheet('Egitim Grupları');
+                    DevExpress.excelExporter.exportDataGrid({
+                        worksheet: worksheet,
+                        component: e.component,
+                        customizeCell: function (options) {
+                            var excelCell = options;
+                            excelCell.font = { name: 'Arial', size: 12 };
+                            excelCell.alignment = { horizontal: 'left' };
+                        }
+                    }).then(function () {
+                        workbook.xlsx.writeBuffer().then(function (buffer) {
+                            saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'Egitim Grupları Listesi' + parseInt(Math.random() * 1000000000) + '.xlsx');
+                        });
+                    });
+                    e.cancel = true;
                 },
-                {
-                    caption: "Konum",
-                    dataField: "hostName",
-                    width: 200
+                export: {
+                    enabled: true
                 },
-                {
-                    caption: "Şehir",
-                    dataField: "hostCity",
-                    allowSorting: false,
-                    allowSearch: false,
-                    allowFiltering: false,
-                    width: 90
-                },
-                {
-                    caption: "Fiyat",
-                    dataField: "newPrice",
-                    customizeText: function (newPrice) {
-                        return newPrice.value + " ₺";
+                columns: [
+                    {
+                        caption: "Başlangıç Tarihi",
+                        dataField: "startDate",
+                        dataType: 'date',
+                        format: 'dd/MM/yyyy',
+                        width: 130
                     },
-                    width:90
-                },
-                {
-                    caption: "İşlem",
-                    allowSearch: false,
-                    cellTemplate: function (container, options) {
-                        var current = options.data;
-                        var div = $('<div class="btn-group" style="display: inline-flex; width:"auto"></div>');
-                        $(`<a class="btn btn-outline-primary btn-sm" href="/admin/grup-detay/${current.id}">Detay</a>`)
-                            .appendTo(div);
-                        $(`<a title="Grup Ayarları" class="btn btn-outline-warning btn-sm" href="/admin/grup/ayarlar/${current.id}"><i class=\"fa fa-cogs\"></i><span style="display: block"></span></a>`);
-                        $(`<a title="Eğitim günlerini sıfırla" class="btn btn-dark btn-sm" href="/make-sure-lesson-days-created/${current.id}"><i class=\"fa fa-archive\"></i><span style="display: block"></span></a>`);
+                    {
+                        caption: "Grup İsmi",
+                        dataField: "groupName",
+                        width: 140
 
-                        div.appendTo(container);
-
+                    }, {
+                        caption: "Eğitim İsmi",
+                        dataField: "educationName"
                     },
-                    alignment: "center",
-                    width: 110
-                }
+
+                    {
+                        caption: "Konum",
+                        dataField: "hostName",
+                        width: 200
+                    },
+                    {
+                        caption: "Şehir",
+                        dataField: "hostCity",
+                        lookup: {
+                            dataSource: cities,
+                            displayExpr: "value",
+                            valueExpr: "key"
+                        },
+                        width: 120
+                    },
+                    {
+                        caption: "Fiyat",
+                        dataField: "newPrice",
+                        customizeText: function (newPrice) {
+                            return newPrice.value + " ₺";
+                        },
+                        width: 90
+                    },
+                    {
+                        caption: "İşlem",
+                        allowSearch: false,
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            var div = $('<div class="btn-group" style="display: inline-flex; width:"auto"></div>');
+                            $(`<a class="btn btn-outline-primary btn-sm" href="/admin/grup-detay/${current.id}">Detay</a>`)
+                                .appendTo(div);
+                            $(`<a title="Grup Ayarları" class="btn btn-outline-warning btn-sm" href="/admin/grup/ayarlar/${current.id}"><i class=\"fa fa-cogs\"></i><span style="display: block"></span></a>`);
+                            $(`<a title="Eğitim günlerini sıfırla" class="btn btn-dark btn-sm" href="/make-sure-lesson-days-created/${current.id}"><i class=\"fa fa-archive\"></i><span style="display: block"></span></a>`);
+
+                            div.appendTo(container);
+
+                        },
+                        alignment: "center",
+                        width: 110
+                    }
                 ]
             });
         }

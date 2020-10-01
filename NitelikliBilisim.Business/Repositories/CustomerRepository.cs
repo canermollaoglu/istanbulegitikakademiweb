@@ -18,9 +18,28 @@ namespace NitelikliBilisim.Business.Repositories
         }
 
 
-        public IQueryable<Customer> GetCustomerListQueryable()
+        public IQueryable<StudentListVm> GetCustomerListQueryable()
         {
-            return Context.Customers.Include(x => x.User);
+            var data = (from student in _context.Customers
+                        join user in _context.Users on student.Id equals user.Id
+                        join educationInfo in _context.StudentEducationInfos on user.Id equals educationInfo.CustomerId into userEducation
+                        from userEducationInfo in userEducation.DefaultIfEmpty()
+                        join educationCategory in _context.EducationCategories on userEducationInfo.CategoryId equals educationCategory.Id into eCategory
+                        from userEducationCategory in eCategory.DefaultIfEmpty()
+                        select new StudentListVm
+                        {
+                            Id=student.Id,
+                            CreatedDate = student.CreatedDate,
+                            Name = user.Name,
+                            Surname = user.Surname,
+                            Email = user.Email,
+                            PhoneNumber = user.PhoneNumber,
+                            Job = student.Job,
+                            IsNbuyStudent = student.IsNbuyStudent,
+                            NbuyCategory = userEducationCategory.Name
+                        }
+                );
+            return data;
 
         }
 

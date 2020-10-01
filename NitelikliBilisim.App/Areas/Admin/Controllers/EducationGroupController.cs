@@ -7,8 +7,11 @@ using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_groups;
+using NitelikliBilisim.Core.ViewModels.HelperVM;
 using NitelikliBilisim.Notificator.Services;
+using NitelikliBilisim.Support.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -391,17 +394,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
         }
 
-        [Route("admin/calculate-group-expected-profitability/")]
-        public IActionResult CalculateExpectedRateOfProfitability(CalculateExpectedProfitabilityVm data)
-        {
-            var retVal = _unitOfWork.EducationGroup.CalculateExpectedRateOfProfitability(data);
-            return Json(new ResponseModel
-            {
-                isSuccess = true,
-                data = retVal
-            });
-        }
-
         public IActionResult ChangeGeneralInformation(UpdateGroupGeneralInformationVm data)
         {
             if (!ModelState.IsValid)
@@ -461,5 +453,29 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             }
         }
 
+
+        [Route("admin/get-host-city-enums/")]
+        public IActionResult GetHostCityEnums()
+        {
+            try
+            {
+                EnumItemVm[] retVal = EnumSupport.ToKeyValuePair<HostCity>().Select(x =>
+            new EnumItemVm { Key = x.Key, Value = x.Value }).ToArray();
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    data = retVal
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { ex.Message }
+                });
+            }
+
+        }
     }
 }
