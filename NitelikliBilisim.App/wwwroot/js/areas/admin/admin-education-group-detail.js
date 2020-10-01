@@ -577,11 +577,11 @@ function calculateGroupExpenseAndIncome() {
                     `<td class="text-right text-danger">${item.groupExpenses}</td>` +
                     "</tr>" +
                     "<tr>" +
-                    `<td>Eğitmen Ücreti Toplamı</td>` +
+                    `<td>Eğitmen Ücreti Toplamı <i class="fa fa-info-circle" title="Saatlik Ücret X Toplam Saat X 1.45"></i></td>` +
                     `<td class="text-right text-danger">${item.educatorExpenses}</td>` +
                     "</tr>" +
                     "<tr>" +
-                    `<td>K.D.V.</td>` +
+                    `<td>K.D.V. <i class="fa fa-info-circle" title="(Grup Giderleri + Eğitmen Ücreti Toplamı) X 0.08"></i></td>` +
                     `<td class="text-right text-danger">${item.kdv}</td>` +
                     "</tr>" +
                     "<tr>" +
@@ -589,15 +589,15 @@ function calculateGroupExpenseAndIncome() {
                     `<td class="text-right text-danger"><b>${item.totalExpenses}</b></td>` +
                     "</tr>" +
                     "<tr>" +
-                    `<td>Ciro (Öğrenci Ödemeleri)</td>` +
+                    `<td>Ciro <i class="fa fa-info-circle" title="Yapılan öğrenci ödemelerinden hesaba geçen miktar."></i></td>` +
                     `<td class="text-right text-success">${item.totalStudentIncomes}</td>` +
                     "</tr>" +
                     "<tr>" +
-                    `<td><b>Genel Toplam</b></td>` +
+                    `<td><b>Genel Toplam</b> <i class="fa fa-info-circle" title="Ciro-(Grup Giderleri+Eğitmen Ücreti Toplamı+KDV)"></i></td>` +
                     `<td class="text-right"><b>${item.grandTotal} </b></td>` +
                     "</tr>" +
                     "<tr>" +
-                    `<td ><b>Kâr Oranı</b></td>` +
+                    `<td ><b>Kâr Oranı</b> <i class="fa fa-info-circle" title="(Ciro/Toplam GiderX100)-100"></i></td>` +
                     `<td class="text-right"><b>%${item.profitRate}</b></td>` +
                     "</tr>";
                 tbodyCalculateGroupExpenseAndIncome.append(table);
