@@ -86,6 +86,23 @@ namespace NitelikliBilisim.Business.Repositories
             return data;
         }
 
+        public IQueryable<StudentAbsenceListVm> GetStudentAbsences(string studentId)
+        {
+            var data = (from absence in _context.GroupAttendances
+                        join egroup in _context.EducationGroups on absence.GroupId equals egroup.Id
+                        join education in _context.Educations on egroup.EducationId equals education.Id
+                        where absence.CustomerId == studentId
+                        select new StudentAbsenceListVm
+                        {
+                            Id = absence.Id,
+                            GroupName = egroup.GroupName,
+                            EducationName = education.Name,
+                            Reason = absence.Reason,
+                            Date = absence.Date
+                        });
+            return data;
+        }
+
         public IQueryable<StudentTicketsVm> GetStudentTickets(string studentId)
         {
             var data = (from ticket in _context.Tickets
@@ -100,7 +117,7 @@ namespace NitelikliBilisim.Business.Repositories
                             EducationName = education.Name,
                             HostName = host.HostName,
                             IsUsed = ticket.IsUsed,
-                            IsCancelled = opdInfo.IsCancelled?"İptal Edildi":"Devam Ediyor"
+                            IsCancelled = opdInfo.IsCancelled ? "İptal Edildi" : "Devam Ediyor"
                         });
 
             return data;
@@ -210,7 +227,7 @@ namespace NitelikliBilisim.Business.Repositories
                         Commission = paymentDetailInfo.CommissionFee + paymentDetailInfo.CommisionRate,
                         MerchantPayout = paymentDetailInfo.MerchantPayout,
                         Status = paymentDetailInfo.IsCancelled ? "İade" : paymentDetailInfo.BlockageResolveDate < DateTime.Now ? "Aktarıldı" : "Bekliyor",
-                    }).OrderByDescending(x=>x.SalesDate);
+                    }).OrderByDescending(x => x.SalesDate);
         }
 
         public List<EducatorPriceTableVm> GetGroupBasedSalesReportEducatorSalaryTable(Guid groupId)

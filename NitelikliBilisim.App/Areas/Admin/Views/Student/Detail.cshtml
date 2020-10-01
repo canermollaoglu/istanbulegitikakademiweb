@@ -221,7 +221,19 @@
     </div>
 </div>
 
-
+<!--Devamsızlıklar-->
+<div class="row">
+    <div class="col-md-12">
+        <div class="card border-info mb-3">
+            <div class="card-header">
+                <i class="fa fa-list-alt"></i> Devamsızlıklar
+            </div>
+            <div class="card-body">
+                <div id="grid-absences"></div>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 @section postScripts{
@@ -237,6 +249,7 @@
             createJoinedGroupsGrid();
             createPaymentReportGrid();
             createStudentTicketsGrid();
+            createAbsenceGrid();
         }
 
         /* DataGrid */
@@ -323,7 +336,6 @@
                 ]
             });
         }
-
         function createStudentTicketsGrid() {
             var SERVICE_URL = `../../api/student/get-student-tickets?studentId=${studentId.val()}`
             $("#grid-student-tickets").dxDataGrid({
@@ -545,5 +557,110 @@
                 }
             });
         }
+
+        function createAbsenceGrid() {
+            var SERVICE_URL = `../../api/student/get-student-absences?studentId=${studentId.val()}`
+            $("#grid-absences").dxDataGrid({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    loadUrl: SERVICE_URL
+                }),
+                remoteOperations: {
+                    paging: true,
+                    filtering: true,
+                    sorting: true,
+                    grouping: true,
+                    summary: true,
+                    groupPaging: true
+                },
+                showBorders: true,
+                showColumnLines: true,
+                rowAlternationEnabled: true,
+                showRowLines: true,
+                wordWrapEnabled: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                searchPanel: {
+                    visible: true,
+                    placeholder: "Ara..."
+                },
+                paging: {
+                    pageSize: 10
+                },
+                grouping: {
+                    autoExpandAll: true
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10, 20],
+                    showInfo: true
+                },
+                onCellPrepared: function (e) {
+                    if (e.rowType === 'data') {
+                        var isCancelled = e.data.isCancelled;
+                        if (isCancelled) {
+                            e.cellElement.css({ "background-color": '#ffa6a6' });
+                        }
+                    }
+                },
+                export: {
+                    enabled: true
+                },
+                onExporting: function (e) {
+                    var workbook = new ExcelJS.Workbook();
+                    var worksheet = workbook.addWorksheet('Devansızlık Listesi');
+                    DevExpress.excelExporter.exportDataGrid({
+                        worksheet: worksheet,
+                        component: e.component,
+                        customizeCell: function (options) {
+                            var excelCell = options;
+                            excelCell.font = { name: 'Arial', size: 12 };
+                            excelCell.alignment = { horizontal: 'left' };
+                        }
+                    }).then(function () {
+                        workbook.xlsx.writeBuffer().then(function (buffer) {
+                            saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'Devamsizlik' + parseInt(Math.random() * 1000000000) + '.xlsx');
+                        });
+                    });
+                    e.cancel = true;
+                },
+                headerFilter: {
+                    visible: true
+                },
+                columns: [
+                    {
+                        caption: "Devamsızlık Tarihi",
+                        dataField: "date",
+                        dataType: "date",
+                        format: "dd/MM/yyyy",
+                        width: 150
+                    },
+                    {
+                        caption: "Grup",
+                        dataField: "groupName",
+                        width:150
+                    },
+                    {
+                        caption: "Eğitim",
+                        dataField: "educationName"
+                    },
+                    {
+                        caption: "Devamsızlık Nedeni",
+                        dataField: "reason"
+                    },
+                ],
+                summary: {
+                    totalItems: [
+                        {
+                            column: "date",
+                            summaryType: "count",
+                            displayFormat: "Toplam : {0}"
+                        }
+                    ]
+                }
+            });
+        }
+
     </script>
 }
