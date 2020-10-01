@@ -394,17 +394,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
         }
 
-        [Route("admin/calculate-group-expected-profitability/")]
-        public IActionResult CalculateExpectedRateOfProfitability(CalculateExpectedProfitabilityVm data)
-        {
-            var retVal = _unitOfWork.EducationGroup.CalculateExpectedRateOfProfitability(data);
-            return Json(new ResponseModel
-            {
-                isSuccess = true,
-                data = retVal
-            });
-        }
-
         public IActionResult ChangeGeneralInformation(UpdateGroupGeneralInformationVm data)
         {
             if (!ModelState.IsValid)
