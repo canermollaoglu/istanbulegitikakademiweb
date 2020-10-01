@@ -258,20 +258,19 @@ namespace NitelikliBilisim.Business.Repositories
 
         public IQueryable<EducationGroupListVm> GetListQueryable()
         {
-            var groups = _context.EducationGroups.Include(x => x.Education).Include(x => x.Host)
-                .Include(x => x.GroupStudents)
-                .Select(x => new EducationGroupListVm
-                {
-                    Id = x.Id,
-                    NewPrice = x.NewPrice.HasValue ? x.NewPrice : 0,
-                    EducationName = x.Education.Name,
-                    GroupName = x.GroupName,
-                    HostName = x.Host.HostName,
-                    HostCity = EnumSupport.GetDescription(x.Host.City),
-                    StartDate = x.StartDate
-                });
-
-            return groups;
+            return (from egroup in _context.EducationGroups
+                    join education in _context.Educations on egroup.EducationId equals education.Id
+                    join host in _context.EducationHosts on egroup.HostId equals host.Id
+                    select new EducationGroupListVm
+                    {
+                        Id = egroup.Id,
+                        CreatedDate = egroup.CreatedDate,
+                        StartDate = egroup.StartDate,
+                        NewPrice = egroup.NewPrice.HasValue ? egroup.NewPrice : 0,
+                        EducationName = education.Name,
+                        GroupName = egroup.GroupName,
+                        HostName = host.HostName
+                    });
         }
 
         public Guid Insert(EducationGroup entity, List<int> days, Guid? classRoomId, decimal educatorSalary)

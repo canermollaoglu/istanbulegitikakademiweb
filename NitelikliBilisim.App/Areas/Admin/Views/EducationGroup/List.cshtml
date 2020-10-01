@@ -87,7 +87,14 @@
                 paging: {
                     pageSize: 10
                 },
-                onContentReady: function () {
+                groupPanel: {
+                    visible: true
+                },
+                grouping: {
+                    autoExpandAll: true
+                },
+                headerFilter: {
+                    visible: true
                 },
                 pager: {
                     showPageSizeSelector: true,
@@ -113,14 +120,6 @@
                     caption: "Konum",
                     dataField: "hostName",
                     width: 200
-                },
-                {
-                    caption: "Şehir",
-                    dataField: "hostCity",
-                    allowSorting: false,
-                    allowSearch: false,
-                    allowFiltering: false,
-                    width: 90
                 },
                 {
                     caption: "Fiyat",
