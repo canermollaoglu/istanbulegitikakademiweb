@@ -3,19 +3,11 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 @section styles{
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
-    <link href="~/vendor\devextreme\dist\css\dx.common.css" rel="stylesheet" />
-    <link href="~/vendor\devextreme\dist\css\dx.light.css" rel="stylesheet" />
     <style>
         .table td {
             padding: .40rem !important;
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.4.0/polyfill.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/3.3.1/exceljs.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
 }
 @section alerts{
     <partial name="partials/_Alert" />
@@ -117,14 +109,9 @@
     </div>
 
 @section postScripts{
-    <script src="~/js/sup/alert-sup.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
-    <script src="~/vendor\devextreme\dist\js\dx.all.js"></script>
-    <script src="~/vendor\devextreme-aspnet-data\js\dx.aspnet.data.js"></script>
-    <script src="https://cdn3.devexpress.com/jslib/20.1.7/js/localization/dx.messages.tr.js"></script>
+    
 
     <script>
-        DevExpress.localization.locale(navigator.language);
         /* elements */
         var groupId = $("#groupId");
         var btnExcelExport = $("#btn-excel-export");
