@@ -269,7 +269,8 @@ namespace NitelikliBilisim.Business.Repositories
                         NewPrice = egroup.NewPrice.HasValue ? egroup.NewPrice : 0,
                         EducationName = education.Name,
                         GroupName = egroup.GroupName,
-                        HostName = host.HostName
+                        HostName = host.HostName,
+                        HostCity = (int)host.City
                     });
         }
 

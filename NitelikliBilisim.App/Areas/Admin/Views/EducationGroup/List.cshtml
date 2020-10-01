@@ -5,7 +5,7 @@
 }
 
 @section styles{
-    
+
     <style>
         .dx-datagrid-content .dx-datagrid-table .dx-row > td:first-child, .dx-datagrid-content .dx-datagrid-table .dx-row > tr > td:first-child {
             width: 44px !important;
@@ -35,17 +35,37 @@
 </div>
 
 @section postScripts{
-    
+
     <script>
         /* fields */
         var confirmModalBuilder = new AlertSupport.ConfirmModalBuilder();
-
+        var resultAlert = new AlertSupport.ResultAlert();
+        var cities = [];
+        var newCities = [{ key: 1010, value: "İstanbul" }];
         /* assignments */
         $(document).ready(document_onLoad);
-
+        
         /* events */
         function document_onLoad() {
-            createGrid();
+           loadCities();
+        }
+
+        function loadCities() {
+            $.ajax({
+                url: "/admin/get-host-city-enums/",
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        cities = res.data;
+                        createGrid();
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: errors
+                        });
+                    }
+                }
+            });
         }
 
         /*DataGrid*/
@@ -108,10 +128,21 @@
                     format: 'dd/MM/yyyy',
                     width: 130
                 },
+
                 {
                     caption: "Konum",
                     dataField: "hostName",
                     width: 200
+                },
+                {
+                    caption: "Şehir",
+                    dataField: "hostCity",
+                    lookup: {
+                        dataSource: cities,
+                        displayExpr: "value",
+                        valueExpr: "key"
+                    },
+                    width: 120
                 },
                 {
                     caption: "Fiyat",
@@ -119,7 +150,7 @@
                     customizeText: function (newPrice) {
                         return newPrice.value + " ₺";
                     },
-                    width:90
+                    width: 90
                 },
                 {
                     caption: "İşlem",

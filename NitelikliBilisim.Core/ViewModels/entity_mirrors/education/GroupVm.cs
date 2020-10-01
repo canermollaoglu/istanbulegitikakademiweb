@@ -22,7 +22,7 @@ namespace NitelikliBilisim.Core.ViewModels
         public DateTime StartDate { get; set; }
         public  string EducationName { get; set; }
         public  string HostName { get; set; }
-        public string HostCity { get; set; }
+        public int HostCity { get; set; }
         public decimal? NewPrice { get; set; }
         public DateTime CreatedDate { get; set; }
     }
