@@ -87,44 +87,80 @@ function createGrid() {
             showPageSizeSelector: true,
             allowedPageSizes: [5, 10, 20],
             showInfo: true
+        }, headerFilter: {
+            visible: true
+        }, onExporting: function (e) {
+            var workbook = new ExcelJS.Workbook();
+            var worksheet = workbook.addWorksheet('Ogrenci Listesi');
+            DevExpress.excelExporter.exportDataGrid({
+                worksheet: worksheet,
+                component: e.component,
+                customizeCell: function (options) {
+                    var excelCell = options;
+                    excelCell.font = { name: 'Arial', size: 12 };
+                    excelCell.alignment = { horizontal: 'left' };
+                }
+            }).then(function () {
+                workbook.xlsx.writeBuffer().then(function (buffer) {
+                    saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'Öğrenci Listesi' + parseInt(Math.random() * 1000000000) + '.xlsx');
+                });
+            });
+            e.cancel = true;
+        }, export: {
+            enabled: true
+        }, groupPanel: {
+            visible: true
         },
-        columns: [{
-            caption: "Adı",
-            dataField: "user.name",
-            width: 150
-        },
-        {
-            caption: "Soyadı",
-            dataField: "user.surname",
-            width: 150
-        },
-        {
-            caption: "Email",
-            dataField: "user.email",
-            width:300
-
-        },
-        {
-            caption: "Meslek",
-            dataField: "job",
-            width:150
-
-        },
-        {
-            caption: "Nbuy Öğrencisi Mi",
-            dataField: "isNbuyStudent",
-            width: 150
-        },
-        {
-            caption:"İşlem",
-            allowSearch: false,
-            cellTemplate: function (container, options) {
-                var current = options.data;
-                $(`<a title="Öğrenci Detay" class="btn btn-outline-primary btn-sm" href="/admin/ogrenci-detay?studentId=${current.id}">Detay</a>`)
-                    .appendTo(container);
+        columns: [
+            {
+                caption: "Kayıt Tarihi",
+                dataField: "createdDate",
+                dataType: "date",
+                format: 'dd/MM/yyyy',
+                width:120
             },
-            alignment: "center",
-        }
+            {
+                caption: "Adı",
+                dataField: "name",
+                width: 120
+            },
+            {
+                caption: "Soyadı",
+                dataField: "surname",
+                width: 120
+            },
+            {
+                caption: "Email",
+                dataField: "email",
+                width: 250
+
+            },
+            {
+                caption: "Meslek",
+                dataField: "job",
+                width: 110
+
+            },
+            {
+                caption: "NBUY",
+                dataField: "isNbuyStudent",
+                width: 110
+            },
+            {
+                caption: "NBUY Kategorisi",
+                dataField: "nbuyCategory",
+                width: 150
+            },
+            {
+                caption: "İşlem",
+                allowSearch: false,
+                cellTemplate: function (container, options) {
+                    var current = options.data;
+                    $(`<a title="Öğrenci Detay" class="btn btn-outline-primary btn-sm" href="/admin/ogrenci-detay?studentId=${current.id}">Detay</a>`)
+                        .appendTo(container);
+                },
+                alignment: "center",
+            }
         ]
 
     });
