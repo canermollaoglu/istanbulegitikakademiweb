@@ -466,12 +466,14 @@ function getGroupDetailInfo() {
                 $("#oldPrice").html(res.data.oldPrice != null ? res.data.oldPrice + " ₺" : "Fiyat belirtilmemiş.");
                 $("#newPrice").html(res.data.newPrice != null ? res.data.newPrice + " ₺" : "Fiyat belirtilmemiş.");
                 var alertStyle = "";
-                if (res.data.minimumStudentCount<(res.data.quota / 2)) {
-                    alertStyle = "alert-danger";
-                    $("#alertMinimumStudent").html(`<b>%${res.data.expectedProfitRate}</b> kârlılık için <b>${res.data.minimumStudentCount}</b> satış daha yapman lazım.`);
-                } else if (res.data.minimumStudentCount <= 0) {
+
+                if (res.data.minimumStudentCount <= 0) {
                     alertStyle = "alert-success";
                     $("#alertMinimumStudent").html(`<b>%${res.data.expectedProfitRate}</b> kârlılık sağlanmıştır.`);
+                }
+                else if (res.data.minimumStudentCount < (res.data.quota / 2)) {
+                    alertStyle = "alert-danger";
+                    $("#alertMinimumStudent").html(`<b>%${res.data.expectedProfitRate}</b> kârlılık için <b>${res.data.minimumStudentCount}</b> satış daha yapman lazım.`);
                 } else {
                     alertStyle = "alert-warning";
                     $("#alertMinimumStudent").html(`<b>%${res.data.expectedProfitRate}</b> kârlılık için <b>${res.data.minimumStudentCount}</b> satış daha yapman lazım.`);
@@ -484,7 +486,7 @@ function getGroupDetailInfo() {
                         weekDays += ',' + element;
                     }
                 });
-                if (res.data.cancellationCount>0) {
+                if (res.data.cancellationCount > 0) {
                     $("#purchasesItemInfo").html(`Bu eğitimi ${res.data.purchasesCount} kişi satın almış, ${res.data.cancellationCount} kişi iade etmiştir. `);
                 } else {
                     $("#purchasesItemInfo").html(`Bu eğitimi ${res.data.purchasesCount} kişi satın almıştır. Grupta iade yoktur. `);

@@ -75,7 +75,7 @@ namespace NitelikliBilisim.Business.UoW
 
         public EducationTagRepository EducationTag => _educationTagRepository ??= new EducationTagRepository(_context);
 
-        public EducationRepository Education => _education ??= new EducationRepository(_context);
+        public EducationRepository Education => _education ??= new EducationRepository(_context,_configuration);
 
         public EducationMediaItemRepository EducationMedia => _educationMediaItem ??= new EducationMediaItemRepository(_context);
 
@@ -92,7 +92,7 @@ namespace NitelikliBilisim.Business.UoW
         public CustomerRepository Customer => _customerRepository ??= new CustomerRepository(_context);
 
         public BridgeEducationEducatorRepository Bridge_EducationEducator => _bridgeEducationEducatorRepository ??= new BridgeEducationEducatorRepository(_context);
-        public EducationGroupRepository EducationGroup => _educationGroupRepository ??= new EducationGroupRepository(_context);
+        public EducationGroupRepository EducationGroup => _educationGroupRepository ??= new EducationGroupRepository(_context,_configuration);
 
         public EducationHostRepository EducationHost => _educationHostRepository ??= new EducationHostRepository(_context);
 

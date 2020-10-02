@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Nest;
 using Newtonsoft.Json;
 using NitelikliBilisim.Business.PagedEntity;
@@ -23,8 +24,10 @@ namespace NitelikliBilisim.Business.Repositories
 {
     public class EducationRepository : BaseRepository<Education, Guid>, IPageableEntity<Education>
     {
-        public EducationRepository(NbDataContext context) : base(context)
+        private readonly IConfiguration _configuration;
+        public EducationRepository(NbDataContext context,IConfiguration configuration) : base(context)
         {
+            _configuration = configuration;
         }
 
         public IQueryable<EducationListVm> GetListQueryable()
@@ -484,7 +487,7 @@ namespace NitelikliBilisim.Business.Repositories
                     break;
             }
 
-            var educationGroupRepository = new EducationGroupRepository(Context);
+            var educationGroupRepository = new EducationGroupRepository(Context,_configuration);
 
             var query = string.IsNullOrEmpty(category) ? educations : preList.AsQueryable();
 
