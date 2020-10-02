@@ -141,10 +141,6 @@ namespace NitelikliBilisim.Business.Repositories
                         CancellationDate = onlinePaymentDetailInfo.CancellationDate,
                         ListPrice = invoiceDetail.PriceAtCurrentDate,
                         PaidPrice = onlinePaymentDetailInfo.PaidPrice,
-                        CommissionFee = onlinePaymentDetailInfo.CommissionFee,
-                        CommissionRate = onlinePaymentDetailInfo.CommisionRate,
-                        Commission = onlinePaymentDetailInfo.CommissionFee + onlinePaymentDetailInfo.CommisionRate,
-                        MerchantPayout = onlinePaymentDetailInfo.MerchantPayout,
                         RefundPrice = onlinePaymentDetailInfo.RefundPrice
                     });
         }
