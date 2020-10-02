@@ -468,7 +468,7 @@ function getGroupDetailInfo() {
                 $("#newPrice").html(res.data.newPrice != null ? res.data.newPrice + " ₺" : "Fiyat belirtilmemiş.");
 
                 var alertStyle = "";
-                if ((res.data.minimumStudentCount / res.data.quota) > 0.5) {
+                if (res.data.minimumStudentCount<(res.data.quota / 2)) {
                     alertStyle = "alert-danger";
                     $("#alertMinimumStudent").html(`<b>%${res.data.expectedProfitRate}</b> kârlılık için <b>${res.data.minimumStudentCount}</b> satış daha yapman lazım.`);
                 } else if (res.data.minimumStudentCount <= 0) {
@@ -488,10 +488,7 @@ function getGroupDetailInfo() {
 
                 });
                 $("#educationWeekDays").html(weekDays);
-
                 $("#alertDiv").addClass(alertStyle);
-
-
                 inputnewPrice.val(res.data.newPrice);
             }
         }
