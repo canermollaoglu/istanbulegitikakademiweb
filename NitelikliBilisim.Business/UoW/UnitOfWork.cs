@@ -33,7 +33,6 @@ namespace NitelikliBilisim.Business.UoW
         private GroupAttendanceRepository _groupAttendanceRepository;
         private EmailRepository _emailRepository;
         private EducatorSalaryRepository _educatorSalaryRepository;
-        private GroupMaterialRepository _groupMaterialRepository;
         private EducatorCertificateRepository _educatorCertificateRepository;
         private StateRepository _stateRepository;
         private CityRepository _cityRepository;
@@ -150,14 +149,7 @@ namespace NitelikliBilisim.Business.UoW
                 return _educatorSalaryRepository ?? (_educatorSalaryRepository = new EducatorSalaryRepository(_context));
             }
         }
-        public GroupMaterialRepository Material
-        {
-            get
-            {
-                return _groupMaterialRepository ?? (_groupMaterialRepository = new GroupMaterialRepository(_context));
-            }
-        }
-
+        
         public EducatorCertificateRepository EducatorCertificate
         {
             get

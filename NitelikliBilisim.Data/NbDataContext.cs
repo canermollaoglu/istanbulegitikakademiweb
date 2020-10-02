@@ -132,7 +132,6 @@ namespace NitelikliBilisim.Data
         public DbSet<GroupAttendance> GroupAttendances { get; set; }
         public DbSet<Classroom> Classrooms { get; set; }
         public DbSet<EducatorSalary> EducatorSalaries { get; set; }
-        public DbSet<GroupMaterial> GroupMaterials { get; set; }
         public DbSet<EducatorCertificate> EducatorCertificates { get; set; }
         public DbSet<Bridge_EducatorCertificate> Bridge_EducatorEducatorCertificates { get; set; }
         public DbSet<EducationHost> EducationHosts { get; set; }
