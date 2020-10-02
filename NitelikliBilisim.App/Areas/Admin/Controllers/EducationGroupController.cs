@@ -81,9 +81,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         {
             try
             {
-                var expectedProfitRate = _configuration.GetValue<int>("ApplicationSettings:ExpectedProfitRate");
-                var posCommissionRate = _configuration.GetValue<decimal>("ApplicationSettings:PosCommissionRate");
-                var groupDetail = _unitOfWork.EducationGroup.GetDetailByGroupId(groupId, expectedProfitRate, posCommissionRate);
+                
+                var groupDetail = _unitOfWork.EducationGroup.GetDetailByGroupId(groupId);
                 return Json(new ResponseModel
                 {
                     isSuccess = true,

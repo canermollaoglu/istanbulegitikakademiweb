@@ -13,110 +13,186 @@
     <partial name="partials/_Alert" />
 }
 
-                <input type="text" hidden id="groupId" value="@ViewData["GroupId"]">
-    <!--Genel Grup Bilgileri-->
-    <div class="card mb-4">
-        <div class="card-header">
-            Genel Grup Bilgileri
-            <button id="btn-excel-export" class="btn btn-outline-primary btn-sm pull-right">Excel Export</button>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-6">
-                    <h6>Genel Bilgiler</h6>
-                    <table class="table table-bordered">
-                        <tbody id="tbody-group-general-info"></tbody>
-                    </table>
-                </div>
+<input type="text" hidden id="groupId" value="@ViewData["GroupId"]">
+<!--Genel Grup Bilgileri-->
+<div class="row">
+    <div class="col-md-6 ">
+        <div class="card border-info mb-3">
+            <div class="card-header">
+                Genel Grup Bilgileri
+                <button id="btn-excel-export" class="btn btn-outline-primary btn-sm pull-right">Excel Export</button>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>Grup Adı</b>
+                            </td>
+                            <td>
+                                <div id="groupName"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Eğitim Yeri</b>
+                            </td>
+                            <td id="hostName">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Eğitim</b>
+                            </td>
+                            <td id="educationName">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Sınıf</b>
+                            </td>
+                            <td id="classRoomName">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Eğitim Günleri</b>
+                            </td>
+                            <td id="educationWeekDays">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Eğitmen</b>
+                            </td>
+                            <td id="educatorName">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Başlangıç Tarihi</b>
+                            </td>
+                            <td id="startDate">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Bitiş Tarihi</b>
+                            </td>
+                            <td id="endDate">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>Kontenjan</b></td>
+                            <td id="quota"></td>
+                        </tr>
+                        <tr>
+                            <td><b>Eğitim Günleri</b></td>
+                            <td id="educationDays"></td>
+                        </tr>
 
-                <div class="col-md-6">
-                    <h6>Bütçe</h6>
-                    <table class="table table-bordered">
-                        <tbody id="tbody-group-expenses-incomes">
-                        </tbody>
-                    </table>
+                        <tr>
+                            <td><b>Fiyat</b></td>
+                            <td>
+                                <div id="newPrice"></div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card border-info mb-3">
+            <div class="card-header">
+                Mali Durum Tablosu
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <tbody id="tbody-calculate-group-expense-and-income">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card border-info mb-3">
+            <div class="card-header">
+                Eğitmen Ücret Tablosu
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <td></td>
+                            <td>Eğitmen İsmi</td>
+                            <td>Ort. Ücret</td>
+                            <td>Ders Sayısı</td>
+                            <td>Toplam</td>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-educator-salary">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Öğrenciler-->
+<div class="card border-info mb-4">
+    <div class="card-header">
+        Satışlar
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div id="group-based-sales-report-grid">
+
                 </div>
             </div>
         </div>
     </div>
-    <!--Öğrenciler-->
-    <div class="card mb-4">
-        <div class="card-header">
-            Kayıtlı Öğrenciler
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-12">
-                    <div id="group-based-sales-report-grid">
+</div>
+<!--İptal İade Raporu-->
+<div class="card border-info mb-4">
+    <div class="card-header">
+        İptal/İade
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div id="group-based-cancellation-sales-report-grid">
 
-                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <!--İptal İade Raporu-->
-    <div class="card mb-4">
-        <div class="card-header">
-            İptal/İade Eden Öğrenciler
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-12">
-                    <div id="group-based-cancellation-sales-report-grid">
+</div>
 
-                    </div>
-                </div>
-            </div>
+<!--Grup Giderleri-->
+
+<div class="card border-info mb-4">
+    <div class="card-header">
+        Grup Giderleri
+    </div>
+    <div class="card-body">
+        <div id="grid-expenses">
+
         </div>
     </div>
+</div>
 
-    <!--Grup Giderleri-->
-
-    <div class="card mb-4">
-        <div class="card-header">
-            Grup Giderleri
-        </div>
-        <div class="card-body">
-            <div id="grid-expenses">
-
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-header">
-                    Eğitmen Ücret Tablosu
-                </div>
-                <div class="card-body">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <td></td>
-                                <td>Eğitmen İsmi</td>
-                                <td>Ortalma Ücret</td>
-                                <td>Ders Sayısı</td>
-                                <td>Toplam</td>
-                            </tr>
-                        </thead>
-                        <tbody id="tbody-educator-salary">
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
+<div class="row">
+</div>
 
 @section postScripts{
-    
+
 
     <script>
         /* elements */
         var groupId = $("#groupId");
         var btnExcelExport = $("#btn-excel-export");
         var tbodyGroupGeneralInfo = $("#tbody-group-general-info");
-        var tbodyGroupExpensesIncomes = $("#tbody-group-expenses-incomes");
+        var tbodyGroupExpensesIncomes = $("#tbody-calculate-group-expense-and-income");
         var tbodyEducatorSalaryTable = $("#tbody-educator-salary");
         var generalGroupInfoDiv = $("#generalGroupInfo");
         /* assignments */
@@ -149,7 +225,7 @@
                         var table = "";
 
                         $.each(item, function (index, value) {
-                            table += `<tr><td>${index+1}</td><td>${value.educatorName}</td><td>${value.avgPrice}</td><td>${value.totalHours}</td><td>${value.sumPrice}</td></tr>`;
+                            table += `<tr><td>${index + 1}</td><td>${value.educatorName}</td><td>${value.avgPrice}</td><td>${value.totalHours}</td><td>${value.sumPrice}</td></tr>`;
                         });
 
                         tbodyEducatorSalaryTable.append(table);
@@ -163,28 +239,32 @@
 
         }
         function createGeneralInformationTable() {
+            var gId = groupId.val();
             $.ajax({
-                url: `/admin/get-group-general-information?groupId=${groupId.val()}`,
+                url: `/admin/get-group-detail/${gId}`,
                 method: "get",
                 success: (res) => {
                     if (res.isSuccess) {
-                        console.log(res);
-                        tbodyGroupGeneralInfo.html("");
-                        var item = res.data;
-                        var table = "";
-                        table =
-                            `<tr> <td><b>Grup Adı</b></td><td>${item.groupName} </td></tr>` +
-                            `<tr><td><b>Eğitim</b></td><td>${item.educationName} </td></tr>` +
-                            `<tr><td><b>Eğitim Yeri</b></td><td>${item.educationHost} - ${item.classroom} </td></tr>` +
-                            `<tr><td><b>Başlangıç Tarihi</b></td><td>${item.startDate} </td></tr>` +
-                            `<tr><td><b>Eğitmen</b></td><td>${item.educatorName} </td></tr>` +
-                            `<tr><td><b>Kontenjan</b></td><td>${item.assignedStudentsCount}/${item.quota} </td></tr>` +
-                            `<tr><td><b>Eğitim Günü</b></td><td>${item.educationDays} gün, günde ${item.educationHoursPerDay} saat</td></tr>`;
-                        tbodyGroupGeneralInfo.append(table);
-                    }
-                    else {
-                        console.log(res.errors);
-                        alert("Hata");
+                        $("#groupName").html(res.data.groupName);
+                        $("#hostName").html(res.data.host.hostName);
+                        $("#educationName").html(res.data.education.name);
+                        $("#classRoomName").html(res.data.classRoomName);
+                        $("#educatorName").html(res.data.educatorName);
+                        $("#startDate").html(res.data.startDate);
+                        $("#endDate").html(res.data.endDate);
+                        $("#quota").html(res.data.assignedStudentsCount + "/" + res.data.quota);
+                        $("#educationDays").html(res.data.educationDays + " gün, günde " + res.data.educationHoursPerDay + " saat");
+                        $("#oldPrice").html(res.data.oldPrice != null ? res.data.oldPrice + " ₺" : "Fiyat belirtilmemiş.");
+                        $("#newPrice").html(res.data.newPrice != null ? res.data.newPrice + " ₺" : "Fiyat belirtilmemiş.");
+                        var weekDays = "";
+                        $(res.data.weekdayNames).each(function (index, element) {
+                            if (index == 0) {
+                                weekDays += element;
+                            } else {
+                                weekDays += ',' + element;
+                            }
+                        });
+                        $("#educationWeekDays").html(weekDays);
                     }
                 }
             });
@@ -278,7 +358,7 @@
                     }, {
                         caption: "Soyad",
                         dataField: "surname",
-                        width:120
+                        width: 120
                     },
                     {
                         caption: "Liste Fiyatı",
@@ -549,7 +629,7 @@
                     }, {
                         caption: "Soyad",
                         dataField: "surname",
-                        width:120
+                        width: 120
                     },
                     {
                         caption: "Liste Fiyatı",
@@ -563,20 +643,6 @@
                         dataField: "paidPrice",
                         customizeText: function (paidPrice) {
                             return paidPrice.value + " ₺";
-                        }
-                    },
-                    {
-                        caption: "Pos Komisyonu",
-                        dataField: "commission",
-                        customizeText: function (commissionFee) {
-                            return commissionFee.value + " ₺";
-                        }
-                    },
-                    {
-                        caption: "Ödenen Tutar",
-                        dataField: "merchantPayout",
-                        customizeText: function (merchantPayout) {
-                            return merchantPayout.value + " ₺";
                         }
                     },
                     {
@@ -604,45 +670,57 @@
                             summaryType: "count",
                             displayFormat: "Toplam Kayıt: {0}"
                         }, {
-                            column: "paidPrice",
+                            column: "refundPrice",
                             summaryType: "sum",
                             displayFormat: "T: {0} ₺"
-                        }, {
-                            column: "commissionFee",
-                            summaryType: "sum",
-                            displayFormat: "T: {0} ₺"
-                        }, {
-                            column: "commissionRate",
-                            summaryType: "sum",
-                            displayFormat: "T: {0} ₺"
-                        }, {
-                            column: "merchantPayout",
-                            summaryType: "sum",
-                            displayFormat: "T: {0} ₺"
-                        }
+                        }, 
                     ]
                 }
             });
         }
         function calculateGroupExpenseAndIncome() {
-            
+
             $.ajax({
                 url: `/admin/calculate-group-expense-and-income/${groupId.val()}`,
                 method: "get",
                 success: (res) => {
                     if (res.isSuccess) {
-                        console.log(res.data);
                         tbodyGroupExpensesIncomes.html("");
                         var item = res.data;
                         var table = "";
                         table +=
-                            `<tr><td>Grup Giderleri</td><td class="text-danger text-right" colspan="3" >${item.groupExpenses} </td></tr>` +
-                        `<tr><td>Eğitmen Ücreti</td><td>${item.totalEducationHours} saat</td><td>Ort: ${item.educatorExpensesAverage} </td><td class="text-danger  text-right">${item.educatorExpenses} </td></tr>` +
-                        `<tr><td><b>Toplam Gider</b></td><td class="text-danger  text-right" colspan="3"><b>${item.totalExpenses} </b></td></tr>` +
-                            `<tr><td>Ciro (Öğrenci Ödemeleri)</td><td class="text-success  text-right" colspan="3">${item.totalStudentIncomes} </td></tr>` +
-                            `<tr><td><b>Genel Toplam</b></td><td colspan="3" class="text-right"><b>${item.grandTotal} </b></td></tr>`+
-                            `<tr><td><b>Kâr Oranı</b></td><td colspan="3" class="text-right"  ><b>%${item.profitRate}</b></td></tr>`
-                            ;
+                            "<tr>" +
+                            `<td>Ciro <i class="fa fa-info-circle" title="Toplam satınalım tutarı."></i></td>` +
+                            `<td class="text-right text-success"><b>${item.totalStudentIncomes}</b></td>` +
+                            "</tr>" +
+                            "<tr>" +
+                            `<td>Grup Giderleri</td>` +
+                            `<td class="text-right text-danger">${item.groupExpenses}</td>` +
+                            "</tr>" +
+                            "<tr>" +
+                            `<td>Eğitmen Ücreti Toplamı <i class="fa fa-info-circle" title="${item.educatorExpensesAverage} (Ort Saatlik Ücret) X ${item.totalEducationHours} (Toplam Eğitim Saati)X 1.45"></i></td>` +
+                            `<td class="text-right text-danger">${item.educatorExpenses}</td>` +
+                            "</tr>" +
+                            "<tr>" +
+                            `<td>Pos Komisyonu <i class="fa fa-info-circle" title="Satışlardan kesilen toplam komisyon"></i></td>` +
+                            `<td class="text-right text-danger">${item.totalPosCommissionAmount}</td>` +
+                            "</tr>" +
+                            "<tr>" +
+                            `<td>K.D.V. <i class="fa fa-info-circle" title="(Grup Giderleri(İptal-İade ve Pos Komisyonu Hariç) + Eğitmen Ücreti Toplamı) X 0.08"></i></td>` +
+                            `<td class="text-right text-danger">${item.kdv}</td>` +
+                            "</tr>" +
+                            "<tr>" +
+                            `<td><b>Toplam Gider</b></td>` +
+                            `<td class="text-right text-danger"><b>${item.totalExpenses}</b></td>` +
+                            "</tr>" +
+                            "<tr>" +
+                            `<td><b>Genel Toplam</b> <i class="fa fa-info-circle" title="Ciro-(Grup Giderleri+Eğitmen Ücreti Toplamı+KDV)"></i></td>` +
+                            `<td class="text-right"><b>${item.grandTotal} </b></td>` +
+                            "</tr>" +
+                            "<tr>" +
+                            `<td ><b>Kâr Oranı</b> <i class="fa fa-info-circle" title="(Ciro/Toplam GiderX100)-100"></i></td>` +
+                            `<td class="text-right"><b>%${item.profitRate}</b></td>` +
+                            "</tr>";
                         tbodyGroupExpensesIncomes.append(table);
                     }
                     else {

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NitelikliBilisim.Data;
 
 namespace NitelikliBilisim.Data.Migrations
 {
     [DbContext(typeof(NbDataContext))]
-    partial class NbDataContextModelSnapshot : ModelSnapshot
+    [Migration("20201002071132_DeleteGroupMaterialsTable")]
+    partial class DeleteGroupMaterialsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1383,6 +1385,46 @@ namespace NitelikliBilisim.Data.Migrations
                     b.ToTable("StudentEducationInfos");
                 });
 
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.Suggestion", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedUser")
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
+
+                    b.Property<byte>("RangeMax")
+                        .HasColumnType("tinyint");
+
+                    b.Property<byte>("RangeMin")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("SuggestableEducations")
+                        .HasColumnType("nvarchar(1024)")
+                        .HasMaxLength(1024);
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("SuggestionByCategory");
+                });
+
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.TempSaleData", b =>
                 {
                     b.Property<string>("Id")
@@ -2292,6 +2334,15 @@ namespace NitelikliBilisim.Data.Migrations
                     b.HasOne("NitelikliBilisim.Core.Entities.Customer", "Customer")
                         .WithMany("StudentEducationInfos")
                         .HasForeignKey("CustomerId");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.Suggestion", b =>
+                {
+                    b.HasOne("NitelikliBilisim.Core.Entities.EducationCategory", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.Ticket", b =>

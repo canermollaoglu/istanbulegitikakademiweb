@@ -33,7 +33,6 @@ namespace NitelikliBilisim.Business.UoW
         private GroupAttendanceRepository _groupAttendanceRepository;
         private EmailRepository _emailRepository;
         private EducatorSalaryRepository _educatorSalaryRepository;
-        private GroupMaterialRepository _groupMaterialRepository;
         private EducatorCertificateRepository _educatorCertificateRepository;
         private StateRepository _stateRepository;
         private CityRepository _cityRepository;
@@ -76,7 +75,7 @@ namespace NitelikliBilisim.Business.UoW
 
         public EducationTagRepository EducationTag => _educationTagRepository ??= new EducationTagRepository(_context);
 
-        public EducationRepository Education => _education ??= new EducationRepository(_context);
+        public EducationRepository Education => _education ??= new EducationRepository(_context,_configuration);
 
         public EducationMediaItemRepository EducationMedia => _educationMediaItem ??= new EducationMediaItemRepository(_context);
 
@@ -93,7 +92,7 @@ namespace NitelikliBilisim.Business.UoW
         public CustomerRepository Customer => _customerRepository ??= new CustomerRepository(_context);
 
         public BridgeEducationEducatorRepository Bridge_EducationEducator => _bridgeEducationEducatorRepository ??= new BridgeEducationEducatorRepository(_context);
-        public EducationGroupRepository EducationGroup => _educationGroupRepository ??= new EducationGroupRepository(_context);
+        public EducationGroupRepository EducationGroup => _educationGroupRepository ??= new EducationGroupRepository(_context,_configuration);
 
         public EducationHostRepository EducationHost => _educationHostRepository ??= new EducationHostRepository(_context);
 
@@ -150,14 +149,7 @@ namespace NitelikliBilisim.Business.UoW
                 return _educatorSalaryRepository ?? (_educatorSalaryRepository = new EducatorSalaryRepository(_context));
             }
         }
-        public GroupMaterialRepository Material
-        {
-            get
-            {
-                return _groupMaterialRepository ?? (_groupMaterialRepository = new GroupMaterialRepository(_context));
-            }
-        }
-
+        
         public EducatorCertificateRepository EducatorCertificate
         {
             get

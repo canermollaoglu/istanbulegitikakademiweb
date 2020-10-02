@@ -27,6 +27,8 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_groups
         public decimal? NewPrice { get; set; }
         public int ExpectedProfitRate { get; set; }
         public List<string> WeekdayNames { get; set; }
+        public int PurchasesCount { get; set; }
+        public int CancellationCount { get; set; }
     }
     
 }
