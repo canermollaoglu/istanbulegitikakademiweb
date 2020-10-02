@@ -455,7 +455,6 @@ function getGroupDetailInfo() {
             if (res.isSuccess) {
                 $("#groupName").html(res.data.groupName);
                 inputGroupName.val(res.data.groupName);
-
                 $("#hostName").html(res.data.host.hostName);
                 $("#educationName").html(res.data.education.name);
                 $("#classRoomName").html(res.data.classRoomName);
@@ -466,7 +465,6 @@ function getGroupDetailInfo() {
                 $("#educationDays").html(res.data.educationDays + " gün, günde " + res.data.educationHoursPerDay + " saat");
                 $("#oldPrice").html(res.data.oldPrice != null ? res.data.oldPrice + " ₺" : "Fiyat belirtilmemiş.");
                 $("#newPrice").html(res.data.newPrice != null ? res.data.newPrice + " ₺" : "Fiyat belirtilmemiş.");
-
                 var alertStyle = "";
                 if (res.data.minimumStudentCount<(res.data.quota / 2)) {
                     alertStyle = "alert-danger";
@@ -485,8 +483,12 @@ function getGroupDetailInfo() {
                     } else {
                         weekDays += ',' + element;
                     }
-
                 });
+                if (res.data.cancellationCount>0) {
+                    $("#purchasesItemInfo").html(`Bu eğitimi ${res.data.purchasesCount} kişi satın almış, ${res.data.cancellationCount} kişi iade etmiştir. `);
+                } else {
+                    $("#purchasesItemInfo").html(`Bu eğitimi ${res.data.purchasesCount} kişi satın almıştır. Grupta iade yoktur. `);
+                }
                 $("#educationWeekDays").html(weekDays);
                 $("#alertDiv").addClass(alertStyle);
                 inputnewPrice.val(res.data.newPrice);
@@ -543,10 +545,6 @@ function calculateGroupExpenseAndIncome() {
                     "<tr>" +
                     `<td>Ciro <i class="fa fa-info-circle" title="Toplam satınalım tutarı."></i></td>` +
                     `<td class="text-right text-success"><b>${item.totalStudentIncomes}</b></td>` +
-                    "</tr>" +
-                    "<tr>" +
-                    `<td>İptal/İade Toplamı <i class="fa fa-info-circle" title="İade edilen toplam tutar."></i></td>` +
-                    `<td class="text-right text-danger">${item.totalRefundAmount}</td>` +
                     "</tr>" +
                     "<tr>" +
                     `<td>Grup Giderleri</td>` +

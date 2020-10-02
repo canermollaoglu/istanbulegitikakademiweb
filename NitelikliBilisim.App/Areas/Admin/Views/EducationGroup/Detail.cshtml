@@ -5,8 +5,6 @@
 }
 
 @section styles{
-    <link href="~/vendor\devextreme\dist\css\dx.common.css" rel="stylesheet" />
-    <link href="~/vendor\devextreme\dist\css\dx.light.css" rel="stylesheet" />
     <style>
         .form-check-label {
             cursor: pointer;
@@ -182,6 +180,9 @@
                     <button type="button" title="Öğrenci Ataması Yap" data-toggle="modal" data-target="#addStudent" class="btn btn-outline-primary btn-sm pull-right" style="margin:0;">Öğrenci Ata</button>
                 </div>
                 <div class="card-body">
+                    <div class="alert alert-warning">
+                        <span id="purchasesItemInfo"></span>
+                    </div>
                     <div id="grid-students"></div>
                 </div>
             </div>

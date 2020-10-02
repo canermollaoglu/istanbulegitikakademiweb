@@ -63,6 +63,16 @@ namespace NitelikliBilisim.Business.Repositories
             var educatorIds = _context.Bridge_EducationEducators.Where(x => x.Id == group.EducationId)
                 .Select(x => x.Id2)
                 .ToList();
+            #region Satın alım ve iptal sayısı 
+            var purchasesItems = (from onlinePaymentDetail in _context.OnlinePaymentDetailsInfos
+                             join invoiceDetail in _context.InvoiceDetails on onlinePaymentDetail.Id equals invoiceDetail.Id
+                             where invoiceDetail.GroupId == groupId
+                             select onlinePaymentDetail).ToList();
+
+
+
+                       #endregion
+
 
             var weekDays = _context.WeekDaysOfGroups.First(x => x.GroupId == groupId);
             List<string> weekDaysNames = new List<string>();
@@ -123,7 +133,10 @@ namespace NitelikliBilisim.Business.Repositories
                 OldPrice = group.OldPrice,
                 NewPrice = group.NewPrice,
                 ExpectedProfitRate = expectedProfitRate,
-                WeekdayNames = weekDaysNames
+                WeekdayNames = weekDaysNames,
+                PurchasesCount = purchasesItems.Count(),
+                CancellationCount = purchasesItems.Count(x=>x.IsCancelled)
+
             };
             return model;
         }
@@ -336,14 +349,12 @@ namespace NitelikliBilisim.Business.Repositories
             decimal educatorExpensesAverage = lessonDays != null && lessonDays.Count > 0 ? lessonDays.Average(x => x.EducatorSalary.GetValueOrDefault()) : 0;
             
             decimal studentIncomes = GetGroupTotalIncomes(groupId);
-            decimal totalRefundAmount = GetGroupTotalRefundAmount(groupId);
             decimal totalPosCommissionAmount = GetGroupTotalPosCommission(groupId);
 
             decimal totalEducatorExpense = (totalHours * educatorExpensesAverage) * (decimal)1.45;
             decimal totalExpense = groupExpenses + totalEducatorExpense;
             decimal kdv = totalExpense * 8 / 100;
             totalExpense = totalExpense + kdv;
-            totalExpense += totalRefundAmount;
             totalExpense += totalPosCommissionAmount;
             decimal profitRate = studentIncomes > 0 && totalExpense > 0 ? Math.Round(studentIncomes / totalExpense, 2) : 0;
             var culture = CultureInfo.CreateSpecificCulture("tr-TR");
@@ -359,7 +370,6 @@ namespace NitelikliBilisim.Business.Repositories
                 GrandTotal = (studentIncomes- totalExpense).ToString("c", culture),
                 ProfitRate = (profitRate * 100) - 100,
                 KDV = kdv.ToString("c", culture),
-                TotalRefundAmount = totalRefundAmount.ToString("c", culture),
                 TotalPosCommissionAmount = totalPosCommissionAmount.ToString("c", culture)
             };
         }
@@ -573,7 +583,7 @@ namespace NitelikliBilisim.Business.Repositories
             return (from onlinePaymentDetailInfo in _context.OnlinePaymentDetailsInfos
                     join invoiceDetail in _context.InvoiceDetails on onlinePaymentDetailInfo.Id equals invoiceDetail.Id
                     join educationGroup in _context.EducationGroups on invoiceDetail.GroupId equals educationGroup.Id
-                    where educationGroup.Id == groupId
+                    where educationGroup.Id == groupId && !onlinePaymentDetailInfo.IsCancelled
                     select onlinePaymentDetailInfo).Sum(x => x.PaidPrice);
         }
         /// <summary>
