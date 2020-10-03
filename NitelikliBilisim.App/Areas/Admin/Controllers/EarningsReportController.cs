@@ -76,10 +76,10 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             var generalInformation = _unitOfWork.EducationGroup.GetDetailByGroupId(groupId);
             var studentList = _unitOfWork.Report.GetGroupBasedSalesReportStudents(groupId).ToList();
             var cancellationList = _unitOfWork.Report.GetGroupBasedCancellationSalesReport(groupId).ToList();
-
             var groupExpenses = _unitOfWork.EducationGroup.GetExpensesByGroupId(groupId);
             var groupExpenseAndIncome = _unitOfWork.EducationGroup.CalculateGroupExpenseAndIncome(groupId);
-
+           string baseUrl = string.Format("{0}://{1}{2}", Request.Scheme, Request.Host, Request.PathBase);
+            
             //Excel
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using (var pck = new ExcelPackage())
@@ -173,7 +173,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 worksheet.Cells[11, 1].Value = "Eğitim Gün/Saat";
                 worksheet.Cells[12, 1].Value = "Satış Fiyatı";
 
-                worksheet.Cells[2, 2].Value = generalInformation.GroupName;
+                worksheet.Cells[2, 2].Formula ="HYPERLINK(\""+baseUrl+ "/admin/grup-detay/" +groupId+ "\",\""+ generalInformation.GroupName+"\")";
                 worksheet.Cells[3, 2].Value = generalInformation.Host.HostName;
                 worksheet.Cells[4, 2].Value = generalInformation.Education.Name;
                 worksheet.Cells[5, 2].Value = generalInformation.ClassRoomName;
@@ -248,7 +248,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     int rowIndex = i + 2;
                     var current = studentList[i];
                     worksheetStudentList.Cells[rowIndex, 1].Value = current.PaymentDate.ToShortDateString();
-                    worksheetStudentList.Cells[rowIndex, 2].Value = $"{current.Name} {current.Surname}";
+                    worksheetStudentList.Cells[rowIndex, 2].Formula = "HYPERLINK(\"" + baseUrl + "/admin/ogrenci-detay?studentId=" + current.Id+ "\",\"" + $"{current.Name} {current.Surname}"+ "\")";
                     worksheetStudentList.Cells[rowIndex, 3].Value = current.ListPrice.Value.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"));
                     worksheetStudentList.Cells[rowIndex, 4].Value = current.PaidPrice.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"));
                     worksheetStudentList.Cells[rowIndex, 5].Value = current.CommissionFee.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"));
@@ -304,7 +304,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     int rowIndex = i + 2;
                     var current = cancellationList[i];
                     worksheetCancellationList.Cells[rowIndex, 1].Value = current.CancellationDate.Value.ToShortDateString();
-                    worksheetCancellationList.Cells[rowIndex, 2].Value = $"{current.Name} {current.Surname}";
+                    worksheetCancellationList.Cells[rowIndex, 2].Formula = "HYPERLINK(\"" + baseUrl + "/admin/ogrenci-detay?studentId=" + current.Id + "\",\"" + $"{current.Name} {current.Surname}" + "\")";
                     worksheetCancellationList.Cells[rowIndex, 3].Value = current.ListPrice.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"));
                     worksheetCancellationList.Cells[rowIndex, 4].Value = current.PaidPrice.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"));
                     worksheetCancellationList.Cells[rowIndex, 5].Value = current.RefundPrice.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"));
