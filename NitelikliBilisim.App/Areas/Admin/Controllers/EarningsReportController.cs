@@ -78,8 +78,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             var cancellationList = _unitOfWork.Report.GetGroupBasedCancellationSalesReport(groupId).ToList();
             var groupExpenses = _unitOfWork.EducationGroup.GetExpensesByGroupId(groupId);
             var groupExpenseAndIncome = _unitOfWork.EducationGroup.CalculateGroupExpenseAndIncome(groupId);
-           string baseUrl = string.Format("{0}://{1}{2}", Request.Scheme, Request.Host, Request.PathBase);
-            
+            string baseUrl = string.Format("{0}://{1}{2}", Request.Scheme, Request.Host, Request.PathBase);
+
             //Excel
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using (var pck = new ExcelPackage())
@@ -173,7 +173,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 worksheet.Cells[11, 1].Value = "Eğitim Gün/Saat";
                 worksheet.Cells[12, 1].Value = "Satış Fiyatı";
 
-                worksheet.Cells[2, 2].Formula ="HYPERLINK(\""+baseUrl+ "/admin/grup-detay/" +groupId+ "\",\""+ generalInformation.GroupName+"\")";
+                worksheet.Cells[2, 2].Formula = "HYPERLINK(\"" + baseUrl + "/admin/grup-detay/" + groupId + "\",\"" + generalInformation.GroupName + "\")";
                 worksheet.Cells[3, 2].Value = generalInformation.Host.HostName;
                 worksheet.Cells[4, 2].Value = generalInformation.Education.Name;
                 worksheet.Cells[5, 2].Value = generalInformation.ClassRoomName;
@@ -248,7 +248,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     int rowIndex = i + 2;
                     var current = studentList[i];
                     worksheetStudentList.Cells[rowIndex, 1].Value = current.PaymentDate.ToShortDateString();
-                    worksheetStudentList.Cells[rowIndex, 2].Formula = "HYPERLINK(\"" + baseUrl + "/admin/ogrenci-detay?studentId=" + current.Id+ "\",\"" + $"{current.Name} {current.Surname}"+ "\")";
+                    worksheetStudentList.Cells[rowIndex, 2].Formula = "HYPERLINK(\"" + baseUrl + "/admin/ogrenci-detay?studentId=" + current.Id + "\",\"" + $"{current.Name} {current.Surname}" + "\")";
                     worksheetStudentList.Cells[rowIndex, 3].Value = current.ListPrice.Value.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"));
                     worksheetStudentList.Cells[rowIndex, 4].Value = current.PaidPrice.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"));
                     worksheetStudentList.Cells[rowIndex, 5].Value = current.CommissionFee.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"));
@@ -272,56 +272,60 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 worksheetStudentList.Column(7).Width = 20;
 
                 #endregion
-
                 #region İptal İade Listesi
-                var worksheetCancellationList = pck.Workbook.Worksheets.Add($"İptal/İade Listesi");
-                using (var rng = worksheetCancellationList.Cells[1, 1, 1, 5])
+                if (cancellationList.Count > 0)
                 {
-                    rng.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                    rng.Style.Border.Top.Color.SetColor(Color.Black);
-                    rng.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                    rng.Style.Border.Left.Color.SetColor(Color.Black);
-                    rng.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                    rng.Style.Border.Right.Color.SetColor(Color.Black);
-                    rng.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                    rng.Style.Border.Bottom.Color.SetColor(Color.Black);
-                    rng.Style.Font.Bold = true;
-                    rng.Style.Font.Size = 12;
+
+                    var worksheetCancellationList = pck.Workbook.Worksheets.Add($"İptal/İade Listesi");
+                    using (var rng = worksheetCancellationList.Cells[1, 1, 1, 5])
+                    {
+                        rng.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        rng.Style.Border.Top.Color.SetColor(Color.Black);
+                        rng.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        rng.Style.Border.Left.Color.SetColor(Color.Black);
+                        rng.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        rng.Style.Border.Right.Color.SetColor(Color.Black);
+                        rng.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        rng.Style.Border.Bottom.Color.SetColor(Color.Black);
+                        rng.Style.Font.Bold = true;
+                        rng.Style.Font.Size = 12;
+                    }
+                    using (var rng = worksheetCancellationList.Cells[cancellationList.Count + 3, 3, cancellationList.Count + 3, 5])
+                    {
+                        rng.Style.Font.Bold = true;
+                        rng.Style.Font.Size = 12;
+                    }
+
+                    worksheetCancellationList.Cells[1, 1].Value = "İptal Tarihi";
+                    worksheetCancellationList.Cells[1, 2].Value = "Adı Soyadı";
+                    worksheetCancellationList.Cells[1, 3].Value = "Liste Fiyatı";
+                    worksheetCancellationList.Cells[1, 4].Value = "Satış Fiyatı";
+                    worksheetCancellationList.Cells[1, 5].Value = "İade Tutarı";
+                    for (int i = 0; i < cancellationList.Count; i++)
+                    {
+                        int rowIndex = i + 2;
+                        var current = cancellationList[i];
+                        worksheetCancellationList.Cells[rowIndex, 1].Value = current.CancellationDate.Value.ToShortDateString();
+                        worksheetCancellationList.Cells[rowIndex, 2].Formula = "HYPERLINK(\"" + baseUrl + "/admin/ogrenci-detay?studentId=" + current.Id + "\",\"" + $"{current.Name} {current.Surname}" + "\")";
+                        worksheetCancellationList.Cells[rowIndex, 3].Value = current.ListPrice.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"));
+                        worksheetCancellationList.Cells[rowIndex, 4].Value = current.PaidPrice.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"));
+                        worksheetCancellationList.Cells[rowIndex, 5].Value = current.RefundPrice.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"));
+
+                    }
+
+                    //TOPLAM SATIRI
+                    worksheetCancellationList.Cells[cancellationList.Count + 3, 3].Value = cancellationList.Sum(x => x.ListPrice).ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"));
+                    worksheetCancellationList.Cells[cancellationList.Count + 3, 4].Value = cancellationList.Sum(x => x.PaidPrice).ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"));
+                    worksheetCancellationList.Cells[cancellationList.Count + 3, 5].Value = cancellationList.Sum(x => x.RefundPrice).ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"));
+
+
+                    worksheetCancellationList.Column(1).Width = 18;
+                    worksheetCancellationList.Column(2).Width = 45;
+                    worksheetCancellationList.Column(3).Width = 25;
+                    worksheetCancellationList.Column(4).Width = 18;
+                    worksheetCancellationList.Column(5).Width = 18;
+
                 }
-                using (var rng = worksheetCancellationList.Cells[cancellationList.Count + 3, 3, cancellationList.Count + 3, 5])
-                {
-                    rng.Style.Font.Bold = true;
-                    rng.Style.Font.Size = 12;
-                }
-
-                worksheetCancellationList.Cells[1, 1].Value = "İptal Tarihi";
-                worksheetCancellationList.Cells[1, 2].Value = "Adı Soyadı";
-                worksheetCancellationList.Cells[1, 3].Value = "Liste Fiyatı";
-                worksheetCancellationList.Cells[1, 4].Value = "Satış Fiyatı";
-                worksheetCancellationList.Cells[1, 5].Value = "İade Tutarı";
-                for (int i = 0; i < cancellationList.Count; i++)
-                {
-                    int rowIndex = i + 2;
-                    var current = cancellationList[i];
-                    worksheetCancellationList.Cells[rowIndex, 1].Value = current.CancellationDate.Value.ToShortDateString();
-                    worksheetCancellationList.Cells[rowIndex, 2].Formula = "HYPERLINK(\"" + baseUrl + "/admin/ogrenci-detay?studentId=" + current.Id + "\",\"" + $"{current.Name} {current.Surname}" + "\")";
-                    worksheetCancellationList.Cells[rowIndex, 3].Value = current.ListPrice.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"));
-                    worksheetCancellationList.Cells[rowIndex, 4].Value = current.PaidPrice.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"));
-                    worksheetCancellationList.Cells[rowIndex, 5].Value = current.RefundPrice.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"));
-
-                }
-
-                //TOPLAM SATIRI
-                worksheetCancellationList.Cells[cancellationList.Count + 3, 3].Value = cancellationList.Sum(x => x.ListPrice).ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"));
-                worksheetCancellationList.Cells[cancellationList.Count + 3, 4].Value = cancellationList.Sum(x => x.PaidPrice).ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"));
-                worksheetCancellationList.Cells[cancellationList.Count + 3, 5].Value = cancellationList.Sum(x => x.RefundPrice).ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"));
-                
-
-                worksheetCancellationList.Column(1).Width = 18;
-                worksheetCancellationList.Column(2).Width = 45;
-                worksheetCancellationList.Column(3).Width = 25;
-                worksheetCancellationList.Column(4).Width = 18;
-                worksheetCancellationList.Column(5).Width = 18;
                 #endregion
 
                 #region Grup Giderleri
