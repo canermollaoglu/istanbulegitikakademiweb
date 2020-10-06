@@ -1,5 +1,5 @@
-﻿using NitelikliBilisim.Core.Enums;
-using NitelikliBilisim.Support.Enums;
+﻿using MUsefullMethods;
+using NitelikliBilisim.Core.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,7 +12,7 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_host
         public HostCity City { get; set; }
         public string CityName
         {
-            get { return EnumSupport.GetDescription(City); }
+            get { return EnumHelpers.GetDescription(City); }
         }
         public string Address { get; set; }
         public string HostName { get; set; }

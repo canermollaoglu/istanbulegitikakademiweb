@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MUsefullMethods;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.ViewModels.areas.admin.student;
 using NitelikliBilisim.Data;
-using NitelikliBilisim.Support.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,7 +62,7 @@ namespace NitelikliBilisim.Business.Repositories
                 {
                     StartDate = studentNBUYEducationDetails.StartedAt,
                     CategoryName = studentNBUYEducationDetails.Category.Name,
-                    EducationCenter = EnumSupport.GetDescription(studentNBUYEducationDetails.EducationCenter),
+                    EducationCenter = EnumHelpers.GetDescription(studentNBUYEducationDetails.EducationCenter),
                     EducationDay = educationDay!=null&&educationDay.Count()>0?educationDay.OrderBy(x => x.Date).LastOrDefault().Day:0
                 };
             }

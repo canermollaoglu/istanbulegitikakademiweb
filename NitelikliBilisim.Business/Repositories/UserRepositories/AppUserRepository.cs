@@ -1,16 +1,15 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using MUsefullMethods;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.Main.Profile;
 using NitelikliBilisim.Data;
-using NitelikliBilisim.Support.Enums;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 
 namespace NitelikliBilisim.Business.Repositories
 {
@@ -54,7 +53,7 @@ namespace NitelikliBilisim.Business.Repositories
                     Name = x.Education.Name,
                     Description = x.Education.Description,
                     CategoryName = x.CategoryName,
-                    Level = EnumSupport.GetDescription(x.Education.Level),
+                    Level = EnumHelpers.GetDescription(x.Education.Level),
                     //PriceText = x.Education.NewPrice.GetValueOrDefault().ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
                     HoursPerDayText = x.Education.HoursPerDay.ToString(),
                     DaysText = x.Education.Days.ToString(),
@@ -93,7 +92,7 @@ namespace NitelikliBilisim.Business.Repositories
                 _educationInfo = new _EducationInfo
                 {
                     EducationCategory = _context.EducationCategories.First(x => x.Id == studentEducationInfo.CategoryId).Name,
-                    EducationCenter = EnumSupport.GetDescription(studentEducationInfo.EducationCenter),
+                    EducationCenter = EnumHelpers.GetDescription(studentEducationInfo.EducationCenter),
                     StartedAt = studentEducationInfo.StartedAt,
                     NBUYCurrentEducationDay = educationDay!=null ?educationDay.Day:0
                 };
@@ -114,7 +113,7 @@ namespace NitelikliBilisim.Business.Repositories
                     EducationName = ticket.Education.Name,
                     HostId = ticket.HostId,
                     HostName = ticket.Host.HostName,
-                    HostCity = EnumSupport.GetDescription(ticket.Host.City),
+                    HostCity = EnumHelpers.GetDescription(ticket.Host.City),
                     IsUsed = ticket.IsUsed
                 });
 
@@ -145,13 +144,13 @@ namespace NitelikliBilisim.Business.Repositories
                 {
                     Invoice = new _Invoice
                     {
-                        BillingType = EnumSupport.GetDescription(invoice.BillingType),
+                        BillingType = EnumHelpers.GetDescription(invoice.BillingType),
                         CompanyInfo = invoice.BillingType == CustomerType.Corporate ? new _CompanyInfo { CompanyName = invoice.CompanyName } : null,
                         CreatedDate = invoice.CreatedDate,
                         InvoiceId = invoice.Id,
                         IsIndividual = invoice.BillingType == CustomerType.Individual,
                         PaymentCount = invoice.PaymentCount,
-                        TransactionStatus = EnumSupport.GetDescription(invoice.TransactionStatus),
+                        TransactionStatus = EnumHelpers.GetDescription(invoice.TransactionStatus),
                         IsEligibleToFullyCancel = true
                     },
                     InvoiceDetails = invoice.InvoiceDetails.Select(x => new _InvoiceDetail

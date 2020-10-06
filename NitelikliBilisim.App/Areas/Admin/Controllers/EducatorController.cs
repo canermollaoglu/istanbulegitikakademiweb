@@ -12,8 +12,6 @@ using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums.user_details;
 using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels.areas.admin.educator;
-using NitelikliBilisim.Support.Enums;
-using NitelikliBilisim.Support.Text;
 using System;
 using System.IO;
 using System.Linq;
@@ -48,7 +46,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             var model = new AddGetVm
             {
                 Certificates = _unitOfWork.EducatorCertificate.Get(null, order => order.OrderBy(x => x.Name)),
-                BankNames = EnumSupport.ToKeyValuePair<BankNames>()
+                BankNames = EnumHelpers.ToKeyValuePair<BankNames>()
             };
             return View(model);
         }
@@ -187,7 +185,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 IBAN = educator.IBAN,
                 Certificates = _unitOfWork.EducatorCertificate.Get(null, o => o.OrderBy(x => x.Name)),
                 RelatedCertificates = _unitOfWork.Educator.GetCertificates(educator.Id),
-                BankNames = EnumSupport.ToKeyValuePair<BankNames>(),
+                BankNames = EnumHelpers.ToKeyValuePair<BankNames>(),
 
             };
             return View(model);

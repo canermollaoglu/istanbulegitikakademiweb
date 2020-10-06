@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MUsefullMethods;
 using NitelikliBilisim.Core.ViewModels.Main.Profile;
 using NitelikliBilisim.Data;
-using NitelikliBilisim.Support.Enums;
 using System;
 using System.Linq;
 
@@ -46,7 +46,7 @@ namespace NitelikliBilisim.Business.Repositories
                     StartDate = bridge.Group.StartDate,
                     GroupName = bridge.Group.GroupName,
                     Educator = educator != null ? $"{educator.User.Name.ToUpper()} {educator.User.Surname.ToUpper()}" : "?",
-                    Host = $"{bridge.Group.Host.HostName} ({EnumSupport.GetDescription(bridge.Group.Host.City)})"
+                    Host = $"{bridge.Group.Host.HostName} ({EnumHelpers.GetDescription(bridge.Group.Host.City)})"
                 },
                 LessonDays = lessonDays.Select(x => new _LessonDay
                 {

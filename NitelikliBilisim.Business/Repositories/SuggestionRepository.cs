@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
+using MUsefullMethods;
 using Nest;
 using Newtonsoft.Json;
 using NitelikliBilisim.Core.ComplexTypes;
@@ -10,7 +11,6 @@ using NitelikliBilisim.Core.Enums.educations;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.Suggestion;
 using NitelikliBilisim.Data;
-using NitelikliBilisim.Support.Enums;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -108,7 +108,7 @@ namespace NitelikliBilisim.Business.Repositories
                     Name = x.Education.Name,
                     Description = x.Education.Description,
                     CategoryName = x.CategoryName,
-                    Level = EnumSupport.GetDescription(x.Education.Level),
+                    Level = EnumHelpers.GetDescription(x.Education.Level),
                     //PriceText = x.Education.NewPrice.GetValueOrDefault().ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
                     HoursPerDayText = x.Education.HoursPerDay.ToString(),
                     DaysText = x.Education.Days.ToString(),
@@ -404,7 +404,7 @@ namespace NitelikliBilisim.Business.Repositories
                     Name = x.Education.Name,
                     Description = x.Education.Description,
                     CategoryName = x.CategoryName,
-                    Level = EnumSupport.GetDescription(x.Education.Level),
+                    Level = EnumHelpers.GetDescription(x.Education.Level),
                     //PriceText = x.Education.NewPrice.GetValueOrDefault().ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
                     HoursPerDayText = x.Education.HoursPerDay.ToString(),
                     DaysText = x.Education.Days.ToString(),

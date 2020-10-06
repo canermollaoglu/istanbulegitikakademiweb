@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MUsefullMethods;
 using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
@@ -7,7 +8,6 @@ using NitelikliBilisim.Business.Debugging;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_tags;
-using NitelikliBilisim.Support.Text;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,7 +65,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             }
             _unitOfWork.EducationTag.Insert(new EducationTag
             {
-                Name = data.Name.FormatForTag(),
+                Name = StringHelpers.FormatForTag(data.Name),
                 Description = data.Description
             });
             return Json(new ResponseModel

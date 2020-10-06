@@ -8,7 +8,6 @@
     <ProjectReference Include="..\NitelikliBilisim.Core\NitelikliBilisim.Core.csproj" />
     <ProjectReference Include="..\NitelikliBilisim.Data\NitelikliBilisim.Data.csproj" />
     <ProjectReference Include="..\NitelikliBilisim.Notificator\NitelikliBilisim.Notificator.csproj" />
-    <ProjectReference Include="..\NitelikliBilisim.Support\NitelikliBilisim.Support.csproj" />
   </ItemGroup>
 
 </Project>

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MUsefullMethods;
 using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Managers;
 using NitelikliBilisim.App.Models;
@@ -10,7 +11,6 @@ using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities.blog;
 using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels.areas.admin.blog.blogpost;
-using NitelikliBilisim.Support.Text;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -81,7 +81,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 });
             }
             var featuredImageStream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.FeaturedImage.Base64Content));
-            var featuredImageFileName = $"{data.Title.FormatForTag()}-featured";
+            var featuredImageFileName = $"{StringHelpers.FormatForTag(data.Title)}-featured";
             var featuredImagePath = await _storage.UploadFile(featuredImageStream, $"{featuredImageFileName}.{data.FeaturedImage.Extension.ToLower()}", "blog-featured-images");
 
             var newBlogPost = new BlogPost

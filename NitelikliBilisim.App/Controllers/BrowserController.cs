@@ -8,7 +8,6 @@ using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.search;
-using NitelikliBilisim.Support.Enums;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -36,7 +35,7 @@ namespace NitelikliBilisim.App.Controllers
             {
                 CategoryName = categoryName,
                 SearchText = s,
-                OrderCriterias = EnumSupport.ToKeyValuePair<OrderCriteria>(),
+                OrderCriterias = EnumHelpers.ToKeyValuePair<OrderCriteria>(),
                 ShowAs = showAs
             };
             return View(model);

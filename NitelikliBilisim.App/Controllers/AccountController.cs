@@ -13,7 +13,6 @@ using NitelikliBilisim.Core.Entities.helper;
 using NitelikliBilisim.Core.Entities.user_details;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.ViewModels.Account;
-using NitelikliBilisim.Support.Enums;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -45,7 +44,7 @@ namespace NitelikliBilisim.App.Controllers
         {
             var model = new RegisterGetVm
             {
-                EducationCenters = EnumSupport.ToKeyValuePair<EducationCenter>(),
+                EducationCenters = EnumHelpers.ToKeyValuePair<EducationCenter>(),
                 EducationCategories = _unitOfWork.EducationCategory.Get(x => x.BaseCategoryId == null, x => x.OrderBy(o => o.Name))
             };
 

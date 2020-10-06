@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MUsefullMethods;
 using NitelikliBilisim.App.Areas.Admin.Models.Category;
 using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Models;
@@ -8,7 +9,6 @@ using NitelikliBilisim.Business.Debugging;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
-using NitelikliBilisim.Support.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,7 +31,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             var model = new AddGetVm
             {
                 Categories = data,
-                Types = EnumSupport.ToKeyValuePair<CategoryType>()
+                Types = EnumHelpers.ToKeyValuePair<CategoryType>()
             };
             return View(model);
         }

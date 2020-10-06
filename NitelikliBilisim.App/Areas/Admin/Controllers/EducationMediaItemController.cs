@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using MUsefullMethods;
 using NitelikliBilisim.App.Areas.Admin.VmCreator.EducationMediaItems;
 using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Managers;
@@ -11,8 +12,6 @@ using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_media_items;
-using NitelikliBilisim.Support.Enums;
-using NitelikliBilisim.Support.Text;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -79,7 +78,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 var education = _unitOfWork.Education.GetById(data.EducationId);
 
                 var mediaStream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.PostedFile.Base64Content));
-                var mediaFileName = $"{education.Name.FormatForTag()}-{EnumSupport.GetDescription((EducationMediaType)data.MediaItemType).ToLower()}";
+                var mediaFileName = $"{StringHelpers.FormatForTag(education.Name)}-{EnumHelpers.GetDescription((EducationMediaType)data.MediaItemType).ToLower()}";
                 var mediaPath = await _storage.UploadFile(mediaStream, $"{mediaFileName}.{data.PostedFile.Extension.ToLower()}", "media-items");
               
                 _unitOfWork.EducationMedia.Insert(new EducationMedia

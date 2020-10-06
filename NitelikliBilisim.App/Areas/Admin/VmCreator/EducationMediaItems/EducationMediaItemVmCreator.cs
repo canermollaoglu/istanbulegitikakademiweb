@@ -1,8 +1,8 @@
-﻿using NitelikliBilisim.Business.UoW;
+﻿using MUsefullMethods;
+using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_media_items;
-using NitelikliBilisim.Support.Enums;
 using System;
 using System.Collections.Generic;
 
@@ -25,7 +25,7 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.EducationMediaItems
             {
                 EducationId = education.Id,
                 EducationName = education.Name,
-                MediaItemTypes = EnumSupport.ToKeyValuePair<EducationMediaType>()
+                MediaItemTypes = EnumHelpers.ToKeyValuePair<EducationMediaType>()
             };
         }
 
@@ -40,7 +40,7 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.EducationMediaItems
                 {
                     Id = item.Id,
                     EducationId = item.EducationId,
-                    MediaItemType = EnumSupport.GetDescription(item.MediaType)
+                    MediaItemType = EnumHelpers.GetDescription(item.MediaType)
                 };
 
                 try

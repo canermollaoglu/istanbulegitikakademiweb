@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using MUsefullMethods;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Models;
@@ -9,7 +10,6 @@ using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.search;
-using NitelikliBilisim.Support.Enums;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -30,7 +30,7 @@ namespace NitelikliBilisim.App.Controllers
             var model = new SearchResultsGetVm
             {
                 SearchText = searchText,
-                OrderCriterias = EnumSupport.ToKeyValuePair<OrderCriteria>(),
+                OrderCriterias = EnumHelpers.ToKeyValuePair<OrderCriteria>(),
                 ShowAs = showAs
             };
             return View(model);

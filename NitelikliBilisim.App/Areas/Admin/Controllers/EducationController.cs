@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using MUsefullMethods;
 using NitelikliBilisim.App.Areas.Admin.Models.Education;
 using NitelikliBilisim.App.Areas.Admin.VmCreator.Education;
 using NitelikliBilisim.App.Lexicographer;
@@ -12,7 +13,6 @@ using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Services.Abstracts;
-using NitelikliBilisim.Support.Text;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -60,7 +60,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
             //var bannerPath = _fileUploadManager.Upload($"/uploads/media-items/", data.BannerFile.Base64Content, data.BannerFile.Extension, "banner", data.Name);
             var bannerStream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.BannerFile.Base64Content));
-            var bannerFileName = $"{data.Name.FormatForTag()}-banner";
+            var bannerFileName = $"{StringHelpers.FormatForTag(data.Name)}-banner";
             var bannerPath = await _storage.UploadFile(bannerStream, $"{bannerFileName}.{data.BannerFile.Extension.ToLower()}", "media-items");
             var banner = new EducationMedia
             {
@@ -70,7 +70,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
             //var previewPath = _fileManager.Upload($"/uploads/media-items/", data.PreviewFile.Base64Content, data.PreviewFile.Extension, "preview", data.Name);
             var previewStream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.PreviewFile.Base64Content));
-            var previewFileName = $"{data.Name.FormatForTag()}-preview";
+            var previewFileName = $"{StringHelpers.FormatForTag(data.Name)}-preview";
             var previewPath = await _storage.UploadFile(previewStream, $"{previewFileName}.{data.PreviewFile.Extension.ToLower()}", "media-items");
             var preview = new EducationMedia
             {

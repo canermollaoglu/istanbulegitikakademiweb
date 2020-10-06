@@ -1,9 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using MUsefullMethods;
+using Newtonsoft.Json;
 using NitelikliBilisim.Core.Entities.educations;
 using NitelikliBilisim.Core.Enums.educations;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_suggestion_criterion;
 using NitelikliBilisim.Data;
-using NitelikliBilisim.Support.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +38,7 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 EducationSuggestionCriterionGetListVm vm = new EducationSuggestionCriterionGetListVm();
                 vm.CriterionType = criterion.CriterionType;
-                vm.CriterionTypeName = EnumSupport.GetDescription(criterion.CriterionType);
+                vm.CriterionTypeName = EnumHelpers.GetDescription(criterion.CriterionType);
                 vm.Id = criterion.Id;
                 vm.MinValue = criterion.MinValue;
                 vm.MaxValue = criterion.MaxValue;

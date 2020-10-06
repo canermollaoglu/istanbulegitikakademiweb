@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using MUsefullMethods;
 using Newtonsoft.Json;
 using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Models;
@@ -11,7 +12,6 @@ using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_groups;
 using NitelikliBilisim.Core.ViewModels.HelperVM;
 using NitelikliBilisim.Notificator.Services;
-using NitelikliBilisim.Support.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -458,7 +458,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         {
             try
             {
-                EnumItemVm[] retVal = EnumSupport.ToKeyValuePair<HostCity>().Select(x =>
+                EnumItemVm[] retVal = EnumHelpers.ToKeyValuePair<HostCity>().Select(x =>
             new EnumItemVm { Key = x.Key, Value = x.Value }).ToArray();
                 return Json(new ResponseModel
                 {

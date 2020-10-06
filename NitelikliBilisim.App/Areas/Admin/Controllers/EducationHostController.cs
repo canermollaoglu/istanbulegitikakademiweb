@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using MUsefullMethods;
 using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Managers;
 using NitelikliBilisim.App.Models;
@@ -11,7 +12,6 @@ using NitelikliBilisim.Core.Entities.educations;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_host;
-using NitelikliBilisim.Support.Enums;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -46,7 +46,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationHostAdd");
             var model = new EducationHostAddGetVm
             {
-                HostCities = EnumSupport.ToKeyValuePair<HostCity>()
+                HostCities = EnumHelpers.ToKeyValuePair<HostCity>()
             };
             return View(model);
         }
@@ -97,7 +97,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             var educationHostVm = new EducationHostUpdateGetVm
             {
                 EducationHost = educationHost,
-                HostCities = EnumSupport.ToKeyValuePair<HostCity>()
+                HostCities = EnumHelpers.ToKeyValuePair<HostCity>()
             };
             return View(educationHostVm);
         }
