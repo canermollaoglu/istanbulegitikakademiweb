@@ -25,7 +25,7 @@ namespace NitelikliBilisim.Core.Services
         {
             var ext = Path.GetExtension(fileName);
             fileName = Path.GetFileNameWithoutExtension(fileName);
-            fileName = StringHelpers.UrlFormatConverter(fileName) + StringHelpers.GenerateUniqueCode() + ext;
+            fileName = StringHelpers.CharacterConverter(fileName) + StringHelpers.GenerateUniqueCode() + ext;
             fileStream.Position = 0;
             var fileClient = _storageAccount.CreateCloudFileClient();
             var share = fileClient.GetShareReference(ReferanceName);
