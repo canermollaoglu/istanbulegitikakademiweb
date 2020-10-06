@@ -1,18 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MUsefullMethods;
+using NitelikliBilisim.App.Controllers.Base;
+using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Enums;
-using NitelikliBilisim.Core.Services;
-using NitelikliBilisim.Core.ViewModels;
-using NitelikliBilisim.Support.Enums;
-using System.Linq;
-using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.Core.Services.Abstracts;
-using System.IO;
-using System.Threading.Tasks;
+using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.search;
-using NitelikliBilisim.App.Filters;
-using MUsefullMethods;
+using NitelikliBilisim.Support.Enums;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -31,7 +30,7 @@ namespace NitelikliBilisim.App.Controllers
         public IActionResult Courses(string categoryUrl, string s, string showAs = "grid")
         {
             var categoryNames = _unitOfWork.EducationCategory.Get(x => x.IsCurrent && x.BaseCategoryId == null).Select(x => x.Name).ToList();
-            var categoryName = categoryNames.FirstOrDefault(x => StringHelpers.UrlFormatConverter(x) == categoryUrl) ?? "";
+            var categoryName = categoryNames.FirstOrDefault(x => StringHelpers.CharacterConverter(x) == categoryUrl) ?? "";
 
             var model = new SearchResultsGetVm
             {
