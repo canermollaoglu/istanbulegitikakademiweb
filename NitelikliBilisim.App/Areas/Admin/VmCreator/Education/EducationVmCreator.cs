@@ -1,4 +1,4 @@
-﻿using MUsefullMethods;
+﻿using MUsefulMethods;
 using NitelikliBilisim.App.Areas.Admin.Models.Education;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.DTO;

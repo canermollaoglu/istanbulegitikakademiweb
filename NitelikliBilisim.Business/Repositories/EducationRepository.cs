@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using MUsefullMethods;
+using MUsefulMethods;
 using Nest;
 using Newtonsoft.Json;
 using NitelikliBilisim.Business.PagedEntity;

@@ -1,4 +1,4 @@
-﻿using MUsefullMethods;
+﻿using MUsefulMethods;
 using Newtonsoft.Json;
 using NitelikliBilisim.Core.Entities.educations;
 using NitelikliBilisim.Core.Enums.educations;

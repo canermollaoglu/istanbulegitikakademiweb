@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MUsefullMethods;
+using MUsefulMethods;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Models;

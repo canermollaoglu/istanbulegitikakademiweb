@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using MUsefullMethods;
+using MUsefulMethods;
 using NitelikliBilisim.App.Areas.Admin.Models.Education;
 using NitelikliBilisim.App.Areas.Admin.VmCreator.Education;
 using NitelikliBilisim.App.Lexicographer;

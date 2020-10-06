@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
-using MUsefullMethods;
+using MUsefulMethods;
 using Nest;
 using Newtonsoft.Json;
 using NitelikliBilisim.Core.ComplexTypes;

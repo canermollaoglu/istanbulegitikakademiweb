@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using MUsefullMethods;
+using MUsefulMethods;
 using Newtonsoft.Json;
 using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Models;

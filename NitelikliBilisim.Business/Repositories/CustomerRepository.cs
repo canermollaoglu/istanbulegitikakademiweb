@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MUsefullMethods;
+using MUsefulMethods;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.ViewModels.areas.admin.student;
 using NitelikliBilisim.Data;

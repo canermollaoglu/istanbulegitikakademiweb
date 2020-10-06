@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using MUsefullMethods;
+using MUsefulMethods;
 using Newtonsoft.Json;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Entities.groups;

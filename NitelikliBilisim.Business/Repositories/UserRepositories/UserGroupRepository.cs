@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MUsefullMethods;
+using MUsefulMethods;
 using NitelikliBilisim.Core.ViewModels.Main.Profile;
 using NitelikliBilisim.Data;
 using System;
