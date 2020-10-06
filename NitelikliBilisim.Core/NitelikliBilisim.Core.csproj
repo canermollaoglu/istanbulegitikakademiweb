@@ -20,7 +20,11 @@
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="3.1.8" />
     <PackageReference Include="NEST" Version="7.9.0" />
     <PackageReference Include="Iyzipay" Version="2.1.38" />
-    <PackageReference Include="UsefullMethods" Version="1.0.4" />
+    <PackageReference Include="UsefulMethods" Version="1.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NitelikliBilisim.Support\NitelikliBilisim.Support.csproj" />
   </ItemGroup>
 
   <ItemGroup>
