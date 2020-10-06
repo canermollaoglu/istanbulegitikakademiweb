@@ -1,5 +1,7 @@
 ﻿using NitelikliBilisim.Core.Abstracts;
+using NitelikliBilisim.Core.Entities.educations;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -12,11 +14,16 @@ namespace NitelikliBilisim.Core.Entities
         {
             Id = Guid.NewGuid();
         }
-        public DateTime ValidThru { get; set; }
+
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
         [MaxLength(7)]
-        public string Code { get; set; }
-        public byte OffPercentage { get; set; }
-        public bool IsUsed { get; set; }
-        public byte TimesUsable { get; set; }
+        public string PromotionCode { get; set; }
+        public string Description { get; set; }
+        public int MaxUsageLimit { get; set; }
+        public int UserBasedUsageLimit { get; set; }
+        public decimal DiscountAmount { get; set; }
+        public decimal MinBasketAmount { get; set; }
+        public virtual List<EducationPromotionItem> EducationPromotionItems { get; set; }
     }
 }
