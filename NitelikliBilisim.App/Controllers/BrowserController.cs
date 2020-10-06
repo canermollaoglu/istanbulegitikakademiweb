@@ -12,6 +12,7 @@ using System.IO;
 using System.Threading.Tasks;
 using NitelikliBilisim.Core.ViewModels.search;
 using NitelikliBilisim.App.Filters;
+using MUsefullMethods;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -30,7 +31,7 @@ namespace NitelikliBilisim.App.Controllers
         public IActionResult Courses(string categoryUrl, string s, string showAs = "grid")
         {
             var categoryNames = _unitOfWork.EducationCategory.Get(x => x.IsCurrent && x.BaseCategoryId == null).Select(x => x.Name).ToList();
-            var categoryName = categoryNames.FirstOrDefault(x => StringHelper.UrlFormatConverter(x) == categoryUrl) ?? "";
+            var categoryName = categoryNames.FirstOrDefault(x => StringHelpers.UrlFormatConverter(x) == categoryUrl) ?? "";
 
             var model = new SearchResultsGetVm
             {

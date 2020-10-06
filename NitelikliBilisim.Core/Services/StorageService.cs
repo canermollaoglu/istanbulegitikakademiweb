@@ -1,5 +1,6 @@
 ﻿using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.File;
+using MUsefullMethods;
 using NitelikliBilisim.Core.Services.Abstracts;
 using System.IO;
 using System.Threading.Tasks;
@@ -24,7 +25,7 @@ namespace NitelikliBilisim.Core.Services
         {
             var ext = Path.GetExtension(fileName);
             fileName = Path.GetFileNameWithoutExtension(fileName);
-            fileName = StringHelper.UrlFormatConverter(fileName) + StringHelper.GenerateUniqueCode() + ext;
+            fileName = StringHelpers.UrlFormatConverter(fileName) + StringHelpers.GenerateUniqueCode() + ext;
             fileStream.Position = 0;
             var fileClient = _storageAccount.CreateCloudFileClient();
             var share = fileClient.GetShareReference(ReferanceName);

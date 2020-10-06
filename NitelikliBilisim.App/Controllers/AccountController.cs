@@ -8,6 +8,7 @@ using Elasticsearch.Net;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using MUsefullMethods;
 using Nest;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Filters;
@@ -202,17 +203,17 @@ namespace NitelikliBilisim.App.Controllers
                     if (info.Principal.HasClaim(c => c.Type == ClaimTypes.GivenName))
                     {
                         model.UserName =
-                            StringHelper.UrlFormatConverter(info.Principal.FindFirstValue(ClaimTypes.GivenName));
+                            StringHelpers.UrlFormatConverter(info.Principal.FindFirstValue(ClaimTypes.GivenName));
                     }
                     if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Name))
                     {
                         model.Name =
-                            StringHelper.UrlFormatConverter(info.Principal.FindFirstValue(ClaimTypes.Name));
+                            StringHelpers.UrlFormatConverter(info.Principal.FindFirstValue(ClaimTypes.Name));
                     }
                     if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Surname))
                     {
                         model.Surname =
-                            StringHelper.UrlFormatConverter(info.Principal.FindFirstValue(ClaimTypes.Surname));
+                            StringHelpers.UrlFormatConverter(info.Principal.FindFirstValue(ClaimTypes.Surname));
                     }
                     if (info.Principal.HasClaim(c => c.Type == "photo"))
                     {
