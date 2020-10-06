@@ -146,6 +146,10 @@ namespace NitelikliBilisim.App.Lexicographer
             _dictionary.Add("AdminGroupBasedSalesReport",
              new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Grup Bazlı Satış Raporu", url: null) });
 
+            /*Promosyon*/
+            _dictionary.Add("AdminEducationPromotionList",
+               new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Promosyonlar", url: null) });
+
             
         }
 
