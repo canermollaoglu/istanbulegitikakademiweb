@@ -18,6 +18,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using MUsefullMethods;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
@@ -71,7 +72,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 var stream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.ProfilePhoto.Base64Content));
                 var fileName = $"{data.Name} {data.Surname}".FormatForTag();
                 var dbPath = await _storageService.UploadFile(stream, $"{fileName}.{data.ProfilePhoto.Extension}", "educator-photos");
-                var userName = TextHelper.ConcatForUserName(data.Name, data.Surname);
+                var userName = StringHelpers.ConcatForUserName(data.Name, data.Surname);
 
                 var count = _userManager.Users.Count(x => x.UserName.StartsWith(userName));
                 var countText = count > 0 ? count.ToString() : "";
@@ -85,7 +86,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     UserName = $"{userName}{countText}"
                 };
                 // TODO: belirlenen şifre mail olarak atılmalı & sabit şifre değiştirilmeli
-                var pwd = TextHelper.RandomPasswordGenerator(10);
+                var pwd = StringHelpers.RandomPasswordGenerator(10);
                 var res = await _userManager.CreateAsync(newUser, "qwe123");
                 if (!res.Succeeded)
                 {
@@ -213,7 +214,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 var stream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.ProfilePhoto.Base64Content));
                 var fileName = $"{data.Name} {data.Surname}".FormatForTag();
                 var dbPath = await _storageService.UploadFile(stream, $"{fileName}.{data.ProfilePhoto.Extension}", "educator-photos");
-                var userName = TextHelper.ConcatForUserName(data.Name, data.Surname);
+                var userName = StringHelpers.ConcatForUserName(data.Name, data.Surname);
                 educator.User.AvatarPath = dbPath;
             }
 
