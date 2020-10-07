@@ -112,27 +112,28 @@ function createGrid() {
         },
         columns: [
             {
-                caption: "Kod",
-                dataField: "promotionCode",
-                width: 100
+                caption: "Ad",
+                dataField: "name",
+                
             },
             {
-                caption: "Başlangıç Tarihi",
+                caption: "Kod",
+                dataField: "promotionCode",
+                width: 80
+            },
+            {
+                caption: "Başlangıç",
                 dataField: "startDate",
                 dataType: "date",
                 format: 'dd/MM/yyyy',
-                width: 125
+                width: 100
             },
             {
-                caption: "Bitiş Tarihi",
+                caption: "Bitiş",
                 dataField: "endDate",
                 dataType: "date",
                 format: 'dd/MM/yyyy',
-                width: 120
-            },
-            {
-                caption: "Açıklama",
-                dataField: "description"
+                width: 100
             },
             {
                 caption: "Maks. Kullanım",
@@ -140,16 +141,16 @@ function createGrid() {
                 width: 130
             },
             {
-                caption: "İndirim Tutarı",
+                caption: "Tutar",
                 dataField: "discountAmount",
                 customizeText: function (discountAmount) {
                     return discountAmount.value + " ₺";
                 },
-                width: 120
+                width: 80
 
             },
             {
-                caption: "Min. Sepet Tutarı",
+                caption: "Min. Sepet ",
                 dataField: "minBasketAmount",
                 customizeText: function (minBasketAmount) {
                     return minBasketAmount.value + " ₺";
@@ -158,25 +159,40 @@ function createGrid() {
 
             },
             {
-                caption: "Aktif",
+                caption: "Durum",
                 dataField: "isActive",
-                width: 110
+                width: 80
             },
             {
                 caption: "İşlem",
                 allowSearch: false,
                 cellTemplate: function (container, options) {
                     var current = options.data;
-                    $(`<a class="btn btn-outline-primary btn-sm" href="/admin/promosyon-duzenle?promotionCodeId=${current.id}">Düzenle</a>`)
+                    $(`<a class="btn btn-outline-primary btn-sm" href="/admin/promosyon-guncelle?promotionId=${current.id}">Düzenle</a>`)
                         .appendTo(container);
-                    $(`<a class="btn btn-outline-danger btn-sm" href="/admin/promosyon-sil?promotionCodeId=${current.id}">Sil</a>`)
+                    $(`<button title="Sil" class="btn-confirmation-modal-trigger btn btn-outline-danger btn-sm" data-url="/admin/promosyon-sil?promotionId=${current.id}" style="cursor:pointer;">Sil</button>`)
                         .appendTo(container);
                 },
                 alignment: "center",
                 width:120
             }
         ]
-
+        ,
+        masterDetail: {
+            enabled: true,
+            template: function (container, options) {
+                var current = options.data;
+                console.log(current);
+                $("<div>")
+                    .addClass("master-detail-caption")
+                    .text(current.name+" Promosyon Açıklaması")
+                    .appendTo(container);
+                $("<div>")
+                    .html("<textarea class='form-control' readonly rows='3'>" + current.description + "</textarea>")
+                    .appendTo(container);
+                
+            }
+        }
     });
 
 }

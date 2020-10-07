@@ -14,7 +14,7 @@ namespace NitelikliBilisim.Core.Entities
         {
             Id = Guid.NewGuid();
         }
-
+        public string Name { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         [MaxLength(7)]

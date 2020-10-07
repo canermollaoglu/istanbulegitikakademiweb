@@ -22,6 +22,7 @@ namespace NitelikliBilisim.Business.Repositories
                         select new EducationPromotionCodeListVm
                         {
                             Id= promotionCode.Id,
+                            Name = promotionCode.Name,
                             StartDate = promotionCode.StartDate,
                             EndDate = promotionCode.EndDate,
                             PromotionCode = promotionCode.PromotionCode,
@@ -29,10 +30,19 @@ namespace NitelikliBilisim.Business.Repositories
                             MaxUsageLimit = promotionCode.MaxUsageLimit,
                             DiscountAmount = promotionCode.DiscountAmount,
                             MinBasketAmount = promotionCode.MinBasketAmount,
-                            IsActive = DateTime.Now.Date < promotionCode.EndDate && DateTime.Now >= promotionCode.StartDate ? true : false
+                            IsActive = DateTime.Now.Date < promotionCode.EndDate && DateTime.Now >= promotionCode.StartDate ? "Aktif" : "Pasif"
                         });
 
             return data;
+        }
+
+        public bool CheckThePromotionItem(Guid promotionId)
+        {
+            if (_context.EducationPromotionItems.Any(x=>x.EducationPromotionCodeId == promotionId))
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
