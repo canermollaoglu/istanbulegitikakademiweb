@@ -119,7 +119,7 @@ function createGrid() {
             {
                 caption: "Kod",
                 dataField: "promotionCode",
-                width: 80
+                width: 100
             },
             {
                 caption: "Başlangıç",
@@ -139,6 +139,11 @@ function createGrid() {
                 caption: "Maks. Kullanım",
                 dataField: "maxUsageLimit",
                 width: 130
+            },
+            {
+                caption: "Kullanım",
+                dataField: "countOfUses",
+                width:100
             },
             {
                 caption: "Tutar",

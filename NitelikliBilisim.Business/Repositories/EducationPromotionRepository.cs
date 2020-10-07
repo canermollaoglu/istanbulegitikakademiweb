@@ -1,4 +1,5 @@
-﻿using NitelikliBilisim.Core.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_promotion;
 using NitelikliBilisim.Data;
 using System;
@@ -18,22 +19,22 @@ namespace NitelikliBilisim.Business.Repositories
 
         public IQueryable<EducationPromotionCodeListVm> GetPromotionCodeList()
         {
-            var data = (from promotionCode in _context.EducationPromotionCodes
-                        select new EducationPromotionCodeListVm
-                        {
-                            Id= promotionCode.Id,
-                            Name = promotionCode.Name,
-                            StartDate = promotionCode.StartDate,
-                            EndDate = promotionCode.EndDate,
-                            PromotionCode = promotionCode.PromotionCode,
-                            Description = promotionCode.Description,
-                            MaxUsageLimit = promotionCode.MaxUsageLimit,
-                            DiscountAmount = promotionCode.DiscountAmount,
-                            MinBasketAmount = promotionCode.MinBasketAmount,
-                            IsActive = DateTime.Now.Date < promotionCode.EndDate && DateTime.Now >= promotionCode.StartDate ? "Aktif" : "Pasif"
-                        });
-
-            return data;
+            
+           return _context.EducationPromotionCodes.Include(x=>x.EducationPromotionItems)
+                .Select(promotionCode => new EducationPromotionCodeListVm
+                {
+                    Id = promotionCode.Id,
+                    Name = promotionCode.Name,
+                    StartDate = promotionCode.StartDate,
+                    EndDate = promotionCode.EndDate,
+                    PromotionCode = promotionCode.PromotionCode,
+                    Description = promotionCode.Description,
+                    MaxUsageLimit = promotionCode.MaxUsageLimit,
+                    DiscountAmount = promotionCode.DiscountAmount,
+                    MinBasketAmount = promotionCode.MinBasketAmount,
+                    IsActive = DateTime.Now.Date < promotionCode.EndDate && DateTime.Now >= promotionCode.StartDate ? "Aktif" : "Pasif",
+                    CountOfUses = promotionCode.EducationPromotionItems.Count
+                });
         }
 
         public bool CheckThePromotionItem(Guid promotionId)
