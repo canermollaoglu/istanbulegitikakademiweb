@@ -44,6 +44,7 @@ $("#chk-confirm-distant-sales").on('ifToggled', function () {
 /* events */
 function document_onLoad() {
     getCartItems();
+    getPromotionInfo();
     getProvinces();
     inputCardNumber.payform('formatCardNumber');
     inputCvc.payform('formatCardCVC');
@@ -202,6 +203,18 @@ function getCartItems() {
                     cartItemIds.push(item);
                 }
                 //cartItems.val(JSON.stringify(cartItemIds));
+            }
+        }
+    });
+}
+function getPromotionInfo() {
+    var promotionCode = localStorage.getItem("promotionCode");
+    $.ajax({
+        url: "/get-promotion",
+        method: "post",
+        data: { promotionCode: promotionCode },
+        success: (res) => {
+            if (res.isSuccess) {
             }
         }
     });

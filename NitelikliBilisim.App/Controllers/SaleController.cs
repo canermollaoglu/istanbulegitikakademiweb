@@ -16,6 +16,7 @@ using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.PaymentModels;
 using NitelikliBilisim.Core.Services.Payments;
 using NitelikliBilisim.Core.ViewModels.Cart;
+using NitelikliBilisim.Core.ViewModels.Main.Cart;
 using NitelikliBilisim.Core.ViewModels.Main.Sales;
 using NitelikliBilisim.Core.ViewModels.Sales;
 using NitelikliBilisim.Notificator.Services;
@@ -87,6 +88,39 @@ namespace NitelikliBilisim.App.Controllers
                 data = model
             });
         }
+
+        [HttpPost, IgnoreAntiforgeryToken, Route("get-promotion")]
+        public IActionResult GetPromotion(string promotionCode)
+        {
+            if (string.IsNullOrEmpty(promotionCode))
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Girdiğiniz kod geçerli değildir." }
+
+                });
+
+            try
+            {
+                PromotionCodeVm promotionInfo = _unitOfWork.EducationPromotionCode.GetPromotionInfo(promotionCode);
+
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    data = promotionInfo
+                });
+            }
+            catch
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Girdiğiniz kod geçerli değildir." }
+                });
+            }
+        }
+
+
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("odeme")]
         public IActionResult Payment()
@@ -207,7 +241,7 @@ namespace NitelikliBilisim.App.Controllers
                         {
                             Subject = "Eğitim ödemeniz alınmıştır | Nitelikli Bilişim",
                             Body = "Eğitim ödemeniz alınmıştır.",
-                            Contacts = new [] { customerEmail }
+                            Contacts = new[] { customerEmail }
                         });
                     }
 
@@ -238,7 +272,7 @@ namespace NitelikliBilisim.App.Controllers
                         {
                             Subject = "Eğitim ödemeniz alınmıştır | Nitelikli Bilişim",
                             Body = "Eğitim ödemeniz alınmıştır.",
-                            Contacts = new [] { customerEmail }
+                            Contacts = new[] { customerEmail }
                         });
                     }
                     return Redirect("/secure3d");
@@ -317,6 +351,8 @@ namespace NitelikliBilisim.App.Controllers
             var groupIds = itemIds.Select(x => x.GroupId).ToList();
             return _unitOfWork.EducationGroup.Get(x => groupIds.Contains(x.Id), null).Sum(x => x.NewPrice.GetValueOrDefault());
         }
+
+
     }
 
     public class GetCartItemsData

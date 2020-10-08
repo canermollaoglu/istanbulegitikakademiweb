@@ -58,14 +58,16 @@
                             <tbody id="tbody-cart-items">
                             </tbody>
                         </table>
+                        <table class="table table-bordered" id="table-promotion-code">
+                        </table>
                         <div class="cart-options clearfix">
                             <div class="float-left">
                                 <div class="apply-coupon">
                                     <div class="form-group">
-                                        <input type="text" name="coupon-code" value="" placeholder="Kupon Kodunuz" class="form-control">
+                                        <input type="text" name="coupon-code" id="input-promotion-code" value="" placeholder="Kupon Kodunuz" class="form-control">
                                     </div>
                                     <div class="form-group">
-                                        <button type="button" class="btn_1 outline">Kuponu Uygula</button>
+                                        <button type="button" class="btn_1 outline" id="apply-promotion-code">Kuponu Uygula</button>
                                     </div>
                                 </div>
                             </div>
@@ -93,6 +95,7 @@
 
 @section postScripts{
     <script src="~/js/lib/security-support.js"></script>
+
     @*<script src="~/js/sup/cart.js"></script>*@
     <script>
         /* fields */
@@ -100,13 +103,18 @@
 
         /* elements */
         var tbodyCartItems = $("#tbody-cart-items");
+        var tablePromotionCode = $("#table-promotion-code");
         var txtTotal = $("#txt-total");
+        var inputPromotionCode = $("#input-promotion-code");
+
+        var btnApplyPromotion = $("#apply-promotion-code");
 
         /* assignments */
         $(document).ready(document_onLoad);
 
         /* events */
         function document_onLoad() {
+            btnApplyPromotion.on("click", btnApplyPromotion_onClick);
             getCartItems();
         }
         function btnDeleteItem_onClick() {
@@ -114,6 +122,9 @@
             _cart.removeFromCart(educationId);
             getCartItems();
             __layoutHeaderCart.html(`<i class="icon-cart"></i> (${__cart.getItemCount()})`);
+        }
+        function btnApplyPromotion_onClick() {
+            getPromotionInfo();
         }
 
         /* functions */
@@ -131,6 +142,20 @@
                         console.log(res);
                         appendCartItems(res.data.items);
                         txtTotal.text(res.data.total);
+                    }
+                }
+            });
+        }
+        function getPromotionInfo() {
+            var promotionCode = inputPromotionCode.val();
+            $.ajax({
+                url: "/get-promotion",
+                method: "post",
+                data: { promotionCode: promotionCode },
+                success: (res) => {
+                    if (res.isSuccess) {
+                        localStorage.setItem("promotionCode", res.data.promotionCode);
+                        appendPromotionCode(res.data);
                     }
                 }
             });
@@ -167,6 +192,37 @@
                 var btn = deleteButtons[i];
                 btn.onclick = btnDeleteItem_onClick;
             }
+        }
+        function appendPromotionCode(data) {
+            console.log(data);
+            tablePromotionCode.html("");
+            if (data.length == 0) {
+                return;
+            }
+
+            var appended = "";
+            appended += `<thead>` +
+                `<tr><td>Kampanya</td><td>Kupon Kodu</td><td>İndirim tutarı</td></tr>` +
+                `</thead>` +
+                `<tbody>` +
+                `<tr>` +
+                `<td>` +
+                `"${data.name}" ` +
+                `</td>` +
+                `<td>` +
+                `${data.promotionCode}` +
+                `</td>` +
+                `<td>` +
+                `${data.discountAmount}` +
+                `</td>` +
+                `<td class="options" style="width:5%; text-align:center;">` +
+                `<a type="button" class="btn-delete-item" data-education-id="${data.educationId}"><i class="icon-trash"></i></a>` +
+                `</td>` +
+                `<tr>`;
+
+            appended += "</tbody>";
+            tablePromotionCode.append(appended);
+
         }
     </script>
 }
