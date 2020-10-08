@@ -65,5 +65,10 @@ namespace NitelikliBilisim.Business.Repositories
             }
 
         }
+
+        public EducationPromotionCode GetPromotionbyPromotionCode(string promotionCode)
+        {
+            return _context.EducationPromotionCodes.FirstOrDefault(x => x.PromotionCode == promotionCode);
+        }
     }
 }

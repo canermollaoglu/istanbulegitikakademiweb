@@ -65,7 +65,8 @@ namespace NitelikliBilisim.App.Controllers
                     data = new
                     {
                         items = new List<CartItemVm>(),
-                        total = 0m.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"))
+                        total = 0m.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
+                        totalNumeric = 0
                     }
                 });
 
@@ -79,7 +80,8 @@ namespace NitelikliBilisim.App.Controllers
             var model = new
             {
                 items = cartItems,
-                total = sum.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"))
+                total = sum.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
+                totalNumeric = sum
             };
 
             return Json(new ResponseModel
@@ -120,7 +122,6 @@ namespace NitelikliBilisim.App.Controllers
             }
         }
 
-
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("odeme")]
         public IActionResult Payment()
@@ -134,7 +135,13 @@ namespace NitelikliBilisim.App.Controllers
         public IActionResult GetInstallmentInfo(InstallmentInfoVm data)
         {
             var binNumber = FormatCardNumber(data.CardNumber).Substring(0, 6);
-            var info = _paymentService.CheckInstallment(data.ConversationId.ToString(), binNumber, GetPriceSumForCartItems(data.CartItems));
+            decimal discountAmount = 0m;
+            if (!string.IsNullOrEmpty(data.PromotionCode))
+            {
+                var promotion = _unitOfWork.EducationPromotionCode.GetPromotionbyPromotionCode(data.PromotionCode);
+                discountAmount = promotion.DiscountAmount;
+            }
+            var info = _paymentService.CheckInstallment(data.ConversationId.ToString(), binNumber, GetPriceSumForCartItems(data.CartItems, discountAmount));
             if (info.Status == PaymentServiceMessages.ResponseSuccess)
             {
                 return Json(new ResponseModel
@@ -197,6 +204,14 @@ namespace NitelikliBilisim.App.Controllers
                 });
             #endregion
 
+
+            decimal discountAmount = 0m;
+            if (!string.IsNullOrEmpty(data.PromotionCode))
+            {
+                var promotion = _unitOfWork.EducationPromotionCode.GetPromotionbyPromotionCode(data.PromotionCode);
+                discountAmount = promotion.DiscountAmount;
+            }
+
             data.CardInfo.NumberOnCard = FormatCardNumber(data.CardInfo.NumberOnCard);
             data.SpecialInfo.Ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
             data.SpecialInfo.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -204,7 +219,7 @@ namespace NitelikliBilisim.App.Controllers
             InstallmentInfo info = _paymentService.CheckInstallment(
                 conversationId: data.ConversationId.ToString(),
                 binNumber: data.CardInfo.NumberOnCard.Substring(0, 6),
-                price: GetPriceSumForCartItems(data.CartItems));
+                price: GetPriceSumForCartItems(data.CartItems,discountAmount));
 
             var cardInfoChecker = new CardInfoChecker();
             var transactionType = cardInfoChecker.DecideTransactionType(info, data.Use3d);
@@ -346,10 +361,13 @@ namespace NitelikliBilisim.App.Controllers
             return string.Join(null, splitted);
         }
         [NonAction]
-        public decimal GetPriceSumForCartItems(List<_CartItem> itemIds)
+        public decimal GetPriceSumForCartItems(List<_CartItem> itemIds,decimal discountAmount)
         {
             var groupIds = itemIds.Select(x => x.GroupId).ToList();
-            return _unitOfWork.EducationGroup.Get(x => groupIds.Contains(x.Id), null).Sum(x => x.NewPrice.GetValueOrDefault());
+            var totalPrice = _unitOfWork.EducationGroup.Get(x => groupIds.Contains(x.Id), null).Sum(x => x.NewPrice.GetValueOrDefault());
+            var discount = discountAmount;
+            var retVal = totalPrice - discount;
+            return retVal;
         }
 
 

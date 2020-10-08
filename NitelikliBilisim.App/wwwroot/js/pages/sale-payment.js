@@ -20,6 +20,8 @@ var inputTaxNo = $("#input-tax-no");
 var inputTaxOffice = $("#input-tax-office");
 var inputInstallment = $("#_installmentCount");
 var input3dSecure = $('#chc3DSecure');
+var inputEducationTotalPrice = $("#input-education-total-price");
+var inputPromotionDiscountAmount = $("#promotion-discount-amount");
 var isDistantSalesAgreementConfirmed = document.getElementById("_is-distant-sales-agreement-confirmed");
 var isIndividual = document.getElementById("_is-individual");
 var chkConfirmDistantSalesAgreement = document.getElementById("chk-confirm-distant-sales");
@@ -28,6 +30,7 @@ var divCorporateField = $("#div-corporate-field");
 var cartItems = $("#_cart-items");
 var btnBuy = $("#btn-buy");
 var installmentInfoDiv = $("#installmentInfo");
+var _promotionCode =  $("#_promotion-code");
 
 /* assignments */
 $(document).ready(document_onLoad);
@@ -44,12 +47,12 @@ $("#chk-confirm-distant-sales").on('ifToggled', function () {
 /* events */
 function document_onLoad() {
     getCartItems();
-    getPromotionInfo();
     getProvinces();
     inputCardNumber.payform('formatCardNumber');
     inputCvc.payform('formatCardCVC');
     inputPhone.mask("(000) 000 0000");
     isIndividual.value = true;
+    getPromotionInfo();
 }
 function customerType_onChange() {
     var type = $("input[name='customer-type']:checked").val();
@@ -110,7 +113,8 @@ function btnBuy_onClick() {
         },
         CorporateInvoiceInfo: corporateInvoiceInfo,
         IsDistantSalesAgreementConfirmed: isDistantSalesAgreementConfirmed,
-        CartItems: cartItems
+        CartItems: cartItems,
+        PromotionCode: _promotionCode.val()
     });
 
 
@@ -139,7 +143,8 @@ function loadInstallmentsInfo(inputVal) {
     var cart = new CartSupport.Cart();
     var data = {
         CardNumber: inputVal,
-        CartItems: cart.getItems()
+        CartItems: cart.getItems(),
+        PromotionCode: _promotionCode.val()
     };
 
     $.ajax({
@@ -165,8 +170,6 @@ function loadInstallmentsInfo(inputVal) {
         }
     });
 }
-
-
 function createInstallmentsDiv(data) {
     var content = '<div class="form_title"><h3>Taksit Seçenekleri</h3></div>';
     if (data.length != 0)
@@ -180,9 +183,9 @@ function createInstallmentsDiv(data) {
     installmentInfoDiv.append(content);
     inputInstallment.val(1);
 }
-
-
-
+function calculateTotalPrice() {
+    txtTotal.text(formatCurrency(parseFloat(inputEducationTotalPrice.val()) - parseFloat(inputPromotionDiscountAmount.val())));
+}
 function getCartItems() {
     var items = _cart.getItems();
     cartItems.val(JSON.stringify(items));
@@ -196,13 +199,14 @@ function getCartItems() {
         success: (res) => {
             if (res.isSuccess) {
                 appendCartItems(res.data.items);
-                txtTotal.text(res.data.total);
+                inputEducationTotalPrice.val(res.data.totalNumeric);
                 var cartItemIds = [];
                 for (var i = 0; i < res.data.items.length; i++) {
                     var item = res.data.items[i];
                     cartItemIds.push(item);
                 }
                 //cartItems.val(JSON.stringify(cartItemIds));
+                calculateTotalPrice();
             }
         }
     });
@@ -215,6 +219,10 @@ function getPromotionInfo() {
         data: { promotionCode: promotionCode },
         success: (res) => {
             if (res.isSuccess) {
+                inputPromotionDiscountAmount.val(res.data.discountAmount);
+                $("#promotion-info").html(`Kupon Kodu :${res.data.promotionCode}  <b> ${res.data.discountAmount}</b>`);
+                calculateTotalPrice();
+                _promotionCode.val(res.data.promotionCode);
             }
         }
     });
@@ -294,4 +302,8 @@ function correctTrChars(text) {
         .replace(/&#246;/g, "ö")
         .replace(/&#304;/g, "İ")
         .replace(/&#252;/g, "ü");
+}
+
+function formatCurrency(total) {
+    return ('₺') + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
 }
