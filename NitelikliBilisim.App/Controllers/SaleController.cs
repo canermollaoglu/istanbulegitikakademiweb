@@ -134,11 +134,12 @@ namespace NitelikliBilisim.App.Controllers
         [HttpPost, Route("getinstallmentinfo")]
         public IActionResult GetInstallmentInfo(InstallmentInfoVm data)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var binNumber = FormatCardNumber(data.CardNumber).Substring(0, 6);
             decimal discountAmount = 0m;
             if (!string.IsNullOrEmpty(data.PromotionCode))
             {
-                var promotion = _unitOfWork.EducationPromotionCode.GetPromotionbyPromotionCode(data.PromotionCode);
+                var promotion = _unitOfWork.EducationPromotionCode.GetPromotionbyPromotionCode(data.PromotionCode, userId);
                 discountAmount = promotion.DiscountAmount;
             }
             var info = _paymentService.CheckInstallment(data.ConversationId.ToString(), binNumber, GetPriceSumForCartItems(data.CartItems, discountAmount));
@@ -204,11 +205,11 @@ namespace NitelikliBilisim.App.Controllers
                 });
             #endregion
 
-
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             decimal discountAmount = 0m;
             if (!string.IsNullOrEmpty(data.PromotionCode))
             {
-                var promotion = _unitOfWork.EducationPromotionCode.GetPromotionbyPromotionCode(data.PromotionCode);
+                var promotion = _unitOfWork.EducationPromotionCode.GetPromotionbyPromotionCode(data.PromotionCode, userId);
                 discountAmount = promotion.DiscountAmount;
             }
 
@@ -248,7 +249,6 @@ namespace NitelikliBilisim.App.Controllers
                     var model = manager.CreateCompletionModel(result.PaymentForNormal);
                     _unitOfWork.Sale.CompletePayment(model, result.Success.InvoiceId, result.Success.InvoiceDetailIds);
 
-                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                     var customerEmail = _userUnitOfWork.User.GetCustomerInfo(userId).PersonalAndAccountInfo.Email;
                     if (customerEmail != null)
                     {
@@ -279,7 +279,6 @@ namespace NitelikliBilisim.App.Controllers
                     _unitOfWork.TempSaleData.Create(result.ConversationId, result.Success);
                     HttpContext.Session.SetString("html_content", result.HtmlContent);
 
-                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                     var customerEmail = _userUnitOfWork.User.GetCustomerInfo(userId).PersonalAndAccountInfo.Email;
                     if (customerEmail != null)
                     {
