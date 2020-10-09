@@ -100,7 +100,7 @@ namespace NitelikliBilisim.App.Controllers
                 return Json(new ResponseModel
                 {
                     isSuccess = false,
-                    errors = new List<string> { "Girdiğiniz kod geçerli değildir." }
+                    errors = new List<string> { "Kod alanı boş geçilemez." }
 
                 });
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

@@ -213,12 +213,10 @@
             }
         }
         function appendPromotionCode(data) {
-            console.log(data);
             tablePromotionCode.html("");
             if (data.length == 0) {
                 return;
             }
-
             var appended = "";
             appended += `<thead>` +
                 `<tr><td>Kampanya</td><td>Kupon Kodu</td><td>İndirim tutarı</td></tr>` +
@@ -235,7 +233,7 @@
                 `${data.discountAmount}` +
                 `</td>` +
                 `<td class="options" style="width:5%; text-align:center;">` +
-                `<a type="button" class="btn-delete-item" data-education-id="${data.educationId}"><i class="icon-trash"></i></a>` +
+                `<a type="button" class="btn-delete-item" onClick="removePromotion()" ><i class="icon-trash"></i></a>` +
                 `</td>` +
                 `<tr>`;
 
@@ -249,6 +247,13 @@
         }
         function formatCurrency(total) {
             return ('₺') + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
+        }
+
+        function removePromotion() {
+            localStorage.setItem("promotionCode", "");
+            tablePromotionCode.html("");
+            inputPromotionDiscountAmount.val(0);
+            calculateTotalPrice();
         }
     </script>
 }
