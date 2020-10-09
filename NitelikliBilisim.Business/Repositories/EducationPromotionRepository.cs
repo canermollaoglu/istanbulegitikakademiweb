@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Entities.educations;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_promotion;
 using NitelikliBilisim.Core.ViewModels.Main.Cart;
 using NitelikliBilisim.Data;
@@ -78,5 +79,6 @@ namespace NitelikliBilisim.Business.Repositories
         {
                 return _context.EducationPromotionCodes.FirstOrDefault(x => x.PromotionCode == promotionCode);
         }
+
     }
 }

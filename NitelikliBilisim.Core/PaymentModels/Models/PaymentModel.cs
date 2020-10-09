@@ -26,5 +26,7 @@ namespace NitelikliBilisim.Core.PaymentModels
     {
         public Guid InvoiceId { get; set; }
         public List<Guid> InvoiceDetailIds { get; set; }
+        public string PromotionId { get; set; }
+        public string UserId { get; set; }
     }
 }
