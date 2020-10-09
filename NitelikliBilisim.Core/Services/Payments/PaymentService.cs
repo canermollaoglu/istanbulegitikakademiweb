@@ -29,13 +29,14 @@ namespace NitelikliBilisim.Core.Services.Payments
             var totalPrice = 0.0m;
             foreach (var item in cartItems)
                 totalPrice += item.EducationGroup.NewPrice.GetValueOrDefault();
+            decimal paidPrice = totalPrice - data.DiscountAmount;
 
             var request = new CreatePaymentRequest
             {
                 Locale = Locale.TR.ToString(),
                 ConversationId = data.ConversationId.ToString(),
                 Price = totalPrice.ToString(new CultureInfo("en-US")),
-                PaidPrice = totalPrice.ToString(new CultureInfo("en-US")),
+                PaidPrice = paidPrice.ToString(new CultureInfo("en-US")),
                 Currency = Currency.TRY.ToString(),
                 Installment = data.PaymentInfo.Installments,
                 BasketId = data.BasketId.ToString(),

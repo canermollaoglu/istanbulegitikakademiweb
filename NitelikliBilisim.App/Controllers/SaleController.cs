@@ -231,6 +231,7 @@ namespace NitelikliBilisim.App.Controllers
                 {
                     var promotion = (EducationPromotionCode)response.Data;
                     discountAmount = promotion.DiscountAmount;
+                    data.DiscountAmount = discountAmount;
                 }
                 else
                 {

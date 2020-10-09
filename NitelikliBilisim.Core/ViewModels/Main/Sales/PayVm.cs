@@ -20,6 +20,7 @@ namespace NitelikliBilisim.Core.ViewModels.Sales
         public bool IsDistantSalesAgreementConfirmed { get; set; }
         public string CartItemsJson { get; set; }
         public string PromotionCode { get; set; }
+        public decimal DiscountAmount { get; set; }
         public List<_CartItem> CartItems { get; set; }
     }
 
