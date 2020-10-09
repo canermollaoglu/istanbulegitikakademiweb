@@ -1,0 +1,168 @@
+﻿@{
+    ViewData["Title"] = "Promosyon Oluştur";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-list"></i> Promosyon Oluştur
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <form id="form-add-promotion">
+                    @Html.AntiForgeryToken()
+                    <div class="row" style="margin-bottom: 1%;">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Promosyon Adı</label>
+                                <input class="form-control" type="text" value="" id="input-name" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Promosyon Kodu</label>
+                                <input class="form-control" type="text" maxlength="7" value="" id="input-code" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Promosyon Tutarı</label>
+                                <input class="form-control" type="number" value="" id="input-discount-amount" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-bottom: 1%;">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Başlangıç Tarihi</label>
+                                <input class="form-control" type="date" value="" id="input-start-date" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Bitiş Tarihi</label>
+                                <input class="form-control" type="date" value="" id="input-end-date" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Maksimum Kullanım Adedi</label>
+                                <input type="number" class="form-control" value="" id="input-max-usage-limit" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom:1%;">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Kullanıcı Başına Kullanım Adedi</label>
+                                <input class="form-control" type="number" value="" id="input-user-based-usage-limit" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Minimum Sepet Tutarı</label>
+                                <input class="form-control" type="number" value="" id="input-min-basket-amount" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Açıklama</label>
+                                <textarea class="form-control" rows="2" id="input-description"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="offset-md-10 col-md-2">
+                            <button id="btn-save" type="button" class="btn btn-outline-success pull-right">Kaydet</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section postScripts{
+    <script src="~/js/sup/datetime-support.js"></script>
+    <script>
+        /* fields */
+       
+        /* elements */
+        var inputStartDate = $("#input-start-date");
+        var inputEndDate = $("#input-end-date");
+
+        var inputDiscountAmount = $("#input-discount-amount");
+        var inputMaxUsageLimit = $("#input-max-usage-limit");
+        var inputUserBasedUsageLimit = $("#input-user-based-usage-limit");
+        var inputMinBasketAmount = $("#input-min-basket-amount");
+        var inputName = $("#input-name");
+        var inputDescription = $('#input-description');
+        var inputCode = $("#input-code");
+
+
+        var btnSave = $("#btn-save");
+
+        /* assignments */
+        $(document).ready(document_onLoad);
+        btnSave.on("click", btnSave_onClick);
+
+        /* events */
+        function document_onLoad() {
+            var dateManager = new DateTimeSupport.Manager();
+            inputStartDate.val(dateManager.getToday());
+        }
+
+        function btnSave_onClick() {
+            btnSave.off("click");
+
+            var tokenVerifier = new SecuritySupport.TokenVerifier();
+            var data = tokenVerifier.addToken("form-add-promotion", {
+                Name: inputName.val(),
+                StartDate: inputStartDate.val(),
+                EndDate: inputEndDate.val(),
+                PromotionCode: inputCode.val(),
+                Description: inputDescription.val(),
+                MaxUsageLimit: inputMaxUsageLimit.val(),
+                UserBasedUsageLimit: inputUserBasedUsageLimit.val(),
+                DiscountAmount: inputDiscountAmount.val(),
+                MinBasketAmount: inputMinBasketAmount.val()
+            });
+            var resultAlert = new AlertSupport.ResultAlert();
+            $.ajax({
+                url: "/admin/promosyon-olustur",
+                method: "post",
+                data: data,
+                success: (res) => {
+                    if (res.isSuccess) {
+                        resultAlert.display({
+                            success: true,
+                            message: "Kayıt işlemi başarılı! Listeye gitmek için {link}",
+                            redirectElement: {
+                                content: "tıklayınız",
+                                link: "/admin/promosyonlar"
+                            }
+                        });
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors,
+                            message: "İşlem başarısız"
+                        });
+                    }
+                },
+                complete: () => { btnSave.on("click", btnSave_onClick); }
+            });
+        }
+
+        /* functions */
+      
+    </script>
+}

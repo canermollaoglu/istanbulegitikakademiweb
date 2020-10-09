@@ -19,6 +19,8 @@ namespace NitelikliBilisim.Core.ViewModels.Sales
         public _SpecialInfo SpecialInfo { get; set; } = new _SpecialInfo();
         public bool IsDistantSalesAgreementConfirmed { get; set; }
         public string CartItemsJson { get; set; }
+        public string PromotionCode { get; set; }
+        public decimal DiscountAmount { get; set; }
         public List<_CartItem> CartItems { get; set; }
     }
 

@@ -1,14 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Elasticsearch.Net;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Nest;
+using MUsefulMethods;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Models;
@@ -19,9 +12,13 @@ using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Entities.helper;
 using NitelikliBilisim.Core.Entities.user_details;
 using NitelikliBilisim.Core.Enums;
-using NitelikliBilisim.Core.Services;
 using NitelikliBilisim.Core.ViewModels.Account;
-using NitelikliBilisim.Support.Enums;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -47,7 +44,7 @@ namespace NitelikliBilisim.App.Controllers
         {
             var model = new RegisterGetVm
             {
-                EducationCenters = EnumSupport.ToKeyValuePair<EducationCenter>(),
+                EducationCenters = EnumHelpers.ToKeyValuePair<EducationCenter>(),
                 EducationCategories = _unitOfWork.EducationCategory.Get(x => x.BaseCategoryId == null, x => x.OrderBy(o => o.Name))
             };
 
@@ -202,17 +199,17 @@ namespace NitelikliBilisim.App.Controllers
                     if (info.Principal.HasClaim(c => c.Type == ClaimTypes.GivenName))
                     {
                         model.UserName =
-                            StringHelper.UrlFormatConverter(info.Principal.FindFirstValue(ClaimTypes.GivenName));
+                            StringHelpers.CharacterConverter(info.Principal.FindFirstValue(ClaimTypes.GivenName));
                     }
                     if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Name))
                     {
                         model.Name =
-                            StringHelper.UrlFormatConverter(info.Principal.FindFirstValue(ClaimTypes.Name));
+                            StringHelpers.CharacterConverter(info.Principal.FindFirstValue(ClaimTypes.Name));
                     }
                     if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Surname))
                     {
                         model.Surname =
-                            StringHelper.UrlFormatConverter(info.Principal.FindFirstValue(ClaimTypes.Surname));
+                            StringHelpers.CharacterConverter(info.Principal.FindFirstValue(ClaimTypes.Surname));
                     }
                     if (info.Principal.HasClaim(c => c.Type == "photo"))
                     {

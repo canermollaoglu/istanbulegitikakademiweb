@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using MUsefulMethods;
 using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Managers;
 using NitelikliBilisim.App.Models;
@@ -9,7 +10,6 @@ using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities.user_details;
 using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels.areas.admin.educator_certificate;
-using NitelikliBilisim.Support.Text;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -56,7 +56,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             try
             {
                 var stream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.CertificateImage.Base64Content));
-                var fileName = data.Name.FormatForTag();
+                var fileName = StringHelpers.FormatForTag(data.Name);
                 var dbPath = await _storageService.UploadFile(stream, $"{fileName}.{data.CertificateImage.Extension}", "educator-certificate-images");
 
                 var newCertificate = new EducatorCertificate

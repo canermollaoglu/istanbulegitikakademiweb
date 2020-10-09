@@ -10,5 +10,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Sales
         public Guid ConversationId { get; set; } = Guid.NewGuid();
         public string CardNumber { get; set; }
         public List<_CartItem> CartItems { get; set; }
+        public string PromotionCode { get; set; }
     }
 }

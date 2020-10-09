@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MUsefulMethods;
 using Newtonsoft.Json;
 using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Models;
@@ -8,7 +9,6 @@ using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities.educations;
 using NitelikliBilisim.Core.Enums.educations;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_suggestion_criterion;
-using NitelikliBilisim.Support.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,7 +45,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             {
                 EducationId = educationId.Value,
                 EducationName = education.Name,
-                EducationSuggestionCriterionTypes = EnumSupport.ToKeyValuePair<CriterionType>(),
+                EducationSuggestionCriterionTypes = EnumHelpers.ToKeyValuePair<CriterionType>(),
             };
 
 

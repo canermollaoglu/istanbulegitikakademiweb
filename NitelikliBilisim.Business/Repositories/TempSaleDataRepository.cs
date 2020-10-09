@@ -14,12 +14,14 @@ namespace NitelikliBilisim.Business.Repositories
             _context = context;
         }
 
-        public void Create(string conversationId, PaymentModelSuccess successModel)
+        public void Create(string conversationId, PaymentModelSuccess successModel,string promotionId,string userId)
         {
             var data = JsonConvert.SerializeObject(new
             {
                 invoiceId = successModel.InvoiceId,
-                invoiceDetailIds = successModel.InvoiceDetailIds
+                invoiceDetailIds = successModel.InvoiceDetailIds,
+                promotionId,
+                userId
             });
 
             // sepette çok fazla ürün olursa exception fırlabilir

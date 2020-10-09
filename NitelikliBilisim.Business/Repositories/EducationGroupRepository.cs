@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using MUsefulMethods;
 using Newtonsoft.Json;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Entities.groups;
@@ -14,7 +15,6 @@ using NitelikliBilisim.Core.ViewModels.areas.admin.reports;
 using NitelikliBilisim.Core.ViewModels.Cart;
 using NitelikliBilisim.Core.ViewModels.Sales;
 using NitelikliBilisim.Data;
-using NitelikliBilisim.Support.Enums;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -81,7 +81,7 @@ namespace NitelikliBilisim.Business.Repositories
             int[] days = JsonConvert.DeserializeObject<int[]>(weekDays.DaysJson);
             foreach (var item in days)
             {
-                weekDaysNames.Add(EnumSupport.GetDescription((Weekdays)item));
+                weekDaysNames.Add(EnumHelpers.GetDescription((Weekdays)item));
             }
 
 
@@ -435,7 +435,7 @@ namespace NitelikliBilisim.Business.Repositories
                         {
                             HostId = item.Host.Id,
                             Address = item.Host.Address,
-                            City = EnumSupport.GetDescription(item.Host.City),
+                            City = EnumHelpers.GetDescription(item.Host.City),
                             HostName = item.Host.HostName,
                             Latitude = item.Host.Latitude,
                             Longitude = item.Host.Longitude
@@ -513,7 +513,7 @@ namespace NitelikliBilisim.Business.Repositories
                 EducationName = group.Education.Name,
                 EducatorName = educator.EducatorName,
                 StartDate = group.StartDate,
-                Location = $"{group.Host.HostName} ({EnumSupport.GetDescription(group.Host.City)})"
+                Location = $"{group.Host.HostName} ({EnumHelpers.GetDescription(group.Host.City)})"
             };
 
             return new AssignStudentsVm

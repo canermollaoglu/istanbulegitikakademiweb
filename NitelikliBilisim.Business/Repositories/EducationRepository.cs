@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using MUsefulMethods;
 using Nest;
 using Newtonsoft.Json;
 using NitelikliBilisim.Business.PagedEntity;
@@ -12,8 +13,6 @@ using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education;
 using NitelikliBilisim.Core.ViewModels.search;
 using NitelikliBilisim.Data;
-using NitelikliBilisim.Support.Enums;
-using NitelikliBilisim.Support.Text;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -40,7 +39,7 @@ namespace NitelikliBilisim.Business.Repositories
                        Name = e.Name,
                        Description = e.Description,
                        CategoryName = c.Name,
-                       Level = EnumSupport.GetDescription(e.Level),
+                       Level = EnumHelpers.GetDescription(e.Level),
                        Days = e.Days,
                        HoursPerDay = e.HoursPerDay,
                        isActive = e.IsActive
@@ -157,7 +156,7 @@ namespace NitelikliBilisim.Business.Repositories
                     Description = item.Description,
                     Days = item.Days,
                     HoursPerDay = item.HoursPerDay,
-                    Level = EnumSupport.GetDescription(item.Level),
+                    Level = EnumHelpers.GetDescription(item.Level),
                     IsActive = item.IsActive,
                     MediaCount = mediaCount.Where(x => x.EducationId == item.Id).Sum(x => x.Count),
                     PartCount = partCount.Where(x => x.EducationId == item.Id).Sum(x => x.Count),
@@ -439,7 +438,7 @@ namespace NitelikliBilisim.Business.Repositories
                     Name = x.Education.Name,
                     Description = x.Education.Description,
                     CategoryName = x.CategoryName,
-                    Level = EnumSupport.GetDescription(x.Education.Level),
+                    Level = EnumHelpers.GetDescription(x.Education.Level),
                     //PriceText = x.Education.NewPrice.GetValueOrDefault().ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
                     HoursPerDayText = x.Education.HoursPerDay.ToString(),
                     DaysText = x.Education.Days.ToString(),
@@ -515,7 +514,7 @@ namespace NitelikliBilisim.Business.Repositories
                     Name = x.Education.Name,
                     Description = x.Education.Description,
                     CategoryName = x.CategoryName,
-                    Level = EnumSupport.GetDescription(x.Education.Level),
+                    Level = EnumHelpers.GetDescription(x.Education.Level),
                     //PriceText = x.Education.NewPrice.GetValueOrDefault().ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
                     HoursPerDayText = x.Education.HoursPerDay.ToString(),
                     DaysText = x.Education.Days.ToString(),
@@ -547,7 +546,7 @@ namespace NitelikliBilisim.Business.Repositories
                     Description = education.Description,
                     Description2 = education.Description2,
                     //PriceNumeric = education.NewPrice.GetValueOrDefault(0),
-                    Level = EnumSupport.GetDescription(education.Level),
+                    Level = EnumHelpers.GetDescription(education.Level),
                     //PriceText = education.NewPrice.GetValueOrDefault(0).ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"))
                 },
                 Gains = Context.EducationGains.Where(x => x.EducationId == id)

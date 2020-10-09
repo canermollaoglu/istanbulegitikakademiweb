@@ -111,6 +111,7 @@ namespace NitelikliBilisim.Data
         public DbSet<EducationPart> EducationParts { get; set; }
         public DbSet<EducationGain> EducationGains { get; set; }
         public DbSet<EducationPromotionCode> EducationPromotionCodes { get; set; }
+        public DbSet<EducationPromotionItem> EducationPromotionItems { get; set; }
         public DbSet<Invoice> Invoices { get; set; }
         public DbSet<InvoiceAddress> InvoiceAddresses { get; set; }
         public DbSet<WishlistItem> Wishlist { get; set; }

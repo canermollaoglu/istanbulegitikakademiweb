@@ -15,7 +15,7 @@ namespace NitelikliBilisim.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.7")
+                .HasAnnotation("ProductVersion", "3.1.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -821,10 +821,6 @@ namespace NitelikliBilisim.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Code")
-                        .HasColumnType("nvarchar(7)")
-                        .HasMaxLength(7);
-
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
@@ -832,14 +828,30 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("nvarchar(128)")
                         .HasMaxLength(128);
 
-                    b.Property<bool>("IsUsed")
-                        .HasColumnType("bit");
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<byte>("OffPercentage")
-                        .HasColumnType("tinyint");
+                    b.Property<decimal>("DiscountAmount")
+                        .HasColumnType("decimal(18,2)");
 
-                    b.Property<byte>("TimesUsable")
-                        .HasColumnType("tinyint");
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MaxUsageLimit")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("MinBasketAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PromotionCode")
+                        .HasColumnType("nvarchar(7)")
+                        .HasMaxLength(7);
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
@@ -848,8 +860,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("nvarchar(128)")
                         .HasMaxLength(128);
 
-                    b.Property<DateTime>("ValidThru")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("UserBasedUsageLimit")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -1684,6 +1696,31 @@ namespace NitelikliBilisim.Data.Migrations
                     b.ToTable("EducationHostImages");
                 });
 
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.educations.EducationPromotionItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("EducationPromotionCodeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("InvoiceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EducationPromotionCodeId");
+
+                    b.ToTable("EducationPromotionItems");
+                });
+
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.educations.EducationSuggestionCriterion", b =>
                 {
                     b.Property<Guid>("Id")
@@ -2366,6 +2403,15 @@ namespace NitelikliBilisim.Data.Migrations
                     b.HasOne("NitelikliBilisim.Core.Entities.EducationHost", "EducationHost")
                         .WithMany("EducationHostImages")
                         .HasForeignKey("EducationHostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.educations.EducationPromotionItem", b =>
+                {
+                    b.HasOne("NitelikliBilisim.Core.Entities.EducationPromotionCode", "EducationPromotionCode")
+                        .WithMany("EducationPromotionItems")
+                        .HasForeignKey("EducationPromotionCodeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

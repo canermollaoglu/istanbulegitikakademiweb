@@ -41,6 +41,7 @@
 
         Cart.prototype.clearCart = function () {
             localStorage.setItem("cart", JSON.stringify([]));
+            localStorage.setItem("promotionCode", "");
         }
 
         return Cart;

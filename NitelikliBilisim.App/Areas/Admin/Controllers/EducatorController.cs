@@ -12,12 +12,11 @@ using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums.user_details;
 using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels.areas.admin.educator;
-using NitelikliBilisim.Support.Enums;
-using NitelikliBilisim.Support.Text;
 using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using MUsefulMethods;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
@@ -47,7 +46,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             var model = new AddGetVm
             {
                 Certificates = _unitOfWork.EducatorCertificate.Get(null, order => order.OrderBy(x => x.Name)),
-                BankNames = EnumSupport.ToKeyValuePair<BankNames>()
+                BankNames = EnumHelpers.ToKeyValuePair<BankNames>()
             };
             return View(model);
         }
@@ -69,9 +68,9 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             {
                 //var dbPath = _fileManager.Upload("/uploads/educator-photos/", data.ProfilePhoto.Base64Content, data.ProfilePhoto.Extension, "profile-photo", $"{data.Name} {data.Surname}");
                 var stream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.ProfilePhoto.Base64Content));
-                var fileName = $"{data.Name} {data.Surname}".FormatForTag();
+                var fileName = StringHelpers.FormatForTag($"{data.Name} {data.Surname}");
                 var dbPath = await _storageService.UploadFile(stream, $"{fileName}.{data.ProfilePhoto.Extension}", "educator-photos");
-                var userName = TextHelper.ConcatForUserName(data.Name, data.Surname);
+                var userName = StringHelpers.ConcatForUserName(data.Name, data.Surname);
 
                 var count = _userManager.Users.Count(x => x.UserName.StartsWith(userName));
                 var countText = count > 0 ? count.ToString() : "";
@@ -85,7 +84,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     UserName = $"{userName}{countText}"
                 };
                 // TODO: belirlenen şifre mail olarak atılmalı & sabit şifre değiştirilmeli
-                var pwd = TextHelper.RandomPasswordGenerator(10);
+                var pwd = StringHelpers.RandomPasswordGenerator(10);
                 var res = await _userManager.CreateAsync(newUser, "qwe123");
                 if (!res.Succeeded)
                 {
@@ -186,7 +185,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 IBAN = educator.IBAN,
                 Certificates = _unitOfWork.EducatorCertificate.Get(null, o => o.OrderBy(x => x.Name)),
                 RelatedCertificates = _unitOfWork.Educator.GetCertificates(educator.Id),
-                BankNames = EnumSupport.ToKeyValuePair<BankNames>(),
+                BankNames = EnumHelpers.ToKeyValuePair<BankNames>(),
 
             };
             return View(model);
@@ -211,9 +210,9 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             if (!string.IsNullOrEmpty(data.ProfilePhoto.Base64Content))
             {
                 var stream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.ProfilePhoto.Base64Content));
-                var fileName = $"{data.Name} {data.Surname}".FormatForTag();
+                var fileName = StringHelpers.FormatForTag($"{data.Name} {data.Surname}");
                 var dbPath = await _storageService.UploadFile(stream, $"{fileName}.{data.ProfilePhoto.Extension}", "educator-photos");
-                var userName = TextHelper.ConcatForUserName(data.Name, data.Surname);
+                var userName = StringHelpers.ConcatForUserName(data.Name, data.Surname);
                 educator.User.AvatarPath = dbPath;
             }
 

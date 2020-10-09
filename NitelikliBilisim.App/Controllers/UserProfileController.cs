@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using MUsefulMethods;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Managers;
@@ -13,7 +14,6 @@ using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Services.Abstracts;
-using NitelikliBilisim.Support.Text;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -51,7 +51,7 @@ namespace NitelikliBilisim.App.Controllers
                 var user = await _userManager.GetUserAsync(HttpContext.User);
 
                 var stream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(base64Content));
-                var fileName = $"{user.Name} {user.Surname}".FormatForTag();
+                var fileName = StringHelpers.FormatForTag($"{user.Name} {user.Surname}");
                 var dbPath = await _storageService.UploadFile(stream, $"{fileName}.{extension}", "user-avatars");
                 user.AvatarPath = dbPath;
 
