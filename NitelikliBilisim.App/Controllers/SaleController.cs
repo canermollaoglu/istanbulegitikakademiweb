@@ -318,7 +318,7 @@ namespace NitelikliBilisim.App.Controllers
                 if (result.Status == PaymentServiceMessages.ResponseSuccess)
                 {
                     string promotionId = promotion != null ? promotion.Id.ToString() : string.Empty;
-                    _unitOfWork.TempSaleData.Create(result.ConversationId, result.Success, promotionId,userId);
+                    _unitOfWork.TempSaleData.Create(result.ConversationId, result.Success, promotionId, userId);
                     HttpContext.Session.SetString("html_content", result.HtmlContent);
                     var customerEmail = _userUnitOfWork.User.GetCustomerInfo(userId).PersonalAndAccountInfo.Email;
                     if (customerEmail != null)
@@ -434,6 +434,7 @@ namespace NitelikliBilisim.App.Controllers
             }
             int userBasedItemCount = _unitOfWork.EducationPromotionCode.GetEducationPromotionItemCountByUserId(promotion.Id, userId);
             int promotionItemCount = _unitOfWork.EducationPromotionCode.GetEducationPromotionItemByPromotionCodeId(promotion.Id);
+            
             if (userBasedItemCount + 1 > promotion.UserBasedUsageLimit || promotionItemCount + 1 > promotion.MaxUsageLimit)
             {
                 return new ResponseData
@@ -442,7 +443,8 @@ namespace NitelikliBilisim.App.Controllers
                     Message = "Kupon kodu kullanım sınırı dolmuştur."
                 };
             }
-            else if (basketAmount < promotion.MinBasketAmount)
+
+            if (basketAmount < promotion.MinBasketAmount)
             {
                 return new ResponseData
                 {
@@ -450,14 +452,22 @@ namespace NitelikliBilisim.App.Controllers
                     Message = "Sepet tutarınız minimum kupon kullanım tutarının altında."
                 };
             }
-            else
+
+            if (DateTime.Now.Date<promotion.StartDate.Date || DateTime.Now.Date>promotion.EndDate.Date)
             {
                 return new ResponseData
                 {
-                    Success = true,
-                    Data = promotion
+                    Success = false,
+                    Message = "Kupon kodunun süresi dolduğu için aktif edilememektedir."
                 };
             }
+
+
+            return new ResponseData
+            {
+                Success = true,
+                Data = promotion
+            };
 
         }
     }
