@@ -65,33 +65,18 @@ namespace NitelikliBilisim.Business.Repositories
             }
 
         }
-
-        public EducationPromotionCode GetPromotionbyPromotionCode(string promotionCode,string userId)
+        public int GetEducationPromotionItemCountByUserId(Guid promotionCodeId,string userId)
         {
-            try
-            {
-                var promotion = _context.EducationPromotionCodes.FirstOrDefault(x => x.PromotionCode == promotionCode);
-                if (promotion==null)
-                {
-                    throw new Exception("Geçersiz promosyon kodu girdiniz.");
-                }
-                var promotionItemCount = _context.EducationPromotionItems.Count(x=>x.EducationPromotionCodeId ==promotion.Id);
-                var userBasedPromotionItemCount = _context.EducationPromotionItems.Count(x => x.UserId == userId && x.EducationPromotionCodeId == promotion.Id);
-                if (promotion.MaxUsageLimit<promotionItemCount+1)
-                {
-                    throw new Exception("Bu kupon maksimum kullanım sınırına gelmiştir.");
-                }
-                if (promotion.UserBasedUsageLimit< userBasedPromotionItemCount + 1)
-                {
-                    throw new Exception("Bu kupon için kullanım hakkınız kalmamıştır.");
-                }
-                return promotion;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            return _context.EducationPromotionItems.Count(x => x.UserId == userId && x.EducationPromotionCodeId == promotionCodeId);
+        }
+        public int GetEducationPromotionItemByPromotionCodeId(Guid promotionCodeId)
+        {
+            return _context.EducationPromotionItems.Count(x => x.EducationPromotionCodeId == promotionCodeId);
+        }
 
+        public EducationPromotionCode GetPromotionbyPromotionCode(string promotionCode)
+        {
+                return _context.EducationPromotionCodes.FirstOrDefault(x => x.PromotionCode == promotionCode);
         }
     }
 }

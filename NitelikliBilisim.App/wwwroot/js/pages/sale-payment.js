@@ -212,11 +212,15 @@ function getCartItems() {
     });
 }
 function getPromotionInfo() {
-    var promotionCode = localStorage.getItem("promotionCode");
+    var items = _cart.getItems();
+    var data = {
+        Items: items,
+        PromotionCode: localStorage.getItem("promotionCode")
+    };
     $.ajax({
         url: "/get-promotion",
         method: "post",
-        data: { promotionCode: promotionCode },
+        data: data,
         success: (res) => {
             if (res.isSuccess) {
                 inputPromotionDiscountAmount.val(res.data.discountAmount);
@@ -303,7 +307,6 @@ function correctTrChars(text) {
         .replace(/&#304;/g, "İ")
         .replace(/&#252;/g, "ü");
 }
-
 function formatCurrency(total) {
     return ('₺') + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
 }

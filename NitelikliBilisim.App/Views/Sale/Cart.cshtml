@@ -71,12 +71,14 @@
                                         <div class="form-group">
                                             <button type="button" class="btn_1 outline" id="apply-promotion-code">Kuponu Uygula</button>
                                         </div>
+
                                     </div>
                                 </div>
                                 <div class="float-right fix_mobile">
                                     <button type="button" class="btn_1 outline">Sepeti Güncelle</button>
                                 </div>
                             </div>
+                            <div class="text-danger" id="coupon-error-message" style="display:none"></div>
                         </div>
                     </div>
 
@@ -111,7 +113,7 @@
         var inputEducationTotalPrice = $("#input-education-total-price");
         var inputPromotionDiscountAmount = $("#promotion-discount-amount");
         var btnApplyPromotion = $("#apply-promotion-code");
-
+        var couponErrorMessage = $("#coupon-error-message");
         /* assignments */
         $(document).ready(document_onLoad);
 
@@ -153,17 +155,26 @@
             });
         }
         function getPromotionInfo() {
-            var promotionCode = inputPromotionCode.val();
+            var items = _cart.getItems();
+            var data = {
+                Items: items,
+                PromotionCode : inputPromotionCode.val()
+            };
             $.ajax({
                 url: "/get-promotion",
                 method: "post",
-                data: { promotionCode: promotionCode },
+                data: data,
                 success: (res) => {
                     if (res.isSuccess) {
                         localStorage.setItem("promotionCode", res.data.promotionCode);
                         inputPromotionDiscountAmount.val(res.data.discountAmount);
                         appendPromotionCode(res.data);
                         calculateTotalPrice();
+                        couponErrorMessage.text('');
+                        couponErrorMessage.slideUp();
+                    } else {
+                        couponErrorMessage.text(res.errors[0]);
+                        couponErrorMessage.slideDown();
                     }
                 }
             });
