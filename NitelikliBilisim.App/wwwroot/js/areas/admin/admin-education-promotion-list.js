@@ -90,7 +90,7 @@ function createGrid() {
             visible: true
         }, onExporting: function (e) {
             var workbook = new ExcelJS.Workbook();
-            var worksheet = workbook.addWorksheet('Ogrenci Listesi');
+            var worksheet = workbook.addWorksheet('Promosyon Listesi');
             DevExpress.excelExporter.exportDataGrid({
                 worksheet: worksheet,
                 component: e.component,
@@ -101,7 +101,7 @@ function createGrid() {
                 }
             }).then(function () {
                 workbook.xlsx.writeBuffer().then(function (buffer) {
-                    saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'Öğrenci Listesi' + parseInt(Math.random() * 1000000000) + '.xlsx');
+                    saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'Promosyon Listesi' + parseInt(Math.random() * 1000000000) + '.xlsx');
                 });
             });
             e.cancel = true;
