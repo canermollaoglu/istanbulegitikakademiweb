@@ -156,39 +156,7 @@ namespace NitelikliBilisim.Business.Repositories
             };
         }
 
-        public GroupGeneralInformationVm GetGroupGeneralInformation(Guid groupId)
-        {
-            var group = _context.EducationGroups
-                .Include(x => x.GroupStudents)
-                .Include(x => x.Education)
-                .Include(x => x.Host).First(x => x.Id == groupId);
-
-
-            Classroom classRoom = null;
-            var firstLessonDay = _context.GroupLessonDays.FirstOrDefault(x => x.GroupId == groupId);
-            if (firstLessonDay != null && firstLessonDay.ClassroomId != null)
-            {
-                classRoom = _context.Classrooms.FirstOrDefault(x => x.Id == firstLessonDay.ClassroomId);
-            }
-            var educator = _context.Users.First(x => x.Id == group.EducatorId);
-
-            var model = new GroupGeneralInformationVm
-            {
-                GroupId = group.Id,
-                GroupName = group.GroupName,
-                Quota = group.Quota,
-                StartDate = group.StartDate.ToShortDateString(),
-                EducationHost = group.Host.HostName,
-                Classroom = classRoom != null ? classRoom.Name : "Sınıf bilgisi girilmemiş.",
-                EducationName = group.Education.Name,
-                EducatorName = $"{educator.Name} {educator.Surname}",
-                AssignedStudentsCount = group.GroupStudents.Count,
-                EducationDays = group.Education.Days.ToString(),
-                EducationHoursPerDay = group.Education.HoursPerDay.ToString()
-            };
-            return model;
-        }
-        public Dictionary<Guid, string> GetAllGroupsDictionary()
+       public Dictionary<Guid, string> GetAllGroupsDictionary()
         {
             return _context.EducationGroups.OrderByDescending(x => x.StartDate).ToDictionary(x => x.Id, x => x.GroupName + " - " + x.StartDate.ToShortDateString());
         }
