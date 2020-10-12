@@ -7,6 +7,7 @@ using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_groups;
@@ -424,11 +425,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult PostponementOfGroup(PostponementGroupVm data)
+        public async Task<IActionResult> PostponementOfGroup(PostponementGroupVm data)
         {
             try
             {
                 var group = _unitOfWork.EducationGroup.GetById(data.GroupId);
+                var education = _unitOfWork.Education.GetById(group.EducationId);
                 if (group.StartDate.Date <= DateTime.Now.Date)
                     return Json(new ResponseModel
                     {
@@ -437,6 +439,13 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     });
 
                 _unitOfWork.GroupLessonDay.PostponeLessons(data.GroupId, data.StartDate);
+                var emails = _unitOfWork.EmailHelper.GetEmailsOfStudentsByGroup(data.GroupId);
+                await _emailSender.SendAsync(new EmailMessage
+                {
+                    Subject="Nitelikli Bilişim Eğitim Tarihi Değişikliği",
+                    Body =$"Katıldığınız {education.Name} eğitimi {data.StartDate} tarihinden itibaren devam edecek şekilde güncellenmiştir.",
+                    Contacts = emails.ToArray()
+                });
                 return Json(new ResponseModel
                 {
                     isSuccess = true
