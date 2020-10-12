@@ -125,7 +125,7 @@ function createGrid() {
                 caption:"Açıklama"
 
             }, {
-                headerCellTemplate: $('<b style="vertical-align:middle; color: black;">İşlem</b>'),
+                caption:"İşlem",
                 allowSearch: false,
                 cellTemplate: function (container, options) {
                     var current = options.data;

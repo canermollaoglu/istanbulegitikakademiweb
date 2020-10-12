@@ -110,7 +110,7 @@ function createGrid() {
         },
         searchPanel: {
             visible: true,
-            width: 240
+            width: 120
         },
         paging: {
             pageSize: 10
@@ -127,6 +127,36 @@ function createGrid() {
             allowedPageSizes: [5, 10, 20],
             showInfo: true
         },
+        export: {
+            enabled: true
+        },
+        onExporting: function (e) {
+            var workbook = new ExcelJS.Workbook();
+            var worksheet = workbook.addWorksheet('Gider Tipi Listesi');
+            DevExpress.excelExporter.exportDataGrid({
+                worksheet: worksheet,
+                component: e.component,
+                customizeCell: function (options) {
+                    var excelCell = options;
+                    excelCell.font = { name: 'Arial', size: 12 };
+                    excelCell.alignment = { horizontal: 'left' };
+                }
+            }).then(function () {
+                workbook.xlsx.writeBuffer().then(function (buffer) {
+                    saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'Gider Tipi Listesi' + parseInt(Math.random() * 1000000000) + '.xlsx');
+                });
+            });
+            e.cancel = true;
+        },
+        grouping: {
+            autoExpandAll: true
+        },
+        headerFilter: {
+            visible: true
+        },
+        groupPanel: {
+            visible: true
+        },
         columns: [
             {
                 caption: "İsim",
@@ -140,9 +170,9 @@ function createGrid() {
                 caption: "Yönet",
                 cellTemplate: function (container, options) {
                     var current = options.data;
-                    $(`<a title="Düzenle" class="btn btn-outline-primary btn-sm" href="/admin/groupexpensetype/update?expenseTypeId=${current.id}">Güncelle</a>`)
+                    $(`<a title="Düzenle" class="btn btn-primary btn-sm" href="/admin/groupexpensetype/update?expenseTypeId=${current.id}">Güncelle</a>`)
                         .appendTo(container);
-                    $(`<a title="Sil" href="#" class="btn btn-outline-danger btn-sm btn-confirmation-modal-trigger" data-url="/admin/groupexpensetype/delete?expenseTypeId=${current.id}" style="cursor:pointer;">Sil</a>`)
+                    $(`<a title="Sil" href="#" class="btn btn-danger btn-sm btn-confirmation-modal-trigger" data-url="/admin/groupexpensetype/delete?expenseTypeId=${current.id}" style="cursor:pointer;">Sil</a>`)
                         .appendTo(container);
                 },
                 width: 150

@@ -3,7 +3,7 @@ var confirmModalBuilder = new AlertSupport.ConfirmModalBuilder();
 
 /* assignments */
 $(document).ready(document_onLoad);
-
+var cities = [];
 /* events */
 function document_onLoad() {
     confirmModalBuilder.buildModal({
@@ -13,7 +13,7 @@ function document_onLoad() {
         confirmText: "Evet, eminim",
         onConfirmClick: confirm_onClick
     });
-    createGrid();
+    loadCities();
 }
 
 function btnConfirmationModalTrigger_onClick(e) {
@@ -36,6 +36,25 @@ function confirm_onClick() {
                     success: false,
                     errors: res.errors,
                     message: "Hataları düzeltiniz"
+                });
+            }
+        }
+    });
+}
+
+
+function loadCities() {
+    $.ajax({
+        url: "/admin/get-host-city-enums/",
+        method: "get",
+        success: (res) => {
+            if (res.isSuccess) {
+                cities = res.data;
+                createGrid();
+            } else {
+                resultAlert.display({
+                    success: false,
+                    errors: errors
                 });
             }
         }
@@ -67,8 +86,7 @@ function createGrid() {
         },
         searchPanel: {
             visible: true,
-            width: 240,
-            placeholder: "Ara..."
+            width: 240
         },
         paging: {
             pageSize: 10
@@ -78,25 +96,57 @@ function createGrid() {
             allowedPageSizes: [5, 10, 20],
             showInfo: true
         },
+        export: {
+            enabled: true
+        },
+        onExporting: function (e) {
+            var workbook = new ExcelJS.Workbook();
+            var worksheet = workbook.addWorksheet('Eğitim Kurumları Listesi');
+            DevExpress.excelExporter.exportDataGrid({
+                worksheet: worksheet,
+                component: e.component,
+                customizeCell: function (options) {
+                    var excelCell = options;
+                    excelCell.font = { name: 'Arial', size: 12 };
+                    excelCell.alignment = { horizontal: 'left' };
+                }
+            }).then(function () {
+                workbook.xlsx.writeBuffer().then(function (buffer) {
+                    saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'Eğitim Kurumları Listesi' + parseInt(Math.random() * 1000000000) + '.xlsx');
+                });
+            });
+            e.cancel = true;
+        },
+        grouping: {
+            autoExpandAll: true
+        },
+        headerFilter: {
+            visible: true
+        },
+        groupPanel: {
+            visible: true
+        },
         columns: [
             {
-                headerCellTemplate: $('<b style="color: black;">Kurum Adı</b>'),
+                caption: "Kurum Adı",
                 dataField: "hostName",
                 width: 200
             }, {
-                headerCellTemplate: $('<b style="color: black;">Adres</b>'),
+                caption: "Adres",
                 dataField: "address",
-            },{
-                headerCellTemplate: $('<b style="vertical-align:middle; color: black;">Şehir</b>'),
-                 dataField: "cityName",
-                allowSorting: false,
-                allowSearch: false,
-                allowFiltering: false,
-                width:100
+            }, {
+                caption: "Şehir",
+                dataField: "city",
+                lookup: {
+                    dataSource: cities,
+                    displayExpr: "value",
+                    valueExpr: "key"
+                },
+                width: 100
             },
             {
-                headerCellTemplate: $('<b style="vertical-align:middle; color: black;">İşlem</b>'),
-                 allowSearch: false,
+                caption:"İşlem",
+                allowSearch: false,
                 cellTemplate: function (container, options) {
                     var current = options.data;
                     $(`<a title="Görsel Yönetimi" class="btn btn-outline-primary btn-sm" href="/admin/egitim-kurumlari/gorsel-yonetimi?educationHostId=${current.id}"><i class="fa fa-image"></i></a>`)
