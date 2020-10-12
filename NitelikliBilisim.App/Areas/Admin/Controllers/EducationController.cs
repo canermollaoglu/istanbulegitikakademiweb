@@ -13,6 +13,7 @@ using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Services.Abstracts;
+using NitelikliBilisim.Core.ViewModels.HelperVM;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -226,6 +227,31 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 }); ;
             }
             
+        }
+
+
+        [Route("admin/get-education-levels/")]
+        public IActionResult GetEducationLevelEnums()
+        {
+            try
+            {
+                EnumItemVm[] retVal = EnumHelpers.ToKeyValuePair<EducationLevel>().Select(x =>
+            new EnumItemVm { Key = x.Key, Value = x.Value }).ToArray();
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    data = retVal
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { ex.Message }
+                });
+            }
+
         }
     }
 }

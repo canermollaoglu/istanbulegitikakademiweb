@@ -36,15 +36,34 @@
     <script>
         /* fields */
         var confirmModalBuilder = new AlertSupport.ConfirmModalBuilder();
-
+        var resultAlert = new AlertSupport.ResultAlert();
+        var levels = [];
         /* assignments */
         $(document).ready(document_onLoad);
 
         /* events */
         function document_onLoad() {
-            createGrid();
+            loadLevels();
         }
 
+
+        function loadLevels() {
+            $.ajax({
+                url: "/admin/get-education-levels/",
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        levels = res.data;
+                        createGrid();
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: errors
+                        });
+                    }
+                }
+            });
+        }
         /*DataGrid*/
         function createGrid() {
             $("#education-grid").dxDataGrid({
@@ -114,17 +133,17 @@
                 },
                 columns: [
                     {
-                        caption:"",
+                        caption: "",
                         cellTemplate: function (container, options) {
                             var current = options.data;
                             if (current.isActive == true) {
                                 $(`<a href="/admin/egitim-guncelle/${current.id}">
-                                                                                                <i class=\"fa fa-unlock text-success\" style=\"font-size:200%;\"></i></a>`)
+                                                                                                    <i class=\"fa fa-unlock text-success\" style=\"font-size:200%;\"></i></a>`)
                                     .appendTo(container);
                             }
                             else {
                                 $(`<a href="/admin/egitim-guncelle/${current.id}">
-                                                                                                <i class=\"fa fa-lock text-danger\" style=\"font-size:200%;\"></i></a>`)
+                                                                                                    <i class=\"fa fa-lock text-danger\" style=\"font-size:200%;\"></i></a>`)
                                     .appendTo(container);
                             }
                         },
@@ -140,23 +159,28 @@
                         dataField: "categoryName",
                         width: 200
                     },
+                    
                     {
-                        cellTemplate: function (container, options) {
-                            var current = options.data;
-                            $(`<span>${current.days} gün / ${current.hoursPerDay} saat</span>`)
-                                .appendTo(container);
-                        },
-                        caption: "Gün/Saat",
+                        caption: "Gün",
+                        dataField: "days",
                         width: 80
-                    }, {
+                    },
+                    {
+                        caption: "Saat",
+                        dataField: "hoursPerDay",
+                        width: 80
+                    },
+                    {
                         caption: "Seviye",
                         dataField: "level",
-                        width: 60,
-                        alignment: "center",
-                        allowSorting: false,
-                        allowSearch: false,
-                        allowFiltering: false
-                    }, {
+                        lookup: {
+                            dataSource: levels,
+                            displayExpr: "value",
+                            valueExpr: "key"
+                        },
+                        width:120
+                    },
+                    {
                         caption: "İşlem",
                         allowSearch: false,
                         cellTemplate: function (container, options) {
