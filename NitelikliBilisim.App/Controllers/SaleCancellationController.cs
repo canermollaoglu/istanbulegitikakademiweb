@@ -72,13 +72,14 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [HttpPost, Route("iade")]
-        public IActionResult Refund(RefundVm data)
+        public async Task<IActionResult> Refund(RefundVm data)
         {
             decimal refundPrice = 0;
             var conversationId = Guid.NewGuid().ToString();
             var invoiceDetail = _unitOfWork.InvoiceDetail.GetByIdWithOnlinePaymentDetailInfo(data.InvoiceDetailId);
             var group = _unitOfWork.EducationGroup.GetById(invoiceDetail.GroupId);
             var ticket = _unitOfWork.Ticket.GetByInvoiceDetailId(invoiceDetail.Id);
+            
             if (ticket!=null && ticket.IsUsed && DateTime.Now.Date>group.StartDate.Date)
             {//Kısmi İptal (Kalan gün)
                 var education = ticket.Education;
@@ -95,7 +96,16 @@ namespace NitelikliBilisim.App.Controllers
 
             if (refundRequest.Status == PaymentServiceMessages.ResponseSuccess)
             {
+                var user = _unitOfWork.Customer.GetCustomerDetail(ticket.OwnerId);
                 _unitOfWork.Sale.RefundPayment(data.InvoiceDetailId,refundPrice);
+
+                var emails = _unitOfWork.EmailHelper.GetAdminEmails();
+                await _emailSender.SendAsync(new EmailMessage
+                {
+                    Subject = "Nitelikli Bilişim Eğitim İadesi",
+                    Body = $"{user.Name} {user.Surname} ({user.Email}) kullanıcısı tarafından satın alınan {group.GroupName} grubundaki eğitim iade edilmiştir.",
+                    Contacts = emails.ToArray()
+                });
 
                 return Json(new ResponseData
                 {
