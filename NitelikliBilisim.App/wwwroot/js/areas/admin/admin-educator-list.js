@@ -71,11 +71,40 @@ function createGrid() {
         },
         searchPanel: {
             visible: true,
-            width: 240,
-            placeholder: "Search..."
+            width: 240
+        },
+        onExporting: function (e) {
+            var workbook = new ExcelJS.Workbook();
+            var worksheet = workbook.addWorksheet('Eğitmen Listesi');
+            DevExpress.excelExporter.exportDataGrid({
+                worksheet: worksheet,
+                component: e.component,
+                customizeCell: function (options) {
+                    var excelCell = options;
+                    excelCell.font = { name: 'Arial', size: 12 };
+                    excelCell.alignment = { horizontal: 'left' };
+                }
+            }).then(function () {
+                workbook.xlsx.writeBuffer().then(function (buffer) {
+                    saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'Eğitmen Listesi' + parseInt(Math.random() * 1000000000) + '.xlsx');
+                });
+            });
+            e.cancel = true;
+        },
+        export: {
+            enabled: true
+        },
+        headerFilter: {
+            visible: true
+        },
+        grouping: {
+            autoExpandAll: true
+        },
+        groupPanel: {
+            visible: true
         },
         paging: {
-            pageSize: 5
+            pageSize: 10
         },
         onContentReady: function () {
             var deleteButtons = $(".btn-confirmation-modal-trigger");
@@ -91,27 +120,27 @@ function createGrid() {
         },
         columns: [{
             dataField: "fullName",
-            headerCellTemplate: $('<b style="color: black; font-weight: bold">Eğitmen Adı</b>'),
+            caption:"Eğitmen Adı",
             width: 160
         },
         {
             dataField: "title",
-            headerCellTemplate: $('<b style="color: black; font-weight: bold">Ünvan</b>')
+            caption:"Ünvan"
         },
         {
             dataField: "phone",
-            headerCellTemplate: $('<b style="color: black; font-weight: bold">Telefon</b>'),
+            caption:"Telefon",
             width: 130,
             allowSorting: false
         },
         {
             dataField: "email",
-            headerCellTemplate: $('<b style="color: black; font-weight: bold">E-Posta</b>'),
+            caption:"E-Posta",
             width: 280,
             allowSorting: false
         },
         {
-            headerCellTemplate: $('<b style="color: black; font-weight: bold">İşlemler</b>'),
+            caption:"İşlem",
             allowSearch: false,
             cellTemplate: function (container, options) {
                 var current = options.data;

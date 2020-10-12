@@ -70,8 +70,7 @@
                 },
                 searchPanel: {
                     visible: true,
-                    width: 240,
-                    placeholder: "Ara..."
+                    width: 240
                 },
                 paging: {
                     pageSize: 10
@@ -83,67 +82,99 @@
                     allowedPageSizes: [5, 10, 20],
                     showInfo: true
                 },
-                columns: [{
-                    headerCellTemplate: $('<i style="padding:0; color: black; font-weight: bolder">#</i>'),
-                    cellTemplate: function (container, options) {
-                        var current = options.data;
-                        if (current.isActive == true) {
-                            $(`<a href="/admin/egitim-guncelle/${current.id}">
-                                                                                            <i class=\"fa fa-unlock text-success\" style=\"font-size:200%;\"></i></a>`)
-                                .appendTo(container);
+                onExporting: function (e) {
+                    var workbook = new ExcelJS.Workbook();
+                    var worksheet = workbook.addWorksheet('Eğitim Listesi');
+                    DevExpress.excelExporter.exportDataGrid({
+                        worksheet: worksheet,
+                        component: e.component,
+                        customizeCell: function (options) {
+                            var excelCell = options;
+                            excelCell.font = { name: 'Arial', size: 12 };
+                            excelCell.alignment = { horizontal: 'left' };
                         }
-                        else {
-                            $(`<a href="/admin/egitim-guncelle/${current.id}">
-                                                                                            <i class=\"fa fa-lock text-danger\" style=\"font-size:200%;\"></i></a>`)
-                                .appendTo(container);
-                        }
-                    },
-                    alignment: "center"
-                }, {
-                    dataField: "name",
-                    headerCellTemplate: $('<b style="color: black; font-weight: bold">İsmi</b>'),
-                    width: 250
-
-                }, {
-                    headerCellTemplate: $('<b style="color: black; font-weight: bold">Kategorisi</b>'),
-                    dataField: "categoryName",
-                    width: 200
+                    }).then(function () {
+                        workbook.xlsx.writeBuffer().then(function (buffer) {
+                            saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'Eğitim Listesi' + parseInt(Math.random() * 1000000000) + '.xlsx');
+                        });
+                    });
+                    e.cancel = true;
                 },
-                {
-                    cellTemplate: function (container, options) {
-                        var current = options.data;
-                        $(`<span>${current.days} gün / ${current.hoursPerDay} saat</span>`)
-                            .appendTo(container);
+                export: {
+                    enabled: true
+                },
+                headerFilter: {
+                    visible: true
+                },
+                grouping: {
+                    autoExpandAll: true
+                },
+                groupPanel: {
+                    visible: true
+                },
+                columns: [
+                    {
+                        caption:"",
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            if (current.isActive == true) {
+                                $(`<a href="/admin/egitim-guncelle/${current.id}">
+                                                                                                <i class=\"fa fa-unlock text-success\" style=\"font-size:200%;\"></i></a>`)
+                                    .appendTo(container);
+                            }
+                            else {
+                                $(`<a href="/admin/egitim-guncelle/${current.id}">
+                                                                                                <i class=\"fa fa-lock text-danger\" style=\"font-size:200%;\"></i></a>`)
+                                    .appendTo(container);
+                            }
+                        },
+                        alignment: "center"
                     },
-                    headerCellTemplate: $('<b style="color: black; font-weight: bold">Gün / Saat</b>'),
-                    width: 80
-                }, {
-                    dataField: "level",
-                    headerCellTemplate: $('<b style="color: black; font-weight: bold">Seviye</b>'),
-                    width: 60,
-                    alignment: "center",
-                    allowSorting: false,
-                    allowSearch: false,
-                    allowFiltering: false
-                }, {
-                    headerCellTemplate: $('<b style="vertical-align:middle; color: black; font-weight: bold">İşlem</b>'),
-                    allowSearch: false,
-                    cellTemplate: function (container, options) {
-                        var current = options.data;
-                        $(`<a title="Öneri Yönetimi" class="btn btn-warning btn-sm" href="/admin/egitim-oneri-kriteri-yonetimi?educationId=${current.id}"><i class=\"fa fa-lightbulb-o\"></i><span style="display: block"></span></a>`)
-                            .appendTo(container);
-                        $(`<a title="Medya Yönetimi" class="btn btn-primary btn-sm" href="/admin/egitim-medya-yonetimi/${current.id}"><i class=\"fa fa-file-photo-o\"></i><span style="display: block"></span></a>`)
-                            .appendTo(container);
-                        $(`<a title="Parça Yönetimi" class="btn btn-secondary btn-sm" href="/admin/egitim-parca-yonetimi/${current.id}"><i class=\"fa fa-list-ul\"></i><span style="display: block"></span></a>`)
-                            .appendTo(container);
-                        $(`<a title="Neler Öğreneceksiniz?" class="btn btn-info btn-sm" href="/admin/egitim-kazanim-yonetimi/${current.id}"><i class=\"fa fa-gift\"></i><span style="display: block"></span></a>`)
-                            .appendTo(container);
-                        $(`<a title="Eğitmen Ata" class="btn btn-success btn-sm" href="/admin/egitmen-ata/${current.id}"><i class=\"fa fa-users\"></i><span style="display: block"></span></a>`)
-                            .appendTo(container);
+                    {
+                        dataField: "name",
+                        caption: "Eğitim Adı",
+                        width: 250
+
+                    }, {
+                        caption: "Kategori",
+                        dataField: "categoryName",
+                        width: 200
                     },
-                    width: "auto",
-                    alignment: "center"
-                }
+                    {
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            $(`<span>${current.days} gün / ${current.hoursPerDay} saat</span>`)
+                                .appendTo(container);
+                        },
+                        caption: "Gün/Saat",
+                        width: 80
+                    }, {
+                        caption: "Seviye",
+                        dataField: "level",
+                        width: 60,
+                        alignment: "center",
+                        allowSorting: false,
+                        allowSearch: false,
+                        allowFiltering: false
+                    }, {
+                        caption: "İşlem",
+                        allowSearch: false,
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            $(`<a title="Öneri Yönetimi" class="btn btn-warning btn-sm" href="/admin/egitim-oneri-kriteri-yonetimi?educationId=${current.id}"><i class=\"fa fa-lightbulb-o\"></i><span style="display: block"></span></a>`)
+                                .appendTo(container);
+                            $(`<a title="Medya Yönetimi" class="btn btn-primary btn-sm" href="/admin/egitim-medya-yonetimi/${current.id}"><i class=\"fa fa-file-photo-o\"></i><span style="display: block"></span></a>`)
+                                .appendTo(container);
+                            $(`<a title="Parça Yönetimi" class="btn btn-secondary btn-sm" href="/admin/egitim-parca-yonetimi/${current.id}"><i class=\"fa fa-list-ul\"></i><span style="display: block"></span></a>`)
+                                .appendTo(container);
+                            $(`<a title="Neler Öğreneceksiniz?" class="btn btn-info btn-sm" href="/admin/egitim-kazanim-yonetimi/${current.id}"><i class=\"fa fa-gift\"></i><span style="display: block"></span></a>`)
+                                .appendTo(container);
+                            $(`<a title="Eğitmen Ata" class="btn btn-success btn-sm" href="/admin/egitmen-ata/${current.id}"><i class=\"fa fa-users\"></i><span style="display: block"></span></a>`)
+                                .appendTo(container);
+                        },
+                        width: "auto",
+                        alignment: "center"
+                    }
                 ]
             });
         }

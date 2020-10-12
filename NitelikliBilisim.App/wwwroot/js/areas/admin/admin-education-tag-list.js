@@ -73,8 +73,7 @@ function createGrid() {
         },
         searchPanel: {
             visible: true,
-            width: 240,
-            placeholder: "Ara..."
+            width: 240
         },
         paging: {
             pageSize: 10
@@ -91,6 +90,36 @@ function createGrid() {
             allowedPageSizes: [5, 10, 20],
             showInfo: true
         },
+        onExporting: function (e) {
+            var workbook = new ExcelJS.Workbook();
+            var worksheet = workbook.addWorksheet('Eğitim Etiket Listesi');
+            DevExpress.excelExporter.exportDataGrid({
+                worksheet: worksheet,
+                component: e.component,
+                customizeCell: function (options) {
+                    var excelCell = options;
+                    excelCell.font = { name: 'Arial', size: 12 };
+                    excelCell.alignment = { horizontal: 'left' };
+                }
+            }).then(function () {
+                workbook.xlsx.writeBuffer().then(function (buffer) {
+                    saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'Eğitim Etiket Listesi' + parseInt(Math.random() * 1000000000) + '.xlsx');
+                });
+            });
+            e.cancel = true;
+        },
+        export: {
+            enabled: true
+        },
+        headerFilter: {
+            visible: true
+        },
+        grouping: {
+            autoExpandAll: true
+        },
+        groupPanel: {
+            visible: true
+        },
         columns: [{
             caption:"Etiket İsmi",
             dataField: "name",
@@ -105,9 +134,9 @@ function createGrid() {
             allowSearch: false,
             cellTemplate: function (container, options) {
                 var current = options.data;
-                $(`<a title="Güncelle" class="btn btn-warning btn-sm" href="/admin/etiket-guncelle/${current.id}"><i class="fa fa-fw fa-pencil-square-o"></i> </a>`)
+                $(`<a title="Güncelle" class="btn btn-outline-warning btn-sm" href="/admin/etiket-guncelle/${current.id}"><i class="fa fa-fw fa-pencil-square-o"></i> </a>`)
                     .appendTo(container);
-                $(`<button title="Sil" class="btn-confirmation-modal-trigger btn btn-danger btn-sm" data-url="/admin/etiket-sil?tagId=${current.id}" style="cursor:pointer;"><i class="fa fa-trash"></i></button>`)
+                $(`<button title="Sil" class="btn-confirmation-modal-trigger btn btn-outline-danger btn-sm" data-url="/admin/etiket-sil?tagId=${current.id}" style="cursor:pointer;"><i class="fa fa-trash"></i></button>`)
                     .appendTo(container);
             },
             alignment: "center",

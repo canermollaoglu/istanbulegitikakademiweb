@@ -71,8 +71,7 @@ function createGrid() {
         },
         searchPanel: {
             visible: true,
-            width: 240,
-            placeholder: "Ara..."
+            width: 240
         },
         paging: {
             pageSize: 10
@@ -89,22 +88,52 @@ function createGrid() {
             allowedPageSizes: [5, 10, 20],
             showInfo: true
         },
+        onExporting: function (e) {
+            var workbook = new ExcelJS.Workbook();
+            var worksheet = workbook.addWorksheet('Kategori Listesi');
+            DevExpress.excelExporter.exportDataGrid({
+                worksheet: worksheet,
+                component: e.component,
+                customizeCell: function (options) {
+                    var excelCell = options;
+                    excelCell.font = { name: 'Arial', size: 12 };
+                    excelCell.alignment = { horizontal: 'left' };
+                }
+            }).then(function () {
+                workbook.xlsx.writeBuffer().then(function (buffer) {
+                    saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'Kategori Listesi' + parseInt(Math.random() * 1000000000) + '.xlsx');
+                });
+            });
+            e.cancel = true;
+        },
+        export: {
+            enabled: true
+        },
+        headerFilter: {
+            visible: true
+        },
+        grouping: {
+            autoExpandAll: true
+        },
+        groupPanel: {
+            visible: true
+        },
         columns: [{
             dataField: "name",
-            headerCellTemplate: $('<b style="color: black;">Kategori Adı</b>')
+            caption: "Kategori Adı"
         },
         {
             dataField: "description",
-            headerCellTemplate: $('<b style="color: black;">Slogan</b>')
+            caption: "Slogan"
         },
         {
             dataField: "educationDayCount",
-            headerCellTemplate: $('<b style="color: black;">Süre (Gün)</b>'),
-            width: 100,
+            caption:"Süre (Gün)",
+            width: 200,
             alignment:"center"
         },
         {
-            headerCellTemplate: $('<b style="color: black;">İşlem</b>'),
+            caption:"İşlem",
             allowSearch: false,
             cellTemplate: function (container, options) {
                 var current = options.data;
