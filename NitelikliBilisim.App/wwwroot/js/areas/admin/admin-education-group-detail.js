@@ -467,17 +467,24 @@ function getGroupDetailInfo() {
                 $("#newPrice").html(res.data.newPrice != null ? res.data.newPrice + " ₺" : "Fiyat belirtilmemiş.");
                 var alertStyle = "";
 
-                if (res.data.minimumStudentCount <= 0) {
+                if (res.data.assignedStudentsCount==0) {
+                    alertStyle = "alert-warning";
+                    $("#alertMinimumStudent").html(`İlk satıştan sonra %${res.data.expectedProfitRate} karlılık için minimum gereksinimler hesaplanacaktır.`);
+                }
+                else if (res.data.minimumStudentCount <= 0) {
                     alertStyle = "alert-success";
                     $("#alertMinimumStudent").html(`<b>%${res.data.expectedProfitRate}</b> kârlılık sağlanmıştır.`);
                 }
                 else if (res.data.minimumStudentCount < (res.data.quota / 2)) {
                     alertStyle = "alert-danger";
-                    $("#alertMinimumStudent").html(`<b>%${res.data.expectedProfitRate}</b> kârlılık için <b>${res.data.minimumStudentCount}</b> satış daha yapman lazım.`);
-                } else {
-                    alertStyle = "alert-warning";
-                    $("#alertMinimumStudent").html(`<b>%${res.data.expectedProfitRate}</b> kârlılık için <b>${res.data.minimumStudentCount}</b> satış daha yapman lazım.`);
+                    $("#alertMinimumStudent").html(`<b>%${res.data.expectedProfitRate}</b> kârlılık için minimum <b>${res.data.minimumStudentCount}</b> öğrencinin gruba katılması gereklidir.`);
                 }
+                else {
+                    alertStyle = "alert-warning";
+                    $("#alertMinimumStudent").html(`<b>%${res.data.expectedProfitRate}</b> kârlılık için minimum <b>${res.data.minimumStudentCount}</b> öğrencinin gruba katılması gereklidir.`);
+                }
+
+
                 var weekDays = "";
                 $(res.data.weekdayNames).each(function (index, element) {
                     if (index == 0) {
@@ -487,13 +494,17 @@ function getGroupDetailInfo() {
                     }
                 });
                 if (res.data.cancellationCount > 0) {
+                    $("#purchasesDiv").addClass("alert-warning");
                     $("#purchasesItemInfo").html(`Bu eğitimi ${res.data.purchasesCount} kişi satın almış, ${res.data.cancellationCount} kişi iade etmiştir. `);
                 } else {
+                    $("#purchasesDiv").addClass("alert-success");
                     $("#purchasesItemInfo").html(`Bu eğitimi ${res.data.purchasesCount} kişi satın almıştır. Grupta iade yoktur. `);
                 }
                 $("#educationWeekDays").html(weekDays);
                 $("#alertDiv").addClass(alertStyle);
+                if (res.data.newPrice!=null) {
                 inputnewPrice.val(res.data.newPrice);
+                }
             }
         }
     });
