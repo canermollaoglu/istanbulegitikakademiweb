@@ -12,6 +12,7 @@ using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.PaymentModels;
 using NitelikliBilisim.Core.Services.Payments;
 using NitelikliBilisim.Core.ViewModels.Main.Sales;
+using NitelikliBilisim.Notificator.Services;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -20,10 +21,12 @@ namespace NitelikliBilisim.App.Controllers
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly IPaymentService _paymentService;
+        private readonly EmailSender _emailSender;
         public SaleCancellationController(UnitOfWork unitOfWork, IPaymentService paymentService)
         {
             _unitOfWork = unitOfWork;
             _paymentService = paymentService;
+            _emailSender = new EmailSender();
         }
 
         [Route("iptal-formu/{invoiceDetailId?}")]
@@ -36,15 +39,23 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [HttpPost, Route("iptal")]
-        public IActionResult Cancel(CancellationFormPostVm data)
+        public async Task<IActionResult> Cancel(CancellationFormPostVm data)
         {
             var invoice = _unitOfWork.Invoice.GetByIdWithOnlinePaymentInfos(data.InvoiceId);
             var conversationId = Guid.NewGuid().ToString();
             var cancelRequest = _paymentService.CreateCancelRequest(conversationId, invoice.OnlinePaymentInfo.PaymentId, "", RefundReason.BUYER_REQUEST, data.UserDescription);
-
+            var user = _unitOfWork.Customer.GetCustomerDetail(invoice.CustomerId);
             if (cancelRequest.Status == PaymentServiceMessages.ResponseSuccess)
             {
                 _unitOfWork.Sale.CancelPayment(data.InvoiceId);
+
+                var emails = _unitOfWork.EmailHelper.GetAdminEmails();
+                await _emailSender.SendAsync(new EmailMessage
+                {
+                    Subject ="Nitelikli Bilişim Eğitim İptali",
+                    Body = $"{user.Name} {user.Surname} ({user.Email}) kullanıcısı tarafından {invoice.CreatedDate} tarihinde oluşutrulmuş fatura için iptal talebi oluşturulmuştur.",
+                    Contacts = emails.ToArray()
+                });
 
                 return Json(new ResponseData
                 {
