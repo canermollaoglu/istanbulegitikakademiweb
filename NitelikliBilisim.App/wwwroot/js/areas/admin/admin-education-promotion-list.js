@@ -114,7 +114,7 @@ function createGrid() {
             {
                 caption: "Ad",
                 dataField: "name",
-                
+
             },
             {
                 caption: "Kod",
@@ -136,23 +136,9 @@ function createGrid() {
                 width: 100
             },
             {
-                caption: "Maks. Kullanım",
-                dataField: "maxUsageLimit",
-                width: 130
-            },
-            {
-                caption: "Kullanım",
+                caption: "Aktif Kullanım",
                 dataField: "countOfUses",
-                width:100
-            },
-            {
-                caption: "Tutar",
-                dataField: "discountAmount",
-                customizeText: function (discountAmount) {
-                    return discountAmount.value + " ₺";
-                },
-                width: 80
-
+                width: 120
             },
             {
                 caption: "Min. Sepet ",
@@ -163,6 +149,16 @@ function createGrid() {
                 width: 110
 
             },
+            {
+                caption: "İndirim Tutarı",
+                dataField: "discountAmount",
+                customizeText: function (discountAmount) {
+                    return discountAmount.value + " ₺";
+                },
+                width: 120
+
+            },
+            
             {
                 caption: "Durum",
                 dataField: "isActive",
@@ -179,7 +175,7 @@ function createGrid() {
                         .appendTo(container);
                 },
                 alignment: "center",
-                width:120
+                width: 120
             }
         ]
         ,
@@ -187,15 +183,26 @@ function createGrid() {
             enabled: true,
             template: function (container, options) {
                 var current = options.data;
-                console.log(current);
                 $("<div>")
                     .addClass("master-detail-caption")
-                    .text(current.name+" Promosyon Açıklaması")
+                    .text(current.name + " Promosyon Detayları")
                     .appendTo(container);
+                var table = `<table class='table table-bordered'>
+                <thead><tr><td>Maksimum Kullanım</td><td>Kişi Başı Maksimum Kullanım</td><td>Açıklama</td></tr></thead>
+                <tbody><tr>
+
+<td>${current.maxUsageLimit}</td>
+<td>${current.userBasedUsageLimit}</td>
+<td>${current.description}</td>
+
+</tr>
+</tbody>
+                </table>`;
+
                 $("<div>")
-                    .html("<textarea class='form-control' readonly rows='3'>" + current.description + "</textarea>")
+                    .html(table)
                     .appendTo(container);
-                
+
             }
         }
     });
