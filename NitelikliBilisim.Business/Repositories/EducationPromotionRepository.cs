@@ -41,6 +41,22 @@ namespace NitelikliBilisim.Business.Repositories
                  });
         }
 
+        public IQueryable<UsagePromotionListVm> GetUsagePromotionList(Guid promotionCodeId)
+        {
+            return (from user in _context.Users
+                    join promotionUsageItem in _context.EducationPromotionItems on user.Id equals promotionUsageItem.UserId
+                    where promotionUsageItem.EducationPromotionCodeId == promotionCodeId
+                    select new UsagePromotionListVm
+                   {
+                       Id = promotionUsageItem.Id,
+                       DateOfUse = promotionUsageItem.CreatedDate,
+                       StudentId = promotionUsageItem.UserId,
+                       Name = user.Name,
+                       Surname = user.Surname,
+                       InvoiceId = promotionUsageItem.InvoiceId
+                   });
+        }
+
         public bool CheckThePromotionItem(Guid promotionId)
         {
             if (_context.EducationPromotionItems.Any(x => x.EducationPromotionCodeId == promotionId))

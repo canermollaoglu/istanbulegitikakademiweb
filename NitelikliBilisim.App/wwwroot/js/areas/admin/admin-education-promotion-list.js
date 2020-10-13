@@ -158,7 +158,7 @@ function createGrid() {
                 width: 120
 
             },
-            
+
             {
                 caption: "Durum",
                 dataField: "isActive",
@@ -181,30 +181,80 @@ function createGrid() {
         ,
         masterDetail: {
             enabled: true,
-            template: function (container, options) {
-                var current = options.data;
-                $("<div>")
-                    .addClass("master-detail-caption")
-                    .text(current.name + " Promosyon Detayları")
-                    .appendTo(container);
-                var table = `<table class='table table-bordered'>
-                <thead><tr><td>Maksimum Kullanım</td><td>Kişi Başı Maksimum Kullanım</td><td>Açıklama</td></tr></thead>
-                <tbody><tr>
-
-<td>${current.maxUsageLimit}</td>
-<td>${current.userBasedUsageLimit}</td>
-<td>${current.description}</td>
-
-</tr>
-</tbody>
-                </table>`;
-
-                $("<div>")
-                    .html(table)
-                    .appendTo(container);
-
-            }
+            template: masterDetailTemplate
         }
     });
+
+    function masterDetailTemplate(_, masterDetailOptions) {
+        return $("<div>").dxTabPanel({
+            items: [{
+                title: "Detaylar",
+                template: createDetailTabTemplate(masterDetailOptions.data)
+            },
+            {
+                title: "Kullanımlar",
+                template: createUsagePromotionTemplate(masterDetailOptions.data.id),
+            }
+            ]
+        });
+    }
+    function createDetailTabTemplate(data) {
+        var current = data;
+        var table = `<table class='table table-bordered'>` +
+            `<thead><tr><td>Maksimum Kullanım</td><td>Kişi Başı Maksimum Kullanım</td><td>Açıklama</td></tr></thead>` +
+            `<tbody><tr>` +
+            `<td>${current.maxUsageLimit}</td>` +
+            `<td>${current.userBasedUsageLimit}</td>` +
+            `<td>${current.description}</td>` +
+            `</tr></tbody></table>`;
+        return $("<div>")
+            .addClass("master-detail-caption")
+            .text(current.name + " Promosyon Detayları")
+            .html(table);
+
+    }
+
+    function createUsagePromotionTemplate(promotionCodeId) {
+        return function () {
+            return $("<div>").dxDataGrid({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    key: "id",
+                    loadUrl: "../../api/educationpromotion/get-usage-promotion-list?promotionCodeId=" + promotionCodeId
+                }),
+                paging: {
+                    pageSize: 5
+                },
+                showBorders: true,
+                columns: [
+                    {
+                        caption:"Kullanım Tarihi",
+                        dataField: "dateOfUse",
+                        dataType: "date"
+                    },
+                    {
+                        caption:"Ad",
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            $(`<a href="/admin/ogrenci-detay?studentId=${current.studentId}">${current.name}</a>`)
+                                .appendTo(container);
+                        },
+                    },
+                    {
+                        caption:"Soyad",
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            $(`<a href="/admin/ogrenci-detay?studentId=${current.studentId}">${current.surname}</a>`)
+                                .appendTo(container);
+                        },
+                    },
+                    {
+                        caption: "Fatura No",
+                        dataField:"invoiceId"
+                    }
+
+                ]
+            });
+        };
+    }
 
 }
