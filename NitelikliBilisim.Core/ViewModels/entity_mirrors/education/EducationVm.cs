@@ -42,7 +42,7 @@ namespace NitelikliBilisim.Core.ViewModels
         public string Name { get; set; }
         public string CategoryName { get; set; }
         public string Description { get; set; }
-        public string Level { get; set; }
+        public int Level { get; set; }
         public byte HoursPerDay { get; set; }
         public byte Days { get; set; }
         public bool isActive { get; set; }

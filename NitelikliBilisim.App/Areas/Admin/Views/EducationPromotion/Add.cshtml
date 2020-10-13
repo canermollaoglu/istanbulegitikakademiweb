@@ -25,7 +25,10 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Promosyon Kodu</label>
-                                <input class="form-control" type="text" maxlength="7" value="" id="input-code" />
+                                <input class="form-control" onfocusout="checkPromotionCode()" type="text" maxlength="7" value="" id="input-code" />
+                                <div id="promotionCodeValidationFeedback">
+                                    
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -60,7 +63,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Kullanıcı Başına Kullanım Adedi</label>
-                                <input class="form-control" type="number" value="" id="input-user-based-usage-limit" />
+                                <input class="form-control" type="number" value="1" id="input-user-based-usage-limit" />
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -107,6 +110,7 @@
         var inputDescription = $('#input-description');
         var inputCode = $("#input-code");
 
+        var promotionCodeFeedbackDiv = $("#promotionCodeValidationFeedback");
 
         var btnSave = $("#btn-save");
 
@@ -118,6 +122,40 @@
         function document_onLoad() {
             var dateManager = new DateTimeSupport.Manager();
             inputStartDate.val(dateManager.getToday());
+            createPromotionCode();
+        }
+
+        function createPromotionCode() {
+            $.get("/admin/promosyon-kodu-olustur", function (res, status) {
+                inputCode.val(res.data);
+            });
+            
+        }
+
+        function checkPromotionCode() {
+            var promotionCode = inputCode.val();
+            $.ajax({
+                url: "/admin/promosyon-kod-dogrula",
+                method: "get",
+                data: { promotionCode },
+                success: (res) => {
+                    if (res.isSuccess) {
+                        if (res.data) {
+                            inputCode.removeClass("is-invalid");
+                            promotionCodeFeedbackDiv.removeClass("invalid-feedback");
+                            inputCode.addClass("is-valid");
+                            promotionCodeFeedbackDiv.addClass("valid-feedback").text("Promosyon kodu kullanılabilir.");
+                        } else {
+                            inputCode.removeClass("is-valid");
+                            inputCode.addClass("is-invalid");
+                            promotionCodeFeedbackDiv.removeClass("valid-feedback");
+                            promotionCodeFeedbackDiv.addClass("invalid-feedback").text("Promosyon kodu kullanılamaz.");
+                            inputCode.focus();
+                        }
+                    }
+                }
+            });
+
         }
 
         function btnSave_onClick() {

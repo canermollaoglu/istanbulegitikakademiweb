@@ -7,6 +7,7 @@ using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_groups;
@@ -87,29 +88,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 {
                     isSuccess = true,
                     data = groupDetail
-                });
-            }
-            catch (Exception ex)
-            {
-                return Json(new ResponseModel
-                {
-                    isSuccess = false,
-                    errors = new List<string> { $"Hata : {ex.Message}" }
-                });
-            }
-        }
-
-
-        [Route("admin/get-group-general-information/{groupId?}")]
-        public IActionResult GetGroupGeneralInformation(Guid groupId)
-        {
-            try
-            {
-                var model = _unitOfWork.EducationGroup.GetGroupGeneralInformation(groupId);
-                return Json(new ResponseModel
-                {
-                    isSuccess = true,
-                    data = model
                 });
             }
             catch (Exception ex)
@@ -239,6 +217,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 data = model
             });
         }
+
         [Route("admin/get-class-rooms-by-host-id/{hostId?}")]
         public IActionResult GetClassRoomsByHostId(Guid? hostId)
         {
@@ -306,17 +285,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
         }
 
-        [Route("admin/gruba-ogrenci-ata/{groupId?}")]
-        public IActionResult AssignStudents(Guid? groupId)
-        {
-            if (!groupId.HasValue)
-                return Redirect("/admin/gruplar");
-
-            var model = _unitOfWork.EducationGroup.GetAssignStudentsVm(groupId.Value);
-
-            return View(model);
-        }
-
         [Route("admin/get-eligible-and-assigned-students/{groupId?}")]
         public IActionResult GetEligibleAndAssignedStudents(Guid? groupId)
         {
@@ -352,23 +320,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 isSuccess = true
             });
         }
-        [Route("make-sure-lesson-days-created/{groupId}")]
-        public IActionResult CreateGroupLessonDays(Guid groupId)
-        {
-            var groupDays = _unitOfWork.WeekDaysOfGroup.GetById(groupId);
-            List<int> daysInt = null;
-            if (groupDays != null)
-                daysInt = JsonConvert.DeserializeObject<List<int>>(groupDays.DaysJson);
-
-            _unitOfWork.GroupLessonDay.CreateGroupLessonDays(
-                group: _unitOfWork.EducationGroup.Get(x => x.Id == groupId, null, x => x.Education).FirstOrDefault(),
-                daysInt: daysInt,
-                unwantedDays: new List<DateTime>(),
-                isReset: true);
-
-            return Json(true);
-        }
-
 
         [Route("admin/calculate-group-expense-and-income/{groupId}")]
         public IActionResult CalculateGroupExpensesAndIncome(Guid groupId)
@@ -424,11 +375,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult PostponementOfGroup(PostponementGroupVm data)
+        public async Task<IActionResult> PostponementOfGroup(PostponementGroupVm data)
         {
             try
             {
                 var group = _unitOfWork.EducationGroup.GetById(data.GroupId);
+                var education = _unitOfWork.Education.GetById(group.EducationId);
                 if (group.StartDate.Date <= DateTime.Now.Date)
                     return Json(new ResponseModel
                     {
@@ -437,6 +389,13 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     });
 
                 _unitOfWork.GroupLessonDay.PostponeLessons(data.GroupId, data.StartDate);
+                var emails = _unitOfWork.EmailHelper.GetEmailsOfStudentsByGroup(data.GroupId);
+                await _emailSender.SendAsync(new EmailMessage
+                {
+                    Subject="Nitelikli Bilişim Eğitim Tarihi Değişikliği",
+                    Body =$"Katıldığınız {education.Name} eğitimi {data.StartDate} tarihinden itibaren devam edecek şekilde güncellenmiştir.",
+                    Contacts = emails.ToArray()
+                });
                 return Json(new ResponseModel
                 {
                     isSuccess = true
@@ -476,5 +435,25 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             }
 
         }
+
+
+        #region Aktif olarak kullanılmayan Actionlar
+        [Route("make-sure-lesson-days-created/{groupId}")]
+        public IActionResult CreateGroupLessonDays(Guid groupId)
+        {
+            var groupDays = _unitOfWork.WeekDaysOfGroup.GetById(groupId);
+            List<int> daysInt = null;
+            if (groupDays != null)
+                daysInt = JsonConvert.DeserializeObject<List<int>>(groupDays.DaysJson);
+
+            _unitOfWork.GroupLessonDay.CreateGroupLessonDays(
+                group: _unitOfWork.EducationGroup.Get(x => x.Id == groupId, null, x => x.Education).FirstOrDefault(),
+                daysInt: daysInt,
+                unwantedDays: new List<DateTime>(),
+                isReset: true);
+
+            return Json(true);
+        }
+        #endregion
     }
 }

@@ -28,5 +28,14 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.WebAPI
             return Ok(DataSourceLoader.Load(data, loadOptions));
         }
 
+        [HttpGet]
+        [Route("get-usage-promotion-list")]
+        public IActionResult GetUsagePromotionList(DataSourceLoadOptions loadOptions,Guid promotionCodeId)
+        {
+            loadOptions.PrimaryKey = new[] { "Id" };
+            var data = _unitOfWork.EducationPromotionCode.GetUsagePromotionList(promotionCodeId);
+            return Ok(DataSourceLoader.Load(data, loadOptions));
+        }
+        
     }
 }

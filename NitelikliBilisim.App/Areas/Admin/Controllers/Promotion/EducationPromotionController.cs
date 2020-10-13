@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MUsefulMethods;
 using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
@@ -183,6 +184,48 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Promotion
             
         }
 
+        [Route("admin/promosyon-kodu-olustur")]
+        public IActionResult CreatePromotionCode()
+        {
+            bool isUnique = false;
+            var code = string.Empty;
+            while (!isUnique)
+            {
+                code = StringHelpers.GenerateUpperCode(7);
+                isUnique = IsUniquePromotionCode(code);
+            }
 
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = code
+            });
+        }
+
+
+        [Route("admin/promosyon-kod-dogrula")]
+        public IActionResult CheckPromotionCode(string promotionCode)
+        {
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = IsUniquePromotionCode(promotionCode)
+            }); 
+
+        }
+
+        /// <summary>
+        /// Promosyon kodu Db ye daha önce kaydolmamış ise true döner
+        /// </summary>
+        /// <param name="promotionCode"></param>
+        /// <returns></returns>
+        public bool IsUniquePromotionCode(string promotionCode)
+        {
+           var code = _unitOfWork.EducationPromotionCode.GetPromotionbyPromotionCode(promotionCode);
+            if (code == null)
+                return true;
+            else
+                return false;
+        }
     }
 }

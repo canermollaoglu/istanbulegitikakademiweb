@@ -17,5 +17,6 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_promotion
         public Guid Id { get; set; }
         public string Name { get; set; }
         public int CountOfUses { get; set; }
+        public int UserBasedUsageLimit { get; set; }
     }
 }

@@ -116,8 +116,7 @@ function createGrid() {
                 caption: "Kayıt Tarihi",
                 dataField: "createdDate",
                 dataType: "date",
-                format: 'dd/MM/yyyy',
-                width:120
+                format: 'dd/MM/yyyy'
             },
             {
                 caption: "Adı",
@@ -137,14 +136,12 @@ function createGrid() {
             },
             {
                 caption: "Meslek",
-                dataField: "job",
-                width: 110
+                dataField: "job"
 
             },
             {
                 caption: "NBUY",
-                dataField: "isNbuyStudent",
-                width: 110
+                dataField: "isNbuyStudent"
             },
             {
                 caption: "NBUY Kategorisi",

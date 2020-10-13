@@ -39,7 +39,7 @@ namespace NitelikliBilisim.Business.Repositories
                        Name = e.Name,
                        Description = e.Description,
                        CategoryName = c.Name,
-                       Level = EnumHelpers.GetDescription(e.Level),
+                       Level = (int)e.Level,
                        Days = e.Days,
                        HoursPerDay = e.HoursPerDay,
                        isActive = e.IsActive

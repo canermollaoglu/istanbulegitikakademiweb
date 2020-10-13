@@ -293,6 +293,17 @@ namespace NitelikliBilisim.Business.Repositories
                         Body = $"{ticket.Education.Name} eğitimi için {firstGroup.StartDate.ToShortDateString()} tarihinde başlayacak olan {firstGroup.GroupName} grubuna atamanız yapılmıştır.",
                         Contacts = new string[] { ticket.Owner.User.Email }
                     }));
+                    var adminEmails = GetAdminEmails();
+                    if (groupStudentsCount>=firstGroup.Quota-3)
+                    {
+                        Task.Run(() => _emailSender.SendAsync(new EmailMessage
+                        {
+                            Subject = "Grup Kontenjan Bilgisi | Nitelikli Bilişim",
+                            Body = $"{firstGroup.GroupName} Grup kontenjanının dolması için {firstGroup.Quota-groupStudentsCount} kayıt kalmıştır.",
+                            Contacts =  adminEmails.ToArray()
+                        }));
+                    }
+
                 }
                 return true;
             }
@@ -300,6 +311,15 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 return false;
             }
+        }
+        public List<string> GetAdminEmails()
+        {
+            return _context.UserRoles
+                .Include(x => x.Role)
+                .Include(x => x.User)
+                .Where(x => x.Role.Name == "Admin")
+                .Select(x => x.User.Email)
+                .ToList();
         }
         private bool Auto__UnassignTickets(List<Guid> invoiceDetailsIds)
         {

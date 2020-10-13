@@ -85,17 +85,47 @@ function createGrid() {
             allowedPageSizes: [5, 10, 20],
             showInfo: true
         },
+        export: {
+            enabled: true
+        },
+        onExporting: function (e) {
+            var workbook = new ExcelJS.Workbook();
+            var worksheet = workbook.addWorksheet('Eğitmen Sertifika Listesi');
+            DevExpress.excelExporter.exportDataGrid({
+                worksheet: worksheet,
+                component: e.component,
+                customizeCell: function (options) {
+                    var excelCell = options;
+                    excelCell.font = { name: 'Arial', size: 12 };
+                    excelCell.alignment = { horizontal: 'left' };
+                }
+            }).then(function () {
+                workbook.xlsx.writeBuffer().then(function (buffer) {
+                    saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'Egitmen Sertifika Listesi' + parseInt(Math.random() * 1000000000) + '.xlsx');
+                });
+            });
+            e.cancel = true;
+        },
+        grouping: {
+            autoExpandAll: true
+        },
+        headerFilter: {
+            visible: true
+        },
+        groupPanel: {
+            visible: true
+        },
         columns: [
             {
                 dataField: "name",
-                headerCellTemplate: $('<b style="color: black;">Sertifika Adı</b>'),
+                caption:"Sertifika Adı",
                 width: 300
             }, {
                 dataField: "description",
-                headerCellTemplate: $('<b style="color: black;">Açıklaması</b>'),
+                caption:"Açıklama"
 
             }, {
-                headerCellTemplate: $('<b style="vertical-align:middle; color: black;">İşlem</b>'),
+                caption:"İşlem",
                 allowSearch: false,
                 cellTemplate: function (container, options) {
                     var current = options.data;

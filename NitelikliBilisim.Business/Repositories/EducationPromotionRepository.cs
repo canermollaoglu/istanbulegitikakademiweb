@@ -35,8 +35,26 @@ namespace NitelikliBilisim.Business.Repositories
                      DiscountAmount = promotionCode.DiscountAmount,
                      MinBasketAmount = promotionCode.MinBasketAmount,
                      IsActive = DateTime.Now.Date < promotionCode.EndDate && DateTime.Now >= promotionCode.StartDate ? "Aktif" : "Pasif",
-                     CountOfUses = promotionCode.EducationPromotionItems.Count
+                     CountOfUses = promotionCode.EducationPromotionItems.Count,
+                     UserBasedUsageLimit = promotionCode.UserBasedUsageLimit
+
                  });
+        }
+
+        public IQueryable<UsagePromotionListVm> GetUsagePromotionList(Guid promotionCodeId)
+        {
+            return (from user in _context.Users
+                    join promotionUsageItem in _context.EducationPromotionItems on user.Id equals promotionUsageItem.UserId
+                    where promotionUsageItem.EducationPromotionCodeId == promotionCodeId
+                    select new UsagePromotionListVm
+                   {
+                       Id = promotionUsageItem.Id,
+                       DateOfUse = promotionUsageItem.CreatedDate,
+                       StudentId = promotionUsageItem.UserId,
+                       Name = user.Name,
+                       Surname = user.Surname,
+                       InvoiceId = promotionUsageItem.InvoiceId
+                   });
         }
 
         public bool CheckThePromotionItem(Guid promotionId)
