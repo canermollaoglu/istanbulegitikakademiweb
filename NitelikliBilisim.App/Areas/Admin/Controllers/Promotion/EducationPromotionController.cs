@@ -6,6 +6,7 @@ using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Enums.promotion;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_promotion;
 using System;
 using System.Collections.Generic;
@@ -31,6 +32,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Promotion
         public IActionResult Add()
         {
             ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationPromotionAdd");
+            ViewData["PromotionTypes"] = EnumHelpers.ToKeyValuePair<PromotionType>();
             return View();
         }
 
