@@ -1,5 +1,6 @@
 ﻿using NitelikliBilisim.Core.Abstracts;
 using NitelikliBilisim.Core.Entities.educations;
+using NitelikliBilisim.Core.Enums.promotion;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -14,6 +15,7 @@ namespace NitelikliBilisim.Core.Entities
         {
             Id = Guid.NewGuid();
         }
+        public PromotionType PromotionType { get; set; }
         public string Name { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
