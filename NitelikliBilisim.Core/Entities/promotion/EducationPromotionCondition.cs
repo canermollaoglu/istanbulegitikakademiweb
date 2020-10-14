@@ -6,9 +6,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace NitelikliBilisim.Core.Entities.promotion
 {
     [Table("EducationPromotionConditions")]
-    public class EducationPromotionConditions:BaseEntity<Guid>
+    public class EducationPromotionCondition:BaseEntity<Guid>
     {
-        public EducationPromotionConditions()
+        public EducationPromotionCondition()
         {
             Id = Guid.NewGuid();
         }

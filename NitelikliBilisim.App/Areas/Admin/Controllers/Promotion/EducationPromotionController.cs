@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MUsefulMethods;
+using Newtonsoft.Json;
 using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Entities.promotion;
 using NitelikliBilisim.Core.Enums.promotion;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_promotion;
 using System;
@@ -76,7 +78,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Promotion
 
             try
             {
-                _unitOfWork.EducationPromotionCode.Insert(new EducationPromotionCode
+               var promotionId = _unitOfWork.EducationPromotionCode.Insert(new EducationPromotionCode
                 {
                     Name = data.Name,
                     Description = data.Description,
@@ -91,7 +93,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Promotion
 
                 return Json(new ResponseModel
                 {
-                    isSuccess = true
+                    isSuccess = true,
+                    data = promotionId
                 });
             }
             catch (Exception ex)
@@ -215,6 +218,57 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Promotion
             }); 
 
         }
+
+
+        [Route("admin/promosyon-kosul")]
+        public IActionResult PromotionConditionManagement(Guid promotionId)
+        {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationPromotionConditionManagement");
+            ViewData["PromotionId"] = promotionId;
+            ViewData["ConditionTypes"] = EnumHelpers.ToKeyValuePair<ConditionType>();
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddPromotionCondition(EducationPromotionConditionAddVm data)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelStateUtil.GetErrors(ModelState);
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = errors
+                });
+            }
+
+            try
+            {
+                _unitOfWork.EducationPromotionCondition.Insert(new EducationPromotionCondition
+                {
+                    ConditionType = data.ConditionType,
+                    ConditionValue = JsonConvert.SerializeObject(data.MultipleValue),
+                    
+                });
+
+                return Json(new ResponseModel
+                {
+                    isSuccess = true
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Hata " + ex.Message }
+
+                });
+            }
+
+        }
+
 
         /// <summary>
         /// Promosyon kodu Db ye daha önce kaydolmamış ise true döner

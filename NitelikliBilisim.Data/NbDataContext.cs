@@ -11,6 +11,7 @@ using NitelikliBilisim.Core.Entities.blog;
 using NitelikliBilisim.Core.Entities.educations;
 using NitelikliBilisim.Core.Entities.groups;
 using NitelikliBilisim.Core.Entities.helper;
+using NitelikliBilisim.Core.Entities.promotion;
 using NitelikliBilisim.Core.Entities.user_details;
 
 namespace NitelikliBilisim.Data
@@ -149,6 +150,7 @@ namespace NitelikliBilisim.Data
         public DbSet<Bridge_BlogPostTag> Bridge_BlogPostTags { get; set; }
         public DbSet<GroupExpense> GroupExpenses { get; set; }
         public DbSet<GroupExpenseType> GroupExpenseTypes { get; set; }
+        public DbSet<EducationPromotionCondition> EducationPromotionConditions{ get; set; }
 
     }
 }

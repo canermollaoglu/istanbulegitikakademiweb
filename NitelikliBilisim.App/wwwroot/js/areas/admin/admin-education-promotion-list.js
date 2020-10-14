@@ -169,13 +169,15 @@ function createGrid() {
                 allowSearch: false,
                 cellTemplate: function (container, options) {
                     var current = options.data;
+                    $(`<a class="btn btn-outline-primary btn-sm" href="/admin/promosyon-kosul?promotionId=${current.id}">Koşullar</a>`)
+                        .appendTo(container);
                     $(`<a class="btn btn-outline-primary btn-sm" href="/admin/promosyon-guncelle?promotionId=${current.id}">Düzenle</a>`)
                         .appendTo(container);
                     $(`<button title="Sil" class="btn-confirmation-modal-trigger btn btn-outline-danger btn-sm" data-url="/admin/promosyon-sil?promotionId=${current.id}" style="cursor:pointer;">Sil</button>`)
                         .appendTo(container);
                 },
                 alignment: "center",
-                width: 120
+                width: 220
             }
         ]
         ,

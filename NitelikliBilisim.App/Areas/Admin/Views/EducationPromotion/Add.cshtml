@@ -211,14 +211,7 @@
                 data: data,
                 success: (res) => {
                     if (res.isSuccess) {
-                        resultAlert.display({
-                            success: true,
-                            message: "Kayıt işlemi başarılı! Listeye gitmek için {link}",
-                            redirectElement: {
-                                content: "tıklayınız",
-                                link: "/admin/promosyonlar"
-                            }
-                        });
+                        location.href = '/admin/promosyon-kosul?promotionId=' + res.data;
                     } else {
                         resultAlert.display({
                             success: false,

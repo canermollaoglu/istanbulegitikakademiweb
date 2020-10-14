@@ -53,6 +53,7 @@ namespace NitelikliBilisim.Business.UoW
         private EducationHostClassroomRepository _educationHostClassroomRepository;
         private EducationPromotionCodeRepository _educationPromotionCodeRepository;
         private EducationPromotionItemRepository _educationPromotionItemRepository;
+        private EducationPromotionConditionRepository _educationPromotionConditionRepository;
 
         private IElasticClient _elasticClient;
         private IConfiguration _configuration;
@@ -67,6 +68,8 @@ namespace NitelikliBilisim.Business.UoW
             _context.EnsureAutoHistory();
             return _context.SaveChanges();
         }
+
+        public EducationPromotionConditionRepository EducationPromotionCondition => _educationPromotionConditionRepository ??= new EducationPromotionConditionRepository(_context);
         public EducationPromotionItemRepository EducationPromotionItem => _educationPromotionItemRepository ??= new EducationPromotionItemRepository(_context);
         public EducationPromotionCodeRepository EducationPromotionCode => _educationPromotionCodeRepository ??= new EducationPromotionCodeRepository(_context);
         public EducationHostClassroomRepository ClassRoom => _educationHostClassroomRepository ??= new EducationHostClassroomRepository(_context);
