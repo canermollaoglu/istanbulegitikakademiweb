@@ -12,6 +12,7 @@ using NitelikliBilisim.Core.Enums.promotion;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_promotion;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers.Promotion
 {
@@ -229,6 +230,29 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Promotion
             return View();
         }
 
+        public IActionResult GetPromotionConditions(Guid promotionId)
+        {
+            try
+            {
+                var conditions = _unitOfWork.EducationPromotionCondition.Get(x => x.EducationPromotionCodeId == promotionId).ToList();
+
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    data = conditions
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Hata :"+ex.Message}
+                });
+            }
+
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult AddPromotionCondition(EducationPromotionConditionAddVm data)
@@ -249,7 +273,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Promotion
                 {
                     ConditionType = data.ConditionType,
                     ConditionValue = JsonConvert.SerializeObject(data.MultipleValue),
-                    
+                    EducationPromotionCodeId = data.PromotionId
                 });
 
                 return Json(new ResponseModel

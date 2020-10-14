@@ -16,5 +16,9 @@ namespace NitelikliBilisim.Core.Entities.promotion
         public ConditionType ConditionType { get; set; }
         public string ConditionValue { get; set; }
 
+        [ForeignKey("EducationPromotionCode")]
+        public Guid EducationPromotionCodeId { get; set; }
+        public virtual EducationPromotionCode EducationPromotionCode { get; set; }
+
     }
 }

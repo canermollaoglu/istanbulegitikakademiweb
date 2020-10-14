@@ -82,6 +82,7 @@
         btnAdd.on("click", btnAdd_onClick);
         btnUpdate.on("click", btnUpdate_onClick);
 
+
         /* events */
         function document_onLoad() {
             switch (selectConditionTypes.val()) {
@@ -96,41 +97,8 @@
                     case "1030": getCategoriesSelect(); break;
                 }
             });
-        }
+            getPromotionConditions();
 
-        function btnUpdate_onClick() {
-            btnUpdate.off("click");
-            var data = {
-                Id: $('#educationSuggestionCriterionId').val(),
-                MinValue: $('#upd_maxVal').val(),
-                MaxValue: $('#upd_minVal').val(),
-                CharValue: $('#upd_SelectEducationList').val()
-            };
-            var tokenVerifier = new SecuritySupport.TokenVerifier();
-            data = tokenVerifier.addToken("form-update-education-suggestion-criterion", data);
-            $.ajax({
-                url: "/admin/educationsuggestioncriterion/update",
-                method: "post",
-                data: data,
-                success: (res) => {
-                    if (res.isSuccess) {
-                        getEducationSuggestionCriterions();
-                        $('#educationSuggestionCriterionModal').modal("hide");
-                        $("#form-update-education-suggestion-criterion")[0].reset();
-                        resultAlert.display({
-                            success: true,
-                            message: res.message
-                        });
-                        btnUpdate.on("click", btnUpdate_onClick);
-                    } else {
-                        resultAlert.display({
-                            success: false,
-                            errors: res.errors
-                        });
-                        btnUpdate.on("click", btnUpdate_onClick);
-                    }
-                }
-            });
         }
         function btnAdd_onClick() {
             btnAdd.off("click");
@@ -201,7 +169,6 @@
             divMultipleVal.hide();
             divSingleVal.show();
         }
-
         function getUsersSelect() {
             divMultipleVal.show();
             divSingleVal.hide();
@@ -225,7 +192,6 @@
                 }
             });
         }
-
         function getEducationsSelect() {
             divMultipleVal.show();
             divSingleVal.hide();
@@ -249,7 +215,6 @@
                 }
             });
         }
-
         function getCategoriesSelect() {
 
             divMultipleVal.show();
@@ -274,5 +239,32 @@
                 }
             });
         }
+
+        function getPromotionConditions() {
+
+            if (!_promotionId)
+                return;
+
+            $.ajax({
+                url: `/admin/educationpromotion/getpromotionconditions?promotionId=${_promotionId}`,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        console.log(res.data);
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors
+                        });
+                    }
+                }
+            });
+        }
+
+        function createPromotionConditionTable(data) {
+
+
+        }
+
     </script>
 }
