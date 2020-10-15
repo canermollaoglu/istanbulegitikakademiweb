@@ -55,6 +55,8 @@
                             <tr>
                                 <td><b>Koşul Tipi</b></td>
                                 <td><b>Değerler</b></td>
+                                <td><b>İşlem</b></td>
+
                             </tr>
                         </thead>
                         <tbody id="condition-table">
@@ -95,6 +97,7 @@
 
         /* events */
         function document_onLoad() {
+            
             switch (selectConditionTypes.val()) {
                 case "1010": getUsersSelect(); break;
                 case "1020": getEducationsSelect(); break;
@@ -157,7 +160,7 @@
                 method: "get",
                 success: (res) => {
                     if (res.isSuccess) {
-                        getEducationSuggestionCriterions();
+                        getPromotionConditions();
                         resultAlert.display({
                             success: true,
                             message: "Kayıt başarıyla silinmiştir"
@@ -283,10 +286,25 @@
                         values += (`<li>${value}</li>`);
                     })
                     console.log(values);
-                    content += `<tr><td style="vertical-align:middle;">${element.conditionType}</td><td>${values}</td></tr>`;
+                    content += `<tr><td style="vertical-align:middle;">${element.conditionType}</td><td>${values}</td><td><button title="Sil" class="btn-confirmation-modal-trigger btn btn-danger btn-sm" data-url="/admin/promosyon-kosul-sil?promotionConditionId=${element.id}" style="cursor:pointer;"><i class="fa fa-trash"></i></button></td></tr>`;
                 }
             conditionTableTbody.append(content);
+            createDeleteButtons();
         }
+        function createDeleteButtons() {
+            var deleteButtons = $(".btn-confirmation-modal-trigger");
+            for (var i = 0; i < deleteButtons.length; i++) {
+                var btn = deleteButtons[i];
+                btn.onclick = btnConfirmationModalTrigger_onClick;
+            }
+            confirmModalBuilder.buildModal({
+                title: "Emin misiniz?",
+                bodyText: "Seçmiş olduğunuz kayıt kalıcı olarak silinecektir.",
+                cancelText: "Hayır, iptal et",
+                confirmText: "Evet, eminim",
+                onConfirmClick: confirm_onClick
+            });
+        };
 
     </script>
 }

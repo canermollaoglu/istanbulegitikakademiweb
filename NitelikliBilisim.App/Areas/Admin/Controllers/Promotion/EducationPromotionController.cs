@@ -344,6 +344,28 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Promotion
 
         }
 
+        [HttpGet]
+        [Route("admin/promosyon-kosul-sil")]
+        public IActionResult DeletePromotionCondition(Guid promotionConditionId)
+        {
+            try
+            {
+                _unitOfWork.EducationPromotionCondition.Delete(promotionConditionId);
+                return Json(new ResponseModel
+                {
+                    isSuccess = true
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Hata " + ex.Message }
+
+                });
+            }
+        }
 
         /// <summary>
         /// Promosyon kodu Db ye daha önce kaydolmamış ise true döner
