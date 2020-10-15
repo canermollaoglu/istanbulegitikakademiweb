@@ -52,6 +52,7 @@ function document_onLoad() {
     inputCvc.payform('formatCardCVC');
     inputPhone.mask("(000) 000 0000");
     isIndividual.value = true;
+    
     getPromotionInfo();
 }
 function customerType_onChange() {
@@ -227,10 +228,33 @@ function getPromotionInfo() {
                 $("#promotion-info").html(`Kupon Kodu :${res.data.promotionCode}  <b> ${res.data.discountAmount}</b>`);
                 calculateTotalPrice();
                 _promotionCode.val(res.data.promotionCode);
+            } else {
+                getBasketBasedPromotion();
             }
         }
     });
 }
+
+function getBasketBasedPromotion() {
+        var items = _cart.getItems();
+        var data = {
+            Items: items
+        };
+        $.ajax({
+            url: "/get-basked-based-promotion",
+            method: "post",
+            data: data,
+            success: (res) => {
+                if (res.isSuccess) {
+                    inputPromotionDiscountAmount.val(res.data.discountAmount);
+                    $("#promotion-info").html(`Kampanya :${res.data.name}  <b> ${res.data.discountAmount}</b>`);
+                    calculateTotalPrice();
+                    _promotionCode.val(res.data.promotionCode);
+                }
+            }
+        });
+}
+
 function appendCartItems(data) {
     tbodyCartItems.html("");
 

@@ -100,8 +100,7 @@ namespace NitelikliBilisim.App.Controllers
             if (data == null || data.Items == null)
                 return Json(new ResponseModel
                 {
-                    isSuccess = false,
-                    errors = new List<string> { "" }
+                    isSuccess = false
 
                 });
 
@@ -119,8 +118,8 @@ namespace NitelikliBilisim.App.Controllers
             {
                 int userBasedItemCount = _unitOfWork.EducationPromotionCode.GetEducationPromotionItemCountByUserId(promotion.Id, userId);
                 int promotionItemCount = _unitOfWork.EducationPromotionCode.GetEducationPromotionItemByPromotionCodeId(promotion.Id);
-                
-                if (userBasedItemCount+1<=promotion.UserBasedUsageLimit && promotionItemCount+1<=promotion.MaxUsageLimit)
+
+                if (userBasedItemCount + 1 <= promotion.UserBasedUsageLimit && promotionItemCount + 1 <= promotion.MaxUsageLimit)
                 {
                     applicatePromotionIds.Add(promotion.Id);
                     foreach (var condition in promotion.EducationPromotionConditions)
@@ -155,20 +154,31 @@ namespace NitelikliBilisim.App.Controllers
                 }
             }
 
-           var applicatePromotion = promotions.Where(x => applicatePromotionIds.Contains(x.Id)).OrderByDescending(x => x.DiscountAmount).FirstOrDefault();
-            var model = new BasketBasedPromotionVm
+            var applicatePromotion = promotions.Where(x => applicatePromotionIds.Contains(x.Id)).OrderByDescending(x => x.DiscountAmount).FirstOrDefault();
+            if (applicatePromotion != null)
             {
-                DiscountAmount = applicatePromotion.DiscountAmount,
-                Name = applicatePromotion.Name
-            };
-            return Json(new ResponseModel
+                var model = new BasketBasedPromotionVm
+                {
+                    DiscountAmount = applicatePromotion.DiscountAmount,
+                    Name = applicatePromotion.Name
+                };
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    data = model
+                });
+            }
+            else
             {
-                isSuccess = true,
-                data = model
-            });
+                return Json(new ResponseModel
+                {
+                    isSuccess = false
+
+                });
+            }
         }
 
-        
+
 
         [HttpPost, IgnoreAntiforgeryToken, Route("get-promotion")]
         public IActionResult GetPromotion(GetPromotionCodeData data)
@@ -176,8 +186,7 @@ namespace NitelikliBilisim.App.Controllers
             if (string.IsNullOrEmpty(data.PromotionCode))
                 return Json(new ResponseModel
                 {
-                    isSuccess = false,
-                    errors = new List<string> { "Kod alanı boş geçilemez." }
+                    isSuccess = false
 
                 });
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -543,7 +552,7 @@ namespace NitelikliBilisim.App.Controllers
                     var ids = JsonConvert.DeserializeObject<Guid[]>(condition.ConditionValue);
                     var cartItemsEducationIds = cartItems.Select(x => x.EducationId).ToList();
                     var cartItemCategoryIds = allEducations.Where(x => cartItemsEducationIds.Contains(x.Id)).Select(x => x.CategoryId).ToList();
-                    if (!cartItemCategoryIds.Any(x=>ids.Contains(x)))
+                    if (!cartItemCategoryIds.Any(x => ids.Contains(x)))
                     {
                         return new ResponseData
                         {
