@@ -1,5 +1,6 @@
 ﻿using NitelikliBilisim.Core.Abstracts;
 using NitelikliBilisim.Core.Entities.educations;
+using NitelikliBilisim.Core.Entities.promotion;
 using NitelikliBilisim.Core.Enums.promotion;
 using System;
 using System.Collections.Generic;
@@ -27,5 +28,6 @@ namespace NitelikliBilisim.Core.Entities
         public decimal DiscountAmount { get; set; }
         public decimal MinBasketAmount { get; set; }
         public virtual List<EducationPromotionItem> EducationPromotionItems { get; set; }
+        public virtual List<EducationPromotionCondition> EducationPromotionConditions { get; set; }
     }
 }

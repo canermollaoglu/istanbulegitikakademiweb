@@ -453,6 +453,11 @@ namespace NitelikliBilisim.Business.Repositories
             return data;
         }
 
+        public IQueryable<Education> GetAllEducationsWithCategory()
+        {
+            return Context.Educations.Include(x => x.Category);
+        }
+
         public List<EducationVm> GetEducationsByCategory(string category, int page = 0, OrderCriteria order = OrderCriteria.Latest)
         {
             var shownResults = 3;

@@ -95,7 +95,7 @@ namespace NitelikliBilisim.Business.Repositories
 
         public EducationPromotionCode GetPromotionbyPromotionCode(string promotionCode)
         {
-                return _context.EducationPromotionCodes.FirstOrDefault(x => x.PromotionCode == promotionCode);
+                return _context.EducationPromotionCodes.Include(x=>x.EducationPromotionConditions).FirstOrDefault(x => x.PromotionCode == promotionCode);
         }
 
     }

@@ -15,6 +15,7 @@ using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Entities.educations;
+using NitelikliBilisim.Core.Enums.promotion;
 using NitelikliBilisim.Core.PaymentModels;
 using NitelikliBilisim.Core.Services.Payments;
 using NitelikliBilisim.Core.ViewModels.Cart;
@@ -104,8 +105,7 @@ namespace NitelikliBilisim.App.Controllers
 
                 });
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var totalBasketAmount = GetPriceSumForCartItems(data.Items);
-            var retVal = CheckPromotionCode(userId, data.PromotionCode, totalBasketAmount);
+            var retVal = CheckPromotionCode(userId, data.PromotionCode, data.Items);
 
             if (retVal.Success)
             {
@@ -144,8 +144,7 @@ namespace NitelikliBilisim.App.Controllers
             decimal discountAmount = 0m;
             if (!string.IsNullOrEmpty(data.PromotionCode))
             {
-                decimal totalBasketAmount = GetPriceSumForCartItems(data.CartItems);
-                var response = CheckPromotionCode(userId, data.PromotionCode, totalBasketAmount);
+                var response = CheckPromotionCode(userId, data.PromotionCode, data.CartItems);
                 if (response.Success)
                 {
                     var promotion = (EducationPromotionCode)response.Data;
@@ -228,7 +227,7 @@ namespace NitelikliBilisim.App.Controllers
             if (!string.IsNullOrEmpty(data.PromotionCode))
             {
                 decimal totalBasketAmount = GetPriceSumForCartItems(data.CartItems);
-                var response = CheckPromotionCode(userId, data.PromotionCode, totalBasketAmount);
+                var response = CheckPromotionCode(userId, data.PromotionCode, data.CartItems);
                 if (response.Success)
                 {
                     promotion = (EducationPromotionCode)response.Data;
@@ -421,7 +420,7 @@ namespace NitelikliBilisim.App.Controllers
         }
 
 
-        public ResponseData CheckPromotionCode(string userId, string promotionCode, decimal basketAmount)
+        public ResponseData CheckPromotionCode(string userId, string promotionCode, List<_CartItem> cartItems)
         {
             var promotion = _unitOfWork.EducationPromotionCode.GetPromotionbyPromotionCode(promotionCode);
             if (promotion == null)
@@ -432,9 +431,11 @@ namespace NitelikliBilisim.App.Controllers
                     Message = "Girdiğiniz koda ait kupon bulunamamıştır."
                 };
             }
+            decimal totalBasketAmount = GetPriceSumForCartItems(cartItems);
+            var allEducations = _unitOfWork.Education.GetAllEducationsWithCategory();
             int userBasedItemCount = _unitOfWork.EducationPromotionCode.GetEducationPromotionItemCountByUserId(promotion.Id, userId);
             int promotionItemCount = _unitOfWork.EducationPromotionCode.GetEducationPromotionItemByPromotionCodeId(promotion.Id);
-            
+
             if (userBasedItemCount + 1 > promotion.UserBasedUsageLimit || promotionItemCount + 1 > promotion.MaxUsageLimit)
             {
                 return new ResponseData
@@ -444,7 +445,7 @@ namespace NitelikliBilisim.App.Controllers
                 };
             }
 
-            if (basketAmount < promotion.MinBasketAmount)
+            if (totalBasketAmount < promotion.MinBasketAmount)
             {
                 return new ResponseData
                 {
@@ -453,7 +454,7 @@ namespace NitelikliBilisim.App.Controllers
                 };
             }
 
-            if (DateTime.Now.Date<promotion.StartDate.Date || DateTime.Now.Date>promotion.EndDate.Date)
+            if (DateTime.Now.Date < promotion.StartDate.Date || DateTime.Now.Date > promotion.EndDate.Date)
             {
                 return new ResponseData
                 {
@@ -461,6 +462,49 @@ namespace NitelikliBilisim.App.Controllers
                     Message = "Kupon kodunun süresi dolduğu için aktif edilememektedir."
                 };
             }
+            foreach (var condition in promotion.EducationPromotionConditions)
+            {
+                if (condition.ConditionType == ConditionType.Category)
+                {
+                    var ids = JsonConvert.DeserializeObject<Guid[]>(condition.ConditionValue);
+                    var cartItemsEducationIds = cartItems.Select(x => x.EducationId).ToList();
+                    var cartItemCategoryIds = allEducations.Where(x => cartItemsEducationIds.Contains(x.Id)).Select(x => x.CategoryId).ToList();
+                    if (!cartItemCategoryIds.Any(x=>ids.Contains(x)))
+                    {
+                        return new ResponseData
+                        {
+                            Success = false,
+                            Message = "Geçerli şartlar sağlanmadığı için indirim aktif edilemiyor. 1"
+                        };
+                    }
+                }
+                else if (condition.ConditionType == ConditionType.Education)
+                {
+                    var ids = JsonConvert.DeserializeObject<Guid[]>(condition.ConditionValue);
+                    if (!cartItems.Any(x => ids.Contains(x.EducationId)))
+                    {
+                        return new ResponseData
+                        {
+                            Success = false,
+                            Message = "Geçerli şartlar sağlanmadığı için indirim aktif edilemiyor. 2"
+                        };
+
+                    }
+                }
+                else if (condition.ConditionType == ConditionType.User)
+                {
+                    var ids = JsonConvert.DeserializeObject<string[]>(condition.ConditionValue);
+                    if (!ids.Contains(userId))
+                    {
+                        return new ResponseData
+                        {
+                            Success = false,
+                            Message = "Geçerli şartlar sağlanmadığı için indirim aktif edilemiyor. 3"
+                        };
+                    }
+                }
+            }
+
 
 
             return new ResponseData
