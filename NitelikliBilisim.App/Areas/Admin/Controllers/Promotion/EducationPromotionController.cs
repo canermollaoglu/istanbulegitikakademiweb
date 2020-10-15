@@ -30,7 +30,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Promotion
             ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationPromotionList");
             return View();
         }
-
+        [Route("admin/sepet-bazli-promosyonlar")]
         public IActionResult BasketBasedPromotionList()
         {
             ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationPromotionList");
@@ -64,7 +64,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Promotion
                 MinBasketAmount = data.MinBasketAmount,
                 PromotionCode = data.PromotionCode,
                 MaxUsageLimit = data.MaxUsageLimit,
-                Name = data.Name
+                Name = data.Name,
+                PromotionType = data.PromotionType
             };
             return View(model);
         }

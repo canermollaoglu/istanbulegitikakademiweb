@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NitelikliBilisim.Core.Enums.promotion;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -16,5 +17,6 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_promotion
         public string PromotionCode { get; set; }
         public int MaxUsageLimit { get; set; }
         public string Name { get; set; }
+        public PromotionType PromotionType { get; set; }
     }
 }
