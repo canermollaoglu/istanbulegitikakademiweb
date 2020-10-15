@@ -30,6 +30,13 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Promotion
             ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationPromotionList");
             return View();
         }
+
+        public IActionResult BasketBasedPromotionList()
+        {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationPromotionList");
+            return View();
+        }
+
         [HttpGet]
         [Route("admin/promosyon-olustur")]
         public IActionResult Add()
@@ -89,7 +96,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Promotion
                     UserBasedUsageLimit = data.UserBasedUsageLimit,
                     MaxUsageLimit = data.MaxUsageLimit,
                     MinBasketAmount = data.MinBasketAmount,
-                    PromotionCode = data.PromotionCode
+                    PromotionCode = data.PromotionCode,
+                    PromotionType =data.PromotionType
                 });
 
                 return Json(new ResponseModel

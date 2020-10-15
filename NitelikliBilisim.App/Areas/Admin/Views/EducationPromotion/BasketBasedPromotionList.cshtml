@@ -1,0 +1,42 @@
+﻿
+@{
+    ViewData["Title"] = "Eğitim Promosyonları Listesi";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    <style>
+        #tag-grid {
+            margin-top: -15px !important;
+        }
+
+        #gridContainer {
+            height: 620px;
+        }
+
+        .dx-datagrid-rowsview .dx-master-detail-row:not(.dx-datagrid-edit-form) > .dx-datagrid-group-space,
+        .dx-datagrid-rowsview .dx-master-detail-row:not(.dx-datagrid-edit-form) .dx-master-detail-cell {
+            background-color: transparent;
+        }
+
+        .form-container {
+            padding: 20px;
+        }
+    </style>
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-table"></i> Promosyonlar
+    </div>
+    <div class="card-body">
+        <div id="promotion-grid"></div>
+    </div>
+    <div class="card-footer small text-muted">Veri tarihi: @DateTime.Now</div>
+</div>
+
+@section postScripts{
+    <script src="~/js/areas/admin/admin-basket-based-education-promotion-list.js"></script>
+}

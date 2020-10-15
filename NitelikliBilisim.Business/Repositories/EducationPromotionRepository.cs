@@ -19,10 +19,11 @@ namespace NitelikliBilisim.Business.Repositories
             _context = context;
         }
 
-        public IQueryable<EducationPromotionCodeListVm> GetPromotionCodeList()
+        public IQueryable<EducationPromotionCodeListVm> GetCouponCodeBasedPromotionList()
         {
 
             return _context.EducationPromotionCodes.Include(x => x.EducationPromotionItems)
+                .Where(x=>x.PromotionType == Core.Enums.promotion.PromotionType.CouponCode)
                  .Select(promotionCode => new EducationPromotionCodeListVm
                  {
                      Id = promotionCode.Id,
@@ -38,6 +39,26 @@ namespace NitelikliBilisim.Business.Repositories
                      CountOfUses = promotionCode.EducationPromotionItems.Count,
                      UserBasedUsageLimit = promotionCode.UserBasedUsageLimit
 
+                 });
+        }
+
+        public IQueryable<EducationBasketBasedPromotionListVm> GetBasketBasedPromotionList()
+        {
+            return _context.EducationPromotionCodes.Include(x => x.EducationPromotionItems)
+                .Where(x => x.PromotionType == Core.Enums.promotion.PromotionType.BasketBased)
+                 .Select(promotionCode => new EducationBasketBasedPromotionListVm
+                 {
+                     Id = promotionCode.Id,
+                     Name = promotionCode.Name,
+                     StartDate = promotionCode.StartDate,
+                     EndDate = promotionCode.EndDate,
+                     Description = promotionCode.Description,
+                     MaxUsageLimit = promotionCode.MaxUsageLimit,
+                     DiscountAmount = promotionCode.DiscountAmount,
+                     MinBasketAmount = promotionCode.MinBasketAmount,
+                     IsActive = DateTime.Now.Date < promotionCode.EndDate && DateTime.Now >= promotionCode.StartDate ? "Aktif" : "Pasif",
+                     CountOfUses = promotionCode.EducationPromotionItems.Count,
+                     UserBasedUsageLimit = promotionCode.UserBasedUsageLimit
                  });
         }
 

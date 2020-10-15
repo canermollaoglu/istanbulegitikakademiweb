@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NitelikliBilisim.Core.Enums.promotion;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_promotion
@@ -21,5 +22,6 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_promotion
         public decimal DiscountAmount { get; set; }
         [Required(ErrorMessage = "Minimum sepet tutarı boş geçilemez.")]
         public decimal MinBasketAmount { get; set; }
+        public PromotionType PromotionType { get; set; }
     }
 }

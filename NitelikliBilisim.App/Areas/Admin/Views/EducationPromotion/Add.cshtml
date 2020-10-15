@@ -202,7 +202,8 @@
                 MaxUsageLimit: inputMaxUsageLimit.val(),
                 UserBasedUsageLimit: inputUserBasedUsageLimit.val(),
                 DiscountAmount: inputDiscountAmount.val(),
-                MinBasketAmount: inputMinBasketAmount.val()
+                MinBasketAmount: inputMinBasketAmount.val(),
+                PromotionType: selectPromotionType.value
             });
             var resultAlert = new AlertSupport.ResultAlert();
             $.ajax({

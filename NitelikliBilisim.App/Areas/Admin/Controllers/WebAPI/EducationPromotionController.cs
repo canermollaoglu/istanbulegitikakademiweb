@@ -20,11 +20,19 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.WebAPI
         }
 
         [HttpGet]
-        [Route("get-promotion-list")]
-        public IActionResult GetCustomerList(DataSourceLoadOptions loadOptions)
+        [Route("get-coupon-code-based-promotion-list")]
+        public IActionResult GetCouponCodeBasedPromotionList(DataSourceLoadOptions loadOptions)
         {
             loadOptions.PrimaryKey = new[] { "Id" };
-            var data = _unitOfWork.EducationPromotionCode.GetPromotionCodeList();
+            var data = _unitOfWork.EducationPromotionCode.GetCouponCodeBasedPromotionList();
+            return Ok(DataSourceLoader.Load(data, loadOptions));
+        }
+        [HttpGet]
+        [Route("get-basket-based-promotion-list")]
+        public IActionResult GetBasketBasedPromotionList(DataSourceLoadOptions loadOptions)
+        {
+            loadOptions.PrimaryKey = new[] { "Id" };
+            var data = _unitOfWork.EducationPromotionCode.GetBasketBasedPromotionList();
             return Ok(DataSourceLoader.Load(data, loadOptions));
         }
 
