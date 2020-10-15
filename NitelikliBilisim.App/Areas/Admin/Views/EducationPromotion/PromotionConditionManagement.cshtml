@@ -50,7 +50,17 @@
                     <i class="fa fa-table"></i> Koşul Listesi
                 </div>
                 <div class="card-body">
-                    <div id="blog-category-grid"></div>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <td><b>Koşul Tipi</b></td>
+                                <td><b>Değerler</b></td>
+                            </tr>
+                        </thead>
+                        <tbody id="condition-table">
+
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -73,14 +83,14 @@
         var selectMultipleValues = $("#select-multiple-values");
         var inputSingleValue = $("#input-single-value");
 
+        var conditionTableTbody = $("#condition-table");
+
         /* elements */
         var btnAdd = $("#btn-save");
-        var btnUpdate = $("#btn-update");
 
         /* assignments */
         $(document).ready(document_onLoad);
         btnAdd.on("click", btnAdd_onClick);
-        btnUpdate.on("click", btnUpdate_onClick);
 
 
         /* events */
@@ -118,8 +128,9 @@
                     if (res.isSuccess) {
                         resultAlert.display({
                             success: true,
-                            message: res.message
+                            message: 'Koşul başarılı bir şekilde eklenmiştir.'
                         });
+                        getPromotionConditions();
                         btnAdd.on("click", btnAdd_onClick);
                     } else {
                         resultAlert.display({
@@ -250,7 +261,7 @@
                 method: "get",
                 success: (res) => {
                     if (res.isSuccess) {
-                        console.log(res.data);
+                        createPromotionConditionTable(res.data);
                     } else {
                         resultAlert.display({
                             success: false,
@@ -262,8 +273,19 @@
         }
 
         function createPromotionConditionTable(data) {
-
-
+            conditionTableTbody.empty();
+            var content = "";
+            if (data.length != 0)
+                for (var i = 0; i < data.length; i++) {
+                    var element = data[i];
+                    var values = "";
+                    $.each(element.conditionValues, function (index, value) {
+                        values += (`<li>${value}</li>`);
+                    })
+                    console.log(values);
+                    content += `<tr><td style="vertical-align:middle;">${element.conditionType}</td><td>${values}</td></tr>`;
+                }
+            conditionTableTbody.append(content);
         }
 
     </script>

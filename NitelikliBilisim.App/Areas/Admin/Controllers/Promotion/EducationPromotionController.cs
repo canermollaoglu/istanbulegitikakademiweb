@@ -48,7 +48,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Promotion
             var data = _unitOfWork.EducationPromotionCode.GetById(promotionId);
             var model = new EducationPromotionUpdateGetVm
             {
-                Id=data.Id,
+                Id = data.Id,
                 StartDate = data.StartDate,
                 EndDate = data.EndDate,
                 Description = data.Description,
@@ -79,7 +79,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Promotion
 
             try
             {
-               var promotionId = _unitOfWork.EducationPromotionCode.Insert(new EducationPromotionCode
+                var promotionId = _unitOfWork.EducationPromotionCode.Insert(new EducationPromotionCode
                 {
                     Name = data.Name,
                     Description = data.Description,
@@ -89,7 +89,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Promotion
                     UserBasedUsageLimit = data.UserBasedUsageLimit,
                     MaxUsageLimit = data.MaxUsageLimit,
                     MinBasketAmount = data.MinBasketAmount,
-                    PromotionCode = data.PromotionCode 
+                    PromotionCode = data.PromotionCode
                 });
 
                 return Json(new ResponseModel
@@ -167,7 +167,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Promotion
                     return Json(new ResponseModel
                     {
                         isSuccess = false,
-                        errors = new List<string> {"Promosyon kullanımları olduğu için silinemiyor."}
+                        errors = new List<string> { "Promosyon kullanımları olduğu için silinemiyor." }
 
                     });
                 }
@@ -187,7 +187,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Promotion
                 });
             }
 
-            
+
         }
 
         [Route("admin/promosyon-kodu-olustur")]
@@ -216,7 +216,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Promotion
             {
                 isSuccess = true,
                 data = IsUniquePromotionCode(promotionCode)
-            }); 
+            });
 
         }
 
@@ -234,12 +234,63 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Promotion
         {
             try
             {
+                List<EducationPromotionGetListVm> model = new List<EducationPromotionGetListVm>();
                 var conditions = _unitOfWork.EducationPromotionCondition.Get(x => x.EducationPromotionCodeId == promotionId).ToList();
-
+                foreach (var condition in conditions)
+                {
+                    List<string> values = new List<string>();
+                    if (condition.ConditionType == ConditionType.Category)
+                    {
+                        var categories = _unitOfWork.EducationCategory.Get().ToList();
+                        var ids = JsonConvert.DeserializeObject<Guid[]>(condition.ConditionValue);
+                        foreach (var id in ids)
+                        {
+                            values.Add(categories.First(x => x.Id == id).Name);
+                        }
+                        model.Add(new EducationPromotionGetListVm()
+                        {
+                            Id = condition.Id,
+                            ConditionType = EnumHelpers.GetDescription(condition.ConditionType),
+                            ConditionValues = values
+                        });
+                    }
+                    else if (condition.ConditionType == ConditionType.Education)
+                    {
+                        var educations = _unitOfWork.Education.Get().ToList();
+                        var ids = JsonConvert.DeserializeObject<Guid[]>(condition.ConditionValue);
+                        foreach (var id in ids)
+                        {
+                            values.Add(educations.First(x => x.Id == id).Name);
+                        }
+                        model.Add(new EducationPromotionGetListVm()
+                        {
+                            Id = condition.Id,
+                            ConditionType = EnumHelpers.GetDescription(condition.ConditionType),
+                            ConditionValues = values
+                        });
+                    }
+                    else if (condition.ConditionType == ConditionType.User)
+                    {
+                        var users = _unitOfWork.Customer.GetCustomerListQueryable().ToList();
+                        var ids = JsonConvert.DeserializeObject<string[]>(condition.ConditionValue);
+                        foreach (var id in ids)
+                        {
+                            var user = users.FirstOrDefault(x => x.Id == id);
+                            if (user != null)
+                                values.Add($"{user.Name} {user.Surname}");
+                        }
+                        model.Add(new EducationPromotionGetListVm()
+                        {
+                            Id = condition.Id,
+                            ConditionType = EnumHelpers.GetDescription(condition.ConditionType),
+                            ConditionValues = values
+                        });
+                    }
+                }
                 return Json(new ResponseModel
                 {
                     isSuccess = true,
-                    data = conditions
+                    data = model
                 });
             }
             catch (Exception ex)
@@ -247,7 +298,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Promotion
                 return Json(new ResponseModel
                 {
                     isSuccess = false,
-                    errors = new List<string> { "Hata :"+ex.Message}
+                    errors = new List<string> { "Hata :" + ex.Message }
                 });
             }
 
@@ -301,7 +352,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Promotion
         /// <returns></returns>
         public bool IsUniquePromotionCode(string promotionCode)
         {
-           var code = _unitOfWork.EducationPromotionCode.GetPromotionbyPromotionCode(promotionCode);
+            var code = _unitOfWork.EducationPromotionCode.GetPromotionbyPromotionCode(promotionCode);
             if (code == null)
                 return true;
             else
