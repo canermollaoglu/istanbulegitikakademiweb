@@ -3,6 +3,7 @@ using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Entities.educations;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_promotion;
 using NitelikliBilisim.Core.ViewModels.Main.Cart;
+using NitelikliBilisim.Core.ViewModels.Sales;
 using NitelikliBilisim.Data;
 using System;
 using System.Collections.Generic;
@@ -78,6 +79,11 @@ namespace NitelikliBilisim.Business.Repositories
                    });
         }
 
+        public IQueryable<EducationPromotionCode> GetBasketBasedPromotions()
+        {
+           return _context.EducationPromotionCodes.Include(x => x.EducationPromotionConditions).Where(x => x.PromotionType == Core.Enums.promotion.PromotionType.BasketBased);
+        }
+
         public bool CheckThePromotionItem(Guid promotionId)
         {
             if (_context.EducationPromotionItems.Any(x => x.EducationPromotionCodeId == promotionId))
@@ -113,6 +119,8 @@ namespace NitelikliBilisim.Business.Repositories
         {
             return _context.EducationPromotionItems.Count(x => x.EducationPromotionCodeId == promotionCodeId);
         }
+
+
 
         public EducationPromotionCode GetPromotionbyPromotionCode(string promotionCode)
         {

@@ -94,6 +94,82 @@ namespace NitelikliBilisim.App.Controllers
             });
         }
 
+        [HttpPost, IgnoreAntiforgeryToken, Route("get-basked-based-promotion")]
+        public IActionResult GetBaskedBasedPromotion(GetCartItemsData data)
+        {
+            if (data == null || data.Items == null)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "" }
+
+                });
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            decimal totalBasketAmount = GetPriceSumForCartItems(data.Items);
+            var promotions = _unitOfWork.EducationPromotionCode.GetBasketBasedPromotions()
+                .Where(x => x.StartDate.Date <= DateTime.Now.Date
+                && x.EndDate.Date > DateTime.Now.Date
+                && x.MinBasketAmount < totalBasketAmount).ToList();
+
+            var applicatePromotionIds = new List<Guid>();
+            var allEducations = _unitOfWork.Education.GetAllEducationsWithCategory();
+            foreach (var promotion in promotions)
+            {
+                int userBasedItemCount = _unitOfWork.EducationPromotionCode.GetEducationPromotionItemCountByUserId(promotion.Id, userId);
+                int promotionItemCount = _unitOfWork.EducationPromotionCode.GetEducationPromotionItemByPromotionCodeId(promotion.Id);
+                
+                if (userBasedItemCount+1<=promotion.UserBasedUsageLimit && promotionItemCount+1<=promotion.MaxUsageLimit)
+                {
+                    applicatePromotionIds.Add(promotion.Id);
+                    foreach (var condition in promotion.EducationPromotionConditions)
+                    {
+                        if (condition.ConditionType == ConditionType.Category)
+                        {
+                            var ids = JsonConvert.DeserializeObject<Guid[]>(condition.ConditionValue);
+                            var cartItemsEducationIds = data.Items.Select(x => x.EducationId).ToList();
+                            var cartItemCategoryIds = allEducations.Where(x => cartItemsEducationIds.Contains(x.Id)).Select(x => x.CategoryId).ToList();
+                            if (!cartItemCategoryIds.Any(x => ids.Contains(x)))
+                            {
+                                applicatePromotionIds.Remove(promotion.Id);
+                            }
+                        }
+                        else if (condition.ConditionType == ConditionType.Education)
+                        {
+                            var ids = JsonConvert.DeserializeObject<Guid[]>(condition.ConditionValue);
+                            if (!data.Items.Any(x => ids.Contains(x.EducationId)))
+                            {
+                                applicatePromotionIds.Remove(promotion.Id);
+                            }
+                        }
+                        else if (condition.ConditionType == ConditionType.User)
+                        {
+                            var ids = JsonConvert.DeserializeObject<string[]>(condition.ConditionValue);
+                            if (!ids.Contains(userId))
+                            {
+                                applicatePromotionIds.Remove(promotion.Id);
+                            }
+                        }
+                    }
+                }
+            }
+
+           var applicatePromotion = promotions.Where(x => applicatePromotionIds.Contains(x.Id)).OrderByDescending(x => x.DiscountAmount).FirstOrDefault();
+            var model = new BasketBasedPromotionVm
+            {
+                DiscountAmount = applicatePromotion.DiscountAmount,
+                Name = applicatePromotion.Name
+            };
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = model
+            });
+        }
+
+        
+
         [HttpPost, IgnoreAntiforgeryToken, Route("get-promotion")]
         public IActionResult GetPromotion(GetPromotionCodeData data)
         {
@@ -402,7 +478,6 @@ namespace NitelikliBilisim.App.Controllers
             return View(retVal);
         }
 
-
         [NonAction]
         public string FormatCardNumber(string cardNumber)
         {
@@ -418,7 +493,6 @@ namespace NitelikliBilisim.App.Controllers
             var retVal = totalPrice - discount;
             return retVal;
         }
-
 
         public ResponseData CheckPromotionCode(string userId, string promotionCode, List<_CartItem> cartItems)
         {
