@@ -134,6 +134,7 @@
                             message: 'Koşul başarılı bir şekilde eklenmiştir.'
                         });
                         getPromotionConditions();
+                        clearSelects();
                         btnAdd.on("click", btnAdd_onClick);
                     } else {
                         resultAlert.display({
@@ -253,7 +254,11 @@
                 }
             });
         }
+        function clearSelects() {
+            selectConditionTypes.val(1010);
+            getUsersSelect();
 
+        }
         function getPromotionConditions() {
 
             if (!_promotionId)

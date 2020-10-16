@@ -283,6 +283,7 @@ namespace NitelikliBilisim.App.Controllers
             }
             else if(basketBasedPromotion!=null)
             {
+                promotion = basketBasedPromotion;
                 discountAmount = basketBasedPromotion.DiscountAmount;
                 data.DiscountAmount = basketBasedPromotion.DiscountAmount;
             }
