@@ -105,62 +105,14 @@ namespace NitelikliBilisim.App.Controllers
                 });
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var promotion = CheckBasketBasedPromotion(userId, data.Items);
 
-            decimal totalBasketAmount = GetPriceSumForCartItems(data.Items);
-            var promotions = _unitOfWork.EducationPromotionCode.GetBasketBasedPromotions()
-                .Where(x => x.StartDate.Date <= DateTime.Now.Date
-                && x.EndDate.Date > DateTime.Now.Date
-                && x.MinBasketAmount < totalBasketAmount).ToList();
-
-            var applicatePromotionIds = new List<Guid>();
-            var allEducations = _unitOfWork.Education.GetAllEducationsWithCategory();
-            foreach (var promotion in promotions)
-            {
-                int userBasedItemCount = _unitOfWork.EducationPromotionCode.GetEducationPromotionItemCountByUserId(promotion.Id, userId);
-                int promotionItemCount = _unitOfWork.EducationPromotionCode.GetEducationPromotionItemByPromotionCodeId(promotion.Id);
-
-                if (userBasedItemCount + 1 <= promotion.UserBasedUsageLimit && promotionItemCount + 1 <= promotion.MaxUsageLimit)
-                {
-                    applicatePromotionIds.Add(promotion.Id);
-                    foreach (var condition in promotion.EducationPromotionConditions)
-                    {
-                        if (condition.ConditionType == ConditionType.Category)
-                        {
-                            var ids = JsonConvert.DeserializeObject<Guid[]>(condition.ConditionValue);
-                            var cartItemsEducationIds = data.Items.Select(x => x.EducationId).ToList();
-                            var cartItemCategoryIds = allEducations.Where(x => cartItemsEducationIds.Contains(x.Id)).Select(x => x.CategoryId).ToList();
-                            if (!cartItemCategoryIds.Any(x => ids.Contains(x)))
-                            {
-                                applicatePromotionIds.Remove(promotion.Id);
-                            }
-                        }
-                        else if (condition.ConditionType == ConditionType.Education)
-                        {
-                            var ids = JsonConvert.DeserializeObject<Guid[]>(condition.ConditionValue);
-                            if (!data.Items.Any(x => ids.Contains(x.EducationId)))
-                            {
-                                applicatePromotionIds.Remove(promotion.Id);
-                            }
-                        }
-                        else if (condition.ConditionType == ConditionType.User)
-                        {
-                            var ids = JsonConvert.DeserializeObject<string[]>(condition.ConditionValue);
-                            if (!ids.Contains(userId))
-                            {
-                                applicatePromotionIds.Remove(promotion.Id);
-                            }
-                        }
-                    }
-                }
-            }
-
-            var applicatePromotion = promotions.Where(x => applicatePromotionIds.Contains(x.Id)).OrderByDescending(x => x.DiscountAmount).FirstOrDefault();
-            if (applicatePromotion != null)
+             if (promotion != null)
             {
                 var model = new BasketBasedPromotionVm
                 {
-                    DiscountAmount = applicatePromotion.DiscountAmount,
-                    Name = applicatePromotion.Name
+                    DiscountAmount = promotion.DiscountAmount,
+                    Name = promotion.Name
                 };
                 return Json(new ResponseModel
                 {
@@ -309,6 +261,7 @@ namespace NitelikliBilisim.App.Controllers
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             decimal discountAmount = 0m;
             EducationPromotionCode promotion = null;
+            var basketBasedPromotion = CheckBasketBasedPromotion(userId, data.CartItems);
             if (!string.IsNullOrEmpty(data.PromotionCode))
             {
                 decimal totalBasketAmount = GetPriceSumForCartItems(data.CartItems);
@@ -327,6 +280,11 @@ namespace NitelikliBilisim.App.Controllers
                         errors = new List<string> { response.Message }
                     });
                 }
+            }
+            else if(basketBasedPromotion!=null)
+            {
+                discountAmount = basketBasedPromotion.DiscountAmount;
+                data.DiscountAmount = basketBasedPromotion.DiscountAmount;
             }
 
             data.CardInfo.NumberOnCard = FormatCardNumber(data.CardInfo.NumberOnCard);
@@ -597,6 +555,62 @@ namespace NitelikliBilisim.App.Controllers
             };
 
         }
+
+        public EducationPromotionCode CheckBasketBasedPromotion(string userId, List<_CartItem> cartItems)
+        {
+            decimal totalBasketAmount = GetPriceSumForCartItems(cartItems);
+            var promotions = _unitOfWork.EducationPromotionCode.GetBasketBasedPromotions()
+                .Where(x => x.StartDate.Date <= DateTime.Now.Date
+                && x.EndDate.Date > DateTime.Now.Date
+                && x.MinBasketAmount < totalBasketAmount).ToList();
+
+            var applicatePromotionIds = new List<Guid>();
+            var allEducations = _unitOfWork.Education.GetAllEducationsWithCategory();
+            foreach (var promotion in promotions)
+            {
+                int userBasedItemCount = _unitOfWork.EducationPromotionCode.GetEducationPromotionItemCountByUserId(promotion.Id, userId);
+                int promotionItemCount = _unitOfWork.EducationPromotionCode.GetEducationPromotionItemByPromotionCodeId(promotion.Id);
+
+                if (userBasedItemCount + 1 <= promotion.UserBasedUsageLimit && promotionItemCount + 1 <= promotion.MaxUsageLimit)
+                {
+                    applicatePromotionIds.Add(promotion.Id);
+                    foreach (var condition in promotion.EducationPromotionConditions)
+                    {
+                        if (condition.ConditionType == ConditionType.Category)
+                        {
+                            var ids = JsonConvert.DeserializeObject<Guid[]>(condition.ConditionValue);
+                            var cartItemsEducationIds = cartItems.Select(x => x.EducationId).ToList();
+                            var cartItemCategoryIds = allEducations.Where(x => cartItemsEducationIds.Contains(x.Id)).Select(x => x.CategoryId).ToList();
+                            if (!cartItemCategoryIds.Any(x => ids.Contains(x)))
+                            {
+                                applicatePromotionIds.Remove(promotion.Id);
+                            }
+                        }
+                        else if (condition.ConditionType == ConditionType.Education)
+                        {
+                            var ids = JsonConvert.DeserializeObject<Guid[]>(condition.ConditionValue);
+                            if (!cartItems.Any(x => ids.Contains(x.EducationId)))
+                            {
+                                applicatePromotionIds.Remove(promotion.Id);
+                            }
+                        }
+                        else if (condition.ConditionType == ConditionType.User)
+                        {
+                            var ids = JsonConvert.DeserializeObject<string[]>(condition.ConditionValue);
+                            if (!ids.Contains(userId))
+                            {
+                                applicatePromotionIds.Remove(promotion.Id);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return promotions.Where(x => applicatePromotionIds.Contains(x.Id)).OrderByDescending(x => x.DiscountAmount).FirstOrDefault();
+
+
+        }
+
     }
 
 
