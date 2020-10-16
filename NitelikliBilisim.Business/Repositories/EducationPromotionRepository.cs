@@ -38,7 +38,8 @@ namespace NitelikliBilisim.Business.Repositories
                      MinBasketAmount = promotionCode.MinBasketAmount,
                      IsActive = DateTime.Now.Date < promotionCode.EndDate && DateTime.Now >= promotionCode.StartDate ? "Aktif" : "Pasif",
                      CountOfUses = promotionCode.EducationPromotionItems.Count,
-                     UserBasedUsageLimit = promotionCode.UserBasedUsageLimit
+                     UserBasedUsageLimit = promotionCode.UserBasedUsageLimit,
+                     PromotionType=promotionCode.PromotionType
 
                  });
         }
@@ -59,7 +60,8 @@ namespace NitelikliBilisim.Business.Repositories
                      MinBasketAmount = promotionCode.MinBasketAmount,
                      IsActive = DateTime.Now.Date < promotionCode.EndDate && DateTime.Now >= promotionCode.StartDate ? "Aktif" : "Pasif",
                      CountOfUses = promotionCode.EducationPromotionItems.Count,
-                     UserBasedUsageLimit = promotionCode.UserBasedUsageLimit
+                     UserBasedUsageLimit = promotionCode.UserBasedUsageLimit,
+                     PromotionType = promotionCode.PromotionType
                  });
         }
 

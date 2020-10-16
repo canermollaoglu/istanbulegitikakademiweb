@@ -1,4 +1,4 @@
-﻿
+﻿@using NitelikliBilisim.Core.Enums.promotion
 @{
     ViewData["Title"] = "Promosyon Koşul Yönetimi";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -12,6 +12,15 @@
 <div class="card mb-3">
     <div class="card-header">
         <i class="fa fa-table"></i> Promosyon Koşul Yönetimi
+        @if ((PromotionType)ViewData["PromotionType"] == PromotionType.CouponCode)
+        {
+            <a href="/admin/promosyonlar" class="btn btn-sm btn-outline-primary pull-right">Liste</a>
+        }
+        else
+        {
+            <a href="/admin/sepet-bazli-promosyonlar" class="btn btn-sm btn-outline-primary pull-right">Liste</a>
+        }
+
     </div>
     <div class="card-body">
         <div class="row">
@@ -60,7 +69,6 @@
                             </tr>
                         </thead>
                         <tbody id="condition-table">
-
                         </tbody>
                     </table>
                 </div>
@@ -97,7 +105,7 @@
 
         /* events */
         function document_onLoad() {
-            
+
             switch (selectConditionTypes.val()) {
                 case "1010": getUsersSelect(); break;
                 case "1020": getEducationsSelect(); break;

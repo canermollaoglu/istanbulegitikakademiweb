@@ -164,7 +164,7 @@ function createGrid() {
                 allowSearch: false,
                 cellTemplate: function (container, options) {
                     var current = options.data;
-                    $(`<a class="btn btn-outline-primary btn-sm" href="/admin/promosyon-kosul?promotionId=${current.id}">Koşullar</a>`)
+                    $(`<a class="btn btn-outline-primary btn-sm" href="/admin/promosyon-kosul?promotionId=${current.id}&pT=${current.promotionType}">Koşullar</a>`)
                         .appendTo(container);
                     $(`<a class="btn btn-outline-primary btn-sm" href="/admin/promosyon-guncelle?promotionId=${current.id}">Düzenle</a>`)
                         .appendTo(container);
@@ -202,7 +202,7 @@ function createGrid() {
             `<tbody><tr>` +
             `<td>${current.maxUsageLimit}</td>` +
             `<td>${current.userBasedUsageLimit}</td>` +
-            `<td>${current.description}</td>` +
+            `<td>${current.description != null ? current.description : ''}</td>` +
             `</tr></tbody></table>`;
         return $("<div>")
             .addClass("master-detail-caption")

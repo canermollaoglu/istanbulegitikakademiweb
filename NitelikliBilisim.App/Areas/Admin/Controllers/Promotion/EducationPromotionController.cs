@@ -231,10 +231,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Promotion
 
 
         [Route("admin/promosyon-kosul")]
-        public IActionResult PromotionConditionManagement(Guid promotionId)
+        public IActionResult PromotionConditionManagement(Guid promotionId,int pT)
         {
             ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationPromotionConditionManagement");
             ViewData["PromotionId"] = promotionId;
+            ViewData["PromotionType"] = pT;
             ViewData["ConditionTypes"] = EnumHelpers.ToKeyValuePair<ConditionType>();
             return View();
         }
