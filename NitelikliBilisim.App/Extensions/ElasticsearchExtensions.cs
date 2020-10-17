@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Nest;
 using NitelikliBilisim.Core.ComplexTypes;
 using System;
-using Elasticsearch.Net;
 
 namespace NitelikliBilisim.App.Extensions
 {
@@ -13,7 +12,10 @@ namespace NitelikliBilisim.App.Extensions
         this IServiceCollection services, IConfiguration configuration)
         {
             var url = configuration["elasticsearch:url"];
-            var defaultIndex = configuration["elasticsearch:index"];
+            var defaultIndex = configuration["elasticsearch:userlogindex"];
+            var userName = configuration["elasticsearch:username"];
+            var password = configuration["elasticsearch:password"];
+
 
             var settings = new ConnectionSettings(new Uri(url))
                  .DefaultIndex(defaultIndex)
@@ -21,13 +23,10 @@ namespace NitelikliBilisim.App.Extensions
                     .IndexName("ut_log")
                     .IdProperty(p => p.Id)
                 );
-            settings.BasicAuthentication("elastic", "LJrAagiPVWpNSxpjSXMdpURA");
-            //settings.ApiKeyAuthentication("nitelikliapp", "SThXbU1YVUJTTkJsZlRzUG5XVHQ6Zm9JMlYzLVVUNXk4NFhQVmp2MkpHQQ==");
+            settings.BasicAuthentication(userName, password);
             
             var client = new ElasticClient(settings);
-
-            var resp = client.Ping().DebugInformation;
-
+            //var resp = client.Ping().DebugInformation;
             services.AddSingleton<IElasticClient>(client);
         }
     }
