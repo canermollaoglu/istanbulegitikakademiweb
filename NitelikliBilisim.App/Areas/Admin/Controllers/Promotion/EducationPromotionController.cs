@@ -43,7 +43,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Promotion
         {
             ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationPromotionAdd");
             ViewData["PromotionTypes"] = EnumHelpers.ToKeyValuePair<PromotionType>();
-            ViewData["ValidityTypes"] = EnumHelpers.ToKeyValuePair<PromotionValidityType>();
             return View();
         }
 
@@ -99,9 +98,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Promotion
                     MaxUsageLimit = data.MaxUsageLimit,
                     MinBasketAmount = data.MinBasketAmount,
                     PromotionCode = data.PromotionCode,
-                    PromotionType =data.PromotionType,
-                    ValidityType =data.ValidityType,
-                    ValidityValues = JsonConvert.SerializeObject(data.ValidityValues)
+                    PromotionType =data.PromotionType
                 });
 
                 return Json(new ResponseModel

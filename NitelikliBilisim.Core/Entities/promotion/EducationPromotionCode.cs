@@ -29,7 +29,5 @@ namespace NitelikliBilisim.Core.Entities
         public decimal MinBasketAmount { get; set; }
         public virtual List<EducationPromotionItem> EducationPromotionItems { get; set; }
         public virtual List<EducationPromotionCondition> EducationPromotionConditions { get; set; }
-        public PromotionValidityType ValidityType { get; set; }
-        public string ValidityValues { get; set; }
     }
 }

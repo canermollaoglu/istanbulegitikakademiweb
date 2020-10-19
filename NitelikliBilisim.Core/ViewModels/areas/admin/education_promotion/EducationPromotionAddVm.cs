@@ -23,7 +23,5 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_promotion
         [Required(ErrorMessage = "Minimum sepet tutarı boş geçilemez.")]
         public decimal MinBasketAmount { get; set; }
         public PromotionType PromotionType { get; set; }
-        public PromotionValidityType ValidityType { get; set; }
-        public Guid[] ValidityValues { get; set; }
     }
 }

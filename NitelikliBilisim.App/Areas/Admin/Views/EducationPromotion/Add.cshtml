@@ -83,28 +83,7 @@
                                 <input class="form-control" type="number" value="" id="input-min-basket-amount" />
                             </div>
                         </div>
-
                     </div>
-                    <div class="row" style="margin-bottom: 1%;">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label>Promosyon Geçerlilik Tipi</label>
-                                <select class="form-control" id="select-validity-type">
-                                    @foreach (var type in (Dictionary<int, string>)ViewData["ValidityTypes"])
-                                    {
-                                        <option value="@type.Key">@type.Value</option>
-                                    }
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-4" >
-                            <div class="form-group" id="divValidityValues" style="display:none">
-                                <label>Değerler</label>
-                                <select class="form-control" multiple="multiple" id="select-validity-values"></select>
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="row" style="margin-bottom:1%;">
                         <div class="col-md-8">
                             <div class="form-group">
@@ -242,9 +221,7 @@
                 UserBasedUsageLimit: inputUserBasedUsageLimit.val(),
                 DiscountAmount: inputDiscountAmount.val(),
                 MinBasketAmount: inputMinBasketAmount.val(),
-                PromotionType: selectPromotionType.value,
-                ValidityType: selectValidityType.value,
-                ValidityValues: selectValidityValues.val()
+                PromotionType: selectPromotionType.value
             });
             var resultAlert = new AlertSupport.ResultAlert();
             $.ajax({
