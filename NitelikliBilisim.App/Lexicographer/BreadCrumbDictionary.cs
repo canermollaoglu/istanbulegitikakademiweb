@@ -157,7 +157,7 @@ namespace NitelikliBilisim.App.Lexicographer
              new BreadCrumbItem[] { new BreadCrumbItem(title: "Promosyonlar", url: "/admin/promosyonlar"), new BreadCrumbItem(title: "Promosyon Koşul Yönetimi", url: null) });
 
 
-            
+
         }
 
         public static BreadCrumbItem[] ReadPart(string part)

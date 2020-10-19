@@ -26,4 +26,15 @@ namespace NitelikliBilisim.Core.Enums.promotion
         [Description("Satın Alınmış Eğitim Kategorisi")]
         PurchasedCategory = 1050
     }
+
+    public enum PromotionValidityType
+    {
+        [Description("Sepet'te Geçerli")]
+        Basket = 1010,
+        [Description("Belirli Eğitimler İçin Geçerli")]
+        Education = 1020,
+        [Description("Belirli Kategoriler İçin Geçerli")]
+        Category = 1030
+
+    }
 }

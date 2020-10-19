@@ -2,7 +2,9 @@
     ViewData["Title"] = "Promosyon Oluştur";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
-
+@section styles{
+    <link href="~/vendor\select2/dist/css/select2.min.css" rel="stylesheet" />
+}
 @section alerts{
     <partial name="partials/_Alert" />
 }
@@ -83,6 +85,26 @@
                         </div>
 
                     </div>
+                    <div class="row" style="margin-bottom: 1%;">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Promosyon Geçerlilik Tipi</label>
+                                <select class="form-control" id="select-validity-type">
+                                    @foreach (var type in (Dictionary<int, string>)ViewData["ValidityTypes"])
+                                    {
+                                        <option value="@type.Key">@type.Value</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4" >
+                            <div class="form-group" id="divValidityValues" style="display:none">
+                                <label>Değerler</label>
+                                <select class="form-control" multiple="multiple" id="select-validity-values"></select>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row" style="margin-bottom:1%;">
                         <div class="col-md-8">
                             <div class="form-group">
@@ -105,10 +127,11 @@
 
 
 @section postScripts{
+    <script src="~/vendor\select2/dist/js/select2.min.js"></script>
     <script src="~/js/sup/datetime-support.js"></script>
     <script>
         /* fields */
-       
+
         /* elements */
         var inputStartDate = $("#input-start-date");
         var inputEndDate = $("#input-end-date");
@@ -124,6 +147,10 @@
         var promotionCodeFeedbackDiv = $("#promotionCodeValidationFeedback");
 
         var selectPromotionType = document.getElementById("select-promotion-type");
+        var selectValidityType = document.getElementById("select-validity-type");
+        var selectValidityValues = $("#select-validity-values");
+
+        var divValidityValues = $("#divValidityValues");
 
         var btnSave = $("#btn-save");
 
@@ -131,7 +158,7 @@
         $(document).ready(document_onLoad);
         btnSave.on("click", btnSave_onClick);
         selectPromotionType.onchange = selectPromotionType_onChange;
-
+        selectValidityType.onchange = selectValidityType_onChange;
 
         /* events */
         function document_onLoad() {
@@ -156,11 +183,23 @@
             }
         }
 
+        function selectValidityType_onChange() {
+            var value = selectValidityType.value;
+            if (value == 1010) {
+                selectValidityValues.html("");
+                divValidityValues.hide();
+            } else if (value == 1020) {
+                getEducationsSelect();
+            } else if (value == 1030) {
+                getCategoriesSelect();
+            }
+        }
+
         function createPromotionCode() {
             $.get("/admin/promosyon-kodu-olustur", function (res, status) {
                 inputCode.val(res.data);
             });
-            
+
         }
 
         function checkPromotionCode() {
@@ -203,7 +242,9 @@
                 UserBasedUsageLimit: inputUserBasedUsageLimit.val(),
                 DiscountAmount: inputDiscountAmount.val(),
                 MinBasketAmount: inputMinBasketAmount.val(),
-                PromotionType: selectPromotionType.value
+                PromotionType: selectPromotionType.value,
+                ValidityType: selectValidityType.value,
+                ValidityValues: selectValidityValues.val()
             });
             var resultAlert = new AlertSupport.ResultAlert();
             $.ajax({
@@ -226,6 +267,52 @@
         }
 
         /* functions */
-      
+
+        function getEducationsSelect() {
+            divValidityValues.show();
+            $.ajax({
+                url: '/admin/education-list-fill-select',
+                type: "GET",
+                dataType: "JSON",
+                success: function (res) {
+                    selectValidityValues.html("");
+                    if (res.isSuccess) {
+                        $.each(res.data, function (index, element) {
+                            selectValidityValues.append($('<option></option>').val(element.value).text(element.text));
+                        });
+                        selectValidityValues.select2();
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors
+                        });
+                    }
+                }
+            });
+        }
+        function getCategoriesSelect() {
+
+            divValidityValues.show();
+            $.ajax({
+                url: '/admin/education-categories-list-fill-select',
+                type: "GET",
+                dataType: "JSON",
+                success: function (res) {
+                    selectValidityValues.html("");
+                    if (res.isSuccess) {
+                        $.each(res.data, function (index, element) {
+                            selectValidityValues.append($('<option></option>').val(element.value).text(element.text));
+                        });
+                        selectValidityValues.select2();
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors
+                        });
+                    }
+                }
+            });
+        }
+
     </script>
 }
