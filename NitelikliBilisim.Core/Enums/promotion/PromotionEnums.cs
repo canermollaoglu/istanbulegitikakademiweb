@@ -17,9 +17,13 @@ namespace NitelikliBilisim.Core.Enums.promotion
     {
         [Description("Kullanıcı")]
         User = 1010,
-        [Description("Eğitim")]
+        [Description("Sepetteki Eğitim")]
         Education = 1020,
-        [Description("Kategori")]
-        Category = 1030
+        [Description("Sepetteki Kategori")]
+        Category = 1030,
+        [Description("Satın Alınmış Eğitim")]
+        PurchasedEducation = 1040,
+        [Description("Satın Alınmış Eğitim Kategorisi")]
+        PurchasedCategory = 1050
     }
 }

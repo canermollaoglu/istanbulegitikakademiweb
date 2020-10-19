@@ -18,6 +18,7 @@ using NitelikliBilisim.Core.Entities.educations;
 using NitelikliBilisim.Core.Enums.promotion;
 using NitelikliBilisim.Core.PaymentModels;
 using NitelikliBilisim.Core.Services.Payments;
+using NitelikliBilisim.Core.ViewModels.areas.admin.education;
 using NitelikliBilisim.Core.ViewModels.Cart;
 using NitelikliBilisim.Core.ViewModels.Main.Cart;
 using NitelikliBilisim.Core.ViewModels.Main.Sales;
@@ -478,6 +479,11 @@ namespace NitelikliBilisim.App.Controllers
             int userBasedItemCount = _unitOfWork.EducationPromotionCode.GetEducationPromotionItemCountByUserId(promotion.Id, userId);
             int promotionItemCount = _unitOfWork.EducationPromotionCode.GetEducationPromotionItemByPromotionCodeId(promotion.Id);
 
+            #region Satın alınan eğitimler
+            List<PurchasedEducationVm> purchasedEducations = _unitOfWork.Education.GetPurchasedEducationsByUserId(userId);
+            #endregion
+
+
             if (userBasedItemCount + 1 > promotion.UserBasedUsageLimit || promotionItemCount + 1 > promotion.MaxUsageLimit)
             {
                 return new ResponseData
@@ -504,6 +510,7 @@ namespace NitelikliBilisim.App.Controllers
                     Message = "Kupon kodunun süresi dolduğu için aktif edilememektedir."
                 };
             }
+
             foreach (var condition in promotion.EducationPromotionConditions)
             {
                 if (condition.ConditionType == ConditionType.Category)
@@ -530,7 +537,6 @@ namespace NitelikliBilisim.App.Controllers
                             Success = false,
                             Message = "Geçerli şartlar sağlanmadığı için indirim aktif edilemiyor. 2"
                         };
-
                     }
                 }
                 else if (condition.ConditionType == ConditionType.User)
@@ -542,6 +548,30 @@ namespace NitelikliBilisim.App.Controllers
                         {
                             Success = false,
                             Message = "Geçerli şartlar sağlanmadığı için indirim aktif edilemiyor. 3"
+                        };
+                    }
+                }
+                else if (condition.ConditionType == ConditionType.PurchasedEducation)
+                {
+                    var ids = JsonConvert.DeserializeObject<Guid[]>(condition.ConditionValue);
+                    if (!purchasedEducations.Any(x=>ids.Contains(x.EducationId)))
+                    {
+                        return new ResponseData
+                        {
+                            Success = false,
+                            Message = "Geçerli şartlar sağlanmadığı için indirim aktif edilemiyor. 2"
+                        };
+                    }
+                }
+                else if (condition.ConditionType == ConditionType.PurchasedCategory)
+                {
+                    var ids = JsonConvert.DeserializeObject<Guid[]>(condition.ConditionValue);
+                    if (!purchasedEducations.Any(x => ids.Contains(x.CategoryId)))
+                    {
+                        return new ResponseData
+                        {
+                            Success = false,
+                            Message = "Geçerli şartlar sağlanmadığı için indirim aktif edilemiyor. 2"
                         };
                     }
                 }
@@ -564,7 +594,9 @@ namespace NitelikliBilisim.App.Controllers
                 .Where(x => x.StartDate.Date <= DateTime.Now.Date
                 && x.EndDate.Date > DateTime.Now.Date
                 && x.MinBasketAmount < totalBasketAmount).ToList();
-
+            #region Satın alınan eğitimler
+            List<PurchasedEducationVm> purchasedEducations = _unitOfWork.Education.GetPurchasedEducationsByUserId(userId);
+            #endregion
             var applicatePromotionIds = new List<Guid>();
             var allEducations = _unitOfWork.Education.GetAllEducationsWithCategory();
             foreach (var promotion in promotions)
@@ -599,6 +631,22 @@ namespace NitelikliBilisim.App.Controllers
                         {
                             var ids = JsonConvert.DeserializeObject<string[]>(condition.ConditionValue);
                             if (!ids.Contains(userId))
+                            {
+                                applicatePromotionIds.Remove(promotion.Id);
+                            }
+                        }
+                        else if (condition.ConditionType == ConditionType.PurchasedEducation)
+                        {
+                            var ids = JsonConvert.DeserializeObject<Guid[]>(condition.ConditionValue);
+                            if (!purchasedEducations.Any(x => ids.Contains(x.EducationId)))
+                            {
+                                applicatePromotionIds.Remove(promotion.Id);
+                            }
+                        }
+                        else if (condition.ConditionType == ConditionType.PurchasedCategory)
+                        {
+                            var ids = JsonConvert.DeserializeObject<Guid[]>(condition.ConditionValue);
+                            if (!purchasedEducations.Any(x => ids.Contains(x.CategoryId)))
                             {
                                 applicatePromotionIds.Remove(promotion.Id);
                             }

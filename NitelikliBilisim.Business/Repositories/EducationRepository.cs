@@ -24,7 +24,7 @@ namespace NitelikliBilisim.Business.Repositories
     public class EducationRepository : BaseRepository<Education, Guid>, IPageableEntity<Education>
     {
         private readonly IConfiguration _configuration;
-        public EducationRepository(NbDataContext context,IConfiguration configuration) : base(context)
+        public EducationRepository(NbDataContext context, IConfiguration configuration) : base(context)
         {
             _configuration = configuration;
         }
@@ -331,7 +331,7 @@ namespace NitelikliBilisim.Business.Repositories
                     transaction.Rollback();
                     throw new Exception(ex.Message);
                 }
-                
+
             }
         }
 
@@ -491,7 +491,7 @@ namespace NitelikliBilisim.Business.Repositories
                     break;
             }
 
-            var educationGroupRepository = new EducationGroupRepository(Context,_configuration);
+            var educationGroupRepository = new EducationGroupRepository(Context, _configuration);
 
             var query = string.IsNullOrEmpty(category) ? educations : preList.AsQueryable();
 
@@ -720,6 +720,26 @@ namespace NitelikliBilisim.Business.Repositories
             // TODO: locations ve stars
             return filterOptions;
         }
+
+
+        /// <summary>
+        /// Kullanıcı tarafından satın alınmış eğitimlere ve bu eğitimlere ait kategorilere ait Id leri döner.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns>Dictionary<CategoryId,EducationId></returns>
+        public List<PurchasedEducationVm> GetPurchasedEducationsByUserId(string userId)
+        {
+            return (from ticket in Context.Tickets
+                    join education in Context.Educations on ticket.EducationId equals education.Id
+                    join category in Context.EducationCategories on education.CategoryId equals category.Id
+                    where ticket.OwnerId == userId
+                    select new PurchasedEducationVm
+                    {
+                        EducationId = education.Id,
+                        CategoryId = category.Id
+                    }).ToList();
+        }
+
 
         public bool IsUnique(string name)
         {

@@ -249,7 +249,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Promotion
                 foreach (var condition in conditions)
                 {
                     List<string> values = new List<string>();
-                    if (condition.ConditionType == ConditionType.Category)
+                    if (condition.ConditionType == ConditionType.Category || condition.ConditionType == ConditionType.PurchasedCategory)
                     {
                         var categories = _unitOfWork.EducationCategory.Get().ToList();
                         var ids = JsonConvert.DeserializeObject<Guid[]>(condition.ConditionValue);
@@ -264,7 +264,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Promotion
                             ConditionValues = values
                         });
                     }
-                    else if (condition.ConditionType == ConditionType.Education)
+                    else if (condition.ConditionType == ConditionType.Education || condition.ConditionType == ConditionType.PurchasedEducation)
                     {
                         var educations = _unitOfWork.Education.Get().ToList();
                         var ids = JsonConvert.DeserializeObject<Guid[]>(condition.ConditionValue);
