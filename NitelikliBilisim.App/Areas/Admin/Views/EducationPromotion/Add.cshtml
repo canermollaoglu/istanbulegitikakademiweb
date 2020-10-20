@@ -230,7 +230,7 @@
                 data: data,
                 success: (res) => {
                     if (res.isSuccess) {
-                        location.href = '/admin/promosyon-kosul?promotionId=' + res.data;
+                        location.href = '/admin/promosyon-kosul?promotionId=' + res.data + '&pT=' + selectPromotionType.value;
                     } else {
                         resultAlert.display({
                             success: false,

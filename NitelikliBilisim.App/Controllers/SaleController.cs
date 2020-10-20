@@ -507,7 +507,7 @@ namespace NitelikliBilisim.App.Controllers
                 return new ResponseData
                 {
                     Success = false,
-                    Message = "Kupon kodunun süresi dolduğu için aktif edilememektedir."
+                    Message = "Kupon kodu aktif değildir."
                 };
             }
 
@@ -523,7 +523,7 @@ namespace NitelikliBilisim.App.Controllers
                         return new ResponseData
                         {
                             Success = false,
-                            Message = "Geçerli şartlar sağlanmadığı için indirim aktif edilemiyor. 1"
+                            Message = "Kupon kodunun geçerli olabilmesi için kampanyada belirtilen kategorideki eğitimlerden birinin sepetinizde olması gerekiyor."
                         };
                     }
                 }
@@ -535,7 +535,7 @@ namespace NitelikliBilisim.App.Controllers
                         return new ResponseData
                         {
                             Success = false,
-                            Message = "Geçerli şartlar sağlanmadığı için indirim aktif edilemiyor. 2"
+                            Message = "Kupon kodunun geçerli olabilmesi için kampanyada belirtilen eğitimlerden birinin sepetinizde olması gerekiyor."
                         };
                     }
                 }
@@ -547,7 +547,7 @@ namespace NitelikliBilisim.App.Controllers
                         return new ResponseData
                         {
                             Success = false,
-                            Message = "Geçerli şartlar sağlanmadığı için indirim aktif edilemiyor. 3"
+                            Message = "Geçerli şartlar sağlanmadığı için indirim aktif edilemiyor."
                         };
                     }
                 }
@@ -559,7 +559,7 @@ namespace NitelikliBilisim.App.Controllers
                         return new ResponseData
                         {
                             Success = false,
-                            Message = "Geçerli şartlar sağlanmadığı için indirim aktif edilemiyor. 2"
+                            Message = "Kupon kodunun geçerli olabilmesi için kampanyada belirtilen eğitimlerden birini almış olmanız gerekiyor."
                         };
                     }
                 }
@@ -571,7 +571,7 @@ namespace NitelikliBilisim.App.Controllers
                         return new ResponseData
                         {
                             Success = false,
-                            Message = "Geçerli şartlar sağlanmadığı için indirim aktif edilemiyor. 2"
+                            Message = "Kupon kodunun geçerli olabilmesi için kampanyada belirtilen kategoriden bir eğitim almış olmanız gerekiyor."
                         };
                     }
                 }
