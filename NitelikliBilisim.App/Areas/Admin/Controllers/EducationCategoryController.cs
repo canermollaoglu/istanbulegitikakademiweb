@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MUsefulMethods;
 using NitelikliBilisim.App.Areas.Admin.Models.Category;
 using NitelikliBilisim.App.Lexicographer;
@@ -157,5 +158,34 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 message = "Silme işlemi başarılı"
             });
         }
+
+        [Route("admin/education-categories-list-fill-select")]
+        public IActionResult EducationCategoryListFillSelect()
+        {
+            try
+            {
+                List<SelectListItem> categoryList = _unitOfWork.EducationCategory.Get().Select(e => new SelectListItem
+                {
+                    Text = e.Name,
+                    Value = e.Id.ToString()
+                }).ToList();
+
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    data = categoryList
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Hata" + ex.Message }
+                }); ;
+            }
+
+        }
+
     }
 }

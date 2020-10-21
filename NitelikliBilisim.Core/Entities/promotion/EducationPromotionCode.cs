@@ -1,5 +1,7 @@
 ﻿using NitelikliBilisim.Core.Abstracts;
 using NitelikliBilisim.Core.Entities.educations;
+using NitelikliBilisim.Core.Entities.promotion;
+using NitelikliBilisim.Core.Enums.promotion;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -14,6 +16,7 @@ namespace NitelikliBilisim.Core.Entities
         {
             Id = Guid.NewGuid();
         }
+        public PromotionType PromotionType { get; set; }
         public string Name { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
@@ -25,5 +28,6 @@ namespace NitelikliBilisim.Core.Entities
         public decimal DiscountAmount { get; set; }
         public decimal MinBasketAmount { get; set; }
         public virtual List<EducationPromotionItem> EducationPromotionItems { get; set; }
+        public virtual List<EducationPromotionCondition> EducationPromotionConditions { get; set; }
     }
 }

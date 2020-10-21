@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NitelikliBilisim.Data;
 
 namespace NitelikliBilisim.Data.Migrations
 {
     [DbContext(typeof(NbDataContext))]
-    partial class NbDataContextModelSnapshot : ModelSnapshot
+    [Migration("20201019111048_EducationPromotionCodeTableAddValidityTypeandValidityValuesColumns")]
+    partial class EducationPromotionCodeTableAddValidityTypeandValidityValuesColumns
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -865,6 +867,12 @@ namespace NitelikliBilisim.Data.Migrations
 
                     b.Property<int>("UserBasedUsageLimit")
                         .HasColumnType("int");
+
+                    b.Property<int>("ValidityType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ValidityValues")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

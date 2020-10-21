@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NitelikliBilisim.Core.Enums.promotion;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_promotion
@@ -11,7 +12,6 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_promotion
         public DateTime StartDate { get; set; }
         [Required(ErrorMessage = "Bitiş tarihi alanı boş geçilemez.")]
         public DateTime EndDate { get; set; }
-        [MaxLength(7), Required(ErrorMessage = "Kod adı boş geçilemez.")]
         public string PromotionCode { get; set; }
         public string Description { get; set; }
         [Required(ErrorMessage = "Maksimum kullanım adedi adı boş geçilemez.")]
@@ -22,5 +22,6 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_promotion
         public decimal DiscountAmount { get; set; }
         [Required(ErrorMessage = "Minimum sepet tutarı boş geçilemez.")]
         public decimal MinBasketAmount { get; set; }
+        public PromotionType PromotionType { get; set; }
     }
 }

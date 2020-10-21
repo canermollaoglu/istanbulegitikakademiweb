@@ -24,7 +24,7 @@ namespace NitelikliBilisim.App.Extensions
                     .IdProperty(p => p.Id)
                 );
             settings.BasicAuthentication(userName, password);
-            
+
             var client = new ElasticClient(settings);
             //var resp = client.Ping().DebugInformation;
             services.AddSingleton<IElasticClient>(client);
