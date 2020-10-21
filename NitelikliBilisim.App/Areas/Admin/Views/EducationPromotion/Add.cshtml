@@ -2,7 +2,9 @@
     ViewData["Title"] = "Promosyon Oluştur";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
-
+@section styles{
+    <link href="~/vendor\select2/dist/css/select2.min.css" rel="stylesheet" />
+}
 @section alerts{
     <partial name="partials/_Alert" />
 }
@@ -18,6 +20,17 @@
                     <div class="row" style="margin-bottom: 1%;">
                         <div class="col-md-4">
                             <div class="form-group">
+                                <label>Promosyon Tipi</label>
+                                <select class="form-control" id="select-promotion-type">
+                                    @foreach (var type in (Dictionary<int, string>)ViewData["PromotionTypes"])
+                                    {
+                                        <option value="@type.Key">@type.Value</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
                                 <label>Promosyon Adı</label>
                                 <input class="form-control" type="text" value="" id="input-name" />
                             </div>
@@ -27,7 +40,7 @@
                                 <label>Promosyon Kodu</label>
                                 <input class="form-control" onfocusout="checkPromotionCode()" type="text" maxlength="7" value="" id="input-code" />
                                 <div id="promotionCodeValidationFeedback">
-                                    
+
                                 </div>
                             </div>
                         </div>
@@ -35,6 +48,18 @@
                             <div class="form-group">
                                 <label>Promosyon Tutarı</label>
                                 <input class="form-control" type="number" value="" id="input-discount-amount" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Maksimum Kullanım Adedi</label>
+                                <input type="number" class="form-control" value="" id="input-max-usage-limit" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Kullanıcı Başına Kullanım Adedi</label>
+                                <input class="form-control" type="number" value="1" id="input-user-based-usage-limit" />
                             </div>
                         </div>
                     </div>
@@ -54,32 +79,19 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label>Maksimum Kullanım Adedi</label>
-                                <input type="number" class="form-control" value="" id="input-max-usage-limit" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row" style="margin-bottom:1%;">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label>Kullanıcı Başına Kullanım Adedi</label>
-                                <input class="form-control" type="number" value="1" id="input-user-based-usage-limit" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
                                 <label>Minimum Sepet Tutarı</label>
                                 <input class="form-control" type="number" value="" id="input-min-basket-amount" />
                             </div>
                         </div>
-                        <div class="col-md-4">
+                    </div>
+                    <div class="row" style="margin-bottom:1%;">
+                        <div class="col-md-8">
                             <div class="form-group">
                                 <label>Açıklama</label>
                                 <textarea class="form-control" rows="2" id="input-description"></textarea>
                             </div>
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="offset-md-10 col-md-2">
                             <button id="btn-save" type="button" class="btn btn-outline-success pull-right">Kaydet</button>
@@ -94,10 +106,11 @@
 
 
 @section postScripts{
+    <script src="~/vendor\select2/dist/js/select2.min.js"></script>
     <script src="~/js/sup/datetime-support.js"></script>
     <script>
         /* fields */
-       
+
         /* elements */
         var inputStartDate = $("#input-start-date");
         var inputEndDate = $("#input-end-date");
@@ -112,11 +125,19 @@
 
         var promotionCodeFeedbackDiv = $("#promotionCodeValidationFeedback");
 
+        var selectPromotionType = document.getElementById("select-promotion-type");
+        var selectValidityType = document.getElementById("select-validity-type");
+        var selectValidityValues = $("#select-validity-values");
+
+        var divValidityValues = $("#divValidityValues");
+
         var btnSave = $("#btn-save");
 
         /* assignments */
         $(document).ready(document_onLoad);
         btnSave.on("click", btnSave_onClick);
+        selectPromotionType.onchange = selectPromotionType_onChange;
+        selectValidityType.onchange = selectValidityType_onChange;
 
         /* events */
         function document_onLoad() {
@@ -125,11 +146,39 @@
             createPromotionCode();
         }
 
+        function selectPromotionType_onChange() {
+            var value = selectPromotionType.value;
+            if (value == 1010) {
+                inputCode.prop('disabled', false);
+                createPromotionCode();
+            } else {
+                inputCode.removeClass("is-invalid");
+                promotionCodeFeedbackDiv.removeClass("invalid-feedback");
+                inputCode.removeClass("is-valid");
+                promotionCodeFeedbackDiv.removeClass("valid-feedback");
+                promotionCodeFeedbackDiv.text('');
+                inputCode.val('');
+                inputCode.prop('disabled', true);
+            }
+        }
+
+        function selectValidityType_onChange() {
+            var value = selectValidityType.value;
+            if (value == 1010) {
+                selectValidityValues.html("");
+                divValidityValues.hide();
+            } else if (value == 1020) {
+                getEducationsSelect();
+            } else if (value == 1030) {
+                getCategoriesSelect();
+            }
+        }
+
         function createPromotionCode() {
             $.get("/admin/promosyon-kodu-olustur", function (res, status) {
                 inputCode.val(res.data);
             });
-            
+
         }
 
         function checkPromotionCode() {
@@ -171,7 +220,8 @@
                 MaxUsageLimit: inputMaxUsageLimit.val(),
                 UserBasedUsageLimit: inputUserBasedUsageLimit.val(),
                 DiscountAmount: inputDiscountAmount.val(),
-                MinBasketAmount: inputMinBasketAmount.val()
+                MinBasketAmount: inputMinBasketAmount.val(),
+                PromotionType: selectPromotionType.value
             });
             var resultAlert = new AlertSupport.ResultAlert();
             $.ajax({
@@ -180,14 +230,7 @@
                 data: data,
                 success: (res) => {
                     if (res.isSuccess) {
-                        resultAlert.display({
-                            success: true,
-                            message: "Kayıt işlemi başarılı! Listeye gitmek için {link}",
-                            redirectElement: {
-                                content: "tıklayınız",
-                                link: "/admin/promosyonlar"
-                            }
-                        });
+                        location.href = '/admin/promosyon-kosul?promotionId=' + res.data + '&pT=' + selectPromotionType.value;
                     } else {
                         resultAlert.display({
                             success: false,
@@ -201,6 +244,52 @@
         }
 
         /* functions */
-      
+
+        function getEducationsSelect() {
+            divValidityValues.show();
+            $.ajax({
+                url: '/admin/education-list-fill-select',
+                type: "GET",
+                dataType: "JSON",
+                success: function (res) {
+                    selectValidityValues.html("");
+                    if (res.isSuccess) {
+                        $.each(res.data, function (index, element) {
+                            selectValidityValues.append($('<option></option>').val(element.value).text(element.text));
+                        });
+                        selectValidityValues.select2();
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors
+                        });
+                    }
+                }
+            });
+        }
+        function getCategoriesSelect() {
+
+            divValidityValues.show();
+            $.ajax({
+                url: '/admin/education-categories-list-fill-select',
+                type: "GET",
+                dataType: "JSON",
+                success: function (res) {
+                    selectValidityValues.html("");
+                    if (res.isSuccess) {
+                        $.each(res.data, function (index, element) {
+                            selectValidityValues.append($('<option></option>').val(element.value).text(element.text));
+                        });
+                        selectValidityValues.select2();
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors
+                        });
+                    }
+                }
+            });
+        }
+
     </script>
 }

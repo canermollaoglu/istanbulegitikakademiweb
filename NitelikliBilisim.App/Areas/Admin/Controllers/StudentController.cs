@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using NitelikliBilisim.App.Lexicographer;
+using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
@@ -43,6 +45,35 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             var model = _unitOfWork.Customer.GetCustomerDetail(studentId);
 
             return View(model);
+        }
+
+
+        [Route("admin/student-list-fill-select")]
+        public IActionResult StudentListFillSelect()
+        {
+            try
+            {
+                List<SelectListItem> studentList = _unitOfWork.Customer.GetCustomerListQueryable().Select(e => new SelectListItem
+                {
+                    Text = $"{e.Name} {e.Surname}",
+                    Value = e.Id.ToString()
+                }).ToList();
+
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    data = studentList
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Hata" + ex.Message }
+                }); ;
+            }
+
         }
 
     }

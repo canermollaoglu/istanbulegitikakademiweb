@@ -51,7 +51,7 @@ function createGrid() {
     $("#promotion-grid").dxDataGrid({
         dataSource: DevExpress.data.AspNet.createStore({
             key: "id",
-            loadUrl: "../../api/educationpromotion/get-coupon-code-based-promotion-list"
+            loadUrl: "../../api/educationpromotion/get-basket-based-promotion-list"
         }),
         remoteOperations: {
             paging: true,
@@ -115,11 +115,6 @@ function createGrid() {
                 caption: "Ad",
                 dataField: "name",
 
-            },
-            {
-                caption: "Kod",
-                dataField: "promotionCode",
-                width: 100
             },
             {
                 caption: "Başlangıç",
@@ -207,7 +202,7 @@ function createGrid() {
             `<tbody><tr>` +
             `<td>${current.maxUsageLimit}</td>` +
             `<td>${current.userBasedUsageLimit}</td>` +
-            `<td>${current.description!=null ? current.description:''}</td>` +
+            `<td>${current.description != null ? current.description : ''}</td>` +
             `</tr></tbody></table>`;
         return $("<div>")
             .addClass("master-detail-caption")
@@ -229,12 +224,12 @@ function createGrid() {
                 showBorders: true,
                 columns: [
                     {
-                        caption:"Kullanım Tarihi",
+                        caption: "Kullanım Tarihi",
                         dataField: "dateOfUse",
                         dataType: "date"
                     },
                     {
-                        caption:"Ad",
+                        caption: "Ad",
                         cellTemplate: function (container, options) {
                             var current = options.data;
                             $(`<a href="/admin/ogrenci-detay?studentId=${current.studentId}">${current.name}</a>`)
@@ -242,7 +237,7 @@ function createGrid() {
                         },
                     },
                     {
-                        caption:"Soyad",
+                        caption: "Soyad",
                         cellTemplate: function (container, options) {
                             var current = options.data;
                             $(`<a href="/admin/ogrenci-detay?studentId=${current.studentId}">${current.surname}</a>`)
@@ -251,7 +246,7 @@ function createGrid() {
                     },
                     {
                         caption: "Fatura No",
-                        dataField:"invoiceId"
+                        dataField: "invoiceId"
                     }
 
                 ]

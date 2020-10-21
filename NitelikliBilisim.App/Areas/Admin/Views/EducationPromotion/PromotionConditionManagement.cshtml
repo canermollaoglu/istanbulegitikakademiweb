@@ -1,0 +1,325 @@
+﻿@using NitelikliBilisim.Core.Enums.promotion
+@{
+    ViewData["Title"] = "Promosyon Koşul Yönetimi";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@section styles{
+    <link href="~/vendor\select2/dist/css/select2.min.css" rel="stylesheet" />
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-table"></i> Promosyon Koşul Yönetimi
+        @if ((PromotionType)ViewData["PromotionType"] == PromotionType.CouponCode)
+        {
+            <a href="/admin/promosyonlar" class="btn btn-sm btn-outline-primary pull-right">Liste</a>
+        }
+        else
+        {
+            <a href="/admin/sepet-bazli-promosyonlar" class="btn btn-sm btn-outline-primary pull-right">Liste</a>
+        }
+
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <input type="hidden" id="_promotionId" value="@ViewData["PromotionId"]" />
+            <div class="col-md-4">
+                <div class="card-header">
+                    <i class="fa fa-table"></i> Koşul Ekle
+                </div>
+                <div class="card-body">
+                    <form id="form-add-promotion-condition">
+                        @Html.AntiForgeryToken()
+                        <div class="form-group">
+                            <label>İsim</label>
+                            <select class="form-control" id="select-condition-types">
+                                @foreach (var type in (Dictionary<int, string>)ViewData["ConditionTypes"])
+                                {
+                                    <option value="@type.Key">@type.Value</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group" id="divMultipleValue">
+                            <label>Değer</label>
+                            <select multiple="multiple" class="form-control" id="select-multiple-values"></select>
+                        </div>
+                        <div class="form-group" id="divSingleValue" style="display:none">
+                            <label>Değer</label>
+                            <input type="text" rows="4" class="form-control" id="input-single-value" />
+                        </div>
+
+                        <button id="btn-save" type="button" class="btn btn-success btn-sm pull-right">Kaydet</button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card-header">
+                    <i class="fa fa-table"></i> Koşul Listesi
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <td><b>Koşul Tipi</b></td>
+                                <td><b>Değerler</b></td>
+                                <td><b>İşlem</b></td>
+
+                            </tr>
+                        </thead>
+                        <tbody id="condition-table">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="card-footer small text-muted">Veri tarihi: @DateTime.Now</div>
+</div>
+
+@section postScripts{
+    <script src="~/vendor\select2/dist/js/select2.min.js"></script>
+    <script type="text/javascript">
+        /* fields */
+        var confirmModalBuilder = new AlertSupport.ConfirmModalBuilder();
+        var resultAlert = new AlertSupport.ResultAlert();
+        var _promotionId = $("#_promotionId").val();
+        var divMultipleVal = $('#divMultipleValue');
+        var divSingleVal = $('#divSingleValue');
+
+        var selectConditionTypes = $("#select-condition-types");
+        var selectMultipleValues = $("#select-multiple-values");
+        var inputSingleValue = $("#input-single-value");
+
+        var conditionTableTbody = $("#condition-table");
+
+        /* elements */
+        var btnAdd = $("#btn-save");
+
+        /* assignments */
+        $(document).ready(document_onLoad);
+        btnAdd.on("click", btnAdd_onClick);
+
+
+        /* events */
+        function document_onLoad() {
+
+            switch (selectConditionTypes.val()) {
+                case "1010": getUsersSelect(); break;
+                case "1020": getEducationsSelect(); break;
+                case "1030": getCategoriesSelect(); break;
+            }
+            selectConditionTypes.on('change', function () {
+                switch (this.value) {
+                    case "1010": getUsersSelect(); break;
+                    case "1020": getEducationsSelect(); break;
+                    case "1030": getCategoriesSelect(); break;
+                    case "1040": getEducationsSelect(); break;
+                    case "1050": getCategoriesSelect(); break;
+                }
+            });
+            getPromotionConditions();
+
+        }
+        function btnAdd_onClick() {
+            btnAdd.off("click");
+            var data = {
+                PromotionId: _promotionId,
+                ConditionType: selectConditionTypes.val(),
+                SingleValue: inputSingleValue.val(),
+                MultipleValue: selectMultipleValues.val(),
+            };
+            var tokenVerifier = new SecuritySupport.TokenVerifier();
+            data = tokenVerifier.addToken("form-add-promotion-condition", data);
+            $.ajax({
+                url: "/admin/educationpromotion/AddPromotionCondition",
+                method: "post",
+                data: data,
+                success: (res) => {
+                    if (res.isSuccess) {
+                        resultAlert.display({
+                            success: true,
+                            message: 'Koşul başarılı bir şekilde eklenmiştir.'
+                        });
+                        getPromotionConditions();
+                        clearSelects();
+                        btnAdd.on("click", btnAdd_onClick);
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors
+                        });
+                        btnAdd.on("click", btnAdd_onClick);
+                    }
+                }
+            });
+        }
+
+        function btnConfirmationModalTrigger_onClick() {
+            var url = this.getAttribute("data-url");
+            confirmModalBuilder.setUrl(url);
+            confirmModalBuilder.display();
+        }
+        function confirm_onClick() {
+            var url = this.getAttribute("data-url");
+            var btn = $(this);
+            btn.off("click");
+            $.ajax({
+                url: url,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        getPromotionConditions();
+                        resultAlert.display({
+                            success: true,
+                            message: "Kayıt başarıyla silinmiştir"
+                        });
+                        btn.on("click");
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors,
+                            message: "Hataları düzeltiniz"
+                        });
+                        btn.on("click");
+                    }
+                }
+            });
+        }
+
+        /* functions */
+        function getSingleInput() {
+            divMultipleVal.hide();
+            divSingleVal.show();
+        }
+        function getUsersSelect() {
+            divMultipleVal.show();
+            divSingleVal.hide();
+            $.ajax({
+                url: '/admin/student-list-fill-select',
+                type: "GET",
+                dataType: "JSON",
+                success: function (res) {
+                    selectMultipleValues.html("");
+                    if (res.isSuccess) {
+                        $.each(res.data, function (index, element) {
+                            selectMultipleValues.append($('<option></option>').val(element.value).text(element.text));
+                        });
+                        selectMultipleValues.select2();
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors
+                        });
+                    }
+                }
+            });
+        }
+        function getEducationsSelect() {
+            divMultipleVal.show();
+            divSingleVal.hide();
+            $.ajax({
+                url: '/admin/education-list-fill-select',
+                type: "GET",
+                dataType: "JSON",
+                success: function (res) {
+                    selectMultipleValues.html("");
+                    if (res.isSuccess) {
+                        $.each(res.data, function (index, element) {
+                            selectMultipleValues.append($('<option></option>').val(element.value).text(element.text));
+                        });
+                        selectMultipleValues.select2();
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors
+                        });
+                    }
+                }
+            });
+        }
+        function getCategoriesSelect() {
+
+            divMultipleVal.show();
+            divSingleVal.hide();
+            $.ajax({
+                url: '/admin/education-categories-list-fill-select',
+                type: "GET",
+                dataType: "JSON",
+                success: function (res) {
+                    selectMultipleValues.html("");
+                    if (res.isSuccess) {
+                        $.each(res.data, function (index, element) {
+                            selectMultipleValues.append($('<option></option>').val(element.value).text(element.text));
+                        });
+                        selectMultipleValues.select2();
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors
+                        });
+                    }
+                }
+            });
+        }
+        function clearSelects() {
+            selectConditionTypes.val(1010);
+            getUsersSelect();
+
+        }
+        function getPromotionConditions() {
+
+            if (!_promotionId)
+                return;
+
+            $.ajax({
+                url: `/admin/educationpromotion/getpromotionconditions?promotionId=${_promotionId}`,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        createPromotionConditionTable(res.data);
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors
+                        });
+                    }
+                }
+            });
+        }
+
+        function createPromotionConditionTable(data) {
+            conditionTableTbody.empty();
+            var content = "";
+            if (data.length != 0)
+                for (var i = 0; i < data.length; i++) {
+                    var element = data[i];
+                    var values = "";
+                    $.each(element.conditionValues, function (index, value) {
+                        values += (`<li>${value}</li>`);
+                    })
+                    console.log(values);
+                    content += `<tr><td style="vertical-align:middle;">${element.conditionType}</td><td>${values}</td><td><button title="Sil" class="btn-confirmation-modal-trigger btn btn-danger btn-sm" data-url="/admin/promosyon-kosul-sil?promotionConditionId=${element.id}" style="cursor:pointer;"><i class="fa fa-trash"></i></button></td></tr>`;
+                }
+            conditionTableTbody.append(content);
+            createDeleteButtons();
+        }
+        function createDeleteButtons() {
+            var deleteButtons = $(".btn-confirmation-modal-trigger");
+            for (var i = 0; i < deleteButtons.length; i++) {
+                var btn = deleteButtons[i];
+                btn.onclick = btnConfirmationModalTrigger_onClick;
+            }
+            confirmModalBuilder.buildModal({
+                title: "Emin misiniz?",
+                bodyText: "Seçmiş olduğunuz kayıt kalıcı olarak silinecektir.",
+                cancelText: "Hayır, iptal et",
+                confirmText: "Evet, eminim",
+                onConfirmClick: confirm_onClick
+            });
+        };
+
+    </script>
+}

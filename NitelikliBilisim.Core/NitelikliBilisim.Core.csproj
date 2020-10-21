@@ -30,7 +30,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Entities\promotion\" />
     <Folder Include="ViewModels\Suggestion\" />
   </ItemGroup>
 

@@ -17,7 +17,8 @@
                 <form id="form-update-promotion">
                     @Html.AntiForgeryToken()
                     <input type="hidden" value="@Model.Id" id="_promotionId" />
-                     <div class="row" style="margin-bottom: 1%;">
+                    <input type="hidden" value="@((int)Model.PromotionType)" id="_promotionType" />
+                    <div class="row" style="margin-bottom: 1%;">
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Promosyon Adı</label>
@@ -27,7 +28,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Promosyon Kodu</label>
-                                <input class="form-control" type="text" maxlength="7" value="@Model.PromotionCode" id="input-code" />
+                                <input class="form-control" disabled type="text" maxlength="7" value="@Model.PromotionCode" id="input-code" />
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -108,7 +109,7 @@
         var inputDescription = $('#input-description');
         var inputCode = $("#input-code");
         var promotionId = $("#_promotionId");
-
+        var promotionType = $("#_promotionType");
 
         var btnSave = $("#btn-save");
 
@@ -147,7 +148,7 @@
                             message: "Güncelleme işlemi başarılı! Listeye gitmek için {link}",
                             redirectElement: {
                                 content: "tıklayınız",
-                                link: "/admin/promosyonlar"
+                                link: promotionType.val() == "1010" ? "/admin/promosyonlar" : "/admin/sepet-bazli-promosyonlar"
                             }
                         });
                     } else {

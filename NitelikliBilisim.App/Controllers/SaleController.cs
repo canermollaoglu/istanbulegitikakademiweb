@@ -15,8 +15,10 @@ using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Entities.educations;
+using NitelikliBilisim.Core.Enums.promotion;
 using NitelikliBilisim.Core.PaymentModels;
 using NitelikliBilisim.Core.Services.Payments;
+using NitelikliBilisim.Core.ViewModels.areas.admin.education;
 using NitelikliBilisim.Core.ViewModels.Cart;
 using NitelikliBilisim.Core.ViewModels.Main.Cart;
 using NitelikliBilisim.Core.ViewModels.Main.Sales;
@@ -93,19 +95,55 @@ namespace NitelikliBilisim.App.Controllers
             });
         }
 
+        [HttpPost, IgnoreAntiforgeryToken, Route("get-basked-based-promotion")]
+        public IActionResult GetBaskedBasedPromotion(GetCartItemsData data)
+        {
+            if (data == null || data.Items == null)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false
+
+                });
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var promotion = CheckBasketBasedPromotion(userId, data.Items);
+
+             if (promotion != null)
+            {
+                var model = new BasketBasedPromotionVm
+                {
+                    DiscountAmount = promotion.DiscountAmount,
+                    Name = promotion.Name
+                };
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    data = model
+                });
+            }
+            else
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false
+
+                });
+            }
+        }
+
+
+
         [HttpPost, IgnoreAntiforgeryToken, Route("get-promotion")]
         public IActionResult GetPromotion(GetPromotionCodeData data)
         {
             if (string.IsNullOrEmpty(data.PromotionCode))
                 return Json(new ResponseModel
                 {
-                    isSuccess = false,
-                    errors = new List<string> { "Kod alanı boş geçilemez." }
+                    isSuccess = false
 
                 });
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var totalBasketAmount = GetPriceSumForCartItems(data.Items);
-            var retVal = CheckPromotionCode(userId, data.PromotionCode, totalBasketAmount);
+            var retVal = CheckPromotionCode(userId, data.PromotionCode, data.Items);
 
             if (retVal.Success)
             {
@@ -144,8 +182,7 @@ namespace NitelikliBilisim.App.Controllers
             decimal discountAmount = 0m;
             if (!string.IsNullOrEmpty(data.PromotionCode))
             {
-                decimal totalBasketAmount = GetPriceSumForCartItems(data.CartItems);
-                var response = CheckPromotionCode(userId, data.PromotionCode, totalBasketAmount);
+                var response = CheckPromotionCode(userId, data.PromotionCode, data.CartItems);
                 if (response.Success)
                 {
                     var promotion = (EducationPromotionCode)response.Data;
@@ -225,10 +262,11 @@ namespace NitelikliBilisim.App.Controllers
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             decimal discountAmount = 0m;
             EducationPromotionCode promotion = null;
+            var basketBasedPromotion = CheckBasketBasedPromotion(userId, data.CartItems);
             if (!string.IsNullOrEmpty(data.PromotionCode))
             {
                 decimal totalBasketAmount = GetPriceSumForCartItems(data.CartItems);
-                var response = CheckPromotionCode(userId, data.PromotionCode, totalBasketAmount);
+                var response = CheckPromotionCode(userId, data.PromotionCode, data.CartItems);
                 if (response.Success)
                 {
                     promotion = (EducationPromotionCode)response.Data;
@@ -243,6 +281,12 @@ namespace NitelikliBilisim.App.Controllers
                         errors = new List<string> { response.Message }
                     });
                 }
+            }
+            else if(basketBasedPromotion!=null)
+            {
+                promotion = basketBasedPromotion;
+                discountAmount = basketBasedPromotion.DiscountAmount;
+                data.DiscountAmount = basketBasedPromotion.DiscountAmount;
             }
 
             data.CardInfo.NumberOnCard = FormatCardNumber(data.CardInfo.NumberOnCard);
@@ -403,7 +447,6 @@ namespace NitelikliBilisim.App.Controllers
             return View(retVal);
         }
 
-
         [NonAction]
         public string FormatCardNumber(string cardNumber)
         {
@@ -413,15 +456,19 @@ namespace NitelikliBilisim.App.Controllers
         [NonAction]
         public decimal GetPriceSumForCartItems(List<_CartItem> itemIds, decimal discountAmount = 0)
         {
-            var groupIds = itemIds.Select(x => x.GroupId).ToList();
-            var totalPrice = _unitOfWork.EducationGroup.Get(x => groupIds.Contains(x.Id), null).Sum(x => x.NewPrice.GetValueOrDefault());
-            var discount = discountAmount;
-            var retVal = totalPrice - discount;
+            var retVal = 0m;
+            if (itemIds!=null && itemIds.Count > 0)
+            {
+                var groupIds = itemIds.Select(x => x.GroupId).ToList();
+                var totalPrice = _unitOfWork.EducationGroup.Get(x => groupIds.Contains(x.Id), null).Sum(x => x.NewPrice.GetValueOrDefault());
+                var discount = discountAmount;
+                retVal = totalPrice - discount;
+            }
+
             return retVal;
         }
 
-
-        public ResponseData CheckPromotionCode(string userId, string promotionCode, decimal basketAmount)
+        public ResponseData CheckPromotionCode(string userId, string promotionCode, List<_CartItem> cartItems)
         {
             var promotion = _unitOfWork.EducationPromotionCode.GetPromotionbyPromotionCode(promotionCode);
             if (promotion == null)
@@ -432,9 +479,15 @@ namespace NitelikliBilisim.App.Controllers
                     Message = "Girdiğiniz koda ait kupon bulunamamıştır."
                 };
             }
+            decimal totalBasketAmount = GetPriceSumForCartItems(cartItems);
+            var allEducations = _unitOfWork.Education.GetAllEducationsWithCategory();
             int userBasedItemCount = _unitOfWork.EducationPromotionCode.GetEducationPromotionItemCountByUserId(promotion.Id, userId);
             int promotionItemCount = _unitOfWork.EducationPromotionCode.GetEducationPromotionItemByPromotionCodeId(promotion.Id);
-            
+
+            #region Satın alınan eğitimler
+            List<PurchasedEducationVm> purchasedEducations = _unitOfWork.Education.GetPurchasedEducationsByUserId(userId);
+            #endregion
+
             if (userBasedItemCount + 1 > promotion.UserBasedUsageLimit || promotionItemCount + 1 > promotion.MaxUsageLimit)
             {
                 return new ResponseData
@@ -444,7 +497,7 @@ namespace NitelikliBilisim.App.Controllers
                 };
             }
 
-            if (basketAmount < promotion.MinBasketAmount)
+            if (totalBasketAmount < promotion.MinBasketAmount)
             {
                 return new ResponseData
                 {
@@ -453,14 +506,81 @@ namespace NitelikliBilisim.App.Controllers
                 };
             }
 
-            if (DateTime.Now.Date<promotion.StartDate.Date || DateTime.Now.Date>promotion.EndDate.Date)
+            if (DateTime.Now.Date < promotion.StartDate.Date || DateTime.Now.Date > promotion.EndDate.Date)
             {
                 return new ResponseData
                 {
                     Success = false,
-                    Message = "Kupon kodunun süresi dolduğu için aktif edilememektedir."
+                    Message = "Kupon kodu aktif değildir."
                 };
             }
+
+            foreach (var condition in promotion.EducationPromotionConditions)
+            {
+                if (condition.ConditionType == ConditionType.Category)
+                {
+                    var ids = JsonConvert.DeserializeObject<Guid[]>(condition.ConditionValue);
+                    var cartItemsEducationIds = cartItems.Select(x => x.EducationId).ToList();
+                    var cartItemCategoryIds = allEducations.Where(x => cartItemsEducationIds.Contains(x.Id)).Select(x => x.CategoryId).ToList();
+                    if (!cartItemCategoryIds.Any(x => ids.Contains(x)))
+                    {
+                        return new ResponseData
+                        {
+                            Success = false,
+                            Message = "Kupon kodunun geçerli olabilmesi için kampanyada belirtilen kategorideki eğitimlerden birinin sepetinizde olması gerekiyor."
+                        };
+                    }
+                }
+                else if (condition.ConditionType == ConditionType.Education)
+                {
+                    var ids = JsonConvert.DeserializeObject<Guid[]>(condition.ConditionValue);
+                    if (!cartItems.Any(x => ids.Contains(x.EducationId)))
+                    {
+                        return new ResponseData
+                        {
+                            Success = false,
+                            Message = "Kupon kodunun geçerli olabilmesi için kampanyada belirtilen eğitimlerden birinin sepetinizde olması gerekiyor."
+                        };
+                    }
+                }
+                else if (condition.ConditionType == ConditionType.User)
+                {
+                    var ids = JsonConvert.DeserializeObject<string[]>(condition.ConditionValue);
+                    if (!ids.Contains(userId))
+                    {
+                        return new ResponseData
+                        {
+                            Success = false,
+                            Message = "Geçerli şartlar sağlanmadığı için indirim aktif edilemiyor."
+                        };
+                    }
+                }
+                else if (condition.ConditionType == ConditionType.PurchasedEducation)
+                {
+                    var ids = JsonConvert.DeserializeObject<Guid[]>(condition.ConditionValue);
+                    if (!purchasedEducations.Any(x=>ids.Contains(x.EducationId)))
+                    {
+                        return new ResponseData
+                        {
+                            Success = false,
+                            Message = "Kupon kodunun geçerli olabilmesi için kampanyada belirtilen eğitimlerden birini almış olmanız gerekiyor."
+                        };
+                    }
+                }
+                else if (condition.ConditionType == ConditionType.PurchasedCategory)
+                {
+                    var ids = JsonConvert.DeserializeObject<Guid[]>(condition.ConditionValue);
+                    if (!purchasedEducations.Any(x => ids.Contains(x.CategoryId)))
+                    {
+                        return new ResponseData
+                        {
+                            Success = false,
+                            Message = "Kupon kodunun geçerli olabilmesi için kampanyada belirtilen kategoriden bir eğitim almış olmanız gerekiyor."
+                        };
+                    }
+                }
+            }
+
 
 
             return new ResponseData
@@ -470,6 +590,80 @@ namespace NitelikliBilisim.App.Controllers
             };
 
         }
+
+        public EducationPromotionCode CheckBasketBasedPromotion(string userId, List<_CartItem> cartItems)
+        {
+            decimal totalBasketAmount = GetPriceSumForCartItems(cartItems);
+            var promotions = _unitOfWork.EducationPromotionCode.GetBasketBasedPromotions()
+                .Where(x => x.StartDate.Date <= DateTime.Now.Date
+                && x.EndDate.Date > DateTime.Now.Date
+                && x.MinBasketAmount < totalBasketAmount).ToList();
+            #region Satın alınan eğitimler
+            List<PurchasedEducationVm> purchasedEducations = _unitOfWork.Education.GetPurchasedEducationsByUserId(userId);
+            #endregion
+            var applicatePromotionIds = new List<Guid>();
+            var allEducations = _unitOfWork.Education.GetAllEducationsWithCategory();
+            foreach (var promotion in promotions)
+            {
+                int userBasedItemCount = _unitOfWork.EducationPromotionCode.GetEducationPromotionItemCountByUserId(promotion.Id, userId);
+                int promotionItemCount = _unitOfWork.EducationPromotionCode.GetEducationPromotionItemByPromotionCodeId(promotion.Id);
+
+                if (userBasedItemCount + 1 <= promotion.UserBasedUsageLimit && promotionItemCount + 1 <= promotion.MaxUsageLimit)
+                {
+                    applicatePromotionIds.Add(promotion.Id);
+                    foreach (var condition in promotion.EducationPromotionConditions)
+                    {
+                        if (condition.ConditionType == ConditionType.Category)
+                        {
+                            var ids = JsonConvert.DeserializeObject<Guid[]>(condition.ConditionValue);
+                            var cartItemsEducationIds = cartItems.Select(x => x.EducationId).ToList();
+                            var cartItemCategoryIds = allEducations.Where(x => cartItemsEducationIds.Contains(x.Id)).Select(x => x.CategoryId).ToList();
+                            if (!cartItemCategoryIds.Any(x => ids.Contains(x)))
+                            {
+                                applicatePromotionIds.Remove(promotion.Id);
+                            }
+                        }
+                        else if (condition.ConditionType == ConditionType.Education)
+                        {
+                            var ids = JsonConvert.DeserializeObject<Guid[]>(condition.ConditionValue);
+                            if (!cartItems.Any(x => ids.Contains(x.EducationId)))
+                            {
+                                applicatePromotionIds.Remove(promotion.Id);
+                            }
+                        }
+                        else if (condition.ConditionType == ConditionType.User)
+                        {
+                            var ids = JsonConvert.DeserializeObject<string[]>(condition.ConditionValue);
+                            if (!ids.Contains(userId))
+                            {
+                                applicatePromotionIds.Remove(promotion.Id);
+                            }
+                        }
+                        else if (condition.ConditionType == ConditionType.PurchasedEducation)
+                        {
+                            var ids = JsonConvert.DeserializeObject<Guid[]>(condition.ConditionValue);
+                            if (!purchasedEducations.Any(x => ids.Contains(x.EducationId)))
+                            {
+                                applicatePromotionIds.Remove(promotion.Id);
+                            }
+                        }
+                        else if (condition.ConditionType == ConditionType.PurchasedCategory)
+                        {
+                            var ids = JsonConvert.DeserializeObject<Guid[]>(condition.ConditionValue);
+                            if (!purchasedEducations.Any(x => ids.Contains(x.CategoryId)))
+                            {
+                                applicatePromotionIds.Remove(promotion.Id);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return promotions.Where(x => applicatePromotionIds.Contains(x.Id)).OrderByDescending(x => x.DiscountAmount).FirstOrDefault();
+
+
+        }
+
     }
 
 

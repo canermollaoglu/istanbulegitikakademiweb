@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NitelikliBilisim.Data;
 
 namespace NitelikliBilisim.Data.Migrations
 {
     [DbContext(typeof(NbDataContext))]
-    partial class NbDataContextModelSnapshot : ModelSnapshot
+    [Migration("20201014114102_PromotionConditionTableInsert")]
+    partial class PromotionConditionTableInsert
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1886,9 +1888,6 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("nvarchar(128)")
                         .HasMaxLength(128);
 
-                    b.Property<Guid>("EducationPromotionCodeId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
@@ -1897,8 +1896,6 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasMaxLength(128);
 
                     b.HasKey("Id");
-
-                    b.HasIndex("EducationPromotionCodeId");
 
                     b.ToTable("EducationPromotionConditions");
                 });
@@ -2475,15 +2472,6 @@ namespace NitelikliBilisim.Data.Migrations
                     b.HasOne("NitelikliBilisim.Core.Entities.EducationGroup", "Group")
                         .WithMany("GroupExpenses")
                         .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.promotion.EducationPromotionCondition", b =>
-                {
-                    b.HasOne("NitelikliBilisim.Core.Entities.EducationPromotionCode", "EducationPromotionCode")
-                        .WithMany("EducationPromotionConditions")
-                        .HasForeignKey("EducationPromotionCodeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
