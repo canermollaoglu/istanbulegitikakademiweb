@@ -57,7 +57,7 @@ function createGrid(currentStudentId) {
                 caption: "Tarih",
                 dataField: "createdDate",
                 dataType: "date",
-                format: "MM/dd/yyyy HH:mm ss",
+                format: "dd/MM/yyyy HH:mm ss",
                 sortOrder:"desc",
                 width: 150
             },

@@ -456,10 +456,15 @@ namespace NitelikliBilisim.App.Controllers
         [NonAction]
         public decimal GetPriceSumForCartItems(List<_CartItem> itemIds, decimal discountAmount = 0)
         {
-            var groupIds = itemIds.Select(x => x.GroupId).ToList();
-            var totalPrice = _unitOfWork.EducationGroup.Get(x => groupIds.Contains(x.Id), null).Sum(x => x.NewPrice.GetValueOrDefault());
-            var discount = discountAmount;
-            var retVal = totalPrice - discount;
+            var retVal = 0m;
+            if (itemIds!=null && itemIds.Count > 0)
+            {
+                var groupIds = itemIds.Select(x => x.GroupId).ToList();
+                var totalPrice = _unitOfWork.EducationGroup.Get(x => groupIds.Contains(x.Id), null).Sum(x => x.NewPrice.GetValueOrDefault());
+                var discount = discountAmount;
+                retVal = totalPrice - discount;
+            }
+
             return retVal;
         }
 
@@ -482,7 +487,6 @@ namespace NitelikliBilisim.App.Controllers
             #region Satın alınan eğitimler
             List<PurchasedEducationVm> purchasedEducations = _unitOfWork.Education.GetPurchasedEducationsByUserId(userId);
             #endregion
-
 
             if (userBasedItemCount + 1 > promotion.UserBasedUsageLimit || promotionItemCount + 1 > promotion.MaxUsageLimit)
             {

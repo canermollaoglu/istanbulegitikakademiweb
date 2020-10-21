@@ -7,7 +7,7 @@ using System;
 namespace NitelikliBilisim.App.Extensions
 {
     public static class ElasticsearchExtensions
-    { 
+    {
         public static void AddElasticsearch(
         this IServiceCollection services, IConfiguration configuration)
         {
