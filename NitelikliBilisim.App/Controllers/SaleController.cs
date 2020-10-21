@@ -413,10 +413,15 @@ namespace NitelikliBilisim.App.Controllers
         [NonAction]
         public decimal GetPriceSumForCartItems(List<_CartItem> itemIds, decimal discountAmount = 0)
         {
-            var groupIds = itemIds.Select(x => x.GroupId).ToList();
-            var totalPrice = _unitOfWork.EducationGroup.Get(x => groupIds.Contains(x.Id), null).Sum(x => x.NewPrice.GetValueOrDefault());
-            var discount = discountAmount;
-            var retVal = totalPrice - discount;
+            var retVal = 0m;
+            if (itemIds!=null && itemIds.Count > 0)
+            {
+                var groupIds = itemIds.Select(x => x.GroupId).ToList();
+                var totalPrice = _unitOfWork.EducationGroup.Get(x => groupIds.Contains(x.Id), null).Sum(x => x.NewPrice.GetValueOrDefault());
+                var discount = discountAmount;
+                retVal = totalPrice - discount;
+            }
+
             return retVal;
         }
 
@@ -434,7 +439,7 @@ namespace NitelikliBilisim.App.Controllers
             }
             int userBasedItemCount = _unitOfWork.EducationPromotionCode.GetEducationPromotionItemCountByUserId(promotion.Id, userId);
             int promotionItemCount = _unitOfWork.EducationPromotionCode.GetEducationPromotionItemByPromotionCodeId(promotion.Id);
-            
+
             if (userBasedItemCount + 1 > promotion.UserBasedUsageLimit || promotionItemCount + 1 > promotion.MaxUsageLimit)
             {
                 return new ResponseData
@@ -453,7 +458,7 @@ namespace NitelikliBilisim.App.Controllers
                 };
             }
 
-            if (DateTime.Now.Date<promotion.StartDate.Date || DateTime.Now.Date>promotion.EndDate.Date)
+            if (DateTime.Now.Date < promotion.StartDate.Date || DateTime.Now.Date > promotion.EndDate.Date)
             {
                 return new ResponseData
                 {
