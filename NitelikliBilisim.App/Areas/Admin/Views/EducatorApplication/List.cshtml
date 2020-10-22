@@ -1,0 +1,171 @@
+﻿@{
+    ViewData["Title"] = "List";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+
+    <style>
+        .dx-datagrid-content .dx-datagrid-table .dx-row > td:first-child, .dx-datagrid-content .dx-datagrid-table .dx-row > tr > td:first-child {
+            width: 44px !important;
+        }
+
+        .dx-datagrid .dx-column-lines > td {
+            border-right: none;
+            vertical-align: middle !important;
+        }
+
+        #educationGrup-grid {
+            margin-top: -15px !important;
+        }
+    </style>
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-table"></i> Eğitmen Başvuru Listesi
+    </div>
+    <div class="card-body">
+        <div id="educator-application-grid"></div>
+    </div>
+    <div class="card-footer small text-muted">Veri tarihi: @DateTime.Now</div>
+</div>
+
+@section postScripts{
+
+    <script>
+        /* fields */
+        var confirmModalBuilder = new AlertSupport.ConfirmModalBuilder();
+        var resultAlert = new AlertSupport.ResultAlert();
+        var cities = [];
+        var newCities = [{ key: 1010, value: "İstanbul" }];
+        /* assignments */
+        $(document).ready(document_onLoad);
+
+        /* events */
+        function document_onLoad() {
+            createGrid();
+        }
+
+        /*DataGrid*/
+        function createGrid() {
+            $("#educator-application-grid").dxDataGrid({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    key: "id",
+                    loadUrl: "../../api/educatorapplication/get-educator-applications"
+                }),
+                remoteOperations: {
+                    paging: true,
+                    filtering: true,
+                    sorting: true,
+                    grouping: true,
+                    summary: true,
+                    groupPaging: true
+                },
+                showBorders: true,
+                showColumnLines: true,
+                showRowLines: true,
+                wordWrapEnabled: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                searchPanel: {
+                    visible: true,
+                    width: 240
+                },
+                paging: {
+                    pageSize: 10
+                },
+                groupPanel: {
+                    visible: true
+                },
+                grouping: {
+                    autoExpandAll: true
+                },
+                headerFilter: {
+                    visible: true
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10, 20],
+                    showInfo: true
+                },
+                onExporting: function (e) {
+                    var workbook = new ExcelJS.Workbook();
+                    var worksheet = workbook.addWorksheet('Egitim Grupları');
+                    DevExpress.excelExporter.exportDataGrid({
+                        worksheet: worksheet,
+                        component: e.component,
+                        customizeCell: function (options) {
+                            var excelCell = options;
+                            excelCell.font = { name: 'Arial', size: 12 };
+                            excelCell.alignment = { horizontal: 'left' };
+                        }
+                    }).then(function () {
+                        workbook.xlsx.writeBuffer().then(function (buffer) {
+                            saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'Egitim Grupları Listesi' + parseInt(Math.random() * 1000000000) + '.xlsx');
+                        });
+                    });
+                    e.cancel = true;
+                },
+                export: {
+                    enabled: true
+                },
+                columns: [
+                    {
+                        caption: "Başvuru Tarihi",
+                        dataField: "createdDate",
+                        dataType: 'date',
+                        format: 'dd/MM/yyyy',
+                        width: 160,
+                        sortOrder:"desc"
+                    },
+                    {
+                        caption: "Ad Soyad",
+                        dataField: "nameSurname",
+                        width: 200
+
+                    }, {
+                        caption: "Telefon",
+                        dataField: "phone",
+                        width:200
+                    },
+
+                    {
+                        caption: "E-Posta",
+                        dataField: "email",
+                        width: 250
+                    },
+                    {
+                        caption: "İşlem",
+                        allowSearch: false,
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            var div = $('<div class="btn-group" style="display: inline-flex; width:"auto"></div>');
+                            $(`<a class="btn btn-outline-primary btn-sm" href="/admin/egitmen-cv-goruntule/${current.id}">CV Görüntüle</a>`)
+                                .appendTo(div);
+                            div.appendTo(container);
+
+                        },
+                        alignment: "center"
+                    }
+                ],
+                masterDetail: {
+                    enabled: true,
+                    template: function (container, options) {
+                        var currentEducatorApplication = options.data;
+                        var currentDiv = $("<div>")
+                            .appendTo(container);
+                        var content = `<div class="card border-info mb-3">`+
+                            ` <div class="card-header font-weight-bold">${currentEducatorApplication.nameSurname} Ön Yazı</div>`+
+                            `<div class="card-body"><p>${currentEducatorApplication.note}</p></div></div>`
+                        currentDiv.append(content);
+                    }
+                }
+            });
+        }
+    </script>
+}

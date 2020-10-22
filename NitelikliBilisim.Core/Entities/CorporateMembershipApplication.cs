@@ -1,9 +1,11 @@
 ﻿using NitelikliBilisim.Core.Abstracts;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NitelikliBilisim.Core.Entities
 {
+    [Table("CorporateMembershipApplications")]
     public class CorporateMembershipApplication : BaseEntity<Guid>
     {
         public CorporateMembershipApplication()
@@ -24,5 +26,6 @@ namespace NitelikliBilisim.Core.Entities
         public int NumberOfEmployees { get; set; }
         public string Address { get; set; }
         public string RequestNote { get; set; }
+        public bool IsViewed { get; set; }
     }
 }

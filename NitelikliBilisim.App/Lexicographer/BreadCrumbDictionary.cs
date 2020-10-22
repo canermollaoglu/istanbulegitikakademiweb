@@ -160,6 +160,9 @@ namespace NitelikliBilisim.App.Lexicographer
             _dictionary.Add("AdminHelpDocuments",
             new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Yardım Dökümanı", url: null) });
 
+            /*Educator Application*/
+            _dictionary.Add("AdminEducatorApplicationList",
+               new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Eğitmen Başvuruları", url: null) });
 
             
         }

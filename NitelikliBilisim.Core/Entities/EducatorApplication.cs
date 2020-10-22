@@ -1,9 +1,11 @@
 ﻿using NitelikliBilisim.Core.Abstracts;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NitelikliBilisim.Core.Entities
 {
+    [Table("EducatorApplications")]
     public class EducatorApplication:BaseEntity<Guid>
     {
         public EducatorApplication()
@@ -20,6 +22,6 @@ namespace NitelikliBilisim.Core.Entities
         [MaxLength(500)]
         public string Note { get; set; }
         public string CvUrl { get; set; }
-
+        public bool IsViewed { get; set; }
     }
 }
