@@ -152,7 +152,16 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             return View(model);
         }
 
+        [Route("admin/grup-adi-dogrula")]
+        public IActionResult CheckGroupName(string groupName)
+        {
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = IsUniqueGroupName(groupName)
+            });
 
+        }
 
         [Route("admin/get-assigned-educators-for-group-add/{educationId?}")]
         public IActionResult GetEducatorsOfEducation(Guid? educationId)
@@ -434,6 +443,20 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 });
             }
 
+        }
+
+        /// <summary>
+        /// Grup Adı daha önce kaydolmamış ise true döner
+        /// </summary>
+        /// <param name="groupName"></param>
+        /// <returns></returns>
+        public bool IsUniqueGroupName(string groupName)
+        {
+            var code = _unitOfWork.EducationGroup.Get(x => x.GroupName == groupName);
+            if (code.Count() == 0)
+                return true;
+            else
+                return false;
         }
 
 
