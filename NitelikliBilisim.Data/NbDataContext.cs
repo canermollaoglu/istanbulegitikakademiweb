@@ -102,6 +102,7 @@ namespace NitelikliBilisim.Data
             #endregion
         }
 
+        public DbSet<CorporateMembershipApplication> CorporateMembershipApplications{ get; set; }
         public DbSet<EducatorApplication> EducatorApplications { get; set; }
         public DbSet<AutoHistory> DataHistories { get; set; }
         public DbSet<Education> Educations { get; set; }
