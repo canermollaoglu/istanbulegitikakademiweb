@@ -29,7 +29,10 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Grup Adı</label>
-                                <input class="form-control" type="text" value="" id="input-name" />
+                                <input class="form-control" onfocusout="checkGroupName()" type="text" value="" id="input-name" />
+                                <div id="group-name-validation-feedback">
+
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -180,6 +183,8 @@
         var inputQuota = $("#input-quota");
         var btnSave = $("#btn-save");
         var educationDaysInfoDiv = $("#education-days-info");
+        var groupNameValidationFeedbackDiv = $("#group-name-validation-feedback");
+
 
         /* assignments */
         $(document).ready(document_onLoad);
@@ -321,6 +326,31 @@
             $(selectClassRoom).append(appended);
         }
 
+        function checkGroupName() {
+            var groupName = inputName.val();
+            $.ajax({
+                url: "/admin/grup-adi-dogrula",
+                method: "get",
+                data: { groupName },
+                success: (res) => {
+                    if (res.isSuccess) {
+                        if (res.data) {
+                            inputName.removeClass("is-invalid");
+                            groupNameValidationFeedbackDiv.removeClass("invalid-feedback");
+                            inputName.addClass("is-valid");
+                            groupNameValidationFeedbackDiv.addClass("valid-feedback").text("Grup adı kullanıma uygun.");
+                        } else {
+                            inputName.removeClass("is-valid");
+                            inputName.addClass("is-invalid");
+                            groupNameValidationFeedbackDiv.removeClass("valid-feedback");
+                            groupNameValidationFeedbackDiv.addClass("invalid-feedback").text("Grup daha önce kullanılmış.");
+                            inputName.focus();
+                        }
+                    }
+                }
+            });
+
+        }
 
         function validateData() {
             // ?

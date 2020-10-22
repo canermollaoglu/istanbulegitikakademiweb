@@ -156,7 +156,17 @@ namespace NitelikliBilisim.App.Lexicographer
             _dictionary.Add("AdminEducationPromotionConditionManagement",
              new BreadCrumbItem[] { new BreadCrumbItem(title: "Promosyonlar", url: "/admin/promosyonlar"), new BreadCrumbItem(title: "Promosyon Koşul Yönetimi", url: null) });
 
+            /*Help Documents*/
+            _dictionary.Add("AdminHelpDocuments",
+            new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Yardım Dökümanı", url: null) });
 
+            /*Educator Application*/
+            _dictionary.Add("AdminEducatorApplicationList",
+               new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Eğitmen Başvuruları", url: null) });
+
+            /*Corporate Membership Application*/
+            _dictionary.Add("AdminCorporateMembershipApplicationList",
+               new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Kurumsal Üyelik Başvuruları", url: null) });
 
         }
 

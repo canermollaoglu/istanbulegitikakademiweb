@@ -31,6 +31,9 @@
                             <li>
                                 <a href="/admin/grup-olustur">Oluştur</a>
                             </li>
+                            <li>
+                                <a href="@Url.Action("Index", "HelpDocuments",new {documentName ="egy-01" })">Döküman</a>
+                            </li>
                         </ul>
                     </li>
 
@@ -65,6 +68,9 @@
                             </li>
                             <li>
                                 <a href="@Url.Action("Add", "EducationPromotion")">Oluştur</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("Index", "HelpDocuments",new {documentName ="ky-01" })">Döküman</a>
                             </li>
                         </ul>
                     </li>
@@ -130,6 +136,20 @@
                             </li>
                         </ul>
                     </li>
+
+                    <li>
+                        <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseApplications" data-parent="#exampleAccordion">Başvurular</a>
+                        <ul class="sidenav-third-level collapse" id="collapseApplications">
+                            <li>
+                                <a href="@Url.Action("List", "EducatorApplication")">Eğitmen Başvuruları</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("List", "CorporateMembershipApplication")">Kurumsal Üyelik Başvuruları</a>
+                            </li>
+                        </ul>
+                    </li>
+
+
                 </ul>
             </li>
         </ul>
