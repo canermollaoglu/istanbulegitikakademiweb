@@ -114,8 +114,7 @@
 
                     }, {
                         caption: "İlgili Ad Soyad",
-                        dataField: "nameSurname",
-                        width: 200
+                        dataField: "nameSurname"
                     },
 
                     {
@@ -126,6 +125,25 @@
                     {
                         caption: "Çalışan Sayısı",
                         dataField:"numberOfEmployees"
+                    },
+                    ,
+                    {
+                        caption:"Durum",
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            var div = $('<div class="btn-group" style="display: inline-flex; width:"auto"></div>');
+                            if (current.isViewed) {
+                                $(`<span class="text-success"><i title="Görüldü" class="fa fa-check"></i></span>`)
+                                    .appendTo(div);
+                            } else {
+                                $(`<button type="button" title="Görüldü olarak işaretle" onClick="setViewedStatus('${current.id}')" class="btn btn-outline-success btn-sm"><i class="fa fa-eye"></i></button>`)
+                                    .appendTo(div);
+                            }
+                            div.appendTo(container);
+
+                        },
+                        alignment: "center",
+                        width:100
                     }
                 ],
                 masterDetail: {
@@ -148,5 +166,29 @@
                 }
             });
         }
+
+        function setViewedStatus(cMAId) {
+            var resultAlert = new AlertSupport.ResultAlert();
+            $.ajax({
+                url: `/admin/CorporateMembershipApplication/SetViewedStatus?cMAID=${cMAId}`,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        resultAlert.display({
+                            success: true,
+                            message: "Göründü bilgisi güncellendi.",
+                        });
+                        $("#corporate-membership-application-grid").dxDataGrid("instance").refresh();
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors,
+                            message: "İşlem başarısız"
+                        });
+                    }
+                }
+            });
+        }
+
     </script>
 }
