@@ -1,25 +1,9 @@
 ﻿@{
-    ViewData["Title"] = "List";
+    ViewData["Title"] = "Eğitmen Başvuruları";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
-@section styles{
 
-    <style>
-        .dx-datagrid-content .dx-datagrid-table .dx-row > td:first-child, .dx-datagrid-content .dx-datagrid-table .dx-row > tr > td:first-child {
-            width: 44px !important;
-        }
-
-        .dx-datagrid .dx-column-lines > td {
-            border-right: none;
-            vertical-align: middle !important;
-        }
-
-        #educationGrup-grid {
-            margin-top: -15px !important;
-        }
-    </style>
-}
 @section alerts{
     <partial name="partials/_Alert" />
 }
@@ -37,10 +21,6 @@
 
     <script>
         /* fields */
-        var confirmModalBuilder = new AlertSupport.ConfirmModalBuilder();
-        var resultAlert = new AlertSupport.ResultAlert();
-        var cities = [];
-        var newCities = [{ key: 1010, value: "İstanbul" }];
         /* assignments */
         $(document).ready(document_onLoad);
 
@@ -95,7 +75,7 @@
                 },
                 onExporting: function (e) {
                     var workbook = new ExcelJS.Workbook();
-                    var worksheet = workbook.addWorksheet('Egitim Grupları');
+                    var worksheet = workbook.addWorksheet('Eğitmen Başvuruları');
                     DevExpress.excelExporter.exportDataGrid({
                         worksheet: worksheet,
                         component: e.component,
@@ -106,7 +86,7 @@
                         }
                     }).then(function () {
                         workbook.xlsx.writeBuffer().then(function (buffer) {
-                            saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'Egitim Grupları Listesi' + parseInt(Math.random() * 1000000000) + '.xlsx');
+                            saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'Eğitmen Başvuru Listesi' + parseInt(Math.random() * 1000000000) + '.xlsx');
                         });
                     });
                     e.cancel = true;
@@ -160,7 +140,7 @@
                         var currentDiv = $("<div>")
                             .appendTo(container);
                         var content = `<div class="card border-info mb-3">`+
-                            ` <div class="card-header font-weight-bold">${currentEducatorApplication.nameSurname} Ön Yazı</div>`+
+                            ` <div class="card-header font-weight-bold">Ön Yazı</div>`+
                             `<div class="card-body"><p>${currentEducatorApplication.note}</p></div></div>`
                         currentDiv.append(content);
                     }
