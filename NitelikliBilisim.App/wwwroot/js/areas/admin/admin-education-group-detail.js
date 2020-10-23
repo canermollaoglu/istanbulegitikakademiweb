@@ -71,9 +71,7 @@ function document_onLoad() {
     createStudentGrid();
     createLessonDayGrid();
     createEligibleTicketTable();
-    loadEducatorsSelect();
-    loadClassRoomsSelect();
-    loadExpenseTypesSelect();
+    fillAllSelect();
 
     $(document).ajaxStart(function () {
         $("#loading").show();
@@ -136,6 +134,7 @@ function btnSave_onClick() {
     });
 
 }
+
 function btnLessonDayClassroomChange_onClick() {
     btnLessonDayClassroomChange.off("click");
     var data = {
@@ -910,69 +909,25 @@ function createStudentGrid() {
 
 
 
-
 /*Select */
-function loadEducatorsSelect() {
+
+
+function fillAllSelect() {
     var gId = groupId.val();
     $.ajax({
-        url: `/admin/get-assigned-educators-for-group-detail/${gId}`,
+        url: `/admin/group-detail-fill-all-select/${gId}`,
         method: "get",
         success: (res) => {
             if (res.isSuccess) {
-                getEducators(res.data);
-                if (!res.data.length)
-                    $(selectEducators).prop("disabled", true);
-            }
-        }
-    });
-}
-function getEducators(data) {
-    var jquerySelectEducators = $(selectEducators);
-    jquerySelectEducators.html(`<option value="">Eğitmen seçiniz...</option>`);
-    var appended = "";
-    for (var i = 0; i < data.length; i++) {
-        var item = data[i];
-        appended += `<option value="${item.educatorId}">${item.name} ${item.surname}</option>`;
-    }
-
-    $(selectEducators).append(appended);
-}
-
-function loadClassRoomsSelect() {
-    var gId = groupId.val();
-    $.ajax({
-        url: `/admin/get-assigned-class-rooms-for-group-detail/${gId}`,
-        method: "get",
-        success: (res) => {
-            if (res.isSuccess) {
-                getClassRooms(res.data);
-                if (!res.data.length)
-                    $(selectClassrooms).prop("disabled", true);
-            }
-        }
-    });
-}
-function getClassRooms(data) {
-    var jquerySelectClassRooms = $(selectClassrooms);
-    jquerySelectClassRooms.html(`<option value="">Sınıf seçiniz...</option>`);
-    var appended = "";
-    for (var i = 0; i < data.length; i++) {
-        var item = data[i];
-        appended += `<option value="${item.id}">${item.name}</option>`;
-    }
-
-    $(selectClassrooms).append(appended);
-}
-
-function loadExpenseTypesSelect() {
-    $.ajax({
-        url: `/admin/get-expense-types`,
-        method: "get",
-        success: (res) => {
-            if (res.isSuccess) {
-                getExpenseTypes(res.data);
-                if (!res.data.length)
+                getExpenseTypes(res.data.expenseTypes);
+                if (!res.data.expenseTypes.length)
                     $(selectExpenseTypes).prop("disabled", true);
+                getClassRooms(res.data.classRooms);
+                if (!res.data.classRooms.length)
+                    $(selectClassrooms).prop("disabled", true);
+                getEducators(res.data.educators);
+                if (!res.data.educators.length)
+                    $(selectEducators).prop("disabled", true);
             }
         }
     });
@@ -988,4 +943,27 @@ function getExpenseTypes(data) {
 
     $(selectExpenseTypes).append(appended);
 }
+function getEducators(data) {
+    var jquerySelectEducators = $(selectEducators);
+    jquerySelectEducators.html(`<option value="">Eğitmen seçiniz...</option>`);
+    var appended = "";
+    for (var i = 0; i < data.length; i++) {
+        var item = data[i];
+        appended += `<option value="${item.educatorId}">${item.name} ${item.surname}</option>`;
+    }
+
+    $(selectEducators).append(appended);
+}
+function getClassRooms(data) {
+    var jquerySelectClassRooms = $(selectClassrooms);
+    jquerySelectClassRooms.html(`<option value="">Sınıf seçiniz...</option>`);
+    var appended = "";
+    for (var i = 0; i < data.length; i++) {
+        var item = data[i];
+        appended += `<option value="${item.id}">${item.name}</option>`;
+    }
+
+    $(selectClassrooms).append(appended);
+}
+
 
