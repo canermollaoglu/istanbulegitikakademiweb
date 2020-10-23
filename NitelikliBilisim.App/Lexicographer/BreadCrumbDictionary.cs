@@ -163,7 +163,10 @@ namespace NitelikliBilisim.App.Lexicographer
             /*Educator Application*/
             _dictionary.Add("AdminEducatorApplicationList",
                new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Eğitmen Başvuruları", url: null) });
+            _dictionary.Add("AdminEducatorApplicationCv",
+               new BreadCrumbItem[] { new BreadCrumbItem(title: "Eğitmen Başvuruları", url: "/admin/educatorapplication/list"), new BreadCrumbItem(title: "Eğitmen Cv Görüntüle", url: null) });
 
+            
             /*Corporate Membership Application*/
             _dictionary.Add("AdminCorporateMembershipApplicationList",
                new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Kurumsal Üyelik Başvuruları", url: null) });
