@@ -10,8 +10,7 @@ using NitelikliBilisim.Business.UoW;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers.Applications
 {
-    [Area("Admin"), Authorize(Roles = "Admin")]
-    public class CorporateMembershipApplicationController : Controller
+    public class CorporateMembershipApplicationController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
         public CorporateMembershipApplicationController(UnitOfWork unitOfWork)

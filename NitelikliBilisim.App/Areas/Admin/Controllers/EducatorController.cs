@@ -20,8 +20,7 @@ using MUsefulMethods;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    [Area("Admin"), Authorize(Roles = "Admin")]
-    public class EducatorController : TempSecurityController
+    public class EducatorController : BaseController
     {
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly FileUploadManager _fileManager;

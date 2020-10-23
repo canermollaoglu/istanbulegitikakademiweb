@@ -12,8 +12,7 @@ using NitelikliBilisim.Core.Entities.groups;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    [Area("Admin"), Authorize(Roles = "Admin")]
-    public class GroupExpenseTypeController : Controller
+    public class GroupExpenseTypeController : BaseController
     {
 
         private readonly UnitOfWork _unitOfWork;

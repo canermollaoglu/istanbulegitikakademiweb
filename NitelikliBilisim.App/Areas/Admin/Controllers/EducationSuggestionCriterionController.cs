@@ -15,8 +15,7 @@ using System.Linq;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    [Area("Admin"), Authorize(Roles = "Admin")]
-    public class EducationSuggestionCriterionController : Controller
+    public class EducationSuggestionCriterionController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
 

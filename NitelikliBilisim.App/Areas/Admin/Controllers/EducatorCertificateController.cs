@@ -17,8 +17,7 @@ using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    [Area("Admin"), Authorize(Roles = "Admin")]
-    public class EducatorCertificateController : Controller
+    public class EducatorCertificateController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly FileUploadManager _fileManager;

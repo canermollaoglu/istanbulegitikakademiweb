@@ -19,8 +19,7 @@ using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    [Area("Admin"), Authorize(Roles = "Admin")]
-    public class EducationHostController : Controller
+    public class EducationHostController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly FileUploadManager _fileManager;

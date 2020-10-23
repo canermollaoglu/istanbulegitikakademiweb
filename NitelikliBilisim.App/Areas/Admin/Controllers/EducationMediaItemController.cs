@@ -19,8 +19,7 @@ using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    [Area("Admin"), Authorize(Roles = "Admin")]
-    public class EducationMediaItemController : TempSecurityController
+    public class EducationMediaItemController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly EducationMediaItemVmCreator _vmCreator;

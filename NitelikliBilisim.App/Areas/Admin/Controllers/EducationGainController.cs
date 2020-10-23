@@ -12,8 +12,7 @@ using NitelikliBilisim.App.Filters;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    [Area("Admin"), Authorize(Roles = "Admin")]
-    public class EducationGainController : TempSecurityController
+    public class EducationGainController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly EducationGainVmCreator _vmCreator;

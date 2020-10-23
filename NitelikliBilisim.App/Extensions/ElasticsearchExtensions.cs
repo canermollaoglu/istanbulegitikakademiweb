@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Nest;
+using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Core.ComplexTypes;
 using System;
 
@@ -22,7 +23,10 @@ namespace NitelikliBilisim.App.Extensions
                  .DefaultMappingFor<TransactionLog>(m => m
                     .IndexName("ut_log")
                     .IdProperty(p => p.Id)
-                );
+                )
+                 .DefaultMappingFor<ExceptionInfo>(m => m
+                 .IndexName("exception_log")
+                 .IdProperty(p => p.Id));
             settings.BasicAuthentication(userName, password);
 
             var client = new ElasticClient(settings);

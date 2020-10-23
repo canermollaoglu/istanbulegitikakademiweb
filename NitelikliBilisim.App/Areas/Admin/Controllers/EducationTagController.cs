@@ -14,8 +14,7 @@ using System.Linq;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    [Area("Admin"), Authorize(Roles = "Admin")]
-    public class EducationTagController : TempSecurityController
+    public class EducationTagController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
         public EducationTagController(UnitOfWork unitOfWork)

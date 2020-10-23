@@ -10,8 +10,7 @@ using System.Linq;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers.Blog
 {
-    [Area("Admin"), Authorize(Roles = "Admin")]
-    public class BlogTagController : Controller
+    public class BlogTagController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
         public BlogTagController(UnitOfWork unitOfWork)

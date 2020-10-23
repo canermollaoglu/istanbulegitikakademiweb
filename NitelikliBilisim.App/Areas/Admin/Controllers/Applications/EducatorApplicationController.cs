@@ -10,8 +10,7 @@ using System.IO;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers.Applications
 {
-    [Area("Admin"), Authorize(Roles = "Admin")]
-    public class EducatorApplicationController : Controller
+    public class EducatorApplicationController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly IStorageService _storage;

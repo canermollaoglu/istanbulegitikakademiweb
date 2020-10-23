@@ -16,8 +16,7 @@ using System.Linq;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers.Promotion
 {
-    [Area("Admin"), Authorize(Roles = "Admin")]
-    public class EducationPromotionController : Controller
+    public class EducationPromotionController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
         public EducationPromotionController(UnitOfWork unitOfWork)
