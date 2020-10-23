@@ -100,6 +100,29 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             }
         }
 
+        [Route("admin/get-group-detail-and-calculations-table/{gId?}")]
+        public IActionResult GetGroupDetailsAndCalculationsTable(Guid gId)
+        {
+            try
+            {
+                var groupDetail = _unitOfWork.EducationGroup.GetDetailByGroupId(gId);
+                var calculationsTable = _unitOfWork.EducationGroup.CalculateGroupExpenseAndIncome(gId);
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    data = new { groupDetail, calculationsTable }
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { $"Hata : {ex.Message}" }
+                });
+            }
+
+        }
 
         public IActionResult GetGroupExpensesByGroupId(Guid groupId)
         {
