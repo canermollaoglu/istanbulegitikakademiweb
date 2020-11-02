@@ -98,13 +98,24 @@
                             </td>
                             <td> @Model.IBAN</td>
                         </tr>
+                        <tr>
+                            <td style="vertical-align:middle"><b>Sertifikalar</b></td>
+                            <td>
+                                <ul class="list-group list-group-flush">
+                                    @foreach (var certificate in Model.Certificates)
+                                    {
+                                        <li class="list-group-item"> @certificate.Name</li>
+                                    }
+                                </ul>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
     <div class="col-md-7">
-        <div class="card border-info mb-3">
+        <div class="card border-info mb-2">
             <div class="card-header">
                 <i class="fa fa-caret-right"></i> Eğitmen Hakkında Kısa Açıklama
             </div>
@@ -113,7 +124,7 @@
             </div>
         </div>
 
-        <div class="card border-info mb-3">
+        <div class="card border-info mb-2">
             <div class="card-header">
                 <i class="fa fa-history"></i> Biyografi
             </div>
@@ -143,6 +154,7 @@
     <script type="text/javascript">
         /* elements */
         var educatorId = $("#educatorId").val();
+        var divEducatorCertificates = $("#div-educator-certificates");
 
         /* assignments */
         $(document).ready(document_onLoad);

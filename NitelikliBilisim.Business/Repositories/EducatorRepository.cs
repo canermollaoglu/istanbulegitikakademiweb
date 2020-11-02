@@ -88,7 +88,11 @@ namespace NitelikliBilisim.Business.Repositories
         public EducatorDetailVm GetEducatorDetail(string educatorId)
         {
             var educator = _context.Educators.Include(x => x.User).First(x => x.Id == educatorId);
-            
+            var certificates = (from bridge in _context.Bridge_EducatorEducatorCertificates
+                                join certificate in _context.EducatorCertificates on bridge.Id2 equals certificate.Id
+                                where bridge.Id == educatorId
+                                select certificate).ToList();
+
             EducatorDetailVm retVal = new EducatorDetailVm()
             {
                 Id = educator.Id,
@@ -100,9 +104,10 @@ namespace NitelikliBilisim.Business.Repositories
                 Phone = educator.User.PhoneNumber,
                 Title = educator.Title,
                 ShortDescription = educator.ShortDescription,
-                Bank = EnumHelpers.GetDescription<BankNames>((BankNames)educator.Bank) ,
+                Bank = EnumHelpers.GetDescription<BankNames>((BankNames)educator.Bank),
                 IBAN = educator.IBAN,
-                Biography = educator.Biography
+                Biography = educator.Biography,
+                Certificates = certificates
             };
             return retVal;
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NitelikliBilisim.Core.Entities.user_details;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -18,5 +19,6 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.educator
         public string Biography { get; set; }
         public string Bank { get; set; }
         public string UserName { get; set; }
+        public List<EducatorCertificate> Certificates { get; set; }
     }
 }
