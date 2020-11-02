@@ -49,8 +49,6 @@ namespace NitelikliBilisim.Business.Repositories
                        join egroup in _context.EducationGroups on educator.Id equals egroup.EducatorId
                        join host in _context.EducationHosts on egroup.HostId equals host.Id
                        join education in _context.Educations on egroup.EducationId equals education.Id
-                       join educatorSalary in _context.EducatorSalaries on egroup.Id equals educatorSalary.EarnedForGroup into eSalary
-                       from educatorSalary2 in eSalary.DefaultIfEmpty()
                        where educator.Id == educatorId
                        select new EducatorGroupVm
                        {
@@ -58,8 +56,7 @@ namespace NitelikliBilisim.Business.Repositories
                            Name = egroup.GroupName,
                            StartDate = egroup.StartDate,
                            HostName = host.HostName,
-                           EducationName = education.Name,
-                           EducatorSalary = educatorSalary2.Paid
+                           EducationName = education.Name
                        };
             return data;
         }
@@ -91,7 +88,7 @@ namespace NitelikliBilisim.Business.Repositories
         public EducatorDetailVm GetEducatorDetail(string educatorId)
         {
             var educator = _context.Educators.Include(x => x.User).First(x => x.Id == educatorId);
-
+            
             EducatorDetailVm retVal = new EducatorDetailVm()
             {
                 Id = educator.Id,
