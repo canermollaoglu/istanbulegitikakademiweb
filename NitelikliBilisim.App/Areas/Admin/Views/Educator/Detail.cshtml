@@ -104,7 +104,8 @@
                                 <ul class="list-group list-group-flush">
                                     @foreach (var certificate in Model.Certificates)
                                     {
-                                        <li class="list-group-item"> @certificate.Name</li>
+
+                                        <li class="list-group-item"><img height="35" src="@StorageService.DownloadFile(System.IO.Path.GetFileName(certificate.CertificateImagePath), "educator-certificate-images").Result"/> @certificate.Name</li>
                                     }
                                 </ul>
                             </td>
