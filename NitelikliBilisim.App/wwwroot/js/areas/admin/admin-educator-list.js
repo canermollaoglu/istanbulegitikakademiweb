@@ -148,8 +148,6 @@ function createGrid() {
                     .appendTo(container);
                 $(`<a title="Güncelle" class="btn btn-outline-warning btn-sm" href="/admin/egitmen-guncelle/${current.id}"><i class=\"fa fa-edit\"></i></a>`)
                     .appendTo(container);
-                $(`<a title="Sosyal Medya Hesapları" class="btn btn-outline-primary btn-sm" href="/admin/egitmen-sosyal-medya-guncelle/${current.id}"><i class=\"fa fa-chain\"></i></a>`)
-                    .appendTo(container);
                 $(`<button title="Sil" class="btn-confirmation-modal-trigger btn btn-outline-danger btn-sm" data-url="/admin/delete-educator?educatorId=${current.id}" style="cursor:pointer;"><i class=\"fa fa-trash\"></i></button>`)
                     .appendTo(container);
             },
