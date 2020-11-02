@@ -50,6 +50,15 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             return View(model);
         }
 
+        [Route("admin/egitmen-detay/{educatorId}")]
+        public IActionResult Detail(string educatorId)
+        {
+            var model = _unitOfWork.Educator.GetEducatorDetail(educatorId);
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducatorDetail");
+            return View(model);
+
+        }
+
         [HttpPost, Route("admin/egitmen-ekle")]
         public async Task<IActionResult> Add(AddPostVm data)
         {

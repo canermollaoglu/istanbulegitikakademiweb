@@ -1,0 +1,126 @@
+﻿@model NitelikliBilisim.Core.ViewModels.areas.admin.educator.EducatorDetailVm
+@using NitelikliBilisim.Core.Services.Abstracts
+@inject IStorageService StorageService
+@{
+    ViewData["Title"] = "Eğitmen Detayları";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@section styles{
+    <style>
+        .form-check-label {
+            cursor: pointer;
+        }
+
+        .table td {
+            padding: .40rem !important;
+        }
+    </style>
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+@{
+    var filePath = "";
+    try
+    {
+        filePath = StorageService.DownloadFile(System.IO.Path.GetFileName(Model.AvatarPath), "educator-photos").Result;
+    }
+    catch
+    {
+    }
+}
+<!--Genel Bilgileri-->
+<div class="row">
+    <div class="col-md-5">
+        <div class="card border-info mb-3">
+            <div class="card-header">
+                <i class="fa fa-id-card-o"></i> Eğitmen Detayları
+            </div>
+            <input type="hidden" value="@Model.Id" id="educatorId" />
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <td style="text-align:center;" colspan="2"><img src="@(string.IsNullOrEmpty(filePath)?"/img/nb_letter_logo_sm.png":filePath)" class="img-thumbnail" width="150" height="150" /></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Kullanıcı Adı</b>
+                            </td>
+                            <td>
+                                @Model.UserName
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Adı</b>
+                            </td>
+                            <td>
+                                @Model.Name
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Soyadı</b>
+                            </td>
+                            <td>
+                                @Model.Surname
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Telefon</b>
+                            </td>
+                            <td>@Model.Phone</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Email</b>
+                            </td>
+                            <td>@Model.Email</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Ünvan</b>
+                            </td>
+                            <td>@Model.Title</td>
+
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Banka</b>
+                            </td>
+                            <td> @Model.Bank</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>IBAN</b>
+                            </td>
+                            <td> @Model.IBAN</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="card border-info mb-3">
+            <div class="card-header">
+                <i class="fa fa-caret-right"></i> Eğitmen Hakkında Kısa Açıklama
+            </div>
+            <div class="card-body">
+                <p>@Model.ShortDescription</p>
+            </div>
+        </div>
+
+        <div class="card border-info mb-3">
+            <div class="card-header">
+                <i class="fa fa-history"></i> Biyografi
+            </div>
+            <div class="card-body">
+                <p>@Model.Biography</p>
+            </div>
+        </div>
+
+    </div>
+</div>

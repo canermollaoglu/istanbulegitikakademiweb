@@ -9,13 +9,15 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.CompilerServices;
+using MUsefulMethods;
+using NitelikliBilisim.Core.Enums.user_details;
 
 namespace NitelikliBilisim.Business.Repositories
 {
     public class EducatorRepository : BaseRepository<Educator, string>
     {
         private readonly NbDataContext _context;
+
         public EducatorRepository(NbDataContext context) : base(context)
         {
             _context = context;
@@ -64,6 +66,29 @@ namespace NitelikliBilisim.Business.Repositories
 
             return base.Update(entity, isSaveLater);
         }
+
+        public EducatorDetailVm GetEducatorDetail(string educatorId)
+        {
+            var educator = _context.Educators.Include(x => x.User).First(x => x.Id == educatorId);
+
+            EducatorDetailVm retVal = new EducatorDetailVm()
+            {
+                Id = educator.Id,
+                UserName = educator.User.UserName,
+                Name = educator.User.Name,
+                Surname = educator.User.Surname,
+                AvatarPath = educator.User.AvatarPath,
+                Email = educator.User.Email,
+                Phone = educator.User.PhoneNumber,
+                Title = educator.Title,
+                ShortDescription = educator.ShortDescription,
+                Bank = EnumHelpers.GetDescription<BankNames>((BankNames)educator.Bank) ,
+                IBAN = educator.IBAN,
+                Biography = educator.Biography
+            };
+            return retVal;
+        }
+
         public List<_Educator> GetEducators()
         {
             var model = Context.Users
