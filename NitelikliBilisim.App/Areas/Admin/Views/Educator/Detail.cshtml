@@ -124,3 +124,148 @@
 
     </div>
 </div>
+<!--Gruplar-->
+<div class="row">
+    <div class="col-md-12">
+        <div class="card border-info mb-3">
+            <div class="card-header">
+                <i class="fa fa-users"></i>  Gruplar
+            </div>
+            <div class="card-body">
+                <div id="grid-educator-groups">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section postScripts{
+    <script type="text/javascript">
+        /* elements */
+        var educatorId = $("#educatorId").val();
+
+        /* assignments */
+        $(document).ready(document_onLoad);
+
+        /* events */
+        function document_onLoad() {
+            createEducatorGroupsGrid();
+        }
+
+        /* DataGrid */
+        function createEducatorGroupsGrid() {
+            var SERVICE_URL = `../../api/educator/get-educator-groups-by-educator-id?educatorId=${educatorId}`
+            $("#grid-educator-groups").dxDataGrid({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    loadUrl: SERVICE_URL
+                }),
+                remoteOperations: {
+                    paging: true,
+                    filtering: true,
+                    sorting: true,
+                    grouping: true,
+                    summary: true,
+                    groupPaging: true
+                },
+                showBorders: true,
+                showColumnLines: true,
+                rowAlternationEnabled: true,
+                showRowLines: true,
+                wordWrapEnabled: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                searchPanel: {
+                    visible: true
+                },
+                paging: {
+                    pageSize: 10
+                },
+                grouping: {
+                    autoExpandAll: true
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10, 20],
+                    showInfo: true
+                },
+                headerFilter: {
+                    visible: true
+                },
+                groupPanel: {
+                    visible: true
+                },
+                export: {
+                    enabled: true,
+                },
+                onExporting: function (e) {
+                    var workbook = new ExcelJS.Workbook();
+                    var worksheet = workbook.addWorksheet('Eğitmen Grup Listesi');
+                    DevExpress.excelExporter.exportDataGrid({
+                        worksheet: worksheet,
+                        component: e.component,
+                        customizeCell: function (options) {
+                            var excelCell = options;
+                            excelCell.font = { name: 'Arial', size: 12 };
+                            excelCell.alignment = { horizontal: 'left' };
+                        }
+                    }).then(function () {
+                        workbook.xlsx.writeBuffer().then(function (buffer) {
+                            saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'Egitmen Grup Listesi' + parseInt(Math.random() * 1000000000) + '.xlsx');
+                        });
+                    });
+                    e.cancel = true;
+                },
+                columns: [
+                    {
+                        caption: "Başlangıç Tarihi",
+                        dataField: "startDate",
+                        dataType: "date",
+                        format: "dd/MM/yyyy",
+                        sortOrder: "desc",
+                        width: 150
+                    },
+                    {
+                        caption: "Grup Adı",
+                        dataField: "name",
+                        width: 100
+                    },
+                    {
+                        caption: "Eğitim Adı",
+                        dataField: "educationName"
+                    },
+                    {
+                        caption: "Kurum",
+                        dataField: "hostName",
+                        width: 250
+                    },
+                    {
+                        caption: "Hakediş",
+                        dataField: "educatorSalary",
+                        customizeText: function (educatorSalary) {
+                            return educatorSalary.value + " ₺";
+                        },
+                        alignment: "center",
+                        width:120
+                    },
+                    {
+                        caption: "Detay",
+                        allowSearch: false,
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            var div = $('<div class="btn-group" style="display: inline-flex; width:"auto"></div>');
+                            $(`<a class="btn btn-outline-primary btn-sm" href="/admin/grup-detay/${current.id}">Grup Detayı</a>`)
+                                .appendTo(div);
+                            div.appendTo(container);
+                        },
+                        alignment: "center",
+                        width: 110
+                    }
+                ]
+            });
+        }
+
+    </script>
+}

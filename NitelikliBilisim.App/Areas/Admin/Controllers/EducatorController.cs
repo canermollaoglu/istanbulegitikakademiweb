@@ -415,5 +415,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 message = "Silme işlemi başarılı"
             });
         }
+
     }
 }
