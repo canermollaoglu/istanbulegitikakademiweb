@@ -64,8 +64,6 @@ namespace NitelikliBilisim.Business.Repositories
 
             return model;
         }
-
-
         public IQueryable<StudentBasedSalesReport> GetStudentBasedSalesReport(string studentId)
         {
             var data = (from paymentDetailInfo in _context.OnlinePaymentDetailsInfos
@@ -85,45 +83,6 @@ namespace NitelikliBilisim.Business.Repositories
                         });
             return data;
         }
-
-        public IQueryable<StudentAbsenceListVm> GetStudentAbsences(string studentId)
-        {
-            var data = (from absence in _context.GroupAttendances
-                        join egroup in _context.EducationGroups on absence.GroupId equals egroup.Id
-                        join education in _context.Educations on egroup.EducationId equals education.Id
-                        where absence.CustomerId == studentId
-                        select new StudentAbsenceListVm
-                        {
-                            Id = absence.Id,
-                            GroupName = egroup.GroupName,
-                            EducationName = education.Name,
-                            Reason = absence.Reason,
-                            Date = absence.Date
-                        });
-            return data;
-        }
-
-        public IQueryable<StudentTicketsVm> GetStudentTickets(string studentId)
-        {
-            var data = (from ticket in _context.Tickets
-                        join opdInfo in _context.OnlinePaymentDetailsInfos on ticket.InvoiceDetailsId equals opdInfo.Id
-                        join education in _context.Educations on ticket.EducationId equals education.Id
-                        join host in _context.EducationHosts on ticket.HostId equals host.Id
-                        where ticket.OwnerId == studentId
-                        select new StudentTicketsVm
-                        {
-                            TicketId = ticket.Id,
-                            CreatedDate = ticket.CreatedDate,
-                            EducationName = education.Name,
-                            HostName = host.HostName,
-                            IsUsed = ticket.IsUsed,
-                            IsCancelled = opdInfo.IsCancelled ? "İptal Edildi" : "Devam Ediyor"
-                        });
-
-            return data;
-        }
-
-
         public IQueryable<GroupBasedCancellationSalesReport> GetGroupBasedCancellationSalesReport(Guid groupId)
         {
             return (from onlinePaymentDetailInfo in _context.OnlinePaymentDetailsInfos
@@ -144,7 +103,6 @@ namespace NitelikliBilisim.Business.Repositories
                         RefundPrice = onlinePaymentDetailInfo.RefundPrice
                     });
         }
-
         public IQueryable<GroupBasedSalesReportStudentsVm> GetGroupBasedSalesReportStudents(Guid groupId)
         {
             return (from gs in _context.Bridge_GroupStudents
@@ -195,8 +153,6 @@ namespace NitelikliBilisim.Business.Repositories
                         RefundPrice = paymentDetailInfo.RefundPrice
                     });
         }
-
-
         public IQueryable<GeneralSalesReportVm> GetGeneralSalesReport()
         {
             return (from paymentDetailInfo in _context.OnlinePaymentDetailsInfos
@@ -225,7 +181,6 @@ namespace NitelikliBilisim.Business.Repositories
                         Status = paymentDetailInfo.IsCancelled ? "İade" : paymentDetailInfo.BlockageResolveDate < DateTime.Now ? "Aktarıldı" : "Bekliyor",
                     }).OrderByDescending(x => x.SalesDate);
         }
-
         public List<EducatorPriceTableVm> GetGroupBasedSalesReportEducatorSalaryTable(Guid groupId)
         {
             List<EducatorPriceTableVm> model = new List<EducatorPriceTableVm>();

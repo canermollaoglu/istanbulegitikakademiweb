@@ -133,12 +133,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                                <tr>
-                                    <td>@Model.StudentNBUYEducationInfo.StartDate.ToShortDateString()</td>
-                                    <td>@Model.StudentNBUYEducationInfo.EducationCenter</td>
-                                    <td>@Model.StudentNBUYEducationInfo.CategoryName</td>
-                                    <td>@Model.StudentNBUYEducationInfo.EducationDay</td>
-                                </tr>
+                            <tr>
+                                <td>@Model.StudentNBUYEducationInfo.StartDate.ToShortDateString()</td>
+                                <td>@Model.StudentNBUYEducationInfo.EducationCenter</td>
+                                <td>@Model.StudentNBUYEducationInfo.CategoryName</td>
+                                <td>@Model.StudentNBUYEducationInfo.EducationDay</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -235,6 +235,20 @@
     </div>
 </div>
 
+<!--Kupon/İndirim Kullanımı-->
+<div class="row">
+    <div class="col-md-12">
+        <div class="card border-info mb-3">
+            <div class="card-header">
+                <i class="fa fa-list-alt"></i> Kupon/İndirim Kullanımı
+            </div>
+            <div class="card-body">
+                <div id="grid-promotions"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 @section postScripts{
     <script type="text/javascript">
@@ -250,6 +264,7 @@
             createPaymentReportGrid();
             createStudentTicketsGrid();
             createAbsenceGrid();
+            createPromotionsGrid();
         }
 
         /* DataGrid */
@@ -388,7 +403,7 @@
                         dataField: "createdDate",
                         dataType: "date",
                         format: "dd/MM/yyyy",
-                        width:100
+                        width: 100
                     },
                     {
                         caption: "Eğitim",
@@ -557,7 +572,6 @@
                 }
             });
         }
-
         function createAbsenceGrid() {
             var SERVICE_URL = `../../api/student/get-student-absences?studentId=${studentId.val()}`
             $("#grid-absences").dxDataGrid({
@@ -639,7 +653,7 @@
                     {
                         caption: "Grup",
                         dataField: "groupName",
-                        width:150
+                        width: 150
                     },
                     {
                         caption: "Eğitim",
@@ -661,6 +675,116 @@
                 }
             });
         }
+        function createPromotionsGrid() {
+            var SERVICE_URL = `../../api/student/get-student-used-promotions?studentId=${studentId.val()}`
+            $("#grid-promotions").dxDataGrid({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    loadUrl: SERVICE_URL
+                }),
+                remoteOperations: {
+                    paging: true,
+                    filtering: true,
+                    sorting: true,
+                    grouping: true,
+                    summary: true,
+                    groupPaging: true
+                },
+                showBorders: true,
+                showColumnLines: true,
+                rowAlternationEnabled: true,
+                showRowLines: true,
+                wordWrapEnabled: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                searchPanel: {
+                    visible: true
+                },
+                paging: {
+                    pageSize: 10
+                },
+                grouping: {
+                    autoExpandAll: true
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10, 20],
+                    showInfo: true
+                },
+                export: {
+                    enabled: true
+                },
+                onExporting: function (e) {
+                    var workbook = new ExcelJS.Workbook();
+                    var worksheet = workbook.addWorksheet('Kupon Kullanımları');
+                    DevExpress.excelExporter.exportDataGrid({
+                        worksheet: worksheet,
+                        component: e.component,
+                        customizeCell: function (options) {
+                            var excelCell = options;
+                            excelCell.font = { name: 'Arial', size: 12 };
+                            excelCell.alignment = { horizontal: 'left' };
+                        }
+                    }).then(function () {
+                        workbook.xlsx.writeBuffer().then(function (buffer) {
+                            saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'Kupon Kullanım Listesi' + parseInt(Math.random() * 1000000000) + '.xlsx');
+                        });
+                    });
+                    e.cancel = true;
+                },
+                headerFilter: {
+                    visible: true
+                },
+                columns: [
+                    {
+                        caption: "Kullanım Tarihi",
+                        dataField: "usedDate",
+                        dataType: "date",
+                        format: "dd/MM/yyyy",
+                        width: 150
+                    },
+                    {
+                        caption: "Promosyon Adı",
+                        dataField: "name",
+                        width: 150
+                    },
+                    {
+                        caption: "Açıklama",
+                        dataField: "description"
+                    },
+                    {
+                        caption: "Promosyon Kodu",
+                        dataField: "promotionCode",
+                        width:150
+
+                    },
+                    {
+                        caption: "İndirim Tutarı",
+                        dataField: "discountAmount",
+                        customizeText: function (discountAmount) {
+                            return discountAmount.value + " ₺";
+                        },
+                        width:150
+                    },
+                ],
+                summary: {
+                    totalItems: [
+                        {
+                            column: "usedDate",
+                            summaryType: "count",
+                            displayFormat: "Toplam : {0}"
+                        },
+                        {
+                            column: "discountAmount",
+                            summaryType: "sum",
+                            displayFormat: "T:{0} ₺"
+                        }
+                    ]
+                }
+            });
+        }
+
 
     </script>
 }
