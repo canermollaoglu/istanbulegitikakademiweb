@@ -126,6 +126,7 @@ function createGrid() {
                 dataField: "startDate",
                 dataType: "date",
                 format: 'dd/MM/yyyy',
+                sortOrder: "desc",
                 width: 100
             },
             {

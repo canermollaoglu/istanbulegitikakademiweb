@@ -91,6 +91,14 @@ function createGrid() {
         },
         columns: [
             {
+                caption: "Tarih",
+                dataField: "createdDate",
+                dataType: "date",
+                format: 'dd/MM/yyyy',
+                sortOrder: "desc",
+                width: 150
+            },
+            {
                 caption: "İsim",
                 dataField: "title",
             },
@@ -106,14 +114,6 @@ function createGrid() {
                 alignment:"center",
                 width:180
             },
-            {
-                caption: "Tarih",
-                dataField: "createdDate",
-                dataType: "date",
-                format: 'dd/MM/yyyy',
-                width:150
-            },
-
             {
                 caption: "Yönet",
                 cellTemplate: function (container, options) {
