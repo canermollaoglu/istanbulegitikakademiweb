@@ -8,8 +8,7 @@ using NitelikliBilisim.App.Lexicographer;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    [Area("Admin"), Authorize(Roles = "Admin")]
-    public class HelpDocumentsController : Controller
+    public class HelpDocumentsController : BaseController
     {
         public IActionResult Index(string documentName)
         {

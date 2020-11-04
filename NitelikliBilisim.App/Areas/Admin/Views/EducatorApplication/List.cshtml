@@ -143,7 +143,7 @@
                         cellTemplate: function (container, options) {
                             var current = options.data;
                             var div = $('<div class="btn-group" style="display: inline-flex; width:"auto"></div>');
-                            $(`<a class="btn btn-outline-primary btn-sm" href="/admin/egitmen-cv-goruntule/${current.id}">CV Görüntüle</a>`)
+                            $(`<a class="btn btn-outline-primary btn-sm" href="/admin/egitmen-cv-goruntule?eId=${current.id}">CV Görüntüle</a>`)
                                 .appendTo(div);
                             div.appendTo(container);
 

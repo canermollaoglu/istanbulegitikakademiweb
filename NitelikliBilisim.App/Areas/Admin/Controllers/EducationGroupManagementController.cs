@@ -12,8 +12,7 @@ using NitelikliBilisim.Notificator.Services;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    [Area("admin"), Authorize(Roles = "Admin")]
-    public class EducationGroupManagementController : Controller
+    public class EducationGroupManagementController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly EmailSender _emailSender;

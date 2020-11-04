@@ -56,9 +56,6 @@ btnCalculateSalesPrice.on("click", btnCalculateSalesPrice_onClick);
 btnEducationPriceSave.on("click", btnEducationPriceSave_onClick);
 /* events */
 function document_onLoad() {
-
-
-    getGroupDetailInfo();
     confirmModalBuilder.buildModal({
         title: "Emin misiniz?",
         bodyText: "Seçmiş olduğunuz kayıt kalıcı olarak silinecektir.",
@@ -66,14 +63,14 @@ function document_onLoad() {
         confirmText: "Evet, eminim",
         onConfirmClick: confirm_onClick
     });
-    calculateGroupExpenseAndIncome();
+
+    getGroupDetailsAndCalculationsTable();
+
     createGroupExpenseGrid();
     createStudentGrid();
     createLessonDayGrid();
     createEligibleTicketTable();
-    loadEducatorsSelect();
-    loadClassRoomsSelect();
-    loadExpenseTypesSelect();
+    fillAllSelect();
 
     $(document).ajaxStart(function () {
         $("#loading").show();
@@ -136,6 +133,7 @@ function btnSave_onClick() {
     });
 
 }
+
 function btnLessonDayClassroomChange_onClick() {
     btnLessonDayClassroomChange.off("click");
     var data = {
@@ -446,69 +444,6 @@ function saveGroup() {
     divGroupEditSaveButton.hide();
 }
 
-function getGroupDetailInfo() {
-    var gId = groupId.val();
-    $.ajax({
-        url: `/admin/get-group-detail/${gId}`,
-        method: "get",
-        success: (res) => {
-            if (res.isSuccess) {
-                $("#groupName").html(res.data.groupName);
-                inputGroupName.val(res.data.groupName);
-                $("#hostName").html(res.data.host.hostName);
-                $("#educationName").html(res.data.education.name);
-                $("#classRoomName").html(res.data.classRoomName);
-                $("#educatorName").html(res.data.educatorName);
-                $("#startDate").html(res.data.startDate);
-                $("#endDate").html(res.data.endDate);
-                $("#quota").html(res.data.assignedStudentsCount + "/" + res.data.quota);
-                $("#educationDays").html(res.data.educationDays + " gün, günde " + res.data.educationHoursPerDay + " saat");
-                $("#oldPrice").html(res.data.oldPrice != null ? res.data.oldPrice + " ₺" : "Fiyat belirtilmemiş.");
-                $("#newPrice").html(res.data.newPrice != null ? res.data.newPrice + " ₺" : "Fiyat belirtilmemiş.");
-                var alertStyle = "";
-
-                if (res.data.assignedStudentsCount==0) {
-                    alertStyle = "alert-warning";
-                    $("#alertMinimumStudent").html(`İlk satıştan sonra %${res.data.expectedProfitRate} karlılık için minimum gereksinimler hesaplanacaktır.`);
-                }
-                else if (res.data.minimumStudentCount <= 0) {
-                    alertStyle = "alert-success";
-                    $("#alertMinimumStudent").html(`<b>%${res.data.expectedProfitRate}</b> kârlılık sağlanmıştır.`);
-                }
-                else if (res.data.minimumStudentCount < (res.data.quota / 2)) {
-                    alertStyle = "alert-danger";
-                    $("#alertMinimumStudent").html(`<b>%${res.data.expectedProfitRate}</b> kârlılık için minimum <b>${res.data.minimumStudentCount}</b> öğrencinin gruba katılması gereklidir.`);
-                }
-                else {
-                    alertStyle = "alert-warning";
-                    $("#alertMinimumStudent").html(`<b>%${res.data.expectedProfitRate}</b> kârlılık için minimum <b>${res.data.minimumStudentCount}</b> öğrencinin gruba katılması gereklidir.`);
-                }
-
-
-                var weekDays = "";
-                $(res.data.weekdayNames).each(function (index, element) {
-                    if (index == 0) {
-                        weekDays += element;
-                    } else {
-                        weekDays += ',' + element;
-                    }
-                });
-                if (res.data.cancellationCount > 0) {
-                    $("#purchasesDiv").addClass("alert-warning");
-                    $("#purchasesItemInfo").html(`Bu eğitimi ${res.data.purchasesCount} kişi satın almış, ${res.data.cancellationCount} kişi iade etmiştir. `);
-                } else {
-                    $("#purchasesDiv").addClass("alert-success");
-                    $("#purchasesItemInfo").html(`Bu eğitimi ${res.data.purchasesCount} kişi satın almıştır. Grupta iade yoktur. `);
-                }
-                $("#educationWeekDays").html(weekDays);
-                $("#alertDiv").addClass(alertStyle);
-                if (res.data.newPrice!=null) {
-                inputnewPrice.val(res.data.newPrice);
-                }
-            }
-        }
-    });
-}
 function createEligibleTicketTable() {
     var gId = groupId.val();
     $.ajax({
@@ -544,61 +479,6 @@ function createAssignmentButtons() {
     }
 }
 
-function calculateGroupExpenseAndIncome() {
-    var gId = groupId.val();
-    $.ajax({
-        url: `/admin/calculate-group-expense-and-income/${gId}`,
-        method: "get",
-        success: (res) => {
-            if (res.isSuccess) {
-                tbodyCalculateGroupExpenseAndIncome.html("");
-                var item = res.data;
-                var table = "";
-                table +=
-                    "<tr>" +
-                    `<td>Ciro <i class="fa fa-info-circle" title="Toplam satınalım tutarı."></i></td>` +
-                    `<td class="text-right text-success"><b>${item.totalStudentIncomes}</b></td>` +
-                    "</tr>" +
-                    "<tr>" +
-                    `<td>Grup Giderleri</td>` +
-                    `<td class="text-right text-danger">${item.groupExpenses}</td>` +
-                    "</tr>" +
-                    "<tr>" +
-                    `<td>Eğitmen Ücreti Toplamı <i class="fa fa-info-circle" title="${item.educatorExpensesAverage} (Ort Saatlik Ücret) X ${item.totalEducationHours} (Toplam Eğitim Saati)X 1.45"></i></td>` +
-                    `<td class="text-right text-danger">${item.educatorExpenses}</td>` +
-                    "</tr>" +
-                    "<tr>" +
-                    `<td>Pos Komisyonu <i class="fa fa-info-circle" title="Satışlardan kesilen toplam komisyon"></i></td>` +
-                    `<td class="text-right text-danger">${item.totalPosCommissionAmount}</td>` +
-                    "</tr>" +
-                    "<tr>" +
-                    `<td>K.D.V. <i class="fa fa-info-circle" title="(Grup Giderleri(İptal-İade ve Pos Komisyonu Hariç) + Eğitmen Ücreti Toplamı) X 0.08"></i></td>` +
-                    `<td class="text-right text-danger">${item.kdv}</td>` +
-                    "</tr>" +
-                    "<tr>" +
-                    `<td><b>Toplam Gider</b></td>` +
-                    `<td class="text-right text-danger"><b>${item.totalExpenses}</b></td>` +
-                    "</tr>" +
-                    "<tr>" +
-                    `<td><b>Genel Toplam</b> <i class="fa fa-info-circle" title="Ciro-(Grup Giderleri+Eğitmen Ücreti Toplamı+KDV)"></i></td>` +
-                    `<td class="text-right"><b>${item.grandTotal} </b></td>` +
-                    "</tr>" +
-                    "<tr>" +
-                    `<td ><b>Kâr Oranı</b> <i class="fa fa-info-circle" title="(Ciro/Toplam GiderX100)-100"></i></td>` +
-                    `<td class="text-right"><b>%${item.profitRate}</b></td>` +
-                    "</tr>";
-                tbodyCalculateGroupExpenseAndIncome.append(table);
-            }
-            else {
-                console.log(res.errors);
-                alert("Hata");
-            }
-        }
-    });
-
-
-}
-
 $('input[type=radio][name=changeClassroomType]').change(function () {
     if (this.value == '10') {
         radioLessonDayClassroomChangeType.val("10");
@@ -619,6 +499,117 @@ $('input[type=radio][name=educatorChangeType]').change(function () {
         inputChangeEducatorStartDateDiv.show();
     }
 });
+
+
+//Genel Grup Bilgileri ve Mali Durum Tablosu
+function getGroupDetailsAndCalculationsTable() {
+    
+    var gId = groupId.val();
+    $.ajax({
+        url: `/admin/get-group-detail-and-calculations-table/${gId}`,
+        method: "get",
+        success: (res) => {
+            if (res.isSuccess) {
+                fillGroupDetailInfo(res.data.groupDetail);
+                fillCalculationsTable(res.data.calculationsTable);
+            }
+        }
+    });
+
+}
+
+function fillCalculationsTable(data) {
+    tbodyCalculateGroupExpenseAndIncome.html("");
+    var table = "";
+    table +=
+        "<tr>" +
+        `<td>Ciro <i class="fa fa-info-circle" title="Toplam satınalım tutarı."></i></td>` +
+    `<td class="text-right text-success"><b>${data.totalStudentIncomes}</b></td>` +
+        "</tr>" +
+        "<tr>" +
+        `<td>Grup Giderleri</td>` +
+    `<td class="text-right text-danger">${data.groupExpenses}</td>` +
+        "</tr>" +
+        "<tr>" +
+    `<td>Eğitmen Ücreti Toplamı <i class="fa fa-info-circle" title="${data.educatorExpensesAverage} (Ort Saatlik Ücret) X ${data.totalEducationHours} (Toplam Eğitim Saati)X 1.45"></i></td>` +
+    `<td class="text-right text-danger">${data.educatorExpenses}</td>` +
+        "</tr>" +
+        "<tr>" +
+        `<td>Pos Komisyonu <i class="fa fa-info-circle" title="Satışlardan kesilen toplam komisyon"></i></td>` +
+    `<td class="text-right text-danger">${data.totalPosCommissionAmount}</td>` +
+        "</tr>" +
+        "<tr>" +
+        `<td>K.D.V. <i class="fa fa-info-circle" title="(Grup Giderleri(İptal-İade ve Pos Komisyonu Hariç) + Eğitmen Ücreti Toplamı) X 0.08"></i></td>` +
+    `<td class="text-right text-danger">${data.kdv}</td>` +
+        "</tr>" +
+        "<tr>" +
+        `<td><b>Toplam Gider</b></td>` +
+    `<td class="text-right text-danger"><b>${data.totalExpenses}</b></td>` +
+        "</tr>" +
+        "<tr>" +
+        `<td><b>Genel Toplam</b> <i class="fa fa-info-circle" title="Ciro-(Grup Giderleri+Eğitmen Ücreti Toplamı+KDV)"></i></td>` +
+    `<td class="text-right"><b>${data.grandTotal} </b></td>` +
+        "</tr>" +
+        "<tr>" +
+        `<td ><b>Kâr Oranı</b> <i class="fa fa-info-circle" title="(Ciro/Toplam GiderX100)-100"></i></td>` +
+    `<td class="text-right"><b>%${data.profitRate}</b></td>` +
+        "</tr>";
+    tbodyCalculateGroupExpenseAndIncome.append(table);
+}
+function fillGroupDetailInfo(data) {
+    $("#groupName").html(data.groupName);
+    inputGroupName.val(data.groupName);
+    $("#hostName").html(data.host.hostName);
+    $("#educationName").html(data.education.name);
+    $("#classRoomName").html(data.classRoomName);
+    $("#educatorName").html(data.educatorName);
+    $("#startDate").html(data.startDate);
+    $("#endDate").html(data.endDate);
+    $("#quota").html(data.assignedStudentsCount + "/" + data.quota);
+    $("#educationDays").html(data.educationDays + " gün, günde " + data.educationHoursPerDay + " saat");
+    $("#oldPrice").html(data.oldPrice != null ? data.oldPrice + " ₺" : "Fiyat belirtilmemiş.");
+    $("#newPrice").html(data.newPrice != null ? data.newPrice + " ₺" : "Fiyat belirtilmemiş.");
+    var alertStyle = "";
+
+    if (data.assignedStudentsCount == 0) {
+        alertStyle = "alert-warning";
+        $("#alertMinimumStudent").html(`İlk satıştan sonra %${data.expectedProfitRate} karlılık için minimum gereksinimler hesaplanacaktır.`);
+    }
+    else if (data.minimumStudentCount <= 0) {
+        alertStyle = "alert-success";
+        $("#alertMinimumStudent").html(`<b>%${data.expectedProfitRate}</b> kârlılık sağlanmıştır.`);
+    }
+    else if (data.minimumStudentCount < (data.quota / 2)) {
+        alertStyle = "alert-danger";
+        $("#alertMinimumStudent").html(`<b>%${data.expectedProfitRate}</b> kârlılık için minimum <b>${data.minimumStudentCount}</b> öğrencinin gruba katılması gereklidir.`);
+    }
+    else {
+        alertStyle = "alert-warning";
+        $("#alertMinimumStudent").html(`<b>%${data.expectedProfitRate}</b> kârlılık için minimum <b>${data.minimumStudentCount}</b> öğrencinin gruba katılması gereklidir.`);
+    }
+
+
+    var weekDays = "";
+    $(data.weekdayNames).each(function (index, element) {
+        if (index == 0) {
+            weekDays += element;
+        } else {
+            weekDays += ',' + element;
+        }
+    });
+    if (data.cancellationCount > 0) {
+        $("#purchasesDiv").addClass("alert-warning");
+        $("#purchasesItemInfo").html(`Bu eğitimi ${data.purchasesCount} kişi satın almış, ${data.cancellationCount} kişi iade etmiştir. `);
+    } else {
+        $("#purchasesDiv").addClass("alert-success");
+        $("#purchasesItemInfo").html(`Bu eğitimi ${data.purchasesCount} kişi satın almıştır. Grupta iade yoktur. `);
+    }
+    $("#educationWeekDays").html(weekDays);
+    $("#alertDiv").addClass(alertStyle);
+    if (data.newPrice != null) {
+        inputnewPrice.val(data.newPrice);
+    }
+}
 
 /*DataGrid*/
 function createGroupExpenseGrid() {
@@ -908,71 +899,23 @@ function createStudentGrid() {
 
 }
 
-
-
-
-/*Select */
-function loadEducatorsSelect() {
+/*Selects */
+function fillAllSelect() {
     var gId = groupId.val();
     $.ajax({
-        url: `/admin/get-assigned-educators-for-group-detail/${gId}`,
+        url: `/admin/group-detail-fill-all-select/${gId}`,
         method: "get",
         success: (res) => {
             if (res.isSuccess) {
-                getEducators(res.data);
-                if (!res.data.length)
-                    $(selectEducators).prop("disabled", true);
-            }
-        }
-    });
-}
-function getEducators(data) {
-    var jquerySelectEducators = $(selectEducators);
-    jquerySelectEducators.html(`<option value="">Eğitmen seçiniz...</option>`);
-    var appended = "";
-    for (var i = 0; i < data.length; i++) {
-        var item = data[i];
-        appended += `<option value="${item.educatorId}">${item.name} ${item.surname}</option>`;
-    }
-
-    $(selectEducators).append(appended);
-}
-
-function loadClassRoomsSelect() {
-    var gId = groupId.val();
-    $.ajax({
-        url: `/admin/get-assigned-class-rooms-for-group-detail/${gId}`,
-        method: "get",
-        success: (res) => {
-            if (res.isSuccess) {
-                getClassRooms(res.data);
-                if (!res.data.length)
-                    $(selectClassrooms).prop("disabled", true);
-            }
-        }
-    });
-}
-function getClassRooms(data) {
-    var jquerySelectClassRooms = $(selectClassrooms);
-    jquerySelectClassRooms.html(`<option value="">Sınıf seçiniz...</option>`);
-    var appended = "";
-    for (var i = 0; i < data.length; i++) {
-        var item = data[i];
-        appended += `<option value="${item.id}">${item.name}</option>`;
-    }
-
-    $(selectClassrooms).append(appended);
-}
-
-function loadExpenseTypesSelect() {
-    $.ajax({
-        url: `/admin/get-expense-types`,
-        method: "get",
-        success: (res) => {
-            if (res.isSuccess) {
-                getExpenseTypes(res.data);
-                if (!res.data.length)
+                getExpenseTypes(res.data.expenseTypes);
+                if (!res.data.expenseTypes.length)
                     $(selectExpenseTypes).prop("disabled", true);
+                getClassRooms(res.data.classRooms);
+                if (!res.data.classRooms.length)
+                    $(selectClassrooms).prop("disabled", true);
+                getEducators(res.data.educators);
+                if (!res.data.educators.length)
+                    $(selectEducators).prop("disabled", true);
             }
         }
     });
@@ -988,4 +931,27 @@ function getExpenseTypes(data) {
 
     $(selectExpenseTypes).append(appended);
 }
+function getEducators(data) {
+    var jquerySelectEducators = $(selectEducators);
+    jquerySelectEducators.html(`<option value="">Eğitmen seçiniz...</option>`);
+    var appended = "";
+    for (var i = 0; i < data.length; i++) {
+        var item = data[i];
+        appended += `<option value="${item.educatorId}">${item.name} ${item.surname}</option>`;
+    }
+
+    $(selectEducators).append(appended);
+}
+function getClassRooms(data) {
+    var jquerySelectClassRooms = $(selectClassrooms);
+    jquerySelectClassRooms.html(`<option value="">Sınıf seçiniz...</option>`);
+    var appended = "";
+    for (var i = 0; i < data.length; i++) {
+        var item = data[i];
+        appended += `<option value="${item.id}">${item.name}</option>`;
+    }
+
+    $(selectClassrooms).append(appended);
+}
+
 

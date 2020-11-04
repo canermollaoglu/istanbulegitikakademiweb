@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
@@ -14,8 +13,7 @@ using System.Linq;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    [Area("Admin"), Authorize(Roles = "Admin")]
-    public class EarningsReportController : Controller
+    public class EarningsReportController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
         public EarningsReportController(UnitOfWork unitOfWork)
@@ -25,6 +23,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("raporlar/satis")]
         public IActionResult IncomeReport()
         {
+            throw new Exception("Test amaçlı oluşturulmuş exception.", new Exception("Inner exception mesajı."));
             return View();
         }
 

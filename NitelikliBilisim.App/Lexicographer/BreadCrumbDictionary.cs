@@ -63,6 +63,9 @@ namespace NitelikliBilisim.App.Lexicographer
               new BreadCrumbItem[] { new BreadCrumbItem(title: "Eğitmen Listesi", url: "/admin/egitmenler"), new BreadCrumbItem(title: "Eğitmen Güncelle", url: null) });
             _dictionary.Add("AdminEducatorUpdateEducatorSocialMedia",
               new BreadCrumbItem[] { new BreadCrumbItem(title: "Eğitmen Listesi", url: "/admin/egitmenler"), new BreadCrumbItem(title: "Eğitmen Sosyal Medya Güncelle", url: null) });
+            _dictionary.Add("AdminEducatorDetail",
+             new BreadCrumbItem[] { new BreadCrumbItem(title: "Eğitmen Listesi", url: "/admin/egitmenler"), new BreadCrumbItem(title: "Eğitmen Detayları", url: null) });
+
 
             /*EducationGrup*/
             _dictionary.Add("AdminEducationGrupList",
@@ -163,7 +166,10 @@ namespace NitelikliBilisim.App.Lexicographer
             /*Educator Application*/
             _dictionary.Add("AdminEducatorApplicationList",
                new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Eğitmen Başvuruları", url: null) });
+            _dictionary.Add("AdminEducatorApplicationCv",
+               new BreadCrumbItem[] { new BreadCrumbItem(title: "Eğitmen Başvuruları", url: "/admin/educatorapplication/list"), new BreadCrumbItem(title: "Eğitmen Cv Görüntüle", url: null) });
 
+            
             /*Corporate Membership Application*/
             _dictionary.Add("AdminCorporateMembershipApplicationList",
                new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Kurumsal Üyelik Başvuruları", url: null) });

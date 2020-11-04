@@ -9,13 +9,15 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.CompilerServices;
+using MUsefulMethods;
+using NitelikliBilisim.Core.Enums.user_details;
 
 namespace NitelikliBilisim.Business.Repositories
 {
     public class EducatorRepository : BaseRepository<Educator, string>
     {
         private readonly NbDataContext _context;
+
         public EducatorRepository(NbDataContext context) : base(context)
         {
             _context = context;
@@ -41,6 +43,24 @@ namespace NitelikliBilisim.Business.Repositories
             return educatorId;
         }
 
+        public IQueryable<EducatorGroupVm> GetEducatorGroupsByEducatorId(string educatorId)
+        {
+            var data = from educator in _context.Educators
+                       join egroup in _context.EducationGroups on educator.Id equals egroup.EducatorId
+                       join host in _context.EducationHosts on egroup.HostId equals host.Id
+                       join education in _context.Educations on egroup.EducationId equals education.Id
+                       where educator.Id == educatorId
+                       select new EducatorGroupVm
+                       {
+                           Id = egroup.Id,
+                           Name = egroup.GroupName,
+                           StartDate = egroup.StartDate,
+                           HostName = host.HostName,
+                           EducationName = education.Name
+                       };
+            return data;
+        }
+
         public  int Update(Educator entity,List<int> certificateIds, bool isSaveLater = false)
         {
             var _certificates = Context.Bridge_EducatorEducatorCertificates.Where(x => x.Id == entity.Id);
@@ -64,6 +84,34 @@ namespace NitelikliBilisim.Business.Repositories
 
             return base.Update(entity, isSaveLater);
         }
+
+        public EducatorDetailVm GetEducatorDetail(string educatorId)
+        {
+            var educator = _context.Educators.Include(x => x.User).First(x => x.Id == educatorId);
+            var certificates = (from bridge in _context.Bridge_EducatorEducatorCertificates
+                                join certificate in _context.EducatorCertificates on bridge.Id2 equals certificate.Id
+                                where bridge.Id == educatorId
+                                select certificate).ToList();
+
+            EducatorDetailVm retVal = new EducatorDetailVm()
+            {
+                Id = educator.Id,
+                UserName = educator.User.UserName,
+                Name = educator.User.Name,
+                Surname = educator.User.Surname,
+                AvatarPath = educator.User.AvatarPath,
+                Email = educator.User.Email,
+                Phone = educator.User.PhoneNumber,
+                Title = educator.Title,
+                ShortDescription = educator.ShortDescription,
+                Bank = EnumHelpers.GetDescription<BankNames>((BankNames)educator.Bank),
+                IBAN = educator.IBAN,
+                Biography = educator.Biography,
+                Certificates = certificates
+            };
+            return retVal;
+        }
+
         public List<_Educator> GetEducators()
         {
             var model = Context.Users

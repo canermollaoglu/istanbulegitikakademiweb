@@ -20,8 +20,7 @@ using MUsefulMethods;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    [Area("Admin"), Authorize(Roles = "Admin")]
-    public class EducatorController : TempSecurityController
+    public class EducatorController : BaseController
     {
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly FileUploadManager _fileManager;
@@ -49,6 +48,15 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 BankNames = EnumHelpers.ToKeyValuePair<BankNames>()
             };
             return View(model);
+        }
+
+        [Route("admin/egitmen-detay/{educatorId}")]
+        public IActionResult Detail(string educatorId)
+        {
+            var model = _unitOfWork.Educator.GetEducatorDetail(educatorId);
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducatorDetail");
+            return View(model);
+
         }
 
         [HttpPost, Route("admin/egitmen-ekle")]
@@ -407,5 +415,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 message = "Silme işlemi başarılı"
             });
         }
+
     }
 }

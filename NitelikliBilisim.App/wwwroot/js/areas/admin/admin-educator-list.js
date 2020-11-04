@@ -144,11 +144,11 @@ function createGrid() {
             allowSearch: false,
             cellTemplate: function (container, options) {
                 var current = options.data;
-                $(`<a title="Güncelle" class="btn btn-warning btn-sm" href="/admin/egitmen-guncelle/${current.id}"><i class=\"fa fa-edit\"></i></a>`)
+                $(`<a title="Detay" class="btn btn-outline-success btn-sm" href="/admin/egitmen-detay/${current.id}"><i class=\"fa fa-id-card-o\"></i></a>`)
                     .appendTo(container);
-                $(`<a title="Sosyal Medya Hesapları" class="btn btn-primary btn-sm" href="/admin/egitmen-sosyal-medya-guncelle/${current.id}"><i class=\"fa fa-chain\"></i></a>`)
+                $(`<a title="Güncelle" class="btn btn-outline-warning btn-sm" href="/admin/egitmen-guncelle/${current.id}"><i class=\"fa fa-edit\"></i></a>`)
                     .appendTo(container);
-                $(`<button title="Sil" class="btn-confirmation-modal-trigger btn btn-danger btn-sm" data-url="/admin/delete-educator?educatorId=${current.id}" style="cursor:pointer;"><i class=\"fa fa-trash\"></i></button>`)
+                $(`<button title="Sil" class="btn-confirmation-modal-trigger btn btn-outline-danger btn-sm" data-url="/admin/delete-educator?educatorId=${current.id}" style="cursor:pointer;"><i class=\"fa fa-trash\"></i></button>`)
                     .appendTo(container);
             },
             alignment: "center",

@@ -66,7 +66,9 @@ function createGrid() {
         },
         showBorders: true,
         showColumnLines: true,
-        showRowLines: false,
+        rowAlternationEnabled: true,
+        showRowLines: true,
+        wordWrapEnabled: true,
         filterRow: {
             visible: true,
             applyFilter: "auto"

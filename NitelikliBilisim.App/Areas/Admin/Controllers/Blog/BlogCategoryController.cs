@@ -10,8 +10,7 @@ using System.Collections.Generic;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers.Blog
 {
-    [Area("Admin"), Authorize(Roles = "Admin")]
-    public class BlogCategoryController : Controller
+    public class BlogCategoryController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
         public BlogCategoryController(UnitOfWork unitOfWork)

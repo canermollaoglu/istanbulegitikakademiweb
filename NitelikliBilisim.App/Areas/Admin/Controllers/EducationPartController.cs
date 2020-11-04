@@ -13,8 +13,7 @@ using System.Linq;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    [Area("Admin"), Authorize(Roles = "Admin")]
-    public class EducationPartController : TempSecurityController
+    public class EducationPartController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly EducationPartVmCreator _vmCreator;

@@ -78,7 +78,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.WebAPI
         [Route("get-student-absences")]
         public IActionResult GetStudentAbsences(DataSourceLoadOptions loadOptions, string studentId)
         {
-            var data = _unitOfWork.Report.GetStudentAbsences(studentId);
+            var data = _unitOfWork.Customer.GetStudentAbsences(studentId);
             return Ok(DataSourceLoader.Load(data, loadOptions));
         }
 
@@ -86,7 +86,16 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.WebAPI
         [Route("get-student-tickets")]
         public IActionResult GetStudentTickets(DataSourceLoadOptions loadOptions, string studentId)
         {
-            var data = _unitOfWork.Report.GetStudentTickets(studentId);
+            var data = _unitOfWork.Customer.GetStudentTickets(studentId);
+            return Ok(DataSourceLoader.Load(data, loadOptions));
+
+        }
+
+        [HttpGet]
+        [Route("get-student-used-promotions")]
+        public IActionResult GetStudentUsedPromotions(DataSourceLoadOptions loadOptions, string studentId)
+        {
+            var data = _unitOfWork.Customer.GetStudentUsedPromotions(studentId);
             return Ok(DataSourceLoader.Load(data, loadOptions));
 
         }

@@ -32,5 +32,15 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.WebAPI
             return Ok(DataSourceLoader.Load(data, loadOptions));
         }
 
+        [HttpGet]
+        [Route("get-educator-groups-by-educator-id")]
+        public IActionResult GetEducatorGroups(DataSourceLoadOptions loadOptions, string educatorId)
+        {
+            loadOptions.PrimaryKey = new[] { "Id" };
+
+            var data = _unitOfWork.Educator.GetEducatorGroupsByEducatorId(educatorId);
+            return Ok(DataSourceLoader.Load(data, loadOptions));
+        }
+
     }
 }

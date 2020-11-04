@@ -20,8 +20,7 @@ using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    [Area("Admin"), Authorize(Roles = "Admin")]
-    public class EducationGroupController : TempSecurityController
+    public class EducationGroupController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly EmailSender _emailSender;
@@ -100,6 +99,29 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             }
         }
 
+        [Route("admin/get-group-detail-and-calculations-table/{gId?}")]
+        public IActionResult GetGroupDetailsAndCalculationsTable(Guid gId)
+        {
+            try
+            {
+                var groupDetail = _unitOfWork.EducationGroup.GetDetailByGroupId(gId);
+                var calculationsTable = _unitOfWork.EducationGroup.CalculateGroupExpenseAndIncome(gId);
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    data = new { groupDetail, calculationsTable }
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { $"Hata : {ex.Message}" }
+                });
+            }
+
+        }
 
         public IActionResult GetGroupExpensesByGroupId(Guid groupId)
         {
@@ -111,15 +133,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             });
         }
 
-        public IActionResult GetLessonDaysByGroupId(Guid groupId)
-        {
-            var lessonDays = _unitOfWork.EducationGroup.GetLessonDaysByGroupId(groupId);
-            return Json(new ResponseModel
-            {
-                isSuccess = true,
-                data = lessonDays
-            });
-        }
+        
         public IActionResult AssignedUserByGroupId(Guid groupId)
         {
             var students = _unitOfWork.EducationGroup.GetAssignedStudentsByGroupId(groupId);
@@ -180,39 +194,9 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             });
         }
 
-        [Route("admin/get-assigned-educators-for-group-detail/{gId?}")]
-        public IActionResult GetEducatorsOfGroup(Guid? gId)
-        {
-            if (!gId.HasValue)
-                return Json(new ResponseModel
-                {
-                    isSuccess = false
-                });
-            var group = _unitOfWork.EducationGroup.GetById(gId.Value);
-            var model = _unitOfWork.Bridge_EducationEducator.GetAssignedEducators(group.EducationId);
-            return Json(new ResponseModel
-            {
-                isSuccess = true,
-                data = model
-            });
-        }
+        
 
-        [Route("admin/get-assigned-class-rooms-for-group-detail/{gId?}")]
-        public IActionResult GetClassRoomsOfGroup(Guid? gId)
-        {
-            if (!gId.HasValue)
-                return Json(new ResponseModel
-                {
-                    isSuccess = false
-                });
-            var group = _unitOfWork.EducationGroup.GetById(gId.Value);
-            var model = _unitOfWork.ClassRoom.GetClassRoomsByHostId(group.HostId);
-            return Json(new ResponseModel
-            {
-                isSuccess = true,
-                data = model
-            });
-        }
+       
 
 
 
@@ -241,6 +225,16 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             {
                 isSuccess = true,
                 data = model
+            });
+        }
+
+        public IActionResult GetLessonDaysByGroupId(Guid groupId)
+        {
+            var lessonDays = _unitOfWork.EducationGroup.GetLessonDaysByGroupId(groupId);
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = lessonDays
             });
         }
 
@@ -458,6 +452,64 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             else
                 return false;
         }
+
+        #region Select doldurmak için kullanılan Actionlar
+        
+        [Route("admin/get-assigned-class-rooms-for-group-detail/{gId?}")]
+        public IActionResult GetClassRoomsOfGroup(Guid? gId)
+        {
+            if (!gId.HasValue)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false
+                });
+            var group = _unitOfWork.EducationGroup.GetById(gId.Value);
+            var model = _unitOfWork.ClassRoom.GetClassRoomsByHostId(group.HostId);
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = model
+            });
+        }
+        [Route("admin/get-assigned-educators-for-group-detail/{gId?}")]
+        public IActionResult GetEducatorsOfGroup(Guid? gId)
+        {
+            if (!gId.HasValue)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false
+                });
+            var group = _unitOfWork.EducationGroup.GetById(gId.Value);
+            var model = _unitOfWork.Bridge_EducationEducator.GetAssignedEducators(group.EducationId);
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = model
+            });
+        }
+
+        [Route("admin/group-detail-fill-all-select/{gId?}")]
+        /// <summary>
+        /// Group Detail sayfası içerisinde bulunan tüm selectleri doldurur.
+        /// </summary>
+        /// <param name="gId"></param>
+        /// <returns></returns>
+        public IActionResult FillAllSelect(Guid gId)
+        {
+            var group = _unitOfWork.EducationGroup.GetById(gId);
+            var educators = _unitOfWork.Bridge_EducationEducator.GetAssignedEducators(group.EducationId);
+            var classRooms = _unitOfWork.ClassRoom.GetClassRoomsByHostId(group.HostId);
+            var expenseTypes = _unitOfWork.GroupExpenseType.Get().ToList();
+
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = new { educators, classRooms, expenseTypes }
+            }) ;
+        }
+
+        #endregion
+
 
 
         #region Aktif olarak kullanılmayan Actionlar

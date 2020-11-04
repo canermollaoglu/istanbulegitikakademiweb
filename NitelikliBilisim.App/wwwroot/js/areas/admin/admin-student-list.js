@@ -116,6 +116,7 @@ function createGrid() {
                 caption: "Kayıt Tarihi",
                 dataField: "createdDate",
                 dataType: "date",
+                sortOrder: "desc",
                 format: 'dd/MM/yyyy'
             },
             {

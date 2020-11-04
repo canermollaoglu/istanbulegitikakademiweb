@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    public class GroupExpenseController : Controller
+    public class GroupExpenseController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
         public GroupExpenseController(UnitOfWork unitOfWork)

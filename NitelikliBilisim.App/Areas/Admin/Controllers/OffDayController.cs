@@ -9,8 +9,7 @@ using System.Collections.Generic;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    [Area("Admin"), Authorize(Roles = "Admin")]
-    public class OffDayController : Controller
+    public class OffDayController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
         public OffDayController(UnitOfWork unitOfWork)

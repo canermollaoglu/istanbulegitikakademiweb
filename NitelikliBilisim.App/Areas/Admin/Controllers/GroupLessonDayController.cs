@@ -12,8 +12,7 @@ using NitelikliBilisim.Core.ViewModels.areas.admin.group_lesson_days;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    [Area("Admin"), Authorize(Roles = "Admin")]
-    public class GroupLessonDayController : Controller
+    public class GroupLessonDayController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
         public GroupLessonDayController(UnitOfWork unitOfWork)

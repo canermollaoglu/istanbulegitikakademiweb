@@ -131,8 +131,6 @@ namespace NitelikliBilisim.App.Controllers
             }
         }
 
-
-
         [HttpPost, IgnoreAntiforgeryToken, Route("get-promotion")]
         public IActionResult GetPromotion(GetPromotionCodeData data)
         {
