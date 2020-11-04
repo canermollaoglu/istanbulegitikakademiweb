@@ -85,14 +85,16 @@ namespace NitelikliBilisim.Business.Repositories
                     attendance.Reason = item.Reason;
                 }
             }
-            var lessonDay = _context.GroupLessonDays
+            var lessonDays = _context.GroupLessonDays
                 .Include(x => x.Group)
                 .ThenInclude(x => x.Education)
-                .FirstOrDefault(x => x.GroupId == data.GroupId && x.DateOfLesson == data.Date);
+                .Where(x => x.GroupId == data.GroupId);
+            var lessonDay = lessonDays.FirstOrDefault(x => x.DateOfLesson == data.Date);
+            lessonDay.HasAttendanceRecord = true;
             if (lessonDay == null)
                 return;
-            var salary = _context.EducatorSalaries.FirstOrDefault(x => x.EducatorId == lessonDay.EducatorId);
-            if (salary == null)
+            var salary = _context.EducatorSalaries.FirstOrDefault(x => x.EducatorId == lessonDay.EducatorId && x.EarnedForGroup == lessonDay.GroupId);
+            if (salary == null) {
                 _context.EducatorSalaries.Add(new EducatorSalary
                 {
                     EarnedAt = data.Date,
@@ -100,7 +102,11 @@ namespace NitelikliBilisim.Business.Repositories
                     EarnedForGroup = data.GroupId,
                     Paid = lessonDay.EducatorSalary.GetValueOrDefault(0) * lessonDay.Group.Education.HoursPerDay
                 });
-            lessonDay.HasAttendanceRecord = true;
+            }
+            else
+            {
+                salary.Paid = (lessonDays.Count(x => x.HasAttendanceRecord)+1) * lessonDay.EducatorSalary.GetValueOrDefault() * lessonDay.Group.Education.HoursPerDay;
+            }
             _context.GroupAttendances.AddRange(addedRecords);
             _context.GroupAttendances.RemoveRange(removedRecords);
             _context.SaveChanges();
