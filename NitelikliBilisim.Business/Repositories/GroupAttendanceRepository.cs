@@ -54,6 +54,8 @@ namespace NitelikliBilisim.Business.Repositories
         {
             if (data.Date.Date > DateTime.Now.Date)
                 throw new Exception("Yoklama kaydı sonraki günler için girilemez!");
+            if (data.StudentRecords == null || data.StudentRecords.Count == 0)
+                throw new Exception("Grupta öğrenci bulunmamaktadır!");
 
             var attendanceRecords = _context.GroupAttendances
                 .Where(x => x.GroupId == data.GroupId && x.Date == data.Date)
@@ -91,10 +93,14 @@ namespace NitelikliBilisim.Business.Repositories
                 .Where(x => x.GroupId == data.GroupId);
             var lessonDay = lessonDays.FirstOrDefault(x => x.DateOfLesson == data.Date);
             lessonDay.HasAttendanceRecord = true;
+            _context.GroupAttendances.AddRange(addedRecords);
+            _context.GroupAttendances.RemoveRange(removedRecords);
+            _context.SaveChanges();
             if (lessonDay == null)
                 return;
             var salary = _context.EducatorSalaries.FirstOrDefault(x => x.EducatorId == lessonDay.EducatorId && x.EarnedForGroup == lessonDay.GroupId);
-            if (salary == null) {
+            if (salary == null)
+            {
                 _context.EducatorSalaries.Add(new EducatorSalary
                 {
                     EarnedAt = data.Date,
@@ -105,10 +111,8 @@ namespace NitelikliBilisim.Business.Repositories
             }
             else
             {
-                salary.Paid = (lessonDays.Count(x => x.HasAttendanceRecord)+1) * lessonDay.EducatorSalary.GetValueOrDefault() * lessonDay.Group.Education.HoursPerDay;
+                salary.Paid = (lessonDays.Count(x => x.HasAttendanceRecord)) * lessonDay.EducatorSalary.GetValueOrDefault() * lessonDay.Group.Education.HoursPerDay;
             }
-            _context.GroupAttendances.AddRange(addedRecords);
-            _context.GroupAttendances.RemoveRange(removedRecords);
             _context.SaveChanges();
         }
     }
