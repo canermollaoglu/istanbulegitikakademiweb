@@ -128,6 +128,7 @@ namespace NitelikliBilisim.Business.Repositories
                 StartDate = group.StartDate.ToShortDateString(),
                 EndDate = group.GroupLessonDays != null ? group.GroupLessonDays.OrderBy(x => x.DateOfLesson).Last().DateOfLesson.ToShortDateString() : group.StartDate.ToShortDateString(),
                 ClassRoomName = classRoom != null ? classRoom.Name : "Sınıf bilgisi girilmemiş.",
+                EducatorId = educator.Id,
                 EducatorName = $"{educator.Name} {educator.Surname}",
                 GroupExpenseTypes = _context.GroupExpenseTypes.ToList(),
                 SelectEducators = educators,
