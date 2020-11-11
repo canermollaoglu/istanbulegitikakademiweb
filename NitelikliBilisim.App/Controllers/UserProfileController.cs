@@ -89,6 +89,17 @@ namespace NitelikliBilisim.App.Controllers
                 return Redirect($"/profil/{userId}");
             return View(model);
         }
+
+        [Route("kuponlarim")]
+        public IActionResult MyPromotions()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var model = _userUnitOfWork.User.GetCustomerPromotions(userId);
+            if (model == null)
+                return Redirect($"/profil/{userId}");
+            return Json(model);
+        }
+
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
         public IActionResult Cancellation(Guid? ticketId)
         {
