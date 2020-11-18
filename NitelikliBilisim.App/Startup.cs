@@ -86,8 +86,6 @@ namespace NitelikliBilisim.App
 
 
 
-            
-            app.UseDeveloperExceptionPage();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
