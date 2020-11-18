@@ -15,11 +15,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
     public class EducationGroupManagementController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
-        private readonly EmailSender _emailSender;
-        public EducationGroupManagementController(UnitOfWork unitOfWork)
+        private readonly IEmailSender _emailSender;
+        public EducationGroupManagementController(UnitOfWork unitOfWork,IEmailSender emailSender)
         {
             _unitOfWork = unitOfWork;
-            _emailSender = new EmailSender();
+            _emailSender = emailSender;
         }
         [Route("admin/grup/ayarlar/{groupId?}")]
         public IActionResult Management(Guid? groupId)

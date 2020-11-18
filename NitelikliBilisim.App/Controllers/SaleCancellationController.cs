@@ -21,12 +21,12 @@ namespace NitelikliBilisim.App.Controllers
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly IPaymentService _paymentService;
-        private readonly EmailSender _emailSender;
-        public SaleCancellationController(UnitOfWork unitOfWork, IPaymentService paymentService)
+        private readonly IEmailSender _emailSender;
+        public SaleCancellationController(UnitOfWork unitOfWork, IPaymentService paymentService,IEmailSender emailSender)
         {
             _unitOfWork = unitOfWork;
             _paymentService = paymentService;
-            _emailSender = new EmailSender();
+            _emailSender = emailSender;
         }
 
         [Route("iptal-formu/{invoiceDetailId?}")]

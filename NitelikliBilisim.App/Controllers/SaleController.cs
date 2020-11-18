@@ -41,16 +41,16 @@ namespace NitelikliBilisim.App.Controllers
         private readonly SaleVmCreator _vmCreator;
         private readonly UserUnitOfWork _userUnitOfWork;
         private readonly IPaymentService _paymentService;
-        private readonly EmailSender _emailSender;
+        private readonly IEmailSender _emailSender;
 
-        public SaleController(IWebHostEnvironment hostingEnvironment, UnitOfWork unitOfWork, IPaymentService paymentService, UserUnitOfWork userUnitOfWork)
+        public SaleController(IWebHostEnvironment hostingEnvironment, UnitOfWork unitOfWork, IPaymentService paymentService, UserUnitOfWork userUnitOfWork,IEmailSender emailSender)
         {
             _hostingEnvironment = hostingEnvironment;
             _unitOfWork = unitOfWork;
             _paymentService = paymentService;
             _vmCreator = new SaleVmCreator(_unitOfWork);
             _userUnitOfWork = userUnitOfWork;
-            _emailSender = new EmailSender();
+            _emailSender = emailSender;
         }
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("sepet")]

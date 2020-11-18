@@ -23,12 +23,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
     public class EducationGroupController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
-        private readonly EmailSender _emailSender;
+        private readonly IEmailSender _emailSender;
         private readonly IConfiguration _configuration;
-        public EducationGroupController(UnitOfWork unitOfWork, IConfiguration configuration)
+        public EducationGroupController(UnitOfWork unitOfWork, IConfiguration configuration,IEmailSender emailSender)
         {
             _unitOfWork = unitOfWork;
-            _emailSender = new EmailSender();
+            _emailSender = emailSender;
             _configuration = configuration;
         }
         [Route("admin/gruplar")]
