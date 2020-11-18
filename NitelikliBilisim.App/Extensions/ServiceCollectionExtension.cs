@@ -7,6 +7,7 @@ using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Services;
 using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.Services.Payments;
+using NitelikliBilisim.Notificator.Services;
 using System;
 
 namespace NitelikliBilisim.App.Extensions
@@ -22,6 +23,7 @@ namespace NitelikliBilisim.App.Extensions
             services.AddSingleton<IMessageService, EmailService>();
             services.AddSingleton<IStorageService, StorageService>();
             services.AddScoped<IPaymentService, PaymentService>();
+            services.AddSingleton<IEmailSender, EmailSender>();
             services.AddElasticsearch(configuration);
             #endregion
 

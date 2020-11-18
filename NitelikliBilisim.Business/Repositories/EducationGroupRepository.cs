@@ -128,6 +128,7 @@ namespace NitelikliBilisim.Business.Repositories
                 StartDate = group.StartDate.ToShortDateString(),
                 EndDate = group.GroupLessonDays != null ? group.GroupLessonDays.OrderBy(x => x.DateOfLesson).Last().DateOfLesson.ToShortDateString() : group.StartDate.ToShortDateString(),
                 ClassRoomName = classRoom != null ? classRoom.Name : "Sınıf bilgisi girilmemiş.",
+                EducatorId = educator.Id,
                 EducatorName = $"{educator.Name} {educator.Surname}",
                 GroupExpenseTypes = _context.GroupExpenseTypes.ToList(),
                 SelectEducators = educators,
@@ -164,6 +165,7 @@ namespace NitelikliBilisim.Business.Repositories
         public List<GroupLessonDayGetListVm> GetLessonDaysByGroupId(Guid groupId)
         {
             var lessonDays = (from lessonDay in _context.GroupLessonDays
+                              join eGroup in _context.EducationGroups.Include(x=>x.Education) on lessonDay.GroupId equals eGroup.Id
                               join educator in _context.Users on lessonDay.EducatorId equals educator.Id into le
                               from educator in le.DefaultIfEmpty()
                               join classRoom in _context.Classrooms on lessonDay.ClassroomId equals classRoom.Id into lc
@@ -174,7 +176,7 @@ namespace NitelikliBilisim.Business.Repositories
                                   ClassRoomName = classRoom.Name,
                                   DateOfLesson = lessonDay.DateOfLesson,
                                   EducatorFullName = $"{educator.Name} {educator.Surname}",
-                                  EducatorSalary = lessonDay.EducatorSalary.GetValueOrDefault(),
+                                  EducatorSalary = lessonDay.EducatorSalary.GetValueOrDefault()*eGroup.Education.HoursPerDay,
                                   Id = lessonDay.Id,
                                   HasAttendanceRecord = lessonDay.HasAttendanceRecord
                               }).OrderBy(x => x.DateOfLesson).ToList();

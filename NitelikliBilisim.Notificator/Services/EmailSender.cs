@@ -1,25 +1,32 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using NitelikliBilisim.Core.ComplexTypes;
 
 namespace NitelikliBilisim.Notificator.Services
 {
-    public class EmailSender
+    public class EmailSender :IEmailSender
     {
-        public string SenderMail { get; set; }
-        public string Password { get; set; }
-        public string Smtp { get; set; }
-        public int SmtpPort { get; set; }
-        public EmailSender()
+        private readonly IConfiguration _configuration;
+        public EmailSender(IConfiguration configuration)
         {
-            this.SenderMail = "noreply@niteliklibilisim.com.tr";
-            this.Password = "zexgtuuxppulprjc";
-            this.Smtp = "smtp.yandex.com";
-            this.SmtpPort = 587;
+            _configuration = configuration;
         }
+        public string SenderMail => _configuration.GetSection("EmailOptions:SenderMail").Value;
+        public string Password => _configuration.GetSection("EmailOptions:Password").Value;
+        public string Smtp => _configuration.GetSection("EmailOptions:Smtp").Value;
+        public int SmtpPort => Convert.ToInt32(_configuration.GetSection("EmailOptions:SmtpPort").Value);
+        //public EmailSender()
+        //{
+        //    this.SenderMail = "noreply@niteliklibilisim.com.tr";
+        //    this.Password = "zexgtuuxppulprjc";
+        //    this.Smtp = "smtp.yandex.com";
+        //    this.SmtpPort = 587;
+        //}
         public async Task SendAsync(EmailMessage message)
         {
             var mail = new MailMessage { From = new MailAddress(this.SenderMail) };

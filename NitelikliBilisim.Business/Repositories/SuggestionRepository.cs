@@ -8,6 +8,7 @@ using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Enums.educations;
+using NitelikliBilisim.Core.ESOptions.ESEntities;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.Suggestion;
 using NitelikliBilisim.Data;

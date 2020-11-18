@@ -4,7 +4,7 @@ using Nest;
 using Newtonsoft.Json;
 using NitelikliBilisim.App.Extensions;
 using NitelikliBilisim.Business.UoW;
-using NitelikliBilisim.Core.ComplexTypes;
+using NitelikliBilisim.Core.ESOptions.ESEntities;
 using System;
 using System.Linq;
 

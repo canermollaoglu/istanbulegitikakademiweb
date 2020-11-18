@@ -16,12 +16,12 @@ namespace NitelikliBilisim.Business.Repositories
     public class SaleRepository
     {
         private readonly NbDataContext _context;
-        private readonly EmailSender _emailSender;
+        private readonly IEmailSender _emailSender;
 
-        public SaleRepository(NbDataContext context)
+        public SaleRepository(NbDataContext context,IEmailSender emailSender)
         {
             _context = context;
-            _emailSender = new EmailSender();
+            _emailSender = emailSender;
         }
         public ApplicationUser GetUser(string userId)
         {

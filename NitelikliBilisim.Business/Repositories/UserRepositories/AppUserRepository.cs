@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MUsefulMethods;
+using Newtonsoft.Json;
 using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Entities.promotion;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.Main.Profile;
@@ -94,7 +96,7 @@ namespace NitelikliBilisim.Business.Repositories
                     EducationCategory = _context.EducationCategories.First(x => x.Id == studentEducationInfo.CategoryId).Name,
                     EducationCenter = EnumHelpers.GetDescription(studentEducationInfo.EducationCenter),
                     StartedAt = studentEducationInfo.StartedAt,
-                    NBUYCurrentEducationDay = educationDay!=null ?educationDay.Day:0
+                    NBUYCurrentEducationDay = educationDay != null ? educationDay.Day : 0
                 };
             }
 
@@ -126,6 +128,24 @@ namespace NitelikliBilisim.Business.Repositories
             };
 
             return model;
+        }
+
+        public object GetCustomerPromotions(string userId)
+        {
+            var conditions = _context.EducationPromotionConditions.Where(x => x.ConditionType == Core.Enums.promotion.ConditionType.User);
+            var currentUserConditions = new List<Guid>();
+            foreach (var condition in conditions)
+            {
+                var userIds = JsonConvert.DeserializeObject<string[]>(condition.ConditionValue);
+                if (userIds.Contains(userId))
+                {
+                    currentUserConditions.Add(condition.EducationPromotionCodeId);
+                }
+            }
+            var data = _context.EducationPromotionCodes
+                .Where(x =>currentUserConditions.Contains(x.Id))
+                .Select(x=> new UserPromotionVm {PromotionId = x.Id,PromotionName = x.Name }).ToList();
+            return data;
         }
         #region Test
         public List<MyInvoicesVm> GetUserInvoices(string userId)
@@ -281,5 +301,12 @@ namespace NitelikliBilisim.Business.Repositories
 
         //    return model;
         //}
+    }
+
+
+    public class UserPromotionVm
+    {
+        public Guid PromotionId { get; internal set; }
+        public string PromotionName { get; internal set; }
     }
 }

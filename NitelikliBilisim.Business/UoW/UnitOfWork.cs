@@ -5,6 +5,7 @@ using NitelikliBilisim.Business.Repositories;
 using NitelikliBilisim.Business.Repositories.BlogRepositories;
 using NitelikliBilisim.Core.Entities.groups;
 using NitelikliBilisim.Data;
+using NitelikliBilisim.Notificator.Services;
 
 namespace NitelikliBilisim.Business.UoW
 {
@@ -59,11 +60,13 @@ namespace NitelikliBilisim.Business.UoW
 
         private IElasticClient _elasticClient;
         private IConfiguration _configuration;
-        public UnitOfWork(NbDataContext context, IElasticClient elasticClient,IConfiguration configuration)
+        private IEmailSender _emailSender;
+        public UnitOfWork(NbDataContext context, IElasticClient elasticClient,IConfiguration configuration,IEmailSender emailSender)
         {
             _elasticClient = elasticClient;
             _context = context;
             _configuration = configuration;
+            _emailSender = emailSender;
         }
         public int Save()
         {
@@ -115,7 +118,7 @@ namespace NitelikliBilisim.Business.UoW
         {
             get
             {
-                return _saleRepository ?? (_saleRepository = new SaleRepository(_context));
+                return _saleRepository ?? (_saleRepository = new SaleRepository(_context,_emailSender));
             }
         }
         public TempSaleDataRepository TempSaleData

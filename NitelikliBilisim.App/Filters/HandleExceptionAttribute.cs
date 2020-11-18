@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Configuration;
 using Nest;
-using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
+using NitelikliBilisim.Core.ESOptions.ESEntities;
+using NitelikliBilisim.Notificator.Services;
 using System;
 using System.Security.Claims;
 
@@ -11,14 +13,22 @@ namespace NitelikliBilisim.App.Filters
     public class HandleExceptionAttribute : Attribute, IExceptionFilter
     {
         private readonly IElasticClient _elasticClient;
-        public HandleExceptionAttribute(IElasticClient elasticClient)
+        private readonly IEmailSender _emailSender;
+        private readonly IConfiguration _configuration;
+        public HandleExceptionAttribute(IElasticClient elasticClient, IEmailSender emailSender, IConfiguration configuration)
         {
             _elasticClient = elasticClient;
+            _emailSender = emailSender;
+            _configuration = configuration;
         }
         public void OnException(ExceptionContext context)
         {
             var descriptor = context.ActionDescriptor as ControllerActionDescriptor;
-            
+            string mailBody = string.Empty;
+            var server = string.Empty;
+#if  DEBUG
+            server = "Test Ortamı";
+#endif
             var eInfo = new ExceptionInfo
             {
                 ControllerName = descriptor.ControllerName,
@@ -28,9 +38,28 @@ namespace NitelikliBilisim.App.Filters
                 StackTrace = context.Exception.StackTrace,
                 InnerException = context.Exception.InnerException?.Message,
             };
+
+            mailBody = $"<b>Controller:</b>{eInfo.ControllerName}<br>";
+            mailBody += $"<b>Action:</b>{eInfo.ActionName}<br>";
+            mailBody += $"<b>User Id:</b>{eInfo.UserId}<br>";
+            mailBody += $"<b>Message:</b>{eInfo.Message}<br>";
+            mailBody += $"<b>StackTrace:</b>{eInfo.StackTrace}<br>";
+            if (string.IsNullOrEmpty(eInfo.InnerException))
+                mailBody += $"<b>InnerException:</b>{eInfo.InnerException}<br>";
+
+            string adminEmails = _configuration.GetSection("SiteGeneralOptions:AdminEmails").Value;
+
+            //Mail Log
+            _emailSender.SendAsync(new Core.ComplexTypes.EmailMessage
+            {
+                Body = mailBody,
+                Subject = $"Nitelikli Bilişim {server} Hata {DateTime.Now:F}",
+                Contacts = adminEmails.Split(";")
+            });
+
+            //EsInsert
             CheckExceptionLogIndex();
             var response = _elasticClient.IndexDocument(eInfo);
-            Console.Write(response);
         }
 
 

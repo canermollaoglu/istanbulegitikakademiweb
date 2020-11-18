@@ -29,6 +29,7 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_groups
         public List<string> WeekdayNames { get; set; }
         public int PurchasesCount { get; set; }
         public int CancellationCount { get; set; }
+        public string EducatorId { get; set; }
     }
     
 }

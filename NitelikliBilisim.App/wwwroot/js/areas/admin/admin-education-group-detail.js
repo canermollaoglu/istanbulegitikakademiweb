@@ -562,7 +562,7 @@ function fillGroupDetailInfo(data) {
     $("#hostName").html(data.host.hostName);
     $("#educationName").html(data.education.name);
     $("#classRoomName").html(data.classRoomName);
-    $("#educatorName").html(data.educatorName);
+    $("#educatorName").html(`<a href='/admin/egitmen-detay/${data.educatorId}'>${data.educatorName}</a>`);
     $("#startDate").html(data.startDate);
     $("#endDate").html(data.endDate);
     $("#quota").html(data.assignedStudentsCount + "/" + data.quota);

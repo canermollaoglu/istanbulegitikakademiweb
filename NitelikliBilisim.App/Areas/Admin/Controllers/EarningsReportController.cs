@@ -23,7 +23,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("raporlar/satis")]
         public IActionResult IncomeReport()
         {
-            throw new Exception("Test amaçlı oluşturulmuş exception.", new Exception("Inner exception mesajı."));
+            throw new Exception("Test amaçlı fırlatılmış hata");
+
             return View();
         }
 

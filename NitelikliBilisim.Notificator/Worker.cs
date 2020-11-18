@@ -24,8 +24,8 @@ namespace NitelikliBilisim.Notificator
         {
             _logger.LogWarning("Worker service started.");
 
-            var emailConsumer = new EmailConsumer(_emailLogger);
-            emailConsumer.MainAsync().Wait(cancellationToken);
+            //var emailConsumer = new EmailConsumer(_emailLogger);
+           // emailConsumer.MainAsync().Wait(cancellationToken);
 
             _cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             _executingTask = ExecuteAsync(_cts.Token);

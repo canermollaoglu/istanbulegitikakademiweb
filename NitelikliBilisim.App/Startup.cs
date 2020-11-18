@@ -84,6 +84,9 @@ namespace NitelikliBilisim.App
             CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
             CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
+
+
+            
             app.UseDeveloperExceptionPage();
             if (env.IsDevelopment())
             {
@@ -91,7 +94,8 @@ namespace NitelikliBilisim.App
             }
             else
             {
-                app.UseExceptionHandler("/yakinda");
+                app.UseStatusCodePagesWithRedirects("/error?eCode={0}");
+                //app.UseExceptionHandler("/home/error");
                 app.UseHsts();
             }
 

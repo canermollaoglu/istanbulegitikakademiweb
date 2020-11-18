@@ -49,6 +49,8 @@ namespace NitelikliBilisim.Business.Repositories
                        join egroup in _context.EducationGroups on educator.Id equals egroup.EducatorId
                        join host in _context.EducationHosts on egroup.HostId equals host.Id
                        join education in _context.Educations on egroup.EducationId equals education.Id
+                       join salaries in _context.EducatorSalaries on new {X1=egroup.Id,X2= educator.Id } equals new {X1=salaries.EarnedForGroup.Value,X2=salaries.EducatorId } into eSalaries
+                       from salaries in eSalaries.DefaultIfEmpty()
                        where educator.Id == educatorId
                        select new EducatorGroupVm
                        {
@@ -56,7 +58,8 @@ namespace NitelikliBilisim.Business.Repositories
                            Name = egroup.GroupName,
                            StartDate = egroup.StartDate,
                            HostName = host.HostName,
-                           EducationName = education.Name
+                           EducationName = education.Name,
+                           EducatorSalary = salaries.Paid
                        };
             return data;
         }
