@@ -1,9 +1,8 @@
 ﻿using Nest;
-using NitelikliBilisim.Core.ComplexTypes.TransactionLogModels;
 using System;
 using System.Collections.Generic;
 
-namespace NitelikliBilisim.Core.ComplexTypes
+namespace NitelikliBilisim.Core.ESOptions.ESEntities
 {
     public class TransactionLog
     {
@@ -35,5 +34,12 @@ namespace NitelikliBilisim.Core.ComplexTypes
         public string IpAddress { get; set; }
         public DateTime CreatedDate { get; set; }
         public string Parameters { get; set; }
+    }
+
+    public class LogParameter
+    {
+        public string ParameterName { get; set; }
+        public string ParameterType { get; set; }
+        public string ParameterValue { get; set; }
     }
 }

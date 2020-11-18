@@ -1,8 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Nest;
-using NitelikliBilisim.App.Models;
-using NitelikliBilisim.Core.ComplexTypes;
+using NitelikliBilisim.Core.ESOptions.ESEntities;
 using System;
 
 namespace NitelikliBilisim.App.Extensions

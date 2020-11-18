@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using Nest;
 using Newtonsoft.Json;
-using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
+using NitelikliBilisim.Core.ESOptions.ESEntities;
 using NitelikliBilisim.Notificator.Services;
 using System;
 using System.Security.Claims;
