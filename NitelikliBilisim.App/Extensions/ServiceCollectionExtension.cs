@@ -23,7 +23,7 @@ namespace NitelikliBilisim.App.Extensions
             services.AddSingleton<IMessageService, EmailService>();
             services.AddSingleton<IStorageService, StorageService>();
             services.AddScoped<IPaymentService, PaymentService>();
-            services.AddScoped<IEmailSender, EmailSender>();
+            services.AddSingleton<IEmailSender, EmailSender>();
             services.AddElasticsearch(configuration);
             #endregion
 

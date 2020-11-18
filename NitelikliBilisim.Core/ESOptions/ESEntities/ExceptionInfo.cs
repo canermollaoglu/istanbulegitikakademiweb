@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace NitelikliBilisim.Core.ESOptions.ESEntities { 
+namespace NitelikliBilisim.Core.ESOptions.ESEntities
+{
     public class ExceptionInfo
     {
         public ExceptionInfo()
