@@ -7,7 +7,7 @@ using NitelikliBilisim.Core.ComplexTypes;
 
 namespace NitelikliBilisim.Notificator.Services
 {
-    public class EmailSender
+    public class EmailSender :IEmailSender
     {
         public string SenderMail { get; set; }
         public string Password { get; set; }

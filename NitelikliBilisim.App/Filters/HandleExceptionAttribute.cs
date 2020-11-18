@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Nest;
+using Newtonsoft.Json;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
+using NitelikliBilisim.Notificator.Services;
 using System;
 using System.Security.Claims;
 
@@ -11,9 +13,11 @@ namespace NitelikliBilisim.App.Filters
     public class HandleExceptionAttribute : Attribute, IExceptionFilter
     {
         private readonly IElasticClient _elasticClient;
-        public HandleExceptionAttribute(IElasticClient elasticClient)
+        private readonly IEmailSender _emailSender;
+        public HandleExceptionAttribute(IElasticClient elasticClient,IEmailSender emailSender)
         {
             _elasticClient = elasticClient;
+            _emailSender = emailSender;
         }
         public void OnException(ExceptionContext context)
         {
@@ -28,9 +32,15 @@ namespace NitelikliBilisim.App.Filters
                 StackTrace = context.Exception.StackTrace,
                 InnerException = context.Exception.InnerException?.Message,
             };
+             _emailSender.SendAsync(new Core.ComplexTypes.EmailMessage
+            {
+                Body = JsonConvert.SerializeObject(eInfo),
+                Subject = "Nitelikli Bilişim Hata",
+                Contacts = new string[] { "asim.ulusoy@wissenakademie.com" }
+            });
+
             CheckExceptionLogIndex();
             var response = _elasticClient.IndexDocument(eInfo);
-            Console.Write(response);
         }
 
 
