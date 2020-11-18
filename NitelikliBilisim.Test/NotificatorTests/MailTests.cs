@@ -7,12 +7,12 @@ namespace NitelikliBilisim.Test.NotificatorTests
 {
     public class MailTests
     {
-        private readonly EmailSender _emailSender;
-        private static readonly string[] mailsToSend =  { "alper.dagli@wissenakademie.com", "eser.canik@wissenakademie.com" };
+        //private readonly EmailSender _emailSender;
+        //private static readonly string[] mailsToSend =  { "alper.dagli@wissenakademie.com", "eser.canik@wissenakademie.com" };
 
         public MailTests()
         {
-            _emailSender = new EmailSender();
+        //    _emailSender = new EmailSender();
         }
 
         [Fact]
