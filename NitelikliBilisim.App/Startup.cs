@@ -84,7 +84,15 @@ namespace NitelikliBilisim.App
             CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
             CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
-
+            app.Use(async (context, next) =>
+            {
+                await next();
+                if (context.Response.StatusCode == 404)
+                {
+                    context.Request.Path = "/404";
+                    await next();
+                }
+            });
 
             if (env.IsDevelopment())
             {
@@ -92,8 +100,7 @@ namespace NitelikliBilisim.App
             }
             else
             {
-                app.UseStatusCodePagesWithRedirects("/error?eCode={0}");
-                //app.UseExceptionHandler("/home/error");
+                app.UseExceptionHandler("/error");
                 app.UseHsts();
             }
 

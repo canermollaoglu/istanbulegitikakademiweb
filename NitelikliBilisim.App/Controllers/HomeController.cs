@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Controllers
 {
-    [Authorize]
+    
     public class HomeController : BaseController
     {
         private readonly RoleManager<ApplicationRole> _roleManager;
@@ -54,6 +54,11 @@ namespace NitelikliBilisim.App.Controllers
         public IActionResult ComingSoon()
         {
             return View();
+        }
+
+        public IActionResult ErrorTest()
+        {
+            throw new System.Exception("Test Exception!");
         }
 
         //[Authorize]
