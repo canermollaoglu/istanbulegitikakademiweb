@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace NitelikliBilisim.Core.Services
 {
+    //TODO : Storage paketi güncellenmeli. Depreched 
     public class StorageService : IStorageService
     {
         //commit
