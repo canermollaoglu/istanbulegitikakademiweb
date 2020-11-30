@@ -90,13 +90,13 @@ namespace NitelikliBilisim.App.Controllers
                     var studentEducationInformation = new StudentEducationInfo
                     {
                         CustomerId = user.Id,
-                        StartedAt = model.StartedAt.GetValueOrDefault(),
+                        StartedAt = Convert.ToDateTime(model.StartedAt),
                         EducationCenter = (EducationCenter)model.EducationCenter,
                         CategoryId = model.EducationCategory.Value
                     };
                     var studentEducationInfoId = _unitOfWork.StudentEducationInfo.Insert(studentEducationInformation);
-                    if (model.EducationCategory.HasValue && model.StartedAt.HasValue)
-                        CreateEducationDays(studentEducationInfoId, model.EducationCategory.Value, model.StartedAt.Value);
+                    if (model.EducationCategory.HasValue && string.IsNullOrEmpty(model.StartedAt))
+                        CreateEducationDays(studentEducationInfoId, model.EducationCategory.Value,Convert.ToDateTime(model.StartedAt));
                 }
                 if (result.Succeeded)
                 {

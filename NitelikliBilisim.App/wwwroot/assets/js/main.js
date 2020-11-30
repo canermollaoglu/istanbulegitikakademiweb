@@ -1945,7 +1945,7 @@ if ($('.login__form').length > 0) {
 		}
 	});
 	$('.login__finish-button').click(function () {
-		location.href = './index.php';
+		btnSubmit_onClick();
 	});
 }
 
