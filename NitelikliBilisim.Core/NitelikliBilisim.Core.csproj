@@ -12,14 +12,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="3.1.8" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.8" />
-    <PackageReference Include="Microsoft.Azure.ServiceBus" Version="5.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Azure.ServiceBus" Version="5.1.0" />
     <PackageReference Include="Microsoft.Azure.Storage.Common" Version="11.2.2" />
     <PackageReference Include="Microsoft.Azure.Storage.File" Version="11.2.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.8" />
-    <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="3.1.8" />
-    <PackageReference Include="NEST" Version="7.9.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="5.0.0" />
+    <PackageReference Include="NEST" Version="7.10.0" />
     <PackageReference Include="Iyzipay" Version="2.1.38" />
     <PackageReference Include="UsefulMethods" Version="1.0.5" />
   </ItemGroup>
