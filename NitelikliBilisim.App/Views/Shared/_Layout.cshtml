@@ -1,11 +1,9 @@
 ﻿<!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" class="o-x-hidden">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewData["Title"] - Uygulama olmadan, teorik bilgi ne işe yarar ki!</title>
-    <meta name="yandex-verification" content="9e671d0a91314836" />
-    <meta name="google-site-verification" content="3Cqrtsl1HAaAHpYtjqFcgDMB_6c43W2hI18BWco35Lc" />
     <partial name="partials/_BaseAssetsHeader" />
 
     @RenderSection("styles", required: false)
@@ -15,9 +13,9 @@
         }
     </style>
 </head>
-<body>
+<body class="o-x-hidden">
     <partial name="partials/_LayoutHeader" />
-
+   
     @RenderBody()
 
     <partial name="partials/_LayoutFooter" />
@@ -25,14 +23,11 @@
     <partial name="partials/_BaseAssetsBody" />
 
     <partial name="partials/_LayoutCookieConsent" />
-
-    <script src="~/js/layout/layout-search.js"></script>
-    <script src="~/js/lib/cookie-agreement.js"></script>
-    <script src="~/js/sup/cart.js"></script>
+   
     <script>
         var __cookieBar = $("#cookie-bar");
         var __envoy = new StorageSupport.Envoy();
-        var __searcher = new AppWide.Searcher();
+        //var __searcher = new AppWide.Searcher();
         var __btnCookieAgree = $("#btn-cookie-agree");
         var __cart = new CartSupport.Cart();
 
@@ -41,7 +36,7 @@
             $("#cookie-bar").hide();
         });
 
-        __searcher.initialize();
+        // __searcher.initialize();
 
         if (__envoy.isStorageExists("register")) {
             __cookieBar.hide();
