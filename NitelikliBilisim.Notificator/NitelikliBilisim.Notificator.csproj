@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Worker;Microsoft.NET.Sdk.Publish">
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
     <UserSecretsId>dotnet-NitelikliBilisim.Notificator-7161C96D-F317-4F2B-BCF0-34BF92068002</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
