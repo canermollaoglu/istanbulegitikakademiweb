@@ -261,7 +261,7 @@
     <div class="container">
         <div class="header">
             <div class="header__inner">
-                <a href="./index.php" class="header__brand">
+                <a asp-controller="Home" asp-action="Index" class="header__brand">
                     <img src="assets/img/nitelikli-bilisim_logo.svg" alt="Nitelikli Bilişim Logo" height="35" />
                 </a>
                 <div class='education-overlay overlay js-close-modal'></div>
@@ -767,19 +767,18 @@
                     </li>
                     <li id="TumSayfalar" class="header__dropdown">
                         <a href="javascript:void(0)">
-                            <span>Tüm Sayfaları Gör</span>
+                            <span>Kurumsal</span>
                         </a>
 
                         <ul>
-                            <a href="./index.php">Anasayfa</a>
+                            <a asp-controller="Home" asp-action="AboutUs">Hakkımızda</a>
+                            <a asp-controller="Home" asp-action="FrequentlyAskedQuestions">Sıkça Sorulan Sorular</a>
+                            <a asp-controller="Home" asp-action="Contact">İletişim</a>
                             <a href="./egitim-listeleme.php">Eğitim Listeleme</a>
                             <a href="./egitim-detay.php">Eğitim Detay</a>
                             <a href="./egitmen-detay.php">Eğitmen Detay</a>
                             <a href="./blog-listeleme.php">Blog Listeleme</a>
                             <a href="./blog-detay.php">Blog Detay</a>
-                            <a href="./hakkimizda.php">Hakkımızda</a>
-                            <a href="./iletisim.php">İletişim</a>
-                            <a href="./sss.php">Sıkça Sorulan Sorular</a>
                             <a href="./kullanici-yorumlari.php">Kullanıcı Yorumları</a>
                             <a href="./kullanici-yorumlari-not-login.php">Kullanıcı Yorumları giriş yapılmamış</a>
                             <a href="./sozlesme.php">Sözleşme</a>
@@ -793,7 +792,7 @@
                         </ul>
                     </li>
                     <li>
-                        <a href="./kurumsal-uyelik-talebi.php">Kurumsal Üyelik Talebi</a>
+                        <a asp-controller="Home" asp-action="CorporateMembershipApplication">Kurumsal Üyelik Talebi</a>
                     </li>
                 </nav>
 

@@ -1,0 +1,271 @@
+﻿
+@{
+    ViewData["Title"] = "İletişim";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="subheader subheader--fullbg">
+    <div class="subheader__wrp">
+        <div class="container">
+            <div class="subheader__cnt">
+                <div class="subheader__txt-cnt">
+                    <div class="subheader__title">Bize Ulaşın</div>
+                    <div class="subheader__txt">
+                        Tüm sorularınız için sıkça sorulan sorular sayfamızı inceleyebilir, ya da bize
+                        aşağıdaki
+                        iletişim formu üzerinden iletişime geçebilirsiniz.
+                    </div>
+                    <a asp-controller="Home" asp-action="FrequentlyAskedQuestions" class="button subheader__button">
+                        <span class="button-icon">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="assets/img/icons.svg#icon-quest-book"></use>
+                                </svg>
+                            </span>
+                        </span>
+                        <span class="button-txt">
+                            Sıkça Sorulan Sorular
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="subheader__img">
+        <img src="./assets/img/subheader-contact.jpg" alt="">
+    </div>
+</div>
+<section class="contact">
+    <div class="container">
+        <div class="contact__items">
+            <div class="contact__item">
+                <div class="contact__item-icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="assets/img/icons.svg#icon-map-st-pin"></use>
+                        </svg>
+                    </span>
+                </div>
+                <div class="contact__item-title">
+                    MERKEZ <span class="colored-blue">OFİS</span>
+                </div>
+                <div class="contact__item-txt">
+                    Balbaros Buları Yıldız İş Hanı No:9 <br>Kat:3 Beşiktaş İstanbul
+                </div>
+                <div class="contact__item-btn">
+                    <a href="https://goo.gl/maps/eAmdD4NP65jn7KPr9" target="_blank" class="button button--simple go-map">
+                        <span class="button-txt">
+                            Yol Tarifi Al
+                        </span>
+                        <span class="button-icon">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="assets/img/icons.svg#icon-arrow"></use>
+                                </svg>
+                            </span>
+                        </span>
+                    </a>
+                </div>
+            </div>
+            <div class="contact__item">
+                <div class="contact__item-icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="assets/img/icons.svg#icon-phone"></use>
+                        </svg>
+                    </span>
+                </div>
+                <div class="contact__item-title">
+                    TELEFON <span class="colored-blue">NUMARASI</span>
+                </div>
+                <div class="contact__item-txt">
+                    Pazartesi’nden Cuma’ya<br>9:00 - 18:00 arası
+                </div>
+                <div class="contact__item-btn">
+                    <a href="tel:02123212121" class="button button--simple">
+                        <span class="button-txt">
+                           +90 (212) 321 21 21
+                        </span>
+                    </a>
+                </div>
+            </div>
+            <div class="contact__item">
+                <div class="contact__item-icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="assets/img/icons.svg#icon-mail"></use>
+                        </svg>
+                    </span>
+                </div>
+                <div class="contact__item-title">
+                    MAİL <span class="colored-blue">ADRESİ</span>
+                </div>
+                <div class="contact__item-txt">
+                    En kısa sürede cevap <br>
+                    veriyoruz!
+                </div>
+                <div class="contact__item-btn">
+                    <a href="mailto:info@niteliklibilisim.com.tr" class="button button--simple">
+                        <span class="button-txt">
+                            info@niteliklibilisim.com.tr
+                        </span>
+                        <span class="button-icon">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="assets/img/icons.svg#icon-arrow"></use>
+                                </svg>
+                            </span>
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="contact__wrp">
+        <div class="container">
+            <div class="contact__left">
+                <div class="title title-section mb-4">
+                    BİZE
+                    <span class="title--blue">ULAŞIN</span>
+                </div>
+                <div class="contact__txt">
+                    Kurs başlangıcından sertifika almaya kadar her adımda yanınızdayız.
+                </div>
+                <button class="button js-modal-trigger mt-3" data-trigger="modalSuccessMessage">
+                    <span class="button-txt">
+                        Başarılı
+                    </span>
+                </button>
+                <button class="button js-modal-trigger mt-3" data-trigger="modalWrongMessage">
+                    <span class="button-txt">
+                        Başarısız
+                    </span>
+                </button>
+            </div>
+            <div class="contact__right">
+                <form class="contact__form" id="validateForm">
+                    <div class="input__column-2">
+                        <div class="input__outer">
+                            <span class="icon-outer input__icon">
+                                <svg class="icon">
+                                    <use xlink:href="assets/img/icons.svg#icon-user"></use>
+                                </svg>
+                            </span>
+                            <input name="cname" type="text" class="input input--fw" placeholder="Adınız Soyadınız" required>
+                        </div>
+                        <div class="input__outer">
+                            <span class="icon-outer input__icon">
+                                <svg class="icon">
+                                    <use xlink:href="assets/img/icons.svg#icon-mail"></use>
+                                </svg>
+                            </span>
+                            <input type="mail" name="cmail" class="input input--fw" placeholder="E-mail Adresiniz" required>
+                        </div>
+                    </div>
+                    <div class="input__column-2">
+                        <div class="input__outer input--phone">
+                            <div class="select-phonecode">
+                                <select class="js-phonecode-select">
+                                    <option value="" selected hidden disabled>539</option>
+                                    <option value="2">540</option>
+                                    <option value="3">541</option>
+                                    <option value="4">542</option>
+                                    <option value="5">543</option>
+                                </select>
+                            </div>
+                            <input type="text" name="cphone" id="inputPhoneNumber" class="input input--fw maskedInput"
+                                   placeholder="___-__-__">
+                        </div>
+                        <div class="input__outer">
+                            <div class="select-subject">
+                                <select class="js-subject-select" name="csubject">
+                                    <option value="" selected hidden disabled>Konu</option>
+                                    <option value="2">Konu1</option>
+                                    <option value="3">Konu2</option>
+                                    <option value="4">Konu3</option>
+                                    <option value="5">Konu4</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input__outer input--textarea">
+                        <span class="icon-outer input__icon">
+                            <svg class="icon">
+                                <use xlink:href="assets/img/icons.svg#icon-speak-balloon"></use>
+                            </svg>
+                        </span>
+                        <textarea name="cmessage" class="input input--fw" placeholder="Mesajınızı buraya yazın"></textarea>
+                    </div>
+                    <div class="form__button">
+                        <button class="button js-modal-trigger" data-trigger="modalSuccessMessage">
+                            <span class="button-txt">
+                                Gönder
+                            </span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</section>
+<div class="modal modal--message success" id="modalSuccessMessage">
+    <div class="modal__close js-close-modal">
+        <span class="icon-outer">
+            <svg class="icon">
+                <use xlink:href="assets/img/icons.svg#icon-close"></use>
+            </svg>
+        </span>
+    </div>
+    <div class="modal__content">
+        <div class="side-subscribe__success">
+            <div class="side-subscribe__top">
+                <div class="side-subscribe__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="assets/img/icons.svg#icon-success"></use>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+            <div class="side-subscribe__content">
+                <div class="side-subscribe__title">Teşekkürler!</div>
+                <div class="side-subscribe__txt">
+                    E-bülten'e kaydınız başarıyla sağlanmıştır. Güncel içerikleri
+                    tarafınıza
+                    ulaştıracağız.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal modal--message wrong" id="modalWrongMessage">
+    <div class="modal__close js-close-modal">
+        <span class="icon-outer">
+            <svg class="icon">
+                <use xlink:href="assets/img/icons.svg#icon-close"></use>
+            </svg>
+        </span>
+    </div>
+    <div class="modal__content">
+        <div class="side-subscribe__success">
+            <div class="side-subscribe__top">
+                <div class="side-subscribe__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="assets/img/icons.svg#icon-wrong"></use>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+            <div class="side-subscribe__content">
+                <div class="side-subscribe__title">Gönderim Başarısız!</div>
+                <div class="side-subscribe__txt">
+                    E-bülten'e kaydınız başarıyla sağlanmıştır. Güncel içerikleri
+                    tarafınıza
+                    ulaştıracağız.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

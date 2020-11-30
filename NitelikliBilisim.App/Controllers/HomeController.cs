@@ -7,9 +7,11 @@ using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.ViewModels.Main.AboutUs;
+using NitelikliBilisim.Core.ViewModels.Main.CorporateMembershipApplication;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -79,6 +81,57 @@ namespace NitelikliBilisim.App.Controllers
             model.Hosts = _unitOfWork.EducationHost.EducationHostList();
 
             return View(model);
+        }
+
+        [Route("iletisim")]
+        public IActionResult Contact()
+        {
+            return View();
+        }
+        [Route("sikca-sorulan-sorular")]
+        public IActionResult FrequentlyAskedQuestions()
+        {
+            return View();
+        }
+
+        [Route("kurumsal-uyelik-basvurusu")]
+        public IActionResult CorporateMembershipApplication()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("kurumsal-uyelik-basvurusu")]
+        public IActionResult CorporateMembershipApplication(CorporateMembershipApplicationAddVm model)
+        {
+            try
+            {
+                _unitOfWork.CorporateMembershipApplication.Insert(new CorporateMembershipApplication
+                {
+                    CompanyName = model.CompanyName,
+                    Address = model.Address,
+                    CompanySector = model.CompanySector,
+                    NameSurname = model.NameSurname,
+                    Department = model.Department,
+                    Phone = model.Phone,
+                    RequestNote = model.RequestNote,
+                    NumberOfEmployees = model.NumberOfEmployees,
+                });
+                return Json(new ResponseData
+                {
+                    Success = true
+                });
+            }
+            catch (Exception ex)
+            {
+                //Log ex
+                return Json(new ResponseData
+                {
+                    Success = false
+                });
+            }
+            
         }
 
         async Task CheckRoles()
