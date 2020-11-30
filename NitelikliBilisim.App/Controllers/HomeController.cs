@@ -9,6 +9,7 @@ using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
+using NitelikliBilisim.Core.ViewModels.Main.AboutUs;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -71,6 +72,14 @@ namespace NitelikliBilisim.App.Controllers
             return View();
         }
 
+        [Route("hakkimizda")]
+        public IActionResult AboutUs()
+        {
+            AboutUsGetVm model = new();
+            model.Hosts = _unitOfWork.EducationHost.EducationHostList();
+
+            return View(model);
+        }
 
         async Task CheckRoles()
         {
