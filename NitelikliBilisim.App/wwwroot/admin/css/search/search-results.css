@@ -1,0 +1,44 @@
+﻿.desc-div {
+    height: 72px;
+    position: relative;
+    background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(255,255,255,0) 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to top, rgba(255,255,255,1) 0%,rgba(255,255,255,0) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#00ffffff',GradientType=0 ); /* IE6-9 */
+}
+
+.desc-p {
+    margin-top: -72px;
+    margin-bottom: 0;
+    height: 72px;
+    overflow: hidden;
+}
+
+.desc-table {
+    width: 100%
+}
+
+.desc-table td {
+    width: 50%;
+    padding: 4px 25px;
+}
+
+.desc-table td:first-child {
+    border-right: 1px solid #ededed;
+}
+
+hr, ul {
+    margin: 0;
+}
+
+.icheckbox_square-grey{
+    transform: scale(0.75);
+}
+
+.filter_type ul .sub-cat {
+    margin-left: 20px;
+}
+
+.filter {
+    cursor: pointer;
+}

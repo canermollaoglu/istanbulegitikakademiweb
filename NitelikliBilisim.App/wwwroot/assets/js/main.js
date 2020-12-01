@@ -2207,12 +2207,7 @@ $('.commenting-box').bind('change keyup', function (e) {
 			.addClass('active');
 	}
 });
-$('#file-upload').change(function () {
-	var filepath = this.value;
-	var m = filepath.match(/([^\/\\]+)$/);
-	var filename = m[1];
-	$('#filename').html(filename);
-});
+
 
 $('body').on('click', '.js-delete-item', function () {
 	$(this)

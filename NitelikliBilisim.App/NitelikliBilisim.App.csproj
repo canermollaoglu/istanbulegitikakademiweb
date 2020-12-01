@@ -72,6 +72,44 @@
 
 
   <ItemGroup>
+    <None Include="wwwroot\admin\font\ElegantIcons.svg" />
+    <None Include="wwwroot\admin\font\fontawesome-webfont.svg" />
+    <None Include="wwwroot\admin\font\fontawesome-webfont.woff2" />
+    <None Include="wwwroot\admin\font\fontello.svg" />
+    <None Include="wwwroot\admin\font\icon_set_1.svg" />
+    <None Include="wwwroot\admin\font\Pe-icon-7-stroke.svg" />
+    <None Include="wwwroot\admin\font\themify.svg" />
+    <None Include="wwwroot\admin\img\arrow_down.svg" />
+    <None Include="wwwroot\admin\img\mainback\background_1475x800.png-autosave.kra" />
+    <None Include="wwwroot\admin\img\wizard_intro_icon.svg" />
+    <None Include="wwwroot\admin\js\admission_func.js" />
+    <None Include="wwwroot\admin\js\area-admin\admin.js" />
+    <None Include="wwwroot\admin\js\area-admin\dataTables.bootstrap4.js" />
+    <None Include="wwwroot\admin\js\area-admin\jquery.dataTables.js" />
+    <None Include="wwwroot\admin\js\bootstrap.bundle.min.js" />
+    <None Include="wwwroot\admin\js\bootstrap.min.js" />
+    <None Include="wwwroot\admin\js\common_scripts.js" />
+    <None Include="wwwroot\admin\js\dropzone.min.js" />
+    <None Include="wwwroot\admin\js\jquery-2.2.4.min.js" />
+    <None Include="wwwroot\admin\js\jquery-3.4.1.min.js" />
+    <None Include="wwwroot\admin\js\jquery-ui-1.8.22.min.js" />
+    <None Include="wwwroot\admin\js\jquery.cookiebar.js" />
+    <None Include="wwwroot\admin\js\jquery.easing.min.js" />
+    <None Include="wwwroot\admin\js\jquery.flexslider.js" />
+    <None Include="wwwroot\admin\js\jquery.flexslider.uncompressed.js" />
+    <None Include="wwwroot\admin\js\jquery.mask.min.js" />
+    <None Include="wwwroot\admin\js\jquery.mask.min.js.gz" />
+    <None Include="wwwroot\admin\js\jquery.payform.min.js" />
+    <None Include="wwwroot\admin\js\jquery.validate.js" />
+    <None Include="wwwroot\admin\js\jquery.wizard.js" />
+    <None Include="wwwroot\admin\js\main.js" />
+    <None Include="wwwroot\admin\js\modernizr.js" />
+    <None Include="wwwroot\admin\js\modernizr_slider.js" />
+    <None Include="wwwroot\admin\js\pw_strenght.js" />
+    <None Include="wwwroot\admin\js\site.js" />
+    <None Include="wwwroot\admin\js\validate.js" />
+    <None Include="wwwroot\admin\js\video_header.js" />
+    <None Include="wwwroot\admin\vid\intro.ogv" />
     <None Include="wwwroot\assets\css\components\accordion.css.map" />
     <None Include="wwwroot\assets\css\components\account-comment.css.map" />
     <None Include="wwwroot\assets\css\components\account-course-detail.css.map" />

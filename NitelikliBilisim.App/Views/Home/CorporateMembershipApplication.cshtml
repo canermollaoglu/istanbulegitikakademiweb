@@ -1,4 +1,4 @@
-﻿
+﻿@model NitelikliBilisim.Core.ViewModels.Main.CorporateMembershipApplication.CorporateMembershipApplicationAddVm 
 @{
     ViewData["Title"] = "Kurumsal Üyelik Talebi";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -40,7 +40,7 @@
                     </div>
                 </div>
                 <div class="contact__right">
-                    <form class="contact__form" id="cma-form">
+                    <form class="contact__form" id="validateForm" asp-controller="Home" asp-action="CorporateMembershipApplication" method="post">
                         @Html.AntiForgeryToken()
                         <div class="input__column-2">
                             <div class="input__outer">
@@ -49,7 +49,7 @@
                                         <use xlink:href="assets/img/icons.svg#icon-bag"></use>
                                     </svg>
                                 </span>
-                                <input name="CompanyName" id="input-company-name" type="text" class="input input--fw" placeholder="Şirket Adı" required>
+                                <input asp-for="CompanyName" id="input-company-name" type="text" class="input input--fw" placeholder="Şirket Adı" required>
                             </div>
                             <div class="input__outer">
                                 <span class="icon-outer input__icon">
@@ -57,18 +57,18 @@
                                         <use xlink:href="assets/img/icons.svg#icon-user"></use>
                                     </svg>
                                 </span>
-                                <input type="text" name="UserName" id="input-user-name" class="input input--fw" placeholder="Adınız Soyadınız" required>
+                                <input type="text" asp-for="NameSurname" id="input-user-name" class="input input--fw" placeholder="Adınız Soyadınız" required>
                             </div>
                         </div>
                         <div class="input__column-2">
                             <div class="input__outer input--phone">
                                 <div class="select-phonecode">
-                                    <select class="js-phonecode-select" id="select-phone-code">
-                                        <option value="" selected hidden disabled>539</option>
-                                        <option value="2">540</option>
-                                        <option value="3">541</option>
-                                        <option value="4">542</option>
-                                        <option value="5">543</option>
+                                    <select class="js-phonecode-select" asp-for="PhoneCode" >
+                                        <option selected hidden disabled>539</option>
+                                        <option >540</option>
+                                        <option >541</option>
+                                        <option >542</option>
+                                        <option >543</option>
                                     </select>
                                 </div>
                                 <input name="Phone" type="text" id="input-phone-number" class="input input--fw maskedInput"
@@ -80,7 +80,7 @@
                                         <use xlink:href="assets/img/icons.svg#icon-global"></use>
                                     </svg>
                                 </span>
-                                <input name="CompanySector" type="text" id="input-company-sector" class="input input--fw" placeholder="Firma Sektörü" required>
+                                <input asp-for="CompanySector" type="text" id="input-company-sector" class="input input--fw" placeholder="Firma Sektörü" required>
                             </div>
                         </div>
                         <div class="input__column-2">
@@ -90,7 +90,7 @@
                                         <use xlink:href="assets/img/icons.svg#icon-chair"></use>
                                     </svg>
                                 </span>
-                                <input name="Department" type="text" id="input-department" class="input input--fw" placeholder="Departman" required>
+                                <input asp-for="Department" type="text" id="input-department" class="input input--fw" placeholder="Departman" required>
                             </div>
                             <div class="input__outer">
                                 <span class="icon-outer input__icon">
@@ -98,7 +98,7 @@
                                         <use xlink:href="assets/img/icons.svg#icon-users"></use>
                                     </svg>
                                 </span>
-                                <input name="NumberOfEmployees" type="number" id="input-employee-count" class="input input--fw" placeholder="Çalışan Sayısı"
+                                <input asp-for="NumberOfEmployees" type="number" id="input-employee-count" class="input input--fw" placeholder="Çalışan Sayısı"
                                        required>
                             </div>
                         </div>
@@ -108,7 +108,7 @@
                                     <use xlink:href="assets/img/icons.svg#icon-map-pin"></use>
                                 </svg>
                             </span>
-                            <input name="Address" type="text" id="input-address" class="input input--fw" placeholder="Kurum Adresi" required>
+                            <input asp-for="Address" type="text" id="input-address" class="input input--fw" placeholder="Kurum Adresi" required>
                         </div>
                         <div class="input__outer input--textarea">
                             <span class="icon-outer input__icon">
@@ -116,10 +116,10 @@
                                     <use xlink:href="assets/img/icons.svg#icon-speak-balloon"></use>
                                 </svg>
                             </span>
-                            <textarea name="RequestNote" id="input-request-note" class="input input--fw" placeholder="Talep Notu"></textarea>
+                            <textarea asp-for="RequestNote" id="input-request-note" class="input input--fw" placeholder="Talep Notu"></textarea>
                         </div>
                         <div class="form__button">
-                            <button type="button" id="btn-send" class="button">
+                            <button type="submit" id="btn-send" class="button">
                                 <span class="button-txt">
                                     Gönder
                                 </span>
@@ -191,58 +191,3 @@
     </div>
 </div>
 
-@section postScripts{
-    <script type="text/javascript">
-        /* elements */
-        var companyName = $("#input-company-name");
-        var userName = $("#input-user-name");
-        var phoneCode = $("#select-phone-code");
-        var phoneNumber = $("#input-phone-number");
-        var companySector = $("#input-company-sector");
-        var department = $("#input-department");
-        var address = $("#input-address");
-        var employeeCount = $("#input-employee-count");
-        var requestNote = $("#input-request-note");
-
-        var btnSend = $("#btn-send");
-        /* assignments */
-        $(document).ready(document_onLoad);
-        btnSend.on("click", btnSend_onClick);
-        /* events */
-        function document_onLoad() {
-        }
-
-
-        function btnSend_onClick() {
-            btnSend.off("click");
-            var tokenVerifier = new SecuritySupport.TokenVerifier();
-            var data = tokenVerifier.addToken("cma-form", {
-                CompanyName: companyName.val(),
-                CompanySector: companySector.val(),
-                NameSurname: userName.val(),
-                Phone: phoneNumber.val(),
-                Department: department.val(),
-                Address: address.val(),
-                NumberOfEmployees: employeeCount.val(),
-                RequestNote: requestNote.val()
-            });
-
-
-            $.ajax({
-                url: "/kurumsal-uyelik-basvurusu",
-                method: "post",
-                data: data,
-                success: (res) => {
-                    if (res.success) {
-                        $("#modalSuccessMessage").show();
-                    } else {
-                        $("#modalWrongMessage").show();
-                    }
-                },
-                complete: () => { btnSend.on("click", btnSend_onClick); }
-            });
-        }
-
-
-    </script>
-} 

@@ -1,0 +1,126 @@
+﻿@model NitelikliBilisim.Core.ViewModels.Main.EducatorApplication.EducatorApplicationAddVm
+@{
+    ViewData["Title"] = "Eğitmen Başvurusu";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="subheader">
+    <div class="subheader__wrp">
+        <div class="container">
+            <div class="breadcrumb">
+                <a asp-controller="Home" asp-action="Index" class="breadcrumb__item">
+                    Anasayfa
+                </a>
+                <a href="#0" class="breadcrumb__item active">
+                    Eğitmen Başvurusu
+                </a>
+            </div>
+            <div class="subheader__cnt">
+                <div class="subheader__txt-cnt">
+                    <div class="subheader__title">Eğitmen Başvurusu</div>
+                    <div class="subheader__txt">Talep Oluşturun</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="subheader__img">
+        <img src="./assets/img/subheader-img.jpg" alt="">
+    </div>
+</div>
+<section class="contact">
+    <div class="corporate__wrp">
+        <div class="container">
+            <div class="corporate__w80">
+                <div class="contact__left">
+                    <div class="title title-section mb-4">
+                        EĞİTMEN BAŞVURU
+                        <span class="title--blue">FORMU</span>
+                    </div>
+                    <div class="contact__txt">
+                        Kurs başlangıcından sertifika almaya kadar her adımda yanınızdayız.
+                    </div>
+                </div>
+                <div class="contact__right">
+                    <form class="contact__form" id="validateForm" method="post" asp-controller="Home" asp-action="EducatorApplication" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+                        <div class="input__outer">
+                            <span class="icon-outer input__icon">
+                                <svg class="icon">
+                                    <use xlink:href="assets/img/icons.svg#icon-user"></use>
+                                </svg>
+                            </span>
+                            <input type="text" asp-for="NameSurname" class="input input--fw" placeholder="Adınız Soyadınız" required>
+                        </div>
+                        <div class="input__column-2">
+                            <div class="input__outer input--phone">
+                                <div class="select-phonecode">
+                                    <select asp-for="PhoneCode" class="js-phonecode-select">
+                                        <option>539</option>
+                                        <option>540</option>
+                                        <option>541</option>
+                                        <option>542</option>
+                                        <option>543</option>
+                                    </select>
+                                </div>
+                                <input asp-for="Phone" type="text" class="input input--fw maskedInput"
+                                       placeholder="___-__-__">
+                            </div>
+                            <div class="input__outer">
+                                <span class="icon-outer input__icon">
+                                    <svg class="icon">
+                                        <use xlink:href="assets/img/icons.svg#icon-mail"></use>
+                                    </svg>
+                                </span>
+                                <input asp-for="Email" type="email" class="input input--fw" placeholder="E-posta Adresiniz" required>
+                            </div>
+                        </div>
+                        <div class="input__outer input--textarea">
+                            <span class="icon-outer input__icon">
+                                <svg class="icon">
+                                    <use xlink:href="assets/img/icons.svg#icon-speak-balloon"></use>
+                                </svg>
+                            </span>
+                            <textarea asp-for="Note" class="input input--fw" placeholder="Notunuz"></textarea>
+                        </div>
+                        <div class="form__button with-file">
+                            <div class="form__button-file">
+                                <label for="file-upload" class="button button-icon-left">
+                                    <span class="icon-outer button-icon">
+                                        <svg class="icon">
+                                            <use xlink:href="assets/img/icons.svg#icon-plus"></use>
+                                        </svg>
+                                    </span>
+                                    <span class="button-txt">
+                                        Cv Ekle
+                                    </span>
+                                    <input asp-for="Cv" accept=".pdf,.doc,.docx" type="file" id="file-upload" required>
+                                </label>
+                                <span id="filename"></span>
+                            </div>
+                            <button type="submit" class="button" id="btn-send">
+                                <span class="button-txt">
+                                    Gönder
+                                </span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+@section postScripts{
+    <script type="text/javascript">
+        /* elements */
+        $('#file-upload').change(function () {
+            var filepath = this.value;
+            var m = filepath.match(/([^\/\\]+)$/);
+            var filename = m[1];
+            $('#filename').html(filename);
+        });
+        
+
+    </script>
+} 

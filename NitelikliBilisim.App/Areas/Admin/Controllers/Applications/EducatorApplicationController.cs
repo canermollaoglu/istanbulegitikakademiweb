@@ -32,7 +32,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Applications
             var educatorApplication = _unitOfWork.EducatorApplication.GetById(eId);
             try
             {
-                fullPath = _storage.DownloadFile(Path.GetFileName(educatorApplication.CvUrl), "educator-application-cv").Result;
+                fullPath = _storage.DownloadFile(Path.GetFileName(educatorApplication.CvUrl), "educator-cv").Result;
             }
             catch
             {
