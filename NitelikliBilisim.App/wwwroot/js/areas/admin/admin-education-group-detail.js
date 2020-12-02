@@ -128,7 +128,7 @@ function btnSave_onClick() {
             btnSave.on("click", btnSave_onClick);
             $("#grid-expenses").dxDataGrid("instance").refresh();
             calculateGroupExpenseAndIncome();
-            getGroupDetailInfo();
+            getGroupDetailsAndCalculationsTable();
         }
     });
 
@@ -240,7 +240,7 @@ function btnUnassign_onClick() {
             TicketId: ticketId
         },
         success: (res) => {
-            getGroupDetailInfo();
+            getGroupDetailsAndCalculationsTable();
             $("#grid-students").dxDataGrid("instance").refresh();
             createEligibleTicketTable();
             calculateGroupExpenseAndIncome();
@@ -258,7 +258,7 @@ function btnAssign_onClick() {
             GroupId: gId
         },
         success: (res) => {
-            getGroupDetailInfo();
+            getGroupDetailsAndCalculationsTable();
             $("#grid-students").dxDataGrid("instance").refresh();
             createEligibleTicketTable();
             calculateGroupExpenseAndIncome();
@@ -302,7 +302,7 @@ function btnEducationPriceSave_onClick() {
         data: data,
         success: (res) => {
             if (res.isSuccess) {
-                getGroupDetailInfo();
+                getGroupDetailsAndCalculationsTable();
             } else {
                 var resultAlert = new AlertSupport.ResultAlert();
                 resultAlert.display({
@@ -373,7 +373,7 @@ function btnPostponementOfGroup_onClick() {
                     success: true,
                     message: "Grup erteleme işlemi başarılı.",
                 });
-                getGroupDetailInfo();
+                getGroupDetailsAndCalculationsTable();
                 createLessonDayGrid();
             } else {
                 var resultAlert = new AlertSupport.ResultAlert();
@@ -407,7 +407,7 @@ function btnSaveGeneralInformation_onClick() {
         success: (res) => {
             if (res.isSuccess) {
                 saveGroup();
-                getGroupDetailInfo();
+                getGroupDetailsAndCalculationsTable();
                 calculateGroupExpenseAndIncome();
             } else {
                 var resultAlert = new AlertSupport.ResultAlert();
