@@ -11,6 +11,7 @@ using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Enums.educations;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education;
+using NitelikliBilisim.Core.ViewModels.Main.EducationComment;
 using NitelikliBilisim.Core.ViewModels.search;
 using NitelikliBilisim.Data;
 using System;
@@ -538,6 +539,20 @@ namespace NitelikliBilisim.Business.Repositories
         {
             var education = Context.Educations.First(x => x.Id == id);
 
+            var comments = (from comment in Context.EducationComments
+                           join commenter in Context.Users on comment.CommentatorId equals commenter.Id
+                           join student in Context.Customers on commenter.Id equals student.Id
+                           orderby comment.ApprovalDate  descending
+                           select new CommentDetailVm
+                           {
+                               Point = comment.Points,
+                               Commenter = $"{commenter.Name} {commenter.Surname}",
+                               Date = comment.CreatedDate.ToString("dd MMMM yyyy"),
+                               CommenterJob = student.Job,
+                               Content = comment.Content
+                           }).ToList();
+
+
             var model = new EducationVm
             {
                 Base = new EducationBaseVm
@@ -552,6 +567,7 @@ namespace NitelikliBilisim.Business.Repositories
                     Description = education.Description,
                     Description2 = education.Description2,
                     IsWishListItem = false,
+                    Comments = comments,
                     //PriceNumeric = education.NewPrice.GetValueOrDefault(0),
                     Level = EnumHelpers.GetDescription(education.Level),
                     //PriceText = education.NewPrice.GetValueOrDefault(0).ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"))

@@ -1,5 +1,4 @@
-﻿@*@model NitelikliBilisim.Core.ViewModels.EducationVm*@
-@using NitelikliBilisim.Core.Services.Abstracts
+﻿@using NitelikliBilisim.Core.Services.Abstracts
 @inject IStorageService StorageService
 @model NitelikliBilisim.Core.ViewModels.Main.Course.CourseDetailsVm
 @{
@@ -10,7 +9,12 @@
 
 @{
     var hours = Model.Details.Base.DaysNumeric * Model.Details.Base.HoursPerDayNumeric;
-    var banner = Model.Details.Medias.Where(x => x.MediaType == NitelikliBilisim.Core.Enums.EducationMediaType.Banner).FirstOrDefault().FileUrl;
+    var banner = Model.Details.Medias.FirstOrDefault(x => x.MediaType == NitelikliBilisim.Core.Enums.EducationMediaType.Banner);
+    var bannerUrl = "";
+    if (banner != null)
+    {
+        bannerUrl = StorageService.DownloadFile(System.IO.Path.GetFileName(banner.FileUrl), System.IO.Path.GetDirectoryName(banner.FileUrl)).Result;
+    }
 }
 
 <div class="subheader subheader--detail">
@@ -260,7 +264,7 @@
                                         Merkez Adı:
                                     </div>
                                     <div class="js-data-change-merkez-adi">
-                                        
+
                                     </div>
                                     <div class="lesson-detail__tab-p-strong">
                                         İl:
@@ -427,382 +431,100 @@
                                     </div>
                                 </div>
                                 <div class="lesson-detail__comments--wrp">
-                                    <div class="lesson-detail__comment">
-                                        <div class="lesson-detail__comment-img">
-                                            <img src="~/assets/img/comment-pp.jpg" alt="">
-                                        </div>
-                                        <div class="lesson-detail__comment-cnt">
-                                            <div class="lesson-detail__comment-top">
-                                                <div class="main-stars">
-                                                    <span class="icon-outer icon-star active">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <span class="icon-outer icon-star active">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <span class="icon-outer icon-star active">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <span class="icon-outer icon-star">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <span class="icon-outer icon-star">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                </div>
-                                                <div class="lesson-detail__comment-date">
-                                                    10 Mayıs 2020
-                                                </div>
+                                    @foreach (var comment in Model.Details.Base.Comments)
+                                    {
+
+                                        <div class="lesson-detail__comment">
+                                            <div class="lesson-detail__comment-img">
+                                                <img src="~/assets/img/comment-pp.jpg" alt="">
                                             </div>
-                                            <div class="lesson-detail__comment-txt">
-                                                Eğitimi veren hocalarımız da sektörde büyük tecrübelere
-                                                sahip insanlardı. Şu anda da Turkcell Superonline’da Network planlamada görev almaktayım.
-                                            </div>
-                                            <div class="lesson-detail__comment-author">
-                                                <div class="lesson-detail__comment-name">Mehmet Fatih BAKACAK</div>
-                                                <div class="lesson-detail__comment-branch">Bilgisayar Mühendisi</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="lesson-detail__comment">
-                                        <div class="lesson-detail__comment-img">
-                                            <img src="~/assets/img/comment-pp.jpg" alt="">
-                                        </div>
-                                        <div class="lesson-detail__comment-cnt">
-                                            <div class="lesson-detail__comment-top">
-                                                <div class="main-stars">
-                                                    <span class="icon-outer icon-star active">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <span class="icon-outer icon-star active">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <span class="icon-outer icon-star active">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <span class="icon-outer icon-star">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <span class="icon-outer icon-star">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
+                                            <div class="lesson-detail__comment-cnt">
+                                                <div class="lesson-detail__comment-top">
+                                                    <div class="main-stars">
+                                                        @for (int i = 1; i <= 5; i++)
+                                                        {
+                                                            if (i <= comment.Point)
+                                                            {
+                                                                <span class="icon-outer icon-star active">
+                                                                    <svg class="icon">
+                                                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                                    </svg>
+                                                                </span>
+                                                            }
+                                                            else
+                                                            {
+
+                                                                <span class="icon-outer icon-star">
+                                                                    <svg class="icon">
+                                                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                                    </svg>
+                                                                </span>
+                                                            }
+                                                        }
+                                                    </div>
+                                                    <div class="lesson-detail__comment-date">
+                                                        @comment.Date
+                                                    </div>
                                                 </div>
-                                                <div class="lesson-detail__comment-date">
-                                                    10 Mayıs 2020
+                                                <div class="lesson-detail__comment-txt">
+                                                    @comment.Content
+                                                </div>
+                                                <div class="lesson-detail__comment-author">
+                                                    <div class="lesson-detail__comment-name">@comment.Commenter</div>
+                                                    <div class="lesson-detail__comment-branch">@comment.CommenterJob</div>
                                                 </div>
                                             </div>
-                                            <div class="lesson-detail__comment-txt">
-                                                Eğitimi veren hocalarımız da sektörde büyük tecrübelere
-                                                sahip insanlardı. Şu anda da Turkcell Superonline’da Network planlamada görev almaktayım.
-                                            </div>
-                                            <div class="lesson-detail__comment-author">
-                                                <div class="lesson-detail__comment-name">Mehmet Fatih BAKACAK</div>
-                                                <div class="lesson-detail__comment-branch">Bilgisayar Mühendisi</div>
-                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="lesson-detail__comment">
-                                        <div class="lesson-detail__comment-img">
-                                            <img src="~/assets/img/comment-pp.jpg" alt="">
-                                        </div>
-                                        <div class="lesson-detail__comment-cnt">
-                                            <div class="lesson-detail__comment-top">
-                                                <div class="main-stars">
-                                                    <span class="icon-outer icon-star active">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <span class="icon-outer icon-star active">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <span class="icon-outer icon-star active">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <span class="icon-outer icon-star">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <span class="icon-outer icon-star">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
+
+                                        <div class="lesson-detail__comment is-load">
+                                            <div class="lesson-detail__comment-img">
+                                                <img src="~/assets/img/comment-pp.jpg" alt="">
+                                            </div>
+                                            <div class="lesson-detail__comment-cnt">
+                                                <div class="lesson-detail__comment-top">
+                                                    <div class="main-stars">
+                                                        <span class="icon-outer icon-star active">
+                                                            <svg class="icon">
+                                                                <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                            </svg>
+                                                        </span>
+                                                        <span class="icon-outer icon-star active">
+                                                            <svg class="icon">
+                                                                <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                            </svg>
+                                                        </span>
+                                                        <span class="icon-outer icon-star active">
+                                                            <svg class="icon">
+                                                                <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                            </svg>
+                                                        </span>
+                                                        <span class="icon-outer icon-star">
+                                                            <svg class="icon">
+                                                                <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                            </svg>
+                                                        </span>
+                                                        <span class="icon-outer icon-star">
+                                                            <svg class="icon">
+                                                                <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                            </svg>
+                                                        </span>
+                                                    </div>
+                                                    <div class="lesson-detail__comment-date">
+                                                        10 Mayıs 2020
+                                                    </div>
                                                 </div>
-                                                <div class="lesson-detail__comment-date">
-                                                    10 Mayıs 2020
+                                                <div class="lesson-detail__comment-txt">
+                                                    Eğitimi veren hocalarımız da sektörde büyük tecrübelere
+                                                    sahip insanlardı. Şu anda da Turkcell Superonline’da Network planlamada görev almaktayım.
                                                 </div>
-                                            </div>
-                                            <div class="lesson-detail__comment-txt">
-                                                Eğitimi veren hocalarımız da sektörde büyük tecrübelere
-                                                sahip insanlardı. Şu anda da Turkcell Superonline’da Network planlamada görev almaktayım.
-                                            </div>
-                                            <div class="lesson-detail__comment-author">
-                                                <div class="lesson-detail__comment-name">Mehmet Fatih BAKACAK</div>
-                                                <div class="lesson-detail__comment-branch">Bilgisayar Mühendisi</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="lesson-detail__comment">
-                                        <div class="lesson-detail__comment-img">
-                                            <img src="~/assets/img/comment-pp.jpg" alt="">
-                                        </div>
-                                        <div class="lesson-detail__comment-cnt">
-                                            <div class="lesson-detail__comment-top">
-                                                <div class="main-stars">
-                                                    <span class="icon-outer icon-star active">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <span class="icon-outer icon-star active">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <span class="icon-outer icon-star active">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <span class="icon-outer icon-star">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <span class="icon-outer icon-star">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                </div>
-                                                <div class="lesson-detail__comment-date">
-                                                    10 Mayıs 2020
+                                                <div class="lesson-detail__comment-author">
+                                                    <div class="lesson-detail__comment-name">Mehmet Fatih BAKACAK</div>
+                                                    <div class="lesson-detail__comment-branch">Bilgisayar Mühendisi</div>
                                                 </div>
                                             </div>
-                                            <div class="lesson-detail__comment-txt">
-                                                Eğitimi veren hocalarımız da sektörde büyük tecrübelere
-                                                sahip insanlardı. Şu anda da Turkcell Superonline’da Network planlamada görev almaktayım.
-                                            </div>
-                                            <div class="lesson-detail__comment-author">
-                                                <div class="lesson-detail__comment-name">Mehmet Fatih BAKACAK</div>
-                                                <div class="lesson-detail__comment-branch">Bilgisayar Mühendisi</div>
-                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="lesson-detail__comment">
-                                        <div class="lesson-detail__comment-img">
-                                            <img src="~/assets/img/comment-pp.jpg" alt="">
-                                        </div>
-                                        <div class="lesson-detail__comment-cnt">
-                                            <div class="lesson-detail__comment-top">
-                                                <div class="main-stars">
-                                                    <span class="icon-outer icon-star active">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <span class="icon-outer icon-star active">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <span class="icon-outer icon-star active">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <span class="icon-outer icon-star">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <span class="icon-outer icon-star">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                </div>
-                                                <div class="lesson-detail__comment-date">
-                                                    10 Mayıs 2020
-                                                </div>
-                                            </div>
-                                            <div class="lesson-detail__comment-txt">
-                                                Eğitimi veren hocalarımız da sektörde büyük tecrübelere
-                                                sahip insanlardı. Şu anda da Turkcell Superonline’da Network planlamada görev almaktayım.
-                                            </div>
-                                            <div class="lesson-detail__comment-author">
-                                                <div class="lesson-detail__comment-name">Mehmet Fatih BAKACAK</div>
-                                                <div class="lesson-detail__comment-branch">Bilgisayar Mühendisi</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="lesson-detail__comment">
-                                        <div class="lesson-detail__comment-img">
-                                            <img src="~/assets/img/comment-pp.jpg" alt="">
-                                        </div>
-                                        <div class="lesson-detail__comment-cnt">
-                                            <div class="lesson-detail__comment-top">
-                                                <div class="main-stars">
-                                                    <span class="icon-outer icon-star active">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <span class="icon-outer icon-star active">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <span class="icon-outer icon-star active">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <span class="icon-outer icon-star">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <span class="icon-outer icon-star">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                </div>
-                                                <div class="lesson-detail__comment-date">
-                                                    10 Mayıs 2020
-                                                </div>
-                                            </div>
-                                            <div class="lesson-detail__comment-txt">
-                                                Eğitimi veren hocalarımız da sektörde büyük tecrübelere
-                                                sahip insanlardı. Şu anda da Turkcell Superonline’da Network planlamada görev almaktayım.
-                                            </div>
-                                            <div class="lesson-detail__comment-author">
-                                                <div class="lesson-detail__comment-name">Mehmet Fatih BAKACAK</div>
-                                                <div class="lesson-detail__comment-branch">Bilgisayar Mühendisi</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="lesson-detail__comment is-load">
-                                        <div class="lesson-detail__comment-img">
-                                            <img src="~/assets/img/comment-pp.jpg" alt="">
-                                        </div>
-                                        <div class="lesson-detail__comment-cnt">
-                                            <div class="lesson-detail__comment-top">
-                                                <div class="main-stars">
-                                                    <span class="icon-outer icon-star active">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <span class="icon-outer icon-star active">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <span class="icon-outer icon-star active">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <span class="icon-outer icon-star">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <span class="icon-outer icon-star">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                </div>
-                                                <div class="lesson-detail__comment-date">
-                                                    10 Mayıs 2020
-                                                </div>
-                                            </div>
-                                            <div class="lesson-detail__comment-txt">
-                                                Eğitimi veren hocalarımız da sektörde büyük tecrübelere
-                                                sahip insanlardı. Şu anda da Turkcell Superonline’da Network planlamada görev almaktayım.
-                                            </div>
-                                            <div class="lesson-detail__comment-author">
-                                                <div class="lesson-detail__comment-name">Mehmet Fatih BAKACAK</div>
-                                                <div class="lesson-detail__comment-branch">Bilgisayar Mühendisi</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="lesson-detail__comment is-load">
-                                        <div class="lesson-detail__comment-img">
-                                            <img src="~/assets/img/comment-pp.jpg" alt="">
-                                        </div>
-                                        <div class="lesson-detail__comment-cnt">
-                                            <div class="lesson-detail__comment-top">
-                                                <div class="main-stars">
-                                                    <span class="icon-outer icon-star active">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <span class="icon-outer icon-star active">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <span class="icon-outer icon-star active">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <span class="icon-outer icon-star">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <span class="icon-outer icon-star">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                </div>
-                                                <div class="lesson-detail__comment-date">
-                                                    10 Mayıs 2020
-                                                </div>
-                                            </div>
-                                            <div class="lesson-detail__comment-txt">
-                                                Eğitimi veren hocalarımız da sektörde büyük tecrübelere
-                                                sahip insanlardı. Şu anda da Turkcell Superonline’da Network planlamada görev almaktayım.
-                                            </div>
-                                            <div class="lesson-detail__comment-author">
-                                                <div class="lesson-detail__comment-name">Mehmet Fatih BAKACAK</div>
-                                                <div class="lesson-detail__comment-branch">Bilgisayar Mühendisi</div>
-                                            </div>
-                                        </div>
-                                    </div>
+
+                                    }
                                 </div>
                                 <div class="lesson-detail__comments--button js-load-comment">
                                     <div class="button button--load-more">
@@ -887,7 +609,7 @@
             <div class="lesson-detail__side js-top-sized">
                 <div class="lesson-detail__card">
                     <div class="lesson-detail__card-top js-video-btn" data-video-id="vfTnXs2RSBQ">
-                        <img src="~/assets/img/lesson-detail-item.jpg" alt="">
+                        <img src="@bannerUrl" alt="">
                         <div class="card-play">
                             <span class="icon-outer">
                                 <svg class="icon">
@@ -1170,7 +892,7 @@
             //latitude = group.host.latitude;
             //longitude = group.host.longitude;
             //initMap();
-            
+
             var educator = `<a href="egitmen-detay.php" class="lesson-detail__tab-teachers--item"><div class="lesson-detail__tab-teachers--img"><img class="js-change-teacher-img" src="${group.educator.profilePhoto}" alt=""></div><div class="lesson-detail__tab-teachers--cnt"><div class="lesson-detail__tab-teachers--name js-change-teacher-name">${group.educator.name} ${group.educator.surname}</div><div class="lesson-detail__tab-teachers--txt">${group.educator.title}</div></div><div class="lesson-detail__tab-teachers--right"><div class="main-stars"><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span></div>3.0 PUAN</div></a>`;
             $('.js-data-change-merkez-adi').text(group.host.hostName);
             $('.js-data-change-il').text(group.host.city);
@@ -1182,7 +904,7 @@
             $('.js-data-change-adres').text(group.host.address);
             $('.js-data-change-teachers a').remove();
             $('.js-data-change-teachers').append(educator);
-            
+
 
 
             //textGroupHostStartDate.html(`<i class="icon-calendar-circled"></i> ${group.startDateText}`);

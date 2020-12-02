@@ -419,7 +419,6 @@ namespace NitelikliBilisim.Business.Repositories
             }
             var educators = _context.Educators.Include(x=>x.User).ToList();
 
-
             var model = new List<GroupVm>();
             var hostIds = new List<Guid>();
             var storage = new StorageService();
