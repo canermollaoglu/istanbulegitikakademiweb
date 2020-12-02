@@ -46,8 +46,9 @@ namespace NitelikliBilisim.App.Controllers
             {
                 Details = educationDetails,
                 Educators = educators,
-                AvaibleEducationCities = educationCities
-            };
+                AvaibleEducationCities = educationCities,
+                PopularEducations = _unitOfWork.Suggestions.GetGuestUserSuggestedEducations()
+        };
             return View(model);
         }
 
@@ -100,8 +101,8 @@ namespace NitelikliBilisim.App.Controllers
 
         }
 
-        [Route("get-available-groups-for-course/{courseId?}")]
-        public IActionResult GetAvailableGroupsForCourse(Guid? courseId)
+        [Route("get-available-groups-for-course")]
+        public IActionResult GetAvailableGroupsForCourse(Guid? courseId,int city)
         {
             if (!courseId.HasValue)
                 return Json(new ResponseModel
@@ -109,7 +110,7 @@ namespace NitelikliBilisim.App.Controllers
                     isSuccess = false
                 });
 
-            var model = _unitOfWork.EducationGroup.GetFirstAvailableGroups(courseId.Value);
+            var model = _unitOfWork.EducationGroup.GetFirstAvailableGroups(courseId.Value,city);
             return Json(new ResponseModel
             {
                 isSuccess = true,

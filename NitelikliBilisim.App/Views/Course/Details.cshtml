@@ -1,4 +1,6 @@
 ﻿@*@model NitelikliBilisim.Core.ViewModels.EducationVm*@
+@using NitelikliBilisim.Core.Services.Abstracts
+@inject IStorageService StorageService
 @model NitelikliBilisim.Core.ViewModels.Main.Course.CourseDetailsVm
 @{
     ViewData["Title"] = $"{Model.Details.Base.Name} Kurs Detayları";
@@ -257,11 +259,15 @@
                                     <div class="lesson-detail__tab-p-strong">
                                         Merkez Adı:
                                     </div>
-                                    BAU Merkez Grup 1
+                                    <div class="js-data-change-merkez-adi">
+                                        
+                                    </div>
                                     <div class="lesson-detail__tab-p-strong">
                                         İl:
                                     </div>
-                                    İstanbul
+                                    <div class="js-data-change-il">
+
+                                    </div>
                                 </div>
                                 <div>
                                     <span class="icon-outer">
@@ -898,8 +904,16 @@
                                         <use xlink:href="../../assets/img/icons.svg#icon-info-i"></use>
                                     </svg>
                                 </span>
-                                Bu eğitimde birden fazla <br>
-                                eğitim grubu bulunmaktadır.
+                                @if (Model.AvaibleEducationCities.Count == 0)
+                                {
+                                    <text>Bu eğitim için aktif eğitim grubu bulunmamaktadır.</text>
+                                }
+                                else
+                                {
+                                    <text> Bu eğitimde birden fazla<br>
+                                        eğitim grubu bulunmaktadır.</text>
+                                }
+
                             </div>
                             <div class="lesson-detail__card-share js-share">
                                 <span class="icon-outer">
@@ -932,68 +946,67 @@
                                 </a>
                             </div>
                         </div>
-                        <div class="lesson-detail__card-cnt-selects">
-                            <div class="lesson-detail__card-select custom-select bordered-select">
-                                <select class="js-custom-select">
-                                    <option value="" selected hidden disabled>Ankara</option>
-                                    @foreach (var city in Model.AvaibleEducationCities)
-                                    {
-                                        <option value="@city.Key">@city.Value</option>
-                                    }
-                                </select>
-                            </div>
-                            <div class="lesson-detail__card-select custom-select2 bordered-select">
-                                <select class="js-custom-select2 educationStateVal">
-                                    <option value="educationState1">BAU - Merkez Kampüs Grup 1</option>
-                                    <option value="educationState2">İTÜ - Merkez Kampüs Grup 2</option>
-                                    <option value="educationState3">DPÜ - Merkez Kampüs Grup 3</option>
-                                    <option value="educationState4">YTÜ - Merkez Kampüs Grup 4</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="lesson-detail__card-cnt-priceinfo js-show-mobile-price">
-                            <div class="lesson-detail__card-pricetext">
-                                Kurs Ücreti
-                            </div>
-                            <div class="lesson-detail__card-priceright">
-                                <div class="lesson-detail__card-price">
-                                    <span class="lesson-detail__card-oldprice">
-                                        <span>₺</span>1,250.00
-                                    </span>
-                                    <span class="lesson-detail__card-newprice">
-                                        <span>₺</span>
-                                        <div class="js-data-change-fiyat">500,00</div>
-                                    </span>
+                        @if (Model.AvaibleEducationCities.Count > 0)
+                        {
+                            <div class="lesson-detail__card-cnt-selects">
+                                <div class="lesson-detail__card-select custom-select bordered-select">
+                                    <select class="js-custom-select educationCityVal">
+                                        @foreach (var city in Model.AvaibleEducationCities)
+                                        {
+                                            <option value="@city.Key">@city.Value</option>
+                                        }
+                                    </select>
                                 </div>
-                                <div class="lesson-detail__card-sale">
-                                    %12
+                                <div class="lesson-detail__card-select custom-select2 bordered-select">
+                                    <select class="js-custom-select2 educationStateVal">
+                                    </select>
                                 </div>
                             </div>
-                        </div>
-                        <div class="lesson-detail__card-cnt-buttons">
-                            <div class="button button--navy-blue button-icon-right button-fw js-btn-basket">
-                                <span class="button-txt">
-                                    <span class="change-text">Sepete Ekle</span>
-                                </span>
-                                <span class="icon-outer button-icon">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-check-circle"></use>
-                                    </svg>
-                                </span>
+                            <div class="lesson-detail__card-cnt-priceinfo js-show-mobile-price">
+                                <div class="lesson-detail__card-pricetext">
+                                    Kurs Ücreti
+                                </div>
+                                <div class="lesson-detail__card-priceright">
+                                    <div class="lesson-detail__card-price">
+                                        <span class="lesson-detail__card-oldprice">
+                                            <span>₺</span>1,250.00
+                                        </span>
+                                        <span class="lesson-detail__card-newprice">
+                                            <span>₺</span>
+                                            <div class="js-data-change-fiyat">500,00</div>
+                                        </span>
+                                    </div>
+                                    <div class="lesson-detail__card-sale">
+                                        %12
+                                    </div>
+                                </div>
                             </div>
-                            <div class="lesson-detail__card-fav js-btn-fav @(Model.Details.Base.IsWishListItem?"active":"")">
-                                <span class="icon-outer fill">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-heart"></use>
-                                    </svg>
-                                </span>
-                                <span class="icon-outer filled">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-heart-filled"></use>
-                                    </svg>
-                                </span>
+                            <div class="lesson-detail__card-cnt-buttons">
+                                <div class="button button--navy-blue button-icon-right button-fw js-btn-basket">
+                                    <span class="button-txt">
+                                        <span class="change-text">Sepete Ekle</span>
+                                    </span>
+                                    <span class="icon-outer button-icon">
+                                        <svg class="icon">
+                                            <use xlink:href="../../assets/img/icons.svg#icon-check-circle"></use>
+                                        </svg>
+                                    </span>
+                                </div>
+                                <div class="lesson-detail__card-fav js-btn-fav @(Model.Details.Base.IsWishListItem?"active":"")">
+                                    <span class="icon-outer fill">
+                                        <svg class="icon">
+                                            <use xlink:href="../../assets/img/icons.svg#icon-heart"></use>
+                                        </svg>
+                                    </span>
+                                    <span class="icon-outer filled">
+                                        <svg class="icon">
+                                            <use xlink:href="../../assets/img/icons.svg#icon-heart-filled"></use>
+                                        </svg>
+                                    </span>
+                                </div>
                             </div>
-                        </div>
+                        }
+
                     </div>
                 </div>
             </div>
@@ -1017,186 +1030,56 @@
 
         <div class="swiper-container js-card-slider mt-1">
             <div class="swiper-wrapper">
-                <div class="swiper-slide">
-                    <div class="card">
-                        <figure>
-                            <img src="~/assets/img/cardimg1.jpg" alt="">
-                        </figure>
+                @foreach (var education in Model.PopularEducations)
+                {
+                    var filePath = "";
+                    try
+                    {
+                        filePath = StorageService.DownloadFile(System.IO.Path.GetFileName(education.Medias[0].FileUrl), "media-items").Result;
+                    }
+                    catch
+                    {
+                    }
+                    <div class="swiper-slide">
+                        <a href="/kurs-detayi/@education.Base.Id" class="card">
+                            <figure>
+                                <img src="@filePath" alt="">
+                            </figure>
 
-                        <div class="card__content">
-                            <h6 class="card__subtitle">Siber Güvenlik</h6>
-                            <h5 class="card__title">Active Directory Sertifika Servisleri</h5>
-                            <p>
-                                Bu eğitim; şirketiniz için yeterlde kullanılan ve ileri düzeyde hassas dalatar olarak tanımlanan
-                            </p>
-                        </div>
+                            <div class="card__content">
+                                <h6 class="card__subtitle">@education.Base.CategoryName</h6>
+                                <h5 class="card__title">@education.Base.Name</h5>
+                                @if (education.Base.Description.Length > 90)
+                                {
+                                    <p>
+                                        @education.Base.Description.Substring(0, 90)
+                                    </p>
+                                }
+                                else
+                                {
+                                    <p>@education.Base.Description</p>
+                                }
+                            </div>
 
-                        <div class="card__footer">
-                            <span class="card__time">
-                                <span class="icon-outer">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                    </svg>
+                            <div class="card__footer">
+                                <span class="card__time">
+                                    <span class="icon-outer">
+                                        <svg class="icon">
+                                            <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                                        </svg>
+                                    </span>
+                                    <span>@education.Base.DaysText gün ( @education.Base.HoursPerDayText saat )</span>
                                 </span>
-                                <span>3 gün ( 12 saat )</span>
-                            </span>
 
-                            <span class="card__money">
-                                <span>₺</span> 800,00
-                            </span>
-                        </div>
+                                @*<span class="card__money">
+                                        <span>₺</span> 800,00
+                                    </span>*@
+                            </div>
+                        </a>
                     </div>
-                </div>
-                <div class="swiper-slide">
-                    <div class="card">
-                        <figure>
-                            <img src="~/assets/img/cardimg2.jpg" alt="">
-                        </figure>
+                }
 
-                        <div class="card__content">
-                            <h6 class="card__subtitle">Siber Güvenlik</h6>
-                            <h5 class="card__title">Active Directory Sertifika Servisleri</h5>
-                            <p>
-                                Bu eğitim; şirketiniz için yeterlde kullanılan ve ileri düzeyde hassas dalatar olarak tanımlanan
-                            </p>
-                        </div>
 
-                        <div class="card__footer">
-                            <span class="card__time">
-                                <span class="icon-outer">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                    </svg>
-                                </span>
-                                <span>3 gün ( 12 saat )</span>
-                            </span>
-
-                            <span class="card__money">
-                                <span>₺</span> 800,00
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <div class="swiper-slide">
-                    <div class="card">
-                        <figure>
-                            <img src="~/assets/img/cardimg3.jpg" alt="">
-                        </figure>
-
-                        <div class="card__content">
-                            <h6 class="card__subtitle">Siber Güvenlik</h6>
-                            <h5 class="card__title">Active Directory Sertifika Servisleri</h5>
-                            <p>
-                                Bu eğitim; şirketiniz için yeterlde kullanılan ve ileri düzeyde hassas dalatar olarak tanımlanan
-                            </p>
-                        </div>
-
-                        <div class="card__footer">
-                            <span class="card__time">
-                                <span class="icon-outer">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                    </svg>
-                                </span>
-                                <span>3 gün ( 12 saat )</span>
-                            </span>
-
-                            <span class="card__money">
-                                <span>₺</span> 800,00
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <div class="swiper-slide">
-                    <div class="card">
-                        <figure>
-                            <img src="~/assets/img/cardimg4.jpg" alt="">
-                        </figure>
-
-                        <div class="card__content">
-                            <h6 class="card__subtitle">Siber Güvenlik</h6>
-                            <h5 class="card__title">Active Directory Sertifika Servisleri</h5>
-                            <p>
-                                Bu eğitim; şirketiniz için yeterlde kullanılan ve ileri düzeyde hassas dalatar olarak tanımlanan
-                            </p>
-                        </div>
-
-                        <div class="card__footer">
-                            <span class="card__time">
-                                <span class="icon-outer">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                    </svg>
-                                </span>
-                                <span>3 gün ( 12 saat )</span>
-                            </span>
-
-                            <span class="card__money">
-                                <span>₺</span> 800,00
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <div class="swiper-slide">
-                    <div class="card">
-                        <figure>
-                            <img src="../../assets/img/cardimg5.jpg" alt="">
-                        </figure>
-
-                        <div class="card__content">
-                            <h6 class="card__subtitle">Siber Güvenlik</h6>
-                            <h5 class="card__title">Active Directory Sertifika Servisleri</h5>
-                            <p>
-                                Bu eğitim; şirketiniz için yeterlde kullanılan ve ileri düzeyde hassas dalatar olarak tanımlanan
-                            </p>
-                        </div>
-
-                        <div class="card__footer">
-                            <span class="card__time">
-                                <span class="icon-outer">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                    </svg>
-                                </span>
-                                <span>3 gün ( 12 saat )</span>
-                            </span>
-
-                            <span class="card__money">
-                                <span>₺</span> 800,00
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <div class="swiper-slide">
-                    <div class="card">
-                        <figure>
-                            <img src="../../assets/img/cardimg6.jpg" alt="">
-                        </figure>
-
-                        <div class="card__content">
-                            <h6 class="card__subtitle">Siber Güvenlik</h6>
-                            <h5 class="card__title">Active Directory Sertifika Servisleri</h5>
-                            <p>
-                                Bu eğitim; şirketiniz için yeterlde kullanılan ve ileri düzeyde hassas dalatar olarak tanımlanan
-                            </p>
-                        </div>
-
-                        <div class="card__footer">
-                            <span class="card__time">
-                                <span class="icon-outer">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                    </svg>
-                                </span>
-                                <span>3 gün ( 12 saat )</span>
-                            </span>
-
-                            <span class="card__money">
-                                <span>₺</span> 800,00
-                            </span>
-                        </div>
-                    </div>
-                </div>
             </div>
             <div class="swiper-pagination"></div>
         </div>
@@ -1226,7 +1109,7 @@
 </div>
 
 @section postScripts{
-   
+
     @*<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBwbBlZQaeP0fYu7xTiviCCWGAK3onN-iE&callback=initMap"></script>*@
     <script src="~/js/sup/cart.js"></script>
     <script>
@@ -1240,7 +1123,8 @@
         /* elements */
         //var btnBuy = $("#btn-buy");
         //var btnBuy2 = $("#btn-buy2");
-       // var selectGroups = document.getElementById("select-groups");
+        var selectGroups = $('.educationStateVal');
+        var selectCities = $(".educationCityVal");
         //var textGroupHostStartDate = $("#text-group-host-start-date");
         //var textGroupHostAddress = $("#text-group-host-address");
         //var textGroupQuota = $("#text-group-quota");
@@ -1251,32 +1135,18 @@
 
 
         /* assignments */
-        //$(document).ready(document_onLoad);
-        //selectGroups.onchange = selectGroups_onChange;
+        $(document).ready(document_onLoad);
+
+        $('.educationStateVal').on('change', selectGroups_onChange);
+        $('.educationCityVal').on('change', selectCities_onChange);
         //btnBuy.on("click", btnBuy_onClick);
         //btnBuy2.on("click", btnBuy_onClick);
 
         /* events */
-        //function document_onLoad() {
-        //    $.ajax({
-        //        url: `/get-available-groups-for-course/${_educationId}`,
-        //        method: "get",
-        //        success: (res) => {
-        //            groups = res.data;
-        //            console.log(groups);
-        //            var appended = "";
-        //            for (var i = 0; i < groups.length; i++) {
-        //                var item = groups[i];
-        //                appended += `<option value="${item.host.hostId}">${item.host.hostName} (${item.host.city})</option>`;
-        //            }
-        //            $(selectGroups).append(appended);
-        //            selectGroups.selectedIndex = 0;
-        //            selectGroups_onChange();
-        //            initMap();
-        //        }
-        //    });
-        //    initSignalR();
-        //}
+        function document_onLoad() {
+            loadGroups();
+            //initSignalR();
+        }
         //let initSignalR = function () {
         //    var connection = new signalR.HubConnectionBuilder()
         //        .withUrl('/messages')
@@ -1292,21 +1162,133 @@
         //            console.error(error.message);
         //        });
         //}
-        //function selectGroups_onChange() {
-        //    var index = selectGroups.selectedIndex;
-        //    var group = groups[index];
-        //    console.log(group);
-        //    latitude = group.host.latitude;
-        //    longitude = group.host.longitude;
-        //    initMap();
-        //    textGroupHostStartDate.html(`<i class="icon-calendar-circled"></i> ${group.startDateText}`);
-        //    textGroupHostAddress.html(`<i class=" icon-location-2"></i> ${group.host.address}`);
-        //    textGroupJoined.html(`<i class="icon-user"></i> Katılımcı: ${group.joined}`);
-        //    textGroupQuota.html(`<i class="icon-users-2"></i> Kontenjan: ${group.quota}`);
-        //    textGroupStartDate.html(`${group.startDateText}, `);
-        //    textGroupNameAndCity.html(`${group.host.hostName} (${group.host.city})`);
-        //    textGroupPrice.html(`<i class="icon-money"></i> Fiyat: ${group.newPrice} ₺`);
-        //}
+
+
+        function selectGroups_onChange() {
+            var index = selectGroups.val();
+            var group = groups.find(x => x.host.hostId == index);
+            //latitude = group.host.latitude;
+            //longitude = group.host.longitude;
+            //initMap();
+            
+            var educator = `<a href="egitmen-detay.php" class="lesson-detail__tab-teachers--item"><div class="lesson-detail__tab-teachers--img"><img class="js-change-teacher-img" src="${group.educator.profilePhoto}" alt=""></div><div class="lesson-detail__tab-teachers--cnt"><div class="lesson-detail__tab-teachers--name js-change-teacher-name">${group.educator.name} ${group.educator.surname}</div><div class="lesson-detail__tab-teachers--txt">${group.educator.title}</div></div><div class="lesson-detail__tab-teachers--right"><div class="main-stars"><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span></div>3.0 PUAN</div></a>`;
+            $('.js-data-change-merkez-adi').text(group.host.hostName);
+            $('.js-data-change-il').text(group.host.city);
+            $('.js-data-change-sure').text();
+            $('.js-data-change-seviye').text();
+            $('.js-data-change-tarih').text(group.startDateText);
+            $('.js-data-change-saat').text();
+            $('.js-data-change-fiyat').text(group.newPrice);
+            $('.js-data-change-adres').text(group.host.address);
+            $('.js-data-change-teachers a').remove();
+            $('.js-data-change-teachers').append(educator);
+            
+
+
+            //textGroupHostStartDate.html(`<i class="icon-calendar-circled"></i> ${group.startDateText}`);
+            //textGroupHostAddress.html(`<i class=" icon-location-2"></i> ${group.host.address}`);
+            //textGroupJoined.html(`<i class="icon-user"></i> Katılımcı: ${group.joined}`);
+            //textGroupQuota.html(`<i class="icon-users-2"></i> Kontenjan: ${group.quota}`);
+            //textGroupStartDate.html(`${group.startDateText}, `);
+            //textGroupNameAndCity.html(`${group.host.hostName} (${group.host.city})`);
+            //textGroupPrice.html(`<i class="icon-money"></i> Fiyat: ${group.newPrice} ₺`);
+            console.log(group);
+        }
+        function selectCities_onChange() {
+            loadGroups();
+        }
+        function loadGroups() {
+            var cityId = selectCities.find(":selected").val();
+            $.ajax({
+                url: `/get-available-groups-for-course?courseId=${educationId}&city=${cityId}`,
+                method: "get",
+                success: (res) => {
+                    groups = res.data;
+                    removeSelectGroupOptions();
+                    var appended = "";
+                    for (var i = 0; i < groups.length; i++) {
+                        var item = groups[i];
+                        appended += `<option value="${item.host.hostId}">${item.host.hostName}</option>`;
+                    }
+                    $(selectGroups).append(appended);
+                    selectGroups.selectedIndex = 0;
+                    selectGroups_onChange();
+                    //initMap();
+                }
+            });
+
+        }
+        function removeSelectGroupOptions() {
+            $(selectGroups).find('option').remove().end();
+        }
+
+        //$('.educationStateVal').on('change', function () {
+        //    console.log($(this).find(":selected").val());
+
+        //    var keys = ["educationState1", "educationState2", "educationState3", "educationState4",];
+        //    var teacher1 =
+        //        '<a href="egitmen-detay.php" class="lesson-detail__tab-teachers--item"><div class="lesson-detail__tab-teachers--img"><img class="js-change-teacher-img" src="../../assets/img/teacher-1.jpg" alt=""></div><div class="lesson-detail__tab-teachers--cnt"><div class="lesson-detail__tab-teachers--name js-change-teacher-name">Muhittin İhsanoğlu</div><div class="lesson-detail__tab-teachers--txt">Yazılım Uzmanı</div></div><div class="lesson-detail__tab-teachers--right"><div class="main-stars"><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span></div>3.0 PUAN</div></a>';
+        //    var teacher2 =
+        //        '<a href="egitmen-detay.php" class="lesson-detail__tab-teachers--item"><div class="lesson-detail__tab-teachers--img"><img class="js-change-teacher-img" src="../../assets/img/teacher-2.jpg" alt=""></div><div class="lesson-detail__tab-teachers--cnt"><div class="lesson-detail__tab-teachers--name js-change-teacher-name">Atiba Hutcingson</div><div class="lesson-detail__tab-teachers--txt">Yazılım Uzmanı</div></div><div class="lesson-detail__tab-teachers--right"><div class="main-stars"><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span></div>3.0 PUAN</div></a>';
+        //    var teacher3 =
+        //        '<a href="egitmen-detay.php" class="lesson-detail__tab-teachers--item"><div class="lesson-detail__tab-teachers--img"><img class="js-change-teacher-img" src="../../assets/img/comment-pp-woman.jpg" alt=""></div><div class="lesson-detail__tab-teachers--cnt"><div class="lesson-detail__tab-teachers--name js-change-teacher-name">Sergen Yalçın</div><div class="lesson-detail__tab-teachers--txt">Yazılım Uzmanı</div></div><div class="lesson-detail__tab-teachers--right"><div class="main-stars"><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span></div>3.0 PUAN</div></a>';
+        //    var teacher4 =
+        //        '<a href="egitmen-detay.php" class="lesson-detail__tab-teachers--item"><div class="lesson-detail__tab-teachers--img"><img class="js-change-teacher-img" src="../../assets/img/comment-pp-woman.jpg" alt=""></div><div class="lesson-detail__tab-teachers--cnt"><div class="lesson-detail__tab-teachers--name js-change-teacher-name">Sergen Yalçın</div><div class="lesson-detail__tab-teachers--txt">Yazılım Uzmanı</div></div><div class="lesson-detail__tab-teachers--right"><div class="main-stars"><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span></div>3.0 PUAN</div></a><a href="egitmen-detay.php" class="lesson-detail__tab-teachers--item"><div class="lesson-detail__tab-teachers--img"><img class="js-change-teacher-img" src="../../assets/img/teacher-1.jpg" alt=""></div><div class="lesson-detail__tab-teachers--cnt"><div class="lesson-detail__tab-teachers--name js-change-teacher-name">Merih Demiral</div><div class="lesson-detail__tab-teachers--txt">Yazılım Uzmanı</div></div><div class="lesson-detail__tab-teachers--right"><div class="main-stars"><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span></div>3.0 PUAN</div></a>';
+
+        //    var educationStateKampus1 = [keys[0], "1 gün 1 saat", "İleri Seviye", "10 Mayıs 2020", "72 saat", "400,00",
+        //        teacher1,
+        //        "Üsküdar, Acıbadem Cd. No:190, 34746 Üsküdar/İstanbul"
+        //    ];
+        //    var educationStateKampus2 = [keys[1], "2 gün 3 saat", "Yeni Mezun", "7 Nisan 2020", "24 saat", "600,00",
+        //        teacher2,
+        //        "Maltepe, Acıbadem Cd. No:190, 34746 Üsküdar/İstanbul"
+        //    ];
+        //    var educationStateKampus3 = [keys[2], "5 gün 3 saat", "Uzman", "10 Haziran 2020", "16 saat", "900",
+        //        teacher4,
+        //        "Burhaniye, Acıbadem Cd. No:190, 34746 Üsküdar/İstanbul"
+        //    ];
+        //    var educationStateKampus4 = [keys[3], "12 gün 2 saat", "Acemi Uzman", "23 Temmuz 2020", "13 saat", "1200",
+        //        teacher1,
+        //        "Acıbadem, Acıbadem Cd. No:190, 34746 Kadıköy/İstanbul"
+        //    ];
+        //    if ($('.educationStateVal').find(':selected').val() == educationStateKampus1[0]) {
+        //        $('.js-data-change-sure').text(educationStateKampus1[1]);
+        //        $('.js-data-change-seviye').text(educationStateKampus1[2]);
+        //        $('.js-data-change-tarih').text(educationStateKampus1[3]);
+        //        $('.js-data-change-saat').text(educationStateKampus1[4]);
+        //        $('.js-data-change-fiyat').text(educationStateKampus1[5]);
+        //        $('.js-data-change-adres').text(educationStateKampus1[7]);
+        //        $('.js-data-change-teachers a').remove();
+        //        $('.js-data-change-teachers').append(educationStateKampus1[6]);
+        //    } else if ($('.educationStateVal').find(':selected').val() == educationStateKampus2[0]) {
+        //        $('.js-data-change-sure').text(educationStateKampus2[1]);
+        //        $('.js-data-change-seviye').text(educationStateKampus2[2]);
+        //        $('.js-data-change-tarih').text(educationStateKampus2[3]);
+        //        $('.js-data-change-saat').text(educationStateKampus2[4]);
+        //        $('.js-data-change-fiyat').text(educationStateKampus2[5]);
+        //        $('.js-data-change-adres').text(educationStateKampus2[7]);
+        //        $('.js-data-change-teachers a').remove();
+        //        $('.js-data-change-teachers').append(educationStateKampus2[6]);
+        //    } else if ($('.educationStateVal').find(':selected').val() == educationStateKampus3[0]) {
+        //        $('.js-data-change-sure').text(educationStateKampus3[1]);
+        //        $('.js-data-change-seviye').text(educationStateKampus3[2]);
+        //        $('.js-data-change-tarih').text(educationStateKampus3[3]);
+        //        $('.js-data-change-saat').text(educationStateKampus3[4]);
+        //        $('.js-data-change-fiyat').text(educationStateKampus3[5]);
+        //        $('.js-data-change-adres').text(educationStateKampus3[7]);
+        //        $('.js-data-change-teachers a').remove();
+        //        $('.js-data-change-teachers').append(educationStateKampus3[6]);
+        //    } else if ($('.educationStateVal').find(':selected').val() == educationStateKampus4[0]) {
+        //        $('.js-data-change-sure').text(educationStateKampus4[1]);
+        //        $('.js-data-change-seviye').text(educationStateKampus4[2]);
+        //        $('.js-data-change-tarih').text(educationStateKampus4[3]);
+        //        $('.js-data-change-saat').text(educationStateKampus4[4]);
+        //        $('.js-data-change-fiyat').text(educationStateKampus4[5]);
+        //        $('.js-data-change-adres').text(educationStateKampus4[7]);
+        //        $('.js-data-change-teachers a').remove();
+        //        $('.js-data-change-teachers').append(educationStateKampus4[6]);
+        //    }
+        //});
         //function btnBuy_onClick() {
         //    var index = selectGroups.selectedIndex;
         //    var group = groups[index];
@@ -1319,18 +1301,18 @@
         //}
 
         /* functions */
-                //function initMap() {
-                //    var location = { lat: parseFloat(latitude), lng: parseFloat(longitude) };
-                //    var map = new google.maps.Map(document.getElementById('map'), { zoom: 13, center: location });
-                //    var marker = new google.maps.Marker({
-                //        position: location,
-                //        map: map,
-                //        title: markerTitle
-                //    });
-                //}
+        //function initMap() {
+        //    var location = { lat: parseFloat(latitude), lng: parseFloat(longitude) };
+        //    var map = new google.maps.Map(document.getElementById('map'), { zoom: 13, center: location });
+        //    var marker = new google.maps.Marker({
+        //        position: location,
+        //        map: map,
+        //        title: markerTitle
+        //    });
+        //}
 
 
-        
+
         $('.js-btn-fav').click(function () {
             $.ajax({
                 url: "/Course/ToggleWishListItem",
@@ -1348,73 +1330,8 @@
             });
         });
 
-        $('.educationStateVal').on('change', function () {
-            console.log($(this).find(":selected").val());
 
-            var keys = ["educationState1", "educationState2", "educationState3", "educationState4",];
-            var teacher1 =
-                '<a href="egitmen-detay.php" class="lesson-detail__tab-teachers--item"><div class="lesson-detail__tab-teachers--img"><img class="js-change-teacher-img" src="../../assets/img/teacher-1.jpg" alt=""></div><div class="lesson-detail__tab-teachers--cnt"><div class="lesson-detail__tab-teachers--name js-change-teacher-name">Muhittin İhsanoğlu</div><div class="lesson-detail__tab-teachers--txt">Yazılım Uzmanı</div></div><div class="lesson-detail__tab-teachers--right"><div class="main-stars"><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span></div>3.0 PUAN</div></a>';
-            var teacher2 =
-                '<a href="egitmen-detay.php" class="lesson-detail__tab-teachers--item"><div class="lesson-detail__tab-teachers--img"><img class="js-change-teacher-img" src="../../assets/img/teacher-2.jpg" alt=""></div><div class="lesson-detail__tab-teachers--cnt"><div class="lesson-detail__tab-teachers--name js-change-teacher-name">Atiba Hutcingson</div><div class="lesson-detail__tab-teachers--txt">Yazılım Uzmanı</div></div><div class="lesson-detail__tab-teachers--right"><div class="main-stars"><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span></div>3.0 PUAN</div></a>';
-            var teacher3 =
-                '<a href="egitmen-detay.php" class="lesson-detail__tab-teachers--item"><div class="lesson-detail__tab-teachers--img"><img class="js-change-teacher-img" src="../../assets/img/comment-pp-woman.jpg" alt=""></div><div class="lesson-detail__tab-teachers--cnt"><div class="lesson-detail__tab-teachers--name js-change-teacher-name">Sergen Yalçın</div><div class="lesson-detail__tab-teachers--txt">Yazılım Uzmanı</div></div><div class="lesson-detail__tab-teachers--right"><div class="main-stars"><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span></div>3.0 PUAN</div></a>';
-            var teacher4 =
-                '<a href="egitmen-detay.php" class="lesson-detail__tab-teachers--item"><div class="lesson-detail__tab-teachers--img"><img class="js-change-teacher-img" src="../../assets/img/comment-pp-woman.jpg" alt=""></div><div class="lesson-detail__tab-teachers--cnt"><div class="lesson-detail__tab-teachers--name js-change-teacher-name">Sergen Yalçın</div><div class="lesson-detail__tab-teachers--txt">Yazılım Uzmanı</div></div><div class="lesson-detail__tab-teachers--right"><div class="main-stars"><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span></div>3.0 PUAN</div></a><a href="egitmen-detay.php" class="lesson-detail__tab-teachers--item"><div class="lesson-detail__tab-teachers--img"><img class="js-change-teacher-img" src="../../assets/img/teacher-1.jpg" alt=""></div><div class="lesson-detail__tab-teachers--cnt"><div class="lesson-detail__tab-teachers--name js-change-teacher-name">Merih Demiral</div><div class="lesson-detail__tab-teachers--txt">Yazılım Uzmanı</div></div><div class="lesson-detail__tab-teachers--right"><div class="main-stars"><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span></div>3.0 PUAN</div></a>';
 
-            var educationStateKampus1 = [keys[0], "1 gün 1 saat", "İleri Seviye", "10 Mayıs 2020", "72 saat", "400,00",
-                teacher1,
-                "Üsküdar, Acıbadem Cd. No:190, 34746 Üsküdar/İstanbul"
-            ];
-            var educationStateKampus2 = [keys[1], "2 gün 3 saat", "Yeni Mezun", "7 Nisan 2020", "24 saat", "600,00",
-                teacher2,
-                "Maltepe, Acıbadem Cd. No:190, 34746 Üsküdar/İstanbul"
-            ];
-            var educationStateKampus3 = [keys[2], "5 gün 3 saat", "Uzman", "10 Haziran 2020", "16 saat", "900",
-                teacher4,
-                "Burhaniye, Acıbadem Cd. No:190, 34746 Üsküdar/İstanbul"
-            ];
-            var educationStateKampus4 = [keys[3], "12 gün 2 saat", "Acemi Uzman", "23 Temmuz 2020", "13 saat", "1200",
-                teacher1,
-                "Acıbadem, Acıbadem Cd. No:190, 34746 Kadıköy/İstanbul"
-            ];
-            if ($('.educationStateVal').find(':selected').val() == educationStateKampus1[0]) {
-                $('.js-data-change-sure').text(educationStateKampus1[1]);
-                $('.js-data-change-seviye').text(educationStateKampus1[2]);
-                $('.js-data-change-tarih').text(educationStateKampus1[3]);
-                $('.js-data-change-saat').text(educationStateKampus1[4]);
-                $('.js-data-change-fiyat').text(educationStateKampus1[5]);
-                $('.js-data-change-adres').text(educationStateKampus1[7]);
-                $('.js-data-change-teachers a').remove();
-                $('.js-data-change-teachers').append(educationStateKampus1[6]);
-            } else if ($('.educationStateVal').find(':selected').val() == educationStateKampus2[0]) {
-                $('.js-data-change-sure').text(educationStateKampus2[1]);
-                $('.js-data-change-seviye').text(educationStateKampus2[2]);
-                $('.js-data-change-tarih').text(educationStateKampus2[3]);
-                $('.js-data-change-saat').text(educationStateKampus2[4]);
-                $('.js-data-change-fiyat').text(educationStateKampus2[5]);
-                $('.js-data-change-adres').text(educationStateKampus2[7]);
-                $('.js-data-change-teachers a').remove();
-                $('.js-data-change-teachers').append(educationStateKampus2[6]);
-            } else if ($('.educationStateVal').find(':selected').val() == educationStateKampus3[0]) {
-                $('.js-data-change-sure').text(educationStateKampus3[1]);
-                $('.js-data-change-seviye').text(educationStateKampus3[2]);
-                $('.js-data-change-tarih').text(educationStateKampus3[3]);
-                $('.js-data-change-saat').text(educationStateKampus3[4]);
-                $('.js-data-change-fiyat').text(educationStateKampus3[5]);
-                $('.js-data-change-adres').text(educationStateKampus3[7]);
-                $('.js-data-change-teachers a').remove();
-                $('.js-data-change-teachers').append(educationStateKampus3[6]);
-            } else if ($('.educationStateVal').find(':selected').val() == educationStateKampus4[0]) {
-                $('.js-data-change-sure').text(educationStateKampus4[1]);
-                $('.js-data-change-seviye').text(educationStateKampus4[2]);
-                $('.js-data-change-tarih').text(educationStateKampus4[3]);
-                $('.js-data-change-saat').text(educationStateKampus4[4]);
-                $('.js-data-change-fiyat').text(educationStateKampus4[5]);
-                $('.js-data-change-adres').text(educationStateKampus4[7]);
-                $('.js-data-change-teachers a').remove();
-                $('.js-data-change-teachers').append(educationStateKampus4[6]);
-            }
-        });
 
     </script>
 }
