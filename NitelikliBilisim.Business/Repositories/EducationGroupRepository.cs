@@ -26,6 +26,9 @@ namespace NitelikliBilisim.Business.Repositories
     {
         private readonly NbDataContext _context;
         private readonly IConfiguration _configuration;
+
+       
+
         public EducationGroupRepository(NbDataContext context, IConfiguration configuration) : base(context)
         {
             _context = context;
@@ -379,6 +382,26 @@ namespace NitelikliBilisim.Business.Repositories
             }
 
             return dates;
+        }
+        /// <summary>
+        /// İlgili eğitim için tarih ve kontenjan uygunluğunu kontrol ederek eğitim verilebileceği şehiler listesini döner.
+        /// </summary>
+        /// <param name="educationId"></param>
+        /// <returns></returns>
+        public Dictionary<int,string> GetAvailableCities(Guid educationId)
+        {
+            var groups = _context.EducationGroups.Include(x=>x.Host).Where(x => x.StartDate.Date > DateTime.Now.Date && x.EducationId == educationId && x.IsGroupOpenForAssignment);
+            Dictionary<int, string> cities = new Dictionary<int, string>();
+            foreach (var group in groups)
+            {
+                if (!cities.ContainsKey((int)group.Host.City))
+                {
+                    cities.Add((int)group.Host.City, EnumHelpers.GetDescription(group.Host.City));
+                }
+            }
+
+            return cities;
+
         }
         public List<GroupVm> GetFirstAvailableGroups(Guid educationId)
         {

@@ -208,9 +208,7 @@ $('body').on('click', '.js-share', e => {
 	$('.js-share').toggleClass('active');
 });
 
-$('.js-btn-fav').click(function () {
-	$(this).toggleClass('active');
-});
+
 $('.js-btn-basket').click(function () {
 	$('.js-btn-basket').toggleClass('active');
 });
@@ -1999,7 +1997,7 @@ $('.js-cupon-btn').click(function () {
 				.addClass('result');
 			cuponInput.val('');
 			var newItem =
-				'<div class="checkout__price-item"><div class="checkout__price-title">******** Kodu İndirimi</div><div class="checkout__price-new"><span>₺</span> -64.90</div><div class="checkout__product-crash js-remove-sale"><span class="icon-outer"><svg class="icon"><use xlink:href="assets/img/icons.svg#icon-crash"></use></svg></span></div></div>';
+				'<div class="checkout__price-item"><div class="checkout__price-title">******** Kodu İndirimi</div><div class="checkout__price-new"><span>₺</span> -64.90</div><div class="checkout__product-crash js-remove-sale"><span class="icon-outer"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-crash"></use></svg></span></div></div>';
 
 			$('.js-discounts').append(newItem);
 		}, 1000);

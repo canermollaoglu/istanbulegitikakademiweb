@@ -537,6 +537,7 @@ namespace NitelikliBilisim.Business.Repositories
         public EducationVm GetEducation(Guid id)
         {
             var education = Context.Educations.First(x => x.Id == id);
+
             var model = new EducationVm
             {
                 Base = new EducationBaseVm
@@ -550,6 +551,7 @@ namespace NitelikliBilisim.Business.Repositories
                     HoursPerDayText = education.HoursPerDay.ToString(),
                     Description = education.Description,
                     Description2 = education.Description2,
+                    IsWishListItem = false,
                     //PriceNumeric = education.NewPrice.GetValueOrDefault(0),
                     Level = EnumHelpers.GetDescription(education.Level),
                     //PriceText = education.NewPrice.GetValueOrDefault(0).ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"))

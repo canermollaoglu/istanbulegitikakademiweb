@@ -197,55 +197,7 @@ namespace NitelikliBilisim.App.Controllers
             }
         }
 
-        [TypeFilter(typeof(UserLoggerFilterAttribute))]
-        [HttpPost]
-        public IActionResult AddWishListItem(Guid? educationId)
-        {
-            if (!educationId.HasValue)
-            {
-                return Json(new ResponseModel
-                {
-                    isSuccess = false,
-                    errors = new List<string> { "Lütfen sayfayı yenileyerek tekrar deneyiniz." }
-                });
-            }
-
-            try
-            {
-                var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                if (userId != null)
-                {
-                    WishlistItem newWishListItem = new WishlistItem();
-                    newWishListItem.Id = userId;
-                    newWishListItem.Id2 = educationId.Value;
-                    _unitOfWork.WishListItem.Insert(newWishListItem);
-                    return Json(new ResponseModel
-                    {
-                        isSuccess = true,
-                        message = "Eğitim favori olarak eklenmiştir."
-                    });
-                }
-                else
-                {
-                    //TODO 
-                    return Json(new ResponseModel
-                    {
-                        isSuccess = true,
-                        message = "Eğitim favori olarak eklenmiştir. Giriş yaparak işlemi tamamlayabilirsiniz. "
-                    });
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.Write(ex.Message);
-                return Json(new ResponseModel
-                {
-                    isSuccess = false,
-                    errors = new List<string> { "Bir sorunla karşılaşıldı." }
-                });
-            }
-
-        }
+      
 
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [HttpPost]

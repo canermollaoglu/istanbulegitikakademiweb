@@ -34,6 +34,7 @@ namespace NitelikliBilisim.Core.ViewModels
         public string HoursPerDayText { get; set; }
         public string Level { get; set; }
         public string StartDateText { get; set; }
+        public bool IsWishListItem { get; set; }
     }
 
     public class EducationListVm

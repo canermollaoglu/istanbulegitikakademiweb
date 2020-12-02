@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@microsoft/signalr": "^3.1.8",
-    "card-js": "^1.0.13",
+    "card": "^2.5.0",
     "jquery-validation": "^1.19.2",
     "modal-video": "^2.4.2",
     "summernote": "^0.8.18"
