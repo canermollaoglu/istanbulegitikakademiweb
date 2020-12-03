@@ -536,71 +536,75 @@
                                         </span>
                                     </div>
                                 </div>
-                                <form class="lesson-detail__commenting">
-                                    <div class="lesson-detail__tab-title">
-                                        <span> YORUM YAPMAK <span class="colored">İSTİYORUM</span></span>
-                                    </div>
-                                    <div class="commenting-box">
-                                        <div class="commenting-top">
-                                            <div class="commenting-name">
-                                                <input type="text" placeholder="Adınız...">
-                                            </div>
-                                            <div class="commenting-branch">
-                                                <input type="text" placeholder="Mesleğiniz...">
-                                            </div>
-                                            <div class="commenting-pointed">
-                                                <span>Puanla</span>
-                                                <div class="js-let-point">
-                                                    <span class="icon-outer icon-star">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <span class="icon-outer icon-star">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <span class="icon-outer icon-star">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <span class="icon-outer icon-star">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <span class="icon-outer icon-star">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                        </svg>
-                                                    </span>
+                                @if (Model.Details.Base.IsCanComment)
+                                {
+                                    <form class="lesson-detail__commenting">
+                                        <div class="lesson-detail__tab-title">
+                                            <span> YORUM YAPMAK <span class="colored">İSTİYORUM</span></span>
+                                        </div>
+                                        <div class="commenting-box">
+                                            <div class="commenting-top">
+                                                <div class="commenting-name">
+                                                    <input type="text" placeholder="Adınız...">
+                                                </div>
+                                                <div class="commenting-branch">
+                                                    <input type="text" placeholder="Mesleğiniz...">
+                                                </div>
+                                                <div class="commenting-pointed">
+                                                    <span>Puanla</span>
+                                                    <div class="js-let-point">
+                                                        <span class="icon-outer icon-star">
+                                                            <svg class="icon">
+                                                                <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                            </svg>
+                                                        </span>
+                                                        <span class="icon-outer icon-star">
+                                                            <svg class="icon">
+                                                                <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                            </svg>
+                                                        </span>
+                                                        <span class="icon-outer icon-star">
+                                                            <svg class="icon">
+                                                                <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                            </svg>
+                                                        </span>
+                                                        <span class="icon-outer icon-star">
+                                                            <svg class="icon">
+                                                                <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                            </svg>
+                                                        </span>
+                                                        <span class="icon-outer icon-star">
+                                                            <svg class="icon">
+                                                                <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                            </svg>
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </div>
+                                            <div class="commenting-texting">
+                                                <textarea placeholder="Yorumlarınızı buradan yazın..."></textarea>
+                                            </div>
                                         </div>
-                                        <div class="commenting-texting">
-                                            <textarea placeholder="Yorumlarınızı buradan yazın..."></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="commenting-footer">
-                                        <div class="clear-message">
-                                            <span class="icon-outer">
-                                                <svg class="icon">
-                                                    <use xlink:href="../../assets/img/icons.svg#icon-circle-close"></use>
-                                                </svg>
-                                            </span>
-                                            Sıfırla
-                                        </div>
-                                        <div class="commenting-footer-right">
-                                            <button class="button button--dark button-fw">
-                                                <span class="button--txt">
-                                                    Yorumu Gönder
+                                        <div class="commenting-footer">
+                                            <div class="clear-message">
+                                                <span class="icon-outer">
+                                                    <svg class="icon">
+                                                        <use xlink:href="../../assets/img/icons.svg#icon-circle-close"></use>
+                                                    </svg>
                                                 </span>
-                                            </button>
+                                                Sıfırla
+                                            </div>
+                                            <div class="commenting-footer-right">
+                                                <button class="button button--dark button-fw">
+                                                    <span class="button--txt">
+                                                        Yorumu Gönder
+                                                    </span>
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
-                                </form>
+                                    </form>
+                                }
+
                             </div>
                         </div>
                     </div>

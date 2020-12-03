@@ -36,6 +36,7 @@ namespace NitelikliBilisim.Core.ViewModels
         public string StartDateText { get; set; }
         public bool IsWishListItem { get; set; }
         public List<CommentDetailVm> Comments { get; set; }
+        public bool IsCanComment { get; set; }
     }
 
     public class EducationListVm

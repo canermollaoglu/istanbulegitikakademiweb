@@ -47,6 +47,27 @@ namespace NitelikliBilisim.Business.Repositories
                    };
         }
 
+        public bool CheckIsCanComment(string userId, Guid educationId)
+        {
+            var group = (from bridge in Context.Bridge_GroupStudents
+                          join eGroup in Context.EducationGroups.Include(x => x.GroupLessonDays) on bridge.Id equals eGroup.Id
+                          where bridge.Id2 == userId && bridge.Id == educationId
+                          select eGroup).FirstOrDefault();
+           
+            if (group == null)
+                return false;
+            if (group.GroupLessonDays==null || group.GroupLessonDays.Count==0)
+                return false;
+
+            var lastDate= group.GroupLessonDays.OrderBy(x => x.DateOfLesson).Last().DateOfLesson;
+            if (DateTime.Now.Date>lastDate)
+            {
+                return true;
+            }
+            return false;
+           
+        }
+
         public PagedEntity<Education> GetPagedEntity(int page = 0, Expression<Func<Education, bool>> filter = null, int shownRecords = 15)
         {
             IQueryable<Education> dbSet = base.Table;
@@ -567,6 +588,7 @@ namespace NitelikliBilisim.Business.Repositories
                     Description = education.Description,
                     Description2 = education.Description2,
                     IsWishListItem = false,
+                    IsCanComment = false,
                     Comments = comments,
                     //PriceNumeric = education.NewPrice.GetValueOrDefault(0),
                     Level = EnumHelpers.GetDescription(education.Level),

@@ -35,6 +35,10 @@ namespace NitelikliBilisim.App.Controllers
             if (isLoggedIn)
             {
                 var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                //Yalnızca giriş yapmış ve eğitimi alarak tamamlamış kişiler yorum yapabilir.
+                bool isCanComment = _unitOfWork.Education.CheckIsCanComment(userId, courseId.Value);
+                educationDetails.Base.IsCanComment = isCanComment;
+                //Eğitimin favori eğitimlerde bulunup bulunmaması kontrolü.
                 bool status = _unitOfWork.WishListItem.CheckWishListItem(userId, courseId.Value);
                 educationDetails.Base.IsWishListItem = status;
             }
@@ -48,7 +52,7 @@ namespace NitelikliBilisim.App.Controllers
                 Educators = educators,
                 AvaibleEducationCities = educationCities,
                 PopularEducations = _unitOfWork.Suggestions.GetGuestUserSuggestedEducations()
-        };
+            };
             return View(model);
         }
 
@@ -73,7 +77,7 @@ namespace NitelikliBilisim.App.Controllers
                     WishlistItem wishListItem = new WishlistItem();
                     wishListItem.Id = userId;
                     wishListItem.Id2 = educationId.Value;
-                   var retVal = _unitOfWork.WishListItem.ToggleWishListItem(wishListItem);
+                    var retVal = _unitOfWork.WishListItem.ToggleWishListItem(wishListItem);
                     return Json(new ResponseModel
                     {
                         isSuccess = true,
@@ -102,7 +106,7 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [Route("get-available-groups-for-course")]
-        public IActionResult GetAvailableGroupsForCourse(Guid? courseId,int city)
+        public IActionResult GetAvailableGroupsForCourse(Guid? courseId, int city)
         {
             if (!courseId.HasValue)
                 return Json(new ResponseModel
@@ -110,7 +114,7 @@ namespace NitelikliBilisim.App.Controllers
                     isSuccess = false
                 });
 
-            var model = _unitOfWork.EducationGroup.GetFirstAvailableGroups(courseId.Value,city);
+            var model = _unitOfWork.EducationGroup.GetFirstAvailableGroups(courseId.Value, city);
             return Json(new ResponseModel
             {
                 isSuccess = true,
