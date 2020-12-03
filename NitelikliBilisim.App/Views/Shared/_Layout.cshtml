@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="tr" class="o-x-hidden">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,13 +13,13 @@
         }
     </style>
 </head>
-<body class="o-x-hidden">
+<body class="tablet-no-overflow">
     <partial name="partials/_LayoutHeader" />
 
     @RenderBody()
 
     <partial name="partials/_LayoutFooter" />
-
+    <partial name="partials/_modal-wizard" />
     <partial name="partials/_LayoutCookieConsent" />
     <div class='main-overlay overlay js-close-modal'></div>
     <script src="~/assets/js/jquery.min.js"></script>

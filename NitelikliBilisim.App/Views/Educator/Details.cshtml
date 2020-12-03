@@ -1,0 +1,282 @@
+﻿@model NitelikliBilisim.Core.ViewModels.Main.Educator.GetEducatorDetailVm
+@using NitelikliBilisim.Core.Services.Abstracts
+@inject IStorageService StorageService
+@{
+    ViewData["Title"] = "Eğitmen Hakkında";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    var avatarPath = "";
+    try
+    {
+        avatarPath = StorageService.DownloadFile(System.IO.Path.GetFileName(Model.EducatorDetail.AvatarPath), "educator-photos").Result;
+    }
+    catch
+    {
+    }
+}
+
+<div class="subheader subheader--detail">
+    <div class="subheader__wrp">
+        <div class="container">
+            <div class="subheader--detail__inner js-calc-height">
+                <div class="breadcrumb">
+                    <a asp-controller="Home" asp-action="Index" class="breadcrumb__item">
+                        Anasayfa
+                    </a>
+                    <a href="#0" class="breadcrumb__item">
+                        Eğitmenler
+                    </a>
+                    <a href="#0" class="breadcrumb__item active">
+                        @Model.EducatorDetail.Name
+                    </a>
+                </div>
+                <div class="subheader__cnt">
+                    <div class="subheader__txt-cnt">
+                        <div class="subheader__title">@Model.EducatorDetail.Name</div>
+                        <div class="subheader__txt">@Model.EducatorDetail.Title</div>
+                        <div class="subheader--detail__infos tablet-no-column">
+                            @foreach (var certificate in Model.EducatorDetail.Certificates)
+                            {
+                                var certificateImage = "";
+                                try
+                                {
+                                    certificateImage = StorageService.DownloadFile(System.IO.Path.GetFileName(certificate.CertificateImagePath),System.IO.Path.GetDirectoryName(certificate.CertificateImagePath)).Result;
+                                }
+                                catch
+                                {
+                                }
+                                <div class="subheader--detail__tag">
+                                    <img src="@certificateImage" alt="">
+                                    @certificate.Name
+                                </div>
+                            }
+                        </div>
+                        <div class="subheader--detail__text js-read-more">
+                            <p>
+                                @Model.EducatorDetail.ShortDescription
+                            </p>
+                        </div>
+                        <div class="teacher-detail__about-button js-read-more-btn">
+                            <span class="teacher-detail__about-buttonicon"></span>
+                            Devamını Oku
+                        </div>
+                        <div class="lesson-detail__infos teacher v-tablet-big-flex">
+                            <div class="lesson-detail__info">
+                                <span class="icon-outer icon-info">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-c-doc-play"></use>
+                                    </svg>
+                                </span>
+                                <div class="lesson-detail__info-cnt">
+                                    <span class="lesson-detail__info-txt">Eğitim Süresi</span>
+                                    <span class="lesson-detail__info-title">3 gün 12 saat</span>
+                                </div>
+                            </div>
+                            <div class="lesson-detail__info">
+                                <span class="icon-outer icon-info">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-c-graduated"></use>
+                                    </svg>
+                                </span>
+                                <div class="lesson-detail__info-cnt">
+                                    <span class="lesson-detail__info-txt">Seviye</span>
+                                    <span class="lesson-detail__info-title">Yeni mezun</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="teacher-detail">
+    <div class="container">
+        <div class="teacher-detail__wrp">
+            <div class="teacher-detail__content">
+                <div class="lesson-detail__infos infos--row h-tablet-big">
+                    <div class="lesson-detail__info">
+                        <span class="icon-outer icon-info">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-c-doc-play"></use>
+                            </svg>
+                        </span>
+                        <div class="lesson-detail__info-cnt">
+                            <span class="lesson-detail__info-txt">Eğitim Süresi</span>
+                            <span class="lesson-detail__info-title">3 gün 12 saat</span>
+                        </div>
+                    </div>
+                    <div class="lesson-detail__info">
+                        <span class="icon-outer icon-info">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-c-graduated"></use>
+                            </svg>
+                        </span>
+                        <div class="lesson-detail__info-cnt">
+                            <span class="lesson-detail__info-txt">Seviye</span>
+                            <span class="lesson-detail__info-title">Yeni mezun</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="teacher-detail__tab-content">
+                    <div class="teacher-detail__tab-item">
+                        <div class="lesson-detail__tab-title">
+                            <span> EĞİTMEN <span class="colored">ÖZGEÇMİŞİ</span></span>
+                        </div>
+                        <div class="teacher-detail__about js-read-more">
+                            <p>
+                                @Model.EducatorDetail.ShortDescription
+                                <br><br>
+                                @Model.EducatorDetail.Biography
+                            </p>
+                        </div>
+                        <div class="teacher-detail__about-button js-read-more-btn">
+                            <span class="teacher-detail__about-buttonicon"></span>
+                            Devamını Oku
+                        </div>
+                    </div>
+                    <div class="teacher-detail__tab-item">
+                        <div class="lesson-detail__tab-title">
+                            <span>
+                                UZMANLIK <span class="colored">ALANLARI</span>
+                            </span>
+                        </div>
+                        <div class="teacher-detail__info-boxes">
+                            <a href="egitim-listeleme.php" class="teacher-detail__info-box">
+                                <span class="icon-outer" style="background-color: #454fd2;">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-system-network"></use>
+                                    </svg>
+                                </span>
+                                <span class="teacher-detail__info-box-txt">Sistem ve Ağ Yönetimi</span>
+                            </a>
+                            <a href="egitim-listeme.php" class="teacher-detail__info-box">
+                                <span class="icon-outer" style="background-color: #222c38;">
+                                    <svg class="icon" style=" position: relative; left: -2px;">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-unity"></use>
+                                    </svg>
+                                </span>
+                                <span class="teacher-detail__info-box-txt">Web ve Mobil Programlama</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="teacher-detail__side js-top-sized-teacher">
+                <div class="lesson-detail__card">
+                    <div class="teacher-detail__card-top js-calc-img-sized">
+                        <img src="@avatarPath" alt="">
+                    </div>
+                    <div class="teacher-detail__card-cnt">
+                        <div class="teacher-detail__card-social">
+                            <a href="@Model.EducatorDetail.FacebookUrl" target="_blank" class="teacher-detail__card-social-item">
+                                <span class="icon-outer">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-facebook"></use>
+                                    </svg>
+                                </span>
+                            </a>
+                            <a href="@Model.EducatorDetail.LinkedInUrl" target="_blank" class="teacher-detail__card-social-item">
+                                <span class="icon-outer">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-linkedin"></use>
+                                    </svg>
+                                </span>
+                            </a>
+                            <a href="@Model.EducatorDetail.TwitterUrl" target="_blank" class="teacher-detail__card-social-item">
+                                <span class="icon-outer">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-m-logo"></use>
+                                    </svg>
+                                </span>
+                            </a>
+                            <a href="@Model.EducatorDetail.GooglePlusUrl" target="_blank" class="teacher-detail__card-social-item">
+                                <span class="icon-outer">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-youtube"></use>
+                                    </svg>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<section class="section with-border is-popular-projects detail-section-bg pt-75 o-hidden">
+    <div class="container">
+        <div class="flex-center mb-4">
+            <h2 class="title title-section">Popüler <span class="title--blue">Proje Eğitimleri</span></h2>
+
+            <a href="" class="all-link">
+                <span>Tüm Eğitimler</span>
+                <span class="icon-outer">
+                    <svg class="icon">
+                        <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                    </svg>
+                </span>
+            </a>
+        </div>
+
+        <div class="swiper-container js-card-slider mt-1">
+            <div class="swiper-wrapper">
+                @foreach (var education in Model.PopularEducations)
+                {
+                    var educationBanner = "";
+                    try
+                    {
+                        educationBanner = StorageService.DownloadFile(System.IO.Path.GetFileName(education.Medias[0].FileUrl), "media-items").Result;
+                    }
+                    catch
+                    {
+                    }
+                    <div class="swiper-slide">
+                        <a href="/kurs-detayi/@education.Base.Id" class="card">
+                            <figure>
+                                <img src="@educationBanner" alt="">
+                            </figure>
+
+                            <div class="card__content">
+                                <h6 class="card__subtitle">@education.Base.CategoryName</h6>
+                                <h5 class="card__title">@education.Base.Name</h5>
+                                @if (education.Base.Description.Length > 90)
+                                {
+                                    <p>
+                                        @education.Base.Description.Substring(0, 90)
+                                    </p>
+                                }
+                                else
+                                {
+                                    <p>@education.Base.Description</p>
+                                }
+                            </div>
+
+                            <div class="card__footer">
+                                <span class="card__time">
+                                    <span class="icon-outer">
+                                        <svg class="icon">
+                                            <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                                        </svg>
+                                    </span>
+                                    <span>@education.Base.DaysText gün ( @education.Base.HoursPerDayText saat )</span>
+                                </span>
+
+                                @*<span class="card__money">
+                                    <span>₺</span> 800,00
+                                </span>*@
+                            </div>
+                        </a>
+                    </div>
+                }
+
+
+
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+
+    </div>
+</section>

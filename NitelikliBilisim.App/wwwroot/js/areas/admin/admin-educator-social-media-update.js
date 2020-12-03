@@ -1,5 +1,4 @@
 ﻿/* fields */
-var fileManager = new UploadSupport.FileUploader();
 
 /* elements */
 var btnSave = $("#btn-save");
@@ -10,26 +9,17 @@ btnSave.on("click", btnSave_onClick);
 
 /* events */
 function document_onLoad() {
-    fileManager.set({
-        container: "file-upload-for-educator-photo",
-        preview: "img-after-preview-for-educator-photo",
-        validExtensions: ["jpg", "jpeg"],
-        style: { content: "Resim Yükle" }
-    });
+   
 }
 function btnSave_onClick() {
     btnSave.off("click");
-    var file = fileManager.getFile();
+    
     var data = {
         EducatorId: $("#_educator-id").val(),
         Facebook: $("#input-facebook").val(),
         Linkedin: $("#input-linkedin").val(),
         GooglePlus: $("#input-google-plus").val(),
-        Twitter: $("#input-twitter").val(),
-        ProfilePhoto: {
-            Base64Content: file.base64content,
-            Extension: file.extension
-        }
+        Twitter: $("#input-twitter").val()
     }
     var tokenVerifier = new SecuritySupport.TokenVerifier();
     data = tokenVerifier.addToken("form-update-educator-social-media", data);
