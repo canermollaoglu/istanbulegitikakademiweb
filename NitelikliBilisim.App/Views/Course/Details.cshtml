@@ -944,10 +944,20 @@
             var group = groups.find(x => x.host.hostId == index);
             var hostId = group.host.hostId;
             var groupId = group.groupId;
-            cart.addToCart(educationId, hostId, groupId);
+            var imageUrl = "@(bannerUrl)";
+            var newPrice = group.newPrice;
+            var educationName = "@(Model.Details.Base.Name)";
+            cart.addToCart(educationId, hostId, groupId, imageUrl, newPrice, educationName);
+            miniBasketReload();
             $('.js-btn-basket')
                 .find('.button-txt')
                 .text('Sepete Eklendi');
+            $(".mini-basket__empty").remove();
+            $('.mini-basket__footer').show();
+        });
+
+        $('body').on('click', '.js-delete-item', function () {
+            cartControl();
         });
 
         function cartControl() {
@@ -960,6 +970,11 @@
                     .find('.button-txt')
                     .text('Sepete Eklendi');
                 $('.js-btn-basket').addClass("active");
+            } else {
+                $('.js-btn-basket')
+                    .find('.button-txt')
+                    .text('Sepete Ekle');
+                $('.js-btn-basket').removeClass("active");
             }
         }
         //function btnBuy_onClick() {
@@ -1002,8 +1017,6 @@
                 }
             });
         });
-
-
 
 
     </script>

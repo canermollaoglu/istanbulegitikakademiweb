@@ -1,3 +1,4 @@
+
 $('.js-video-btn').modalVideo({
 	channel: 'youtube',
 	youtube: {
@@ -2191,8 +2192,11 @@ $('.commenting-box').bind('change keyup', function (e) {
 	}
 });
 
-
 $('body').on('click', '.js-delete-item', function () {
+	var cart = new CartSupport.Cart();
+	var id = $(this).closest('.js-deleted-item').attr("data-eid");
+	cart.removeFromCart(id);
+	miniBasketReload();
 	$(this)
 		.closest('.js-deleted-item')
 		.fadeOut(350);
@@ -2203,7 +2207,7 @@ $('body').on('click', '.js-delete-item', function () {
 		if ($('.mini-basket__item').length <= 0) {
 			console.log('hiç ürün yok');
 			$('.mini-basket__cnt').append(
-				"<div class='mini-basket__empty'><span class='icon-outer button-icon'><svg class='icon'><use xlink:href='assets/img/icons.svg#icon-basket-empty'></use></svg></span>Sepetiniz Boş.</div>",
+				"<div class='mini-basket__empty'><span class='icon-outer button-icon'><svg class='icon'><use xlink:href='../../assets/img/icons.svg#icon-basket-empty'></use></svg></span>Sepetiniz Boş.</div>",
 			);
 			$('.mini-basket__footer').hide();
 		}
@@ -2212,7 +2216,7 @@ $('body').on('click', '.js-delete-item', function () {
 if ($('.mini-basket__item').length <= 0) {
 	console.log('hiç ürün yok');
 	$('.mini-basket__cnt').append(
-		"<div class='mini-basket__empty'><span class='icon-outer button-icon'><svg class='icon'><use xlink:href='assets/img/icons.svg#icon-basket-empty'></use></svg></span>Sepetiniz Boş.</div>",
+		"<div class='mini-basket__empty'><span class='icon-outer button-icon'><svg class='icon'><use xlink:href='../../assets/img/icons.svg#icon-basket-empty'></use></svg></span>Sepetiniz Boş.</div>",
 	);
 	$('.mini-basket__footer').hide();
 }

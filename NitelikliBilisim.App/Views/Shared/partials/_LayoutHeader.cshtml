@@ -104,12 +104,12 @@
     <ul>-->
 @*<li> <span><a href="#" data-toggle="modal" data-target="#header-obf-modal">Ön Bilgilendirme Formu</a></span></li>*@
 @*<li> <span><a href="#" data-toggle="modal" data-target="#header-ch-modal">Cayma Hakkı</a></span></li>
-<li> <span><a href="#" data-toggle="modal" data-target="#header-cp-modal">Çerez Politikası</a></span></li>
-<li> <span><a href="#" data-toggle="modal" data-target="#header-gp-modal">Gizlilik Politikası</a></span></li>
-<li> <span><a href="#" data-toggle="modal" data-target="#header-kvkk-modal">Kişisel Verilerin Korunması Kanunu</a></span></li>
-                    </ul>
-                </div>
-            </div>-->*@
+    <li> <span><a href="#" data-toggle="modal" data-target="#header-cp-modal">Çerez Politikası</a></span></li>
+    <li> <span><a href="#" data-toggle="modal" data-target="#header-gp-modal">Gizlilik Politikası</a></span></li>
+    <li> <span><a href="#" data-toggle="modal" data-target="#header-kvkk-modal">Kişisel Verilerin Korunması Kanunu</a></span></li>
+                        </ul>
+                    </div>
+                </div>-->*@
 <!-- /row -->
 <!--</nav>
         <div class="follow_us">
@@ -188,63 +188,7 @@
         <div class="mini-basket__count">2 Ürün</div>
     </div>
     <div class="mini-basket__cnt">
-        <a class="mini-basket__item js-deleted-item">
-            <div class="mini-basket__item-img">
-                <img src="~/assets/img/cardimg1.jpg" alt="">
-            </div>
-            <div class="mini-basket__item-cnt">
-                <div class="mini-basket__item-title">Yerel sistemlerde yüksek erişilebilirlik</div>
-                <div class="mini-basket__item-price">
-                    <span>₺</span>
-                    700.00
-                </div>
-            </div>
-            <div class="mini-basket__item-crash js-delete-item">
-                <span class="icon-outer">
-                    <svg class="icon">
-                        <use xlink:href="../../assets/img/icons.svg#icon-crash"></use>
-                    </svg>
-                </span>
-            </div>
-        </a>
-        <a class="mini-basket__item js-deleted-item">
-            <div class="mini-basket__item-img">
-                <img src="~/assets/img/cardimg2.jpg" alt="">
-            </div>
-            <div class="mini-basket__item-cnt">
-                <div class="mini-basket__item-title">Yerel sistemlerde yüksek erişilebilirlik</div>
-                <div class="mini-basket__item-price">
-                    <span>₺</span>
-                    700.00
-                </div>
-            </div>
-            <div class="mini-basket__item-crash js-delete-item">
-                <span class="icon-outer">
-                    <svg class="icon">
-                        <use xlink:href="../../assets/img/icons.svg#icon-crash"></use>
-                    </svg>
-                </span>
-            </div>
-        </a>
-        <a class="mini-basket__item js-deleted-item">
-            <div class="mini-basket__item-img">
-                <img src="~/assets/img/cardimg3.jpg" alt="">
-            </div>
-            <div class="mini-basket__item-cnt">
-                <div class="mini-basket__item-title">Yerel sistemlerde yüksek erişilebilirlik</div>
-                <div class="mini-basket__item-price">
-                    <span>₺</span>
-                    700.00
-                </div>
-            </div>
-            <div class="mini-basket__item-crash js-delete-item">
-                <span class="icon-outer">
-                    <svg class="icon">
-                        <use xlink:href="../../assets/img/icons.svg#icon-crash"></use>
-                    </svg>
-                </span>
-            </div>
-        </a>
+      
     </div>
     <div class="mini-basket__footer">
         <a href="./checkout-1-sepet.php" class="button button-fw button-icon-right">
@@ -799,44 +743,53 @@
 
                 <nav class="header__right-side">
                     <div class='header-overlay overlay js-close-modal'></div>
-                    <!-- giriş yapılmamış -->
-                    <!-- <a class="button button--ghost header__login-button">
-                      <span class="icon-outer button-icon">
-                        <svg class="icon">
-                          <use xlink:href="../../assets/img/icons.svg#icon-lock"></use>
-                        </svg>
-                      </span>
-                      <span>Giriş Yap</span>
-                    </a>
-                    <a class="button header__register-button">
-                      <span class="icon-outer button-icon">
-                        <svg class="icon">
-                          <use xlink:href="../../assets/img/icons.svg#icon-user"></use>
-                        </svg>
-                      </span>
-                      <span>Üye Ol</span>
-                    </a> -->
-                    <!-- giriş yapılmamış -->
-                    <!-- giriş yapılmış -->
-                    <div class="header__profile-btn js-open-user-dropdown">
-                        <div class="header__profile-img">
-                            <img src="~/assets/img/comment-pp-woman.jpg" alt="">
-                            <div class="header__profile-caret"></div>
+
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <!-- giriş yapılmış -->
+                        <div class="header__profile-btn js-open-user-dropdown">
+                            <div class="header__profile-img">
+                                <img src="~/assets/img/comment-pp-woman.jpg" alt="">
+                                <div class="header__profile-caret"></div>
+                            </div>
+                            <div class="header__profile-cnt">
+                                <div class="header__profile-txt">Hoşgeldiniz</div>
+                                <div class="header__profile-name">Zeynep Yıldırım</div>
+                            </div>
                         </div>
-                        <div class="header__profile-cnt">
-                            <div class="header__profile-txt">Hoşgeldiniz</div>
-                            <div class="header__profile-name">Zeynep Yıldırım</div>
-                        </div>
-                    </div>
-                    <a href="./sana-ozel.php" class="button header__register-button">
-                        <span class="icon-outer button-icon">
-                            <svg class="icon">
-                                <use xlink:href="../../assets/img/icons.svg#icon-star-s"></use>
-                            </svg>
-                        </span>
-                        <span>Sana Özel</span>
-                    </a>
-                    <!-- giriş yapılmış -->
+                        <a href="./sana-ozel.php" class="button header__register-button">
+                            <span class="icon-outer button-icon">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-star-s"></use>
+                                </svg>
+                            </span>
+                            <span>Sana Özel</span>
+                        </a>
+                        <!-- giriş yapılmış -->
+                    }
+                    else
+                    {
+                        <!-- giriş yapılmamış -->
+                        <a asp-controller="Account" asp-action="Login" class="button button--ghost header__login-button">
+                            <span class="icon-outer button-icon">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-lock"></use>
+                                </svg>
+                            </span>
+                            <span>Giriş Yap</span>
+                        </a>
+                        <a asp-controller="Account" asp-action="Register" class="button header__register-button">
+                            <span class="icon-outer button-icon">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-user"></use>
+                                </svg>
+                            </span>
+                            <span>Üye Ol</span>
+                        </a>
+                        <!-- giriş yapılmamış -->
+                    }
+
                     <a class="header__hamper js-open-mini-basket">
                         <span class="icon-outer icon-basket">
                             <svg class="icon">
