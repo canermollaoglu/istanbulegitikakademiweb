@@ -649,21 +649,21 @@
                                 </span>
                             </div>
                             <div class="lesson-detail__card-share-items js-share-opened">
-                                <a href="#0">
+                                <a href="http://www.facebook.com/share.php?u=@(Context.Request.Host)@(Context.Request.Path)">
                                     <span class="icon-outer">
                                         <svg class="icon">
                                             <use xlink:href="../../assets/img/icons.svg#icon-facebook"></use>
                                         </svg>
                                     </span>
                                 </a>
-                                <a href="#0">
+                                <a href="http://twitter.com/intent/tweet?text=Nitelikli%20Bilisim%20@(Model.Details.Base.Name)%20Egitimi&url=@(Context.Request.Host)@(Context.Request.Path)">
                                     <span class="icon-outer">
                                         <svg class="icon">
                                             <use xlink:href="../../assets/img/icons.svg#icon-twitter"></use>
                                         </svg>
                                     </span>
                                 </a>
-                                <a href="#0">
+                                <a href="https://www.linkedin.com/sharing/share-offsite/?url=@(Context.Request.Host)@(Context.Request.Path)">
                                     <span class="icon-outer">
                                         <svg class="icon">
                                             <use xlink:href="../../assets/img/icons.svg#icon-linkedin"></use>
@@ -839,6 +839,7 @@
     @*<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBwbBlZQaeP0fYu7xTiviCCWGAK3onN-iE&callback=initMap"></script>*@
     <script src="~/js/sup/cart.js"></script>
     <script>
+        var cart = new CartSupport.Cart();
         /* fields */
         var educationId = $("#_education-id").val();
         var groups = [];
@@ -851,22 +852,12 @@
         //var btnBuy2 = $("#btn-buy2");
         var selectGroups = $('.educationStateVal');
         var selectCities = $(".educationCityVal");
-        //var textGroupHostStartDate = $("#text-group-host-start-date");
-        //var textGroupHostAddress = $("#text-group-host-address");
-        //var textGroupQuota = $("#text-group-quota");
-        //var textGroupJoined = $("#text-group-joined");
-        //var textGroupStartDate = $("#text-group-start-date");
-        //var textGroupNameAndCity = $("#text-group-name-and-city");
-        //var textGroupPrice = $("#text-group-price");
 
 
         /* assignments */
         $(document).ready(document_onLoad);
-
         $('.educationStateVal').on('change', selectGroups_onChange);
         $('.educationCityVal').on('change', selectCities_onChange);
-        //btnBuy.on("click", btnBuy_onClick);
-        //btnBuy2.on("click", btnBuy_onClick);
 
         /* events */
         function document_onLoad() {
@@ -908,17 +899,6 @@
             $('.js-data-change-adres').text(group.host.address);
             $('.js-data-change-teachers a').remove();
             $('.js-data-change-teachers').append(educator);
-
-
-
-            //textGroupHostStartDate.html(`<i class="icon-calendar-circled"></i> ${group.startDateText}`);
-            //textGroupHostAddress.html(`<i class=" icon-location-2"></i> ${group.host.address}`);
-            //textGroupJoined.html(`<i class="icon-user"></i> Katılımcı: ${group.joined}`);
-            //textGroupQuota.html(`<i class="icon-users-2"></i> Kontenjan: ${group.quota}`);
-            //textGroupStartDate.html(`${group.startDateText}, `);
-            //textGroupNameAndCity.html(`${group.host.hostName} (${group.host.city})`);
-            //textGroupPrice.html(`<i class="icon-money"></i> Fiyat: ${group.newPrice} ₺`);
-            console.log(group);
         }
         function selectCities_onChange() {
             loadGroups();
@@ -939,6 +919,7 @@
                     $(selectGroups).append(appended);
                     selectGroups.selectedIndex = 0;
                     selectGroups_onChange();
+                    cartControl();
                     //initMap();
                 }
             });
@@ -948,78 +929,44 @@
             $(selectGroups).find('option').remove().end();
         }
 
-        //$('.educationStateVal').on('change', function () {
-        //    console.log($(this).find(":selected").val());
+        $('.js-btn-basket').click(function () {
+            $('.js-btn-basket').toggleClass('active');
+        });
+        $('body').on('click', '.js-btn-basket', function () {
+            cart.removeFromCart(educationId);
+            $('.js-btn-basket')
+                .find('.button-txt')
+                .text('Sepete Ekle');
+        });
+        $('body').on('click', '.js-btn-basket.active', function () {
 
-        //    var keys = ["educationState1", "educationState2", "educationState3", "educationState4",];
-        //    var teacher1 =
-        //        '<a href="egitmen-detay.php" class="lesson-detail__tab-teachers--item"><div class="lesson-detail__tab-teachers--img"><img class="js-change-teacher-img" src="../../assets/img/teacher-1.jpg" alt=""></div><div class="lesson-detail__tab-teachers--cnt"><div class="lesson-detail__tab-teachers--name js-change-teacher-name">Muhittin İhsanoğlu</div><div class="lesson-detail__tab-teachers--txt">Yazılım Uzmanı</div></div><div class="lesson-detail__tab-teachers--right"><div class="main-stars"><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span></div>3.0 PUAN</div></a>';
-        //    var teacher2 =
-        //        '<a href="egitmen-detay.php" class="lesson-detail__tab-teachers--item"><div class="lesson-detail__tab-teachers--img"><img class="js-change-teacher-img" src="../../assets/img/teacher-2.jpg" alt=""></div><div class="lesson-detail__tab-teachers--cnt"><div class="lesson-detail__tab-teachers--name js-change-teacher-name">Atiba Hutcingson</div><div class="lesson-detail__tab-teachers--txt">Yazılım Uzmanı</div></div><div class="lesson-detail__tab-teachers--right"><div class="main-stars"><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span></div>3.0 PUAN</div></a>';
-        //    var teacher3 =
-        //        '<a href="egitmen-detay.php" class="lesson-detail__tab-teachers--item"><div class="lesson-detail__tab-teachers--img"><img class="js-change-teacher-img" src="../../assets/img/comment-pp-woman.jpg" alt=""></div><div class="lesson-detail__tab-teachers--cnt"><div class="lesson-detail__tab-teachers--name js-change-teacher-name">Sergen Yalçın</div><div class="lesson-detail__tab-teachers--txt">Yazılım Uzmanı</div></div><div class="lesson-detail__tab-teachers--right"><div class="main-stars"><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span></div>3.0 PUAN</div></a>';
-        //    var teacher4 =
-        //        '<a href="egitmen-detay.php" class="lesson-detail__tab-teachers--item"><div class="lesson-detail__tab-teachers--img"><img class="js-change-teacher-img" src="../../assets/img/comment-pp-woman.jpg" alt=""></div><div class="lesson-detail__tab-teachers--cnt"><div class="lesson-detail__tab-teachers--name js-change-teacher-name">Sergen Yalçın</div><div class="lesson-detail__tab-teachers--txt">Yazılım Uzmanı</div></div><div class="lesson-detail__tab-teachers--right"><div class="main-stars"><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span></div>3.0 PUAN</div></a><a href="egitmen-detay.php" class="lesson-detail__tab-teachers--item"><div class="lesson-detail__tab-teachers--img"><img class="js-change-teacher-img" src="../../assets/img/teacher-1.jpg" alt=""></div><div class="lesson-detail__tab-teachers--cnt"><div class="lesson-detail__tab-teachers--name js-change-teacher-name">Merih Demiral</div><div class="lesson-detail__tab-teachers--txt">Yazılım Uzmanı</div></div><div class="lesson-detail__tab-teachers--right"><div class="main-stars"><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span></div>3.0 PUAN</div></a>';
+            var index = selectGroups.val();
+            var group = groups.find(x => x.host.hostId == index);
+            var hostId = group.host.hostId;
+            var groupId = group.groupId;
+            cart.addToCart(educationId, hostId, groupId);
+            $('.js-btn-basket')
+                .find('.button-txt')
+                .text('Sepete Eklendi');
+        });
 
-        //    var educationStateKampus1 = [keys[0], "1 gün 1 saat", "İleri Seviye", "10 Mayıs 2020", "72 saat", "400,00",
-        //        teacher1,
-        //        "Üsküdar, Acıbadem Cd. No:190, 34746 Üsküdar/İstanbul"
-        //    ];
-        //    var educationStateKampus2 = [keys[1], "2 gün 3 saat", "Yeni Mezun", "7 Nisan 2020", "24 saat", "600,00",
-        //        teacher2,
-        //        "Maltepe, Acıbadem Cd. No:190, 34746 Üsküdar/İstanbul"
-        //    ];
-        //    var educationStateKampus3 = [keys[2], "5 gün 3 saat", "Uzman", "10 Haziran 2020", "16 saat", "900",
-        //        teacher4,
-        //        "Burhaniye, Acıbadem Cd. No:190, 34746 Üsküdar/İstanbul"
-        //    ];
-        //    var educationStateKampus4 = [keys[3], "12 gün 2 saat", "Acemi Uzman", "23 Temmuz 2020", "13 saat", "1200",
-        //        teacher1,
-        //        "Acıbadem, Acıbadem Cd. No:190, 34746 Kadıköy/İstanbul"
-        //    ];
-        //    if ($('.educationStateVal').find(':selected').val() == educationStateKampus1[0]) {
-        //        $('.js-data-change-sure').text(educationStateKampus1[1]);
-        //        $('.js-data-change-seviye').text(educationStateKampus1[2]);
-        //        $('.js-data-change-tarih').text(educationStateKampus1[3]);
-        //        $('.js-data-change-saat').text(educationStateKampus1[4]);
-        //        $('.js-data-change-fiyat').text(educationStateKampus1[5]);
-        //        $('.js-data-change-adres').text(educationStateKampus1[7]);
-        //        $('.js-data-change-teachers a').remove();
-        //        $('.js-data-change-teachers').append(educationStateKampus1[6]);
-        //    } else if ($('.educationStateVal').find(':selected').val() == educationStateKampus2[0]) {
-        //        $('.js-data-change-sure').text(educationStateKampus2[1]);
-        //        $('.js-data-change-seviye').text(educationStateKampus2[2]);
-        //        $('.js-data-change-tarih').text(educationStateKampus2[3]);
-        //        $('.js-data-change-saat').text(educationStateKampus2[4]);
-        //        $('.js-data-change-fiyat').text(educationStateKampus2[5]);
-        //        $('.js-data-change-adres').text(educationStateKampus2[7]);
-        //        $('.js-data-change-teachers a').remove();
-        //        $('.js-data-change-teachers').append(educationStateKampus2[6]);
-        //    } else if ($('.educationStateVal').find(':selected').val() == educationStateKampus3[0]) {
-        //        $('.js-data-change-sure').text(educationStateKampus3[1]);
-        //        $('.js-data-change-seviye').text(educationStateKampus3[2]);
-        //        $('.js-data-change-tarih').text(educationStateKampus3[3]);
-        //        $('.js-data-change-saat').text(educationStateKampus3[4]);
-        //        $('.js-data-change-fiyat').text(educationStateKampus3[5]);
-        //        $('.js-data-change-adres').text(educationStateKampus3[7]);
-        //        $('.js-data-change-teachers a').remove();
-        //        $('.js-data-change-teachers').append(educationStateKampus3[6]);
-        //    } else if ($('.educationStateVal').find(':selected').val() == educationStateKampus4[0]) {
-        //        $('.js-data-change-sure').text(educationStateKampus4[1]);
-        //        $('.js-data-change-seviye').text(educationStateKampus4[2]);
-        //        $('.js-data-change-tarih').text(educationStateKampus4[3]);
-        //        $('.js-data-change-saat').text(educationStateKampus4[4]);
-        //        $('.js-data-change-fiyat').text(educationStateKampus4[5]);
-        //        $('.js-data-change-adres').text(educationStateKampus4[7]);
-        //        $('.js-data-change-teachers a').remove();
-        //        $('.js-data-change-teachers').append(educationStateKampus4[6]);
-        //    }
-        //});
+        function cartControl() {
+            var cartItems = cart.getItems();
+            var index = selectGroups.val();
+            var group = groups.find(x => x.host.hostId == index);
+            var statu = cartItems.find(x => x.groupId == group.groupId);
+            if (statu) {
+                $('.js-btn-basket')
+                    .find('.button-txt')
+                    .text('Sepete Eklendi');
+                $('.js-btn-basket').addClass("active");
+            }
+        }
         //function btnBuy_onClick() {
-        //    var index = selectGroups.selectedIndex;
-        //    var group = groups[index];
+        //    var index = selectGroups.val();
+        //    var group = groups.find(x => x.host.hostId == index);
         //    var cart = new CartSupport.Cart();
-        //    var hostId = selectGroups.options[selectGroups.selectedIndex].value;
+        //    var hostId = group.host.hostId;
         //    var groupId = group.groupId;
         //    cart.addToCart(_educationId, hostId, groupId);
 

@@ -209,21 +209,6 @@ $('body').on('click', '.js-share', e => {
 });
 
 
-$('.js-btn-basket').click(function () {
-	$('.js-btn-basket').toggleClass('active');
-});
-
-$('body').on('click', '.js-btn-basket', function () {
-	$('.js-btn-basket')
-		.find('.button-txt')
-		.text('Sepete Ekle');
-});
-$('body').on('click', '.js-btn-basket.active', function () {
-	$('.js-btn-basket')
-		.find('.button-txt')
-		.text('Sepete Eklendi');
-});
-
 $(function () {
 	// Open modal and append overlay
 	// $('body').on('click', '.js-modal-trigger', e => {
