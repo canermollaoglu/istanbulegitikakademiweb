@@ -124,7 +124,7 @@ namespace NitelikliBilisim.Business.Repositories
         /// User Tarafında kullanılıyor
         /// </summary>
         /// <returns></returns>
-        public GetEducatorDetailItemVm GetEducatorDetailUser(string educatorId)
+        public GetEducatorDetailVm GetEducatorDetailUser(string educatorId)
         {
             var educator = _context.Educators.Include(x => x.User).First(x => x.Id == educatorId);
             var certificates = (from bridge in _context.Bridge_EducatorEducatorCertificates
@@ -136,7 +136,7 @@ namespace NitelikliBilisim.Business.Repositories
             var linkedIn = socialMedias.FirstOrDefault(x => x.SocialMediaType == Core.Enums.EducatorSocialMediaType.LinkedIn);
             var twitter = socialMedias.FirstOrDefault(x => x.SocialMediaType == Core.Enums.EducatorSocialMediaType.Twitter);
             var google = socialMedias.FirstOrDefault(x => x.SocialMediaType == Core.Enums.EducatorSocialMediaType.GooglePlus);
-            GetEducatorDetailItemVm retVal = new GetEducatorDetailItemVm()
+            GetEducatorDetailVm retVal = new GetEducatorDetailVm()
             {
                 Id = educator.Id,
                 Name = $"{educator.User.Name} {educator.User.Surname}",

@@ -9,7 +9,7 @@
     var avatarPath = "";
     try
     {
-        avatarPath = StorageService.DownloadFile(System.IO.Path.GetFileName(Model.EducatorDetail.AvatarPath), "educator-photos").Result;
+        avatarPath = StorageService.DownloadFile(System.IO.Path.GetFileName(Model.AvatarPath), "educator-photos").Result;
     }
     catch
     {
@@ -28,15 +28,15 @@
                         Eğitmenler
                     </a>
                     <a href="#0" class="breadcrumb__item active">
-                        @Model.EducatorDetail.Name
+                        @Model.Name
                     </a>
                 </div>
                 <div class="subheader__cnt">
                     <div class="subheader__txt-cnt">
-                        <div class="subheader__title">@Model.EducatorDetail.Name</div>
-                        <div class="subheader__txt">@Model.EducatorDetail.Title</div>
+                        <div class="subheader__title">@Model.Name</div>
+                        <div class="subheader__txt">@Model.Title</div>
                         <div class="subheader--detail__infos tablet-no-column">
-                            @foreach (var certificate in Model.EducatorDetail.Certificates)
+                            @foreach (var certificate in Model.Certificates)
                             {
                                 var certificateImage = "";
                                 try
@@ -54,7 +54,7 @@
                         </div>
                         <div class="subheader--detail__text js-read-more">
                             <p>
-                                @Model.EducatorDetail.ShortDescription
+                                @Model.ShortDescription
                             </p>
                         </div>
                         <div class="teacher-detail__about-button js-read-more-btn">
@@ -127,9 +127,9 @@
                         </div>
                         <div class="teacher-detail__about js-read-more">
                             <p>
-                                @Model.EducatorDetail.ShortDescription
+                                @Model.ShortDescription
                                 <br><br>
-                                @Model.EducatorDetail.Biography
+                                @Model.Biography
                             </p>
                         </div>
                         <div class="teacher-detail__about-button js-read-more-btn">
@@ -171,28 +171,28 @@
                     </div>
                     <div class="teacher-detail__card-cnt">
                         <div class="teacher-detail__card-social">
-                            <a href="@Model.EducatorDetail.FacebookUrl" target="_blank" class="teacher-detail__card-social-item">
+                            <a href="@Model.FacebookUrl" target="_blank" class="teacher-detail__card-social-item">
                                 <span class="icon-outer">
                                     <svg class="icon">
                                         <use xlink:href="../../assets/img/icons.svg#icon-facebook"></use>
                                     </svg>
                                 </span>
                             </a>
-                            <a href="@Model.EducatorDetail.LinkedInUrl" target="_blank" class="teacher-detail__card-social-item">
+                            <a href="@Model.LinkedInUrl" target="_blank" class="teacher-detail__card-social-item">
                                 <span class="icon-outer">
                                     <svg class="icon">
                                         <use xlink:href="../../assets/img/icons.svg#icon-linkedin"></use>
                                     </svg>
                                 </span>
                             </a>
-                            <a href="@Model.EducatorDetail.TwitterUrl" target="_blank" class="teacher-detail__card-social-item">
+                            <a href="@Model.TwitterUrl" target="_blank" class="teacher-detail__card-social-item">
                                 <span class="icon-outer">
                                     <svg class="icon">
                                         <use xlink:href="../../assets/img/icons.svg#icon-m-logo"></use>
                                     </svg>
                                 </span>
                             </a>
-                            <a href="@Model.EducatorDetail.GooglePlusUrl" target="_blank" class="teacher-detail__card-social-item">
+                            <a href="@Model.GooglePlusUrl" target="_blank" class="teacher-detail__card-social-item">
                                 <span class="icon-outer">
                                     <svg class="icon">
                                         <use xlink:href="../../assets/img/icons.svg#icon-youtube"></use>
@@ -223,57 +223,7 @@
 
         <div class="swiper-container js-card-slider mt-1">
             <div class="swiper-wrapper">
-                @foreach (var education in Model.PopularEducations)
-                {
-                    var educationBanner = "";
-                    try
-                    {
-                        educationBanner = StorageService.DownloadFile(System.IO.Path.GetFileName(education.Medias[0].FileUrl), "media-items").Result;
-                    }
-                    catch
-                    {
-                    }
-                    <div class="swiper-slide">
-                        <a href="/kurs-detayi/@education.Base.Id" class="card">
-                            <figure>
-                                <img src="@educationBanner" alt="">
-                            </figure>
-
-                            <div class="card__content">
-                                <h6 class="card__subtitle">@education.Base.CategoryName</h6>
-                                <h5 class="card__title">@education.Base.Name</h5>
-                                @if (education.Base.Description.Length > 90)
-                                {
-                                    <p>
-                                        @education.Base.Description.Substring(0, 90)
-                                    </p>
-                                }
-                                else
-                                {
-                                    <p>@education.Base.Description</p>
-                                }
-                            </div>
-
-                            <div class="card__footer">
-                                <span class="card__time">
-                                    <span class="icon-outer">
-                                        <svg class="icon">
-                                            <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                        </svg>
-                                    </span>
-                                    <span>@education.Base.DaysText gün ( @education.Base.HoursPerDayText saat )</span>
-                                </span>
-
-                                @*<span class="card__money">
-                                    <span>₺</span> 800,00
-                                </span>*@
-                            </div>
-                        </a>
-                    </div>
-                }
-
-
-
+                @await Component.InvokeAsync("PopularEducations")
             </div>
             <div class="swiper-pagination"></div>
         </div>

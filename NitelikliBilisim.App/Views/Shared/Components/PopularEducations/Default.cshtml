@@ -1,0 +1,54 @@
+﻿@using NitelikliBilisim.Core.ViewModels
+@using NitelikliBilisim.Core.Services.Abstracts
+@inject IStorageService StorageService
+@model List<SuggestedEducationVm>
+
+
+@foreach (var education in Model)
+{
+    var filePath = "";
+    try
+    {
+        filePath = StorageService.DownloadFile(System.IO.Path.GetFileName(education.Medias[0].FileUrl), "media-items").Result;
+    }
+    catch
+    {
+    }
+    <div class="swiper-slide">
+        <a href="/kurs-detayi/@education.Base.Id" class="card">
+            <figure>
+                <img src="@filePath" alt="">
+            </figure>
+
+            <div class="card__content">
+                <h6 class="card__subtitle">@education.Base.CategoryName</h6>
+                <h5 class="card__title">@education.Base.Name</h5>
+                @if (education.Base.Description.Length > 90)
+                {
+                    <p>
+                        @education.Base.Description.Substring(0, 90)
+                    </p>
+                }
+                else
+                {
+                    <p>@education.Base.Description</p>
+                }
+            </div>
+
+            <div class="card__footer">
+                <span class="card__time">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                        </svg>
+                    </span>
+                    <span>@education.Base.DaysText gün ( @education.Base.HoursPerDayText saat )</span>
+                </span>
+
+                @*<span class="card__money">
+                        <span>₺</span> 800,00
+                    </span>*@
+            </div>
+        </a>
+    </div>
+}

@@ -25,13 +25,7 @@ namespace NitelikliBilisim.App.Controllers
             if (string.IsNullOrEmpty(educatorId))
                 return Redirect("/");
 
-            var model = new GetEducatorDetailVm
-            {
-                EducatorDetail = _unitOfWork.Educator.GetEducatorDetailUser(educatorId),
-                PopularEducations = _unitOfWork.Suggestions.GetGuestUserSuggestedEducations()
-            };
-
-
+            var model = _unitOfWork.Educator.GetEducatorDetailUser(educatorId);
             return View(model);
         }
     }
