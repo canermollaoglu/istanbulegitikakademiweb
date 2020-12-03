@@ -13,6 +13,7 @@ namespace NitelikliBilisim.Core.ViewModels
         public HostVm Host { get; set; }
         public decimal? OldPrice { get; set; }
         public decimal? NewPrice { get; set; }
+        public EducatorVm Educator { get; set; }
     }
 
     public class EducationGroupListVm

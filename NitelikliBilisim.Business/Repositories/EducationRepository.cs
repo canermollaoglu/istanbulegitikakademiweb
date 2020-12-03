@@ -11,6 +11,7 @@ using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Enums.educations;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education;
+using NitelikliBilisim.Core.ViewModels.Main.EducationComment;
 using NitelikliBilisim.Core.ViewModels.search;
 using NitelikliBilisim.Data;
 using System;
@@ -44,6 +45,27 @@ namespace NitelikliBilisim.Business.Repositories
                        HoursPerDay = e.HoursPerDay,
                        isActive = e.IsActive
                    };
+        }
+
+        public bool CheckIsCanComment(string userId, Guid educationId)
+        {
+            var group = (from bridge in Context.Bridge_GroupStudents
+                          join eGroup in Context.EducationGroups.Include(x => x.GroupLessonDays) on bridge.Id equals eGroup.Id
+                          where bridge.Id2 == userId && bridge.Id == educationId
+                          select eGroup).FirstOrDefault();
+           
+            if (group == null)
+                return false;
+            if (group.GroupLessonDays==null || group.GroupLessonDays.Count==0)
+                return false;
+
+            var lastDate= group.GroupLessonDays.OrderBy(x => x.DateOfLesson).Last().DateOfLesson;
+            if (DateTime.Now.Date>lastDate)
+            {
+                return true;
+            }
+            return false;
+           
         }
 
         public PagedEntity<Education> GetPagedEntity(int page = 0, Expression<Func<Education, bool>> filter = null, int shownRecords = 15)
@@ -537,6 +559,21 @@ namespace NitelikliBilisim.Business.Repositories
         public EducationVm GetEducation(Guid id)
         {
             var education = Context.Educations.First(x => x.Id == id);
+
+            var comments = (from comment in Context.EducationComments
+                           join commenter in Context.Users on comment.CommentatorId equals commenter.Id
+                           join student in Context.Customers on commenter.Id equals student.Id
+                           orderby comment.ApprovalDate  descending
+                           select new CommentDetailVm
+                           {
+                               Point = comment.Points,
+                               Commenter = $"{commenter.Name} {commenter.Surname}",
+                               Date = comment.CreatedDate.ToString("dd MMMM yyyy"),
+                               CommenterJob = student.Job,
+                               Content = comment.Content
+                           }).ToList();
+
+
             var model = new EducationVm
             {
                 Base = new EducationBaseVm
@@ -550,6 +587,9 @@ namespace NitelikliBilisim.Business.Repositories
                     HoursPerDayText = education.HoursPerDay.ToString(),
                     Description = education.Description,
                     Description2 = education.Description2,
+                    IsWishListItem = false,
+                    IsCanComment = false,
+                    Comments = comments,
                     //PriceNumeric = education.NewPrice.GetValueOrDefault(0),
                     Level = EnumHelpers.GetDescription(education.Level),
                     //PriceText = education.NewPrice.GetValueOrDefault(0).ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"))

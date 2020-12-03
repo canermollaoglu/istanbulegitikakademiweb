@@ -13,6 +13,7 @@ using NitelikliBilisim.Core.Entities.helper;
 using NitelikliBilisim.Core.Entities.user_details;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.ViewModels.Account;
+using NitelikliBilisim.Notificator.Services;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -29,13 +30,15 @@ namespace NitelikliBilisim.App.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UnitOfWork _unitOfWork;
+        private readonly IEmailSender _emailSender; 
 
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, UnitOfWork unitOfWork)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, UnitOfWork unitOfWork,IEmailSender emailSender)
         {
             this._userManager = userManager;
             this._signInManager = signInManager;
             _unitOfWork = unitOfWork;
+            _emailSender = emailSender;
         }
 
         [Route("kayit-ol")]
@@ -90,13 +93,13 @@ namespace NitelikliBilisim.App.Controllers
                     var studentEducationInformation = new StudentEducationInfo
                     {
                         CustomerId = user.Id,
-                        StartedAt = model.StartedAt.GetValueOrDefault(),
+                        StartedAt = Convert.ToDateTime(model.StartedAt),
                         EducationCenter = (EducationCenter)model.EducationCenter,
                         CategoryId = model.EducationCategory.Value
                     };
                     var studentEducationInfoId = _unitOfWork.StudentEducationInfo.Insert(studentEducationInformation);
-                    if (model.EducationCategory.HasValue && model.StartedAt.HasValue)
-                        CreateEducationDays(studentEducationInfoId, model.EducationCategory.Value, model.StartedAt.Value);
+                    if (model.EducationCategory.HasValue && string.IsNullOrEmpty(model.StartedAt))
+                        CreateEducationDays(studentEducationInfoId, model.EducationCategory.Value,Convert.ToDateTime(model.StartedAt));
                 }
                 if (result.Succeeded)
                 {
@@ -135,16 +138,83 @@ namespace NitelikliBilisim.App.Controllers
             {
                 return View(model);
             }
-
             var result =
                 await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, true);
             if (result.Succeeded)
             {
                 return Redirect(model.ReturnUrl ?? "/");
             }
-
             ModelState.AddModelError(string.Empty, "Böyle bir kullanıcı bulunmamaktadır!");
+            return View(model);
+        }
 
+        [Route("sifremi-unuttum")]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [Route("sifremi-unuttum")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user!=null)
+            {
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var passwordResetLink = Url.Action("ResetPassword", "Account", new { email = model.Email, token = token }, Request.Scheme);
+                await _emailSender.SendAsync(new Core.ComplexTypes.EmailMessage
+                {
+                    Subject = "Nitelikli Bilişim Şifre Yenileme",
+                    Contacts = new string[] { model.Email },
+                    Body = $"Merhaba {user.Name} {user.Surname},<br/> Şifrenizi yenilemek için <a href=\"{passwordResetLink}\" target=\"_blank\"><b>buraya</b></a> tıklayınız."
+                });
+            }
+            return RedirectToAction("Index", "Home");
+        }
+
+        
+        [HttpGet]
+        [Route("sifre-sifirla")]
+        public IActionResult ResetPassword(string token,string email)
+        {
+            if (string.IsNullOrEmpty(token)||string.IsNullOrEmpty(email))
+            {
+                ModelState.AddModelError("", "Geçersiz istek.");
+            }
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("sifre-sifirla")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user!=null)
+            {
+                var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Login","Account");
+                }
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+                return View(model);
+            }
+            else
+            {
+                ModelState.AddModelError("", "Kullanıcı bulunamıyor. Yönetici ile irtibata geçebilirsiniz.");
+            }
             return View(model);
         }
 

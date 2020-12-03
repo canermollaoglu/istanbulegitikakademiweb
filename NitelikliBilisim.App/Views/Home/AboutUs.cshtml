@@ -1,0 +1,664 @@
+﻿@model NitelikliBilisim.Core.ViewModels.Main.AboutUs.AboutUsGetVm
+@using NitelikliBilisim.Core.Services.Abstracts
+@inject IStorageService StorageService
+@{
+    ViewData["Title"] = "Hakkımızda";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="subheader subheader--big">
+    <div class="subheader__wrp">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="./index.php" class="breadcrumb__item">
+                    Anasayfa
+                </a>
+                <a href="#0" class="breadcrumb__item">
+                    Kurumsal
+                </a>
+                <a href="#0" class="breadcrumb__item active">
+                    Hakkımızda
+                </a>
+            </div>
+            <div class="subheader__cnt">
+                <div class="subheader__txt-cnt">
+                    <div class="subheader__title">Hakkımızda</div>
+                    <div class="subheader__txt">
+                        Güncel eğitimlerimiz ve uzman eğitmenlerimiz ile bilişim kariyerinizde
+                        daima
+                        yanınızdayız. Teorik Eğitimini Proje Yazarak Pekiştir, Sertifikanı Al, Aranan BT Uzmanı Ol!
+                    </div>
+                    <div class="subheader__nums">
+                        <div class="subheader__num">
+                            <div>
+                                <img src="~/assets/img/icon-clock-c.svg" alt="">
+                            </div>
+                            <div>
+                                <span>1800</span>
+                                Saat Eğitim
+                            </div>
+                        </div>
+                        <div class="subheader__num">
+                            <div>
+                                <img src="~/assets/img/icon-student-2-c.svg" alt="">
+                            </div>
+                            <div>
+                                <span>2700</span>
+                                Kayıtlı Öğrenci
+                            </div>
+                        </div>
+                        <div class="subheader__num">
+                            <div>
+                                <img src="~/assets/img/icon-student-c.svg" alt="">
+                            </div>
+                            <div>
+                                <span>85</span>
+                                Proj. Eğitmen
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="subheader__img with-icon">
+                <img src="~/assets/img/about-subheader.jpg" alt="">
+                <a class="js-video-btn" data-video-id="oxiU6A8MEMM">
+                    <span class="icon-outer subheader__img-play">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-play"></use>
+                        </svg>
+                    </span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="section section-about who-we-are o-hidden">
+    <img src="~/assets/img/half-shape.svg" class="popular-technology--shape right-top" alt="">
+    <div class="container mini-container">
+        <div class="who-we-are__top">
+            <div class="title title-section mb-4">
+                BİZ
+                <span class=" title--blue">KİMİZ?</span>
+            </div>
+            <div class="who-we-are__item-title">“Uygulama olmadan, teorik bilgi ne işe yarar ki!” </div>
+            <div class="who-we-are__item-txt">
+                anlayışıyla uygulamalı proje eğitimleri sunan nitelikbilisim.com.tr, bilgi teknolojileri alanında kariyer
+                hedefleyen kişilerin iş hayatı öncesi proje bazlı eğitim anlayışı ile deneyim kazanmalarına imkan tanıyan bir
+                eğitim platformudur.
+            </div>
+        </div>
+        <div class="who-we-are__wrp">
+            <div class="who-we-are__item">
+                <div class="who-we-are__item-title">MİSYONUMUZ</div>
+                <div class="who-we-are__item-txt">
+                    Bilişim teknolojileri ile ilgili teorik bilgi almış veya hiç bilgi sahibi olmasa dahi bu alanda kariyer
+                    hedefleyen kişilerin, sektörün önde gelen isimleri ile buluşmasına aracılık etmek ve alınan eğitim
+                    neticesinde
+                    bilgilerin uygulamaya dökülerek kalıcı birer yeteneğe dönüştürülmesini sağlamaktır.
+                </div>
+            </div>
+            <div class="who-we-are__item">
+                <div class="who-we-are__item-title">VİZYONUMUZ</div>
+                <div class="who-we-are__item-txt">
+                    Bu bilinçle yola çıkarak Bilgi Teknolojileri ’ne ilgi duyan bireylerin kendilerini geliştirmelerine olanak
+                    sunmak ve böylece ülkemizi sektörün güçlü aktörlerinden biri haline getirmektir.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="section section-about profession">
+    <div class="container mini-container">
+        <div class="title title-section mb-5">
+            UZMANLIK
+            <span class=" title--blue">ALANLARIMIZ</span>
+        </div>
+        <div class="swiper-container popular-technology">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <a href="#0" class="profession__item webmobilprogramlama">
+                        <div class="profession__item-top">
+                            <span class="icon-outer" style="background: var(--webmobilprogramlama);">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-window-code"></use>
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="profession__item-title">
+                            Web ve Mobil Programlama
+                        </div>
+                    </a>
+                </div>
+                <div class="swiper-slide">
+                    <a href="#0" class="profession__item sistemagyonetim">
+                        <div class="profession__item-top">
+                            <span class="icon-outer" style="background: var(--sistemagyonetim);">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-system-network"></use>
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="profession__item-title">
+                            Sistem ve Ağ Yönetimi
+                        </div>
+                    </a>
+                </div>
+                <div class="swiper-slide">
+                    <a href="#0" class="profession__item siberguvenlik">
+                        <div class="profession__item-top">
+                            <span class="icon-outer" style="background: var(--siberguvenlik);">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-azure"></use>
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="profession__item-title">
+                            Siber Güvenlik
+                        </div>
+                    </a>
+                </div>
+                <div class="swiper-slide">
+                    <a href="#0" class="profession__item bulutbilisim">
+                        <div class="profession__item-top">
+                            <span class="icon-outer" style="background: var(--bulutbilisim)">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-microsoft-azure"></use>
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="profession__item-title">
+                            Bulut Bilişim
+                        </div>
+                    </a>
+                </div>
+                <div class="swiper-slide">
+                    <a href="#0" class="profession__item oyunprogramlama">
+                        <div class="profession__item-top">
+                            <span class="icon-outer" style="background: var(--oyunprogramlama);">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-unity"></use>
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="profession__item-title">
+                            Oyun Programlama
+                        </div>
+                    </a>
+                </div>
+                <div class="swiper-slide">
+                    <a href="#0" class="profession__item kurumsalkaynakplanlama">
+                        <div class="profession__item-top">
+                            <span class="icon-outer" style="background: var(--kurumsalkaynakplanlama);">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-dynamics"></use>
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="profession__item-title">
+                            Kurumsal Kaynak Planlama
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <!-- If we need pagination -->
+            <div class="swiper-pagination"></div>
+
+            <div class="swiper-button-prev swiper-button-circle reverse">
+                <span class="icon-outer">
+                    <svg class="icon">
+                        <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                    </svg>
+                </span>
+            </div>
+            <div class="swiper-button-next swiper-button-circle reverse">
+                <span class="icon-outer">
+                    <svg class="icon">
+                        <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                    </svg>
+                </span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section section-about professional-staff about-colored o-hidden">
+    <div class="container mini-container">
+        <div class="professional-staff__top">
+            <div class="professional-staff__top-img">
+                <img src="~/assets/img/about-img.jpg" alt="">
+            </div>
+            <div class="professional-staff__top-cnt">
+                <div class="title title-section mb-4">
+                    EKİBİMİZ VE
+                    <span class=" title--blue">TECRÜBEMİZ</span>
+                </div>
+                <p>
+                    Sektörün önde gelen isimlerinden oluşan ekibimizin tecrübe ortalaması 15 yıldır.
+                    <br>
+                    <br>
+                    niteliklibilisim.com.tr olarak hedefimiz, eğitmenlerimizin yıllardır sektörde kazanmış oldukları bu
+                    deneyimi, siz değerli öğrencilerimize aktararak, BT alanında edinmiş olduğunuz teorik bilgi birikiminizi,
+                    gerçek hayat senaryoları ile destekleyerek kalıcı birer yeteneğe dönüştürmektir.
+                </p>
+            </div>
+        </div>
+        <div class="professional-staff__teachers">
+            <div class="title title-section d-flex justify-content-center mb-4">
+                PROFESYONEL
+                <span class=" title--blue">&nbsp;KADROMUZ</span>
+            </div>
+            <div class="professional-staff__tab with-magic-line">
+                <div class="main-tab__header js-magic-line">
+                    <div class="lesson-detail__tab-header--item magic-item js-main-tab-item active">
+                        <a href="#genelbakis" class="lesson-detail__tab-header--a">
+                            İdari Kadromuz
+                        </a>
+                    </div>
+                    <div class="lesson-detail__tab-header--item magic-item js-main-tab-item">
+                        <a href="#egitimicerigi" class="lesson-detail__tab-header--a">
+                            Eğitmen Kadromuz
+                        </a>
+                    </div>
+                    <div class="lesson-detail__tab-header--item magic-item js-main-tab-item">
+                        <a href="#egitmenbilgisi" class="lesson-detail__tab-header--a">
+                            Teknik Kadromuz
+                        </a>
+                    </div>
+                </div>
+                <div class="main-tab__content">
+                    <div id="genelbakis" class="main-tab__item  active">
+                        <div class="swiper-container js-teacher-slider">
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide">
+                                    <a href="./egitmen-detay.php" class="teacher-card">
+                                        <div class="teacher-card__img">
+                                            <img src="~/assets/img/teacher-img.jpg" alt="">
+                                        </div>
+                                        <div class="teacher-card__cnt">
+                                            <div class="teacher-card__title">Avşar Kaan Asan</div>
+                                            <div class="teacher-card__branch">Web Yazılım Uzmanı</div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="swiper-slide">
+                                    <a href="./egitmen-detay.php" class="teacher-card">
+                                        <div class="teacher-card__img">
+                                            <img src="~/assets/img/teacher-2.jpg" alt="">
+                                        </div>
+                                        <div class="teacher-card__cnt">
+                                            <div class="teacher-card__title">Avşar Kaan Asan</div>
+                                            <div class="teacher-card__branch">Web Yazılım Uzmanı</div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="swiper-slide">
+                                    <a href="./egitmen-detay.php" class="teacher-card">
+                                        <div class="teacher-card__img">
+                                            <img src="~/assets/img/teacher-2.jpg" alt="">
+                                        </div>
+                                        <div class="teacher-card__cnt">
+                                            <div class="teacher-card__title">Avşar Kaan Asan</div>
+                                            <div class="teacher-card__branch">Web Yazılım Uzmanı</div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="swiper-slide">
+                                    <a href="./egitmen-detay.php" class="teacher-card">
+                                        <div class="teacher-card__img">
+                                            <img src="~/assets/img/teacher-img.jpg" alt="">
+                                        </div>
+                                        <div class="teacher-card__cnt">
+                                            <div class="teacher-card__title">Avşar Kaan Asan</div>
+                                            <div class="teacher-card__branch">Web Yazılım Uzmanı</div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="swiper-slide">
+                                    <a href="./egitmen-detay.php" class="teacher-card">
+                                        <div class="teacher-card__img">
+                                            <img src="~/assets/img/teacher-2.jpg" alt="">
+                                        </div>
+                                        <div class="teacher-card__cnt">
+                                            <div class="teacher-card__title">Avşar Kaan Asan</div>
+                                            <div class="teacher-card__branch">Web Yazılım Uzmanı</div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="swiper-pagination"></div>
+
+                            <div class="swiper-button-prev swiper-button-circle reverse">
+                                <span class="icon-outer">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="swiper-button-next swiper-button-circle reverse">
+                                <span class="icon-outer">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="egitimicerigi" class="main-tab__item ">
+                        <div class="swiper-container js-teacher-slider">
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide">
+                                    <a href="./egitmen-detay.php" class="teacher-card">
+                                        <div class="teacher-card__img">
+                                            <img src="~/assets/img/teacher-img.jpg" alt="">
+                                        </div>
+                                        <div class="teacher-card__cnt">
+                                            <div class="teacher-card__title">Avşar Kaan Asan</div>
+                                            <div class="teacher-card__branch">Web Yazılım Uzmanı</div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="swiper-slide">
+                                    <a href="./egitmen-detay.php" class="teacher-card">
+                                        <div class="teacher-card__img">
+                                            <img src="~/assets/img/teacher-2.jpg" alt="">
+                                        </div>
+                                        <div class="teacher-card__cnt">
+                                            <div class="teacher-card__title">Avşar Kaan Asan</div>
+                                            <div class="teacher-card__branch">Web Yazılım Uzmanı</div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="swiper-slide">
+                                    <a href="./egitmen-detay.php" class="teacher-card">
+                                        <div class="teacher-card__img">
+                                            <img src="~/assets/img/teacher-2.jpg" alt="">
+                                        </div>
+                                        <div class="teacher-card__cnt">
+                                            <div class="teacher-card__title">Avşar Kaan Asan</div>
+                                            <div class="teacher-card__branch">Web Yazılım Uzmanı</div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="swiper-slide">
+                                    <a href="./egitmen-detay.php" class="teacher-card">
+                                        <div class="teacher-card__img">
+                                            <img src="~/assets/img/teacher-img.jpg" alt="">
+                                        </div>
+                                        <div class="teacher-card__cnt">
+                                            <div class="teacher-card__title">Avşar Kaan Asan</div>
+                                            <div class="teacher-card__branch">Web Yazılım Uzmanı</div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="swiper-slide">
+                                    <a href="./egitmen-detay.php" class="teacher-card">
+                                        <div class="teacher-card__img">
+                                            <img src="~/assets/img/teacher-2.jpg" alt="">
+                                        </div>
+                                        <div class="teacher-card__cnt">
+                                            <div class="teacher-card__title">Avşar Kaan Asan</div>
+                                            <div class="teacher-card__branch">Web Yazılım Uzmanı</div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="swiper-pagination"></div>
+
+                            <div class="swiper-button-prev swiper-button-circle reverse">
+                                <span class="icon-outer">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="swiper-button-next swiper-button-circle reverse">
+                                <span class="icon-outer">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="egitmenbilgisi" class="main-tab__item ">
+                        <div class="swiper-container js-teacher-slider">
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide">
+                                    <a href="./egitmen-detay.php" class="teacher-card">
+                                        <div class="teacher-card__img">
+                                            <img src="~/assets/img/teacher-img.jpg" alt="">
+                                        </div>
+                                        <div class="teacher-card__cnt">
+                                            <div class="teacher-card__title">Avşar Kaan Asan</div>
+                                            <div class="teacher-card__branch">Web Yazılım Uzmanı</div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="swiper-slide">
+                                    <a href="./egitmen-detay.php" class="teacher-card">
+                                        <div class="teacher-card__img">
+                                            <img src="~/assets/img/teacher-2.jpg" alt="">
+                                        </div>
+                                        <div class="teacher-card__cnt">
+                                            <div class="teacher-card__title">Avşar Kaan Asan</div>
+                                            <div class="teacher-card__branch">Web Yazılım Uzmanı</div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="swiper-slide">
+                                    <a href="./egitmen-detay.php" class="teacher-card">
+                                        <div class="teacher-card__img">
+                                            <img src="~/assets/img/teacher-2.jpg" alt="">
+                                        </div>
+                                        <div class="teacher-card__cnt">
+                                            <div class="teacher-card__title">Avşar Kaan Asan</div>
+                                            <div class="teacher-card__branch">Web Yazılım Uzmanı</div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="swiper-slide">
+                                    <a href="./egitmen-detay.php" class="teacher-card">
+                                        <div class="teacher-card__img">
+                                            <img src="~/assets/img/teacher-img.jpg" alt="">
+                                        </div>
+                                        <div class="teacher-card__cnt">
+                                            <div class="teacher-card__title">Avşar Kaan Asan</div>
+                                            <div class="teacher-card__branch">Web Yazılım Uzmanı</div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="swiper-slide">
+                                    <a href="./egitmen-detay.php" class="teacher-card">
+                                        <div class="teacher-card__img">
+                                            <img src="~/assets/img/teacher-2.jpg" alt="">
+                                        </div>
+                                        <div class="teacher-card__cnt">
+                                            <div class="teacher-card__title">Avşar Kaan Asan</div>
+                                            <div class="teacher-card__branch">Web Yazılım Uzmanı</div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="swiper-pagination"></div>
+
+                            <div class="swiper-button-prev swiper-button-circle reverse">
+                                <span class="icon-outer">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="swiper-button-next swiper-button-circle reverse">
+                                <span class="icon-outer">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section section-about about-difference">
+    <div class="container mini-container">
+        <div class="about-difference__wrp">
+            <div class="about-difference__img">
+                <div class="about-difference__img-item1">
+                    <img src="~/assets/img/about-difference.jpg" alt="">
+                </div>
+                <div class="about-difference__img-column">
+                    <div class="about-difference__img-item2">
+                        <img src="~/assets/img/about-difference2.jpg" alt="">
+                    </div>
+                    <div class="about-difference__img-item3">
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-laptop-global"></use>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="about-difference__cnt">
+                <div class="title title-section mb-4">
+                    PLATFORM <br>
+                    <span class=" title--blue">OLARAK FARKIMIZ?</span>
+                </div>
+                <p>
+                    Gerçek hayat senaryoları üzerinden, daha önce sektörde deneyimlediğimiz proje geliştirme yaklaşımlarını
+                    öğreterek teorik konuları, çalışabilen uygulamalar ve projeler üzerinden anlatıyoruz.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section section-about about-support">
+    <div class="container mini-container">
+        <div class="title title-section mb-4 text-center">
+            Nitelikli Bilişim Uzmanı Yetiştirme Programı
+            (NBUY)<br>
+            <span class=" title--blue">öğrencilerine sağlanan destek</span>
+        </div>
+        <div class="about-support__wrp">
+            <div class="support-card">
+                <div class="support-card__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-check-sub"></use>
+                        </svg>
+                    </span>
+                </div>
+                <div class="support-card__cnt">
+                    niteliklibilisim.com.tr’ye üye olduktan sonra sistem, eğitim başlangıç tarihinden bitiş tarihine kadar olan
+                    süre için size bir “proje eğitim planı” çıkartır.
+                </div>
+            </div>
+            <div class="support-card">
+                <div class="support-card__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-code-browser-2"></use>
+                        </svg>
+                    </span>
+                </div>
+                <div class="support-card__cnt">
+                    Yaklaşık 10 yıllık NBUY eğitim tecrübemize dayanarak, içerisinde bulunduğunuz hafta, hangi teorik konuları
+                    işlediğinizi, hangi konularda zorlanabileceğinizi ya da mutlaka uygulama yapılması gerektiğini biliyoruz ve
+                    sizlere istediğiniz hafta ile ilgili proje eğitimleri öneriyoruz.
+                </div>
+            </div>
+            <div class="support-card">
+                <div class="support-card__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-user-id"></use>
+                        </svg>
+                    </span>
+                </div>
+                <div class="support-card__cnt">
+                    Bu proje eğitimlerini alabilir, yapmış olduğunuz uygulamaları ve eğitim sonunda alacağınız üniversite
+                    sertifikanızı cv’lerinize ekleyerek, istihdam sürecinizde kullanmak üzere portföyünüze dahil edebilirsiniz.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section section-about education-place is-popular-projects o-hidden">
+    <div class="container">
+        <div class="row">
+            <div class="d-flex justify-content-center w-100 mb-4">
+                <h2 class="title title-section text-center">EĞİTİM <span class="title--blue">YERLERİ</span></h2>
+            </div>
+
+            <div class="swiper-container js-card-slider mt-1">
+                <div class="swiper-wrapper">
+                    @foreach (var host in Model.Hosts)
+                    {
+                        var filePath = "";
+                        try
+                        {
+                            filePath = StorageService.DownloadFile(System.IO.Path.GetFileName(host.ImagePath), "education-host-images").Result;
+                        }
+                        catch
+                        {
+                        }
+                        <div class="swiper-slide">
+                            <div class="education-place-card">
+                                <div class="education-place-card__img">
+                                    <img src="@filePath" alt="">
+                                </div>
+                                <div class="education-place-card__cnt">
+                                    <div class="education-place-card__country">
+                                        @host.City
+                                    </div>
+                                    <div class="education-place-card__title">
+                                        @host.HostName
+                                    </div>
+                                </div>
+                                <div class="education-place-card__footer">
+                                    <a href="https://www.google.com/maps/search/?api=1&query=@host.Latitude,@host.Longitude" target="_blank" class="button button-fw">
+                                        <span class="button-icon">
+                                            <span class="icon-outer">
+                                                <svg class="icon">
+                                                    <use xlink:href="../../assets/img/icons.svg#icon-map-pin-f"></use>
+                                                </svg>
+                                            </span>
+                                        </span>
+                                        <span class="button-txt">
+                                            Haritada İncele
+                                        </span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+                <div class="swiper-pagination"></div>
+
+                <div class="swiper-button-prev swiper-button-circle reverse">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                        </svg>
+                    </span>
+                </div>
+                <div class="swiper-button-next swiper-button-circle reverse">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+

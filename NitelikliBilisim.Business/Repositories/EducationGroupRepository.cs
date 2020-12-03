@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using MUsefulMethods;
 using Newtonsoft.Json;
@@ -6,6 +7,7 @@ using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Entities.groups;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Enums.group;
+using NitelikliBilisim.Core.Services;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.areas.admin.customer;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_groups;
@@ -18,6 +20,7 @@ using NitelikliBilisim.Data;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 
 namespace NitelikliBilisim.Business.Repositories
@@ -26,6 +29,9 @@ namespace NitelikliBilisim.Business.Repositories
     {
         private readonly NbDataContext _context;
         private readonly IConfiguration _configuration;
+
+       
+
         public EducationGroupRepository(NbDataContext context, IConfiguration configuration) : base(context)
         {
             _context = context;
@@ -380,17 +386,54 @@ namespace NitelikliBilisim.Business.Repositories
 
             return dates;
         }
-        public List<GroupVm> GetFirstAvailableGroups(Guid educationId)
+        /// <summary>
+        /// İlgili eğitim için tarih ve kontenjan uygunluğunu kontrol ederek eğitim verilebileceği şehiler listesini döner.
+        /// </summary>
+        /// <param name="educationId"></param>
+        /// <returns></returns>
+        public Dictionary<int,string> GetAvailableCities(Guid educationId)
+        {
+            var groups = _context.EducationGroups.Include(x=>x.Host).Where(x => x.StartDate.Date > DateTime.Now.Date && x.EducationId == educationId && x.IsGroupOpenForAssignment);
+            Dictionary<int, string> cities = new Dictionary<int, string>();
+            foreach (var group in groups)
+            {
+                if (!cities.ContainsKey((int)group.Host.City))
+                {
+                    cities.Add((int)group.Host.City, EnumHelpers.GetDescription(group.Host.City));
+                }
+            }
+
+            return cities;
+
+        }
+        public List<GroupVm> GetFirstAvailableGroups(Guid educationId,int? cityId = null)
         {
             var groups = _context.EducationGroups
                 .Include(x => x.Host)
-                .Where(x => x.StartDate.Date > DateTime.Now.Date && x.EducationId == educationId && x.IsGroupOpenForAssignment)
+                .Where(x => x.StartDate.Date > DateTime.Now.Date && x.EducationId == educationId && x.IsGroupOpenForAssignment )
                 .OrderBy(o => o.StartDate)
                 .ToList();
+            if (cityId.HasValue)
+            {
+                groups = groups.Where(x => x.Host.City == (HostCity)cityId).ToList();
+            }
+            var educators = _context.Educators.Include(x=>x.User).ToList();
 
             var model = new List<GroupVm>();
             var hostIds = new List<Guid>();
-            foreach (var item in groups)
+            var storage = new StorageService();
+            foreach (var item in groups) {
+                var educator = educators.First(x => x.Id == item.EducatorId);
+                var folder = Path.GetDirectoryName(educator.User.AvatarPath);
+                var fileName = Path.GetFileName(educator.User.AvatarPath);
+                var url = string.Empty;
+                try
+                {
+                    url = storage.DownloadFile(fileName, folder).Result;
+                }
+                catch 
+                {
+                }
                 if (!hostIds.Contains(item.HostId))
                 {
                     hostIds.Add(item.HostId);
@@ -398,7 +441,7 @@ namespace NitelikliBilisim.Business.Repositories
                     {
                         GroupId = item.Id,
                         StartDate = item.StartDate,
-                        StartDateText = item.StartDate.ToLongDateString(),
+                        StartDateText = item.StartDate.ToString("dd MMMM yyyy"),
                         Joined = _context.Bridge_GroupStudents.Count(x => x.Id == item.Id),
                         Quota = item.Quota,
                         Host = new HostVm
@@ -410,11 +453,19 @@ namespace NitelikliBilisim.Business.Repositories
                             Latitude = item.Host.Latitude,
                             Longitude = item.Host.Longitude
                         },
+                        Educator = new EducatorVm
+                        {
+                            EducatorId = educator.Id,
+                            Name = educator.User.Name,
+                            Surname = educator.User.Surname,
+                            Title = educator.Title,
+                            ProfilePhoto = url
+                        },
                         OldPrice = item.OldPrice,
                         NewPrice = item.NewPrice
                     });
                 }
-
+            }
             return model;
         }
         private string SerializeDays(List<int> days)

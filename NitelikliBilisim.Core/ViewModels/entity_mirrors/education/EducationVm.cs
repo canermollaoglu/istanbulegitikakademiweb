@@ -1,5 +1,5 @@
-﻿using NitelikliBilisim.Core.Entities;
-using NitelikliBilisim.Core.Enums;
+﻿using NitelikliBilisim.Core.Enums;
+using NitelikliBilisim.Core.ViewModels.Main.EducationComment;
 using System;
 using System.Collections.Generic;
 
@@ -34,6 +34,9 @@ namespace NitelikliBilisim.Core.ViewModels
         public string HoursPerDayText { get; set; }
         public string Level { get; set; }
         public string StartDateText { get; set; }
+        public bool IsWishListItem { get; set; }
+        public List<CommentDetailVm> Comments { get; set; }
+        public bool IsCanComment { get; set; }
     }
 
     public class EducationListVm
