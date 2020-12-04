@@ -1,10 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.Business.UoW;
-using NitelikliBilisim.Core.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Components
 {
@@ -20,8 +15,5 @@ namespace NitelikliBilisim.App.Components
         {
             return View(_unitOfWork.Suggestions.GetGuestUserSuggestedEducations());
         }
-
-
-
     }
 }

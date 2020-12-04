@@ -8,6 +8,7 @@ using NitelikliBilisim.Core.Entities.groups;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Enums.group;
 using NitelikliBilisim.Core.Services;
+using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.areas.admin.customer;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_groups;
@@ -29,13 +30,14 @@ namespace NitelikliBilisim.Business.Repositories
     {
         private readonly NbDataContext _context;
         private readonly IConfiguration _configuration;
-
+        private readonly IStorageService _storageService;
        
 
         public EducationGroupRepository(NbDataContext context, IConfiguration configuration) : base(context)
         {
             _context = context;
             _configuration = configuration;
+            _storageService = new StorageService();
         }
 
 
@@ -632,14 +634,20 @@ namespace NitelikliBilisim.Business.Repositories
         {
             var groups = _context.EducationGroups.Include(x => x.Education).Where(x => items.Select(x => x.GroupId).Contains(x.Id)).OrderBy(x => x.Education.Name);
             //var educations = _unitOfWork.Education.Get(x => items.Select(x => x.EducationId).Contains(x.Id), x => x.OrderBy(o => o.Name));
-            var model = groups.Select(x => new CartItemVm
+            var model = new List<CartItemVm>();
+            foreach (var group in groups)
             {
-                EducationId = x.Education.Id,
-                EducationName = x.Education.Name,
-                PreviewPhoto = _context.EducationMedias.First(y => y.EducationId == x.Id && y.MediaType == EducationMediaType.PreviewPhoto).FileUrl,
-                PriceNumeric = x.NewPrice.GetValueOrDefault(0),
-                PriceText = x.NewPrice.GetValueOrDefault(0).ToString()
-            }).ToList();
+                var imagePath = _context.EducationMedias.First(x => x.EducationId == group.EducationId && x.MediaType == EducationMediaType.PreviewPhoto).FileUrl;
+                var imageUrl = _storageService.DownloadFile(System.IO.Path.GetFileName(imagePath), Path.GetDirectoryName(imagePath)).Result;
+                model.Add(new CartItemVm
+                {
+                    EducationId = group.EducationId,
+                    EducationName = group.Education.Name,
+                    PreviewPhoto = imageUrl,
+                    PriceNumeric = group.NewPrice.GetValueOrDefault(),
+                    PriceText = group.NewPrice.GetValueOrDefault().ToString()
+                });
+            }
             return model;
         }
 
