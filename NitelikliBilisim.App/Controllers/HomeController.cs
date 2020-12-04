@@ -76,8 +76,13 @@ namespace NitelikliBilisim.App.Controllers
         {
             throw new System.Exception("Test Exception!");
         }
+        [Route("gizlilik-sozlesmesi")]
+        public IActionResult NonDisclosureAgreement()
+        {
+            return View();
+        }
 
-        //[Authorize]
+
         public IActionResult Privacy()
         {
             string sessionId = _session.GetString("userSessionId");
@@ -138,7 +143,7 @@ namespace NitelikliBilisim.App.Controllers
                     CompanySector = model.CompanySector,
                     NameSurname = model.NameSurname,
                     Department = model.Department,
-                    Phone = model.PhoneCode+model.Phone,
+                    Phone = model.PhoneCode + model.Phone,
                     RequestNote = model.RequestNote,
                     NumberOfEmployees = model.NumberOfEmployees,
                 });
@@ -197,7 +202,7 @@ namespace NitelikliBilisim.App.Controllers
             }
         }
 
-      
+
 
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [HttpPost]

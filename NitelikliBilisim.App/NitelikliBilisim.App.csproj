@@ -136,7 +136,6 @@
     <None Include="wwwroot\assets\css\components\teacher-card.css.map" />
     <None Include="wwwroot\assets\css\components\user-dropdown.css.map" />
     <None Include="wwwroot\assets\css\fonts.css.map" />
-    <None Include="wwwroot\assets\css\main.css.map" />
     <None Include="wwwroot\assets\css\pages\about.css.map" />
     <None Include="wwwroot\assets\css\pages\account.css.map" />
     <None Include="wwwroot\assets\css\pages\blog-detail.css.map" />
