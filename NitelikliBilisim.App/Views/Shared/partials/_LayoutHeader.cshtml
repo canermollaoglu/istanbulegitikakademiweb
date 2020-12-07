@@ -134,14 +134,19 @@
 </div>-->
 <!-- End Search Menu -->
 <div id="userDropdown" class="user-dropdown">
-    <div class="user-dropdown__top">
-        <div class="user-dropdown__name">
-            Zeynep Yıldırım
+    @if (User.Identity.IsAuthenticated)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var user = await UserManager.FindByIdAsync(userId);
+        <div class="user-dropdown__top">
+            <div class="user-dropdown__name">
+                @user.Name @user.Surname
+            </div>
+            <div class="user-dropdown__mail">
+                @user.Email
+            </div>
         </div>
-        <div class="user-dropdown__mail">
-            zeynepyildirim@mail.com
-        </div>
-    </div>
+    }
     <div class="user-dropdown__list">
         <a href="./hesap-panelim.php" class="user-dropdown__item">
             <span class="icon-outer button-icon">
@@ -188,7 +193,7 @@
         <div class="mini-basket__count">2 Ürün</div>
     </div>
     <div class="mini-basket__cnt">
-      
+
     </div>
     <div class="mini-basket__footer">
         <a asp-controller="Sale" asp-action="Cart" class="button button-fw button-icon-right">
@@ -741,15 +746,34 @@
 
                     @if (User.Identity.IsAuthenticated)
                     {
+                        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                        var user = await UserManager.FindByIdAsync(userId);
+                        var profileImage = "";
+                        try
+                        {
+                            if (User.IsInRole("Educator"))
+                            {
+
+                                profileImage = StorageService.DownloadFile(System.IO.Path.GetFileName(user.AvatarPath), "educator-photos").Result;
+                            }
+                            else if (User.IsInRole("User"))
+                            {
+                                profileImage = StorageService.DownloadFile(System.IO.Path.GetFileName(user.AvatarPath), "user-avatars").Result;
+                            }
+                        }
+                        catch
+                        {
+                        }
+
                         <!-- giriş yapılmış -->
                         <div class="header__profile-btn js-open-user-dropdown">
                             <div class="header__profile-img">
-                                <img src="~/assets/img/comment-pp-woman.jpg" alt="">
+                                <img src="@profileImage" alt="">
                                 <div class="header__profile-caret"></div>
                             </div>
                             <div class="header__profile-cnt">
                                 <div class="header__profile-txt">Hoşgeldiniz</div>
-                                <div class="header__profile-name">Zeynep Yıldırım</div>
+                                <div class="header__profile-name">@user.Name @user.Surname</div>
                             </div>
                         </div>
                         <a href="./sana-ozel.php" class="button header__register-button">
