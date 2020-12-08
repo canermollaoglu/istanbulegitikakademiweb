@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NitelikliBilisim.Core.Entities.blog;
+using NitelikliBilisim.Core.ViewModels.Main.Blog;
 using NitelikliBilisim.Data;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,25 @@ namespace NitelikliBilisim.Business.Repositories.BlogRepositories
 
         public BlogPost GetByIdWithCategory(Guid postId)
         {
-            return _context.BlogPosts.Include(x => x.Category).First(x=>x.Id == postId);
+            return _context.BlogPosts.Include(x => x.Category).First(x => x.Id == postId);
+        }
+
+        public List<RecommendedBlogPostVm> GetUserRecommendedBlogPosts(Guid currentBlogPostId)
+        {
+            var data = (from blog in _context.BlogPosts
+                        join blogCategory in _context.BlogCategories on blog.CategoryId equals blogCategory.Id
+                        where blog.Id != currentBlogPostId
+                        select new RecommendedBlogPostVm
+                        {
+                            Id=blog.Id,
+                            Title = blog.Title,
+                            Content = blog.SummaryContent,
+                            CreatedDate = blog.CreatedDate.ToShortDateString(),
+                            Category = blogCategory.Name,
+                            FeaturedImageUrl =blog.FeaturedImageUrl,
+                            ReadingTime = blog.ReadingTime.ToString()
+                        }).Take(5).ToList();
+            return data;
         }
 
         public List<BlogTag> GetTagsByBlogPostId(Guid postId)
@@ -27,6 +46,19 @@ namespace NitelikliBilisim.Business.Repositories.BlogRepositories
                         where b.Id == postId
                         select c).ToList();
             return data;
+        }
+
+        public BlogPostGetDetailVm GetPostById(Guid id)
+        {
+            var post = _context.BlogPosts.First(x => x.Id == id);
+            var model = new BlogPostGetDetailVm()
+            {
+                Id = post.Id,
+                Content = post.Content,
+                FeaturedImageUrl = post.FeaturedImageUrl,
+                Title = post.Title
+            };
+            return model;
         }
 
         public Guid? Insert(BlogPost blogPost, string[] tags)

@@ -11,6 +11,7 @@ namespace NitelikliBilisim.Core.Entities.blog
         [MaxLength(128)]
         public string Title { get; set; }
         public string Content { get; set; }
+        public string SummaryContent { get; set; }
         public string FeaturedImageUrl { get; set; }
         public int ReadingTime { get; set; }
         public bool IsActive { get; set; }
