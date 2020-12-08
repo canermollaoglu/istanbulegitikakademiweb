@@ -71,7 +71,6 @@ namespace NitelikliBilisim.App.Controllers
             return View(invoiceInfos);
         }
 
-
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("sepet")]
         public IActionResult Cart()
@@ -742,7 +741,6 @@ namespace NitelikliBilisim.App.Controllers
             }
         }
     }
-
 
     public class GetPromotionCodeData
     {

@@ -1596,19 +1596,7 @@ $('#validateForm').validate({
         },
         ckurumadresi: {
             required: true,
-        },
-        // signupchoose: {
-        // 	required: true,
-        // },
-        // signuplocation: {
-        // 	required: true,
-        // },
-        // singupeducationcat: {
-        // 	required: true,
-        // },
-        // signupeducationdate: {
-        // 	required: true,
-        // },
+        }
     },
     messages: {
         cname: 'Bu alan zorunludur.',
