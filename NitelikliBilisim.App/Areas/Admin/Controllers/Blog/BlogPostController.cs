@@ -87,6 +87,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             {
                 Title = data.Title,
                 CategoryId = data.CategoryId,
+                SummaryContent = data.SummaryContent,
                 Content = data.Content,
                 FeaturedImageUrl = featuredImagePath,
                 IsActive = true,
@@ -143,7 +144,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 FeaturedImageUrl = post.FeaturedImageUrl,
                 BlogCategories = _unitOfWork.BlogCategory.Get().ToList(),
                 Category = post.Category,
-                Tags = _unitOfWork.BlogPost.GetTagsByBlogPostId(postId)
+                Tags = _unitOfWork.BlogPost.GetTagsByBlogPostId(postId),
+                SummaryContent = post.SummaryContent
             };
 
             return View(model);
@@ -172,6 +174,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     post.FeaturedImageUrl = dbPath;
                 }
                 post.Title = data.Title;
+                post.SummaryContent = data.SummaryContent;
                 post.Content = data.Content;
                 post.ReadingTime = CalculateReadingTime(data.Content);
                 post.CategoryId = data.CategoryId;
