@@ -15,12 +15,14 @@ using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Entities.educations;
+using NitelikliBilisim.Core.Entities.user_details;
 using NitelikliBilisim.Core.Enums.promotion;
 using NitelikliBilisim.Core.PaymentModels;
 using NitelikliBilisim.Core.Services.Payments;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education;
 using NitelikliBilisim.Core.ViewModels.Cart;
 using NitelikliBilisim.Core.ViewModels.Main.Cart;
+using NitelikliBilisim.Core.ViewModels.Main.InvoiceInfo;
 using NitelikliBilisim.Core.ViewModels.Main.Sales;
 using NitelikliBilisim.Core.ViewModels.Sales;
 using NitelikliBilisim.Notificator.Services;
@@ -43,7 +45,7 @@ namespace NitelikliBilisim.App.Controllers
         private readonly IPaymentService _paymentService;
         private readonly IEmailSender _emailSender;
 
-        public SaleController(IWebHostEnvironment hostingEnvironment, UnitOfWork unitOfWork, IPaymentService paymentService, UserUnitOfWork userUnitOfWork,IEmailSender emailSender)
+        public SaleController(IWebHostEnvironment hostingEnvironment, UnitOfWork unitOfWork, IPaymentService paymentService, UserUnitOfWork userUnitOfWork, IEmailSender emailSender)
         {
             _hostingEnvironment = hostingEnvironment;
             _unitOfWork = unitOfWork;
@@ -52,6 +54,24 @@ namespace NitelikliBilisim.App.Controllers
             _userUnitOfWork = userUnitOfWork;
             _emailSender = emailSender;
         }
+
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
+        [Route("fatura-bilgileri")]
+        public IActionResult InvoiceInformation()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            List<InvoiceInfoAddressGetVm> addresses = _unitOfWork.Address.GetInvoiceAddressesByUserId(userId);
+            var cities = _unitOfWork.City.Get().OrderBy(x=>x.Order).ToList();
+            
+            var invoiceInfos = new InvoiceInfoGetVm
+            {
+                Addresses = addresses,
+                Cities = cities
+            };
+            return View(invoiceInfos);
+        }
+
+
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("sepet")]
         public IActionResult Cart()
@@ -108,7 +128,7 @@ namespace NitelikliBilisim.App.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var promotion = CheckBasketBasedPromotion(userId, data.Items);
 
-             if (promotion != null)
+            if (promotion != null)
             {
                 var model = new BasketBasedPromotionVm
                 {
@@ -280,7 +300,7 @@ namespace NitelikliBilisim.App.Controllers
                     });
                 }
             }
-            else if(basketBasedPromotion!=null)
+            else if (basketBasedPromotion != null)
             {
                 promotion = basketBasedPromotion;
                 discountAmount = basketBasedPromotion.DiscountAmount;
@@ -455,7 +475,7 @@ namespace NitelikliBilisim.App.Controllers
         public decimal GetPriceSumForCartItems(List<_CartItem> itemIds, decimal discountAmount = 0)
         {
             var retVal = 0m;
-            if (itemIds!=null && itemIds.Count > 0)
+            if (itemIds != null && itemIds.Count > 0)
             {
                 var groupIds = itemIds.Select(x => x.GroupId).ToList();
                 var totalPrice = _unitOfWork.EducationGroup.Get(x => groupIds.Contains(x.Id), null).Sum(x => x.NewPrice.GetValueOrDefault());
@@ -556,7 +576,7 @@ namespace NitelikliBilisim.App.Controllers
                 else if (condition.ConditionType == ConditionType.PurchasedEducation)
                 {
                     var ids = JsonConvert.DeserializeObject<Guid[]>(condition.ConditionValue);
-                    if (!purchasedEducations.Any(x=>ids.Contains(x.EducationId)))
+                    if (!purchasedEducations.Any(x => ids.Contains(x.EducationId)))
                     {
                         return new ResponseData
                         {
@@ -662,6 +682,65 @@ namespace NitelikliBilisim.App.Controllers
 
         }
 
+        [Route("get-states/{cityId}")]
+        public IActionResult GetStatesByCityId(int cityId)
+        {
+            try
+            {
+                List<State> states = _unitOfWork.State.GetStateByCityId(cityId);
+                return Json(new ResponseData
+                {
+                    Success = true,
+                    Data = states
+                });
+
+            }
+            catch (Exception)
+            {
+                //Todo Log
+                throw;
+            }
+        }
+
+        public IActionResult AddCorporateAddress(AddCorporateAddressPostVm model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                model.CustomerId = userId;
+                model.IsDefaultAddress = true;
+                _unitOfWork.Address.AddCorporateAddress(model);
+                return RedirectToAction("InvoiceInformation", "Sale");
+            }
+            catch (Exception)
+            {
+                //Todo Log
+                throw;
+            }
+
+        }
+        public IActionResult AddIndividualAddress(AddIndividualAddressPostVm model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                model.CustomerId = userId;
+                model.IsDefaultAddress = true;
+                _unitOfWork.Address.AddIndividualAddress(model);
+                return RedirectToAction("InvoiceInformation", "Sale");
+            }
+            catch (Exception)
+            {
+                //Todo Log
+                throw;
+            }
+        }
     }
 
 

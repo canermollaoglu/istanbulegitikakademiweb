@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NitelikliBilisim.Data;
 
 namespace NitelikliBilisim.Data.Migrations
 {
     [DbContext(typeof(NbDataContext))]
-    partial class NbDataContextModelSnapshot : ModelSnapshot
+    [Migration("20201208062121_EditAddressTable")]
+    partial class EditAddressTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2050,13 +2052,7 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<bool>("IsDefaultAddress")
                         .HasColumnType("bit");
 
-                    b.Property<string>("NameSurname")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
+                    b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("StateId")
@@ -2066,9 +2062,6 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TaxOffice")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedDate")
