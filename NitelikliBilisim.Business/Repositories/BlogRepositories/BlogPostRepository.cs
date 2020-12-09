@@ -28,14 +28,67 @@ namespace NitelikliBilisim.Business.Repositories.BlogRepositories
                         where blog.Id != currentBlogPostId
                         select new RecommendedBlogPostVm
                         {
-                            Id=blog.Id,
+                            Id = blog.Id,
                             Title = blog.Title,
                             Content = blog.SummaryContent,
                             CreatedDate = blog.CreatedDate.ToShortDateString(),
                             Category = blogCategory.Name,
-                            FeaturedImageUrl =blog.FeaturedImageUrl,
+                            FeaturedImageUrl = blog.FeaturedImageUrl,
                             ReadingTime = blog.ReadingTime.ToString()
                         }).Take(5).ToList();
+            return data;
+        }
+
+        public BlogsVm GetPosts(Guid? categoryId, int? pageIndex)
+        {
+            var retVal = new BlogsVm();
+            var data = _context.BlogPosts.AsQueryable();
+            if (categoryId.HasValue)
+            {
+                data = data.Where(x => x.CategoryId == categoryId);
+            }
+            var totalCount = data.Count();
+            pageIndex = pageIndex ?? 1;
+
+            data = data.Skip((pageIndex.Value-1) * 8).Take(8);
+
+            var list = data.Include(x => x.Category).Select(x => new BlogPostListVm
+            {
+                Id = x.Id,
+                Title = x.Title,
+                Content = x.SummaryContent,
+                CreatedDate = x.CreatedDate.ToShortDateString(),
+                Category = x.Category.Name,
+                FeaturedImageUrl = x.FeaturedImageUrl,
+                ReadingTime = x.ReadingTime.ToString()
+            }).ToList();
+
+            retVal.Posts = list;
+            retVal.TotalCount = totalCount;
+            retVal.PageIndex = pageIndex.Value;
+
+            return retVal;
+        }
+
+        public int TotalBlogPostCount()
+        {
+            return _context.BlogPosts.Count();
+        }
+
+        public List<LastBlogPostVm> LastBlogPosts(int t)
+        {
+            var data = (from blog in _context.BlogPosts
+                        join blogCategory in _context.BlogCategories on blog.CategoryId equals blogCategory.Id
+                        orderby blog.CreatedDate descending
+                        select new LastBlogPostVm
+                        {
+                            Id = blog.Id,
+                            Title = blog.Title,
+                            CreatedDate = blog.CreatedDate.ToShortDateString(),
+                            Category = blogCategory.Name,
+                            FeaturedImageUrl = blog.FeaturedImageUrl,
+                            ReadingTime = blog.ReadingTime.ToString()
+                        }).Take(t).ToList();
             return data;
         }
 

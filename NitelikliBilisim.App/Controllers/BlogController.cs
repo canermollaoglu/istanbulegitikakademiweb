@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.ViewModels.Main.Blog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace NitelikliBilisim.App.Controllers
         {
             return View();
         }
-        [Route("blog/detail/{blogId}")]
+        [Route("blog/detay/{blogId}")]
         public IActionResult Detail(Guid? blogId)
         {
             if (!blogId.HasValue)
@@ -36,6 +37,19 @@ namespace NitelikliBilisim.App.Controllers
                 throw;
             }
             
+        }
+        [Route("blog")]
+        public IActionResult List(Guid? c,int? p)
+        {
+            ViewData["CategoryFilter"] = c.HasValue ? c : ViewData["CategoryFilter"];
+            ViewData["Page"] = p.HasValue ? p : ViewData["Page"];
+
+            BlogListVm model = new BlogListVm();
+            model.Categories = _unitOfWork.BlogCategory.GetListForBlogListPage();
+            model.LastBlogPosts = _unitOfWork.BlogPost.LastBlogPosts(5);
+            model.Blogs = _unitOfWork.BlogPost.GetPosts(c,p);
+            model.TotalBlogPostCount = _unitOfWork.BlogPost.TotalBlogPostCount();
+            return View(model);
         }
 
     }

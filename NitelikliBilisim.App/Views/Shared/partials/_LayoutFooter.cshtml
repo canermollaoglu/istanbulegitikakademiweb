@@ -1,71 +1,4 @@
-﻿<!--<footer>
-    <div class="container margin_120_95">
-        <div class="row">
-            <div class="col-lg-5 col-md-12 p-r-5">-->
-                <!--<p><img src="img/logo.png" width="149" height="42" data-retina="true" alt=""></p>-->
-                <!--<p>
-                    <div id="logo">
-                        <a href="/"><img src="~/assets/img/nb_logo_sm.png" style="margin-top: -32px !important" width="149" height="42" data-retina="true" alt=""></a>
-                    </div>
-                </p><br /><br />
-                <p>niteliklibilisim.com.tr, her alanda almış olduğunuz Bilişim Teknolojileri Eğitimleri'ni destekleyen Proje Eğitimleri'ni, canlı sınıflarda sektörün önde gelen uzman eğiticilerinden alabileceğiniz bir eğitim platformudur.</p>
-                <div class="follow_us">
-                    <ul>
-                        <li>BİZİ TAKİP EDİN</li>
-                        <li><a href="https://www.facebook.com/NBUYProjeEgitimleri"><i class="ti-facebook"></i></a></li>
-                        <li><a href="https://twitter.com/NbuyProjeEgitim"><i class="ti-twitter-alt"></i></a></li>
-                        <li><a href="https://www.instagram.com/niteliklibilisim/"><i class="ti-instagram"></i></a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 ml-lg-auto">
-                <h5>Linkler</h5>
-                <ul class="links">
-                    @if (!User.Identity.IsAuthenticated)
-                    {
-                        <li><a href="/giris-yap">Giriş Yap</a></li>
-                        <li><a href="/kayit-ol">Üye Ol</a></li>
-                    }
-                    <li><a href="#0" class="search-overlay-menu-btn">Arama</a></li>
-                    <li><a href="/biz-kimiz">Biz Kimiz?</a></li>
-                    <li><a href="#0">İletişim</a></li>
-                </ul>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <h5>İletişim Bilgileri</h5>
-                <ul class="contacts">
-                    <li><a href="tel://5074344049"><i class="ti-mobile"></i> 5074344049</a></li>
-                    <li><a href="mailto:info@niteliklibisilim.com.tr"><i class="ti-email"></i> info@niteliklibilisim.com.tr</a></li>
-                </ul>
-                <div id="newsletter">
-                    <h6>Mail Listemize Katılın</h6>
-                    <div id="message-newsletter"></div>
-                    <form method="post" action="~/assets/newsletter.php" name="newsletter_form" id="newsletter_form">
-                        <div class="form-group">
-                            <input type="email" name="email_newsletter" id="email_newsletter" class="form-control" placeholder="Email adresiniz">
-                            <input type="submit" value="Katıl" id="submit-newsletter">
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>-->
-        <!--/row-->
-        <!--<hr>
-        <div class="row">
-            <div class="col-md-8">
-                <ul id="additional_links">
-                    <li><a href="#0">Kullanım Koşulları</a></li>
-                    <li><a href="#0">Güvenlik</a></li>
-                </ul>
-            </div>
-            <div class="col-md-4">
-                <div id="copy">© @DateTime.Now.Year niteliklibilisim.com.tr</div>
-            </div>
-        </div>
-    </div>
-</footer>-->
-<!--/footer-->
-<footer class="footerWrap">
+﻿<footer class="footerWrap">
     <div class="container">
         <div class="row">
             <div class="footer">
@@ -156,14 +89,14 @@
                                 <div class="footer__inner">
                                     <h6 class="title title--blue">Kurumsal</h6>
                                     <nav>
-                                        <li><a href="">Hakkımızda</a></li>
-                                        <li><a href="">İletişim</a></li>
+                                        <li><a asp-controller="Home" asp-action="AboutUs">Hakkımızda</a></li>
+                                        <li><a asp-controller="Home" asp-action="Contact">İletişim</a></li>
                                     </nav>
 
                                     <div class="footer__linkWrap">
-                                        <li><a href="./egitmen-basvuru.php" class="title title--blue">Eğitmen Başvurusu</a></li>
-                                        <li><a href="./blog-listeleme.php" class="title title--blue">Blog</a></li>
-                                        <li><a href="./sss.php" class="title title--blue">SSS</a></li>
+                                        <li><a asp-controller="Home" asp-action="EducatorApplication" class="title title--blue">Eğitmen Başvurusu</a></li>
+                                        <li><a asp-controller="Blog" asp-action="List" class="title title--blue">Blog</a></li>
+                                        <li><a asp-controller="Home" asp-action="FrequentlyAskedQuestions" class="title title--blue">SSS</a></li>
                                     </div>
                                 </div>
                             </div>

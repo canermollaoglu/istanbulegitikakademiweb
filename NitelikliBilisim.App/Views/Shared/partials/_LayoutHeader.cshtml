@@ -3,136 +3,7 @@
 @using System.Security.Claims
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
-<!--<header class="header fadeInDown">
-    <div id="logo">
-        <a href="/"><img class="sitelogo" src="~/assets/img/nb_logo_sm.png" width="149" height="42" data-retina="true" alt=""></a>
-    </div>
 
-    <ul id="top_menu">
-        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
-        {
-            <li><a href="/admin/panel" class="btn_1">Admin Panel</a></li>
-        }
-        @if (User.Identity.IsAuthenticated && User.IsInRole("Educator"))
-        {
-            <li><a href="/egitmen/yonetim-paneli">Eğitmen Paneli</a></li>
-        }
-        @if (User.Identity.IsAuthenticated && User.IsInRole("User"))
-        {
-            <li><a href="/profil/@User.FindFirstValue(ClaimTypes.NameIdentifier)"><i class="fa fa-user"></i> Profil</a></li>
-        }
-        @if (!User.Identity.IsAuthenticated)
-        {
-            <li><a href="/giris-yap" class="login">GİRİŞ YAP</a></li>
-        }
-        <li><a href="#0" class="search-overlay-menu-btn">Arama</a></li>
-        <li class="hidden_mobile"><a href="/biz-kimiz">BİZ KİMİZ?</a></li>
-        <li><a href="/sepet" style="background-color:#ef8d6f !important" class="btn_1 rounded" id="layout-header-cart"><i class="hidden_mobile pe-7s-cart"></i> (0)</a></li>
-        @if (!User.Identity.IsAuthenticated)
-        {
-            <li class="hidden_mobile"><a href="/kayit-ol" class="btn_1 rounded">KAYDOL</a></li>
-        }
-        else
-        {
-            <li><a href="/cikis-yap" class="btn_1">Çıkış Yap</a></li>
-        }
-        <li>
-            <div class="hamburger hamburger--spin">
-                <div class="hamburger-box">
-                    <div class="hamburger-inner"></div>
-                </div>
-            </div>
-        </li>
-    </ul>
-    <!-- /top_menu -->
-<!--</header>-->
-<!-- /header -->
-<!--<div id="main_menu">
-    <div class="container">
-        <nav class="version_2">
-            <div class="row">
-                @if (User.Identity.IsAuthenticated)
-                {
-                    <div class="col-md-3">
-                        <h3>Kullanıcı</h3>
-                        <ul>
-                            <li><a href="/profil/@User.FindFirstValue(ClaimTypes.NameIdentifier)">Profil</a></li>
-                            <li><a href="/sepet">Sepet</a></li>
-                            <li><a href="/sepet">Satın Alma Geçmişi</a></li>
-                        </ul>
-                    </div>
-                }
-                else
-                {
-                    <div class="col-md-3">
-                        <h3>Kullanıcı</h3>
-                        <ul>
-                            <li><a href="/giris-yap">Giriş yap</a></li>
-                            <li><a href="/kayit-ol">Kaydol</a></li>
-                        </ul>
-                    </div>
-                }
-
-                <div class="col-md-3">
-                    <h3>NBuy Projeleri</h3>
-                    <ul>
-                        <li><a href="/egitimler/web-ve-mobil-programlama">Web ve Mobil Programlama</a></li>
-                        <li><a href="/egitimler/sistem-ve-ag-yonetimi">Sistem ve Ağ Yönetimi</a></li>
-                        <li><a href="/egitimler/siber-guvenlik">Siber Güvenlik</a></li>
-                        <li><a href="/egitimler/bulut-bilisim">Bulut Bilişim</a></li>
-                        <li><a href="/egitimler/oyun-programlama">Oyun Programlama</a></li>
-                        <li><a href="/egitimler/kurumsal-kaynak-planlama">Kurumsal Kaynak Planlama</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-3">
-                    <h3></h3>
-                    <ul>-->
-@*<li><a href="#0">Menu 1</a><span class="badge_info">New</span></li>
-    <li><a href="about.html">About</a></li>
-    <li><a href="blog.html">Blog</a></li>
-    <li><a href="login.html">Login</a></li>
-    <li><a href="register.html">Register</a></li>
-    <li><a href="contacts.html">Contacts</a></li>
-    <li><a href="404.html">404 page</a></li>
-    <li><a href="agenda-calendar.html">Agenda Calendar</a></li>
-    <li><a href="faq.html">Faq</a></li>
-    <li><a href="help.html">Help</a></li>*@
-<!--</ul>
-</div>
-<div class="col-md-3">
-    <h3>Sözleşme Metinleri</h3>
-    <ul>-->
-@*<li> <span><a href="#" data-toggle="modal" data-target="#header-obf-modal">Ön Bilgilendirme Formu</a></span></li>*@
-@*<li> <span><a href="#" data-toggle="modal" data-target="#header-ch-modal">Cayma Hakkı</a></span></li>
-    <li> <span><a href="#" data-toggle="modal" data-target="#header-cp-modal">Çerez Politikası</a></span></li>
-    <li> <span><a href="#" data-toggle="modal" data-target="#header-gp-modal">Gizlilik Politikası</a></span></li>
-    <li> <span><a href="#" data-toggle="modal" data-target="#header-kvkk-modal">Kişisel Verilerin Korunması Kanunu</a></span></li>
-                        </ul>
-                    </div>
-                </div>-->*@
-<!-- /row -->
-<!--</nav>
-        <div class="follow_us">
-            <ul>
-                <li>BİZİ TAKİP EDİN</li>
-                <li><a href="https://www.facebook.com/NBUYProjeEgitimleri"><i class="ti-facebook"></i></a></li>
-                <li><a href="https://twitter.com/NbuyProjeEgitim"><i class="ti-twitter-alt"></i></a></li>
-                <li><a href="https://www.instagram.com/niteliklibilisim/"><i class="ti-instagram"></i></a></li>
-            </ul>
-        </div>
-    </div>
-</div>-->
-<!-- /main_menu 2-->
-<!--<div class="search-overlay-menu">
-    <span class="search-overlay-close"><span class="closebt"><i class="ti-close"></i></span></span>
-    <form onsubmit="return false;">
-        <input value="" name="q" type="search" placeholder="Ara..." id="input-hidden-search" />
-        <button type="button" id="btn-hidden-search">
-            <i class="icon_search"></i>
-        </button>
-    </form>
-</div>-->
-<!-- End Search Menu -->
 <div id="userDropdown" class="user-dropdown">
     @if (User.Identity.IsAuthenticated)
     {
@@ -724,9 +595,8 @@
                             <a asp-controller="Home" asp-action="Contact">İletişim</a>
                             <a asp-controller="Home" asp-action="EducatorApplication">Eğitmen Başvurusu</a>
                             <a asp-controller="Home" asp-action="NonDisclosureAgreement">Gizlilik Sözleşmesi</a>
+                            <a asp-controller="Blog" asp-action="List">Blog Listeleme</a>
                             <a href="./egitim-listeleme.php">Eğitim Listeleme</a>
-                            <a href="./blog-listeleme.php">Blog Listeleme</a>
-                            <a href="./blog-detay.php">Blog Detay</a>
                             <a href="./kullanici-yorumlari.php">Kullanıcı Yorumları</a>
                             <a href="./kullanici-yorumlari-not-login.php">Kullanıcı Yorumları giriş yapılmamış</a>
                             <a href="./sana-ozel.php">Sana Özel</a>
