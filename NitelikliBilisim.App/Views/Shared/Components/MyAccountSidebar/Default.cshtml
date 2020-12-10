@@ -1,0 +1,140 @@
+﻿@model NitelikliBilisim.Core.ViewModels.Main.Profile.MyAccountSidebarVm
+@using NitelikliBilisim.Core.Services.Abstracts
+@inject IStorageService StorageService
+@{
+    var userAvatarPath = "";
+    if (!string.IsNullOrEmpty(Model.AvatarPath))
+    {
+        userAvatarPath = StorageService.DownloadFile(System.IO.Path.GetFileName(Model.AvatarPath), System.IO.Path.GetDirectoryName(Model.AvatarPath)).Result;
+    }
+}
+
+<div class="account-side">
+    <div class="account-side__menu js-calc-line-height">
+        <div class="account-side__top">
+            <div class="account-side__img">
+                <input type="image" class="account-side__img-img" src="@userAvatarPath" />
+                <input type="file" id="accountSideImg" style="display: none;" />
+                <div class="account-side__img-edit">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-pencil"></use>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+            <div class="account-side__name">
+                @Model.Name @Model.Surname
+                @if (Model.IsNBUY)
+                {
+                    <span class="account-side__nbuy">NBUY</span>
+                }
+            </div>
+            <div class="account-side__branch">
+                Web Tasarım ve Programlama
+            </div>
+            <div class="account-side__university">
+                <span class="icon-outer">
+                    <svg class="icon">
+                        <use xlink:href="../../assets/img/icons.svg#icon-map-pin-f"></use>
+                    </svg>
+                </span>
+                Bahçeşehir Üniversitesi
+            </div>
+        </div>
+        <ul class="account-side__list js-vertical-magic-line">
+            <li class="account-side__item active js-vertical-magic-line-item">
+                <a href="./hesap-panelim.php">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-home"></use>
+                        </svg>
+                    </span>
+                    Panelim
+                </a>
+            </li>
+            <li class="account-side__item js-vertical-magic-line-item">
+                <a href="./hesap-kurslarim.php">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-code-c"></use>
+                        </svg>
+                    </span>
+                    Kurslarım
+                </a>
+            </li>
+            <li class="account-side__item js-vertical-magic-line-item">
+                <a href="./hesap-sertifikalarim.php">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-doc-medal"></use>
+                        </svg>
+                    </span>
+                    Sertifikalarım (10)
+                </a>
+            </li>
+            <li class="account-side__item js-vertical-magic-line-item">
+                <a href="./hesap-yorumlarim.php">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-speak-balloon"></use>
+                        </svg>
+                    </span>
+                    Yorumlarım
+                </a>
+            </li>
+            <li class="account-side__item js-vertical-magic-line-item">
+                <a href="./hesap-kuponlarim.php">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-coupon"></use>
+                        </svg>
+                    </span>
+                    Kuponlarım / İndirimlerim
+                </a>
+            </li>
+            <li class="account-side__item js-vertical-magic-line-item">
+                <a href="./hesap-favorilerim.php">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-heart"></use>
+                        </svg>
+                    </span>
+                    Favori Kurslarım
+                </a>
+            </li>
+            <li class="account-side__item js-vertical-magic-line-item">
+                <a href="./hesap-faturalar.php">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-bill"></use>
+                        </svg>
+                    </span>
+                    Faturalarım
+                </a>
+            </li>
+            <li class="account-side__item js-vertical-magic-line-item">
+                <a href="./hesap-ayarlari.php">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-settings"></use>
+                        </svg>
+                    </span>
+                    Ayarlar
+                </a>
+            </li>
+        </ul>
+        <div class="account-side__footer">
+            <div class="account-side__item">
+                <a href="#0">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-logout"></use>
+                        </svg>
+                    </span>
+                    Çıkış Yap
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

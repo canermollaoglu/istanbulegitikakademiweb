@@ -34,12 +34,12 @@ namespace NitelikliBilisim.App.Controllers
             _fileManager = new FileUploadManager(_hostingEnvironment, "jpg", "jpeg");
         }
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
-        [Route("profil/{userId}")]
-        public IActionResult Profile(string userId)
+        [Route("hesap/panelim")]
+        public IActionResult Profile()
         {
-            if (userId == null)
-                return Redirect("/");
-            var model = _userUnitOfWork.User.GetCustomerInfo(userId);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            //var model = _userUnitOfWork.User.GetCustomerInfo(userId);
+            var model = _userUnitOfWork.User.GetPanelInfo(userId);
             return View(model);
         }
 

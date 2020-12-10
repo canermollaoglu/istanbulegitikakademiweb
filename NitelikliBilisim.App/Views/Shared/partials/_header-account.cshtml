@@ -4,20 +4,19 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
+@{
+    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    var user = await UserManager.FindByIdAsync(userId);
+}
 <div id="userDropdown" class="user-dropdown">
-    @if (User.Identity.IsAuthenticated)
-    {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var user = await UserManager.FindByIdAsync(userId);
-        <div class="user-dropdown__top">
-            <div class="user-dropdown__name">
-                @user.Name @user.Surname
-            </div>
-            <div class="user-dropdown__mail">
-                @user.Email
-            </div>
+    <div class="user-dropdown__top">
+        <div class="user-dropdown__name">
+            @user.Name @user.Surname
         </div>
-    }
+        <div class="user-dropdown__mail">
+            @user.Email
+        </div>
+    </div>
     <div class="user-dropdown__list">
         <a asp-controller="UserProfile" asp-action="Profile" class="user-dropdown__item">
             <span class="icon-outer button-icon">
@@ -55,34 +54,15 @@
         </a>
     </div>
 </div>
-<div id="miniBasket" class="mini-basket">
-    <div class="mini-basket__top">
-        <div class="title title--small">
-            SEPETTEKİ
-            <span class="title--blue">ÜRÜNLERİM</span>
-        </div>
-        <div class="mini-basket__count">2 Ürün</div>
-    </div>
-    <div class="mini-basket__cnt">
-
-    </div>
-    <div class="mini-basket__footer">
-        <a asp-controller="Sale" asp-action="Cart" class="button button-fw button-icon-right">
-            <span class="button-txt">Alışverişi Tamamla</span>
-            <span class="icon-outer button-icon">
-                <svg class="icon">
-                    <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
-                </svg>
-            </span>
-        </a>
-    </div>
-</div>
-<header class="headerWrap">
+<header class="headerWrap headerWrap--account">
+    <!--
+      TODO: Header fixed mı olacak?
+    -->
     <div class="container">
-        <div class="header">
+        <div class="header header--light">
             <div class="header__inner">
                 <a asp-controller="Home" asp-action="Index" class="header__brand">
-                    <img src="~/assets/img/nitelikli-bilisim_logo.svg" alt="Nitelikli Bilişim Logo" height="35" />
+                    <img src="../../assets/img/nitelikli-bilisim_logo-dark.svg" alt="Nitelikli Bilişim Logo" height="40" />
                 </a>
                 <div class='education-overlay overlay js-close-modal'></div>
                 <span class="header__education js-open-education">
@@ -159,11 +139,11 @@
                                     </p>
                                     <a href="">
                                         <span>Şimdi İncele</span>
-                                        <img src="~/assets/img/arrowRightLong.png" alt="" />
+                                        <img src="../../assets/img/arrowRightLong.png" alt="" />
                                     </a>
                                 </div>
                                 <figure class="banner__image">
-                                    <img src="~/assets/img/banner1.png" alt="" height="150" />
+                                    <img src="../../assets/img/banner1.png" alt="" height="150" />
                                 </figure>
                             </div>
 
@@ -177,7 +157,7 @@
                                     </a>
                                 </div>
                                 <figure class="banner__image">
-                                    <img src="~/assets/img/banner2.png" alt="" />
+                                    <img src="../../assets/img/banner2.png" alt="" />
                                 </figure>
                             </div>
                         </div>
@@ -583,302 +563,86 @@
 
                 <nav class="header__links">
                     <li>
-                        <a href="#0" class="js-modal-trigger" data-trigger="egitimSihirbazi">Eğitim Sihirbazı</a>
+                        <a  class="js-modal-trigger" data-trigger="egitimSihirbazi">Eğitim Sihirbazı</a>
                     </li>
                     <li id="TumSayfalar" class="header__dropdown">
+                        <!--
+                          TODO: Bu linkin paddingleri tasarımda fazla basılmış, kod tarafında sorun oluyor.
+                        -->
                         <a href="javascript:void(0)">
                             <span>Kurumsal</span>
                         </a>
+
                         <ul>
-                            <a asp-controller="Home" asp-action="AboutUs">Hakkımızda</a>
-                            <a asp-controller="Home" asp-action="FrequentlyAskedQuestions">Sıkça Sorulan Sorular</a>
-                            <a asp-controller="Home" asp-action="Contact">İletişim</a>
-                            <a asp-controller="Home" asp-action="EducatorApplication">Eğitmen Başvurusu</a>
-                            <a asp-controller="Home" asp-action="NonDisclosureAgreement">Gizlilik Sözleşmesi</a>
-                            <a asp-controller="Blog" asp-action="List">Blog Listeleme</a>
-                            <a asp-controller="Home" asp-action="UserComments">Kullanıcı Yorumları</a>
+                            <a href="./index.php">Anasayfa</a>
                             <a href="./egitim-listeleme.php">Eğitim Listeleme</a>
+                            <a href="./egitim-detay.php">Eğitim Detay</a>
+                            <a href="./egitmen-detay.php">Eğitmen Detay</a>
+                            <a href="./blog-listeleme.php">Blog Listeleme</a>
+                            <a href="./blog-detay.php">Blog Detay</a>
+                            <a href="./hakkimizda.php">Hakkımızda</a>
+                            <a href="./iletisim.php">İletişim</a>
+                            <a href="./sss.php">Sıkça Sorulan Sorular</a>
+                            <a href="./kullanici-yorumlari.php">Kullanıcı Yorumları</a>
+                            <a href="./kullanici-yorumlari-not-login.php">Kullanıcı Yorumları giriş yapılmamış</a>
+                            <a href="./sozlesme.php">Sözleşme</a>
                             <a href="./sana-ozel.php">Sana Özel</a>
                             <a href="./checkout-1-sepet.php">Alışveriş Sepeti</a>
+                            <a href="./kayit-ol.php">Kayıt Ol</a>
+                            <a href="./giris-yap.php">Giriş Yap</a>
+                            <a href="./sifremi-unuttum.php">Şifremi Unuttum</a>
+                            <a href="./sifre-olustur.php">Şifre Oluştur</a>
                             <a href="./hesap-panelim.php">Hesap</a>
-
+                            <a href="./kurumsal-uyelik-talebi.php">Kurumsal Üyelik Talebi</a>
                         </ul>
                     </li>
                     <li>
-                        <a asp-controller="Home" asp-action="CorporateMembershipApplication">Kurumsal Üyelik Talebi</a>
+                        <a href="./kurumsal-uyelik-talebi.php">Kurumsal Üyelik Talebi</a>
                     </li>
                 </nav>
 
                 <nav class="header__right-side">
                     <div class='header-overlay overlay js-close-modal'></div>
-
-
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                        var user = await UserManager.FindByIdAsync(userId);
-                        var profileImage = "";
-                        try
-                        {
-                            if (User.IsInRole("Educator"))
-                            {
-
-                                profileImage = StorageService.DownloadFile(System.IO.Path.GetFileName(user.AvatarPath), "educator-photos").Result;
-                            }
-                            else if (User.IsInRole("User"))
-                            {
-                                profileImage = StorageService.DownloadFile(System.IO.Path.GetFileName(user.AvatarPath), "user-avatars").Result;
-                            }
-                        }
-                        catch
-                        {
-                        }
-
-                        <!-- giriş yapılmış -->
-                        <div class="header__profile-btn js-open-user-dropdown">
-                            <div class="header__profile-img">
-                                <img src="@profileImage" alt="">
-                                <div class="header__profile-caret"></div>
-                            </div>
-                            <div class="header__profile-cnt">
-                                <div class="header__profile-txt">Hoşgeldiniz</div>
-                                <div class="header__profile-name">@user.Name @user.Surname</div>
-                            </div>
-                        </div>
-                        <a href="./sana-ozel.php" class="button header__register-button">
-                            <span class="icon-outer button-icon">
-                                <svg class="icon">
-                                    <use xlink:href="../../assets/img/icons.svg#icon-star-s"></use>
-                                </svg>
-                            </span>
-                            <span>Sana Özel</span>
-                        </a>
-                        <!-- giriş yapılmış -->
-                    }
-                    else
-                    {
-                        <!-- giriş yapılmamış -->
-                        <a asp-controller="Account" asp-action="Login" class="button button--ghost header__login-button">
-                            <span class="icon-outer button-icon">
-                                <svg class="icon">
-                                    <use xlink:href="../../assets/img/icons.svg#icon-lock"></use>
-                                </svg>
-                            </span>
-                            <span>Giriş Yap</span>
-                        </a>
-                        <a asp-controller="Account" asp-action="Register" class="button header__register-button">
-                            <span class="icon-outer button-icon">
-                                <svg class="icon">
-                                    <use xlink:href="../../assets/img/icons.svg#icon-user"></use>
-                                </svg>
-                            </span>
-                            <span>Üye Ol</span>
-                        </a>
-                        <!-- giriş yapılmamış -->
-                    }
-
-                    <a class="header__hamper js-open-mini-basket">
-                        <span class="icon-outer icon-basket">
-                            <svg class="icon">
-                                <use xlink:href="../../assets/img/icons.svg#icon-basket"></use>
-                            </svg>
-                        </span>
-                        <!-- <span class="header__count">3</span> -->
+                    <!-- giriş yapılmamış -->
+                    <!-- <a class="button button--ghost header__login-button">
+                      <span class="icon-outer button-icon">
+                        <svg class="icon">
+                          <use xlink:href="../../assets/img/icons.svg#icon-lock"></use>
+                        </svg>
+                      </span>
+                      <span>Giriş Yap</span>
                     </a>
+                    <a class="button header__register-button">
+                      <span class="icon-outer button-icon">
+                        <svg class="icon">
+                          <use xlink:href="../../assets/img/icons.svg#icon-user"></use>
+                        </svg>
+                      </span>
+                      <span>Üye Ol</span>
+                    </a> -->
+                    <!-- giriş yapılmamış -->
+                    <!-- giriş yapılmış -->
+                    <div class="header__profile-btn js-open-user-dropdown">
+                        <div class="header__profile-img">
+                            @{
+                                var avatarPath = "";
+                                if (!string.IsNullOrEmpty(user.AvatarPath))
+                                {
+                                    avatarPath = @StorageService.DownloadFile(System.IO.Path.GetFileName(user.AvatarPath), System.IO.Path.GetDirectoryName(user.AvatarPath)).Result;
+                                }
+
+                            }
+                            <img src="@avatarPath" alt="">
+                            <div class="header__profile-caret"></div>
+                        </div>
+                        <div class="header__profile-cnt">
+                            <div class="header__profile-name">@user.Name @user.Surname </div>
+                        </div>
+                    </div>
+                    <!-- giriş yapılmış -->
+
                 </nav>
             </div>
         </div>
     </div>
 </header>
-
-<header class="header-mobile">
-
-    <div class="container">
-        <div class="header-mobile__wrp">
-            <div class="header-mobile__dots js-open-mobile-menu">
-                <span class="icon-outer header-mobile__dots-open">
-                    <svg class="icon">
-                        <use xlink:href="../../assets/img/icons.svg#icon-dots"></use>
-                    </svg>
-                </span>
-                <span class="icon-outer header-mobile__dots-close">
-                    <svg class="icon">
-                        <use xlink:href="../../assets/img/icons.svg#icon-circle-close-c"></use>
-                    </svg>
-                </span>
-            </div>
-            <a href="./index.php" class="header-mobile__logo">
-                <img src="~/assets/img/nitelikli-bilisim_logo.svg" class="logolight" alt="Nitelikli Bilişim Logo" height="35" />
-                <img src="~/assets/img/nitelikli-bilisim_logo-dark.svg" class="logodark" alt="Nitelikli bilişim logo" height="35">
-            </a>
-            <div class="header-mobile__right">
-                <a href="./hesap-menu.php" class="header-mobile__right-btn">
-                    <span class="icon-outer">
-                        <svg class="icon">
-                            <use xlink:href="../../assets/img/icons.svg#icon-user"></use>
-                        </svg>
-                    </span>
-                </a>
-                <div class="header-mobile__right-btn js-open-mini-basket">
-                    <span class="icon-outer">
-                        <svg class="icon">
-                            <use xlink:href="../../assets/img/icons.svg#icon-basket"></use>
-                        </svg>
-                    </span>
-                </div>
-            </div>
-        </div>
-        <div class="mobile-menu">
-            <div class="mobile-menu__list">
-                <div class="mobile-menu__item mobile-menu-dropdown active js-mobile-menu-dropdown">
-                    <span class="mobile-menu__txt">
-                        Eğitimler
-                    </span>
-                    <div class="mobile-menu__dropdown">
-                        <div class="mobile-menu-dropdown ">
-                            <div class="js-mobile-menu-subdropdown">
-                                <span style="color: #007cc8;">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-window-code"></use>
-                                    </svg>
-                                </span>
-                                <span>Web & Mobil Programlama</span>
-                            </div>
-                            <div class="mobile-menu__subdropdown">
-                                <a href="./index.php">Java</a>
-                                <a href="./egitim-listeleme.php">Vue</a>
-                                <a href="#0" class="mobile-menu-subin js-mobile-subin">
-                                    <div>Microsoft</div>
-                                </a>
-                                <div class="mobile-menu-subin__dropdown">
-                                    <a href="#0">React</a>
-                                    <a href="#0">javascript</a>
-                                    <a href="#0">Pyhton</a>
-                                </div>
-                                <a href="./egitmen-detay.php">Pyhton</a>
-                                <a href="./blog-listeleme.php">React</a>
-                            </div>
-                        </div>
-
-                        <div class="mobile-menu-dropdown">
-                            <div class="js-mobile-menu-subdropdown">
-                                <span style="color: #454fd2;">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-system-network"></use>
-                                    </svg>
-                                </span>
-                                <span>Sistem & Ağ Yönetimi</span>
-                            </div>
-                            <div class="mobile-menu__subdropdown">
-                                <a href="./index.php">Java</a>
-                                <a href="./egitim-listeleme.php">Vue</a>
-                                <a href="./egitim-detay.php">Microsoft</a>
-                                <a href="./egitmen-detay.php">Pyhton</a>
-                                <a href="./blog-listeleme.php">React</a>
-                            </div>
-                        </div>
-
-                        <div class="mobile-menu-dropdown no-after">
-                            <div>
-                                <span style="color: #0072cd;">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-azure"></use>
-                                    </svg>
-                                </span>
-                                <span>Siber Güvenlik</span>
-                            </div>
-                        </div>
-
-                        <div class="mobile-menu-dropdown">
-                            <div class="js-mobile-menu-subdropdown">
-                                <span style="color: #0566dd;">
-                                    <svg class="icon icon-azure">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-microsoft-azure"></use>
-                                    </svg>
-                                </span>
-                                <span>Bulut Bilişim</span>
-                            </div>
-                            <div class="mobile-menu__subdropdown">
-                                <a href="./index.php">Java</a>
-                                <a href="./egitim-listeleme.php">Vue</a>
-                                <a href="./egitim-detay.php">Microsoft</a>
-                                <a href="./egitmen-detay.php">Pyhton</a>
-                                <a href="./blog-listeleme.php">React</a>
-                            </div>
-                        </div>
-
-                        <div class="mobile-menu-dropdown no-after">
-                            <div>
-                                <span style="color: #222c38;">
-                                    <svg class="icon icon-unity">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-unity"></use>
-                                    </svg>
-                                </span>
-                                <span>Oyun Programlama</span>
-                            </div>
-                        </div>
-
-                        <div class="mobile-menu-dropdown js-mobile-menu-subdropdown no-after">
-                            <div>
-                                <span style="color: #00b5c3;">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-dynamics"></use>
-                                    </svg>
-                                </span>
-                                <span>Kurumsal Kaynak Planlama</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="mobile-menu__item mobile-menu-dropdown js-mobile-menu-dropdown">
-                    <span class="mobile-menu__txt">
-                        Kurumsal
-                    </span>
-                    <div class="mobile-menu__dropdown">
-                        <a href="./index.php">Anasayfa</a>
-                        <a href="./egitim-listeleme.php">Eğitim Listeleme</a>
-                        <a href="./egitim-detay.php">Eğitim Detay</a>
-                        <a href="./egitmen-detay.php">Eğitmen Detay</a>
-                        <a href="./blog-listeleme.php">Blog Listeleme</a>
-                        <a href="./blog-detay.php">Blog Detay</a>
-                        <a href="./hakkimizda.php">Hakkımızda</a>
-                        <a href="./iletisim.php">İletişim</a>
-                        <a href="./sss.php">Sıkça Sorulan Sorular</a>
-                        <a href="./kullanici-yorumlari.php">Kullanıcı Yorumları</a>
-                        <a href="./kullanici-yorumlari-not-login.php">Kullanıcı Yorumları giriş yapılmamış</a>
-                        <a href="./sozlesme.php">Sözleşme</a>
-                        <a href="./sana-ozel.php">Sana Özel</a>
-                        <a href="./checkout-1-sepet.php">Alışveriş Sepeti</a>
-                        <a href="./kayit-ol.php">Kayıt Ol</a>
-                        <a href="./giris-yap.php">Giriş Yap</a>
-                        <a href="./sifremi-unuttum.php">Şifremi Unuttum</a>
-                        <a href="./sifre-olustur.php">Şifre Oluştur</a>
-                        <a href="./hesap-panelim.php">Hesap</a>
-                        <a href="./kurumsal-uyelik-talebi.php">Kurumsal Üyelik Talebi</a>
-                    </div>
-                </div>
-                <div class="mobile-menu__item js-modal-trigger" data-trigger="egitimSihirbazi">
-                    <span class="mobile-menu__txt">
-                        Eğitim Sihirbazı
-                    </span>
-                </div>
-                <a href="./kurumsal-uyelik-talebi.php" class="mobile-menu__item">
-                    <span class="mobile-menu__txt">
-                        Eğitmen Başvurusu
-                    </span>
-                </a>
-                <a href="./blog-listeleme.php" class="mobile-menu__item">
-                    <span class="mobile-menu__txt">
-                        Blog
-                    </span>
-                </a>
-            </div>
-            <div class="mobile-menu__footer">
-                <a href="#">Kullanım Koşulları</a>
-                <a href="#">Gizlilik Koşulları</a>
-            </div>
-        </div>
-    </div>
-
-</header>
-<div class='header-overlay overlay js-close-modal header-overlay--mobile'></div>
