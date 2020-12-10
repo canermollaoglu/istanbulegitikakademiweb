@@ -50,22 +50,22 @@ namespace NitelikliBilisim.Business.Repositories
         public bool CheckIsCanComment(string userId, Guid educationId)
         {
             var group = (from bridge in Context.Bridge_GroupStudents
-                          join eGroup in Context.EducationGroups.Include(x => x.GroupLessonDays) on bridge.Id equals eGroup.Id
-                          where bridge.Id2 == userId && bridge.Id == educationId
-                          select eGroup).FirstOrDefault();
-           
+                         join eGroup in Context.EducationGroups.Include(x => x.GroupLessonDays) on bridge.Id equals eGroup.Id
+                         where bridge.Id2 == userId && bridge.Id == educationId
+                         select eGroup).FirstOrDefault();
+
             if (group == null)
                 return false;
-            if (group.GroupLessonDays==null || group.GroupLessonDays.Count==0)
+            if (group.GroupLessonDays == null || group.GroupLessonDays.Count == 0)
                 return false;
 
-            var lastDate= group.GroupLessonDays.OrderBy(x => x.DateOfLesson).Last().DateOfLesson;
-            if (DateTime.Now.Date>lastDate)
+            var lastDate = group.GroupLessonDays.OrderBy(x => x.DateOfLesson).Last().DateOfLesson;
+            if (DateTime.Now.Date > lastDate)
             {
                 return true;
             }
             return false;
-           
+
         }
 
         public PagedEntity<Education> GetPagedEntity(int page = 0, Expression<Func<Education, bool>> filter = null, int shownRecords = 15)
@@ -561,17 +561,18 @@ namespace NitelikliBilisim.Business.Repositories
             var education = Context.Educations.First(x => x.Id == id);
 
             var comments = (from comment in Context.EducationComments
-                           join commenter in Context.Users on comment.CommentatorId equals commenter.Id
-                           join student in Context.Customers on commenter.Id equals student.Id
-                           orderby comment.ApprovalDate  descending
-                           select new CommentDetailVm
-                           {
-                               Point = comment.Points,
-                               Commenter = $"{commenter.Name} {commenter.Surname}",
-                               Date = comment.CreatedDate.ToString("dd MMMM yyyy"),
-                               CommenterJob = student.Job,
-                               Content = comment.Content
-                           }).ToList();
+                            join commenter in Context.Users on comment.CommentatorId equals commenter.Id
+                            join student in Context.Customers on commenter.Id equals student.Id
+                            where comment.EducationId == id
+                            orderby comment.ApprovalDate descending
+                            select new CommentDetailVm
+                            {
+                                Point = comment.Points,
+                                Commenter = $"{commenter.Name} {commenter.Surname}",
+                                Date = comment.CreatedDate.ToString("dd MMMM yyyy"),
+                                CommenterJob = student.Job,
+                                Content = comment.Content
+                            }).ToList();
 
 
             var model = new EducationVm
