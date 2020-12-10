@@ -84,6 +84,12 @@ namespace NitelikliBilisim.Business.Repositories
 
         }
 
+        public Dictionary<Guid,string> GetEducationCategoryDictionary()
+        {
+            var categories = _context.EducationCategories.Where(x => x.BaseCategoryId != null).ToDictionary(x => x.Id, x => x.Name);
+            return categories;
+        }
+
     }
 
     public class _EducationCountByCategory

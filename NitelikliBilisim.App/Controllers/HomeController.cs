@@ -17,6 +17,7 @@ using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels.Main.AboutUs;
 using NitelikliBilisim.Core.ViewModels.Main.CorporateMembershipApplication;
+using NitelikliBilisim.Core.ViewModels.Main.EducationComment;
 using NitelikliBilisim.Core.ViewModels.Main.EducatorApplication;
 using System;
 using System.Collections.Generic;
@@ -124,6 +125,21 @@ namespace NitelikliBilisim.App.Controllers
             return View();
         }
 
+        [Route("kullanici-yorumlari")]
+        public IActionResult UserComments(Guid? c, int? s, int? p)
+        {
+            UserCommentsPageGetVm retVal = new();
+
+            ViewData["SortingType"] = s.HasValue ? s : ViewData["SortingType"];
+            ViewData["Page"] = p.HasValue ? p : ViewData["Page"];
+            ViewData["Category"] = c.HasValue ? c : ViewData["Category"];
+            //her sayfada 6 yorum.
+            retVal.SortingTypes = EnumHelpers.ToKeyValuePair<EducationCommentSortingTypes>();
+            retVal.EducationCategories = _unitOfWork.EducationCategory.GetEducationCategoryDictionary();
+            retVal.PageDetails = _unitOfWork.EducationComment.GetEducationComments(c,s,p);
+
+            return View(retVal);
+        }
 
 
         [HttpPost]

@@ -1,0 +1,446 @@
+﻿@model NitelikliBilisim.Core.ViewModels.Main.EducationComment.UserCommentsPageGetVm
+@using NitelikliBilisim.Core.Services.Abstracts
+@using NitelikliBilisim.Core.Enums
+@using MUsefulMethods
+@inject IStorageService StorageService
+@{
+    ViewData["Title"] = "Kullanıcı Yorumları";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="subheader">
+    <div class="subheader__wrp subheader__slider--fw">
+        <div class="container">
+            <div class="subheader__slider--cnt">
+                <div class="subheader__title">Kullanıcı Yorumları</div>
+                <div class="subheader__slider">
+                    <div class="swiper-container js-comment-card-slider">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide">
+                                <div class="comment-slider-card">
+                                    <div class="comment-slider-card__cnt">
+                                        <div class="comment-slider-card__icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="59px"
+                                                 height="45px">
+                                                <text kerning="auto" font-family="Myriad Pro" fill="rgb(0, 0, 0)"
+                                                      transform="matrix( 1.00022414459494, 0, 0, 0.99980177798945,0.55601381578379, 85.0341019070173)"
+                                                      font-size="124.025px">
+                                                    <tspan font-size="124.025px" font-family="Proxima Nova" fill="#60D9DB">&#8220;</tspan>
+                                                </text>
+                                            </svg>
+                                        </div>
+                                        <div class="comment-slider-card__txt">
+                                            Merhabalar, Ben Mehmet Fatih Bakacak. İstanbul Teknik Üniversitesi Telekomünikasyon Mühendisliği
+                                            mezunuyum. Şu anda yine İstanbul Üniversitesi’nde Uydu Haberleşmesi ve Uzaktan algılama üzerine
+                                            yüksek lisans yapmaktayım...
+                                        </div>
+                                        <div class="comment-slider-card__name">
+                                            Mehmet Fatih BAKACAK
+                                        </div>
+                                        <div class="comment-slider-card__branch">
+                                            Bilgisayar Mühendisi
+                                        </div>
+                                    </div>
+                                    <div class="comment-slider-card__video js-video-btn" data-video-id="oxiU6A8MEMM">
+                                        <img src="../../assets/img/comment-card-img.jpg" alt="">
+                                        <div class="card-play">
+                                            <span class="icon-outer">
+                                                <svg class="icon">
+                                                    <use xlink:href="../../assets/img/icons.svg#icon-play"></use>
+                                                </svg>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <div class="comment-slider-card">
+                                    <div class="comment-slider-card__cnt">
+                                        <div class="comment-slider-card__icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="59px"
+                                                 height="45px">
+                                                <text kerning="auto" font-family="Myriad Pro" fill="rgb(0, 0, 0)"
+                                                      transform="matrix( 1.00022414459494, 0, 0, 0.99980177798945,0.55601381578379, 85.0341019070173)"
+                                                      font-size="124.025px">
+                                                    <tspan font-size="124.025px" font-family="Proxima Nova" fill="#60D9DB">&#8220;</tspan>
+                                                </text>
+                                            </svg>
+                                        </div>
+                                        <div class="comment-slider-card__txt">
+                                            Merhabalar, Ben Mehmet Fatih Bakacak. İstanbul Teknik Üniversitesi Telekomünikasyon Mühendisliği
+                                            mezunuyum. Şu anda yine İstanbul Üniversitesi’nde Uydu Haberleşmesi ve Uzaktan algılama üzerine
+                                            yüksek lisans yapmaktayım...
+                                        </div>
+                                        <div class="comment-slider-card__name">
+                                            Mehmet Fatih BAKACAK
+                                        </div>
+                                        <div class="comment-slider-card__branch">
+                                            Bilgisayar Mühendisi
+                                        </div>
+                                    </div>
+                                    <div class="comment-slider-card__video js-video-btn" data-video-id="oxiU6A8MEMM">
+                                        <img src="../../assets/img/comment-card-img.jpg" alt="">
+                                        <div class="card-play">
+                                            <span class="icon-outer">
+                                                <svg class="icon">
+                                                    <use xlink:href="../../assets/img/icons.svg#icon-play"></use>
+                                                </svg>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <div class="comment-slider-card">
+                                    <div class="comment-slider-card__cnt">
+                                        <div class="comment-slider-card__icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="59px"
+                                                 height="45px">
+                                                <text kerning="auto" font-family="Myriad Pro" fill="rgb(0, 0, 0)"
+                                                      transform="matrix( 1.00022414459494, 0, 0, 0.99980177798945,0.55601381578379, 85.0341019070173)"
+                                                      font-size="124.025px">
+                                                    <tspan font-size="124.025px" font-family="Proxima Nova" fill="#60D9DB">&#8220;</tspan>
+                                                </text>
+                                            </svg>
+                                        </div>
+                                        <div class="comment-slider-card__txt">
+                                            Merhabalar, Ben Mehmet Fatih Bakacak. İstanbul Teknik Üniversitesi Telekomünikasyon Mühendisliği
+                                            mezunuyum. Şu anda yine İstanbul Üniversitesi’nde Uydu Haberleşmesi ve Uzaktan algılama üzerine
+                                            yüksek lisans yapmaktayım...
+                                        </div>
+                                        <div class="comment-slider-card__name">
+                                            Mehmet Fatih BAKACAK
+                                        </div>
+                                        <div class="comment-slider-card__branch">
+                                            Bilgisayar Mühendisi
+                                        </div>
+                                    </div>
+                                    <div class="comment-slider-card__video js-video-btn" data-video-id="oxiU6A8MEMM">
+                                        <img src="../../assets/img/comment-card-img.jpg" alt="">
+                                        <div class="card-play">
+                                            <span class="icon-outer">
+                                                <svg class="icon">
+                                                    <use xlink:href="../../assets/img/icons.svg#icon-play"></use>
+                                                </svg>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="swiper-button-prev swiper-button-circle">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="swiper-button-next swiper-button-circle">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="comment-list">
+    <div class="container">
+        <div class="comment-list__top">
+            <h2 class="title title-section">NİTELİKLİ BİLİŞİM'İ <span class="title--blue">TERCİH EDENLER</span></h2>
+            <div class="comment-list__selects mobile-fw-wrap">
+                <form method="get">
+                    <div class="comment-list__select select-commentsort">
+                        <select class="js-comment-sort-select" name="s" onchange="this.form.submit()">
+                            @foreach (var sType in Model.SortingTypes)
+                            {
+                                <!option value="@sType.Key" @(((int?)ViewData["SortingType"] != null && (int?)ViewData["SortingType"] == sType.Key) ? "selected" : "")>@sType.Value</!option>
+                            }
+                        </select>
+                        <div class="lesson-list__select--mobile js-open-sort-mobile">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-sort-gray"></use>
+                                </svg>
+                            </span>
+                            <div class="js-select-mobile-change">
+                                Sırala
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comment-list__select select-commentapp">
+                        <select class="js-comment-app-select" name="c" onchange="this.form.submit()">
+                            <option value="" selected>Tüm Alanlar</option>
+                            @foreach (var category in Model.EducationCategories)
+                            {
+                                <!option value="@category.Key" @(ViewData["Category"] != null && (Guid?)ViewData["Category"] == category.Key ? "selected" : "")>@category.Value</!option>
+                            }
+                        </select>
+                        <div class="lesson-list__select--mobile js-open-filter-mobile">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-filter"></use>
+                                </svg>
+                            </span>
+                            <div class="js-select-mobile-change">
+                                Filtrele
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="comment-list__wrp">
+            @foreach (var comment in Model.PageDetails.Comments)
+            {
+                var profileImage = "";
+                try
+                {
+                    profileImage = StorageService.DownloadFile(System.IO.Path.GetFileName(comment.AvatarPath), System.IO.Path.GetDirectoryName(comment.AvatarPath)).Result;
+                }
+                catch
+                {
+                }
+                <div class="comment-card">
+                    <div class="comment-card__cnt">
+                        <div class="comment-card__top">
+                            <div class="comment-card__title">@comment.Category</div>
+                            <div class="comment-card__date">@comment.Date</div>
+                        </div>
+                        <div class="scroll-more">
+                            <div class="comment-card__txt">
+                                <p>
+                                    @comment.Content
+                                </p>
+                            </div>
+                            <div class="scroll-more-btn">
+                                Devamı için kaydırın
+                                <span class="icon-outer">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-arrow-twins"></use>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comment-card__footer">
+                        <div class="comment-card__author">
+                            <div class="comment-card__author-img">
+                                <img src="@profileImage" alt="">
+                            </div>
+                            <div class="comment-card__author-cnt">
+                                <div class="comment-card__author-name">@comment.UserName</div>
+                                <div class="comment-card__author-branch">@comment.Job</div>
+                            </div>
+                        </div>
+                        <div class="comment-card__stars">
+                            <div class="main-stars">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= comment.Point)
+                                    {
+                                        <span class="icon-outer icon-star active">
+                                            <svg class="icon">
+                                                <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                            </svg>
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="icon-outer icon-star">
+                                            <svg class="icon">
+                                                <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                            </svg>
+                                        </span>
+                                    }
+
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+        <div class="pagination">
+            @if (Model.PageDetails.PageIndex > 1)
+            {
+                <a class="pagination__item prev">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
+                        </svg>
+                    </span>
+                </a>
+            }
+            @for (int i = 1; i <= (int)Math.Ceiling(Model.PageDetails.TotalCount / (double)6); i++)
+            {
+                <a asp-action="UserComments" asp-route-c="@ViewData["Category"]" asp-route-p="@(i)" class="pagination__item @(Model.PageDetails.PageIndex==i?"active":"")">@i</a>
+            }
+            @if (Model.PageDetails.PageIndex < (int)Math.Ceiling(Model.PageDetails.TotalCount / (double)6))
+            {
+                <a class="pagination__item next">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
+                        </svg>
+                    </span>
+                </a>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="commenting-section">
+    <div class="container">
+        <div class="commenting-section__title">
+            YORUM YAPMAK <span class="colored-blue"> İSTİYORUM</span>
+        </div>
+        <div class="commenting-section__txt">
+            Yukarıdaki maddelerin haricinde bize aşağıdaki form ile<br> sorularınızı iletebilirsiniz
+        </div>
+        <div class="commenting-section__commenting">
+            @if (User.Identity.IsAuthenticated)
+            {
+                <form class="commenting-section__commenting">
+                    <div class="commenting-box">
+                        <div class="commenting-top">
+                            <div class="commenting-name">
+                                <input type="text" placeholder="Adınız Soyadınız*">
+                            </div>
+                            <div class="commenting-select">
+                                <select class="js-commenting-select">
+                                    <option value="" selected hidden disabled>Kurs Alanı</option>
+                                    <option value="2">Asp.Net</option>
+                                    <option value="3">Vue</option>
+                                    <option value="4">React</option>
+                                    <option value="5">Angular</option>
+                                </select>
+                            </div>
+                            <div class="commenting-branch">
+                                <input type="text" placeholder="Mesleğiniz">
+                            </div>
+                            <div class="commenting-pointed">
+                                <span>Puanla</span>
+                                <div class="js-let-point">
+                                    <span class="icon-outer icon-star">
+                                        <svg class="icon">
+                                            <use xlink:href="assets/img/icons.svg#icon-star"></use>
+                                        </svg>
+                                    </span>
+                                    <span class="icon-outer icon-star">
+                                        <svg class="icon">
+                                            <use xlink:href="assets/img/icons.svg#icon-star"></use>
+                                        </svg>
+                                    </span>
+                                    <span class="icon-outer icon-star">
+                                        <svg class="icon">
+                                            <use xlink:href="assets/img/icons.svg#icon-star"></use>
+                                        </svg>
+                                    </span>
+                                    <span class="icon-outer icon-star">
+                                        <svg class="icon">
+                                            <use xlink:href="assets/img/icons.svg#icon-star"></use>
+                                        </svg>
+                                    </span>
+                                    <span class="icon-outer icon-star">
+                                        <svg class="icon">
+                                            <use xlink:href="assets/img/icons.svg#icon-star"></use>
+                                        </svg>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="commenting-texting">
+                            <textarea placeholder="Yorumlarınızı buradan yazın...*"></textarea>
+                        </div>
+                    </div>
+                    <div class="commenting-footer">
+                        <div class="clear-message">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="assets/img/icons.svg#icon-circle-close"></use>
+                                </svg>
+                            </span>
+                            Sıfırla
+                        </div>
+                        <div class="commenting-footer-right">
+                            <button class="button button--dark button-big button-fw">
+                                <span class="button--txt">
+                                    Yorumu Gönder
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            }
+            else
+            {
+                <div class="commenting__not-login">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-speak-balloon"></use>
+                        </svg>
+                    </span>
+                    <div class="commenting__not-login-txt">
+                        Yorum yapabilmek için; <a asp-controller="Account" asp-action="Login">giriş yapmanız</a> üye değilseniz, <a asp-controller="Account" asp-action="Register">üye olmanız</a>
+                        gerekmektedir.
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</section>
+<div class="sort-mobile js-sort-mobile">
+    <div class="sort-mobile__top">
+        <span class="icon-outer">
+            <svg class="icon">
+                <use xlink:href="../../assets/img/icons.svg#icon-sort-gray"></use>
+            </svg>
+        </span>
+        <div class="sort-mobile__top-title">
+            Sırala
+        </div>
+    </div>
+    <div class="sort-mobile__list">
+        <div class="sort-mobile__item">Fiyata Göre Artan</div>
+        <div class="sort-mobile__item">Fiyata Göre Azalan</div>
+        <div class="sort-mobile__item">Puana Göre En Yüksek</div>
+        <div class="sort-mobile__item">Seviyeye Göre Başlangıç</div>
+        <div class="sort-mobile__item">Seviyeye Göre İleri Düzey</div>
+    </div>
+</div>
+<div class="sort-mobile js-filter-mobile">
+    <div class="sort-mobile__top">
+        <span class="icon-outer">
+            <svg class="icon">
+                <use xlink:href="../../assets/img/icons.svg#icon-filter"></use>
+            </svg>
+        </span>
+        <div class="sort-mobile__top-title">
+            Filtrele
+        </div>
+    </div>
+    <div class="sort-mobile__list">
+        <div class="sort-mobile__item">Oyun Programlama</div>
+        <div class="sort-mobile__item">Microsoft</div>
+        <div class="sort-mobile__item">Python</div>
+        <div class="sort-mobile__item">Java</div>
+        <div class="sort-mobile__item">Android</div>
+        <div class="sort-mobile__item">Javascript</div>
+    </div>
+</div>
+<input hidden value="@ViewData["Category"]" id="input-c" />
+<input hidden value="@ViewData["SortingType"]" id="input-s" />
+
+@section postScripts{
+
+
+} 
