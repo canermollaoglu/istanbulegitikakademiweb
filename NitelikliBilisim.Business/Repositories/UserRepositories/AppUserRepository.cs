@@ -22,6 +22,12 @@ namespace NitelikliBilisim.Business.Repositories
         private readonly NbDataContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
+       
+        public AppUserRepository(NbDataContext context, UserManager<ApplicationUser> userManager)
+        {
+            _context = context;
+            _userManager = userManager;
+        }
         public MyAccountSidebarVm GetMyAccountSidebarInfo(string userId, string currentPageName)
         {
             MyAccountSidebarVm model = new MyAccountSidebarVm();
@@ -46,11 +52,6 @@ namespace NitelikliBilisim.Business.Repositories
             return model;
         }
 
-        public AppUserRepository(NbDataContext context, UserManager<ApplicationUser> userManager)
-        {
-            _context = context;
-            _userManager = userManager;
-        }
 
         public UserInfoVm GetCustomerInfo(string userId)
         {
@@ -155,6 +156,8 @@ namespace NitelikliBilisim.Business.Repositories
 
             return model;
         }
+
+        
 
         public List<MyCommentVm> GetCustomerComments(string userId)
         {
@@ -264,7 +267,7 @@ namespace NitelikliBilisim.Business.Repositories
 
         }
 
-        private List<PurchasedEducationVm> GetPurschasedEducationsByUserId(string userId)
+        public List<PurchasedEducationVm> GetPurschasedEducationsByUserId(string userId)
         {
             var purchasedEducations = _context.Bridge_GroupStudents.Where(x => x.Id2 == userId);
             List<Guid> ids = purchasedEducations.Select(x => x.Id).ToList();
@@ -324,7 +327,7 @@ namespace NitelikliBilisim.Business.Repositories
                                       Id = education.Id,
                                       Name = education.Name,
                                       CategoryName = category.Name,
-                                      HoursPerDayText = education.HoursPerDay.ToString(),
+                                      HoursText = (education.HoursPerDay*education.Days).ToString(),
                                       DaysText = education.Days.ToString(),
                                       FeaturedImageUrl = featuredImage.FileUrl
                                   }).ToList();

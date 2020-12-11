@@ -11,7 +11,7 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string CategoryName { get; set; }
-        public string HoursPerDayText { get; set; }
+        public string HoursText { get; set; }
         public string DaysText { get; set; }
         public string FeaturedImageUrl { get; set; }
     }

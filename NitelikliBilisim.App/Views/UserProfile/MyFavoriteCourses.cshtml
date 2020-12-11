@@ -1,0 +1,122 @@
+﻿@model List<NitelikliBilisim.Core.ViewModels.Main.Profile.FavoriteEducationVm>
+@using NitelikliBilisim.Core.Services.Abstracts
+@using NitelikliBilisim.App.Utility
+@inject IStorageService StorageService
+@{
+    ViewData["Title"] = "Favori Kurslarım";
+    Layout = "~/Views/Shared/_LayoutHesap.cshtml";
+}
+
+<section class="account account--dashboard">
+    <div class="account-mobile__top">
+        <a href="./hesap-menu.php" class="account-mobile__prev">
+            <span class="icon-outer">
+                <svg class="icon">
+                    <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                </svg>
+            </span>
+        </a>
+        <span class="account-mobile__txt">
+            FAVORİLERİM
+        </span>
+    </div>
+    <div class="container">
+        <div class="account__wrp">
+            @await Component.InvokeAsync("MyAccountSidebar", AccountSideBarPageNames.MyFavoriteCourses)
+            <div class="account-content">
+                <div class="account-detail">
+                    <div class="account-detail__wrp">
+                        <div class="account-detail__title">
+                            FAVORİLERİ KURSLARIM
+                        </div>
+                        <div class="account-courses favorite">
+                            <div class="account-courses__top">
+                                <div class="account-courses__top-course">
+                                    KURS ADI
+                                </div>
+                                <div class="account-courses__top-item fav">
+                                    &nbsp;
+                                </div>
+                                <div class="account-courses__top-item">
+                                    SÜRE
+                                </div>
+                                <div class="account-courses__top-item">
+                                    DETAY
+                                </div>
+                            </div>
+                            <div class="account-courses__wrp">
+                                @foreach (var course in Model)
+                                {
+                                    var bannerUrl = "";
+                                    if (!string.IsNullOrEmpty(course.FeaturedImageUrl))
+                                    {
+                                        bannerUrl = StorageService.DownloadFile(System.IO.Path.GetFileName(course.FeaturedImageUrl), System.IO.Path.GetDirectoryName(course.FeaturedImageUrl)).Result;
+                                    }
+                                    <div class="account-courses__item">
+                                        <a href="#0" class="account-courses__item-cnt">
+                                            <div class="account-courses__item-img">
+                                                <img src="@bannerUrl" alt="">
+                                            </div>
+                                            <div class="account-courses__item-title">
+                                                @course.Name
+                                            </div>
+                                        </a>
+                                        <div class="account-courses__item-item js-btn-fav fav" data-eid="@(course.Id)" >
+                                            <span class="icon-outer fill">
+                                                <svg class="icon">
+                                                    <use xlink:href="../../assets/img/icons.svg#icon-heart"></use>
+                                                </svg>
+                                            </span>
+                                        </div>
+                                        <div class="account-courses__item-item">
+                                            <span class="icon-outer time-icon">
+                                                <svg class="icon">
+                                                    <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                                                </svg>
+                                            </span>
+                                            @course.DaysText gün ( @course.HoursText saat )
+                                        </div>
+                                        <div class="account-courses__item-item">
+                                            <a asp-controller="Course" asp-action="Details" asp-route-courseId="@course.Id" class="button button-fw button-icon-right">
+                                                <span class="button-txt">Eğitimi İncele</span>
+                                                <span class="button-icon">
+                                                    <span class="icon-outer">
+                                                        <svg class="icon">
+                                                            <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                                                        </svg>
+                                                    </span>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="js-tooltip tooltip tooltip-top account-dashboard__started-tooltip">
+    <div class="tooltip__title">
+    </div>
+</div>
+
+@section postScripts{
+    <script type="text/javascript">
+        $('.js-btn-fav').click(function () {
+            var educationId = $(this).attr("data-eid");
+            $.ajax({
+                url: "/Course/ToggleWishListItem",
+                method: "post",
+                data: { educationId },
+                success: (res) => {
+                    if (res.isSuccess) {
+                        location.href = location.href;
+                    }
+                }
+            });
+        });
+    </script>
+}

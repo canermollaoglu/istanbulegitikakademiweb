@@ -99,7 +99,7 @@
                 </a>
             </li>
             <li class="account-side__item js-vertical-magic-line-item  @(Model.PageName == AccountSideBarPageNames.MyFavoriteCourses?"active":"")">
-                <a href="./hesap-favorilerim.php">
+                <a asp-controller="UserProfile" asp-action="MyFavoriteCourses">
                     <span class="icon-outer">
                         <svg class="icon">
                             <use xlink:href="../../assets/img/icons.svg#icon-heart"></use>
@@ -131,7 +131,7 @@
         </ul>
         <div class="account-side__footer">
             <div class="account-side__item">
-                <a href="#0">
+                <a asp-controller="Account" asp-action="Logout">
                     <span class="icon-outer">
                         <svg class="icon">
                             <use xlink:href="../../assets/img/icons.svg#icon-logout"></use>

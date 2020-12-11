@@ -144,6 +144,13 @@ namespace NitelikliBilisim.App.Controllers
             var model = _userUnitOfWork.User.GetCustomerPromotions(userId);
             return View(model);
         }
+        [Route("hesap/favori-kurslarim")]
+        public IActionResult MyFavoriteCourses()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var model = _userUnitOfWork.User.GetUserFavoriteEducationsByUserId(userId);
+            return View(model);
+        }
 
     }
 }
