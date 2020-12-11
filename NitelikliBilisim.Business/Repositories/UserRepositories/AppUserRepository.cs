@@ -169,7 +169,7 @@ namespace NitelikliBilisim.Business.Repositories
                              EducationId = education.Id,
                              Content = comment.Content,
                              Point = comment.Points,
-                             Date = comment.CreatedDate,
+                             Date = comment.CreatedDate.ToString("dd MMMM yyyy"),
                              EducationName = education.Name,
                              EducationFeaturedImage = eImage.FileUrl,
                              CategoryName = category.Name,
@@ -331,7 +331,7 @@ namespace NitelikliBilisim.Business.Repositories
             return educationsList;
         }
 
-        public object GetCustomerPromotions(string userId)
+        public List<MyCouponVm> GetCustomerPromotions(string userId)
         {
             var conditions = _context.EducationPromotionConditions.Where(x => x.ConditionType == Core.Enums.promotion.ConditionType.User);
             var currentUserConditions = new List<Guid>();
@@ -343,10 +343,26 @@ namespace NitelikliBilisim.Business.Repositories
                     currentUserConditions.Add(condition.EducationPromotionCodeId);
                 }
             }
-            var data = _context.EducationPromotionCodes
-                .Where(x => currentUserConditions.Contains(x.Id))
-                .Select(x => new UserPromotionVm { PromotionId = x.Id, PromotionName = x.Name }).ToList();
-            return data;
+
+            var codes = _context.EducationPromotionCodes.Where(x => x.PromotionType == Core.Enums.promotion.PromotionType.CouponCode && currentUserConditions.Contains(x.Id));
+            var retVal = new List<MyCouponVm>();
+            foreach (var promotionCode in codes)
+            {
+                MyCouponVm promotion = new MyCouponVm();
+                promotion.PromotionName = promotionCode.Name;
+                promotion.Code = promotionCode.PromotionCode;
+                promotion.PromotionId = promotionCode.Id;
+                promotion.RemainingTime = "0";
+                if (promotionCode.EndDate.Date>DateTime.Now.Date)
+                {
+                    TimeSpan remainingTime = promotionCode.EndDate - DateTime.Now.Date;
+                    promotion.RemainingTime = remainingTime.TotalDays.ToString();
+                }
+                retVal.Add(promotion);
+            }
+                        
+
+            return retVal;
         }
         #region Test
         public List<MyInvoicesVm> GetUserInvoices(string userId)
@@ -505,9 +521,4 @@ namespace NitelikliBilisim.Business.Repositories
     }
 
 
-    public class UserPromotionVm
-    {
-        public Guid PromotionId { get; internal set; }
-        public string PromotionName { get; internal set; }
-    }
 }

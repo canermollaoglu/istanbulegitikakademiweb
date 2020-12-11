@@ -89,7 +89,7 @@
                 </a>
             </li>
             <li class="account-side__item js-vertical-magic-line-item  @(Model.PageName == AccountSideBarPageNames.MyCouponCodes?"active":"")">
-                <a href="./hesap-kuponlarim.php">
+                <a asp-controller="UserProfile" asp-action="MyCoupons">
                     <span class="icon-outer">
                         <svg class="icon">
                             <use xlink:href="../../assets/img/icons.svg#icon-coupon"></use>

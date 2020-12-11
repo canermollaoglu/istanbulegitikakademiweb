@@ -137,6 +137,13 @@ namespace NitelikliBilisim.App.Controllers
             var model = _userUnitOfWork.User.GetCustomerComments(userId);
             return View(model);
         }
+        [Route("hesap/indirim-kuponlarim")]
+        public IActionResult MyCoupons()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var model = _userUnitOfWork.User.GetCustomerPromotions(userId);
+            return View(model);
+        }
 
     }
 }

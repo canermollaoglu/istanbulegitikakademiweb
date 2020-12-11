@@ -12,7 +12,7 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public Guid Id { get; set; }
         public string Content { get; set; }
         public byte Point { get; set; }
-        public DateTime Date { get; set; }
+        public string Date { get; set; }
         public string EducationName { get; set; }
         public string CategoryName { get; set; }
         public string EducationFeaturedImage { get; set; }
