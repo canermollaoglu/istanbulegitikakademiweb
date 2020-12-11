@@ -39,34 +39,29 @@
                             <div class="subheader--detail__tag">@Model.Details.Base.CategoryName</div>
                             <div class="subheader--detail__point">
                                 <div class="main-stars">
-                                    <span class="icon-outer icon-star active">
-                                        <svg class="icon">
-                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                        </svg>
-                                    </span>
-                                    <span class="icon-outer icon-star active">
-                                        <svg class="icon">
-                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                        </svg>
-                                    </span>
-                                    <span class="icon-outer icon-star active">
-                                        <svg class="icon">
-                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                        </svg>
-                                    </span>
-                                    <span class="icon-outer icon-star">
-                                        <svg class="icon">
-                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                        </svg>
-                                    </span>
-                                    <span class="icon-outer icon-star">
-                                        <svg class="icon">
-                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                        </svg>
-                                    </span>
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        if (i<=Model.Details.Base.Point)
+                                        {
+                                            <span class="icon-outer icon-star active">
+                                                <svg class="icon">
+                                                    <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                </svg>
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="icon-outer icon-star">
+                                                <svg class="icon">
+                                                    <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                </svg>
+                                            </span>
+                                        }
+                                    }
+
                                 </div>
                                 <div class="subheader--detail__point-text">
-                                    3.0 Puan <span>(162 Öğrenci)</span>
+                                    @Model.Details.Base.PointText Puan <span>(@Model.Details.Base.CommentCount Öğrenci)</span>
                                 </div>
                             </div>
                         </div>
@@ -538,42 +533,45 @@
                                 </div>
                                 @if (Model.Details.Base.IsCanComment)
                                 {
-                                    <form class="lesson-detail__commenting">
+                                    <form class="lesson-detail__commenting" method="post" asp-controller="Course" asp-action="UserCommentPost">
+                                       @Html.AntiForgeryToken()
+                                        <input type="hidden" name="EducationId" value="@Model.Details.Base.Id" />
+                                        <input type="hidden" name="Point" value="0" id="input-point" />
                                         <div class="lesson-detail__tab-title">
                                             <span> YORUM YAPMAK <span class="colored">İSTİYORUM</span></span>
                                         </div>
                                         <div class="commenting-box">
                                             <div class="commenting-top">
                                                 <div class="commenting-name">
-                                                    <input type="text" placeholder="Adınız...">
+                                                    <input type="text" name="Name" placeholder="Adınız...">
                                                 </div>
                                                 <div class="commenting-branch">
-                                                    <input type="text" placeholder="Mesleğiniz...">
+                                                    <input type="text" name="Job" placeholder="Mesleğiniz...">
                                                 </div>
                                                 <div class="commenting-pointed">
                                                     <span>Puanla</span>
                                                     <div class="js-let-point">
-                                                        <span class="icon-outer icon-star">
+                                                        <span class="icon-outer icon-star" data-point="1">
                                                             <svg class="icon">
                                                                 <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
                                                             </svg>
                                                         </span>
-                                                        <span class="icon-outer icon-star">
+                                                        <span class="icon-outer icon-star" data-point="2">
                                                             <svg class="icon">
                                                                 <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
                                                             </svg>
                                                         </span>
-                                                        <span class="icon-outer icon-star">
+                                                        <span class="icon-outer icon-star" data-point="3">
                                                             <svg class="icon">
                                                                 <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
                                                             </svg>
                                                         </span>
-                                                        <span class="icon-outer icon-star">
+                                                        <span class="icon-outer icon-star" data-point="4">
                                                             <svg class="icon">
                                                                 <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
                                                             </svg>
                                                         </span>
-                                                        <span class="icon-outer icon-star">
+                                                        <span class="icon-outer icon-star" data-point="5">
                                                             <svg class="icon">
                                                                 <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
                                                             </svg>
@@ -582,20 +580,20 @@
                                                 </div>
                                             </div>
                                             <div class="commenting-texting">
-                                                <textarea placeholder="Yorumlarınızı buradan yazın..."></textarea>
+                                                <textarea name="Content" maxlength="512" placeholder="Yorumlarınızı buradan yazın..."></textarea>
                                             </div>
                                         </div>
                                         <div class="commenting-footer">
-                                            <div class="clear-message">
+                                            @*<div class="clear-message">
                                                 <span class="icon-outer">
                                                     <svg class="icon">
                                                         <use xlink:href="../../assets/img/icons.svg#icon-circle-close"></use>
                                                     </svg>
                                                 </span>
                                                 Sıfırla
-                                            </div>
+                                            </div>*@
                                             <div class="commenting-footer-right">
-                                                <button class="button button--dark button-fw">
+                                                <button type="submit" class="button button--dark button-fw">
                                                     <span class="button--txt">
                                                         Yorumu Gönder
                                                     </span>
@@ -950,7 +948,20 @@
         //        title: markerTitle
         //    });
         //}
+        $('.js-let-point span').click(function () {
+            var point = $(this).attr("data-point");
+            alert(point);
 
+            $("#input-point").val(point);
+            alert($("#input-point").val());
+            $(this)
+                .nextAll()
+                .removeClass('active');
+            $(this)
+                .prevAll()
+                .addClass('active');
+            $(this).addClass('active');
+        });
 
 
         $('.js-btn-fav').click(function () {

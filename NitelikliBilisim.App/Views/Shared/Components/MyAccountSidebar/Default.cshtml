@@ -119,7 +119,7 @@
                 </a>
             </li>
             <li class="account-side__item js-vertical-magic-line-item  @(Model.PageName == AccountSideBarPageNames.Settings?"active":"")">
-                <a href="./hesap-ayarlari.php">
+                <a asp-controller="UserProfile" asp-action="AccountSettings">
                     <span class="icon-outer">
                         <svg class="icon">
                             <use xlink:href="../../assets/img/icons.svg#icon-settings"></use>

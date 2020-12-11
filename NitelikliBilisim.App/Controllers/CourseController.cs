@@ -56,6 +56,36 @@ namespace NitelikliBilisim.App.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult UserCommentPost(UserCommentPostVm model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                _unitOfWork.EducationComment.Insert(new EducationComment
+                {
+                    ApprovalStatus = Core.Enums.user_details.CommentApprovalStatus.Waiting,
+                    Content = model.Content,
+                    Points = model.Point,
+                    EducationId = model.EducationId,
+                    IsEducatorComment=false,
+                    CommentatorId = userId
+                });
+            }
+            catch (Exception)
+            {
+                //todo Log
+                throw;
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+
+
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [HttpPost]
         public IActionResult ToggleWishListItem(Guid? educationId)

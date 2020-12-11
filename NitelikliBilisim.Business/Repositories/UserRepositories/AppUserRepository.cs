@@ -165,7 +165,7 @@ namespace NitelikliBilisim.Business.Repositories
                          join education in _context.Educations on comment.EducationId equals education.Id
                          join category in _context.EducationCategories on education.CategoryId equals category.Id
                          join eImage in _context.EducationMedias on education.Id equals eImage.EducationId
-                         where eImage.MediaType == EducationMediaType.PreviewPhoto
+                         where eImage.MediaType == EducationMediaType.PreviewPhoto && comment.CommentatorId == userId
                          select new MyCommentVm
                          {
                              Id = comment.Id,

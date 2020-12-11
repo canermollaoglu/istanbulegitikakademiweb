@@ -9,6 +9,7 @@ using NitelikliBilisim.Core.DTO;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Enums.educations;
+using NitelikliBilisim.Core.Enums.user_details;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education;
 using NitelikliBilisim.Core.ViewModels.Main.EducationComment;
@@ -51,7 +52,7 @@ namespace NitelikliBilisim.Business.Repositories
         {
             var group = (from bridge in Context.Bridge_GroupStudents
                          join eGroup in Context.EducationGroups.Include(x => x.GroupLessonDays) on bridge.Id equals eGroup.Id
-                         where bridge.Id2 == userId && bridge.Id == educationId
+                         where bridge.Id2 == userId && eGroup.EducationId == educationId
                          select eGroup).FirstOrDefault();
 
             if (group == null)
@@ -563,7 +564,7 @@ namespace NitelikliBilisim.Business.Repositories
             var comments = (from comment in Context.EducationComments
                             join commenter in Context.Users on comment.CommentatorId equals commenter.Id
                             join student in Context.Customers on commenter.Id equals student.Id
-                            where comment.EducationId == id
+                            where comment.EducationId == id && comment.ApprovalStatus == CommentApprovalStatus.Approved
                             orderby comment.ApprovalDate descending
                             select new CommentDetailVm
                             {
@@ -591,6 +592,9 @@ namespace NitelikliBilisim.Business.Repositories
                     IsWishListItem = false,
                     IsCanComment = false,
                     Comments = comments,
+                    Point = (comments.Sum(x => x.Point) / (double)comments.Count()),
+                    PointText = (comments.Sum(x => x.Point) / comments.Count()).ToString("0.0"),
+                    CommentCount = comments.Count(),
                     //PriceNumeric = education.NewPrice.GetValueOrDefault(0),
                     Level = EnumHelpers.GetDescription(education.Level),
                     //PriceText = education.NewPrice.GetValueOrDefault(0).ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"))
@@ -650,7 +654,7 @@ namespace NitelikliBilisim.Business.Repositories
             }
             model.TotalDuration = totalDurationCount;
             model.TotalPartCount = totalPartCount;
-
+            
             return model;
         }
 

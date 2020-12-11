@@ -151,6 +151,12 @@ namespace NitelikliBilisim.App.Controllers
             var model = _userUnitOfWork.User.GetUserFavoriteEducationsByUserId(userId);
             return View(model);
         }
+        [Route("hesap/ayarlar")]
+        public IActionResult AccountSettings()
+        {
+            return View();
+        }
+
 
     }
 }

@@ -37,6 +37,9 @@ namespace NitelikliBilisim.Core.ViewModels
         public bool IsWishListItem { get; set; }
         public List<CommentDetailVm> Comments { get; set; }
         public bool IsCanComment { get; set; }
+        public double Point { get; set; }
+        public string PointText { get; set; }
+        public int CommentCount { get; set; }
     }
 
     public class EducationListVm

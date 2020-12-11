@@ -151,16 +151,6 @@ $('.accordion__item.selected-cart ')
     .find('.accordion__content')
     .css('height', accordionContentCart + 170);
 
-$('.js-let-point span').click(function () {
-    $(this)
-        .nextAll()
-        .removeClass('active');
-    $(this)
-        .prevAll()
-        .addClass('active');
-    $(this).addClass('active');
-});
-
 $('.clear-message').click(function () {
     $(this)
         .parents()
