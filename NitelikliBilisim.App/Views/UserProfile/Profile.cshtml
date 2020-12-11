@@ -1,5 +1,6 @@
 ﻿@model NitelikliBilisim.Core.ViewModels.Main.Profile.MyPanelVm
 @using NitelikliBilisim.Core.Services.Abstracts
+@using NitelikliBilisim.App.Utility
 @inject IStorageService StorageService
 @{
     ViewData["Title"] = "Profil";
@@ -215,7 +216,7 @@
     <div class="dunyanın-en-sacma-fixi js-fix-pos"></div>
     <div class="container">
         <div class="account__wrp">
-            @await Component.InvokeAsync("MyAccountSidebar")
+            @await Component.InvokeAsync("MyAccountSidebar",AccountSideBarPageNames.MyPanel)
             <div class="account-content">
                 <div class="account-dashboard">
                     <div class="account-dashboard__subtop custom-subtop">

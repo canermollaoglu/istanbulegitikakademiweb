@@ -1,0 +1,212 @@
+﻿@model NitelikliBilisim.Core.ViewModels.Main.Profile.MyCourseDetailVm
+@using NitelikliBilisim.Core.Services.Abstracts
+@using NitelikliBilisim.App.Utility
+@inject IStorageService StorageService
+@{
+    ViewData["Title"] = "MyCourseDetail";
+    Layout = "~/Views/Shared/_LayoutHesap.cshtml";
+
+    var educationImage = "";
+    if (!string.IsNullOrEmpty(Model.EducationFeaturedImage))
+    {
+        educationImage = StorageService.DownloadFile(System.IO.Path.GetFileName(Model.EducationFeaturedImage), System.IO.Path.GetDirectoryName(Model.EducationFeaturedImage)).Result;
+    }
+    var educatorImage = "";
+    if (!string.IsNullOrEmpty(Model.EducatorAvatarPath))
+    {
+        educatorImage = StorageService.DownloadFile(System.IO.Path.GetFileName(Model.EducatorAvatarPath), System.IO.Path.GetDirectoryName(Model.EducatorAvatarPath)).Result;
+    }
+}
+
+<section class="account account--dashboard">
+    <div class="account-mobile__top">
+        <a href="./hesap-menu.php" class="account-mobile__prev">
+            <span class="icon-outer">
+                <svg class="icon">
+                    <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                </svg>
+            </span>
+        </a>
+        <span class="account-mobile__txt">
+            KURS DETAY
+        </span>
+    </div>
+    <div class="container">
+        <div class="account__wrp">
+            @await Component.InvokeAsync("MyAccountSidebar", AccountSideBarPageNames.MyCourses)
+            <div class="account-content">
+                <div class="account-detail">
+                    <div class="account-detail__wrp">
+                        <a asp-controller="UserProfile" asp-action="MyCourses" class="account-detail__title account-detail__title--link">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                                </svg>
+                            </span>
+                            KURS LİSTESİNE GERİ DÖN
+                        </a>
+                        <div class="account-course-detail">
+                            <div class="account-course-detail__item">
+                                <div class="account-course-detail__item-img">
+                                    <img src="@educationImage" alt="">
+                                </div>
+                                <div class="account-course-detail__item-cnt">
+                                    <div class="account-course-detail__item-title">
+                                        @Model.EducationName
+                                    </div>
+                                    <div class="account-course-detail__item-txt">
+                                        @Model.EducationShortDescription
+                                    </div>
+                                </div>
+                                <div class="account-course-detail__item-button">
+                                    <a asp-controller="Course" asp-action="Details" asp-route-courseId="@Model.EducationId" class="button button-fw button-icon-right">
+                                        <span class="button-txt">Eğitim Detayı</span>
+                                        <span class="button-icon">
+                                            <span class="icon-outer">
+                                                <svg class="icon">
+                                                    <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                                                </svg>
+                                            </span>
+                                        </span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="account-course-detail__infos">
+                                <div class="account-course-detail__info">
+                                    <span class="icon-outer">
+                                        <svg class="icon">
+                                            <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                                        </svg>
+                                    </span>
+                                    @Model.Days gün ( @Model.Hours saat )
+                                </div>
+                                <div class="account-course-detail__info">
+                                    <span class="icon-outer">
+                                        <svg class="icon">
+                                            <use xlink:href="../../assets/img/icons.svg#icon-map-pin-f"></use>
+                                        </svg>
+                                    </span>
+                                    @Model.Host
+                                </div>
+                                <div class="account-course-detail__info">
+                                    <span class="icon-outer">
+                                        <svg class="icon">
+                                            <use xlink:href="../../assets/img/icons.svg#icon-bank"></use>
+                                        </svg>
+                                    </span>
+                                    Kredi Kartı
+                                </div>
+                                <div class="account-course-detail__info price">
+                                    <span>
+                                        ₺
+                                    </span>
+                                    @Model.PriceText
+                                </div>
+                            </div>
+                            <div class="account-course-detail__certificate">
+                                <div class="account-course-detail__certificate-img"
+                                     data-name="ASP.Net Core Web API ile JWT Authentication">
+                                    <img src="../../assets/img/certificate.jpg" alt="">
+                                </div>
+                                <div class="account-course-detail__certificate-cnt">
+                                    <div class="account-course-detail__certificate-txt">
+                                        ASP.Net Core Web API ile JWT Authentication
+                                    </div>
+                                    <div class="account-course-detail__certificate-title">
+                                        Başlangıçtan Uzmanlığı Phyton Eğitimi Bitirme Setifikası
+                                    </div>
+                                </div>
+                                <div class="account-course-detail__certificate-button">
+                                    <a href="#0" class="button button-fw button-yellow button-icon-right">
+                                        <span class="button-txt">Hazırlanıyor</span>
+                                        <span class="button-icon">
+                                            <span class="icon-outer">
+                                                <svg class="icon">
+                                                    <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                                                </svg>
+                                            </span>
+                                        </span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="account-course-detail__teacher">
+                                <div class="account-course-detail__teacher-img">
+                                    <img src="@educatorImage" alt="">
+                                </div>
+                                <div class="account-course-detail__teacher-cnt">
+                                    <div class="account-course-detail__teacher-top">
+                                        <div class="main-stars">
+                                            <span class="icon-outer icon-star active">
+                                                <svg class="icon">
+                                                    <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                </svg>
+                                            </span>
+                                            <span class="icon-outer icon-star active">
+                                                <svg class="icon">
+                                                    <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                </svg>
+                                            </span>
+                                            <span class="icon-outer icon-star active">
+                                                <svg class="icon">
+                                                    <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                </svg>
+                                            </span>
+                                            <span class="icon-outer icon-star">
+                                                <svg class="icon">
+                                                    <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                </svg>
+                                            </span>
+                                            <span class="icon-outer icon-star">
+                                                <svg class="icon">
+                                                    <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                </svg>
+                                            </span>
+                                        </div>
+                                        4.0 Puan
+                                        <span>(75 Öğrenci)</span>
+                                    </div>
+                                    <div class="account-course-detail__teacher-name">
+                                        @Model.EducatorName
+                                    </div>
+                                    <div class="account-course-detail__teacher-branch">
+                                        @Model.EducatorTitle
+                                    </div>
+                                    <div class="account-course-detail__teacher-tags">
+                                        @foreach (var certificate in Model.EducatorCertificates)
+                                        {
+                                            var certificateImage = "";
+                                            if (!string.IsNullOrEmpty(Model.EducatorAvatarPath))
+                                            {
+                                                certificateImage = StorageService.DownloadFile(System.IO.Path.GetFileName(certificate.CertificateImagePath), System.IO.Path.GetDirectoryName(certificate.CertificateImagePath)).Result;
+                                            }
+                                            <div class="account-course-detail__teacher-tag">
+                                                <img src="@certificateImage" alt="">
+                                                @certificate.Name
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="account-course-detail__teacher-button">
+                                    <a asp-controller="Educator" asp-action="Details" asp-route-educatorId="@Model.EducatorId" class="button button-fw button-icon-right">
+                                        <span class="button-txt">Eğitmen Profili</span>
+                                        <span class="button-icon">
+                                            <span class="icon-outer">
+                                                <svg class="icon">
+                                                    <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                                                </svg>
+                                            </span>
+                                        </span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="js-tooltip tooltip tooltip-top account-comment__bottom-status-tooltip">
+    <div class="tooltip__title">
+    </div>
+</div>

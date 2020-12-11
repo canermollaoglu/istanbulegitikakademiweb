@@ -1,5 +1,6 @@
 ﻿@model NitelikliBilisim.Core.ViewModels.Main.Profile.MyAccountSidebarVm
 @using NitelikliBilisim.Core.Services.Abstracts
+@using NitelikliBilisim.App.Utility
 @inject IStorageService StorageService
 @{
     var userAvatarPath = "";
@@ -30,8 +31,12 @@
                     <span class="account-side__nbuy">NBUY</span>
                 }
             </div>
+
             <div class="account-side__branch">
-                Web Tasarım ve Programlama
+                @if (Model.IsNBUY)
+                {
+                    @Model.NbuyCategory
+                }
             </div>
             <div class="account-side__university">
                 <span class="icon-outer">
@@ -39,12 +44,12 @@
                         <use xlink:href="../../assets/img/icons.svg#icon-map-pin-f"></use>
                     </svg>
                 </span>
-                Bahçeşehir Üniversitesi
+                @Model.University
             </div>
         </div>
         <ul class="account-side__list js-vertical-magic-line">
-            <li class="account-side__item active js-vertical-magic-line-item">
-                <a href="./hesap-panelim.php">
+            <li class="account-side__item js-vertical-magic-line-item @(Model.PageName == AccountSideBarPageNames.MyPanel?"active":"")">
+                <a asp-controller="UserProfile" asp-action="Profile">
                     <span class="icon-outer">
                         <svg class="icon">
                             <use xlink:href="../../assets/img/icons.svg#icon-home"></use>
@@ -53,8 +58,8 @@
                     Panelim
                 </a>
             </li>
-            <li class="account-side__item js-vertical-magic-line-item">
-                <a href="./hesap-kurslarim.php">
+            <li class="account-side__item js-vertical-magic-line-item @(Model.PageName == AccountSideBarPageNames.MyCourses?"active":"")">
+                <a asp-controller="UserProfile" asp-action="MyCourses">
                     <span class="icon-outer">
                         <svg class="icon">
                             <use xlink:href="../../assets/img/icons.svg#icon-code-c"></use>
@@ -63,7 +68,7 @@
                     Kurslarım
                 </a>
             </li>
-            <li class="account-side__item js-vertical-magic-line-item">
+            <li class="account-side__item js-vertical-magic-line-item @(Model.PageName == AccountSideBarPageNames.MyCertificates?"active":"")">
                 <a href="./hesap-sertifikalarim.php">
                     <span class="icon-outer">
                         <svg class="icon">
@@ -73,8 +78,8 @@
                     Sertifikalarım (10)
                 </a>
             </li>
-            <li class="account-side__item js-vertical-magic-line-item">
-                <a href="./hesap-yorumlarim.php">
+            <li class="account-side__item js-vertical-magic-line-item  @(Model.PageName == AccountSideBarPageNames.MyComments?"active":"")">
+                <a asp-controller="UserProfile" asp-action="MyComments">
                     <span class="icon-outer">
                         <svg class="icon">
                             <use xlink:href="../../assets/img/icons.svg#icon-speak-balloon"></use>
@@ -83,7 +88,7 @@
                     Yorumlarım
                 </a>
             </li>
-            <li class="account-side__item js-vertical-magic-line-item">
+            <li class="account-side__item js-vertical-magic-line-item  @(Model.PageName == AccountSideBarPageNames.MyCouponCodes?"active":"")">
                 <a href="./hesap-kuponlarim.php">
                     <span class="icon-outer">
                         <svg class="icon">
@@ -93,7 +98,7 @@
                     Kuponlarım / İndirimlerim
                 </a>
             </li>
-            <li class="account-side__item js-vertical-magic-line-item">
+            <li class="account-side__item js-vertical-magic-line-item  @(Model.PageName == AccountSideBarPageNames.MyFavoriteCourses?"active":"")">
                 <a href="./hesap-favorilerim.php">
                     <span class="icon-outer">
                         <svg class="icon">
@@ -103,7 +108,7 @@
                     Favori Kurslarım
                 </a>
             </li>
-            <li class="account-side__item js-vertical-magic-line-item">
+            <li class="account-side__item js-vertical-magic-line-item  @(Model.PageName == AccountSideBarPageNames.MyInvoices?"active":"")">
                 <a href="./hesap-faturalar.php">
                     <span class="icon-outer">
                         <svg class="icon">
@@ -113,7 +118,7 @@
                     Faturalarım
                 </a>
             </li>
-            <li class="account-side__item js-vertical-magic-line-item">
+            <li class="account-side__item js-vertical-magic-line-item  @(Model.PageName == AccountSideBarPageNames.Settings?"active":"")">
                 <a href="./hesap-ayarlari.php">
                     <span class="icon-outer">
                         <svg class="icon">
