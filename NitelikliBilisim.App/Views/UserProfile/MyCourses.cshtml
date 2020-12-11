@@ -1,0 +1,114 @@
+﻿@model List<NitelikliBilisim.Core.ViewModels.Main.Profile.MyCourseVm>
+@using NitelikliBilisim.Core.Services.Abstracts
+@using NitelikliBilisim.App.Utility
+@inject IStorageService StorageService
+
+@{
+    ViewData["Title"] = "MyCourses";
+    Layout = "~/Views/Shared/_LayoutHesap.cshtml";
+}
+<section class="account account--dashboard">
+    <div class="account-mobile__top">
+        <a href="./hesap-menu.php" class="account-mobile__prev">
+            <span class="icon-outer">
+                <svg class="icon">
+                    <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                </svg>
+            </span>
+        </a>
+        <span class="account-mobile__txt">
+            KURSLARIM
+        </span>
+    </div>
+    <div class="container">
+        <div class="account__wrp">
+            @await Component.InvokeAsync("MyAccountSidebar",AccountSideBarPageNames.MyCourses)
+            <div class="account-content">
+                <div class="account-detail">
+                    <div class="account-detail__wrp">
+                        <div class="account-detail__title">
+                            KURSLARIM
+                        </div>
+                        <div class="account-courses course">
+                            <div class="account-courses__top">
+                                <div class="account-courses__top-course">
+                                    KURS ADI
+                                </div>
+                                <div class="account-courses__top-item fav">
+                                    &nbsp;
+                                </div>
+                                <div class="account-courses__top-item">
+                                    EĞİTİM TARİHİ
+                                </div>
+                                <div class="account-courses__top-item">
+                                    SÜRE
+                                </div>
+                                <div class="account-courses__top-item">
+                                    DETAY
+                                </div>
+                            </div>
+                            <div class="account-courses__wrp">
+                                @foreach (var group in Model)
+                                {
+                                    var featuredImage = "";
+                                    if (!string.IsNullOrEmpty(group.FeaturedImageUrl))
+                                    {
+                                        featuredImage = StorageService.DownloadFile(System.IO.Path.GetFileName(group.FeaturedImageUrl), System.IO.Path.GetDirectoryName(group.FeaturedImageUrl)).Result;
+                                    }
+                                    <div class="account-courses__item">
+                                        <a href="#0" class="account-courses__item-cnt">
+                                            <div class="account-courses__item-img">
+                                                <img src="@featuredImage" alt="">
+                                            </div>
+                                            <div class="account-courses__item-title">
+                                                @group.Name
+                                            </div>
+                                        </a>
+                                        @if (group.IsFavorite)
+                                        {
+                                            <div class="account-courses__item-item fav">
+                                                <span class="icon-outer fill">
+                                                    <svg class="icon">
+                                                        <use xlink:href="../../assets/img/icons.svg#icon-heart"></use>
+                                                    </svg>
+                                                </span>
+                                            </div>
+                                        }
+                                        <div class="account-courses__item-item">@group.Date</div>
+                                        <div class="account-courses__item-item">
+                                            <span class="icon-outer time-icon">
+                                                <svg class="icon">
+                                                    <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                                                </svg>
+                                            </span>
+                                            @group.Days gün ( @group.Hours saat )
+                                        </div>
+                                        <div class="account-courses__item-item">
+                                            <a asp-controller="UserProfile" asp-action="MyCourseDetail" asp-route-groupId="@group.Id" class="button button-fw button-icon-right">
+                                                <span class="button-txt">İncele</span>
+                                                <span class="button-icon">
+                                                    <span class="icon-outer">
+                                                        <svg class="icon">
+                                                            <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                                                        </svg>
+                                                    </span>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                }
+
+                               
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="js-tooltip tooltip tooltip-top account-dashboard__started-tooltip">
+    <div class="tooltip__title">
+    </div>
+</div>
+

@@ -108,5 +108,35 @@ namespace NitelikliBilisim.App.Controllers
 
             return View();
         }
+        [Route("hesap/kurslarim")]
+        public IActionResult MyCourses()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var model = _userUnitOfWork.User.GetPurschasedEducationsByUserIdMyCoursesPage(userId);
+            return View(model);
+        }
+
+        [Route("hesap/kurs-detay/{groupId}")]
+        public IActionResult MyCourseDetail(Guid groupId)
+        {
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            bool check = _userUnitOfWork.User.CheckPurschasedEducation(userId, groupId);
+            if (!check)
+                return RedirectToAction("MyCourses");
+
+            var model = _userUnitOfWork.User.GetPurschasedEducationDetail(userId, groupId);
+            if (model == null)
+                return RedirectToAction("MyCourses");
+            return View(model);
+        }
+        [Route("hesap/yorumlarim")]
+        public IActionResult MyComments()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var model = _userUnitOfWork.User.GetCustomerComments(userId);
+            return View(model);
+        }
+
     }
 }

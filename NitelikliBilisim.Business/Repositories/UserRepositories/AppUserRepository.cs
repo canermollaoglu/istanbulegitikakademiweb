@@ -4,7 +4,9 @@ using MUsefulMethods;
 using Newtonsoft.Json;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Entities.promotion;
+using NitelikliBilisim.Core.Entities.user_details;
 using NitelikliBilisim.Core.Enums;
+using NitelikliBilisim.Core.Enums.user_details;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.Main.Profile;
 using NitelikliBilisim.Data;
@@ -20,15 +22,27 @@ namespace NitelikliBilisim.Business.Repositories
         private readonly NbDataContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public MyAccountSidebarVm GetMyAccountSidebarInfo(string userId)
+        public MyAccountSidebarVm GetMyAccountSidebarInfo(string userId, string currentPageName)
         {
             MyAccountSidebarVm model = new MyAccountSidebarVm();
-            var student = _context.Customers.Include(x => x.User).First(x => x.Id == userId);
+            var student = _context.Customers.Include(x => x.User).Include(x => x.StudentEducationInfos).ThenInclude(x => x.Category).First(x => x.Id == userId);
+            University university = null;
+            StudentEducationInfo nBuyInfo = null;
+            if (student.LastGraduatedSchoolId.HasValue)
+            {
+                university = _context.Universities.FirstOrDefault(x => x.Id == student.LastGraduatedSchoolId);
+            }
+            if (student.IsNbuyStudent && student.StudentEducationInfos[0] != null)
+            {
+                nBuyInfo = student.StudentEducationInfos[0];
+            }
             model.Name = student.User.Name;
             model.Surname = student.User.Surname;
             model.IsNBUY = student.IsNbuyStudent;
-            model.University = student.LastGraduatedSchoolId;
+            model.University = university != null ? university.Name : "Girilmemiş";
+            model.NbuyCategory = nBuyInfo != null && nBuyInfo.Category != null ? nBuyInfo.Category.Name : "Girilmemiş";
             model.AvatarPath = student.User.AvatarPath;
+            model.PageName = currentPageName;
             return model;
         }
 
@@ -142,13 +156,106 @@ namespace NitelikliBilisim.Business.Repositories
             return model;
         }
 
+        public List<MyCommentVm> GetCustomerComments(string userId)
+        {
+            var model = (from comment in _context.EducationComments
+                         join education in _context.Educations on comment.EducationId equals education.Id
+                         join category in _context.EducationCategories on education.CategoryId equals category.Id
+                         join eImage in _context.EducationMedias on education.Id equals eImage.EducationId
+                         where eImage.MediaType == EducationMediaType.PreviewPhoto
+                         select new MyCommentVm
+                         {
+                             Id = comment.Id,
+                             EducationId = education.Id,
+                             Content = comment.Content,
+                             Point = comment.Points,
+                             Date = comment.CreatedDate,
+                             EducationName = education.Name,
+                             EducationFeaturedImage = eImage.FileUrl,
+                             CategoryName = category.Name,
+                             ApprovalStatus = comment.ApprovalStatus,
+                         }).ToList();
+            return model;
+        }
+
+        public MyCourseDetailVm GetPurschasedEducationDetail(string userId, Guid groupId)
+        {
+            var model = (from eGroup in _context.EducationGroups
+                         join education in _context.Educations on eGroup.EducationId equals education.Id
+                         join educator in _context.Educators on eGroup.EducatorId equals educator.Id
+                         join host in _context.EducationHosts on eGroup.HostId equals host.Id
+                         join educatorUser in _context.Users on educator.Id equals educatorUser.Id
+                         join eImage in _context.EducationMedias on education.Id equals eImage.EducationId
+                         where eImage.MediaType == EducationMediaType.PreviewPhoto
+                         && eGroup.Id == groupId
+                         select new MyCourseDetailVm
+                         {
+                             EducationId = education.Id,
+                             EducationName = education.Name,
+                             EducationShortDescription = education.Description,
+                             EducationFeaturedImage = eImage.FileUrl,
+                             EducatorId = educator.Id,
+                             EducatorName = $"{educatorUser.Name} {educatorUser.Surname}",
+                             EducatorTitle = educator.Title,
+                             EducatorAvatarPath = educatorUser.AvatarPath,
+                             PriceText = eGroup.NewPrice,
+                             Days = education.Days.ToString(),
+                             Hours = (education.Days * education.HoursPerDay).ToString(),
+                             Host = host.HostName
+                         }).FirstOrDefault();
+            var bridgeEducatorCertificates = _context.Bridge_EducatorEducatorCertificates.Include(x => x.EducatorCertificate).Where(x => x.Id == model.EducatorId).ToList();
+            var educatorCertificates = new List<EducatorCertificate>();
+            foreach (var bridge in bridgeEducatorCertificates)
+            {
+                educatorCertificates.Add(bridge.EducatorCertificate);
+            }
+            model.EducatorCertificates = educatorCertificates;
+
+            return model;
+
+        }
+
+        public bool CheckPurschasedEducation(string userId, Guid groupId)
+        {
+            var purchasedEducations = _context.Bridge_GroupStudents.FirstOrDefault(x => x.Id2 == userId && x.Id == groupId);
+            return purchasedEducations == null ? false : true;
+        }
+
+        public List<MyCourseVm> GetPurschasedEducationsByUserIdMyCoursesPage(string userId)
+        {
+            var purchasedEducations = _context.Bridge_GroupStudents.Where(x => x.Id2 == userId);
+            var wishListItems = _context.Wishlist.Where(x => x.Id == userId).Select(x => x.Id2).ToList();
+
+            List<Guid> ids = purchasedEducations.Select(x => x.Id).ToList();
+            var educationList = (from eGroup in _context.EducationGroups
+                                 join education in _context.Educations on eGroup.EducationId equals education.Id
+                                 join eImage in _context.EducationMedias on education.Id equals eImage.EducationId
+                                 where eImage.MediaType == EducationMediaType.PreviewPhoto
+                                  && ids.Contains(eGroup.Id)
+                                 select new MyCourseVm
+                                 {
+                                     Id = eGroup.Id,
+                                     EducationId = education.Id,
+                                     Name = education.Name,
+                                     Date = eGroup.StartDate.ToString("dd MMMM yyyy"),
+                                     Days = education.Days.ToString(),
+                                     Hours = (education.Days * education.HoursPerDay).ToString(),
+                                     FeaturedImageUrl = eImage.FileUrl,
+                                 }).ToList();
+            foreach (var education in educationList)
+            {
+                education.IsFavorite = wishListItems.Contains(education.Id) ? true : false;
+            }
+            return educationList;
+        }
+
         public MyPanelVm GetPanelInfo(string userId)
         {
             MyPanelVm model = new MyPanelVm();
             var student = _context.Customers.Include(x => x.User).First(x => x.Id == userId);
             var favoriteEducations = GetUserFavoriteEducationsByUserId(userId);
             var purchasedEducations = GetPurschasedEducationsByUserId(userId);
-            
+
             model.FavoriteEducations = favoriteEducations;
             model.FavoriteEducationCount = favoriteEducations.Count;
             model.PurchasedEducations = purchasedEducations;
@@ -191,7 +298,7 @@ namespace NitelikliBilisim.Business.Repositories
 
         private int GetEducationCompletionRate(Guid id)
         {
-            var group = _context.EducationGroups.Include(x => x.Education).Include(x=>x.GroupLessonDays).FirstOrDefault(x => x.Id == id);
+            var group = _context.EducationGroups.Include(x => x.Education).Include(x => x.GroupLessonDays).FirstOrDefault(x => x.Id == id);
             var rate = 0;
             if (group != null && DateTime.Now.Date > group.StartDate)
             {

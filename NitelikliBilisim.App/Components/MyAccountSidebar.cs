@@ -15,10 +15,10 @@ namespace NitelikliBilisim.App.Components
         {
             _userUnitOfWork = userUnitOfWork;
         }
-        public IViewComponentResult Invoke()
+        public IViewComponentResult Invoke(string currentPageName)
         {
             var userId = UserClaimsPrincipal.FindFirstValue(ClaimTypes.NameIdentifier);
-            return View(_userUnitOfWork.User.GetMyAccountSidebarInfo(userId));
+            return View(_userUnitOfWork.User.GetMyAccountSidebarInfo(userId, currentPageName));
         }
     }
 }

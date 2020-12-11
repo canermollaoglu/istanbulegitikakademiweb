@@ -11,7 +11,9 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public string Name { get; set; }
         public string Surname { get; set; }
         public bool IsNBUY { get; set; }
-        public int? University { get; set; }
+        public string University { get; set; }
         public string AvatarPath { get; set; }
+        public string PageName { get; set; }
+        public string NbuyCategory { get; set; }
     }
 }
