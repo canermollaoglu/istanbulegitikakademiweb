@@ -18,7 +18,7 @@
     <section class="login">
         <partial name="partials/_header-simple" />
         <div class="login__img">
-            <a href="./index.php" class="login__logo">
+            <a asp-controller="Home" asp-action="Index" class="login__logo">
                 <img src="~/assets/img/logo-white.svg" alt="">
             </a>
             <img src="~/assets/img/login-img.jpg" class="login__img-img" alt="">
@@ -192,10 +192,18 @@
             </div>
         </div>
     </section>
-
-    <partial name="partials/_BaseAssetsBody" />
-    <script src="~/js/lib/cookie-agreement.js"></script>
-    <script src="~/js/lib/security-support.js"></script>
+    <div class='main-overlay overlay js-close-modal'></div>
+    <script src="~/assets/js/jquery.min.js"></script>
+    <script src="~/vendor/select2/dist/js/select2.min.js"></script>
+    <script src="~/assets/js/swiper.min.js"></script>
+    <!-- <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script> -->
+    <script src="~/assets/js/jquery.inputmask.min.js"></script>
+    <script src="~/assets/js/datepicker.min.js"></script>
+    <!-- <script src="https://unpkg.com/bootstrap-datepicker@1.9.0/dist/locales/bootstrap-datepicker.tr.min.js"></script> -->
+    <script src="~/vendor/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/vendor/modal-video/js/jquery-modal-video.min.js"></script>
+    <script src="~/vendor/card/dist/card.js"></script>
+    <script src="~/assets/js/main.js"></script>
     <script>
         /* fields */
         var __envoy = new StorageSupport.Envoy();
@@ -219,7 +227,7 @@
         $(document).ready(document_onLoad);
         window.onbeforeunload = window_onBeforeUnload;
         btnSubmit.on("click", btnSubmit_onClick);
-        
+
         /* events */
         function document_onLoad() {
             chkTermsAndConditions.checked = false;
@@ -227,7 +235,7 @@
                 var stored = __envoy.getRegisterForm();
                 setStoredData(stored);
             }
-            
+
         }
         function window_onBeforeUnload() {
             if (__envoy.isStorageExists("register")) {
@@ -268,7 +276,7 @@
                 }
             });
         }
-        
+
 
         /* functions */
         function setStoredData(stored) {
@@ -277,7 +285,7 @@
             inputEmail.val(stored.email);
             inputPhone.val(stored.phone);
             if (stored.isNbuy != null) {
-               
+
             }
         }
     </script>

@@ -592,8 +592,8 @@ namespace NitelikliBilisim.Business.Repositories
                     IsWishListItem = false,
                     IsCanComment = false,
                     Comments = comments,
-                    Point = (comments.Sum(x => x.Point) / (double)comments.Count()),
-                    PointText = (comments.Sum(x => x.Point) / comments.Count()).ToString("0.0"),
+                    Point = 0,
+                    PointText = "0.0",
                     CommentCount = comments.Count(),
                     //PriceNumeric = education.NewPrice.GetValueOrDefault(0),
                     Level = EnumHelpers.GetDescription(education.Level),
@@ -613,6 +613,11 @@ namespace NitelikliBilisim.Business.Repositories
                     MediaType = x.MediaType
                 }).ToList()
             };
+            if (comments.Count > 0)
+            {
+                model.Base.Point = (comments.Sum(x => x.Point) / (double)comments.Count());
+                model.Base.PointText = (comments.Sum(x => x.Point) / comments.Count()).ToString("0.0");
+            }
 
             var parts = Context.EducationParts.Where(x => x.EducationId == id)
                 .OrderBy(o => o.Order)
@@ -654,7 +659,7 @@ namespace NitelikliBilisim.Business.Repositories
             }
             model.TotalDuration = totalDurationCount;
             model.TotalPartCount = totalPartCount;
-            
+
             return model;
         }
 
