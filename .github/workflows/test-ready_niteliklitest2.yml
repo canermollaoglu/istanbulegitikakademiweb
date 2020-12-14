@@ -24,7 +24,7 @@ jobs:
       run: dotnet build --configuration Debug
 
     - name: dotnet publish 
-      run: dotnet publish ~/a/niteliklibilisim/niteliklibilisim/NitelikliBilisim.App/NitelikliBilisim.App.csproj -c Debug -o ${{env.DOTNET_ROOT}}/myapp
+      run: dotnet publish D:\a\niteliklibilisim\niteliklibilisim\NitelikliBilisim.App\NitelikliBilisim.App.csproj -c Debug -o ${{env.DOTNET_ROOT}}/myapp
 
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
