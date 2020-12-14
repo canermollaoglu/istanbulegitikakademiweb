@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ViewModels.Main.Educator;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Controllers
 {
-    public class EducatorController : Controller
+    public class EducatorController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
         public EducatorController(UnitOfWork unitOfWork)

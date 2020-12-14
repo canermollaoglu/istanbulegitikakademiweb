@@ -25,7 +25,7 @@ namespace NitelikliBilisim.App.Controllers
 {
     //[Authorize]
 
-    public class AccountController : BaseController
+    public class AccountController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
