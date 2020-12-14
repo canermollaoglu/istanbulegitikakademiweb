@@ -27,4 +27,14 @@ namespace NitelikliBilisim.Core.Enums.promotion
         PurchasedCategory = 1050
     }
 
+    public enum PromotionStatus
+    {
+        [Description("Aktif")]
+        Active = 1010,
+        [Description("Kullanıldı")]
+        Used = 1020, 
+        [Description("Süresi Doldu")]
+        Expired = 1030
+    }
+
 }

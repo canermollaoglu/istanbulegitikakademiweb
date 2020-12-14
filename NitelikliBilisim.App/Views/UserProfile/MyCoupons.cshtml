@@ -52,14 +52,40 @@
                                         <div class="account-courses__item-item coupon-no">@coupon.Code</div>
                                         <div class="account-courses__item-item coupon-name">@coupon.PromotionName</div>
                                         <div class="account-courses__item-item coupon-status">
-                                            <div class="coupon-active">
-                                                <span class="icon-outer">
-                                                    <svg class="icon">
-                                                        <use xlink:href="../../assets/img/icons.svg#icon-check-circle-c"></use>
-                                                    </svg>
-                                                </span>
-                                                Aktif
-                                            </div>
+                                            @if (coupon.Status == NitelikliBilisim.Core.Enums.promotion.PromotionStatus.Active)
+                                            {
+                                                <div class="coupon-active">
+                                                    <span class="icon-outer">
+                                                        <svg class="icon">
+                                                            <use xlink:href="../../assets/img/icons.svg#icon-check-circle-c"></use>
+                                                        </svg>
+                                                    </span>
+                                                    Aktif
+                                                </div>
+                                            }
+                                            else if (coupon.Status == NitelikliBilisim.Core.Enums.promotion.PromotionStatus.Used)
+                                            {
+                                                <div class="coupon-active disabled">
+                                                    <span class="icon-outer">
+                                                        <svg class="icon">
+                                                            <use xlink:href="../../assets/img/icons.svg#icon-disabled"></use>
+                                                        </svg>
+                                                    </span>
+                                                    Kullanıldı
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="coupon-active disabled">
+                                                    <span class="icon-outer">
+                                                        <svg class="icon">
+                                                            <use xlink:href="../../assets/img/icons.svg#icon-disabled"></use>
+                                                        </svg>
+                                                    </span>
+                                                    Süre Doldu
+                                                </div>
+                                            }
+
                                         </div>
                                         <div class="account-courses__item-item coupon-date">
                                             <div>
@@ -79,96 +105,7 @@
                                         </div>
                                     </div>
                                 }
-                                <div class="account-courses__item">
-                                    <div class="account-courses__item-item coupon-no">#2844ksfc</div>
-                                    <div class="account-courses__item-item coupon-name">YENİ YIL 10</div>
-                                    <div class="account-courses__item-item coupon-status">
-                                        <div class="coupon-active">
-                                            <span class="icon-outer">
-                                                <svg class="icon">
-                                                    <use xlink:href="../../assets/img/icons.svg#icon-check-circle-c"></use>
-                                                </svg>
-                                            </span>
-                                            Aktif
-                                        </div>
-                                    </div>
-                                    <div class="account-courses__item-item coupon-date">
-                                        <div>
-                                            <span class="icon-outer time-icon">
-                                                <svg class="icon">
-                                                    <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                </svg>
-                                            </span>
-                                            17 GÜN
-                                        </div>
-                                        <div>Kalan Süre</div>
-                                    </div>
-                                    <div class="account-courses__item-item coupon-detail">
-                                        <a href="#0" class="button button-fw tooltip-hover">
-                                            <span class="button-txt">Bilgi Al</span>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="account-courses__item">
-                                    <div class="account-courses__item-item coupon-no">#2844ksfc</div>
-                                    <div class="account-courses__item-item coupon-name">YENİ YIL 10</div>
-                                    <div class="account-courses__item-item coupon-status">
-                                        <div class="coupon-active">
-                                            <span class="icon-outer">
-                                                <svg class="icon">
-                                                    <use xlink:href="../../assets/img/icons.svg#icon-check-circle-c"></use>
-                                                </svg>
-                                            </span>
-                                            Aktif
-                                        </div>
-                                    </div>
-                                    <div class="account-courses__item-item coupon-date">
-                                        <div>
-                                            <span class="icon-outer time-icon">
-                                                <svg class="icon">
-                                                    <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                </svg>
-                                            </span>
-                                            17 GÜN
-                                        </div>
-                                        <div>Kalan Süre</div>
-                                    </div>
-                                    <div class="account-courses__item-item coupon-detail">
-                                        <a href="#0" class="button button-fw tooltip-hover">
-                                            <span class="button-txt">Bilgi Al</span>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="account-courses__item">
-                                    <div class="account-courses__item-item coupon-no">#2844ksfc</div>
-                                    <div class="account-courses__item-item coupon-name">YENİ SEZON</div>
-                                    <div class="account-courses__item-item coupon-status">
-                                        <div class="coupon-active disabled">
-                                            <span class="icon-outer">
-                                                <svg class="icon">
-                                                    <use xlink:href="../../assets/img/icons.svg#icon-disabled"></use>
-                                                </svg>
-                                            </span>
-                                            Kullanıldı
-                                        </div>
-                                    </div>
-                                    <div class="account-courses__item-item coupon-date">
-                                        <div>
-                                            <span class="icon-outer time-icon">
-                                                <svg class="icon">
-                                                    <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                </svg>
-                                            </span>
-                                            0 GÜN
-                                        </div>
-                                        <div>Kalan Süre</div>
-                                    </div>
-                                    <div class="account-courses__item-item coupon-detail">
-                                        <a href="#0" class="button button-fw tooltip-hover">
-                                            <span class="button-txt">Bilgi Al</span>
-                                        </a>
-                                    </div>
-                                </div>
+                               
                             </div>
                         </div>
                     </div>

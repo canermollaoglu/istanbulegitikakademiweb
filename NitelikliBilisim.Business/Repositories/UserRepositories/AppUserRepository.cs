@@ -6,6 +6,7 @@ using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Entities.promotion;
 using NitelikliBilisim.Core.Entities.user_details;
 using NitelikliBilisim.Core.Enums;
+using NitelikliBilisim.Core.Enums.promotion;
 using NitelikliBilisim.Core.Enums.user_details;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.Main.Profile;
@@ -22,7 +23,7 @@ namespace NitelikliBilisim.Business.Repositories
         private readonly NbDataContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
-       
+
         public AppUserRepository(NbDataContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
@@ -157,7 +158,7 @@ namespace NitelikliBilisim.Business.Repositories
             return model;
         }
 
-        
+
 
         public List<MyCommentVm> GetCustomerComments(string userId)
         {
@@ -327,7 +328,7 @@ namespace NitelikliBilisim.Business.Repositories
                                       Id = education.Id,
                                       Name = education.Name,
                                       CategoryName = category.Name,
-                                      HoursText = (education.HoursPerDay*education.Days).ToString(),
+                                      HoursText = (education.HoursPerDay * education.Days).ToString(),
                                       DaysText = education.Days.ToString(),
                                       FeaturedImageUrl = featuredImage.FileUrl
                                   }).ToList();
@@ -348,6 +349,7 @@ namespace NitelikliBilisim.Business.Repositories
             }
 
             var codes = _context.EducationPromotionCodes.Where(x => x.PromotionType == Core.Enums.promotion.PromotionType.CouponCode && currentUserConditions.Contains(x.Id));
+            var uses = _context.EducationPromotionItems.Where(x => x.UserId == userId).ToList();
             var retVal = new List<MyCouponVm>();
             foreach (var promotionCode in codes)
             {
@@ -356,14 +358,23 @@ namespace NitelikliBilisim.Business.Repositories
                 promotion.Code = promotionCode.PromotionCode;
                 promotion.PromotionId = promotionCode.Id;
                 promotion.RemainingTime = "0";
-                if (promotionCode.EndDate.Date>DateTime.Now.Date)
+                if (uses.Any(x => x.EducationPromotionCodeId == promotionCode.Id))
+                {
+                    promotion.Status = PromotionStatus.Used;
+                }
+                else if (promotionCode.EndDate.Date < DateTime.Now.Date)
+                {
+                    promotion.Status = PromotionStatus.Expired;
+                }
+                else
                 {
                     TimeSpan remainingTime = promotionCode.EndDate - DateTime.Now.Date;
                     promotion.RemainingTime = remainingTime.TotalDays.ToString();
+                    promotion.Status = PromotionStatus.Active;
                 }
                 retVal.Add(promotion);
             }
-                        
+
 
             return retVal;
         }

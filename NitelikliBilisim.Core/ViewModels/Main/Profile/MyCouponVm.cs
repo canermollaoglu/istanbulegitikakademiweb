@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NitelikliBilisim.Core.Enums.promotion;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,5 +13,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public string PromotionName { get;  set; }
         public string Code { get;  set; }
         public string RemainingTime { get;  set; }
+        public PromotionStatus Status { get; set; }
     }
 }
