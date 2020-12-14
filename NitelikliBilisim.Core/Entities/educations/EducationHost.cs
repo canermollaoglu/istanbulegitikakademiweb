@@ -25,6 +25,7 @@ namespace NitelikliBilisim.Core.Entities
         public string Latitude { get; set; }
         [MaxLength(128)]
         public string Longitude { get; set; }
+        public string GoogleMapUrl { get; set; }
 
         public virtual List<EducationHostImage> EducationHostImages { get; set; }
     }

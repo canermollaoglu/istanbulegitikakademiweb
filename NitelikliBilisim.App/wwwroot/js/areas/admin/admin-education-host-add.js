@@ -91,11 +91,8 @@ function btnSave_onClick() {
         Address: $("#input-address").val(),
         Latitude: $("#input-latitude").val(),
         Longitude: $("#input-longitude").val(),
-        City:$("#input-city").val()
-        //CertificateImage: {
-        //    Base64Content: file.base64content,
-        //    Extension: file.extension
-        //}
+        City: $("#input-city").val(),
+        GoogleMapUrl: $("#input-map-url").val()
     }
     var tokenVerifier = new SecuritySupport.TokenVerifier();
     data = tokenVerifier.addToken("form-add-education-host", data);

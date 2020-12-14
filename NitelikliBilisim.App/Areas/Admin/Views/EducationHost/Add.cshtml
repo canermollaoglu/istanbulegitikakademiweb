@@ -26,12 +26,18 @@
                             <input type="text" class="form-control" id="input-name">
                         </div>
                     </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Google Map Url</label>
+                            <input type="text" class="form-control" id="input-map-url">
+                        </div>
+                    </div>
 
                     <div class="col-md-12">
                         <div class="form-group">
                             <label>Şehir Seçiniz</label>
                             <select id="input-city" class="form-control">
-                                @foreach( var city in Model.HostCities)
+                                @foreach (var city in Model.HostCities)
                                 {
                                     <option value="@city.Key">@city.Value</option>
                                 }

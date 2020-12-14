@@ -24,9 +24,8 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 City = EnumHelpers.GetDescription(x.City),
                 HostName = x.HostName,
-                Latitude = x.Latitude,
-                Longitude = x.Longitude,
-                ImagePath = x.EducationHostImages.First().FileUrl
+                ImagePath = x.EducationHostImages.First().FileUrl,
+                GoogleMapUrl = x.GoogleMapUrl
             }).ToList();
             return data;
         }

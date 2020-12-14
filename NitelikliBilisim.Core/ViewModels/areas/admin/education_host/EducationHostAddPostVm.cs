@@ -18,5 +18,6 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_host
         public string Latitude { get; set; }
         [MaxLength(128)]
         public string Longitude { get; set; }
+        public string GoogleMapUrl { get; set; }
     }
 }

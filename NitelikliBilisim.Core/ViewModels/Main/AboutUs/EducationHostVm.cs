@@ -10,8 +10,7 @@ namespace NitelikliBilisim.Core.ViewModels.Main.AboutUs
     {
         public string City { get; set; }
         public string HostName { get; set; }
-        public string Latitude { get; set; }
-        public string Longitude { get; set; }
         public string ImagePath { get; set; }
+        public string GoogleMapUrl { get; set; }
     }
 }
