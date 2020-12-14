@@ -8,28 +8,32 @@ on:
     branches:
       - test-ready
 
+  pull_request:
+    branches:
+      - test-ready
+
 jobs:
   build-and-deploy:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@master
+      - uses: actions/checkout@master
 
-    - name: Set up .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: '5.0.x'
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: "5.0.x"
 
-    - name: Build with dotnet
-      run: dotnet build --configuration Debug
+      - name: Build with dotnet
+        run: dotnet build --configuration Debug
 
-    - name: dotnet publish 
-      run: dotnet publish D:\a\niteliklibilisim\niteliklibilisim\NitelikliBilisim.App\NitelikliBilisim.App.csproj -c Debug -o ${{env.DOTNET_ROOT}}/myapp
+      - name: dotnet publish
+        run: dotnet publish D:\a\niteliklibilisim\niteliklibilisim\NitelikliBilisim.App\NitelikliBilisim.App.csproj -c Debug -o ${{env.DOTNET_ROOT}}/myapp
 
-    - name: Deploy to Azure Web App
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: 'niteliklitest2'
-        slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_3ae9eb712fee410e9866e93a98a22e02 }}
-        package: ${{env.DOTNET_ROOT}}/myapp 
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: "niteliklitest2"
+          slot-name: "production"
+          publish-profile: ${{ secrets.AzureAppService_PublishProfile_3ae9eb712fee410e9866e93a98a22e02 }}
+          package: ${{env.DOTNET_ROOT}}/myapp
