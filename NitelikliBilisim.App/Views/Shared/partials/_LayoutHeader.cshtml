@@ -705,18 +705,21 @@
                     </svg>
                 </span>
             </div>
-            <a href="./index.php" class="header-mobile__logo">
+            <a asp-controller="Home" asp-action="Index" class="header-mobile__logo">
                 <img src="~/assets/img/nitelikli-bilisim_logo.svg" class="logolight" alt="Nitelikli Bilişim Logo" height="35" />
                 <img src="~/assets/img/nitelikli-bilisim_logo-dark.svg" class="logodark" alt="Nitelikli bilişim logo" height="35">
             </a>
             <div class="header-mobile__right">
-                <a href="./hesap-menu.php" class="header-mobile__right-btn">
-                    <span class="icon-outer">
-                        <svg class="icon">
-                            <use xlink:href="../../assets/img/icons.svg#icon-user"></use>
-                        </svg>
-                    </span>
-                </a>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <a asp-controller="UserProfile" asp-action="MyMenu" class="header-mobile__right-btn">
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-user"></use>
+                            </svg>
+                        </span>
+                    </a>
+                }
                 <div class="header-mobile__right-btn js-open-mini-basket">
                     <span class="icon-outer">
                         <svg class="icon">
@@ -833,26 +836,14 @@
                         Kurumsal
                     </span>
                     <div class="mobile-menu__dropdown">
-                        <a href="./index.php">Anasayfa</a>
+                        <a asp-controller="Home" asp-action="AboutUs">Hakkımızda</a>
+                        <a asp-controller="Home" asp-action="FrequentlyAskedQuestions">Sıkça Sorulan Sorular</a>
+                        <a asp-controller="Home" asp-action="Contact">İletişim</a>
+                        <a asp-controller="Home" asp-action="NonDisclosureAgreement">Gizlilik Sözleşmesi</a>
+                        <a asp-controller="Blog" asp-action="List">Blog Listeleme</a>
+                        <a asp-controller="Home" asp-action="UserComments">Kullanıcı Yorumları</a>
                         <a href="./egitim-listeleme.php">Eğitim Listeleme</a>
-                        <a href="./egitim-detay.php">Eğitim Detay</a>
-                        <a href="./egitmen-detay.php">Eğitmen Detay</a>
-                        <a href="./blog-listeleme.php">Blog Listeleme</a>
-                        <a href="./blog-detay.php">Blog Detay</a>
-                        <a href="./hakkimizda.php">Hakkımızda</a>
-                        <a href="./iletisim.php">İletişim</a>
-                        <a href="./sss.php">Sıkça Sorulan Sorular</a>
-                        <a href="./kullanici-yorumlari.php">Kullanıcı Yorumları</a>
-                        <a href="./kullanici-yorumlari-not-login.php">Kullanıcı Yorumları giriş yapılmamış</a>
-                        <a href="./sozlesme.php">Sözleşme</a>
                         <a href="./sana-ozel.php">Sana Özel</a>
-                        <a href="./checkout-1-sepet.php">Alışveriş Sepeti</a>
-                        <a href="./kayit-ol.php">Kayıt Ol</a>
-                        <a href="./giris-yap.php">Giriş Yap</a>
-                        <a href="./sifremi-unuttum.php">Şifremi Unuttum</a>
-                        <a href="./sifre-olustur.php">Şifre Oluştur</a>
-                        <a href="./hesap-panelim.php">Hesap</a>
-                        <a href="./kurumsal-uyelik-talebi.php">Kurumsal Üyelik Talebi</a>
                     </div>
                 </div>
                 <div class="mobile-menu__item js-modal-trigger" data-trigger="egitimSihirbazi">
@@ -860,12 +851,12 @@
                         Eğitim Sihirbazı
                     </span>
                 </div>
-                <a href="./kurumsal-uyelik-talebi.php" class="mobile-menu__item">
+                <a asp-controller="Home" asp-action="EducatorApplication" class="mobile-menu__item">
                     <span class="mobile-menu__txt">
                         Eğitmen Başvurusu
                     </span>
                 </a>
-                <a href="./blog-listeleme.php" class="mobile-menu__item">
+                <a asp-controller="Blog" asp-action="List" class="mobile-menu__item">
                     <span class="mobile-menu__txt">
                         Blog
                     </span>

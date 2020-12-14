@@ -108,6 +108,13 @@ namespace NitelikliBilisim.App.Controllers
 
             return View();
         }
+        [Route("hesap/menu")]
+        public IActionResult MyMenu()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return View(_userUnitOfWork.User.GetMyAccountSidebarInfo(userId,null));
+        }
+
         [Route("hesap/kurslarim")]
         public IActionResult MyCourses()
         {

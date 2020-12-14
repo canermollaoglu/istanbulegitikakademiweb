@@ -202,7 +202,7 @@
 
 <section class="account account--dashboard">
     <div class="account-mobile__top">
-        <a href="./hesap-menu.php" class="account-mobile__prev">
+        <a asp-controller="UserProfile" asp-action="MyMenu" class="account-mobile__prev">
             <span class="icon-outer">
                 <svg class="icon">
                     <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
@@ -216,7 +216,7 @@
     <div class="dunyanın-en-sacma-fixi js-fix-pos"></div>
     <div class="container">
         <div class="account__wrp">
-            @await Component.InvokeAsync("MyAccountSidebar",AccountSideBarPageNames.MyPanel)
+            @await Component.InvokeAsync("MyAccountSidebar", AccountSideBarPageNames.MyPanel)
             <div class="account-content">
                 <div class="account-dashboard">
                     <div class="account-dashboard__subtop custom-subtop">
@@ -243,126 +243,20 @@
                         <div class="account-dashboard__week">
                             <div class="swiper-container js-dashboard-week-slider">
                                 <div class="swiper-wrapper">
-                                    <div class="swiper-slide account-dashboard__week-slide js-main-tab-item">
-                                        <a href="#week1" class="account-dashboard__week-item">
-                                            <span>Hafta</span>
-                                            <div>1</div>
-                                        </a>
-                                    </div>
-                                    <div class="swiper-slide account-dashboard__week-slide js-main-tab-item">
-                                        <a href="#week2" class="account-dashboard__week-item">
-                                            <span>Hafta</span>
-                                            <div>2</div>
-                                        </a>
-                                    </div>
-                                    <div class="swiper-slide account-dashboard__week-slide js-main-tab-item">
-                                        <a href="#week3" class="account-dashboard__week-item">
-                                            <span>Hafta</span>
-                                            <div>3</div>
-                                        </a>
-                                    </div>
-                                    <div class="swiper-slide account-dashboard__week-slide js-main-tab-item">
-                                        <a href="#week4" class="account-dashboard__week-item">
-                                            <span>Hafta</span>
-                                            <div>4</div>
-                                        </a>
-                                    </div>
-                                    <div class="swiper-slide account-dashboard__week-slide js-main-tab-item">
-                                        <a href="#week5" class="account-dashboard__week-item">
-                                            <span>Hafta</span>
-                                            <div>5</div>
-                                        </a>
-                                    </div>
-                                    <div class="swiper-slide account-dashboard__week-slide js-main-tab-item active">
-                                        <a href="#week6" class="account-dashboard__week-item">
-                                            <span>Hafta</span>
-                                            <div>6</div>
-                                        </a>
-                                    </div>
-                                    <div class="swiper-slide account-dashboard__week-slide js-main-tab-item">
-                                        <a href="#week7" class="account-dashboard__week-item">
-                                            <span>Hafta</span>
-                                            <div>7</div>
-                                        </a>
-                                    </div>
-                                    <div class="swiper-slide account-dashboard__week-slide js-main-tab-item">
-                                        <a href="#week8" class="account-dashboard__week-item">
-                                            <span>Hafta</span>
-                                            <div>8</div>
-                                        </a>
-                                    </div>
-                                    <div class="swiper-slide account-dashboard__week-slide js-main-tab-item">
-                                        <a href="#week9" class="account-dashboard__week-item">
-                                            <span>Hafta</span>
-                                            <div>9</div>
-                                        </a>
-                                    </div>
-                                    <div class="swiper-slide account-dashboard__week-slide js-main-tab-item">
-                                        <a href="#week10" class="account-dashboard__week-item">
-                                            <span>Hafta</span>
-                                            <div>10</div>
-                                        </a>
-                                    </div>
-                                    <div class="swiper-slide account-dashboard__week-slide js-main-tab-item">
-                                        <a href="#week11" class="account-dashboard__week-item">
-                                            <span>Hafta</span>
-                                            <div>11</div>
-                                        </a>
-                                    </div>
-                                    <div class="swiper-slide account-dashboard__week-slide js-main-tab-item">
-                                        <a href="#week12" class="account-dashboard__week-item">
-                                            <span>Hafta</span>
-                                            <div>12</div>
-                                        </a>
-                                    </div>
-                                    <div class="swiper-slide account-dashboard__week-slide js-main-tab-item">
-                                        <a href="#week13" class="account-dashboard__week-item">
-                                            <span>Hafta</span>
-                                            <div>13</div>
-                                        </a>
-                                    </div>
-                                    <div class="swiper-slide account-dashboard__week-slide js-main-tab-item">
-                                        <a href="#week14" class="account-dashboard__week-item">
-                                            <span>Hafta</span>
-                                            <div>14</div>
-                                        </a>
-                                    </div>
-                                    <div class="swiper-slide account-dashboard__week-slide js-main-tab-item">
-                                        <a href="#week15" class="account-dashboard__week-item">
-                                            <span>Hafta</span>
-                                            <div>15</div>
-                                        </a>
-                                    </div>
-                                    <div class="swiper-slide account-dashboard__week-slide js-main-tab-item">
-                                        <a class="account-dashboard__week-item">
-                                            <span>Hafta</span>
-                                            <div>16</div>
-                                        </a>
-                                    </div>
-                                    <div class="swiper-slide account-dashboard__week-slide js-main-tab-item">
-                                        <a class="account-dashboard__week-item">
-                                            <span>Hafta</span>
-                                            <div>17</div>
-                                        </a>
-                                    </div>
-                                    <div class="swiper-slide account-dashboard__week-slide js-main-tab-item">
-                                        <a class="account-dashboard__week-item">
-                                            <span>Hafta</span>
-                                            <div>18</div>
-                                        </a>
-                                    </div>
-                                    <div class="swiper-slide account-dashboard__week-slide js-main-tab-item">
-                                        <a class="account-dashboard__week-item">
-                                            <span>Hafta</span>
-                                            <div>19</div>
-                                        </a>
-                                    </div>
-                                    <div class="swiper-slide account-dashboard__week-slide js-main-tab-item">
-                                        <a class="account-dashboard__week-item">
-                                            <span>Hafta</span>
-                                            <div>20</div>
-                                        </a>
-                                    </div>
+                                    @for (int i = 1; i <= 20; i++)
+                                    {
+                                        var slideClass = "";
+                                        if (i == Model.EducationWeek)
+                                            slideClass = "active";
+                                        else if (i < Model.EducationWeek)
+                                            slideClass = "preved";
+                                        <div class="swiper-slide account-dashboard__week-slide @slideClass js-main-tab-item">
+                                            <a href="#week@(i)" class="account-dashboard__week-item">
+                                                <span>Hafta</span>
+                                                <div>@i</div>
+                                            </a>
+                                        </div>
+                                    }
                                 </div>
                             </div>
                             <div class="swiper-button-prev">

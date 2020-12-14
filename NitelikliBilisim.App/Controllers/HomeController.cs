@@ -193,12 +193,12 @@ namespace NitelikliBilisim.App.Controllers
                     NameSurname = model.NameSurname,
                     CvUrl = mediaPath
                 });
-                return View();
+                return RedirectToAction("Index","Home");
             }
             catch (Exception ex)
             {
                 //Log ex
-                return View();
+                return RedirectToAction("Index", "Home");
             }
         }
 

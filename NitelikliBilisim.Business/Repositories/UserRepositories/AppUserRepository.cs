@@ -264,8 +264,24 @@ namespace NitelikliBilisim.Business.Repositories
             model.FavoriteEducationCount = favoriteEducations.Count;
             model.PurchasedEducations = purchasedEducations;
             model.PurchasedEducationCount = purchasedEducations.Count;
+            if (student.IsNbuyStudent)
+            {
+                model.EducationWeek = GetEducationWeek(userId);
+            }
             return model;
 
+        }
+
+        private int GetEducationWeek(string userId)
+        {
+            var retVal = 1;
+            var student = _context.Customers.Include(x => x.StudentEducationInfos).ThenInclude(x => x.EducationDays).FirstOrDefault(x => x.Id == userId);
+            if (student != null)
+            {
+                var currentDate = student.StudentEducationInfos[0].EducationDays.OrderBy(x => x.Date).Last(x => x.Date <= DateTime.Now.Date);
+                retVal = (int)Math.Ceiling(currentDate.Day / (double)7);
+            }
+            return retVal;
         }
 
         public List<PurchasedEducationVm> GetPurschasedEducationsByUserId(string userId)

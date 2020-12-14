@@ -1,0 +1,235 @@
+﻿@model NitelikliBilisim.Core.ViewModels.Main.Profile.MyAccountSidebarVm
+@using NitelikliBilisim.Core.Services.Abstracts
+@using NitelikliBilisim.App.Utility
+@inject IStorageService StorageService
+@{
+    var userAvatarPath = "";
+    if (!string.IsNullOrEmpty(Model.AvatarPath))
+    {
+        userAvatarPath = StorageService.DownloadFile(System.IO.Path.GetFileName(Model.AvatarPath), System.IO.Path.GetDirectoryName(Model.AvatarPath)).Result;
+    }
+}
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <title>Nitelikli Bilişim</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <partial name="partials/_BaseAssetsHeader" />
+</head>
+
+<body>
+
+    <div class="account-mobile">
+        <div class="account-mobile__top">
+            <a asp-controller="Home" asp-action="Index" class="account-mobile__prev">
+                <span class="icon-outer">
+                    <svg class="icon">
+                        <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                    </svg>
+                </span>
+            </a>
+            <span class="account-mobile__txt">
+                HESABIM
+            </span>
+        </div>
+        <div class="account-side__menu">
+            <div class="account-side__top">
+                <div class="account-side__img">
+                    <input type="image" class="account-side__img-img" src="@userAvatarPath" />
+                    <input type="file" id="accountSideImg" style="display: none;" />
+                    <div class="account-side__img-edit">
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-pencil"></use>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+                <div class="account-side__name">
+                    @Model.Name @Model.Surname
+                    @if (Model.IsNBUY)
+                    {
+                        <span class="account-side__nbuy">NBUY</span>
+                    }
+                </div>
+                <div class="account-side__branch">
+                    @if (Model.IsNBUY)
+                    {
+                        @Model.NbuyCategory
+                    }
+                </div>
+                <div class="account-side__university">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-map-pin-f"></use>
+                        </svg>
+                    </span>
+                    @Model.University
+                </div>
+            </div>
+            <ul class="account-side__list">
+                <li class="account-side__item active js-vertical-magic-line-item">
+                    <a asp-controller="UserProfile" asp-action="Profile">
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-home"></use>
+                            </svg>
+                        </span>
+                        Panelim
+                    </a>
+                </li>
+                <li class="account-side__item js-vertical-magic-line-item">
+                    <a asp-controller="UserProfile" asp-action="MyCourses">
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-code-c"></use>
+                            </svg>
+                        </span>
+                        Kurslarım
+                    </a>
+                </li>
+                <li class="account-side__item js-vertical-magic-line-item">
+                    <a href="./hesap-sertifikalarim.php">
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-doc-medal"></use>
+                            </svg>
+                        </span>
+                        Sertifikalarım (10)
+                    </a>
+                </li>
+                <li class="account-side__item js-vertical-magic-line-item">
+                    <a asp-controller="UserProfile" asp-action="MyComments">
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-speak-balloon"></use>
+                            </svg>
+                        </span>
+                        Yorumlarım
+                    </a>
+                </li>
+                <li class="account-side__item js-vertical-magic-line-item">
+                    <a asp-controller="UserProfile" asp-action="MyCoupons">
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-coupon"></use>
+                            </svg>
+                        </span>
+                        Kuponlarım / İndirimlerim
+                    </a>
+                </li>
+                <li class="account-side__item js-vertical-magic-line-item">
+                    <a asp-controller="UserProfile" asp-action="MyFavoriteCourses">
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-heart"></use>
+                            </svg>
+                        </span>
+                        Favori Kurslarım
+                    </a>
+                </li>
+                <li class="account-side__item js-vertical-magic-line-item">
+                    <a href="./hesap-faturalar.php">
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-bill"></use>
+                            </svg>
+                        </span>
+                        Faturalarım
+                    </a>
+                </li>
+                <li class="account-side__item js-vertical-magic-line-item">
+                    <a asp-controller="UserProfile" asp-action="AccountSettings">
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-settings"></use>
+                            </svg>
+                        </span>
+                        Ayarlar
+                    </a>
+                </li>
+            </ul>
+            <div class="account-side__footer">
+                <div class="account-side__item">
+                    <a asp-controller="Account" asp-action="Logout">
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-logout"></use>
+                            </svg>
+                        </span>
+                        Çıkış Yap
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class='main-overlay overlay js-close-modal'></div>
+    <script src="~/assets/js/jquery.min.js"></script>
+    <script src="~/vendor/select2/dist/js/select2.min.js"></script>
+    <script src="~/assets/js/swiper.min.js"></script>
+    <!-- <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script> -->
+    <script src="~/assets/js/jquery.inputmask.min.js"></script>
+    <script src="~/assets/js/datepicker.min.js"></script>
+    <!-- <script src="https://unpkg.com/bootstrap-datepicker@1.9.0/dist/locales/bootstrap-datepicker.tr.min.js"></script> -->
+    <script src="~/vendor/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/vendor/modal-video/js/jquery-modal-video.min.js"></script>
+    <script src="~/vendor/card/dist/card.js"></script>
+    <script src="~/js/lib/cookie-agreement.js"></script>
+    <script src="~/js/sup/cart.js"></script>
+    <script src="~/js/lib/security-support.js"></script>
+
+    <script>
+        var __cookieBar = $("#cookie-bar");
+        var __envoy = new StorageSupport.Envoy();
+        //var __searcher = new AppWide.Searcher();
+        var __btnCookieAgree = $("#btn-cookie-agree");
+        var __cart = new CartSupport.Cart();
+        __btnCookieAgree.on("click", () => {
+            __envoy.createRegisterForm();
+            $("#cookie-bar").hide();
+        });
+
+        // __searcher.initialize();
+
+        if (__envoy.isStorageExists("register")) {
+            __cookieBar.hide();
+        }
+        miniBasketReload();
+
+        function miniBasketReload() {
+            var cartItems = __cart.getItems();
+            var __layoutHeaderCartCount = $(".mini-basket__count");
+            var __layoutHeaderCartContent = $(".mini-basket__cnt");
+            __layoutHeaderCartCount.html(`${__cart.getItemCount()} Eğitim`);
+            $.each(cartItems, function (index, value) {
+                var item = `<a class="mini-basket__item js-deleted-item" data-eid="${value.educationId}">
+                                        <div class="mini-basket__item-img">
+                                            <img src="${value.imageUrl}" alt="">
+                                        </div>
+                                        <div class="mini-basket__item-cnt">
+                                            <div class="mini-basket__item-title">${value.educationName}</div>
+                                            <div class="mini-basket__item-price">
+                                                <span>₺</span>
+                                                ${value.newPrice}
+                                            </div>
+                                        </div>
+                                        <div class="mini-basket__item-crash js-delete-item">
+                                            <span class="icon-outer">
+                                                <svg class="icon">
+                                                    <use xlink:href="../../assets/img/icons.svg#icon-crash"></use>
+                                                </svg>
+                                            </span>
+                                        </div>
+                                    </a>`;
+                __layoutHeaderCartContent.append(item);
+            });
+        };
+    </script>
+
+    <script src="~/assets/js/main.js"></script>
+</body>
+
+</html>

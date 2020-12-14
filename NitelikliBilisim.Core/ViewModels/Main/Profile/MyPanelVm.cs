@@ -17,5 +17,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public int FavoriteEducationCount { get; set; }
         public List<PurchasedEducationVm> PurchasedEducations { get; set; }
         public int PurchasedEducationCount { get; set; }
+        public int EducationWeek { get; set; }
     }
 }
