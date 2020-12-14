@@ -8,6 +8,10 @@
     {
         userAvatarPath = StorageService.DownloadFile(System.IO.Path.GetFileName(Model.AvatarPath), System.IO.Path.GetDirectoryName(Model.AvatarPath)).Result;
     }
+    else
+    {
+        userAvatarPath = "../../img/nb_letter_logo_sm.png";
+    }
 }
 
 <div class="account-side">
@@ -15,7 +19,9 @@
         <div class="account-side__top">
             <div class="account-side__img">
                 <input type="image" class="account-side__img-img" src="@userAvatarPath" />
-                <input type="file" id="accountSideImg" style="display: none;" />
+                <form method="post" id="imageForm" enctype="multipart/form-data" asp-controller="UserProfile" asp-action="ChangeProfileImage">
+                    <input type="file" id="accountSideImg" name="ProfileImage" style="display: none;" />
+                </form>
                 <div class="account-side__img-edit">
                     <span class="icon-outer">
                         <svg class="icon">

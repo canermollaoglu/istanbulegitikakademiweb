@@ -13,5 +13,18 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public string NbuyStartDate { get; set; }
         public string NbuyEndDate { get; set; }
         public string EducationCategory { get; set; }
+        public List<EducationMonth> EducationMonths { get; set; } = new List<EducationMonth>();
+
+    }
+
+    public class EducationMonth
+    {
+        public int Order { get; set; }
+        public List<EducationWeek> Weeks { get; set; } = new List<EducationWeek>();
+    }
+    public class EducationWeek
+    {
+        public int Order { get; set; }
+        public bool IsCurrentWeek { get; set; }
     }
 }

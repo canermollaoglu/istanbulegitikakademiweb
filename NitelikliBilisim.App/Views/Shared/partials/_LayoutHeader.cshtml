@@ -631,6 +631,11 @@
                         catch
                         {
                         }
+                        if (string.IsNullOrEmpty(profileImage))
+                        {
+                            profileImage = "../../img/nb_letter_logo_sm.png";
+                                
+                        }
 
                         <!-- giriş yapılmış -->
                         <div class="header__profile-btn js-open-user-dropdown">

@@ -1911,6 +1911,10 @@ if ($('.login__form').length > 0) {
     });
 }
 
+$('#accountSideImg').on('change', function () {
+    $("#imageForm").submit();
+});
+
 $("input[type='image']").click(function () {
     $("input[id='accountSideImg']").click();
 });

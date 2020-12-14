@@ -243,13 +243,11 @@
                         <div class="account-dashboard__week">
                             <div class="swiper-container js-dashboard-week-slider">
                                 <div class="swiper-wrapper">
-                                    @for (int i = 1; i <= 20; i++)
+                                    @for (int i = 1; i <= Model.TotalEducationWeek; i++)
                                     {
                                         var slideClass = "";
                                         if (i == Model.EducationWeek)
                                             slideClass = "active";
-                                        else if (i < Model.EducationWeek)
-                                            slideClass = "preved";
                                         <div class="swiper-slide account-dashboard__week-slide @slideClass js-main-tab-item">
                                             <a href="#week@(i)" class="account-dashboard__week-item">
                                                 <span>Hafta</span>

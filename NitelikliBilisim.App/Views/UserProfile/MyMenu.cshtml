@@ -8,6 +8,10 @@
     {
         userAvatarPath = StorageService.DownloadFile(System.IO.Path.GetFileName(Model.AvatarPath), System.IO.Path.GetDirectoryName(Model.AvatarPath)).Result;
     }
+    else
+    {
+        userAvatarPath = "../../img/nb_letter_logo_sm.png";
+    }
 }
 <!DOCTYPE html>
 <html lang="tr">
