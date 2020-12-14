@@ -158,7 +158,25 @@ namespace NitelikliBilisim.Business.Repositories
             return model;
         }
 
-
+        public ForYouPageGetVm GetForYouPageData(string userId)
+        {
+            var infos = _context.Customers
+                .Include(x=>x.StudentEducationInfos)
+                .ThenInclude(x=>x.Category)
+                .Include(x => x.StudentEducationInfos)
+                .ThenInclude(x => x.EducationDays)
+                .First(x=>x.Id == userId);
+            var nbuyInfo = infos.StudentEducationInfos[0];
+            var totalEducationWeeks = (int)Math.Ceiling((nbuyInfo.EducationDays.OrderBy(x=>x.Day).Last().Date - nbuyInfo.StartedAt.Date).TotalDays / (double)7);
+            var currentEducationWeek = (int)Math.Ceiling((DateTime.Now.Date - nbuyInfo.StartedAt).TotalDays / (double)7); //GetEducationWeek(userId);
+            ForYouPageGetVm model = new();
+            model.EducationCategory = nbuyInfo.Category.Name;
+            model.EducationWeek = currentEducationWeek;
+            model.LeftWeeks = totalEducationWeeks - currentEducationWeek;
+            model.NbuyStartDate = nbuyInfo.StartedAt.ToString("dd MMMM yyyy");
+            model.NbuyEndDate = nbuyInfo.EducationDays.OrderBy(x => x.Date).Last().Date.ToString("dd MMMM yyyy");
+            return model;
+        }
 
         public List<MyCommentVm> GetCustomerComments(string userId)
         {

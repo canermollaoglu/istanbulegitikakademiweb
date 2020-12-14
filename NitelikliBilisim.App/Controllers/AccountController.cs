@@ -98,7 +98,7 @@ namespace NitelikliBilisim.App.Controllers
                         CategoryId = model.EducationCategory.Value
                     };
                     var studentEducationInfoId = _unitOfWork.StudentEducationInfo.Insert(studentEducationInformation);
-                    if (model.EducationCategory.HasValue && string.IsNullOrEmpty(model.StartedAt))
+                    if (model.EducationCategory.HasValue && !string.IsNullOrEmpty(model.StartedAt))
                         CreateEducationDays(studentEducationInfoId, model.EducationCategory.Value,Convert.ToDateTime(model.StartedAt));
                 }
                 if (result.Succeeded)

@@ -598,7 +598,7 @@
                             <a asp-controller="Blog" asp-action="List">Blog Listeleme</a>
                             <a asp-controller="Home" asp-action="UserComments">Kullanıcı Yorumları</a>
                             <a href="./egitim-listeleme.php">Eğitim Listeleme</a>
-                            <a href="./sana-ozel.php">Sana Özel</a>
+                            <a asp-controller="UserProfile" asp-action="ForYou">Sana Özel</a>
 
                         </ul>
                     </li>
@@ -643,7 +643,7 @@
                                 <div class="header__profile-name">@user.Name @user.Surname</div>
                             </div>
                         </div>
-                        <a href="./sana-ozel.php" class="button header__register-button">
+                        <a asp-controller="UserProfile" asp-action="ForYou" class="button header__register-button">
                             <span class="icon-outer button-icon">
                                 <svg class="icon">
                                     <use xlink:href="../../assets/img/icons.svg#icon-star-s"></use>
@@ -853,7 +853,7 @@
                         <a asp-controller="Blog" asp-action="List">Blog Listeleme</a>
                         <a asp-controller="Home" asp-action="UserComments">Kullanıcı Yorumları</a>
                         <a href="./egitim-listeleme.php">Eğitim Listeleme</a>
-                        <a href="./sana-ozel.php">Sana Özel</a>
+                        <a asp-controller="UserProfile" asp-action="ForYou">Sana Özel</a>
                     </div>
                 </div>
                 <div class="mobile-menu__item js-modal-trigger" data-trigger="egitimSihirbazi">

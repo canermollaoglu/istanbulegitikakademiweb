@@ -136,7 +136,7 @@ namespace NitelikliBilisim.App.Controllers
             //her sayfada 6 yorum.
             retVal.SortingTypes = EnumHelpers.ToKeyValuePair<EducationCommentSortingTypes>();
             retVal.EducationCategories = _unitOfWork.EducationCategory.GetEducationCategoryDictionary();
-            retVal.PageDetails = _unitOfWork.EducationComment.GetEducationComments(c,s,p);
+            retVal.PageDetails = _unitOfWork.EducationComment.GetEducationComments(c, s, p);
 
             return View(retVal);
         }
@@ -193,7 +193,7 @@ namespace NitelikliBilisim.App.Controllers
                     NameSurname = model.NameSurname,
                     CvUrl = mediaPath
                 });
-                return RedirectToAction("Index","Home");
+                return RedirectToAction("Index", "Home");
             }
             catch (Exception ex)
             {
