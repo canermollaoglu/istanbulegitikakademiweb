@@ -4,199 +4,206 @@
     ViewBag.Title = "Kaydol";
 }
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" class="h-100-percent">
+
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Udema a modern educational site template">
-    <meta name="author" content="Ansonika">
-    <title>@ViewBag.Title</title>
-
-    <!-- Favicons-->
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-    <link rel="apple-touch-icon" type="image/x-icon" href="img/apple-touch-icon-57x57-precomposed.png">
-    <link rel="apple-touch-icon" type="image/x-icon" sizes="72x72" href="img/apple-touch-icon-72x72-precomposed.png">
-    <link rel="apple-touch-icon" type="image/x-icon" sizes="114x114" href="img/apple-touch-icon-114x114-precomposed.png">
-    <link rel="apple-touch-icon" type="image/x-icon" sizes="144x144" href="img/apple-touch-icon-144x144-precomposed.png">
-
-
-    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800" rel="stylesheet">
-
-    <link href="~/assets/css/bootstrap.min.css" rel="stylesheet">
-    <link href="~/assets/css/style.css" rel="stylesheet">
-    <link href="~/assets/css/style_overwritten.css" rel="stylesheet" />
-    <link href="~/assets/css/vendors.css" rel="stylesheet">
-    <link href="~/assets/css/all_icons.min.css" rel="stylesheet">
-
-    <link href="~/assets/css/grey.css" rel="stylesheet" />
-    <link href="~/assets/css/wizard.css" rel="stylesheet" />
-    <!-- YOUR CUSTOM CSS -->
-    <link href="/css/custom.css" rel="stylesheet">
+    <title>Nitelikli Bilişim</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <partial name="partials/_BaseAssetsHeader" />
 </head>
 
-<body id="admission_bg">
-
-    <div id="preloader">
-        <div data-loader="circle-side"></div>
-    </div>
-
-    <div id="form_container" class="clearfix">
-        <figure>
-            <a href="/"><img class="sitelogo" src="~/assets/img/nb_logo_sm.png" width="149" height="42" data-retina="true" alt=""></a>
-        </figure>
-        <div id="wizard_container">
-            <div id="top-wizard">
-                <div id="progressbar"></div>
+<body class="h-100-percent o-x-hidden">
+    <section class="login">
+        <partial name="partials/_header-simple" />
+        <div class="login__img">
+            <a asp-controller="Home" asp-action="Index" class="login__logo">
+                <img src="~/assets/img/logo-white.svg" alt="">
+            </a>
+            <img src="~/assets/img/login-img.jpg" class="login__img-img" alt="">
+            <div class="login__main-txt">
+                <span>Güncel Proje Eğitimleri ile</span> <br>
+                Aranan BT Uzmanı Ol!
             </div>
-
-            <form name="example-1" id="wrapped" method="POST">
-                <input id="website" name="website" type="text" value="">
-
-                <div id="middle-wizard">
-                    <div class="step">
-                        <div id="intro">
-                            <figure><img src="~/assets/img/wizard_intro_icon.svg" alt=""></figure>
-                            <h1>Kayıt Formu</h1>
-                            <p>İş dünyasında, proje geliştirme deneyimi elde ederek bir adım öne geçmek için ilk adımı atmak üzeresiniz. </p>
-                            <p><strong>Yalnızca 2 dakikanınızı ayırarak kayıt olun ve fark yaratın!</strong></p>
+        </div>
+        <div class="login__wrp">
+            <div class="login__inner">
+                <div class="login__title">
+                    HESAP <span class="colored-blue">OLUŞTUR</span>
+                </div>
+                <div class="login__header">
+                    <div class="login__header-buttons">
+                        <div class="login__header-button js-login-header-step1 active">
+                            <span>
+                                Kişisel Bilgiler
+                            </span>
+                        </div>
+                        <div class="login__header-button js-login-header-step2">
+                            <span>
+                                Eğitim Bilgileri
+                            </span>
                         </div>
                     </div>
-
-                    @* ADIM 1 *@
-                    <div class="step">
-                        <h3 class="main_question"><strong>1/3</strong>Lütfen detayları doldurunuz</h3>
-                        <div class="form-group">
-                            <input type="text" name="firstname" class="form-control required" placeholder="İsim" id="input-name">
-                        </div>
-                        <div class="form-group">
-                            <input type="text" name="lastname" class="form-control required" placeholder="Soyisim" id="input-surname">
-                        </div>
-                        <div class="form-group">
-                            <input type="email" name="email" class="form-control required" placeholder="E-Posta" id="input-email">
-                        </div>
-                        <div class="form-group">
-                            <input type="text" name="telephone" class="form-control" placeholder="Telefon" id="input-phone">
-                        </div>
-                        @*<div class="form-group">
-                                <input type="text" name="age" class="form-control" placeholder="Yaş" id="input-age">
+                    <div class="login__header-line">
+                        <div class="login__header-line--circles">
+                            <div class="login__header-line--circle-outer circle-step1 active">
+                                <div class="login__header-line--circle">
+                                    <span class="icon-outer circle-icon">
+                                        <svg class="icon">
+                                            <use xlink:href="../../assets/img/icons.svg#icon-check"></use>
+                                        </svg>
+                                    </span>
+                                </div>
                             </div>
-
-                            <div class="form-group radio_input">
-                                <label><input type="radio" value="Male" checked name="gender" class="icheck" id="radio-gender-male">Erkek</label>
-                                <label><input type="radio" value="Female" name="gender" class="icheck" id="radio-gender-female">Kadın</label>
-                            </div>*@
-                    </div>
-
-                    @* ADIM 2 *@
-                <div class="step">
-                    <h3 class="main_question"><strong>2/3</strong>Eğitim Bilgileri</h3>
-
-                    <label>"Nitelikli Bilişim Uzmanı Yetiştirme" programını tamamladınız ya da devam ediyor musunuz?</label>
-                    <div style=""></div>
-                    <div class="form-group radio_input">
-                        <label>
-                            <input type="radio" value="1" checked="" name="isnbuy" class="icheck"  id="radio-nbuy-yes" style="position: absolute; opacity: 0;">Evet
-                        </label>
-                        <label class="">
-                            <input type="radio" value="2" name="isnbuy" class="icheck" id="radio-nbuy-no" style="position: absolute; opacity: 0;">Hayır
-                        </label>
-                    </div>
-                    <div id="div-nbuy-form-container">
-                        <div class="form-group select">
-                            <div class="styled-select">
-                                <select class="required" id="select-education-centers">
-                                    <option value="0" selected="">Eğitim kurumu seçiniz</option>
-                                    @foreach (var item in Model.EducationCenters)
-                                    {
-                                        <option value="@item.Key">@item.Value</option>
-                                    }
-                                </select>
+                            <div class="login__header-line--circle-outer circle-step2">
+                                <div class="login__header-line--circle"></div>
                             </div>
                         </div>
-
-                        <div class="form-group select">
-                            <div class="styled-select">
-                                <select class="required" id="select-education-categories">
-                                    <option value="" selected="">Eğitim programı seçiniz</option>
-                                    @foreach (var item in Model.EducationCategories)
-                                    {
-                                        <option value="@item.Id">@item.Name</option>
-                                    }
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Eğitim başlangıç tarihi</label>
-                            <input type="date" value="" class="form-control" id="input-date-when-begun" />
-                        </div>
+                        <div class="login__header-line--progress" style="width: 50%;"></div>
                     </div>
                 </div>
-
-                    @* SON ADIM *@
-                    <div class="submit step">
-                        <h3 class="main_question"><strong>3/3</strong>Hesap Bilgileri</h3>
-                        <div class="form-group">
-                            <input type="text" name="username" class="form-control required" placeholder="Kullanıcı adı" id="input-username">
-                        </div>
-                        <div class="form-group">
-                            <input type="password" name="password" class="form-control required" placeholder="Şifre" id="input-password">
-                        </div>
-                        <div class="form-group">
-                            <input type="password" name="confirmPassword" class="form-control required" placeholder="Şifre onayla" id="input-confirm-password">
-                        </div>
-                        <div class="form-group terms">
-                            <label>
-                                <input name="terms" type="checkbox" class="icheck required" value="yes" id="chk-terms-and-conditions">
-                                <span> <a href="#" data-toggle="modal" data-target="#terms-txt">Kullanım Şartlarını</a> okudum ve kabul ediyorum</span>
+                <form id="validateForm" class="login__content" method="post" asp-controller="Account" asp-action="Register">
+                    <div class="login__form login__form-step1 active">
+                        <div class="formStep1">
+                            <div class="input__outer">
+                                <span class="icon-outer input__icon">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-user"></use>
+                                    </svg>
+                                </span>
+                                <input name="Name" id="input-name" type="text" class="input input--fw" placeholder="Adınız" required>
+                            </div>
+                            <div class="input__outer">
+                                <span class="icon-outer input__icon">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-user"></use>
+                                    </svg>
+                                </span>
+                                <input name="Surname" id="input-surname" type="text" class="input input--fw" placeholder="Soyadınız" required>
+                            </div>
+                            <div class="input__outer">
+                                <span class="icon-outer input__icon">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-user"></use>
+                                    </svg>
+                                </span>
+                                <input name="Phone" id="input-phone" type="text" class="input input--fw" placeholder="Telefon numaranız" required>
+                            </div>
+                            <div class="input__outer">
+                                <span class="icon-outer input__icon">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-user"></use>
+                                    </svg>
+                                </span>
+                                <input name="UserName" id="input-username" type="text" class="input input--fw" placeholder="Kullanıcı adınız" required>
+                            </div>
+                            <div class="input__outer">
+                                <span class="icon-outer input__icon">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-mail"></use>
+                                    </svg>
+                                </span>
+                                <input name="Email" id="input-email" type="text" class="input input--fw" placeholder="E-posta adresiniz" required>
+                            </div>
+                            <div class="input__outer">
+                                <span class="icon-outer input__icon">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-lock"></use>
+                                    </svg>
+                                </span>
+                                <input name="Password" id="input-password" type="password" class="input input--fw" placeholder="Şifreniz" required>
+                            </div>
+                            <div class="input__outer">
+                                <span class="icon-outer input__icon">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-lock"></use>
+                                    </svg>
+                                </span>
+                                <input name="ConfirmPassword" id="input-confirm-password" type="password" class="input input--fw"
+                                       placeholder="Şifrenizi tekrar yazınız" required>
+                            </div>
+                            <p style="display:none;" class="js-password-equal">Şifreler Eşit Değil</p>
+                            <label class="main-checkbox reverse login__checkbox">
+                                niteliklibilisim.com.tr‘ye ait <a href="#0">kullanım politikalarını</a> ve
+                                <a href="#0">gizlilik sözleşmesini</a> okudum, kabul ediyorum.
+                                <input type="checkbox" id="chk-terms-and-conditions" class="login-checkbox" name="onBilgilendirme" required>
+                                <span class="main-checkbox__checkmark"></span>
                             </label>
+                            <button type="submit" class="button button-fw js-next-step2">
+                                Devam et
+                            </button>
                         </div>
                     </div>
-                </div>
-
-                <div id="bottom-wizard">
-                    <button type="button" name="backward" class="backward">Geri </button>
-                    <button type="button" name="forward" class="forward">İleri</button>
-                    <button type="button" name="process" class="submit" id="btn-submit">Kayıt</button>
-                </div>
-
-            </form>
-        </div>
-
-    </div>
-
-    @* TERMS & CONDITIONS *@
-    <div class="modal fade" id="terms-txt" tabindex="-1" role="dialog" aria-labelledby="termsLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="termsLabel">Kullanım Şartları</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <p>Lorem ipsum dolor sit amet, in porro albucius qui, in <strong>nec quod novum accumsan</strong>, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus.</p>
-                    <p>Lorem ipsum dolor sit amet, in porro albucius qui, in nec quod novum accumsan, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus. Lorem ipsum dolor sit amet, <strong>in porro albucius qui</strong>, in nec quod novum accumsan, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus.</p>
-                    <p>Lorem ipsum dolor sit amet, in porro albucius qui, in nec quod novum accumsan, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn_1" data-dismiss="modal">Kapat</button>
-                </div>
+                    <div class="login__form login__form-step2">
+                        <div class="formStep2">
+                            <div class="login__select-t-f">
+                                <p>
+                                    Nitelikli Bilişim Uzmanı Yetiştirme Programı kapsamında eğitim aldınız mı ya da eğitime devam ediyor
+                                    musunuz?
+                                </p>
+                                <div class="input__outer select-signup no-icon">
+                                    <select class="js-signup-select" id="select-isnbuy-student" name="IsNbuyStudent">
+                                        <option value="false" hidden selected disabled>Seçiniz</option>
+                                        <option value="true">Evet, Aldım.</option>
+                                        <option value="false">Hayır, Almadım.</option>
+                                    </select>
+                                </div>
+                                <div class="login__is-true">
+                                    <span class="login__hr"></span>
+                                    <div class="input__outer select-map-pin">
+                                        <select class="js-education-place-select" id="select-education-centers" name="EducationCenter">
+                                            <option value="" selected hidden disabled>Eğitim merkezi seçiniz</option>
+                                            @foreach (var item in Model.EducationCenters)
+                                            {
+                                                <option value="@item.Key">@item.Value</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="input__outer select-education-cat">
+                                        <select class="js-education-categori-select" id="select-education-categories" name="EducationCategory">
+                                            <option value="" selected hidden disabled>Eğitim kategorisi Seçiniz</option>
+                                            @foreach (var item in Model.EducationCategories)
+                                            {
+                                                <option value="@item.Id">@item.Name</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="input__outer input__datepicker">
+                                        <span class="icon-outer input__icon">
+                                            <svg class="icon">
+                                                <use xlink:href="../../assets/img/icons.svg#icon-date-c"></use>
+                                            </svg>
+                                        </span>
+                                        <input type="text" class="input input--fw js-datepicker" name="StartedAt" id="input-date-when-begun"
+                                               placeholder="Eğitim aldığınız / alacağınız tarihi seçiniz">
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="button button-fw js-button-step-finish login__finish-button">
+                                Kaydol
+                            </button>
+                        </div>
+                    </div>
+                    <div class="login__is-logined">
+                        Kayıtlı bir hesabın mı var? <a href="/giris-yap">Giriş yap</a>
+                    </div>
+                </form>
             </div>
-
         </div>
-
-    </div>
-    <script src="~/assets/js/jquery-2.2.4.min.js"></script>
-    <script src="~/assets/js/common_scripts.js"></script>
+    </section>
+    <div class='main-overlay overlay js-close-modal'></div>
+    <script src="~/assets/js/jquery.min.js"></script>
+    <script src="~/vendor/select2/dist/js/select2.min.js"></script>
+    <script src="~/assets/js/swiper.min.js"></script>
+    <!-- <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script> -->
+    <script src="~/assets/js/jquery.inputmask.min.js"></script>
+    <script src="~/assets/js/datepicker.min.js"></script>
+    <!-- <script src="https://unpkg.com/bootstrap-datepicker@1.9.0/dist/locales/bootstrap-datepicker.tr.min.js"></script> -->
+    <script src="~/vendor/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/vendor/modal-video/js/jquery-modal-video.min.js"></script>
+    <script src="~/vendor/card/dist/card.js"></script>
     <script src="~/assets/js/main.js"></script>
-    <script src="~/assets/js/validate.js"></script>
-
-    <script src="~/assets/js/jquery-ui-1.8.22.min.js"></script>
-    <script src="~/assets/js/jquery.wizard.js"></script>
-    <script src="~/assets/js/jquery.validate.js"></script>
-    <script src="~/assets/js/admission_func.js"></script>
     <script src="~/js/lib/cookie-agreement.js"></script>
     <script src="~/js/lib/security-support.js"></script>
     <script>
@@ -208,36 +215,29 @@
         var inputSurname = $("#input-surname");
         var inputEmail = $("#input-email");
         var inputPhone = $("#input-phone");
-        //var inputAge = $("#input-age");
         var selectEducationCenters = document.getElementById("select-education-centers");
         var selectEducationCategories = document.getElementById("select-education-categories");
-        //var radioGenderMale = document.getElementById("radio-gender-male");
-        var radioNbuyYes = document.getElementById("radio-nbuy-yes");
-        var radioNbuyNo = document.getElementById("radio-nbuy-no");
+        var selectIsNbuyStudent = document.getElementById("select-isnbuy-student");
         var inputDateWhenBegun = $("#input-date-when-begun");
         var inputUsername = $("#input-username");
         var inputPassword = $("#input-password");
         var inputConfirmPassword = $("#input-confirm-password");
         var chkTermsAndConditions = document.getElementById("chk-terms-and-conditions");
         var btnSubmit = $("#btn-submit");
-        var divNbuyFormContainer = $("#div-nbuy-form-container");
 
         /* assignments */
         $(document).ready(document_onLoad);
         window.onbeforeunload = window_onBeforeUnload;
         btnSubmit.on("click", btnSubmit_onClick);
-        //radioNbuyYes.onchange = radioNbuy_onChange;
-        //radioNbuyNo.onchange = radioNbuy_onChange;
 
         /* events */
         function document_onLoad() {
+            chkTermsAndConditions.checked = false;
             if (__envoy.isStorageExists("register")) {
                 var stored = __envoy.getRegisterForm();
                 setStoredData(stored);
             }
-            $('.icheck').on('ifToggled', function () {
-                radioNbuy_onChange();
-            });
+
         }
         function window_onBeforeUnload() {
             if (__envoy.isStorageExists("register")) {
@@ -246,7 +246,7 @@
                     surname: inputSurname.val(),
                     email: inputEmail.val(),
                     phone: inputPhone.val(),
-                    isNbuy: radioNbuyYes.checked
+                    isNbuy: selectIsNbuyStudent.options[selectIsNbuyStudent.selectedIndex].value
                 });
             }
         }
@@ -259,7 +259,7 @@
                 Password: inputPassword.val(),
                 ConfirmPassword: inputConfirmPassword.val(),
                 UserName: inputUsername.val(),
-                IsNbuyStudent: radioNbuyYes.checked,
+                IsNbuyStudent: selectIsNbuyStudent.options[selectIsNbuyStudent.selectedIndex].value,
                 StartedAt: inputDateWhenBegun.val(),
                 EducationCenter: selectEducationCenters.options[selectEducationCenters.selectedIndex].value,
                 EducationCategory: selectEducationCategories.options[selectEducationCategories.selectedIndex].value,
@@ -278,17 +278,7 @@
                 }
             });
         }
-        function radioNbuy_onChange() {
-            if (radioNbuyYes.checked) {
-                divNbuyFormContainer.show();
-                $(selectEducationCenters).addClass("required");
-                $(selectEducationCategories).addClass("required");
-            } else {
-                divNbuyFormContainer.hide();
-                $(selectEducationCenters).removeClass("required");
-                $(selectEducationCategories).removeClass("required");
-            }
-        }
+
 
         /* functions */
         function setStoredData(stored) {
@@ -297,7 +287,7 @@
             inputEmail.val(stored.email);
             inputPhone.val(stored.phone);
             if (stored.isNbuy != null) {
-                radioNbuyYes.checked = stored.isNbuy;
+
             }
         }
     </script>

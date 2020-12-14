@@ -1,0 +1,838 @@
+﻿@model NitelikliBilisim.Core.ViewModels.Main.InvoiceInfo.InvoiceInfoGetVm
+@{
+    ViewData["Title"] = "Fatura Bilgileri";
+    Layout = "~/Views/Shared/_LayoutCheckout.cshtml";
+}
+<div class="checkout-steps">
+    <div class="container">
+        <div class="checkout-steps__wrp">
+            <a asp-controller="Sale" asp-action="Cart" class="checkout-steps__item">
+                <div class="checkout-steps__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-basket"></use>
+                        </svg>
+                    </span>
+                </div>
+                <div class="checkout-steps__txt">1. SEPETİM</div>
+            </a>
+            <a href="./checkout-2-fatura.php" class="checkout-steps__item active">
+                <div class="checkout-steps__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-invoice"></use>
+                        </svg>
+                    </span>
+                </div>
+                <div class="checkout-steps__txt">2. FATURA BİLGİLERİ</div>
+            </a>
+            <a href="./checkout-3-odeme.php" class="checkout-steps__item">
+                <div class="checkout-steps__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-credit-card-f"></use>
+                        </svg>
+                    </span>
+                </div>
+                <div class="checkout-steps__txt">3. ÖDEME</div>
+            </a>
+            <a href="./checkout-4-ozet.php" class="checkout-steps__item">
+                <div class="checkout-steps__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-doc-f"></use>
+                        </svg>
+                    </span>
+                </div>
+                <div class="checkout-steps__txt">4. ÖZET</div>
+            </a>
+        </div>
+    </div>
+</div>
+<section class="section section--checkout">
+    <div class="container">
+        <div class="checkout__wrp">
+            <div class="checkout__left">
+                <div class="checkout__content">
+                    <div class="checkout__top">
+                        <div class="checkout__title">
+                            FATURA <span class="colored-blue">BİLGİLERİ</span>
+                        </div>
+                    </div>
+                    <div class="checkout__subtop">
+                        <div class="checkout__subtop-title">
+                            Kayıtlı Adreslerim
+                        </div>
+                    </div>
+                    <div class="address-wrp">
+                        @if (Model.Addresses.Count > 0)
+                        {
+                            @foreach (var address in Model.Addresses)
+                            {
+                                <div class="address-item @(address.IsDefault?"selected":"")">
+                                    <div class="address-button js-select-address js-new-address-func">
+                                        <span class="address-button-radio"></span>
+                                    </div>
+                                    <div class="address-cnt js-select-address js-new-address-func">
+                                        <div class="address-title">
+                                            @address.Title
+                                        </div>
+                                        <div class="address-txt">
+                                            @address.Content <br> @address.State/@address.City
+                                        </div>
+                                    </div>
+                                    <div class="address-edit js-modal-trigger" data-trigger="adresEdit">
+                                        <span class="icon-outer">
+                                            <svg class="icon">
+                                                <use xlink:href="../../assets/img/icons.svg#icon-pencil"></use>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p>Kayıtlı adresiniz bulunmamaktadır. Alışverişe devam edebilmek için yeni adres ekleyiniz.</p>
+                        }
+
+                    </div>
+                    <span class="checkout__fw-hr"></span>
+
+                    <div class="accordion accordion--big">
+                        <div class="accordion__item js-new-address">
+                            <div class="accordion__header">
+                                <span class="icon-outer accordion__icon">
+                                </span>
+                                <div class="checkout__title">
+                                    YENİ ADRES <span class="colored-blue">EKLE</span>
+                                </div>
+                            </div>
+                            <div class="accordion__content">
+                                <div class="js-calc-accordion-height">
+                                    <div class="address-input-radio">
+                                        <label class="main-radio">
+                                            Kurumsal Fatura
+                                            <input type="radio" checked="checked" id="kurumsalRadio" class="newAddressRadio" name="radio">
+                                            <span class="main-radio__checkmark"></span>
+                                        </label>
+                                        <label class="main-radio">
+                                            Bireysel Fatura
+                                            <input type="radio" name="radio" id="bireyselRadio" class="newAddressRadio">
+                                            <span class="main-radio__checkmark"></span>
+                                        </label>
+                                    </div>
+                                    <form id="corporateAddressForm" asp-controller="Sale" asp-action="AddCorporateAddress" novalidate class="address__form-change addressKurumsal"
+                                          style="display: block;">
+                                        <div class="input__column-2">
+                                            <div class="input__outer no-icon">
+                                                <div class="input__title">Şirket Adı</div>
+                                                <input name="CompanyName" type="text" class="input input--bordered input--fw input--noshadow" placeholder="Kurum adınızı giriniz" >
+                                            </div>
+                                            <div class="input__outer input--phone f-column">
+                                                <div class="input__title">Telefon Numaranız</div>
+                                                <div>
+                                                    <div class="select-phonecode no-icon bordered-select">
+                                                        <select name="PhoneCode" class="js-phonecode-select" >
+                                                            <option value="" selected hidden disabled>539</option>
+                                                            <option value="2">540</option>
+                                                            <option value="3">541</option>
+                                                            <option value="4">542</option>
+                                                            <option value="5">543</option>
+                                                        </select>
+                                                    </div>
+                                                    <input type="text" name="PhoneNumber" class="input input--bordered input--fw input--noshadow maskedInput inputPhoneNumber" placeholder="___-__-__" >
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="input__column-2">
+                                            <div class="input__outer no-icon">
+                                                <div class="input__title">Vergi Dairesi</div>
+                                                <input name="TaxOffice" type="text" class="input input--bordered input--fw input--noshadow" placeholder="Vergi Dairesi" >
+                                            </div>
+                                            <div class="input__outer no-icon">
+                                                <div class="input__title">Vergi Numaranız</div>
+                                                <input name="TaxNumber" type="text" class="input input--bordered input--fw input--noshadow maskedInput inputVergiNo" placeholder="Vergi Numaranız" >
+                                            </div>
+                                        </div>
+                                        <div class="input__column-2">
+                                            <div class="input__outer bordered-select">
+                                                <div class="select-subject no-icon">
+                                                    <div class="input__title">İl</div>
+                                                    <select class="js-sehir-select" name="CityId" >
+                                                        @foreach (var city in Model.Cities)
+                                                        {
+                                                            <option value="@city.Id">@city.Name</option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="input__outer bordered-select">
+                                                <div class="select-subject no-icon">
+                                                    <div class="input__title">İlçe</div>
+                                                    <select class="js-ilce-select" name="StateId" >
+                                                        <option value="" selected hidden disabled>İlçe Seçiniz</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="input__outer input--textarea no-icon">
+                                            <div class="input__title">Açık Adresiniz</div>
+                                            <textarea name="Content" class="input input--fw input--bordered input--noshadow h-150"
+                                                      placeholder="Adresinizin tamamını buraya yazınız" ></textarea>
+                                        </div>
+                                        <div class="input__outer no-icon">
+                                            <div class="input__title">Adres Adı</div>
+                                            <input name="Title" type="text" class="input input--bordered input--fw input--noshadow"
+                                                   placeholder="Adresinize isim verin" >
+                                        </div>
+                                        <div class="form__button">
+                                            <div class="form__button-left">
+                                                <span>
+                                                    * Adres açıklaması yazınız.
+                                                </span>
+                                            </div>
+                                            <div class="form__button-right">
+                                                <button type="submit" class="button button-fw">
+                                                    <span class="button-txt">
+                                                        Adresi Kaydet
+                                                    </span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <form id="individualAddressForm" asp-controller="Sale" asp-action="AddIndividualAddress" class="address__form-change addressBireysel">
+                                        <div class="input__column-2">
+                                            <div class="input__outer no-icon">
+                                                <div class="input__title">Adınız Soyadınız</div>
+                                                <input name="NameSurname" type="text" class="input input--bordered input--fw input--noshadow"
+                                                       placeholder="Adınızı soyadınızı giriniz" required>
+                                            </div>
+                                            <div class="input__outer input--phone f-column">
+                                                <div class="input__title">Telefon Numaranız</div>
+                                                <div>
+                                                    <div class="select-phonecode no-icon bordered-select">
+                                                        <select name="PhoneCode" class="js-phonecode-select" required>
+                                                            <option value="" selected hidden disabled>539</option>
+                                                            <option value="2">540</option>
+                                                            <option value="3">541</option>
+                                                            <option value="4">542</option>
+                                                            <option value="5">543</option>
+                                                        </select>
+                                                    </div>
+                                                    <input type="text" name="PhoneNumber" id=""
+                                                           class="input input--bordered input--fw input--noshadow maskedInput inputPhoneNumber"
+                                                           placeholder="___-__-__" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="input__column-2">
+                                            <div class="input__outer bordered-select">
+                                                <div class="select-subject no-icon">
+                                                    <div class="input__title">Şehir</div>
+                                                    <select class="js-sehir-select" name="CityId" required>
+                                                        @foreach (var city in Model.Cities)
+                                                        {
+                                                            <option value="@city.Id">@city.Name</option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="input__outer bordered-select">
+                                                <div class="select-subject no-icon">
+                                                    <div class="input__title">İlçe</div>
+                                                    <select class="js-ilce-select" name="StateId" required>
+                                                        <option value="" selected hidden disabled>İlçe Seçiniz</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="input__outer input--textarea no-icon">
+                                            <div class="input__title">Açık Adresiniz</div>
+                                            <textarea name="Content" class="input input--fw input--bordered input--noshadow h-150"
+                                                      placeholder="Adresinizin tamamını buraya yazınız" required></textarea>
+                                        </div>
+                                        <div class="input__outer no-icon">
+                                            <div class="input__title">Adres Adı</div>
+                                            <input name="Title" type="text" class="input input--bordered input--fw input--noshadow"
+                                                   placeholder="Adresinize isim verin" required>
+                                        </div>
+                                        <div class="form__button">
+                                            <div class="form__button-left">
+                                                <span>
+                                                    * Adres açıklaması yazınız.
+                                                </span>
+                                            </div>
+                                            <div class="form__button-right">
+                                                <button type="submit" class="button button-fw">
+                                                    <span class="button-txt">
+                                                        Adresi Kaydet
+                                                    </span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a href="./checkout-1-sepet.php" class="button button--simple button-left checkout__button-prev">
+                    <span class="button-icon">
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                            </svg>
+                        </span>
+                    </span>
+                    <span class="button-txt">
+                        Önceki Adım
+                    </span>
+                </a>
+            </div>
+            <div class="checkout__side">
+                <div class="checkout__content no-shadow">
+                    <div class="checkout__top">
+                        <div class="checkout__title">
+                            SEPETTEKİ <span class="colored-blue">ÜRÜNLERİM</span>
+                        </div>
+                        <div class="checkout__top-right">
+                            2 Ürün
+                        </div>
+                    </div>
+                    <div class="checkout__basket-wrp">
+
+                    </div>
+                </div>
+                <div class="checkout__content no-shadow">
+                    <div class="checkout__top">
+                        <div class="checkout__title">
+                            SİPARİŞ <span class="colored-blue">ÖZETİ</span>
+                        </div>
+                    </div>
+                    <div class="checkout__price-wrp js-discounts">
+                        <div class="checkout__price-item">
+                            <div class="checkout__price-title">Toplam İndirimler</div>
+                            <div class="checkout__price-new">
+                                <span>₺</span> -249.90
+                            </div>
+                        </div>
+                        <div class="checkout__price-item">
+                            <div class="checkout__price-title">Ürünler Toplamı</div>
+                            <div class="checkout__price-old">
+                                <span>₺</span> 1,250.00
+                            </div>
+                            <div class="checkout__price-new">
+                                <span>₺</span> 1,550.00
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <form class="checkout__sale-code js-cupon-form">
+                    <div class="wizard-loading">
+                        <div class="loader">
+                            <svg class="circular" viewBox="25 25 50 50">
+                                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="js-cupon-form__result">
+                        <span class="icon-font">
+                            <svg class="icon icon-check">
+                                <use xlink:href="../../assets/img/icons.svg#icon-check"></use>
+                            </svg>
+                        </span>
+                        İndirim Başarılı ile Uygulandı!
+                    </div>
+                    <div>
+                        <input class="input js-cupon-input" id="promotion-code" type="text" placeholder="İndirim kodum var">
+                        <span class="icon-outer checkout__sale-code--icon js-cupon-btn">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-plus"></use>
+                            </svg>
+                        </span>
+                    </div>
+                </form>
+                <a href="./checkout-3-odeme.php" class="button button-icon-right button-fw checkout__next-button">
+                    <span class="button-txt">
+                        Ödeme Adımına Geç
+                    </span>
+                    <span class="button-icon">
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                            </svg>
+                        </span>
+                    </span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+<input type="hidden" value="0" id="input-education-total-price" />
+<input type="hidden" value="0" id="promotion-discount-amount" />
+<div class="modal" id="adresEdit">
+    <div class="modal__header">
+        <div class="modal__title">Adres Güncelle</div>
+        <div class="modal__close js-close-modal">
+            <span class="icon-outer">
+                <svg class="icon">
+                    <use xlink:href="../../assets/img/icons.svg#icon-close"></use>
+                </svg>
+            </span>
+        </div>
+    </div>
+    <div class="modal__content">
+        <form id="validateForm" novalidate>
+            <div class="input__column-2">
+                <div class="input__outer no-icon">
+                    <div class="input__title">Şirket Adı</div>
+                    <input name="csirket" type="text" class="input input--bordered input--fw input--noshadow"
+                           placeholder="Kurum adınızı giriniz">
+                </div>
+                <div class="input__outer input--phone f-column">
+                    <div class="input__title">Telefon Numaranız</div>
+                    <div>
+                        <div class="select-phonecode no-icon bordered-select">
+                            <select class="js-phonecode-select">
+                                <option value="" selected hidden disabled>539</option>
+                                <option value="2">540</option>
+                                <option value="3">541</option>
+                                <option value="4">542</option>
+                                <option value="5">543</option>
+                            </select>
+                        </div>
+                        <input type="text" name="cadresphone" id=""
+                               class="input input--bordered input--fw input--noshadow maskedInput inputPhoneNumber"
+                               placeholder="___-__-__">
+                    </div>
+                </div>
+            </div>
+            <div class="input__column-2">
+                <div class="input__outer no-icon">
+                    <div class="input__title">Vergi Dairesi</div>
+                    <input name="cVdaire" type="text" class="input input--bordered input--fw input--noshadow"
+                           placeholder="Vergi Dairesi">
+                </div>
+                <div class="input__outer no-icon">
+                    <div class="input__title">Vergi Numaranız</div>
+                    <input name="cVno" type="text"
+                           class="input input--bordered input--fw input--noshadow maskedInput inputVergiNo"
+                           placeholder="Vergi Numaranız">
+                </div>
+            </div>
+            <div class="input__column-2">
+                <div class="input__outer bordered-select">
+                    <div class="select-subject no-icon">
+                        <div class="input__title">İl</div>
+                        <select class="js-sehir-select" name="csehir">
+                            <option value="" selected hidden disabled>Şehir Seçiniz</option>
+                            <option value="2">Şehir1</option>
+                            <option value="3">Şehir2</option>
+                            <option value="4">Şehir3</option>
+                            <option value="5">Şehir4</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input__outer bordered-select">
+                    <div class="select-subject no-icon">
+                        <div class="input__title">İlçe</div>
+                        <select class="js-ilce-select" name="cilce">
+                            <option value="" selected hidden disabled>İlçe Seçiniz</option>
+                            <option value="2">İlçe1</option>
+                            <option value="3">İlçe2</option>
+                            <option value="4">İlçe3</option>
+                            <option value="5">İlçe4</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="input__outer input--textarea no-icon">
+                <div class="input__title">Açık Adresiniz</div>
+                <textarea name="cacikadres" class="input input--fw input--bordered input--noshadow h-150"
+                          placeholder="Adresinizin tamamını buraya yazınız"></textarea>
+            </div>
+            <div class="input__outer no-icon">
+                <div class="input__title">Adres Adı</div>
+                <input name="cacikad" type="text" class="input input--bordered input--fw input--noshadow"
+                       placeholder="Adresinize isim verin">
+            </div>
+            <div class="form__button">
+                <div class="form__button-left">
+                    <span>
+                        * Adres açıklaması yazınız.
+                    </span>
+                </div>
+                <div class="form__button-right">
+                    <button class="button button-fw">
+                        <span class="button-txt">
+                            Adresi Kaydet
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section postScripts{
+    <script src="~/js/sup/cart.js"></script>
+    <script type="text/javascript">
+        /* fields */
+        var _cart = new CartSupport.Cart();
+
+        /* elements */
+        var cardItemsBody = $(".checkout__basket-wrp");
+        var txtTotal = $(".checkout__price-new");
+        var tablePromotionCode = $("#table-promotion-code");
+        var inputPromotionCode = $("#promotion-code");
+        var inputEducationTotalPrice = $("#input-education-total-price");
+        var inputPromotionDiscountAmount = $("#promotion-discount-amount");
+
+        /* assignments */
+        $(document).ready(document_onLoad);
+        /*ValidateForms*/ 
+        $('#corporateAddressForm').validate({
+            errorLabelContainer: $('#validateForm div.error'),
+            errorContainer: 'div.error-messages',
+            errorLabelContainer: $('ul', 'div.error-messages'),
+            wrapper: 'li',
+            rules: {
+                CompanyName: {
+                    required: true,
+                },
+                PhoneCode: {
+                    required: true,
+                },
+                PhoneNumber: {
+                    required: true,
+                },
+                TaxNumber: {
+                    required: true,
+                },
+                TaxOffice: {
+                    required: true,
+                },
+                CityId: {
+                    required: true,
+                },
+                StateId: {
+                    required: true,
+                },
+                Content: {
+                    required: true,
+                },
+                Title: {
+                    required: true,
+                }
+            },
+            messages: {
+                CompanyName: 'Bu alan zorunludur.',
+                PhoneCode: 'Bu alan zorunludur.',
+                PhoneNumber:'Bu alan zorunludur.',
+                TaxNumber: 'Bu alan zorunludur.',
+                TaxOffice: 'Bu alan zorunludur.',
+                CityId: 'Bu alan zorunludur.',
+                StateId: 'Bu alan zorunludur.',
+                Content: 'Bu alan zorunludur.',
+                Title: 'Bu alan zorunludur.'
+            },
+            submitHandler: function () {
+                $successMsg.show();
+            },
+            highlight: function (element) {
+                $(element)
+                    .parent()
+                    .addClass('outer-error');
+            },
+            unhighlight: function (element) {
+                $(element)
+                    .parent()
+                    .removeClass('outer-error');
+            },
+        });
+        $('#individualAddressForm').validate({
+            errorLabelContainer: $('#validateForm div.error'),
+            errorContainer: 'div.error-messages',
+            errorLabelContainer: $('ul', 'div.error-messages'),
+            wrapper: 'li',
+            rules: {
+                NameSurname: {
+                    required: true,
+                },
+                PhoneCode: {
+                    required: true,
+                },
+                PhoneNumber: {
+                    required: true,
+                },
+                CityId: {
+                    required: true,
+                },
+                StateId: {
+                    required: true,
+                },
+                Content: {
+                    required: true,
+                },
+                Title: {
+                    required: true,
+                }
+            },
+            messages: {
+                NameSurname: 'Bu alan zorunludur.',
+                PhoneCode: 'Bu alan zorunludur.',
+                PhoneNumber: 'Bu alan zorunludur.',
+                CityId: 'Bu alan zorunludur.',
+                StateId: 'Bu alan zorunludur.',
+                Content: 'Bu alan zorunludur.',
+                Title: 'Bu alan zorunludur.'
+            },
+            submitHandler: function () {
+                $successMsg.show();
+            },
+            highlight: function (element) {
+                $(element)
+                    .parent()
+                    .addClass('outer-error');
+            },
+            unhighlight: function (element) {
+                $(element)
+                    .parent()
+                    .removeClass('outer-error');
+            },
+        });
+
+
+        /* events */
+        function document_onLoad() {
+            getCartItems();
+            checkPromotionCode();
+            //getBasketBasedPromotion();
+        }
+
+        $('.js-cupon-btn').click(function () {
+            var cuponInput = $(this).prev();
+            if (cuponInput.val() == '') {
+                $(this)
+                    .parent()
+                    .parent()
+                    .append("<div class='cupon-error'>Lütfen Bu alanı doldurunuz.</div>");
+            } else {
+                $(this)
+                    .parent()
+                    .parent()
+                    .remove('.cupon-error');
+                $('.js-cupon-form').addClass('active');
+                getPromotionInfo();
+                setTimeout(function () {
+
+                    //var newItem =
+                    //    '<div class="checkout__price-item"><div class="checkout__price-title">******** Kodu İndirimi</div><div class="checkout__price-new"><span>₺</span> -64.90</div><div class="checkout__product-crash js-remove-sale"><span class="icon-outer"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-crash"></use></svg></span></div></div>';
+
+                    //$('.js-discounts').append(newItem);
+                }, 1000);
+
+                return false;
+            }
+        });
+        function checkPromotionCode() {
+            var promotionCode = localStorage.getItem("promotionCode");
+            if (promotionCode) {
+                getPromotionInfo(promotionCode);
+            }
+
+        }
+
+        function getPromotionInfo(promotionCode) {
+            var datapromotionCode;
+            
+            if (promotionCode) {
+                datapromotionCode = promotionCode;
+            } else {
+                alert(inputPromotionCode.val());
+                datapromotionCode = inputPromotionCode.val();
+            }
+            var items = _cart.getItems();
+            var data = {
+                Items: items,
+                PromotionCode: datapromotionCode
+            };
+            $.ajax({
+                url: "/get-promotion",
+                method: "post",
+                data: data,
+                success: (res) => {
+                    if (res.isSuccess) {
+                        console.log(res);
+                        localStorage.setItem("promotionCode", res.data.promotionCode);
+                        $('.js-cupon-form .wizard-loading').fadeOut(500);
+                        $('.js-cupon-form')
+                            .removeClass('active')
+                            .addClass('result');
+                        inputPromotionCode.val('');
+                        var newItem = `<div class="checkout__price-item"><div class="checkout__price-title">${res.data.name} Kodu İndirimi</div><div class="checkout__price-new"> ${formatCurrency(res.data.discountAmount)}</div><div class="checkout__product-crash js-remove-sale"><span class="icon-outer"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-crash"></use></svg></span></div></div>`;
+                        $('.js-discounts').append(newItem);
+                        var result = `<span class="icon-font"><svg class="icon icon-check"><use xlink:href="../../assets/img/icons.svg#icon-check"></use></svg></span>İndirim Başarılı ile Uygulandı!`;
+                        $('.js-cupon-form__result').html(result);
+                        inputPromotionDiscountAmount.val(res.data.discountAmount);
+                        calculateTotalPrice();
+                    } else {
+                        $('.js-cupon-form')
+                            .removeClass('active')
+                            .addClass('result');
+                        var result = `<span class="icon-outer"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-warning"></use></svg></span>Gerçesiz İndirim Kodu!`;
+                        $('.js-cupon-form__result').html(result);
+                    }
+                }
+            });
+        }
+
+
+        function appendCartItems(data) {
+            cardItemsBody.html("");
+            var appended = "";
+            for (var i = 0; i < data.length; i++) {
+                var item = data[i];
+                appended += ` <div class="checkout__basket-item">
+                                    <div class="checkout__basket-img">
+                                        <img src="${item.previewPhoto}" alt="">
+                                    </div>
+                                    <div class="checkout__basket-right">
+                                        <div class="checkout__basket-title">
+                                           ${item.educationName}
+                                        </div>
+                                        <div class="checkout__basket-crash">
+                                            <span class="icon-outer">
+                                                <svg class="icon">
+                                                    <use xlink:href="../../assets/img/icons.svg#icon-crash"></use>
+                                                </svg>
+                                            </span>
+                                        </div>
+                                        <div class="checkout__basket-price">
+                                            <div class="checkout__price-new">
+                                                ${item.priceText}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>`;
+
+            }
+
+            cardItemsBody.html(appended);
+
+            if (data.length <= 0) {
+                $('.checkout__product-wrp, .js-siparis-ozeti').html(
+                    "<div class='mini-basket__empty'><span class='icon-outer button-icon'><svg class='icon'><use xlink:href='assets/img/icons.svg#icon-basket-empty'></use></svg></span>Sepetiniz Boş.</div>",
+                );
+            }
+        }
+        function calculateTotalPrice() {
+            txtTotal.html(formatCurrency(parseFloat(inputEducationTotalPrice.val() - parseFloat(inputPromotionDiscountAmount.val()))));
+        }
+        function formatCurrency(total) {
+            return " <span>₺</span> " + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
+        }
+        function setDeleteButtonAttribute(id) {
+            $(".js-delete-product-checkout").attr("data-eid", id);
+        }
+
+        //Remove Cart Item
+        $('body').on('click', '.js-delete-product-checkout', function () {
+            var id = $(this).attr("data-eid");
+            _cart.removeFromCart(id);
+            getCartItems();
+            $('.checkout__product-item:nth-child(1)').fadeOut(250, function () {
+                $(this).remove();
+            });
+            setTimeout(() => {
+                $(this)
+                    .closest('.js-deleted-item')
+                    .remove();
+                if ($('.checkout__product-item').length <= 0) {
+                    $('.checkout__product-wrp, .js-siparis-ozeti').html(
+                        "<div class='mini-basket__empty'><span class='icon-outer button-icon'><svg class='icon'><use xlink:href='../../assets/img/icons.svg#icon-basket-empty'></use></svg></span>Sepetiniz Boş.</div>",
+                    );
+                }
+            }, 400);
+        });
+
+        //Remove Promotion Code
+        $('body').on('click', '.js-remove-sale', function () {
+            $(this)
+                .parent()
+                .fadeOut(300, function () {
+                    $(this).remove();
+                });
+            // $(this).parent().find().fadeOut(100, function () {
+            // 	$(this).remove();
+            // });
+            localStorage.setItem("promotionCode", "");
+            inputPromotionDiscountAmount.val(0);
+            calculateTotalPrice();
+            $('.js-cupon-form')
+                .find('.wizard-loading')
+                .show();
+            $('.js-cupon-form').removeClass('result');
+        });
+
+
+        var selectStates = $('.js-ilce-select');
+        $('.js-sehir-select').on("change", function () {
+            loadStates($(this).val());
+        });
+
+        function loadStates(cityId) {
+            $.ajax({
+                url: `/get-states/${cityId}`,
+                method: "get",
+                success: (res) => {
+                    if (res.success) {
+                        console.log(res);
+                        fillStates(res.data);
+                        $(selectStates).prop("disabled", false);
+                        if (!res.data.length)
+                            $(selectStates).prop("disabled", true);
+                    } else {
+                        selectStates.html(`<option value="">İlçe Seçiniz</option>`);
+                        $(selectStates).prop("disabled", true);
+                    }
+                }
+            });
+        };
+        function fillStates(data) {
+            $(selectStates).html(`<option value="">İlçe Seçiniz</option>`);
+            var appended = "";
+            for (var i = 0; i < data.length; i++) {
+                var state = data[i];
+                console.log(state);
+                appended += `<option value="${state.id}">${state.name}</option>`;
+            }
+
+            $(selectStates).append(appended);
+        }
+
+
+        function getCartItems() {
+            var items = _cart.getItems();
+            var data = {
+                Items: items
+            };
+            $.ajax({
+                url: "/get-cart-items",
+                method: "post",
+                data: data,
+                success: (res) => {
+                    if (res.isSuccess) {
+                        appendCartItems(res.data.items);
+                        inputEducationTotalPrice.val(res.data.totalNumeric);
+                        calculateTotalPrice();
+                    }
+                }
+            });
+        }
+
+    </script>
+
+}
+

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.Controllers;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Configuration;
 using Nest;
@@ -38,7 +40,7 @@ namespace NitelikliBilisim.App.Filters
                 StackTrace = context.Exception.StackTrace,
                 InnerException = context.Exception.InnerException?.Message,
             };
-
+            string adminEmails = _configuration.GetSection("SiteGeneralOptions:AdminEmails").Value;
             mailBody = $"<b>Controller:</b>{eInfo.ControllerName}<br>";
             mailBody += $"<b>Action:</b>{eInfo.ActionName}<br>";
             mailBody += $"<b>User Id:</b>{eInfo.UserId}<br>";
@@ -47,7 +49,6 @@ namespace NitelikliBilisim.App.Filters
             if (string.IsNullOrEmpty(eInfo.InnerException))
                 mailBody += $"<b>InnerException:</b>{eInfo.InnerException}<br>";
 
-            string adminEmails = _configuration.GetSection("SiteGeneralOptions:AdminEmails").Value;
 
             //Mail Log
             _emailSender.SendAsync(new Core.ComplexTypes.EmailMessage
@@ -56,6 +57,7 @@ namespace NitelikliBilisim.App.Filters
                 Subject = $"Nitelikli Bilişim {server} Hata {DateTime.Now:F}",
                 Contacts = adminEmails.Split(";")
             });
+
 
             //EsInsert
             CheckExceptionLogIndex();
@@ -74,6 +76,19 @@ namespace NitelikliBilisim.App.Filters
                 _elasticClient.Indices.Create(ElasticSearchIndexNameUtility.ExceptionLogIndex, index =>
                    index.Map<ExceptionInfo>(x => x.AutoMap()));
             }
+        }
+
+        /// <summary>
+        /// Determines whether the specified HTTP request is an AJAX request.
+        /// </summary>
+        /// 
+        /// <returns>
+        /// true if the specified HTTP request is an AJAX request; otherwise, false.
+        /// </returns>
+        /// <param name="request">The HTTP request.</param><exception cref="T:System.ArgumentNullException">The <paramref name="request"/> parameter is null (Nothing in Visual Basic).</exception>
+        public static bool IsAjaxRequest(HttpRequest request)
+        {
+            return request.Headers["X-Requested-With"] == "XMLHttpRequest";
         }
     }
 }

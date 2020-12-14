@@ -1,12 +1,13 @@
-﻿using Iyzipay.Model;
+﻿using System;
+using Iyzipay.Model;
 using Iyzipay.Request;
-using Microsoft.Extensions.Configuration;
 using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.PaymentModels;
 using NitelikliBilisim.Core.ViewModels.Sales;
 using System.Collections.Generic;
 using System.Globalization;
+using Microsoft.Extensions.Configuration;
 
 namespace NitelikliBilisim.Core.Services.Payments
 {
@@ -15,7 +16,15 @@ namespace NitelikliBilisim.Core.Services.Payments
         private readonly PaymentOptions _options;
         public PaymentService(IConfiguration configuration)
         {
-            _options = configuration.GetSection("IyzicoOptions").Get<PaymentOptions>();
+            var section = configuration.GetSection(PaymentOptions.Key);
+            _options = new PaymentOptions()
+            {
+                ApiKey = section["ApiKey"],
+                SecretKey = section["SecretKey"],
+                BaseUrl = section["BaseUrl"],
+                ThreedsCallbackUrl = section["ThreedsCallbackUrl"],
+            };
+            Console.WriteLine();
         }
         /// <summary>
         /// Ortak ayarlamaların yapıldığı method!

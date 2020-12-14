@@ -15,16 +15,16 @@ namespace NitelikliBilisim.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.8")
+                .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "5.0.0");
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -48,7 +48,7 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -113,7 +113,7 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<string>("Changed")
                         .HasColumnType("nvarchar(max)");
@@ -126,13 +126,13 @@ namespace NitelikliBilisim.Data.Migrations
 
                     b.Property<string>("RowId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("TableName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -149,18 +149,18 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("NormalizedName")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
-                        .HasName("RoleNameIndex")
+                        .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
@@ -175,16 +175,16 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("AvatarPath")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
@@ -196,16 +196,16 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("NormalizedEmail")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("NormalizedUserName")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
@@ -220,24 +220,24 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Surname")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
                     b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
-                        .HasName("EmailIndex");
+                        .HasDatabaseName("EmailIndex");
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasName("UserNameIndex")
+                        .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
@@ -270,15 +270,15 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id", "Id2");
 
@@ -299,15 +299,15 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id", "Id2");
 
@@ -328,8 +328,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<Guid>("TicketId")
                         .HasColumnType("uniqueidentifier");
@@ -338,8 +338,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id", "Id2");
 
@@ -358,22 +358,22 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<Guid>("HostId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(64)")
-                        .HasMaxLength(64);
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -393,41 +393,41 @@ namespace NitelikliBilisim.Data.Migrations
 
                     b.Property<string>("CompanyName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(150)")
-                        .HasMaxLength(150);
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("CompanySector")
                         .IsRequired()
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Department")
                         .IsRequired()
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("IsViewed")
                         .HasColumnType("bit");
 
                     b.Property<string>("NameSurname")
                         .IsRequired()
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("NumberOfEmployees")
                         .HasColumnType("int");
 
                     b.Property<string>("Phone")
                         .IsRequired()
-                        .HasColumnType("nvarchar(15)")
-                        .HasMaxLength(15);
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
 
                     b.Property<string>("RequestNote")
                         .HasColumnType("nvarchar(max)");
@@ -436,8 +436,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -456,8 +456,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<int>("CustomerType")
                         .HasColumnType("int");
@@ -484,8 +484,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("WebSiteUrl")
                         .HasColumnType("nvarchar(max)");
@@ -508,19 +508,19 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<byte>("Days")
                         .HasColumnType("tinyint");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(512)")
-                        .HasMaxLength(512);
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
 
                     b.Property<string>("Description2")
-                        .HasColumnType("nvarchar(512)")
-                        .HasMaxLength(512);
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
 
                     b.Property<byte>("HoursPerDay")
                         .HasColumnType("tinyint");
@@ -532,15 +532,15 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -565,12 +565,12 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(512)")
-                        .HasMaxLength(512);
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
 
                     b.Property<int?>("EducationDayCount")
                         .HasColumnType("int");
@@ -579,15 +579,15 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -605,27 +605,30 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<DateTime?>("ApprovalDate")
                         .HasColumnType("datetime2(3)");
 
+                    b.Property<int>("ApprovalStatus")
+                        .HasColumnType("int");
+
                     b.Property<string>("ApproverId")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<Guid?>("BaseCommentId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CommentatorId")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Content")
-                        .HasColumnType("nvarchar(512)")
-                        .HasMaxLength(512);
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<Guid>("EducationId")
                         .HasColumnType("uniqueidentifier");
@@ -640,8 +643,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -662,26 +665,26 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<Guid>("EducationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Gain")
-                        .HasColumnType("nvarchar(512)")
-                        .HasMaxLength(512);
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -700,22 +703,22 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<Guid>("EducationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("EducatorId")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<decimal>("ExtraPrice")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("GroupName")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<Guid>("HostId")
                         .HasColumnType("uniqueidentifier");
@@ -724,10 +727,10 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<decimal?>("NewPrice")
-                        .HasColumnType("decimal(8, 2)");
+                        .HasColumnType("decimal(8,2)");
 
                     b.Property<decimal?>("OldPrice")
-                        .HasColumnType("decimal(8, 2)");
+                        .HasColumnType("decimal(8,2)");
 
                     b.Property<byte>("Quota")
                         .HasColumnType("tinyint");
@@ -739,8 +742,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -758,8 +761,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Address")
-                        .HasColumnType("nvarchar(2048)")
-                        .HasMaxLength(2048);
+                        .HasMaxLength(2048)
+                        .HasColumnType("nvarchar(2048)");
 
                     b.Property<int>("City")
                         .HasColumnType("int");
@@ -768,27 +771,30 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("GoogleMapUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("HostName")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("Latitude")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Longitude")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -805,15 +811,15 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<Guid>("EducationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("FileUrl")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<int>("MediaType")
                         .HasColumnType("int");
@@ -822,8 +828,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -845,8 +851,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<byte>("Duration")
                         .HasColumnType("tinyint");
@@ -858,15 +864,15 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("tinyint");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -887,8 +893,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -909,8 +915,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PromotionCode")
-                        .HasColumnType("nvarchar(7)")
-                        .HasMaxLength(7);
+                        .HasMaxLength(7)
+                        .HasColumnType("nvarchar(7)");
 
                     b.Property<int>("PromotionType")
                         .HasColumnType("int");
@@ -922,8 +928,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<int>("UserBasedUsageLimit")
                         .HasColumnType("int");
@@ -943,23 +949,23 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(512)")
-                        .HasMaxLength(512);
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -975,33 +981,33 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Biography")
-                        .HasColumnType("nvarchar(max)")
-                        .HasMaxLength(8192);
+                        .HasMaxLength(8192)
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("IBAN")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ShortDescription")
-                        .HasColumnType("nvarchar(400)")
-                        .HasMaxLength(400);
+                        .HasMaxLength(400)
+                        .HasColumnType("nvarchar(400)");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -1018,40 +1024,40 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("CvUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("IsViewed")
                         .HasColumnType("bit");
 
                     b.Property<string>("NameSurname")
                         .IsRequired()
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Note")
-                        .HasColumnType("nvarchar(500)")
-                        .HasMaxLength(500);
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Phone")
                         .IsRequired()
-                        .HasColumnType("nvarchar(15)")
-                        .HasMaxLength(15);
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -1068,8 +1074,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<DateTime>("EarnedAt")
                         .HasColumnType("datetime2");
@@ -1078,8 +1084,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("EducatorId")
-                        .HasColumnType("nvarchar(450)")
-                        .HasMaxLength(450);
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("Paid")
                         .HasColumnType("decimal(18,2)");
@@ -1088,8 +1094,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -1101,14 +1107,14 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("EducatorId")
                         .HasColumnType("nvarchar(450)");
@@ -1123,8 +1129,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -1143,12 +1149,12 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("CustomerId")
-                        .HasColumnType("nvarchar(450)")
-                        .HasMaxLength(450);
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
@@ -1157,15 +1163,15 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Reason")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -1187,15 +1193,15 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<DateTime>("DateOfLesson")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("EducatorId")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<decimal?>("EducatorSalary")
                         .HasColumnType("decimal(18,2)");
@@ -1213,8 +1219,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -1233,34 +1239,34 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("CompanyName")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedIp")
-                        .HasColumnType("nvarchar(32)")
-                        .HasMaxLength(32);
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("CustomerId")
-                        .HasColumnType("nvarchar(450)")
-                        .HasMaxLength(450);
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<byte>("PaymentCount")
                         .HasColumnType("tinyint");
 
                     b.Property<string>("TaxNo")
-                        .HasColumnType("nvarchar(32)")
-                        .HasMaxLength(32);
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
 
                     b.Property<string>("TaxOffice")
-                        .HasColumnType("nvarchar(32)")
-                        .HasMaxLength(32);
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
 
                     b.Property<int>("TransactionStatus")
                         .HasColumnType("int");
@@ -1269,12 +1275,12 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedIp")
-                        .HasColumnType("nvarchar(32)")
-                        .HasMaxLength(32);
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -1289,34 +1295,34 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Address")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("City")
-                        .HasColumnType("nvarchar(32)")
-                        .HasMaxLength(32);
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
 
                     b.Property<string>("County")
-                        .HasColumnType("nvarchar(32)")
-                        .HasMaxLength(32);
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("PostalCode")
-                        .HasColumnType("nvarchar(8)")
-                        .HasMaxLength(8);
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -1333,8 +1339,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<Guid>("EducationId")
                         .HasColumnType("uniqueidentifier");
@@ -1355,8 +1361,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -1386,8 +1392,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<bool>("IsCancelled")
                         .HasColumnType("bit");
@@ -1405,15 +1411,15 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("TransactionId")
-                        .HasColumnType("nvarchar(32)")
-                        .HasMaxLength(32);
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -1426,8 +1432,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("BinNumber")
-                        .HasColumnType("nvarchar(12)")
-                        .HasMaxLength(12);
+                        .HasMaxLength(12)
+                        .HasColumnType("nvarchar(12)");
 
                     b.Property<decimal>("CommissionRate")
                         .HasColumnType("decimal(18,2)");
@@ -1439,30 +1445,30 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("HostRef")
-                        .HasColumnType("nvarchar(32)")
-                        .HasMaxLength(32);
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
 
                     b.Property<string>("LastFourDigit")
-                        .HasColumnType("nvarchar(8)")
-                        .HasMaxLength(8);
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
 
                     b.Property<decimal>("PaidPrice")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("PaymentId")
-                        .HasColumnType("nvarchar(32)")
-                        .HasMaxLength(32);
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -1482,8 +1488,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("CustomerId")
                         .HasColumnType("nvarchar(450)");
@@ -1498,8 +1504,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -1513,12 +1519,12 @@ namespace NitelikliBilisim.Data.Migrations
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.TempSaleData", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)")
-                        .HasMaxLength(450);
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Data")
-                        .HasColumnType("nvarchar(512)")
-                        .HasMaxLength(512);
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
 
                     b.HasKey("Id");
 
@@ -1535,8 +1541,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<Guid>("EducationId")
                         .HasColumnType("uniqueidentifier");
@@ -1554,15 +1560,15 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("OwnerId")
-                        .HasColumnType("nvarchar(450)")
-                        .HasMaxLength(450);
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -1585,12 +1591,12 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("DaysJson")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<Guid>("GroupId")
                         .HasColumnType("uniqueidentifier");
@@ -1599,8 +1605,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -1621,15 +1627,15 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id", "Id2");
 
@@ -1648,23 +1654,23 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(512)")
-                        .HasMaxLength(512);
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -1687,8 +1693,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("FeaturedImageUrl")
                         .HasColumnType("nvarchar(max)");
@@ -1699,16 +1705,19 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<int>("ReadingTime")
                         .HasColumnType("int");
 
+                    b.Property<string>("SummaryContent")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -1727,8 +1736,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -1737,8 +1746,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -1757,15 +1766,15 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id", "Id2");
 
@@ -1784,15 +1793,15 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<Guid>("EducationHostId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("FileUrl")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -1801,8 +1810,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -1849,8 +1858,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<int>("CriterionType")
                         .HasColumnType("int");
@@ -1868,8 +1877,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -1891,12 +1900,12 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<Guid>("ExpenseTypeId")
                         .HasColumnType("uniqueidentifier");
@@ -1911,8 +1920,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -1933,8 +1942,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -1946,8 +1955,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -1959,7 +1968,7 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<int>("Day")
                         .HasColumnType("int");
@@ -1995,8 +2004,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<Guid>("EducationPromotionCodeId")
                         .HasColumnType("uniqueidentifier");
@@ -2005,8 +2014,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -2020,10 +2029,16 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
+
+                    b.Property<int>("AddressType")
+                        .HasColumnType("int");
 
                     b.Property<int?>("CityId")
                         .HasColumnType("int");
+
+                    b.Property<string>("CompanyName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
@@ -2032,27 +2047,45 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("CustomerId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("IdentityNumber")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsDefaultAddress")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("NameSurname")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("StateId")
                         .HasColumnType("int");
 
+                    b.Property<string>("TaxNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TaxOffice")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -2077,15 +2110,15 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id", "Id2");
 
@@ -2099,7 +2132,7 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -2117,7 +2150,7 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
@@ -2140,7 +2173,7 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<string>("CertificateImagePath")
                         .HasColumnType("nvarchar(max)");
@@ -2149,8 +2182,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -2162,8 +2195,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUser")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -2175,7 +2208,7 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<int>("CityId")
                         .HasColumnType("int");
@@ -2193,7 +2226,7 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -2252,6 +2285,10 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.Bridge_EducationEducator", b =>
@@ -2267,6 +2304,10 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasForeignKey("Id2")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Education");
+
+                    b.Navigation("Educator");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.Bridge_EducationTag", b =>
@@ -2282,6 +2323,10 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasForeignKey("Id2")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Education");
+
+                    b.Navigation("Tag");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.Bridge_GroupStudent", b =>
@@ -2297,6 +2342,10 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasForeignKey("Id2")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Group");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.Classroom", b =>
@@ -2306,6 +2355,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasForeignKey("HostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Host");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.Customer", b =>
@@ -2315,6 +2366,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.Education", b =>
@@ -2324,6 +2377,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationCategory", b =>
@@ -2331,6 +2386,8 @@ namespace NitelikliBilisim.Data.Migrations
                     b.HasOne("NitelikliBilisim.Core.Entities.EducationCategory", "BaseCategory")
                         .WithMany()
                         .HasForeignKey("BaseCategoryId");
+
+                    b.Navigation("BaseCategory");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationComment", b =>
@@ -2344,6 +2401,10 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasForeignKey("EducationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("BaseComment");
+
+                    b.Navigation("Education");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationGain", b =>
@@ -2353,6 +2414,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasForeignKey("EducationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Education");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationGroup", b =>
@@ -2368,6 +2431,10 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasForeignKey("HostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Education");
+
+                    b.Navigation("Host");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationMedia", b =>
@@ -2377,6 +2444,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasForeignKey("EducationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Education");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationPart", b =>
@@ -2390,6 +2459,10 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasForeignKey("EducationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("BasePart");
+
+                    b.Navigation("Education");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.Educator", b =>
@@ -2399,6 +2472,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasForeignKey("NitelikliBilisim.Core.Entities.Educator", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducatorSocialMedia", b =>
@@ -2406,6 +2481,8 @@ namespace NitelikliBilisim.Data.Migrations
                     b.HasOne("NitelikliBilisim.Core.Entities.Educator", "Educator")
                         .WithMany()
                         .HasForeignKey("EducatorId");
+
+                    b.Navigation("Educator");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.GroupAttendance", b =>
@@ -2415,6 +2492,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Group");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.GroupLessonDay", b =>
@@ -2424,6 +2503,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Group");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.Invoice", b =>
@@ -2431,6 +2512,8 @@ namespace NitelikliBilisim.Data.Migrations
                     b.HasOne("NitelikliBilisim.Core.Entities.Customer", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId");
+
+                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.InvoiceAddress", b =>
@@ -2440,6 +2523,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Sale");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.InvoiceDetail", b =>
@@ -2449,6 +2534,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasForeignKey("InvoiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Invoice");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.OnlinePaymentDetailsInfo", b =>
@@ -2458,6 +2545,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasForeignKey("NitelikliBilisim.Core.Entities.OnlinePaymentDetailsInfo", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("InvoiceDetail");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.OnlinePaymentInfo", b =>
@@ -2467,6 +2556,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasForeignKey("NitelikliBilisim.Core.Entities.OnlinePaymentInfo", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Invoice");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.StudentEducationInfo", b =>
@@ -2480,6 +2571,10 @@ namespace NitelikliBilisim.Data.Migrations
                     b.HasOne("NitelikliBilisim.Core.Entities.Customer", "Customer")
                         .WithMany("StudentEducationInfos")
                         .HasForeignKey("CustomerId");
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.Ticket", b =>
@@ -2499,6 +2594,12 @@ namespace NitelikliBilisim.Data.Migrations
                     b.HasOne("NitelikliBilisim.Core.Entities.Customer", "Owner")
                         .WithMany()
                         .HasForeignKey("OwnerId");
+
+                    b.Navigation("Education");
+
+                    b.Navigation("Host");
+
+                    b.Navigation("Owner");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.WeekDaysOfGroup", b =>
@@ -2508,6 +2609,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Group");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.WishlistItem", b =>
@@ -2523,6 +2626,10 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasForeignKey("Id2")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Education");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.blog.BlogPost", b =>
@@ -2532,6 +2639,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.blog.Bridge_BlogPostTag", b =>
@@ -2547,6 +2656,10 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasForeignKey("Id2")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("BlogPost");
+
+                    b.Navigation("BlogTag");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.educations.EducationHostImage", b =>
@@ -2556,6 +2669,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasForeignKey("EducationHostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("EducationHost");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.educations.EducationPromotionItem", b =>
@@ -2565,6 +2680,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasForeignKey("EducationPromotionCodeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("EducationPromotionCode");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.educations.EducationSuggestionCriterion", b =>
@@ -2574,6 +2691,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasForeignKey("EducationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Education");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.groups.GroupExpense", b =>
@@ -2589,6 +2708,10 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("ExpenseType");
+
+                    b.Navigation("Group");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.promotion.EducationPromotionCondition", b =>
@@ -2598,6 +2721,8 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasForeignKey("EducationPromotionCodeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("EducationPromotionCode");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.user_details.Address", b =>
@@ -2613,6 +2738,12 @@ namespace NitelikliBilisim.Data.Migrations
                     b.HasOne("NitelikliBilisim.Core.Entities.user_details.State", "State")
                         .WithMany()
                         .HasForeignKey("StateId");
+
+                    b.Navigation("City");
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("State");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.user_details.Bridge_EducatorCertificate", b =>
@@ -2628,6 +2759,10 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasForeignKey("Id2")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Educator");
+
+                    b.Navigation("EducatorCertificate");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.user_details.EducationDay", b =>
@@ -2637,6 +2772,75 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasForeignKey("StudentEducationInfoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("StudentEducationInfo");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.ApplicationRole", b =>
+                {
+                    b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.ApplicationUser", b =>
+                {
+                    b.Navigation("Educator");
+
+                    b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.Customer", b =>
+                {
+                    b.Navigation("Addresses");
+
+                    b.Navigation("StudentEducationInfos");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.Education", b =>
+                {
+                    b.Navigation("EducationSuggestionCriterions");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationGroup", b =>
+                {
+                    b.Navigation("GroupExpenses");
+
+                    b.Navigation("GroupLessonDays");
+
+                    b.Navigation("GroupStudents");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationHost", b =>
+                {
+                    b.Navigation("EducationHostImages");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationPromotionCode", b =>
+                {
+                    b.Navigation("EducationPromotionConditions");
+
+                    b.Navigation("EducationPromotionItems");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.Invoice", b =>
+                {
+                    b.Navigation("InvoiceDetails");
+
+                    b.Navigation("OnlinePaymentInfo");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.InvoiceDetail", b =>
+                {
+                    b.Navigation("OnlinePaymentDetailInfo");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.StudentEducationInfo", b =>
+                {
+                    b.Navigation("EducationDays");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.blog.BlogCategory", b =>
+                {
+                    b.Navigation("BlogPosts");
                 });
 #pragma warning restore 612, 618
         }

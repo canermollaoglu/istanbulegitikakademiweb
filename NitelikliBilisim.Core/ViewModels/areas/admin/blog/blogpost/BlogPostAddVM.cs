@@ -14,7 +14,7 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.blog.blogpost
         [Required(ErrorMessage = "Etiket alanı boş geçilemez")]
         public string[] Tags { get; set; }
         public _PostedFile FeaturedImage { get; set; }
-
+        public string SummaryContent { get; set; }
     }
     public class _PostedFile
     {

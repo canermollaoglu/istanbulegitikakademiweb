@@ -53,7 +53,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/egitmen-detay/{educatorId}")]
         public IActionResult Detail(string educatorId)
         {
-            var model = _unitOfWork.Educator.GetEducatorDetail(educatorId);
+            var model = _unitOfWork.Educator.GetEducatorDetailAdmin(educatorId);
             ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducatorDetail");
             return View(model);
 

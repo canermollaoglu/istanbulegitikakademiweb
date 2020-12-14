@@ -92,6 +92,7 @@ function btnSave_onClick() {
     var data = {
         Title: $("#input-title").val(),
         Content: $('#summernote').summernote('code'),
+        SummaryContent: $('#input-summary-content').val(),
         CategoryId: selectCategory.val(),
         Tags: tags,
         FeaturedImage: {

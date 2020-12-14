@@ -1,0 +1,19 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using NitelikliBilisim.Business.UoW;
+
+namespace NitelikliBilisim.App.Components
+{
+    public class PopularEducations:ViewComponent
+    {
+        private readonly UnitOfWork _unitOfWork;
+        public PopularEducations(UnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
+
+        public IViewComponentResult Invoke()
+        {
+            return View(_unitOfWork.Suggestions.GetGuestUserSuggestedEducations());
+        }
+    }
+}

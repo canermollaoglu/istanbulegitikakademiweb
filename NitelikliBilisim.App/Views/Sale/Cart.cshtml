@@ -1,139 +1,222 @@
 ﻿
 @{
     ViewData["Title"] = "Sepet";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_LayoutCheckout.cshtml";
 }
-<main>
-    <input type="hidden" value="0" id="input-education-total-price" />
-    <input type="hidden" value="0" id="promotion-discount-amount" />
-    <section id="hero_in" class="cart_section">
-        <div class="wrapper">
-            <div class="container">
-                <div class="bs-wizard clearfix">
-                    <div class="bs-wizard-step active">
-                        <div class="text-center bs-wizard-stepnum">Sepetiniz</div>
-                        <div class="progress">
-                            <div class="progress-bar"></div>
-                        </div>
-                        <a href="#0" class="bs-wizard-dot"></a>
-                    </div>
 
-                    <div class="bs-wizard-step disabled">
-                        <div class="text-center bs-wizard-stepnum">Ödeme</div>
-                        <div class="progress">
-                            <div class="progress-bar"></div>
-                        </div>
-                        <a href="#0" class="bs-wizard-dot"></a>
-                    </div>
 
-                    <div class="bs-wizard-step disabled">
-                        <div class="text-center bs-wizard-stepnum">Tamamla!</div>
-                        <div class="progress">
-                            <div class="progress-bar"></div>
+<input type="hidden" value="0" id="input-education-total-price" />
+<input type="hidden" value="0" id="promotion-discount-amount" />
+<div class="checkout-steps">
+    <div class="container">
+        <div class="checkout-steps__wrp">
+            <a href="./checkout-1-sepet.php" class="checkout-steps__item active">
+                <div class="checkout-steps__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-basket"></use>
+                        </svg>
+                    </span>
+                </div>
+                <div class="checkout-steps__txt">1. SEPETİM</div>
+            </a>
+            <a href="./checkout-2-fatura.php" class="checkout-steps__item">
+                <div class="checkout-steps__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-invoice"></use>
+                        </svg>
+                    </span>
+                </div>
+                <div class="checkout-steps__txt">2. FATURA BİLGİLERİ</div>
+            </a>
+            <a href="./checkout-3-odeme.php" class="checkout-steps__item">
+                <div class="checkout-steps__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-credit-card-f"></use>
+                        </svg>
+                    </span>
+                </div>
+                <div class="checkout-steps__txt">3. ÖDEME</div>
+            </a>
+            <a href="./checkout-4-ozet.php" class="checkout-steps__item">
+                <div class="checkout-steps__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-doc-f"></use>
+                        </svg>
+                    </span>
+                </div>
+                <div class="checkout-steps__txt">4. ÖZET</div>
+            </a>
+        </div>
+    </div>
+</div>
+<section class="section section--checkout">
+    <div class="container">
+        <div class="checkout__wrp">
+            <div class="checkout__left">
+                <div class="checkout__content">
+                    <div class="checkout__top">
+                        <div class="checkout__title">
+                            SEPETTEKİ <span class="colored-blue">ÜRÜNLERİM</span>
                         </div>
-                        <a href="#0" class="bs-wizard-dot"></a>
+                    </div>
+                    <div class="checkout__subtop">
+                        <div class="checkout__subtop-title">
+                            ÜRÜNLER
+                        </div>
+                        <div class="checkout__subtop-title ml-auto mr-40">
+                            FİYAT
+                        </div>
+                    </div>
+                    <div class="checkout__product-wrp">
+                        
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <div class="bg_color_1">
-        <div class="container margin_60_35">
-            <div class="row">
-                <div class="col-lg-8">
-                    <div class="box_cart">
-                        <table class="table table-striped cart-list">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        Ürün
-                                    </th>
-                                    <th>
-                                        Ücret
-                                    </th>
-                                    <th>
-                                        Eylem
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbody-cart-items">
-                            </tbody>
-                        </table>
-                        <table class="table table-bordered" id="table-promotion-code">
-                        </table>
-                        <div class="cart-options clearfix">
-                            <div class="float-left">
-                                <div class="apply-coupon">
-                                    <div class="form-group">
-                                        <input type="text" name="coupon-code" id="input-promotion-code" value="" placeholder="Kupon Kodunuz" class="form-control">
-                                    </div>
-                                    <div class="form-group">
-                                        <button type="button" class="btn_1 outline" id="apply-promotion-code">Kuponu Uygula</button>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <div class="float-right fix_mobile">
-                                <button type="button" class="btn_1 outline">Sepeti Güncelle</button>
+            <div class="checkout__side">
+                <div class="checkout__content no-shadow js-siparis-ozeti">
+                    <div class="checkout__top">
+                        <div class="checkout__title">
+                            SİPARİŞ <span class="colored-blue">ÖZETİ</span>
+                        </div>
+                    </div>
+                    <div class="checkout__price-wrp js-discounts">
+                        <div class="checkout__price-item">
+                            <div class="checkout__price-title">Toplam İndirimler</div>
+                            <div class="checkout__price-new">
+                                <span>₺</span> -249.90
                             </div>
                         </div>
-                        <div class="text-danger" id="coupon-error-message" style="display:none"></div>
+                        <div class="checkout__price-item">
+                            <div class="checkout__price-title">Ürünler Toplamı</div>
+                            <div class="checkout__price-old">
+                                <span>₺</span> 1,250.00
+                            </div>
+                            <div class="checkout__price-new">
+
+                            </div>
+                        </div>
+                        <div class="checkout__price-item totaly">
+                            <div class="checkout__price-title">Toplam Tutar</div>
+                            <div class="checkout__price-new">
+                                <span>₺</span> 1.1799.90
+                            </div>
+                        </div>
                     </div>
                 </div>
-
-                <aside class="col-lg-4" id="sidebar">
-                    <div class="box_detail">
-                        <div id="total_cart">
-                            Toplam <span class="float-right" id="txt-total"></span>
+                <form class="checkout__sale-code js-cupon-form">
+                    <div class="wizard-loading">
+                        <div class="loader">
+                            <svg class="circular" viewBox="25 25 50 50">
+                                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+                            </svg>
                         </div>
-                        <div class="add_bottom_30">Lorem ipsum dolor sit amet, sed vide <strong>moderatius</strong> ad. Ex eius soleat sanctus pro, enim conceptam in quo, <a href="#0">brute convenire</a> appellantur an mei.</div>
-                        <a href="/odeme" class="btn_1 full-width">Ödeme Yap</a>
-                        <a href="/" class="btn_1 full-width outline"><i class="icon-right"></i> Alışverişe Devam Et</a>
                     </div>
-                </aside>
+                    <div class="js-cupon-form__result">
+
+                    </div>
+                    <div>
+                        <input class="input js-cupon-input" id="promotion-code" type="text" placeholder="İndirim kodum var">
+                        <span class="icon-outer checkout__sale-code--icon js-cupon-btn">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-plus"></use>
+                            </svg>
+                        </span>
+                    </div>
+                </form>
+                <a asp-controller="Sale" asp-action="InvoiceInformation" class="button button-icon-right button-fw checkout__next-button">
+                    <span class="button-txt">
+                        Fatura Bilgilerine Geç
+                    </span>
+                    <span class="button-icon">
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                            </svg>
+                        </span>
+                    </span>
+                </a>
             </div>
         </div>
     </div>
-</main>
+</section>
+<div class="modal modal--delete" id="ModalDelete">
+    <div class="modal__header">
+        <div class="modal__title">Ürünü Silmek İstediğinize Emin misiniz?</div>
+    </div>
+    <div class="modal__footer">
+        <div class="button  js-delete-product-checkout js-close-modal">
+            <span class="button-txt">Evet, Sil</span>
+        </div>
+        <div class="button button--load-more js-close-modal">
+            <span class="button-txt">Vazgeç</span>
+        </div>
+    </div>
+</div>
+
+
+
 
 @section postScripts{
     <script src="~/js/lib/security-support.js"></script>
 
-    @*<script src="~/js/sup/cart.js"></script>*@
+    <script src="~/js/sup/cart.js"></script>
     <script>
         /* fields */
         var _cart = new CartSupport.Cart();
 
         /* elements */
-        var tbodyCartItems = $("#tbody-cart-items");
+        var cardItemsBody = $(".checkout__product-wrp");
+        var txtTotal = $(".checkout__price-new");
         var tablePromotionCode = $("#table-promotion-code");
-        var txtTotal = $("#txt-total");
-        var inputPromotionCode = $("#input-promotion-code");
+
+        var inputPromotionCode = $("#promotion-code");
         var inputEducationTotalPrice = $("#input-education-total-price");
         var inputPromotionDiscountAmount = $("#promotion-discount-amount");
-        var btnApplyPromotion = $("#apply-promotion-code");
-        var couponErrorMessage = $("#coupon-error-message");
+
         /* assignments */
         $(document).ready(document_onLoad);
 
         /* events */
         function document_onLoad() {
             localStorage.removeItem("promotionCode");
-            btnApplyPromotion.on("click", btnApplyPromotion_onClick);
             getCartItems();
-            getBasketBasedPromotion();
-            calculateTotalPrice();
+            //getBasketBasedPromotion();
         }
-        function btnDeleteItem_onClick() {
-            var educationId = this.getAttribute("data-education-id");
-            _cart.removeFromCart(educationId);
-            getCartItems();
-            __layoutHeaderCart.html(`<i class="icon-cart"></i> (${__cart.getItemCount()})`);
-        }
-        function btnApplyPromotion_onClick() {
-            getPromotionInfo();
-        }
+
+        //function btnApplyPromotion_onClick() {
+        //    getPromotionInfo();
+        //}
+        $('.js-cupon-btn').click(function () {
+            var cuponInput = $(this).prev();
+            if (cuponInput.val() == '') {
+                $(this)
+                    .parent()
+                    .parent()
+                    .append("<div class='cupon-error'>Lütfen Bu alanı doldurunuz.</div>");
+            } else {
+                $(this)
+                    .parent()
+                    .parent()
+                    .remove('.cupon-error');
+                $('.js-cupon-form').addClass('active');
+                getPromotionInfo();
+                setTimeout(function () {
+
+                    //var newItem =
+                    //    '<div class="checkout__price-item"><div class="checkout__price-title">******** Kodu İndirimi</div><div class="checkout__price-new"><span>₺</span> -64.90</div><div class="checkout__product-crash js-remove-sale"><span class="icon-outer"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-crash"></use></svg></span></div></div>';
+
+                    //$('.js-discounts').append(newItem);
+                }, 1000);
+
+                return false;
+            }
+        });
+
+
 
         /* functions */
         function getCartItems() {
@@ -155,25 +238,25 @@
             });
         }
 
-        function getBasketBasedPromotion() {
-            var items = _cart.getItems();
-            var data = {
-                Items: items
-            };
-            $.ajax({
-                url: "/get-basked-based-promotion",
-                method: "post",
-                data: data,
-                success: (res) => {
-                    if (res.isSuccess) {
-                        console.log(res);
-                        inputPromotionDiscountAmount.val(res.data.discountAmount);
-                        appendBasketBasedPromotion(res.data);
-                        calculateTotalPrice();
-                    }
-                }
-            });
-        }
+        //function getBasketBasedPromotion() {
+        //    var items = _cart.getItems();
+        //    var data = {
+        //        Items: items
+        //    };
+        //    $.ajax({
+        //        url: "/get-basked-based-promotion",
+        //        method: "post",
+        //        data: data,
+        //        success: (res) => {
+        //            if (res.isSuccess) {
+        //                console.log(res);
+        //                inputPromotionDiscountAmount.val(res.data.discountAmount);
+        //                appendBasketBasedPromotion(res.data);
+        //                calculateTotalPrice();
+        //            }
+        //        }
+        //    });
+        //}
 
         function getPromotionInfo() {
             var items = _cart.getItems();
@@ -187,115 +270,165 @@
                 data: data,
                 success: (res) => {
                     if (res.isSuccess) {
+                        console.log(res);
                         localStorage.setItem("promotionCode", res.data.promotionCode);
+                        $('.js-cupon-form .wizard-loading').fadeOut(500);
+                        $('.js-cupon-form')
+                            .removeClass('active')
+                            .addClass('result');
+                        inputPromotionCode.val('');
+                        var newItem = `<div class="checkout__price-item"><div class="checkout__price-title">${res.data.name} Kodu İndirimi</div><div class="checkout__price-new"> ${formatCurrency(res.data.discountAmount)}</div><div class="checkout__product-crash js-remove-sale"><span class="icon-outer"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-crash"></use></svg></span></div></div>`;
+                        $('.js-discounts').append(newItem);
+                        var result = `<span class="icon-font"><svg class="icon icon-check"><use xlink:href="../../assets/img/icons.svg#icon-check"></use></svg></span>İndirim Başarılı ile Uygulandı!`;
+                        $('.js-cupon-form__result').html(result);
                         inputPromotionDiscountAmount.val(res.data.discountAmount);
-                        appendPromotionCode(res.data);
                         calculateTotalPrice();
-                        couponErrorMessage.text('');
-                        couponErrorMessage.slideUp();
                     } else {
-                        couponErrorMessage.text(res.errors[0]);
-                        couponErrorMessage.slideDown();
+                        $('.js-cupon-form')
+                            .removeClass('active')
+                            .addClass('result');
+                        var result = `<span class="icon-outer"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-warning"></use></svg></span>Gerçesiz İndirim Kodu!`;
+                        $('.js-cupon-form__result').html(result);
                     }
                 }
             });
         }
-        function appendCartItems(data) {
-            tbodyCartItems.html("");
-            if (data.length == 0) {
-                tbodyCartItems.append(`<tr><td colspan="3">Sepetiniz boş</td></tr>`);
-                return;
-            }
 
+        function appendCartItems(data) {
+            cardItemsBody.html("");
             var appended = "";
             for (var i = 0; i < data.length; i++) {
                 var item = data[i];
-                appended += `<tr>` +
-                    `<td>` +
-                    `<div class="thumb_cart">` +
-                    `<img src="${item.previewPhoto}" alt="Image" />` +
-                    `</div>` +
-                    `<span class="item_cart">${item.educationName}</span>` +
-                    `</td>` +
-                    `<td>` +
-                    `<strong>${item.priceText}</strong>` +
-                    `</td>` +
-                    `<td class="options" style="width:5%; text-align:center;">` +
-                    `<a type="button" class="btn-delete-item" data-education-id="${item.educationId}"><i class="icon-trash"></i></a>` +
-                    `</td>` +
-                    `<tr>`;
+                appended += `<div class="checkout__product-item">
+                                                <a href="/egitim-detay/${item.educationId}" class="checkout__product-left">
+                                                    <div class="checkout__product-img">
+                                                        <img src="${item.previewPhoto}" alt="">
+                                                    </div>
+                                                </a>
+                                                <div class="checkout__product-right">
+                                                    <div class="checkout__product-title">${item.educationName}</div>
+                                                    <div class="checkout__product-new">
+                                                        <span>₺</span> ${item.priceText}
+                                                    </div>
+                                                </div>
+                                                <div class="checkout__product-crash js-modal-trigger" onclick="setDeleteButtonAttribute('${item.educationId}')" data-trigger="ModalDelete">
+                                                    <span class="icon-outer">
+                                                        <svg class="icon">
+                                                            <use xlink:href="../../assets/img/icons.svg#icon-crash"></use>
+                                                        </svg>
+                                                    </span>
+                                                </div>
+                                            </div>`;
             }
-            tbodyCartItems.append(appended);
 
-            var deleteButtons = document.getElementsByClassName("btn-delete-item");
-            for (var i = 0; i < deleteButtons.length; i++) {
-                var btn = deleteButtons[i];
-                btn.onclick = btnDeleteItem_onClick;
+            cardItemsBody.html(appended);
+
+            if (data.length <= 0) {
+                $('.checkout__product-wrp, .js-siparis-ozeti').html(
+                    "<div class='mini-basket__empty'><span class='icon-outer button-icon'><svg class='icon'><use xlink:href='assets/img/icons.svg#icon-basket-empty'></use></svg></span>Sepetiniz Boş.</div>",
+                );
             }
         }
-        function appendPromotionCode(data) {
-            tablePromotionCode.html("");
-            if (data.length == 0) {
-                return;
-            }
-            var appended = "";
-            appended += `<thead>` +
-                `<tr><td>Kampanya</td><td>Kupon Kodu</td><td>İndirim tutarı</td></tr>` +
-                `</thead>` +
-                `<tbody>` +
-                `<tr>` +
-                `<td>` +
-                `"${data.name}" ` +
-                `</td>` +
-                `<td>` +
-                `${data.promotionCode}` +
-                `</td>` +
-                `<td>` +
-                `${data.discountAmount}` +
-                `</td>` +
-                `<td class="options" style="width:5%; text-align:center;">` +
-                `<a type="button" class="btn-delete-item" onClick="removePromotion()" ><i class="icon-trash"></i></a>` +
-                `</td>` +
-                `<tr>`;
+        //function appendPromotionCode(data) {
+        //    tablePromotionCode.html("");
+        //    if (data.length == 0) {
+        //        return;
+        //    }
+        //    var appended = "";
+        //    appended += `<thead>` +
+        //        `<tr><td>Kampanya</td><td>Kupon Kodu</td><td>İndirim tutarı</td></tr>` +
+        //        `</thead>` +
+        //        `<tbody>` +
+        //        `<tr>` +
+        //        `<td>` +
+        //        `"${data.name}" ` +
+        //        `</td>` +
+        //        `<td>` +
+        //        `${data.promotionCode}` +
+        //        `</td>` +
+        //        `<td>` +
+        //        `${data.discountAmount}` +
+        //        `</td>` +
+        //        `<td class="options" style="width:5%; text-align:center;">` +
+        //        `<a type="button" class="btn-delete-item" onClick="removePromotion()" ><i class="icon-trash"></i></a>` +
+        //        `</td>` +
+        //        `<tr>`;
 
-            appended += "</tbody>";
-            tablePromotionCode.append(appended);
+        //    appended += "</tbody>";
+        //    tablePromotionCode.append(appended);
 
-        }
-        function appendBasketBasedPromotion(data) {
-            tablePromotionCode.html("");
-            if (data.length == 0) {
-                return;
-            }
-            var appended = "";
-            appended += `<thead>` +
-                `<tr><td>Kampanya</td><td>İndirim tutarı</td></tr>` +
-                `</thead>` +
-                `<tbody>` +
-                `<tr>` +
-                `<td>` +
-                `"${data.name}" ` +
-                `</td>` +
-                `<td>` +
-                `${data.discountAmount}` +
-                `</td>`+
-                `<tr>`;
+        //}
+        //function appendBasketBasedPromotion(data) {
+        //    tablePromotionCode.html("");
+        //    if (data.length == 0) {
+        //        return;
+        //    }
+        //    var appended = "";
+        //    appended += `<thead> +
+        //        `<tr><td>Kampanya</td><td>İndirim tutarı</td></tr>` +
+        //        `</thead>` +
+        //        `<tbody>` +
+        //        `<tr>` +
+        //        `<td>` +
+        //        `"${data.name}" ` +
+        //        `</td>` +
+        //        `<td>` +
+        //        `${data.discountAmount}` +
+        //        `</td>`+
+        //        `<tr>`;
 
-            appended += "</tbody>";
-            tablePromotionCode.append(appended);
+        //    appended += "</tbody>";
+        //    tablePromotionCode.append(appended);
 
-        }
+        //}
         function calculateTotalPrice() {
-            txtTotal.text(formatCurrency(parseFloat(inputEducationTotalPrice.val()) - parseFloat(inputPromotionDiscountAmount.val())));
+            txtTotal.html(formatCurrency(parseFloat(inputEducationTotalPrice.val() - parseFloat(inputPromotionDiscountAmount.val()))));
         }
         function formatCurrency(total) {
-            return ('₺') + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
+            return " <span>₺</span> " + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
         }
-        function removePromotion() {
+        function setDeleteButtonAttribute(id) {
+            $(".js-delete-product-checkout").attr("data-eid", id);
+        }
+
+        //Remove Cart Item
+        $('body').on('click', '.js-delete-product-checkout', function () {
+            var id = $(this).attr("data-eid");
+            _cart.removeFromCart(id);
+            getCartItems();
+            $('.checkout__product-item:nth-child(1)').fadeOut(250, function () {
+                $(this).remove();
+            });
+            setTimeout(() => {
+                $(this)
+                    .closest('.js-deleted-item')
+                    .remove();
+                if ($('.checkout__product-item').length <= 0) {
+                    $('.checkout__product-wrp, .js-siparis-ozeti').html(
+                        "<div class='mini-basket__empty'><span class='icon-outer button-icon'><svg class='icon'><use xlink:href='../../assets/img/icons.svg#icon-basket-empty'></use></svg></span>Sepetiniz Boş.</div>",
+                    );
+                }
+            }, 400);
+        });
+
+        //Remove Promotion Code
+        $('body').on('click', '.js-remove-sale', function () {
+            $(this)
+                .parent()
+                .fadeOut(300, function () {
+                    $(this).remove();
+                });
+            // $(this).parent().find().fadeOut(100, function () {
+            // 	$(this).remove();
+            // });
             localStorage.setItem("promotionCode", "");
-            tablePromotionCode.html("");
             inputPromotionDiscountAmount.val(0);
             calculateTotalPrice();
-        }
+            $('.js-cupon-form')
+                .find('.wizard-loading')
+                .show();
+            $('.js-cupon-form').removeClass('result');
+        });
+
     </script>
 }

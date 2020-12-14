@@ -1,30 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <LangVersion>Latest</LangVersion>
     <!--<AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>-->
   </PropertyGroup>
 
 
   <ItemGroup>
-    <PackageReference Include="AspNet.Security.OAuth.GitHub" Version="3.1.3" />
-    <PackageReference Include="AspNet.Security.OAuth.LinkedIn" Version="3.1.3" />
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.0.1" />
-    <PackageReference Include="DevExtreme.AspNet.Data" Version="2.7.1" />
-    <PackageReference Include="EPPlus" Version="5.3.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="3.1.8" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.8" />
+    <PackageReference Include="AspNet.Security.OAuth.GitHub" Version="5.0.0" />
+    <PackageReference Include="AspNet.Security.OAuth.LinkedIn" Version="5.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
+    <PackageReference Include="DevExtreme.AspNet.Data" Version="2.7.2" />
+    <PackageReference Include="EPPlus" Version="5.4.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="5.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
-    <PackageReference Include="Microsoft.Azure.SignalR" Version="1.5.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.8">
+    <PackageReference Include="Microsoft.Azure.SignalR" Version="1.6.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.8" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.8" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
-    <PackageReference Include="NEST" Version="7.9.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.1" />
+    <PackageReference Include="NEST" Version="7.10.0" />
   </ItemGroup>
 
 
@@ -42,8 +42,6 @@
     <Folder Include="Areas\EducatorArea\Data\" />
     <Folder Include="Areas\EducatorArea\Models\" />
     <Folder Include="Properties\PublishProfiles\" />
-    <Folder Include="wwwroot\assets\font\area-admin\" />
-    <Folder Include="wwwroot\coming-soon\" />
     <Folder Include="wwwroot\uploads\educator-photos\" />
     <Folder Include="wwwroot\uploads\media-items\" />
   </ItemGroup>
@@ -74,12 +72,242 @@
 
 
   <ItemGroup>
-    <None Include="wwwroot\assets\css\all_icons.min.css" />
-    <None Include="wwwroot\assets\css\bootstrap.min.css" />
-    <None Include="wwwroot\assets\css\style.css" />
-    <None Include="wwwroot\assets\css\style_overwritten.css" />
-    <None Include="wwwroot\assets\css\vendors.css" />
-    <None Include="wwwroot\assets\css\vendors.unminified.css" />
+    <None Include="wwwroot\admin\font\ElegantIcons.svg" />
+    <None Include="wwwroot\admin\font\fontawesome-webfont.svg" />
+    <None Include="wwwroot\admin\font\fontawesome-webfont.woff2" />
+    <None Include="wwwroot\admin\font\fontello.svg" />
+    <None Include="wwwroot\admin\font\icon_set_1.svg" />
+    <None Include="wwwroot\admin\font\Pe-icon-7-stroke.svg" />
+    <None Include="wwwroot\admin\font\themify.svg" />
+    <None Include="wwwroot\admin\img\arrow_down.svg" />
+    <None Include="wwwroot\admin\img\mainback\background_1475x800.png-autosave.kra" />
+    <None Include="wwwroot\admin\img\wizard_intro_icon.svg" />
+    <None Include="wwwroot\admin\js\admission_func.js" />
+    <None Include="wwwroot\admin\js\area-admin\admin.js" />
+    <None Include="wwwroot\admin\js\area-admin\dataTables.bootstrap4.js" />
+    <None Include="wwwroot\admin\js\area-admin\jquery.dataTables.js" />
+    <None Include="wwwroot\admin\js\bootstrap.bundle.min.js" />
+    <None Include="wwwroot\admin\js\bootstrap.min.js" />
+    <None Include="wwwroot\admin\js\common_scripts.js" />
+    <None Include="wwwroot\admin\js\dropzone.min.js" />
+    <None Include="wwwroot\admin\js\jquery-2.2.4.min.js" />
+    <None Include="wwwroot\admin\js\jquery-3.4.1.min.js" />
+    <None Include="wwwroot\admin\js\jquery-ui-1.8.22.min.js" />
+    <None Include="wwwroot\admin\js\jquery.cookiebar.js" />
+    <None Include="wwwroot\admin\js\jquery.easing.min.js" />
+    <None Include="wwwroot\admin\js\jquery.flexslider.js" />
+    <None Include="wwwroot\admin\js\jquery.flexslider.uncompressed.js" />
+    <None Include="wwwroot\admin\js\jquery.mask.min.js" />
+    <None Include="wwwroot\admin\js\jquery.mask.min.js.gz" />
+    <None Include="wwwroot\admin\js\jquery.payform.min.js" />
+    <None Include="wwwroot\admin\js\jquery.validate.js" />
+    <None Include="wwwroot\admin\js\jquery.wizard.js" />
+    <None Include="wwwroot\admin\js\main.js" />
+    <None Include="wwwroot\admin\js\modernizr.js" />
+    <None Include="wwwroot\admin\js\modernizr_slider.js" />
+    <None Include="wwwroot\admin\js\pw_strenght.js" />
+    <None Include="wwwroot\admin\js\site.js" />
+    <None Include="wwwroot\admin\js\validate.js" />
+    <None Include="wwwroot\admin\js\video_header.js" />
+    <None Include="wwwroot\admin\vid\intro.ogv" />
+    <None Include="wwwroot\assets\css\components\accordion.css.map" />
+    <None Include="wwwroot\assets\css\components\account-comment.css.map" />
+    <None Include="wwwroot\assets\css\components\account-course-detail.css.map" />
+    <None Include="wwwroot\assets\css\components\account-courses.css.map" />
+    <None Include="wwwroot\assets\css\components\account-dashboard.css.map" />
+    <None Include="wwwroot\assets\css\components\address.css.map" />
+    <None Include="wwwroot\assets\css\components\blog-card.css.map" />
+    <None Include="wwwroot\assets\css\components\blog-slider-card.css.map" />
+    <None Include="wwwroot\assets\css\components\breadcrumb.css.map" />
+    <None Include="wwwroot\assets\css\components\comment-card.css.map" />
+    <None Include="wwwroot\assets\css\components\comment-slider-card.css.map" />
+    <None Include="wwwroot\assets\css\components\commenting-box.css.map" />
+    <None Include="wwwroot\assets\css\components\education-place-card.css.map" />
+    <None Include="wwwroot\assets\css\components\for-you.css.map" />
+    <None Include="wwwroot\assets\css\components\main-stars.css.map" />
+    <None Include="wwwroot\assets\css\components\main-tab.css.map" />
+    <None Include="wwwroot\assets\css\components\mini-basket.css.map" />
+    <None Include="wwwroot\assets\css\components\pagination.css.map" />
+    <None Include="wwwroot\assets\css\components\side-categories.css.map" />
+    <None Include="wwwroot\assets\css\components\side-search.css.map" />
+    <None Include="wwwroot\assets\css\components\side-subscribe.css.map" />
+    <None Include="wwwroot\assets\css\components\subheader.css.map" />
+    <None Include="wwwroot\assets\css\components\support-card.css.map" />
+    <None Include="wwwroot\assets\css\components\teacher-card.css.map" />
+    <None Include="wwwroot\assets\css\components\user-dropdown.css.map" />
+    <None Include="wwwroot\assets\css\fonts.css.map" />
+    <None Include="wwwroot\assets\css\pages\about.css.map" />
+    <None Include="wwwroot\assets\css\pages\account.css.map" />
+    <None Include="wwwroot\assets\css\pages\blog-detail.css.map" />
+    <None Include="wwwroot\assets\css\pages\blog-list.css.map" />
+    <None Include="wwwroot\assets\css\pages\checkout.css.map" />
+    <None Include="wwwroot\assets\css\pages\comment-list.css.map" />
+    <None Include="wwwroot\assets\css\pages\contact.css.map" />
+    <None Include="wwwroot\assets\css\pages\default-page.css.map" />
+    <None Include="wwwroot\assets\css\pages\lesson-detail.css.map" />
+    <None Include="wwwroot\assets\css\pages\lesson-list.css.map" />
+    <None Include="wwwroot\assets\css\pages\login.css.map" />
+    <None Include="wwwroot\assets\css\pages\sss.css.map" />
+    <None Include="wwwroot\assets\css\pages\teacher-detail.css.map" />
+    <None Include="wwwroot\assets\css\utilities\select2-options.css.map" />
+    <None Include="wwwroot\assets\css\vendors\datepicker.min.css.map" />
+    <None Include="wwwroot\assets\css\vendors\swiper.min.css.map" />
+    <None Include="wwwroot\assets\fonts\ProximaNova-Bold.svg" />
+    <None Include="wwwroot\assets\fonts\ProximaNova-Bold.woff2" />
+    <None Include="wwwroot\assets\fonts\ProximaNova-Medium.svg" />
+    <None Include="wwwroot\assets\fonts\ProximaNova-Medium.woff2" />
+    <None Include="wwwroot\assets\fonts\ProximaNova-Regular.svg" />
+    <None Include="wwwroot\assets\fonts\ProximaNova-Regular.woff2" />
+    <None Include="wwwroot\assets\fonts\ProximaNova-Semibold.svg" />
+    <None Include="wwwroot\assets\fonts\ProximaNova-Semibold.woff2" />
+    <None Include="wwwroot\assets\fonts\ProximaNovaSW07-Medium.svg" />
+    <None Include="wwwroot\assets\fonts\ProximaNovaSW07-Medium.woff2" />
+    <None Include="wwwroot\assets\fonts\QanelasSoftDEMO-ExtraBold.svg" />
+    <None Include="wwwroot\assets\fonts\QanelasSoftDEMO-ExtraBold.woff2" />
+    <None Include="wwwroot\assets\img\dots-shape.svg" />
+    <None Include="wwwroot\assets\img\ellipse-shape.svg" />
+    <None Include="wwwroot\assets\img\half-shape.svg" />
+    <None Include="wwwroot\assets\img\icon-clock-c.svg" />
+    <None Include="wwwroot\assets\img\icon-student-2-c.svg" />
+    <None Include="wwwroot\assets\img\icon-student-c.svg" />
+    <None Include="wwwroot\assets\img\icons.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-arrow-gray.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-arrow-twins.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-arrow.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-azure.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-bag.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-bank.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-basket-empty.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-basket.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-big-arrow.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-bill.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-browser-mouse-blue.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-browser-mouse-gray.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-building.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-c-calendar.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-c-clock.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-c-doc-clock.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-c-doc-play.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-c-graduated.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-c-human.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-certificate.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-chair.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-check-circle-c.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-check-circle.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-check-gray.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-check-sub.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-check.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-circle-close-c.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-circle-close.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-clock.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-close.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-code-browser-2.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-code-browser.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-code-c.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-code.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-copyboard.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-coupon.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-crash.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-credit-card-f.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-credit-card.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-date-c.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-date.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-degree-blue.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-degree-gray.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-disabled.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-doc-f.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-doc-medal.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-docs.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-dots-blue.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-dots-gray.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-dots.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-dynamics.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-eye.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-facebook.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-filter-blue.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-filter.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-flag.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-global.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-heart-filled.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-heart.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-home.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-hunnel-blue.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-hunnel-gray.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-info-circle-f.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-info-circle.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-info-i.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-instagram.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-invoice.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-laptop-global.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-linkedin.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-loader.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-lock.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-logout.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-long-arrow.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-m-logo.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-mail.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-mailist.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-map-pin-blue.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-map-pin-f-blue.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-map-pin-f-gray.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-map-pin-f.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-map-pin-gray.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-map-pin-gray2.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-map-pin.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-map-st-pin.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-microsoft-azure.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-mouse-window.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-pencil.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-phone.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-play.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-plus.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-quest-book.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-ranking-up.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-rotate.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-sand-watch.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-screen.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-search.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-settings.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-share.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-show-more.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-small-arrow.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-smartphone-blue.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-smartphone-dark.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-smartphone-gray.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-smartphone-red.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-sort-blue.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-sort-gray.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-speak-balloon.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-speaker-human.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-star-s.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-star.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-statistic-up.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-subject-blue.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-subject-gray.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-subject-red.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-success.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-system-network.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-twitter.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-unity.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-user-dart.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-user-id.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-user-simple.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-user.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-users.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-view.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-warning.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-window-code.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-wrong.svg" />
+    <None Include="wwwroot\assets\img\icons\icon-youtube.svg" />
+    <None Include="wwwroot\assets\img\logo-white.svg" />
+    <None Include="wwwroot\assets\img\nitelikli-bilisim_logo-dark.svg" />
+    <None Include="wwwroot\assets\img\nitelikli-bilisim_logo.svg" />
+    <None Include="wwwroot\assets\js\datepicker.min.js" />
+    <None Include="wwwroot\assets\js\form-validation.js" />
+    <None Include="wwwroot\assets\js\jquery.inputmask.min.js" />
+    <None Include="wwwroot\assets\js\jquery.min.js" />
+    <None Include="wwwroot\assets\js\main.js" />
+    <None Include="wwwroot\assets\js\swiper.min.js" />
   </ItemGroup>
 
   <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">

@@ -1,92 +1,85 @@
 ﻿@model NitelikliBilisim.Core.ViewModels.Account.LoginViewModel
 
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" class="h-100-percent">
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Udema a modern educational site template">
-    <meta name="author" content="Ansonika">
-    @*<title>UDEMA | Modern Educational site template</title>*@
-    <title>Nitelikli Bilişim - Nitelikli Bilişim</title>
-
-    <!-- Favicons-->
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-    <link rel="apple-touch-icon" type="image/x-icon" href="img/apple-touch-icon-57x57-precomposed.png">
-    <link rel="apple-touch-icon" type="image/x-icon" sizes="72x72" href="img/apple-touch-icon-72x72-precomposed.png">
-    <link rel="apple-touch-icon" type="image/x-icon" sizes="114x114" href="img/apple-touch-icon-114x114-precomposed.png">
-    <link rel="apple-touch-icon" type="image/x-icon" sizes="144x144" href="img/apple-touch-icon-144x144-precomposed.png">
-
-    <!-- BASE CSS -->
-    <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/assets/css/style.css" rel="stylesheet">
-    <link href="~/assets/css/style_overwritten.css" rel="stylesheet" />
-    <link href="/assets/css/vendors.css" rel="stylesheet">
-    <link href="/assets/css/all_icons.min.css" rel="stylesheet">
-
-    <!-- YOUR CUSTOM CSS -->
-    <link href="/css/custom.css" rel="stylesheet">
-
+    <title>Nitelikli Bilişim</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <partial name="partials/_BaseAssetsHeader" />
 </head>
 
-<body id="login_bg">
-
-    <nav id="menu" class="fake_menu"></nav>
-
-    <div id="preloader">
-        <div data-loader="circle-side"></div>
-    </div>
-    <!-- End Preload -->
-
-    <div id="login">
-        <aside>
-            <figure>
-                <a href="/"><img class="sitelogo" src="~/assets/img/nb_logo_sm.png" width="149" height="42" data-retina="true" alt=""></a>
-            </figure>
-            <form action="giris-yap" method="post" enctype="application/x-www-form-urlencoded" id="form-login">
-                <div class="access_social">
-                    <a href="#0" class="social_bt facebook">Facebook ile giriş yap</a>
-                    <a href="#0" class="social_bt google">Google ile giriş yap</a>
-                    <a href="#0" class="social_bt linkedin">Linkedin ile giriş yap</a>
+<body class="h-100-percent">
+    <section class="login">
+        <partial name="partials/_header-simple" />
+        <div class="login__img">
+            <a href="./index.php" class="login__logo">
+                <img src="~/assets/img/logo-white.svg" alt="">
+            </a>
+            <img src="~/assets/img/giris-yap-img.jpg" class="login__img-img pos-0" alt="">
+            <div class="login__main-txt">
+                <span>Güncel Proje Eğitimleri ile</span> <br>
+                Aranan BT Uzmanı Ol!
+            </div>
+        </div>
+        <div class="login__wrp aic pt-0">
+            <div class="login__inner">
+                <div class="login__title">
+                    GİRİŞ <span class="colored-blue">YAP</span>
                 </div>
-                <div class="divider"><span>ya da</span></div>
-                <div asp-validation-summary="All" class="text-danger"></div>
-                @Html.AntiForgeryToken()
-            <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
-                <div class="form-group">
-                    <span class="input">
-                        <input class="input_field" type="text" autocomplete="off" name="UserName">
-                        <label class="input_label">
-                            <span class="input__label-content">Kullanıcı Adı</span>
-                        </label>
-                    </span>
-
-                    <span class="input">
-                        <input class="input_field" type="password" autocomplete="new-password" name="Password">
-                        <label class="input_label">
-                            <span class="input__label-content">Şifre</span>
-                        </label>
-                    </span>
-                    <small><a href="#0">Şifrenizi mi unuttunuz?</a></small>
-                </div>
-                <input type="submit" value="Giriş Yap" class="btn_1 rounded full-width add_top_40" id="btn-submit" />
-                @*<button type="submit" class="btn_1 rounded full-width add_top_60">Giriş Yap</button>*@
-                <div class="text-center add_top_10">Nitelikli Bilişim'de yeni misiniz? 
-                @*<strong><a href="/kayit-ol">Kaydolun!</a></strong>*@
-                </div>
-            <a href="/kayit-ol" class="btn_1 rounded full-width add_top_10">Kaydolun</a>
-            </form>
-            <div class="copy">© @DateTime.Now.Year Nitelikli Bilişim</div>
-        </aside>
-    </div>
-    <!-- /login -->
-    <!-- COMMON SCRIPTS -->
-    <script src="~/assets/js/jquery-2.2.4.min.js"></script>
-    <script src="~/assets/js/common_scripts.js"></script>
+                <form id="validateForm" class="login__content" action="giris-yap" method="post">
+                    <div asp-validation-summary="All"></div>
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
+                    <div class="login__inner-form">
+                        <div class="input__outer">
+                            <span class="icon-outer input__icon">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-mail"></use>
+                                </svg>
+                            </span>
+                            <input name="UserName" type="text" class="input input--fw" placeholder="E-posta adresiniz" required>
+                        </div>
+                        <div class="input__outer">
+                            <span class="icon-outer input__icon">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-lock"></use>
+                                </svg>
+                            </span>
+                            <input type="password" name="Password" class="input input--fw" placeholder="Şifreniz" required>
+                        </div>
+                        <div class="login__forget">
+                            <label class="main-checkbox reverse">
+                                Beni Hatırla
+                                <input id="RememberMe" value="true" name="RememberMe" type="checkbox" class="login-checkbox">
+                                <input name="RememberMe" value="false" type="hidden" />
+                                <span class="main-checkbox__checkmark"></span>
+                            </label>
+                            <a asp-controller="Account" asp-action="ForgotPassword">Şifremi Unuttum</a>
+                        </div>
+                        <button type="submit" class="button button-fw">
+                            Giriş Yap
+                        </button>
+                    </div>
+                    <div class="login__is-logined mt-4">
+                        Bir hesabın yok mu? <a href="/kayit-ol">Kayıt Ol</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+    <div class='main-overlay overlay js-close-modal'></div>
+    <script src="~/assets/js/jquery.min.js"></script>
+    <script src="~/vendor/select2/dist/js/select2.min.js"></script>
+    <script src="~/assets/js/swiper.min.js"></script>
+    <!-- <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script> -->
+    <script src="~/assets/js/jquery.inputmask.min.js"></script>
+    <script src="~/assets/js/datepicker.min.js"></script>
+    <!-- <script src="https://unpkg.com/bootstrap-datepicker@1.9.0/dist/locales/bootstrap-datepicker.tr.min.js"></script> -->
+    <script src="~/vendor/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/vendor/modal-video/js/jquery-modal-video.min.js"></script>
+    <script src="~/vendor/card/dist/card.js"></script>
     <script src="~/assets/js/main.js"></script>
-    <script src="~/assets/js/validate.js"></script>
-    <script src="~/js/lib/security-support.js"></script>
 </body>
 </html>

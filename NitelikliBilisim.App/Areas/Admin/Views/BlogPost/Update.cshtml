@@ -27,6 +27,10 @@
                     <input type="text" class="form-control" value="@Model.Title" id="input-title">
                 </div>
                 <div class="form-group">
+                    <label>Özet</label> <i title="Bu yazıları da okuyabilirsiniz. Alanında görüntülenecek olan kısa açıklama." class="fa fa-question-circle"></i>
+                    <textarea type="text" rows="3" class="form-control" id="input-summary-content">@Model.SummaryContent</textarea>
+                </div>
+                <div class="form-group">
                     <label>Yazı</label>
                     <div id="summernote"></div>
                 </div>

@@ -71,7 +71,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     Address = data.Address,
                     City = (HostCity)data.City.GetValueOrDefault(),
                     Latitude = data.Latitude,
-                    Longitude = data.Longitude
+                    Longitude = data.Longitude,
+                    GoogleMapUrl = data.GoogleMapUrl
                 };
                 _unitOfWork.EducationHost.Insert(host);
             }
@@ -221,6 +222,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 educationHost.Latitude = data.Latitude;
                 educationHost.Longitude = data.Longitude;
                 educationHost.City = (HostCity)data.City;
+                educationHost.GoogleMapUrl = data.GoogleMapUrl;
                 _unitOfWork.EducationHost.Update(educationHost);
             }
             catch (System.Exception ex)

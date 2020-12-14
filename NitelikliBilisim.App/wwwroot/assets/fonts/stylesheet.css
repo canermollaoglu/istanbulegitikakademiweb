@@ -1,0 +1,78 @@
+@font-face {
+    font-family: 'ProximaNovaSW07';
+    src: url('ProximaNovaSW07-Medium.eot');
+    src: url('ProximaNovaSW07-Medium.eot?#iefix') format('embedded-opentype'),
+        url('ProximaNovaSW07-Medium.woff2') format('woff2'),
+        url('ProximaNovaSW07-Medium.woff') format('woff'),
+        url('ProximaNovaSW07-Medium.ttf') format('truetype'),
+        url('ProximaNovaSW07-Medium.svg#ProximaNovaSW07-Medium') format('svg');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Proxima Nova Rg';
+    src: url('ProximaNova-Bold.eot');
+    src: url('ProximaNova-Bold.eot?#iefix') format('embedded-opentype'),
+        url('ProximaNova-Bold.woff2') format('woff2'),
+        url('ProximaNova-Bold.woff') format('woff'),
+        url('ProximaNova-Bold.ttf') format('truetype'),
+        url('ProximaNova-Bold.svg#ProximaNova-Bold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Proxima Nova';
+    src: url('ProximaNova-Medium.eot');
+    src: url('ProximaNova-Medium.eot?#iefix') format('embedded-opentype'),
+        url('ProximaNova-Medium.woff2') format('woff2'),
+        url('ProximaNova-Medium.woff') format('woff'),
+        url('ProximaNova-Medium.ttf') format('truetype'),
+        url('ProximaNova-Medium.svg#ProximaNova-Medium') format('svg');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Proxima Nova Rg';
+    src: url('ProximaNova-Regular.eot');
+    src: url('ProximaNova-Regular.eot?#iefix') format('embedded-opentype'),
+        url('ProximaNova-Regular.woff2') format('woff2'),
+        url('ProximaNova-Regular.woff') format('woff'),
+        url('ProximaNova-Regular.ttf') format('truetype'),
+        url('ProximaNova-Regular.svg#ProximaNova-Regular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Qanelas Soft DEMO';
+    src: url('QanelasSoftDEMO-ExtraBold.eot');
+    src: url('QanelasSoftDEMO-ExtraBold.eot?#iefix') format('embedded-opentype'),
+        url('QanelasSoftDEMO-ExtraBold.woff2') format('woff2'),
+        url('QanelasSoftDEMO-ExtraBold.woff') format('woff'),
+        url('QanelasSoftDEMO-ExtraBold.ttf') format('truetype'),
+        url('QanelasSoftDEMO-ExtraBold.svg#QanelasSoftDEMO-ExtraBold') format('svg');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Proxima Nova Lt';
+    src: url('ProximaNova-Semibold.eot');
+    src: url('ProximaNova-Semibold.eot?#iefix') format('embedded-opentype'),
+        url('ProximaNova-Semibold.woff2') format('woff2'),
+        url('ProximaNova-Semibold.woff') format('woff'),
+        url('ProximaNova-Semibold.ttf') format('truetype'),
+        url('ProximaNova-Semibold.svg#ProximaNova-Semibold') format('svg');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+

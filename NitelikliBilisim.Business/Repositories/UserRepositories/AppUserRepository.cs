@@ -4,7 +4,10 @@ using MUsefulMethods;
 using Newtonsoft.Json;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Entities.promotion;
+using NitelikliBilisim.Core.Entities.user_details;
 using NitelikliBilisim.Core.Enums;
+using NitelikliBilisim.Core.Enums.promotion;
+using NitelikliBilisim.Core.Enums.user_details;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.Main.Profile;
 using NitelikliBilisim.Data;
@@ -19,17 +22,44 @@ namespace NitelikliBilisim.Business.Repositories
     {
         private readonly NbDataContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+
+
         public AppUserRepository(NbDataContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
+        public MyAccountSidebarVm GetMyAccountSidebarInfo(string userId, string currentPageName)
+        {
+            MyAccountSidebarVm model = new MyAccountSidebarVm();
+            var student = _context.Customers.Include(x => x.User).Include(x => x.StudentEducationInfos).ThenInclude(x => x.Category).First(x => x.Id == userId);
+            University university = null;
+            StudentEducationInfo nBuyInfo = null;
+            if (student.LastGraduatedSchoolId.HasValue)
+            {
+                university = _context.Universities.FirstOrDefault(x => x.Id == student.LastGraduatedSchoolId);
+            }
+            if (student.IsNbuyStudent && student.StudentEducationInfos[0] != null)
+            {
+                nBuyInfo = student.StudentEducationInfos[0];
+            }
+            model.Name = student.User.Name;
+            model.Surname = student.User.Surname;
+            model.IsNBUY = student.IsNbuyStudent;
+            model.University = university != null ? university.Name : "Girilmemiş";
+            model.NbuyCategory = nBuyInfo != null && nBuyInfo.Category != null ? nBuyInfo.Category.Name : "Girilmemiş";
+            model.AvatarPath = student.User.AvatarPath;
+            model.PageName = currentPageName;
+            return model;
+        }
+
 
         public UserInfoVm GetCustomerInfo(string userId)
         {
             var customer = _context.Customers
                 .Include(x => x.User)
                 .FirstOrDefault(x => x.Id == userId);
+
             #region Favori eklenen eğitimler
             var wishListItems = _context.Wishlist.Where(x => x.Id == userId).ToList();
             List<Guid> wishListEducationIds = wishListItems.Select(x => x.Id2).ToList();
@@ -66,8 +96,6 @@ namespace NitelikliBilisim.Business.Repositories
             }).ToList();
 
             #endregion
-            if (customer == null)
-                return null;
 
             var _personalAndAccount = new _PersonalAccountInfo
             {
@@ -130,7 +158,241 @@ namespace NitelikliBilisim.Business.Repositories
             return model;
         }
 
-        public object GetCustomerPromotions(string userId)
+        public ForYouPageGetVm GetForYouPageData(string userId)
+        {
+            var infos = _context.Customers
+                .Include(x => x.StudentEducationInfos)
+                .ThenInclude(x => x.Category)
+                .Include(x => x.StudentEducationInfos)
+                .ThenInclude(x => x.EducationDays)
+                .First(x => x.Id == userId);
+            var nbuyInfo = infos.StudentEducationInfos[0];
+            var totalEducationWeeks = (int)Math.Ceiling((nbuyInfo.EducationDays.OrderBy(x => x.Day).Last().Date - nbuyInfo.StartedAt.Date).TotalDays / (double)7);
+            var currentEducationWeek = (int)Math.Ceiling((DateTime.Now.Date - nbuyInfo.StartedAt).TotalDays / (double)7); //GetEducationWeek(userId);
+            var totalEducationMonths = (int)Math.Ceiling(totalEducationWeeks / (double)4);
+            ForYouPageGetVm model = new();
+            int week = 1;
+            for (int i = 1; i <= totalEducationMonths; i++)
+            {
+                var eMonth = new EducationMonth();
+                eMonth.Order = i;
+                for (int j = 1; j <= 4; j++)
+                {
+                    if (week<=totalEducationWeeks)
+                    {
+                        eMonth.Weeks.Add(new EducationWeek
+                        {
+                            Order = week++,
+                            IsCurrentWeek = currentEducationWeek == week
+                        });
+                    }
+                }
+                model.EducationMonths.Add(eMonth);
+            }
+            model.EducationCategory = nbuyInfo.Category.Name;
+            model.EducationWeek = currentEducationWeek;
+            model.LeftWeeks = totalEducationWeeks - currentEducationWeek;
+            model.NbuyStartDate = nbuyInfo.StartedAt.ToString("dd MMMM yyyy");
+            model.NbuyEndDate = nbuyInfo.EducationDays.OrderBy(x => x.Date).Last().Date.ToString("dd MMMM yyyy");
+            return model;
+        }
+
+        public List<MyCommentVm> GetCustomerComments(string userId)
+        {
+            var model = (from comment in _context.EducationComments
+                         join education in _context.Educations on comment.EducationId equals education.Id
+                         join category in _context.EducationCategories on education.CategoryId equals category.Id
+                         join eImage in _context.EducationMedias on education.Id equals eImage.EducationId
+                         where eImage.MediaType == EducationMediaType.PreviewPhoto && comment.CommentatorId == userId
+                         select new MyCommentVm
+                         {
+                             Id = comment.Id,
+                             EducationId = education.Id,
+                             Content = comment.Content,
+                             Point = comment.Points,
+                             Date = comment.CreatedDate.ToString("dd MMMM yyyy"),
+                             EducationName = education.Name,
+                             EducationFeaturedImage = eImage.FileUrl,
+                             CategoryName = category.Name,
+                             ApprovalStatus = comment.ApprovalStatus,
+                         }).ToList();
+            return model;
+        }
+
+        public MyCourseDetailVm GetPurschasedEducationDetail(string userId, Guid groupId)
+        {
+            var model = (from eGroup in _context.EducationGroups
+                         join education in _context.Educations on eGroup.EducationId equals education.Id
+                         join educator in _context.Educators on eGroup.EducatorId equals educator.Id
+                         join host in _context.EducationHosts on eGroup.HostId equals host.Id
+                         join educatorUser in _context.Users on educator.Id equals educatorUser.Id
+                         join eImage in _context.EducationMedias on education.Id equals eImage.EducationId
+                         where eImage.MediaType == EducationMediaType.PreviewPhoto
+                         && eGroup.Id == groupId
+                         select new MyCourseDetailVm
+                         {
+                             EducationId = education.Id,
+                             EducationName = education.Name,
+                             EducationShortDescription = education.Description,
+                             EducationFeaturedImage = eImage.FileUrl,
+                             EducatorId = educator.Id,
+                             EducatorName = $"{educatorUser.Name} {educatorUser.Surname}",
+                             EducatorTitle = educator.Title,
+                             EducatorAvatarPath = educatorUser.AvatarPath,
+                             PriceText = eGroup.NewPrice,
+                             Days = education.Days.ToString(),
+                             Hours = (education.Days * education.HoursPerDay).ToString(),
+                             Host = host.HostName
+                         }).FirstOrDefault();
+            var bridgeEducatorCertificates = _context.Bridge_EducatorEducatorCertificates.Include(x => x.EducatorCertificate).Where(x => x.Id == model.EducatorId).ToList();
+            var educatorCertificates = new List<EducatorCertificate>();
+            foreach (var bridge in bridgeEducatorCertificates)
+            {
+                educatorCertificates.Add(bridge.EducatorCertificate);
+            }
+            model.EducatorCertificates = educatorCertificates;
+
+            return model;
+
+        }
+
+        public bool CheckPurschasedEducation(string userId, Guid groupId)
+        {
+            var purchasedEducations = _context.Bridge_GroupStudents.FirstOrDefault(x => x.Id2 == userId && x.Id == groupId);
+            return purchasedEducations == null ? false : true;
+        }
+
+        public List<MyCourseVm> GetPurschasedEducationsByUserIdMyCoursesPage(string userId)
+        {
+            var purchasedEducations = _context.Bridge_GroupStudents.Where(x => x.Id2 == userId);
+            var wishListItems = _context.Wishlist.Where(x => x.Id == userId).Select(x => x.Id2).ToList();
+
+            List<Guid> ids = purchasedEducations.Select(x => x.Id).ToList();
+            var educationList = (from eGroup in _context.EducationGroups
+                                 join education in _context.Educations on eGroup.EducationId equals education.Id
+                                 join eImage in _context.EducationMedias on education.Id equals eImage.EducationId
+                                 where eImage.MediaType == EducationMediaType.PreviewPhoto
+                                  && ids.Contains(eGroup.Id)
+                                 select new MyCourseVm
+                                 {
+                                     Id = eGroup.Id,
+                                     EducationId = education.Id,
+                                     Name = education.Name,
+                                     Date = eGroup.StartDate.ToString("dd MMMM yyyy"),
+                                     Days = education.Days.ToString(),
+                                     Hours = (education.Days * education.HoursPerDay).ToString(),
+                                     FeaturedImageUrl = eImage.FileUrl,
+                                 }).ToList();
+            foreach (var education in educationList)
+            {
+                education.IsFavorite = wishListItems.Contains(education.Id) ? true : false;
+            }
+            return educationList;
+        }
+
+        public MyPanelVm GetPanelInfo(string userId)
+        {
+            MyPanelVm model = new MyPanelVm();
+            var student = _context.Customers.Include(x => x.User).Include(x=>x.StudentEducationInfos).ThenInclude(x=>x.EducationDays).First(x => x.Id == userId);
+            var favoriteEducations = GetUserFavoriteEducationsByUserId(userId);
+            var purchasedEducations = GetPurschasedEducationsByUserId(userId);
+
+            model.FavoriteEducations = favoriteEducations;
+            model.FavoriteEducationCount = favoriteEducations.Count;
+            model.PurchasedEducations = purchasedEducations;
+            model.PurchasedEducationCount = purchasedEducations.Count;
+            if (student.IsNbuyStudent)
+            {
+                var nbuyInfo = student.StudentEducationInfos[0];
+                var totalEducationWeek = (int)Math.Ceiling((nbuyInfo.EducationDays.OrderBy(x => x.Day).Last().Date - nbuyInfo.StartedAt.Date).TotalDays / (double)7);
+                var currentEducationWeek = (int)Math.Ceiling((DateTime.Now.Date - nbuyInfo.StartedAt).TotalDays / (double)7);
+                model.EducationWeek = currentEducationWeek;
+                model.TotalEducationWeek = totalEducationWeek;
+            }
+            return model;
+
+        }
+
+        private int GetEducationWeek(string userId)
+        {
+            var retVal = 1;
+            var student = _context.Customers.Include(x => x.StudentEducationInfos).ThenInclude(x => x.EducationDays).FirstOrDefault(x => x.Id == userId);
+            if (student != null)
+            {
+                var currentDate = student.StudentEducationInfos[0].EducationDays.OrderBy(x => x.Date).Last(x => x.Date <= DateTime.Now.Date);
+                retVal = (int)Math.Ceiling(currentDate.Day / (double)7);
+            }
+            return retVal;
+        }
+
+        public List<PurchasedEducationVm> GetPurschasedEducationsByUserId(string userId)
+        {
+            var purchasedEducations = _context.Bridge_GroupStudents.Where(x => x.Id2 == userId);
+            List<Guid> ids = purchasedEducations.Select(x => x.Id).ToList();
+            var educationList = (from eGroup in _context.EducationGroups
+                                 join education in _context.Educations on eGroup.EducationId equals education.Id
+                                 join eImage in _context.EducationMedias on education.Id equals eImage.EducationId
+                                 join educator in _context.Educators on eGroup.EducatorId equals educator.Id
+                                 join educatorUser in _context.Users on educator.Id equals educatorUser.Id
+                                 join host in _context.EducationHosts on eGroup.HostId equals host.Id
+                                 join category in _context.EducationCategories on education.CategoryId equals category.Id
+                                 where eImage.MediaType == EducationMediaType.PreviewPhoto
+                                 && ids.Contains(eGroup.Id)
+                                 select new PurchasedEducationVm
+                                 {
+                                     EducationId = education.Id,
+                                     GroupId = eGroup.Id,
+                                     Name = education.Name,
+                                     CategoryName = category.Name,
+                                     City = EnumHelpers.GetDescription(host.City),
+                                     FeaturedImageUrl = eImage.FileUrl,
+                                     EducatorImageUrl = educatorUser.AvatarPath,
+                                 }
+                ).ToList();
+            foreach (var data in educationList)
+            {
+                data.CompletionRate = GetEducationCompletionRate(data.GroupId);
+            }
+            return educationList;
+
+        }
+
+        private int GetEducationCompletionRate(Guid id)
+        {
+            var group = _context.EducationGroups.Include(x => x.Education).Include(x => x.GroupLessonDays).FirstOrDefault(x => x.Id == id);
+            var rate = 0;
+            if (group != null && DateTime.Now.Date > group.StartDate)
+            {
+                var completedDays = group.GroupLessonDays.Where(x => x.DateOfLesson.Date < DateTime.Now.Date).Count();
+                var totalDays = group.Education.Days;
+                rate = completedDays * 100 / totalDays;
+            }
+
+            return rate;
+        }
+
+        public List<FavoriteEducationVm> GetUserFavoriteEducationsByUserId(string userId)
+        {
+            var wishListItems = _context.Wishlist.Where(x => x.Id == userId).ToList();
+            List<Guid> wishListEducationIds = wishListItems.Select(x => x.Id2).ToList();
+            var educationsList = (from education in _context.Educations
+                                  join featuredImage in _context.EducationMedias on education.Id equals featuredImage.EducationId
+                                  join category in _context.EducationCategories on education.CategoryId equals category.Id
+                                  where featuredImage.MediaType == EducationMediaType.PreviewPhoto
+                                  && wishListEducationIds.Contains(education.Id)
+                                  select new FavoriteEducationVm
+                                  {
+                                      Id = education.Id,
+                                      Name = education.Name,
+                                      CategoryName = category.Name,
+                                      HoursText = (education.HoursPerDay * education.Days).ToString(),
+                                      DaysText = education.Days.ToString(),
+                                      FeaturedImageUrl = featuredImage.FileUrl
+                                  }).ToList();
+            return educationsList;
+        }
+
+        public List<MyCouponVm> GetCustomerPromotions(string userId)
         {
             var conditions = _context.EducationPromotionConditions.Where(x => x.ConditionType == Core.Enums.promotion.ConditionType.User);
             var currentUserConditions = new List<Guid>();
@@ -142,10 +404,36 @@ namespace NitelikliBilisim.Business.Repositories
                     currentUserConditions.Add(condition.EducationPromotionCodeId);
                 }
             }
-            var data = _context.EducationPromotionCodes
-                .Where(x =>currentUserConditions.Contains(x.Id))
-                .Select(x=> new UserPromotionVm {PromotionId = x.Id,PromotionName = x.Name }).ToList();
-            return data;
+
+            var codes = _context.EducationPromotionCodes.Where(x => x.PromotionType == Core.Enums.promotion.PromotionType.CouponCode && currentUserConditions.Contains(x.Id));
+            var uses = _context.EducationPromotionItems.Where(x => x.UserId == userId).ToList();
+            var retVal = new List<MyCouponVm>();
+            foreach (var promotionCode in codes)
+            {
+                MyCouponVm promotion = new MyCouponVm();
+                promotion.PromotionName = promotionCode.Name;
+                promotion.Code = promotionCode.PromotionCode;
+                promotion.PromotionId = promotionCode.Id;
+                promotion.RemainingTime = "0";
+                if (uses.Any(x => x.EducationPromotionCodeId == promotionCode.Id))
+                {
+                    promotion.Status = PromotionStatus.Used;
+                }
+                else if (promotionCode.EndDate.Date < DateTime.Now.Date)
+                {
+                    promotion.Status = PromotionStatus.Expired;
+                }
+                else
+                {
+                    TimeSpan remainingTime = promotionCode.EndDate - DateTime.Now.Date;
+                    promotion.RemainingTime = remainingTime.TotalDays.ToString();
+                    promotion.Status = PromotionStatus.Active;
+                }
+                retVal.Add(promotion);
+            }
+
+
+            return retVal;
         }
         #region Test
         public List<MyInvoicesVm> GetUserInvoices(string userId)
@@ -304,9 +592,4 @@ namespace NitelikliBilisim.Business.Repositories
     }
 
 
-    public class UserPromotionVm
-    {
-        public Guid PromotionId { get; internal set; }
-        public string PromotionName { get; internal set; }
-    }
 }
