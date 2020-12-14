@@ -8,6 +8,10 @@ on:
     branches:
       - test-ready
 
+  pull_request:
+    branches:
+      - test-ready
+
 jobs:
   build-and-deploy:
     runs-on: windows-latest
