@@ -18,5 +18,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public List<PurchasedEducationVm> PurchasedEducations { get; set; }
         public int PurchasedEducationCount { get; set; }
         public int EducationWeek { get; set; }
+        public int TotalEducationWeek { get; set; }
     }
 }

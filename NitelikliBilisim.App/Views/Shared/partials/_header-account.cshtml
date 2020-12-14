@@ -619,7 +619,10 @@
                                 {
                                     avatarPath = @StorageService.DownloadFile(System.IO.Path.GetFileName(user.AvatarPath), System.IO.Path.GetDirectoryName(user.AvatarPath)).Result;
                                 }
-
+                                else
+                                {
+                                    avatarPath = "../../img/nb_letter_logo_sm.png";
+                                }
                             }
                             <img src="@avatarPath" alt="">
                             <div class="header__profile-caret"></div>

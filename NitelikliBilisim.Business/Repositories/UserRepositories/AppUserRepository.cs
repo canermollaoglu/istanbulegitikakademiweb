@@ -161,15 +161,34 @@ namespace NitelikliBilisim.Business.Repositories
         public ForYouPageGetVm GetForYouPageData(string userId)
         {
             var infos = _context.Customers
-                .Include(x=>x.StudentEducationInfos)
-                .ThenInclude(x=>x.Category)
+                .Include(x => x.StudentEducationInfos)
+                .ThenInclude(x => x.Category)
                 .Include(x => x.StudentEducationInfos)
                 .ThenInclude(x => x.EducationDays)
-                .First(x=>x.Id == userId);
+                .First(x => x.Id == userId);
             var nbuyInfo = infos.StudentEducationInfos[0];
-            var totalEducationWeeks = (int)Math.Ceiling((nbuyInfo.EducationDays.OrderBy(x=>x.Day).Last().Date - nbuyInfo.StartedAt.Date).TotalDays / (double)7);
+            var totalEducationWeeks = (int)Math.Ceiling((nbuyInfo.EducationDays.OrderBy(x => x.Day).Last().Date - nbuyInfo.StartedAt.Date).TotalDays / (double)7);
             var currentEducationWeek = (int)Math.Ceiling((DateTime.Now.Date - nbuyInfo.StartedAt).TotalDays / (double)7); //GetEducationWeek(userId);
+            var totalEducationMonths = (int)Math.Ceiling(totalEducationWeeks / (double)4);
             ForYouPageGetVm model = new();
+            int week = 1;
+            for (int i = 1; i <= totalEducationMonths; i++)
+            {
+                var eMonth = new EducationMonth();
+                eMonth.Order = i;
+                for (int j = 1; j <= 4; j++)
+                {
+                    if (week<=totalEducationWeeks)
+                    {
+                        eMonth.Weeks.Add(new EducationWeek
+                        {
+                            Order = week++,
+                            IsCurrentWeek = currentEducationWeek == week
+                        });
+                    }
+                }
+                model.EducationMonths.Add(eMonth);
+            }
             model.EducationCategory = nbuyInfo.Category.Name;
             model.EducationWeek = currentEducationWeek;
             model.LeftWeeks = totalEducationWeeks - currentEducationWeek;
@@ -274,7 +293,7 @@ namespace NitelikliBilisim.Business.Repositories
         public MyPanelVm GetPanelInfo(string userId)
         {
             MyPanelVm model = new MyPanelVm();
-            var student = _context.Customers.Include(x => x.User).First(x => x.Id == userId);
+            var student = _context.Customers.Include(x => x.User).Include(x=>x.StudentEducationInfos).ThenInclude(x=>x.EducationDays).First(x => x.Id == userId);
             var favoriteEducations = GetUserFavoriteEducationsByUserId(userId);
             var purchasedEducations = GetPurschasedEducationsByUserId(userId);
 
@@ -284,7 +303,11 @@ namespace NitelikliBilisim.Business.Repositories
             model.PurchasedEducationCount = purchasedEducations.Count;
             if (student.IsNbuyStudent)
             {
-                model.EducationWeek = GetEducationWeek(userId);
+                var nbuyInfo = student.StudentEducationInfos[0];
+                var totalEducationWeek = (int)Math.Ceiling((nbuyInfo.EducationDays.OrderBy(x => x.Day).Last().Date - nbuyInfo.StartedAt.Date).TotalDays / (double)7);
+                var currentEducationWeek = (int)Math.Ceiling((DateTime.Now.Date - nbuyInfo.StartedAt).TotalDays / (double)7);
+                model.EducationWeek = currentEducationWeek;
+                model.TotalEducationWeek = totalEducationWeek;
             }
             return model;
 
