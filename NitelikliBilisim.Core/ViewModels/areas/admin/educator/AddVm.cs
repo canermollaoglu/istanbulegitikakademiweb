@@ -1,10 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using NitelikliBilisim.Core.Entities.user_details;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace NitelikliBilisim.Core.ViewModels.areas.admin.educator
 {
     public class AddGetVm
     {
 
+        public List<EducatorCertificate> Certificates { get; set; }
+        public Dictionary<int,string> BankNames { get; set; }
     }
 
     public class AddPostVm
@@ -24,6 +28,11 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.educator
         public string Biography { get; set; }
         [Required(ErrorMessage = "Kısa Açıklama alanı boş geçilemez"),MaxLength(400,ErrorMessage ="Kısa Açıklama alanı en fazla 400 karakter içerebilir.")]
         public string ShortDescription { get; set; }
+        public List<int> CertificateIds { get; set; }
+        public int Bank { get; set; }
+        [MaxLength(26,ErrorMessage ="IBAN alanı en fazla 26 karakter içerebilir.")]
+        public string IBAN { get; set; }
+
     }
 
     public class _SocialMedia

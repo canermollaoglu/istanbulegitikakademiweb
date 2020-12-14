@@ -1,0 +1,50 @@
+﻿
+@{
+    ViewData["Title"] = "Sınıf Listesi";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-table"></i> @ViewData["educationHostName"] Kurumuna Ait Sınıflar
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card-header">
+                    <i class="fa fa-table"></i> Sınıf Ekle
+                </div>
+                <div class="card-body">
+                    <form id="form-add-classroom">
+                        <input type="hidden" id="educationHostId" value="@ViewData["educationHostId"]" />
+                        @Html.AntiForgeryToken()
+                        <div class="form-group">
+                            <label>İsim</label>
+                            <input type="text" required class="form-control" id="input-name">
+                        </div>
+                        <button id="btn-save" type="button" class="btn btn-success btn-sm pull-right">Kaydet</button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card-header">
+                    <i class="fa fa-table"></i> Sınıf Listesi
+                </div>
+                <div class="card-body">
+                    <div id="classroom-grid"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="card-footer small text-muted">Veri tarihi: @DateTime.Now</div>
+</div>
+
+@section postScripts{
+    <script src="~/js/areas/admin/admin-host-classroom-list.js"></script>
+}

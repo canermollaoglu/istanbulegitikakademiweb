@@ -64,10 +64,13 @@ namespace NitelikliBilisim.App
             //services.AddControllers(options => { options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()); });
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromSeconds(30);
                 options.Cookie.IsEssential = true;
             });
-
+            services.AddCors(options=>
+            {
+                options.AddPolicy("AllowAll",
+                    builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+            });
             services.AddMvc();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddControllers();
@@ -81,14 +84,23 @@ namespace NitelikliBilisim.App
             CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
             CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
-            app.UseDeveloperExceptionPage();
+            app.Use(async (context, next) =>
+            {
+                await next();
+                if (context.Response.StatusCode == 404)
+                {
+                    context.Request.Path = "/404";
+                    await next();
+                }
+            });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
             else
             {
-                app.UseExceptionHandler("/yakinda");
+                app.UseExceptionHandler("/error");
                 app.UseHsts();
             }
 
@@ -103,10 +115,12 @@ namespace NitelikliBilisim.App
             {
                 config.MapHub<MessageHub>("/messages");
             });
+            
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseCookiePolicy();
+            app.UseCors("AllowAll");
             app.UseSession();
             app.UseEndpoints(endpoints =>
             {

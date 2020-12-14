@@ -18,6 +18,10 @@ var inputCvc = $("#input-cvc");
 var inputCompanyName = $("#input-company-name");
 var inputTaxNo = $("#input-tax-no");
 var inputTaxOffice = $("#input-tax-office");
+var inputInstallment = $("#_installmentCount");
+var input3dSecure = $('#chc3DSecure');
+var inputEducationTotalPrice = $("#input-education-total-price");
+var inputPromotionDiscountAmount = $("#promotion-discount-amount");
 var isDistantSalesAgreementConfirmed = document.getElementById("_is-distant-sales-agreement-confirmed");
 var isIndividual = document.getElementById("_is-individual");
 var chkConfirmDistantSalesAgreement = document.getElementById("chk-confirm-distant-sales");
@@ -25,6 +29,8 @@ var chkCustomerTypeIndividual = document.getElementById("chk-customer-type-indiv
 var divCorporateField = $("#div-corporate-field");
 var cartItems = $("#_cart-items");
 var btnBuy = $("#btn-buy");
+var installmentInfoDiv = $("#installmentInfo");
+var _promotionCode =  $("#_promotion-code");
 
 /* assignments */
 $(document).ready(document_onLoad);
@@ -37,6 +43,7 @@ $("#chk-confirm-distant-sales").on('ifToggled', function () {
     chkConfirmDistantSalesAgreement_onChange();
 });
 
+
 /* events */
 function document_onLoad() {
     getCartItems();
@@ -45,6 +52,8 @@ function document_onLoad() {
     inputCvc.payform('formatCardCVC');
     inputPhone.mask("(000) 000 0000");
     isIndividual.value = true;
+    
+    getPromotionInfo();
 }
 function customerType_onChange() {
     var type = $("input[name='customer-type']:checked").val();
@@ -58,6 +67,11 @@ function customerType_onChange() {
         isIndividual.value = false;
     }
 }
+function installmentNumber_onChange() {
+    var retVal = $("input[name='installmentNumber']:checked").val();
+    inputInstallment.val(retVal);
+}
+
 function selectProvinces_onChange() {
     getDistricts($(this).val());
 }
@@ -78,7 +92,9 @@ function btnBuy_onClick() {
 
     var tokenVerifier = new SecuritySupport.TokenVerifier();
     var cart = new CartSupport.Cart();
+    var cartItems = cart.getItems();
     var data = tokenVerifier.addToken("form-buy", {
+        Use3d: input3dSecure.prop("checked"),
         CardInfo: {
             NameOnCard: inputOwner.val(),
             NumberOnCard: inputCardNumber.val(),
@@ -93,10 +109,15 @@ function btnBuy_onClick() {
             Phone: inputPhone.val(),
             IsIndividual: isIndividual
         },
+        PaymentInfo: {
+            Installments: inputInstallment.val()
+        },
         CorporateInvoiceInfo: corporateInvoiceInfo,
         IsDistantSalesAgreementConfirmed: isDistantSalesAgreementConfirmed,
-        CartItems: cart.getItems()
+        CartItems: cartItems,
+        PromotionCode: _promotionCode.val()
     });
+
 
     $.ajax({
         url: "/pay",
@@ -109,33 +130,131 @@ function btnBuy_onClick() {
     });
 }
 
+
+$('#input-card-number').focusout(function () {
+    var inputVal = this.value;
+    if (inputVal.length > 7) {
+        loadInstallmentsInfo(inputVal);
+    }
+});
+
+
 /* functions */
+function loadInstallmentsInfo(inputVal) {
+    var cart = new CartSupport.Cart();
+    var data = {
+        CardNumber: inputVal,
+        CartItems: cart.getItems(),
+        PromotionCode: _promotionCode.val()
+    };
+
+    $.ajax({
+        url: "/getinstallmentinfo",
+        method: "post",
+        data: data,
+        success: (res) => {
+            if (res.isSuccess) {
+                console.log(res);
+                installmentInfoDiv.empty();
+                createInstallmentsDiv(res.data);
+                if (res.data.installmentOptions.force3Ds == "1") {
+                    input3dSecure.prop("checked", true);
+                    input3dSecure.prop('readonly', true);
+                } else {
+                    input3dSecure.prop("checked", false);
+                    input3dSecure.prop('readonly', false);
+                }
+                $("input[name='installmentNumber']").on('change', function () {
+                    installmentNumber_onChange();
+                });
+            }
+        }
+    });
+}
+function createInstallmentsDiv(data) {
+    var content = '<div class="form_title"><h3>Taksit Seçenekleri</h3></div>';
+    if (data.length != 0)
+        $.each(data.installmentOptions.installmentPrices, function (index, info) {
+            if (info.installmentNumber == 1) {
+                content += `<p><input type="radio" name="installmentNumber" value="${info.installmentNumber}" checked> ${info.installmentNumber} Taksit :  ${info.price} X ${info.installmentNumber}  = ${info.totalPrice}</p>`
+            } else {
+                content += `<p><input type="radio" name="installmentNumber" value="${info.installmentNumber}"> ${info.installmentNumber} Taksit :  ${info.price} X ${info.installmentNumber}  = ${info.totalPrice}</p>`
+            }
+        });
+    installmentInfoDiv.append(content);
+    inputInstallment.val(1);
+}
+function calculateTotalPrice() {
+    txtTotal.text(formatCurrency(parseFloat(inputEducationTotalPrice.val()) - parseFloat(inputPromotionDiscountAmount.val())));
+}
 function getCartItems() {
     var items = _cart.getItems();
     cartItems.val(JSON.stringify(items));
-    console.log(cartItems.val());
-    //var data = {
-    //    Items: items
-    //};
-    //$.ajax({
-    //    url: "/get-cart-items",
-    //    method: "post",
-    //    data: data,
-    //    success: (res) => {
-    //        if (res.isSuccess) {
-    //            appendCartItems(res.data.items);
-    //            txtTotal.text(res.data.total);
-    //            var cartItemIds = [];
-    //            for (var i = 0; i < res.data.items.length; i++) {
-    //                var item = res.data.items[i];
-    //                cartItemIds.push(item);
-    //            }
-    //            console.log(cartItemIds);
-    //            cartItems.val(JSON.stringify(cartItemIds));
-    //        }
-    //    }
-    //});
+    var data = {
+        Items: items
+    };
+    $.ajax({
+        url: "/get-cart-items",
+        method: "post",
+        data: data,
+        success: (res) => {
+            if (res.isSuccess) {
+                appendCartItems(res.data.items);
+                inputEducationTotalPrice.val(res.data.totalNumeric);
+                var cartItemIds = [];
+                for (var i = 0; i < res.data.items.length; i++) {
+                    var item = res.data.items[i];
+                    cartItemIds.push(item);
+                }
+                //cartItems.val(JSON.stringify(cartItemIds));
+                calculateTotalPrice();
+            }
+        }
+    });
 }
+function getPromotionInfo() {
+    var items = _cart.getItems();
+    var data = {
+        Items: items,
+        PromotionCode: localStorage.getItem("promotionCode")
+    };
+    $.ajax({
+        url: "/get-promotion",
+        method: "post",
+        data: data,
+        success: (res) => {
+            if (res.isSuccess) {
+                inputPromotionDiscountAmount.val(res.data.discountAmount);
+                $("#promotion-info").html(`Kupon Kodu :${res.data.promotionCode}  <b> ${res.data.discountAmount}</b>`);
+                calculateTotalPrice();
+                _promotionCode.val(res.data.promotionCode);
+            } else {
+                getBasketBasedPromotion();
+            }
+        }
+    });
+}
+
+function getBasketBasedPromotion() {
+        var items = _cart.getItems();
+        var data = {
+            Items: items
+        };
+        $.ajax({
+            url: "/get-basked-based-promotion",
+            method: "post",
+            data: data,
+            success: (res) => {
+                if (res.isSuccess) {
+                    inputPromotionDiscountAmount.val(res.data.discountAmount);
+                    $("#promotion-info").html(`Kampanya :${res.data.name}  <b> ${res.data.discountAmount}</b>`);
+                    calculateTotalPrice();
+                    _promotionCode.val(res.data.promotionCode);
+                }
+            }
+        });
+}
+
 function appendCartItems(data) {
     tbodyCartItems.html("");
 
@@ -211,4 +330,7 @@ function correctTrChars(text) {
         .replace(/&#246;/g, "ö")
         .replace(/&#304;/g, "İ")
         .replace(/&#252;/g, "ü");
+}
+function formatCurrency(total) {
+    return ('₺') + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
 }

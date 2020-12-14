@@ -1,0 +1,61 @@
+﻿@using NitelikliBilisim.Core.ViewModels.Main.Blog
+@using NitelikliBilisim.Core.Services.Abstracts
+@inject IStorageService StorageService
+
+@model List<RecommendedBlogPostVm>
+
+
+@foreach (var post in Model)
+{
+    var image = "";
+    try
+    {
+        image = StorageService.DownloadFile(System.IO.Path.GetFileName(post.FeaturedImageUrl), System.IO.Path.GetDirectoryName(post.FeaturedImageUrl)).Result;
+    }
+    catch
+    {
+    }
+    <div class="swiper-slide">
+        <a href="/blog/detay/@post.Id" class="blog-card">
+            <div class="blog-card__img">
+                <img src="@image" alt="">
+            </div>
+            <div class="blog-card__content">
+                <div class="blog-card__tag">@post.Category</div>
+                <div class="blog-card__title">
+                    @post.Title
+                </div>
+                <div class="blog-card__txt">
+                    @post.Content
+                </div>
+            </div>
+            <div class="blog-card__footer">
+                <div class="blog-card__info">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-date"></use>
+                        </svg>
+                    </span>
+                    <span>@post.CreatedDate</span>
+                </div>
+                <div class="blog-card__info">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                        </svg>
+                    </span>
+                    <span>@post.ReadingTime dk.</span>
+                </div>
+                <div class="blog-card__info">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-view"></use>
+                        </svg>
+                    </span>
+                    <span>12 Görüntülenme</span>
+                </div>
+            </div>
+        </a>
+    </div>
+
+}

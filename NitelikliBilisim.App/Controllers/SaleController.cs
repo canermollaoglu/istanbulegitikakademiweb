@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using NitelikliBilisim.App.Controllers.Base;
+using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.App.VmCreator;
@@ -12,9 +13,17 @@ using NitelikliBilisim.Business.Factory;
 using NitelikliBilisim.Business.PaymentFactory;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ComplexTypes;
+using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Entities.educations;
+using NitelikliBilisim.Core.Entities.user_details;
+using NitelikliBilisim.Core.Enums.promotion;
 using NitelikliBilisim.Core.PaymentModels;
 using NitelikliBilisim.Core.Services.Payments;
+using NitelikliBilisim.Core.ViewModels.areas.admin.education;
 using NitelikliBilisim.Core.ViewModels.Cart;
+using NitelikliBilisim.Core.ViewModels.Main.Cart;
+using NitelikliBilisim.Core.ViewModels.Main.InvoiceInfo;
+using NitelikliBilisim.Core.ViewModels.Main.Sales;
 using NitelikliBilisim.Core.ViewModels.Sales;
 using NitelikliBilisim.Notificator.Services;
 using System;
@@ -34,24 +43,41 @@ namespace NitelikliBilisim.App.Controllers
         private readonly SaleVmCreator _vmCreator;
         private readonly UserUnitOfWork _userUnitOfWork;
         private readonly IPaymentService _paymentService;
-        private readonly EmailSender _emailSender;
+        private readonly IEmailSender _emailSender;
 
-        public SaleController(IWebHostEnvironment hostingEnvironment, UnitOfWork unitOfWork, IPaymentService paymentService, UserUnitOfWork userUnitOfWork)
+        public SaleController(IWebHostEnvironment hostingEnvironment, UnitOfWork unitOfWork, IPaymentService paymentService, UserUnitOfWork userUnitOfWork, IEmailSender emailSender)
         {
             _hostingEnvironment = hostingEnvironment;
             _unitOfWork = unitOfWork;
             _paymentService = paymentService;
             _vmCreator = new SaleVmCreator(_unitOfWork);
             _userUnitOfWork = userUnitOfWork;
-            _emailSender = new EmailSender();
+            _emailSender = emailSender;
         }
 
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
+        [Route("fatura-bilgileri")]
+        public IActionResult InvoiceInformation()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            List<InvoiceInfoAddressGetVm> addresses = _unitOfWork.Address.GetInvoiceAddressesByUserId(userId);
+            var cities = _unitOfWork.City.Get().OrderBy(x=>x.Order).ToList();
+            
+            var invoiceInfos = new InvoiceInfoGetVm
+            {
+                Addresses = addresses,
+                Cities = cities
+            };
+            return View(invoiceInfos);
+        }
+
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("sepet")]
         public IActionResult Cart()
         {
             return View();
         }
-
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [HttpPost, IgnoreAntiforgeryToken, Route("get-cart-items")]
         public IActionResult GetCartItems(GetCartItemsData data)
         {
@@ -62,7 +88,8 @@ namespace NitelikliBilisim.App.Controllers
                     data = new
                     {
                         items = new List<CartItemVm>(),
-                        total = 0m.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"))
+                        total = 0m.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
+                        totalNumeric = 0
                     }
                 });
 
@@ -76,7 +103,8 @@ namespace NitelikliBilisim.App.Controllers
             var model = new
             {
                 items = cartItems,
-                total = sum.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"))
+                total = sum.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
+                totalNumeric = sum
             };
 
             return Json(new ResponseModel
@@ -86,6 +114,75 @@ namespace NitelikliBilisim.App.Controllers
             });
         }
 
+        [HttpPost, IgnoreAntiforgeryToken, Route("get-basked-based-promotion")]
+        public IActionResult GetBaskedBasedPromotion(GetCartItemsData data)
+        {
+            if (data == null || data.Items == null)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false
+
+                });
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var promotion = CheckBasketBasedPromotion(userId, data.Items);
+
+            if (promotion != null)
+            {
+                var model = new BasketBasedPromotionVm
+                {
+                    DiscountAmount = promotion.DiscountAmount,
+                    Name = promotion.Name
+                };
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    data = model
+                });
+            }
+            else
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false
+
+                });
+            }
+        }
+
+        [HttpPost, IgnoreAntiforgeryToken, Route("get-promotion")]
+        public IActionResult GetPromotion(GetPromotionCodeData data)
+        {
+            if (string.IsNullOrEmpty(data.PromotionCode))
+                return Json(new ResponseModel
+                {
+                    isSuccess = false
+
+                });
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var retVal = CheckPromotionCode(userId, data.PromotionCode, data.Items);
+
+            if (retVal.Success)
+            {
+                PromotionCodeVm promotionInfo = _unitOfWork.EducationPromotionCode.GetPromotionInfo(data.PromotionCode);
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    data = promotionInfo
+                });
+            }
+            else
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { retVal.Message }
+
+                });
+            }
+        }
+
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("odeme")]
         public IActionResult Payment()
         {
@@ -94,7 +191,52 @@ namespace NitelikliBilisim.App.Controllers
 
             return View();
         }
+        [HttpPost, Route("getinstallmentinfo")]
+        public IActionResult GetInstallmentInfo(InstallmentInfoVm data)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var binNumber = FormatCardNumber(data.CardNumber).Substring(0, 6);
+            decimal discountAmount = 0m;
+            if (!string.IsNullOrEmpty(data.PromotionCode))
+            {
+                var response = CheckPromotionCode(userId, data.PromotionCode, data.CartItems);
+                if (response.Success)
+                {
+                    var promotion = (EducationPromotionCode)response.Data;
+                    discountAmount = promotion.DiscountAmount;
+                }
+                else
+                {
+                    return Json(new ResponseModel
+                    {
+                        isSuccess = false,
+                        errors = new List<string> { response.Message }
+                    });
+                }
+            }
+            var info = _paymentService.CheckInstallment(data.ConversationId.ToString(), binNumber, GetPriceSumForCartItems(data.CartItems, discountAmount));
+            if (info.Status == PaymentServiceMessages.ResponseSuccess)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    data = new
+                    {
+                        installmentOptions = info.InstallmentDetails[0]
+                    }
+                });
+            }
+            else
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Taksit bilgileri alınamadı. Sayfayı yenileyerek tekrar deneyiniz." }
+                });
+            }
+        }
 
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [HttpPost, ValidateAntiForgeryToken, Route("pay")]
         public async Task<IActionResult> Pay(PayData data)
         {
@@ -134,6 +276,36 @@ namespace NitelikliBilisim.App.Controllers
                 });
             #endregion
 
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            decimal discountAmount = 0m;
+            EducationPromotionCode promotion = null;
+            var basketBasedPromotion = CheckBasketBasedPromotion(userId, data.CartItems);
+            if (!string.IsNullOrEmpty(data.PromotionCode))
+            {
+                decimal totalBasketAmount = GetPriceSumForCartItems(data.CartItems);
+                var response = CheckPromotionCode(userId, data.PromotionCode, data.CartItems);
+                if (response.Success)
+                {
+                    promotion = (EducationPromotionCode)response.Data;
+                    discountAmount = promotion.DiscountAmount;
+                    data.DiscountAmount = discountAmount;
+                }
+                else
+                {
+                    return Json(new ResponseModel
+                    {
+                        isSuccess = false,
+                        errors = new List<string> { response.Message }
+                    });
+                }
+            }
+            else if (basketBasedPromotion != null)
+            {
+                promotion = basketBasedPromotion;
+                discountAmount = basketBasedPromotion.DiscountAmount;
+                data.DiscountAmount = basketBasedPromotion.DiscountAmount;
+            }
+
             data.CardInfo.NumberOnCard = FormatCardNumber(data.CardInfo.NumberOnCard);
             data.SpecialInfo.Ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
             data.SpecialInfo.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -141,55 +313,44 @@ namespace NitelikliBilisim.App.Controllers
             InstallmentInfo info = _paymentService.CheckInstallment(
                 conversationId: data.ConversationId.ToString(),
                 binNumber: data.CardInfo.NumberOnCard.Substring(0, 6),
-                price: GetPriceSumForCartItems(data.CartItems));
+                price: GetPriceSumForCartItems(data.CartItems, discountAmount));
 
             var cardInfoChecker = new CardInfoChecker();
             var transactionType = cardInfoChecker.DecideTransactionType(info, data.Use3d);
 
             var manager = new PaymentManager(_paymentService, transactionType);
-            string content = "";
+            string content;
             var rootPath = _hostingEnvironment.WebRootPath;
             using (var sr = new StreamReader(Path.Combine(rootPath, "data/cities.json")))
             {
-                content = sr.ReadToEnd();
+                content = await sr.ReadToEndAsync();
             }
             var cityTowns = JsonConvert.DeserializeObject<CityTownModel>(content);
             var cityId = data.InvoiceInfo.City;
             var townId = data.InvoiceInfo.Town;
-            var city = cityTowns.data.FirstOrDefault(x => x._id == cityId);
+            var city = cityTowns.data.First(x => x._id == cityId);
             data.InvoiceInfo.City = city.name;
-            data.InvoiceInfo.Town = city.towns.FirstOrDefault(x => x._id == townId).name;
-            
+            data.InvoiceInfo.Town = city.towns.First(x => x._id == townId).name;
+
             var result = manager.Pay(_unitOfWork, data);
+            NormalPaymentResultVm paymentResultModel = new NormalPaymentResultVm();
 
             if (result.TransactionType == TransactionType.Normal)
             {
-                var model = manager.CreateCompletionModel(result.PaymentForNormal);
-                _unitOfWork.Sale.CompletePayment(model, result.Success.InvoiceId, result.Success.InvoiceDetailIds);
-
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var customerEmail = _userUnitOfWork.User.GetCustomerInfo(userId).PersonalAndAccountInfo.Email;
-                if (customerEmail != null)
+                if (result.Status == PaymentServiceMessages.ResponseSuccess)
                 {
-                    await _emailSender.SendAsync(new EmailMessage
+                    var model = manager.CreateCompletionModel(result.PaymentForNormal);
+                    _unitOfWork.Sale.CompletePayment(model, result.Success.InvoiceId, result.Success.InvoiceDetailIds);
+                    if (promotion != null)
                     {
-                        Subject = "Eğitim ödemeniz alınmıştır | Nitelikli Bilişim",
-                        Body = "Eğitim ödemeniz alınmıştır.",
-                        Contacts = new string[] { customerEmail }
-                    });
-                }
-
-                return Redirect("/odeme-sonucunuz");
-            }
-
-            if (result.TransactionType == TransactionType.Secure3d)
-            {
-                if (result.Status == "success")
-                {
-                    _unitOfWork.TempSaleData.Create(result.ConversationId, result.Success);
-                    HttpContext.Session.SetString("html_content", result.HtmlContent);
-
-                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                        _unitOfWork.EducationPromotionItem.Insert(new EducationPromotionItem
+                        {
+                            UserId = userId,
+                            EducationPromotionCodeId = promotion.Id,
+                            InvoiceId = result.Success.InvoiceId,
+                            CreatedDate = DateTime.Now
+                        });
+                    }
                     var customerEmail = _userUnitOfWork.User.GetCustomerInfo(userId).PersonalAndAccountInfo.Email;
                     if (customerEmail != null)
                     {
@@ -197,14 +358,49 @@ namespace NitelikliBilisim.App.Controllers
                         {
                             Subject = "Eğitim ödemeniz alınmıştır | Nitelikli Bilişim",
                             Body = "Eğitim ödemeniz alınmıştır.",
-                            Contacts = new string[] { customerEmail }
+                            Contacts = new[] { customerEmail }
                         });
                     }
 
+                    paymentResultModel.Status = PaymentResultStatus.Success;
+                    paymentResultModel.Message = "Ödemeniz başarılı bir şekilde gerçekleşmiştir.";
+                }
+                else
+                {
+                    paymentResultModel.Status = PaymentResultStatus.Failure;
+                    paymentResultModel.Message = result.Error.ErrorMessage;
+                }
+
+                return RedirectToAction("NormalPaymentResult", "Sale", paymentResultModel);
+            }
+
+            if (result.TransactionType == TransactionType.Secure3d)
+            {
+                if (result.Status == PaymentServiceMessages.ResponseSuccess)
+                {
+                    string promotionId = promotion != null ? promotion.Id.ToString() : string.Empty;
+                    _unitOfWork.TempSaleData.Create(result.ConversationId, result.Success, promotionId, userId);
+                    HttpContext.Session.SetString("html_content", result.HtmlContent);
+                    var customerEmail = _userUnitOfWork.User.GetCustomerInfo(userId).PersonalAndAccountInfo.Email;
+                    if (customerEmail != null)
+                    {
+                        await _emailSender.SendAsync(new EmailMessage
+                        {
+                            Subject = "Eğitim ödemeniz alınmıştır | Nitelikli Bilişim",
+                            Body = "Eğitim ödemeniz alınmıştır.",
+                            Contacts = new[] { customerEmail }
+                        });
+                    }
                     return Redirect("/secure3d");
                 }
+                else
+                {
+                    paymentResultModel.Status = PaymentResultStatus.Failure;
+                    paymentResultModel.Message = result.Error.ErrorMessage;
+                    return RedirectToAction("NormalPaymentResult", "Sale", paymentResultModel);
+                }
             }
-            
+
             return Redirect("/");
         }
 
@@ -218,43 +414,54 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [HttpGet, Route("odeme-sonucunuz")]
-        public IActionResult NormalPaymentResult()
+        public IActionResult NormalPaymentResult(NormalPaymentResultVm model)
         {
-            return View();
+            return View(model);
         }
 
         [HttpPost, Route("odeme-sonucu")]
         public IActionResult PaymentResult(CreateThreedsPaymentRequest data)
         {
+            NormalPaymentResultVm retVal = new NormalPaymentResultVm();
             if (data != null)
             {
                 data.Locale = Locale.TR.ToString();
                 var result = _paymentService.Confirm3DsPayment(data);
-                var manager = new PaymentManager(_paymentService, TransactionType.Secure3d);
-                var model = manager.CreateCompletionModel(result);
-                if (model == null)
-                    return View();
-
-                var paymentModelSuccess = _unitOfWork.TempSaleData.Get(data.ConversationId);
-                _unitOfWork.TempSaleData.Remove(data.ConversationId);
-                _unitOfWork.Sale.CompletePayment(model, paymentModelSuccess.InvoiceId, paymentModelSuccess.InvoiceDetailIds);
+                if (result.Status == PaymentServiceMessages.ResponseSuccess)
+                {
+                    var manager = new PaymentManager(_paymentService, TransactionType.Secure3d);
+                    var model = manager.CreateCompletionModel(result);
+                    if (model == null)
+                        return View();
+                    retVal.Status = PaymentResultStatus.Success;
+                    retVal.Message = "Ödemeniz başarılı bir şekilde gerçekleşmiştir.";
+                    var paymentModelSuccess = _unitOfWork.TempSaleData.Get(data.ConversationId);
+                    if (!string.IsNullOrEmpty(paymentModelSuccess.PromotionId))
+                    {
+                        _unitOfWork.EducationPromotionItem.Insert(new EducationPromotionItem
+                        {
+                            UserId = paymentModelSuccess.UserId,
+                            EducationPromotionCodeId = Guid.Parse(paymentModelSuccess.PromotionId),
+                            InvoiceId = paymentModelSuccess.InvoiceId,
+                            CreatedDate = DateTime.Now
+                        });
+                    }
+                    _unitOfWork.TempSaleData.Remove(data.ConversationId);
+                    _unitOfWork.Sale.CompletePayment(model, paymentModelSuccess.InvoiceId, paymentModelSuccess.InvoiceDetailIds);
+                }
+                else
+                {
+                    retVal.Status = PaymentResultStatus.Failure;
+                    retVal.Message = result.ErrorMessage;
+                }
+            }
+            else
+            {
+                retVal.Status = PaymentResultStatus.Failure;
+                retVal.Message = "Ödeme servisinden cevap alınamamıştır. Lütfen yönetici ile iletişime geçiniz.";
             }
 
-            return View();
-        }
-
-        public IActionResult GetCardInfo()
-        {
-            var conversationId = Guid.NewGuid().ToString();
-            var info = _paymentService.CheckInstallment(conversationId, "111111", 800);
-            return Json(new ResponseModel
-            {
-                isSuccess = true,
-                data = new
-                {
-                    installmentOptions = info.InstallmentDetails[0].InstallmentPrices
-                }
-            });
+            return View(retVal);
         }
 
         [NonAction]
@@ -264,13 +471,282 @@ namespace NitelikliBilisim.App.Controllers
             return string.Join(null, splitted);
         }
         [NonAction]
-        public decimal GetPriceSumForCartItems(List<_CartItem> itemIds)
+        public decimal GetPriceSumForCartItems(List<_CartItem> itemIds, decimal discountAmount = 0)
         {
-            var educationIds = itemIds.Select(x => x.EducationId).ToList();
-            return _unitOfWork.Education.Get(x => educationIds.Contains(x.Id), null).Sum(x => x.NewPrice.Value);
+            var retVal = 0m;
+            if (itemIds != null && itemIds.Count > 0)
+            {
+                var groupIds = itemIds.Select(x => x.GroupId).ToList();
+                var totalPrice = _unitOfWork.EducationGroup.Get(x => groupIds.Contains(x.Id), null).Sum(x => x.NewPrice.GetValueOrDefault());
+                var discount = discountAmount;
+                retVal = totalPrice - discount;
+            }
+
+            return retVal;
+        }
+
+        public ResponseData CheckPromotionCode(string userId, string promotionCode, List<_CartItem> cartItems)
+        {
+            var promotion = _unitOfWork.EducationPromotionCode.GetPromotionbyPromotionCode(promotionCode);
+            if (promotion == null)
+            {
+                return new ResponseData
+                {
+                    Success = false,
+                    Message = "Girdiğiniz koda ait kupon bulunamamıştır."
+                };
+            }
+            decimal totalBasketAmount = GetPriceSumForCartItems(cartItems);
+            var allEducations = _unitOfWork.Education.GetAllEducationsWithCategory();
+            int userBasedItemCount = _unitOfWork.EducationPromotionCode.GetEducationPromotionItemCountByUserId(promotion.Id, userId);
+            int promotionItemCount = _unitOfWork.EducationPromotionCode.GetEducationPromotionItemByPromotionCodeId(promotion.Id);
+
+            #region Satın alınan eğitimler
+            List<PurchasedEducationVm> purchasedEducations = _unitOfWork.Education.GetPurchasedEducationsByUserId(userId);
+            #endregion
+
+            if (userBasedItemCount + 1 > promotion.UserBasedUsageLimit || promotionItemCount + 1 > promotion.MaxUsageLimit)
+            {
+                return new ResponseData
+                {
+                    Success = false,
+                    Message = "Kupon kodu kullanım sınırı dolmuştur."
+                };
+            }
+
+            if (totalBasketAmount < promotion.MinBasketAmount)
+            {
+                return new ResponseData
+                {
+                    Success = false,
+                    Message = "Sepet tutarınız minimum kupon kullanım tutarının altında."
+                };
+            }
+
+            if (DateTime.Now.Date < promotion.StartDate.Date || DateTime.Now.Date > promotion.EndDate.Date)
+            {
+                return new ResponseData
+                {
+                    Success = false,
+                    Message = "Kupon kodu aktif değildir."
+                };
+            }
+
+            foreach (var condition in promotion.EducationPromotionConditions)
+            {
+                if (condition.ConditionType == ConditionType.Category)
+                {
+                    var ids = JsonConvert.DeserializeObject<Guid[]>(condition.ConditionValue);
+                    var cartItemsEducationIds = cartItems.Select(x => x.EducationId).ToList();
+                    var cartItemCategoryIds = allEducations.Where(x => cartItemsEducationIds.Contains(x.Id)).Select(x => x.CategoryId).ToList();
+                    if (!cartItemCategoryIds.Any(x => ids.Contains(x)))
+                    {
+                        return new ResponseData
+                        {
+                            Success = false,
+                            Message = "Kupon kodunun geçerli olabilmesi için kampanyada belirtilen kategorideki eğitimlerden birinin sepetinizde olması gerekiyor."
+                        };
+                    }
+                }
+                else if (condition.ConditionType == ConditionType.Education)
+                {
+                    var ids = JsonConvert.DeserializeObject<Guid[]>(condition.ConditionValue);
+                    if (!cartItems.Any(x => ids.Contains(x.EducationId)))
+                    {
+                        return new ResponseData
+                        {
+                            Success = false,
+                            Message = "Kupon kodunun geçerli olabilmesi için kampanyada belirtilen eğitimlerden birinin sepetinizde olması gerekiyor."
+                        };
+                    }
+                }
+                else if (condition.ConditionType == ConditionType.User)
+                {
+                    var ids = JsonConvert.DeserializeObject<string[]>(condition.ConditionValue);
+                    if (!ids.Contains(userId))
+                    {
+                        return new ResponseData
+                        {
+                            Success = false,
+                            Message = "Geçerli şartlar sağlanmadığı için indirim aktif edilemiyor."
+                        };
+                    }
+                }
+                else if (condition.ConditionType == ConditionType.PurchasedEducation)
+                {
+                    var ids = JsonConvert.DeserializeObject<Guid[]>(condition.ConditionValue);
+                    if (!purchasedEducations.Any(x => ids.Contains(x.EducationId)))
+                    {
+                        return new ResponseData
+                        {
+                            Success = false,
+                            Message = "Kupon kodunun geçerli olabilmesi için kampanyada belirtilen eğitimlerden birini almış olmanız gerekiyor."
+                        };
+                    }
+                }
+                else if (condition.ConditionType == ConditionType.PurchasedCategory)
+                {
+                    var ids = JsonConvert.DeserializeObject<Guid[]>(condition.ConditionValue);
+                    if (!purchasedEducations.Any(x => ids.Contains(x.CategoryId)))
+                    {
+                        return new ResponseData
+                        {
+                            Success = false,
+                            Message = "Kupon kodunun geçerli olabilmesi için kampanyada belirtilen kategoriden bir eğitim almış olmanız gerekiyor."
+                        };
+                    }
+                }
+            }
+
+
+
+            return new ResponseData
+            {
+                Success = true,
+                Data = promotion
+            };
+
+        }
+
+        public EducationPromotionCode CheckBasketBasedPromotion(string userId, List<_CartItem> cartItems)
+        {
+            decimal totalBasketAmount = GetPriceSumForCartItems(cartItems);
+            var promotions = _unitOfWork.EducationPromotionCode.GetBasketBasedPromotions()
+                .Where(x => x.StartDate.Date <= DateTime.Now.Date
+                && x.EndDate.Date > DateTime.Now.Date
+                && x.MinBasketAmount < totalBasketAmount).ToList();
+            #region Satın alınan eğitimler
+            List<PurchasedEducationVm> purchasedEducations = _unitOfWork.Education.GetPurchasedEducationsByUserId(userId);
+            #endregion
+            var applicatePromotionIds = new List<Guid>();
+            var allEducations = _unitOfWork.Education.GetAllEducationsWithCategory();
+            foreach (var promotion in promotions)
+            {
+                int userBasedItemCount = _unitOfWork.EducationPromotionCode.GetEducationPromotionItemCountByUserId(promotion.Id, userId);
+                int promotionItemCount = _unitOfWork.EducationPromotionCode.GetEducationPromotionItemByPromotionCodeId(promotion.Id);
+
+                if (userBasedItemCount + 1 <= promotion.UserBasedUsageLimit && promotionItemCount + 1 <= promotion.MaxUsageLimit)
+                {
+                    applicatePromotionIds.Add(promotion.Id);
+                    foreach (var condition in promotion.EducationPromotionConditions)
+                    {
+                        if (condition.ConditionType == ConditionType.Category)
+                        {
+                            var ids = JsonConvert.DeserializeObject<Guid[]>(condition.ConditionValue);
+                            var cartItemsEducationIds = cartItems.Select(x => x.EducationId).ToList();
+                            var cartItemCategoryIds = allEducations.Where(x => cartItemsEducationIds.Contains(x.Id)).Select(x => x.CategoryId).ToList();
+                            if (!cartItemCategoryIds.Any(x => ids.Contains(x)))
+                            {
+                                applicatePromotionIds.Remove(promotion.Id);
+                            }
+                        }
+                        else if (condition.ConditionType == ConditionType.Education)
+                        {
+                            var ids = JsonConvert.DeserializeObject<Guid[]>(condition.ConditionValue);
+                            if (!cartItems.Any(x => ids.Contains(x.EducationId)))
+                            {
+                                applicatePromotionIds.Remove(promotion.Id);
+                            }
+                        }
+                        else if (condition.ConditionType == ConditionType.User)
+                        {
+                            var ids = JsonConvert.DeserializeObject<string[]>(condition.ConditionValue);
+                            if (!ids.Contains(userId))
+                            {
+                                applicatePromotionIds.Remove(promotion.Id);
+                            }
+                        }
+                        else if (condition.ConditionType == ConditionType.PurchasedEducation)
+                        {
+                            var ids = JsonConvert.DeserializeObject<Guid[]>(condition.ConditionValue);
+                            if (!purchasedEducations.Any(x => ids.Contains(x.EducationId)))
+                            {
+                                applicatePromotionIds.Remove(promotion.Id);
+                            }
+                        }
+                        else if (condition.ConditionType == ConditionType.PurchasedCategory)
+                        {
+                            var ids = JsonConvert.DeserializeObject<Guid[]>(condition.ConditionValue);
+                            if (!purchasedEducations.Any(x => ids.Contains(x.CategoryId)))
+                            {
+                                applicatePromotionIds.Remove(promotion.Id);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return promotions.Where(x => applicatePromotionIds.Contains(x.Id)).OrderByDescending(x => x.DiscountAmount).FirstOrDefault();
+
+
+        }
+
+        [Route("get-states/{cityId}")]
+        public IActionResult GetStatesByCityId(int cityId)
+        {
+            try
+            {
+                List<State> states = _unitOfWork.State.GetStateByCityId(cityId);
+                return Json(new ResponseData
+                {
+                    Success = true,
+                    Data = states
+                });
+
+            }
+            catch (Exception)
+            {
+                //Todo Log
+                throw;
+            }
+        }
+
+        public IActionResult AddCorporateAddress(AddCorporateAddressPostVm model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                model.CustomerId = userId;
+                model.IsDefaultAddress = true;
+                _unitOfWork.Address.AddCorporateAddress(model);
+                return RedirectToAction("InvoiceInformation", "Sale");
+            }
+            catch (Exception)
+            {
+                //Todo Log
+                throw;
+            }
+
+        }
+        public IActionResult AddIndividualAddress(AddIndividualAddressPostVm model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                model.CustomerId = userId;
+                model.IsDefaultAddress = true;
+                _unitOfWork.Address.AddIndividualAddress(model);
+                return RedirectToAction("InvoiceInformation", "Sale");
+            }
+            catch (Exception)
+            {
+                //Todo Log
+                throw;
+            }
         }
     }
 
+    public class GetPromotionCodeData
+    {
+        public List<_CartItem> Items { get; set; }
+        public string PromotionCode { get; set; }
+    }
     public class GetCartItemsData
     {
         public List<_CartItem> Items { get; set; }

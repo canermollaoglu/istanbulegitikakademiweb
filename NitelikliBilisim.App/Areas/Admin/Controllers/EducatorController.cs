@@ -9,18 +9,18 @@ using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Enums.user_details;
 using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels.areas.admin.educator;
-using NitelikliBilisim.Support.Text;
 using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using MUsefulMethods;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    [Area("Admin"), Authorize(Roles = "Admin")]
-    public class EducatorController : TempSecurityController
+    public class EducatorController : BaseController
     {
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly FileUploadManager _fileManager;
@@ -42,7 +42,21 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         public IActionResult Add()
         {
             ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducatorAdd");
-            return View();
+            var model = new AddGetVm
+            {
+                Certificates = _unitOfWork.EducatorCertificate.Get(null, order => order.OrderBy(x => x.Name)),
+                BankNames = EnumHelpers.ToKeyValuePair<BankNames>()
+            };
+            return View(model);
+        }
+
+        [Route("admin/egitmen-detay/{educatorId}")]
+        public IActionResult Detail(string educatorId)
+        {
+            var model = _unitOfWork.Educator.GetEducatorDetailAdmin(educatorId);
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducatorDetail");
+            return View(model);
+
         }
 
         [HttpPost, Route("admin/egitmen-ekle")]
@@ -62,9 +76,9 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             {
                 //var dbPath = _fileManager.Upload("/uploads/educator-photos/", data.ProfilePhoto.Base64Content, data.ProfilePhoto.Extension, "profile-photo", $"{data.Name} {data.Surname}");
                 var stream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.ProfilePhoto.Base64Content));
-                var fileName = $"{data.Name} {data.Surname}".FormatForTag();
+                var fileName = StringHelpers.FormatForTag($"{data.Name} {data.Surname}");
                 var dbPath = await _storageService.UploadFile(stream, $"{fileName}.{data.ProfilePhoto.Extension}", "educator-photos");
-                var userName = TextHelper.ConcatForUserName(data.Name, data.Surname);
+                var userName = StringHelpers.ConcatForUserName(data.Name, data.Surname);
 
                 var count = _userManager.Users.Count(x => x.UserName.StartsWith(userName));
                 var countText = count > 0 ? count.ToString() : "";
@@ -78,7 +92,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     UserName = $"{userName}{countText}"
                 };
                 // TODO: belirlenen şifre mail olarak atılmalı & sabit şifre değiştirilmeli
-                var pwd = TextHelper.RandomPasswordGenerator(10);
+                var pwd = StringHelpers.RandomPasswordGenerator(10);
                 var res = await _userManager.CreateAsync(newUser, "qwe123");
                 if (!res.Succeeded)
                 {
@@ -108,9 +122,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     Id = newUser.Id,
                     Title = data.Title,
                     Biography = data.Biography,
-                    ShortDescription = data.ShortDescription
+                    ShortDescription = data.ShortDescription,
+                    Bank = data.Bank,
+                    IBAN = data.IBAN
                 };
-                _unitOfWork.Educator.Insert(newEducator);
+                _unitOfWork.Educator.Insert(newEducator, data.CertificateIds);
 
                 if (data.SocialMedia != null)
                     _unitOfWork.EducatorSocialMedia.Insert(newEducator.Id, data.SocialMedia.Facebook, data.SocialMedia.Linkedin, data.SocialMedia.GooglePlus, data.SocialMedia.Twitter);
@@ -172,8 +188,13 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 Email = educator.User.Email,
                 FilePath = educator.User.AvatarPath,
                 Biography = educator.Biography,
-                ShortDescription = educator.ShortDescription
-                
+                ShortDescription = educator.ShortDescription,
+                Bank = educator.Bank,
+                IBAN = educator.IBAN,
+                Certificates = _unitOfWork.EducatorCertificate.Get(null, o => o.OrderBy(x => x.Name)),
+                RelatedCertificates = _unitOfWork.Educator.GetCertificates(educator.Id),
+                BankNames = EnumHelpers.ToKeyValuePair<BankNames>(),
+
             };
             return View(model);
         }
@@ -193,12 +214,13 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
             var educator = _unitOfWork.Educator.Get(x => x.Id == data.EducatorId.ToString(), null, x => x.User).First();
 
+
             if (!string.IsNullOrEmpty(data.ProfilePhoto.Base64Content))
             {
                 var stream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.ProfilePhoto.Base64Content));
-                var fileName = $"{data.Name} {data.Surname}".FormatForTag();
+                var fileName = StringHelpers.FormatForTag($"{data.Name} {data.Surname}");
                 var dbPath = await _storageService.UploadFile(stream, $"{fileName}.{data.ProfilePhoto.Extension}", "educator-photos");
-                var userName = TextHelper.ConcatForUserName(data.Name, data.Surname);
+                var userName = StringHelpers.ConcatForUserName(data.Name, data.Surname);
                 educator.User.AvatarPath = dbPath;
             }
 
@@ -209,8 +231,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             educator.User.Surname = data.Surname;
             educator.User.PhoneNumber = data.Phone;
             educator.User.Email = data.Email;
+            educator.Bank = data.Bank;
+            educator.IBAN = data.IBAN;
+            //Test 
+            _unitOfWork.Educator.Update(educator, data.CertificateIds);
 
-            _unitOfWork.Educator.Update(educator);
             return Json(new ResponseModel
             {
                 isSuccess = true,
@@ -227,7 +252,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             var educatorSocialMedias = _unitOfWork.EducatorSocialMedia.Get(x => x.EducatorId == educatorId.ToString(), null, x => x.Educator).ToList();
             var model = new UpdateGetEducatorSocialMediaVm
             {
-                Id = Guid.Parse(educatorSocialMedias.First().EducatorId),
+                Id = Guid.Parse(educatorId.ToString()),
                 Facebook = educatorSocialMedias.FirstOrDefault(x => x.SocialMediaType == Core.Enums.EducatorSocialMediaType.Facebook)?.Link,
                 Linkedin = educatorSocialMedias.FirstOrDefault(x => x.SocialMediaType == Core.Enums.EducatorSocialMediaType.LinkedIn)?.Link,
                 GooglePlus = educatorSocialMedias.FirstOrDefault(x => x.SocialMediaType == Core.Enums.EducatorSocialMediaType.GooglePlus)?.Link,
@@ -390,5 +415,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 message = "Silme işlemi başarılı"
             });
         }
+
     }
 }

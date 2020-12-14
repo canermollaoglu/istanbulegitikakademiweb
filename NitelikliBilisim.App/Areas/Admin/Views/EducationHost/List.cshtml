@@ -1,0 +1,26 @@
+﻿
+@{
+    ViewData["Title"] = "Eğitim Kurumları Listesi";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-table"></i> Eğitim Kurumları
+
+        <a href="@Url.Action("Add", "EducationHost")" class="btn btn-sm btn-outline-primary pull-right"> Ekle</a>
+    </div>
+    <div class="card-body">
+        <div id="education-host-grid"></div>
+    </div>
+    <div class="card-footer small text-muted">Veri tarihi: @DateTime.Now</div>
+</div>
+
+@section postScripts{
+    <script src="~/js/areas/admin/admin-education-host-list.js"></script>
+}

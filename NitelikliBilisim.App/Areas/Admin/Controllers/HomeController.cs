@@ -4,8 +4,7 @@ using NitelikliBilisim.App.Lexicographer;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    [Area("admin"), Authorize(Roles = "Admin")]
-    public class HomeController : TempSecurityController
+    public class HomeController : BaseController
     {
         [Route("admin/panel")]
         public IActionResult Index()

@@ -49,18 +49,33 @@ function confirm_onClick() {
 /*DataGrid*/
 function createGrid() {
     $("#tag-grid").dxDataGrid({
-        dataSource: `get-tag-list`,
+        dataSource: DevExpress.data.AspNet.createStore({
+            key: "id",
+            loadUrl: "../../api/educationtag/get-education-tag-list",
+        }),
+        selection: {
+            mode: "single"
+        },
+        remoteOperations: {
+            paging: true,
+            filtering: true,
+            sorting: true,
+            grouping: true,
+            summary: true,
+            groupPaging: true
+        },
         showBorders: true,
         showColumnLines: true,
+        rowAlternationEnabled: true,
         showRowLines: true,
+        wordWrapEnabled: true,
         filterRow: {
             visible: true,
             applyFilter: "auto"
         },
         searchPanel: {
             visible: true,
-            width: 240,
-            placeholder: "Search..."
+            width: 240
         },
         paging: {
             pageSize: 10
@@ -77,27 +92,58 @@ function createGrid() {
             allowedPageSizes: [5, 10, 20],
             showInfo: true
         },
+        onExporting: function (e) {
+            var workbook = new ExcelJS.Workbook();
+            var worksheet = workbook.addWorksheet('Eğitim Etiket Listesi');
+            DevExpress.excelExporter.exportDataGrid({
+                worksheet: worksheet,
+                component: e.component,
+                customizeCell: function (options) {
+                    var excelCell = options;
+                    excelCell.font = { name: 'Arial', size: 12 };
+                    excelCell.alignment = { horizontal: 'left' };
+                }
+            }).then(function () {
+                workbook.xlsx.writeBuffer().then(function (buffer) {
+                    saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'Eğitim Etiket Listesi' + parseInt(Math.random() * 1000000000) + '.xlsx');
+                });
+            });
+            e.cancel = true;
+        },
+        export: {
+            enabled: true
+        },
+        headerFilter: {
+            visible: true
+        },
+        grouping: {
+            autoExpandAll: true
+        },
+        groupPanel: {
+            visible: true
+        },
         columns: [{
+            caption:"Etiket İsmi",
             dataField: "name",
-            headerCellTemplate: $('<i style="color: black; font-weight: bold">Etiket İsmi</i>')
+            width:300
+        },
+            {
+            caption:"Açıklama",
+            dataField: "description"
         },
         {
-            dataField: "description",
-            headerCellTemplate: $('<i style="color: black; font-weight: bold">Açıklama</i>')
-        },
-        {
-            headerCellTemplate: $('<i style="color: black; font-weight: bold">İşlem</i>'),
+            caption:"İşlem",
             allowSearch: false,
             cellTemplate: function (container, options) {
                 var current = options.data;
-                $(`<a class="btn btn-warning" href="/admin/etiket-guncelle/${current.id}">Güncelle</a>`)
+                $(`<a title="Güncelle" class="btn btn-outline-warning btn-sm" href="/admin/etiket-guncelle/${current.id}"><i class="fa fa-fw fa-pencil-square-o"></i> </a>`)
                     .appendTo(container);
-                $(`<button class="btn-confirmation-modal-trigger btn btn-danger" data-url="/admin/etiket-sil?tagId=${current.id}" style="cursor:pointer;">Sil</button>`)
+                $(`<button title="Sil" class="btn-confirmation-modal-trigger btn btn-outline-danger btn-sm" data-url="/admin/etiket-sil?tagId=${current.id}" style="cursor:pointer;"><i class="fa fa-trash"></i></button>`)
                     .appendTo(container);
             },
             alignment: "center",
-            width:"auto"
-        }
+            width:150
+            }
         ]
     });
 

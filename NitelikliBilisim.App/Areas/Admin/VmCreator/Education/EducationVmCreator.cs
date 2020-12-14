@@ -1,9 +1,9 @@
-﻿using NitelikliBilisim.App.Areas.Admin.Models.Education;
+﻿using MUsefulMethods;
+using NitelikliBilisim.App.Areas.Admin.Models.Education;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.DTO;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education;
-using NitelikliBilisim.Support.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,10 +21,9 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.Education
         {
             var tags = _unitOfWork.EducationTag.Get(null, x => x.OrderBy(o => o.Name));
             var categories = _unitOfWork.EducationCategory.Get(x => x.BaseCategoryId != null, x => x.OrderBy(o => o.Name));
-            var levels = EnumSupport.ToKeyValuePair<EducationLevel>();
+            var levels = EnumHelpers.ToKeyValuePair<EducationLevel>();
             return new AddGetVm
             {
-                Tags = tags,
                 Levels = levels,
                 Categories = categories
             };
@@ -39,13 +38,12 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.Education
         {
             var addGetVm = CreateAddGetVm();
             var education = _unitOfWork.Education.GetById(educationId);
-            var relatedCategories = _unitOfWork.Education.GetTags(educationId);
+            var relatedTags = _unitOfWork.Education.GetTags(educationId);
             return new UpdateGetVm
             {
-                Tags = addGetVm.Tags,
                 Levels = addGetVm.Levels,
                 Education = education,
-                RelatedCategories = relatedCategories
+                RelatedTags = relatedTags
             };
         }
 
@@ -61,9 +59,8 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.Education
                 Description2 = data.Description2,
                 Level = (EducationLevel)data.EducationLevel,
                 Name = data.Name,
-                NewPrice = data.Price,
                 IsActive = data.IsActive
-            }, data.TagIds);
+            }, data.Tags);
         }
 
         public Core.ViewModels.areas.admin.educator.ManageAssignEducatorsGetVm CreateManageAssignEducatorsVm(Guid educationId)

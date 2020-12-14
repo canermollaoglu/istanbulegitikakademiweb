@@ -1,368 +1,1082 @@
 ﻿@model NitelikliBilisim.App.Models.HomeIndexModel
-@using NitelikliBilisim.Core.Services.Abstracts
-@inject IStorageService StorageService
 @{
     ViewData["Title"] = "Nitelikli Bilişim";
     Layout = "/Views/Shared/_Layout.cshtml";
 }
-@section styles{
-    <link href="~/assets/css/search/search-results.css" rel="stylesheet" />
-}
+
+
 <main>
-    <section class="hero_single version_2">
-        <div class="wrapper">
-            <div class="container">
-                <div class="row containerRow col-sm-12">
-                    <h3><span style="font-weight: 100 !important">HANGİ KONUDA</span> <b style="color:#fc4912">PROJE EKSİĞİN VAR?</b></h3>
-                    <p>Uygulama olmadan, teorik bilgi ne işe yarar ki!</p><br />
-                    <div class="main_title_Search">
-                        <span><em></em></span>
-                    </div>
-                    <p>Aldığın teorik eğitimi proje yazarak pekiştir, sertifikanı al, aranan BT uzmanı ol.</p>
-                    <form>
-                        <div id="custom-search-input">
-                            <div class="input-group rounded">
-                                <input type="text" style="margin: 0 -35px !important; padding-right:130px; border: 2px solid #2d2f33;" class="search-query" placeholder="Örnek: Windows Form Uygulamaları..." id="input-index-search">
-                                <input type="submit" style="        border-radius: 33px !important
-" class="btn_search rounded" value="Eğitim Bul" id="btn-index-search">
+    <section class="section is-hero">
+        <div class="is-hero__img">
+            <img class="v-desktop" src="~/assets/img/banner-atf.png" alt="">
+            <img class="v-tablet-s" src="~/assets/img/banner-atf_mobile.png" alt="">
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="is-hero__heading">
+                        Hangi konuda <br /> <span class="is-hero__heading--colored">
+                            proje eksiğin
+                            var?
+                        </span>
+                    </h2>
+                    <p class="is-hero__desc">
+                        Teorik Eğitimini Proje Yazarak Pekiştir, Sertifikanı Al, <br /> Aranan BT Uzmanı Ol !
+                    </p>
+
+                    <form action="" class="is-hero__form">
+                        <div id="firstSearch" class="dropdown js-dropdown">
+                            <span class="icon-outer is-hero__dropdown-icon">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-mouse-window"></use>
+                                </svg>
+                            </span>
+
+                            <div class="dropdown__title-wrap">
+                                <span class="dropdown__subtitle">Eğitim Arayın</span>
+                                <input type="search" class="dropdown__title js-title" autocomplete="off" value="" />
+                            </div>
+
+                            <div class="dropdown__content">
+                                <nav>
+                                    <a data-filter-item data-filter-name="active directory sertifika servisleri">
+                                        Active Directory
+                                        Sertifika Servisleri
+                                    </a>
+                                    <a data-filter-item data-filter-name="asp.net core web api ile jwt
+                      authentication">
+                                        ASP.Net Core Web API ile JWT
+                                        Authentication
+                                    </a>
+                                    <a data-filter-item data-filter-name="yerel sistemlerde yüksek erişilebilirlik">
+                                        Yerel Sistemlerde
+                                        Yüksek Erişilebilirlik
+                                    </a>
+                                    <a data-filter-item data-filter-name="asp.net core web api ile jwt
+                      authentication">
+                                        ASP.Net Core Web API ile JWT
+                                        Authentication
+                                    </a>
+                                    <a data-filter-item data-filter-name="yerel sistemlerde yüksek erişilebilirlik">
+                                        Yerel Sistemlerde
+                                        Yüksek Erişilebilirlik
+                                    </a>
+                                    <a data-filter-item data-filter-name="vue js">Vue JS</a>
+                                    <a data-filter-item data-filter-name="vue navite">Vue Navite</a>
+                                </nav>
                             </div>
                         </div>
+
+                        <!-- <div id="secondarySearch" class="dropdown js-dropdown">
+                          <span class="icon-outer is-hero__dropdown-icon">
+                            <svg class="icon">
+                              <use xlink:href="../../assets/img/icons.svg#icon-map-pin"></use>
+                            </svg>
+                          </span>
+
+                          <div class="dropdown__title-wrap">
+                            <span class="dropdown__subtitle js-subtitle">Konum Seçin</span>
+                            <div class="dropdown__title js-title"></div>
+                          </div>
+
+                          <div class="dropdown__content">
+                            <nav>
+                              <a>Ankara</a>
+                              <a>İstanbul</a>
+                              <a>İzmir</a>
+                              <a>Bursa</a>
+                              <a>Antalya</a>
+                            </nav>
+                          </div>
+                        </div> -->
+
+                        <div class="select-index-dropdown">
+                            <select class="js-index-location-select">
+                                <option value="" selected hidden disabled>Konum Seçin</option>
+                                <option value="2">İstanbul</option>
+                                <option value="3">Ankara</option>
+                            </select>
+                        </div>
+
+                        <a class="button">
+                            <span class="icon-outer button-icon">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-search"></use>
+                                </svg>
+                            </span>
+                            <span>Eğitim Bul</span>
+                        </a>
                     </form>
+
+                    <div class="is-hero__bottom">
+                        <h3 class="is-hero__subheading">
+                            Bilişim Kariyerine <br /> <span class="is-hero__subheading--colored">Nitelik Kazandır</span>
+                        </h3>
+                        <span class="is-hero__arrow">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-big-arrow"></use>
+                            </svg>
+                        </span>
+
+                        <div class="is-hero__details">
+
+                            <div>
+                                <figure>
+                                    <img src="~/assets/img/icons/icon-statistic-up.svg" />
+                                </figure>
+
+                                <span>
+                                    Sektör Liderlerinden <br />
+                                    <span class="colored">Proje Eğitimi Al</span>
+                                </span>
+                            </div>
+
+                            <div>
+                                <figure>
+                                    <img src="~/assets/img/icons/icon-ranking-up.svg"/>
+                                </figure>
+
+                                <span>
+                                    Uygulama <br />
+                                    <span class="colored">Tecrübesi Kazan</span>
+                                </span>
+                            </div>
+
+                            <div>
+                                <figure>
+                                    <img src="~/assets/img/icons/icon-certificate.svg"/>
+                                </figure>
+
+                                <span>
+                                    Üniversite <br />
+                                    <span class="colored">Sertifikanı Al</span>
+                                </span>
+                            </div>
+
+                            <div>
+                                <figure>
+                                    <img src="~/assets/img/icons/icon-speaker-human.svg"/>
+                                </figure>
+
+                                <span>
+                                    Aranan BT <br />
+                                    <span class="colored">Uzmanı Ol</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
-    <!-- /hero_single -->
 
-    <div class="features clearfix">
+    <section class="section is-popular-technology">
+        <img src="~/assets/img/half-shape.svg" class="popular-technology--shape left-top" alt="">
+        <img src="~/assets/img/dots-shape.svg" class="popular-technology--shape right-bottom" alt="">
         <div class="container">
-            <ul>
-                <li>
-                    <i class="pe-7s-study"></i>
-                    <h4>+100 Proje Eğitimi</h4><span>Teoride kalma, uygulama yap</span>
-                </li>
-                <li>
-                    <i class="pe-7s-cup"></i>
-                    <h4>Uzman Eğiticiler</h4><span>Sektör liderleri ile proje yaz</span>
-                </li>
-                <li>
-                    <i class="pe-7s-target"></i>
-                    <h4>İstihdam</h4><span>Uygulama becerini yükselt, hedefine ulaş</span>
-                </li>
-            </ul>
-        </div>
-    </div>
-    <!-- /features -->
-
-    <div class="container-fluid margin_120_0">
-        <div class="main_title_2">
-            <span><em></em></span>
-            <h3>Nitelikli Bilişim Popüler Eğitimler</h3>
-            <p>NBUY eğitimi alan öğrenciler tarafından en çok <br />tercih edilen proje eğitimleri</p>
-        </div>
-        <div id="reccomended" class="owl-carousel owl-theme">
-            @foreach (var item in Model.SuggestedEducations)
-            {
-                <div class="item">
-                    <div class="box_grid">
-                        <figure>
-                            <a href="#0" class="wish_bt"></a>
-                            <a href="/kurs-detayi/@item.Base.Id">
-                                <div class="preview"><span>Detaylar</span></div>
-                                @{
-                                    var filePath = "";
-                                    try
-                                    {
-                                        filePath = StorageService.DownloadFile(System.IO.Path.GetFileName(item.Medias[0].FileUrl), "media-items").Result;
-                                    }
-                                    catch
-                                    {
-
-                                    }
-                                }
-                                <img src="@filePath" class="img-fluid preview-img" />
-                            </a>
-                            <div class="price">@item.Base.PriceText</div>
-
-                        </figure>
-                        <div class="wrapper">
-                            <small>@item.Base.CategoryName</small>
-                            <h3>@item.Base.Name</h3>
-                            <a href="/kurs-detayi/@item.Base.Id">
-                                <div class="desc-div"></div>
-                            </a>
-                            <p class="desc-p">@item.Base.Description</p>
-                        </div>
-                        @*<hr />
-                        <ul>
-                            <li><div class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(145)</small></div></li>
-                            <li><i class="icon_like"></i> 890</li>
-                        </ul>*@
-                        <ul>
-                            <li><i class="icon_clock_alt"></i> @item.Base.DaysText gün (@(item.Base.HoursPerDayNumeric * item.Base.DaysNumeric) saat)</li>
-                            @*<li><a role="button" data-education-id="@item.Base.Id" class="btn-buy" style="cursor:pointer;">Kayıt Ol</a></li>*@
-                        </ul>
-                    </div>
-                </div>
-            }
-        </div>
-        <!-- /carousel -->
-        <div class="container">
-            <p class="btn_home_align"><a href="/egitimler" class="btn_1 rounded">Tüm proje eğitimleri</a></p>
-        </div>
-        <!-- /container -->
-        <hr>
-    </div>
-    <!-- /container -->
-
-    <div class="container margin_30_95">
-        <div class="main_title_2">
-            <span><em></em></span>
-            <h3>Proje Eğitim Kategorileri</h3>
-            <p>Size en uygun proje eğitimi için bir kategori seçin</p>
-        </div>
-        <div class="row">
-            <div class="col-lg-4 col-md-6 wow" data-wow-offset="150">
-                <a href="/egitimler/web-ve-mobil-programlama" class="grid_item">
-                    <figure class="block-reveal">
-                        <div class="block-horizzontal"></div>
-                        @*<img src="img/categories/course_1.jpg" class="img-fluid" alt="">*@
-                        <img src="~/assets/img/course_1.jpg" class="img-fluid" />
-                        <div class="info">
-                            <small>
-                                <i class="ti-layers"></i>
-                                @if (Model.EducationCountByCategory.ContainsKey("Web ve Mobil Programlama"))
-                                {
-                                    <text>@Model.EducationCountByCategory["Web ve Mobil Programlama"] Eğitim</text>
-                                }
-                                else
-                                {
-                                    <text>0 Eğitim</text>
-                                }
-                            </small>
-                            <h3>Web ve Mobil Programlama</h3>
-                        </div>
-                    </figure>
-                </a>
-            </div>
-            <!-- /grid_item -->
-            <div class="col-lg-4 col-md-6 wow" data-wow-offset="150">
-                <a href="/egitimler/sistem-ve-ag-yonetimi" class="grid_item">
-                    <figure class="block-reveal">
-                        <div class="block-horizzontal"></div>
-                        @*<img src="img/categories/course_1.jpg" class="img-fluid" alt="">*@
-                        <img src="~/assets/img/course_1.jpg" class="img-fluid" />
-                        <div class="info">
-                            <small>
-                                <i class="ti-layers"></i>
-                                @if (Model.EducationCountByCategory.ContainsKey("Sistem ve Ağ Yönetimi"))
-                                {
-                                    <text>@Model.EducationCountByCategory["Sistem ve Ağ Yönetimi"] Eğitim</text>
-                                }
-                                else
-                                {
-                                    <text>0 Eğitim</text>
-                                }
-                            </small>
-                            <h3>Sistem ve Ağ Yönetimi</h3>
-                        </div>
-                    </figure>
-                </a>
-            </div>
-            <!-- /grid_item -->
-            <div class="col-lg-4 col-md-6 wow" data-wow-offset="150">
-                <a href="/egitimler/siber-guvenlik" class="grid_item">
-                    <figure class="block-reveal">
-                        <div class="block-horizzontal"></div>
-                        @*<img src="img/categories/course_1.jpg" class="img-fluid" alt="">*@
-                        <img src="~/assets/img/course_1.jpg" class="img-fluid" />
-                        <div class="info">
-                            <small>
-                                <i class="ti-layers"></i>
-                                @if (Model.EducationCountByCategory.ContainsKey("Siber Güvenlik"))
-                                {
-                                    <text>@Model.EducationCountByCategory["Siber Güvenlik"] Eğitim</text>
-                                }
-                                else
-                                {
-                                    <text>0 Eğitim</text>
-                                }
-                            </small>
-                            <h3>Siber Güvenlik</h3>
-                        </div>
-                    </figure>
-                </a>
-            </div>
-            <!-- /grid_item -->
-            <div class="col-lg-4 col-md-6 wow" data-wow-offset="150">
-                <a href="/egitimler/bulut-bilisim" class="grid_item">
-                    <figure class="block-reveal">
-                        <div class="block-horizzontal"></div>
-                        @*<img src="img/categories/course_1.jpg" class="img-fluid" alt="">*@
-                        <img src="~/assets/img/course_1.jpg" class="img-fluid" />
-                        <div class="info">
-                            <small>
-                                <i class="ti-layers"></i>
-                                @if (Model.EducationCountByCategory.ContainsKey("Bulut Bilişim"))
-                                {
-                                    <text>@Model.EducationCountByCategory["Bulut Bilişim"] Eğitim</text>
-                                }
-                                else
-                                {
-                                    <text>0 Eğitim</text>
-                                }
-                            </small>
-                            <h3>Bulut Bilişim</h3>
-                        </div>
-                    </figure>
-                </a>
-            </div>
-            <!-- /grid_item -->
-            <div class="col-lg-4 col-md-6 wow" data-wow-offset="150">
-                <a href="/egitimler/oyun-programlama" class="grid_item">
-                    <figure class="block-reveal">
-                        <div class="block-horizzontal"></div>
-                        @*<img src="img/categories/course_1.jpg" class="img-fluid" alt="">*@
-                        <img src="~/assets/img/course_1.jpg" class="img-fluid" />
-                        <div class="info">
-                            <small>
-                                <i class="ti-layers"></i>
-                                @if (Model.EducationCountByCategory.ContainsKey("Oyun Programlama"))
-                                {
-                                    <text>@Model.EducationCountByCategory["Oyun Programlama"] Eğitim</text>
-                                }
-                                else
-                                {
-                                    <text>0 Eğitim</text>
-                                }
-                            </small>
-                            <h3>Oyun Programlama</h3>
-                        </div>
-                    </figure>
-                </a>
-            </div>
-            <!-- /grid_item -->
-            <div class="col-lg-4 col-md-6 wow" data-wow-offset="150">
-                <a href="/egitimler/kurumsal-kaynak-planlama" class="grid_item">
-                    <figure class="block-reveal">
-                        <div class="block-horizzontal"></div>
-                        @*<img src="img/categories/course_1.jpg" class="img-fluid" alt="">*@
-                        <img src="~/assets/img/course_1.jpg" class="img-fluid" />
-                        <div class="info">
-                            <small>
-                                <i class="ti-layers"></i>
-                                @if (Model.EducationCountByCategory.ContainsKey("Kurumsal Kaynak Planlama"))
-                                {
-                                    <text>@Model.EducationCountByCategory["Kurumsal Kaynak Planlama"] Eğitim</text>
-                                }
-                                else
-                                {
-                                    <text>0 Eğitim</text>
-                                }
-                            </small>
-                            <h3>Kurumsal Kaynak Planlama</h3>
-                        </div>
-                    </figure>
-                </a>
-            </div>
-            <!-- /grid_item -->
-        </div>
-        <!-- /row -->
-    </div>
-
-    <!-- /container -->
-
-    <div class="bg_color_1">
-        <!--<div class="container margin_120_95">
-            <div class="main_title_2">
-                <span><em></em></span>
-                <h2>News and Events</h2>
-                <p>Cum doctus civibus efficiantur in imperdiet deterruisset.</p>
-            </div>
             <div class="row">
-                <div class="col-lg-6">
-                    <a class="box_news" href="#0">
-                        <figure>
-                            <img src="http://via.placeholder.com/500x333/ccc/fff/news_home_1.jpg" alt="">
-                            <figcaption><strong>28</strong>Dec</figcaption>
-                        </figure>
-                        <ul>
-                            <li>Mark Twain</li>
-                            <li>20.11.2017</li>
-                        </ul>
-                        <h4>Pri oportere scribentur eu</h4>
-                        <p>Cu eum alia elit, usu in eius appareat, deleniti sapientem honestatis eos ex. In ius esse ullum vidisse....</p>
-                    </a>
-                </div>
-                 /box_news
-                <div class="col-lg-6">
-                    <a class="box_news" href="#0">
-                        <figure>
-                            <img src="http://via.placeholder.com/500x333/ccc/fff/news_home_2.jpg" alt="">
-                            <figcaption><strong>28</strong>Dec</figcaption>
-                        </figure>
-                        <ul>
-                            <li>Jhon Doe</li>
-                            <li>20.11.2017</li>
-                        </ul>
-                        <h4>Duo eius postea suscipit ad</h4>
-                        <p>Cu eum alia elit, usu in eius appareat, deleniti sapientem honestatis eos ex. In ius esse ullum vidisse....</p>
-                    </a>
-                </div>
-                 /box_news
-                <div class="col-lg-6">
-                    <a class="box_news" href="#0">
-                        <figure>
-                            <img src="http://via.placeholder.com/500x333/ccc/fff/news_home_3.jpg" alt="">
-                            <figcaption><strong>28</strong>Dec</figcaption>
-                        </figure>
-                        <ul>
-                            <li>Luca Robinson</li>
-                            <li>20.11.2017</li>
-                        </ul>
-                        <h4>Elitr mandamus cu has</h4>
-                        <p>Cu eum alia elit, usu in eius appareat, deleniti sapientem honestatis eos ex. In ius esse ullum vidisse....</p>
-                    </a>
-                </div>
-                 /box_news
-                <div class="col-lg-6">
-                    <a class="box_news" href="#0">
-                        <figure>
-                            <img src="http://via.placeholder.com/500x333/ccc/fff/news_home_4.jpg" alt="">
-                            <figcaption><strong>28</strong>Dec</figcaption>
-                        </figure>
-                        <ul>
-                            <li>Paula Rodrigez</li>
-                            <li>20.11.2017</li>
-                        </ul>
-                        <h4>Id est adhuc ignota delenit</h4>
-                        <p>Cu eum alia elit, usu in eius appareat, deleniti sapientem honestatis eos ex. In ius esse ullum vidisse....</p>
-                    </a>
-                </div>
-                 /box_news
-            </div>
-             /row
-            <p class="btn_home_align"><a href="blog.html" class="btn_1 rounded">View all news</a></p>
-        </div>-->
-        <!-- /container -->
-    </div>
-    <!-- /bg_color_1 -->
+                <div class="col-12">
+                    <h2 class="title title-section text-center">
+                        Popüler <span class="title--blue">Teknoloji Kategorileri</span>
+                    </h2>
 
-    <div class="call_section">
-        <div class="container clearfix">
-            <div class="col-lg-5 col-md-6 float-right wow" data-wow-offset="250">
-                <div class="block-reveal">
-                    <div class="block-vertical"></div>
-                    <div class="box_1">
-                        <h3>Tüm proje eğitimlerinde %30 indirim fırsatını kaçırma</h3>
-                        <p>Proje eğitimlerini 3 arkadaşınıza önererek, %30 indirim hakkı kazanabilirsiniz. </p>
-                        <a href="#0" class="btn_1 rounded">Detay</a>
+                    <div class="swiper-container popular-technology">
+                        <!-- Additional required wrapper -->
+                        <div class="swiper-wrapper">
+                            <!-- Slides -->
+                            <div class="swiper-slide">
+                                <div class="popular-technology__item">
+                                    <div class="popular-technology__icon" style="background: #012b69;">
+                                        <span class="icon-outer">
+                                            <svg class="icon">
+                                                <use xlink:href="../../assets/img/icons.svg#icon-window-code"></use>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                    <div class="popular-technology__txt">
+                                        Web ve Mobil Programlama
+                                    </div>
+                                    <div class="popular-technology__bottom">
+                                        <a href="/egitimler/web-ve-mobil-programlama">
+                                            <div>
+                                                @if (Model.EducationCountByCategory.ContainsKey("Web ve Mobil Programlama"))
+                                                {
+                                                    <text>@Model.EducationCountByCategory["Web ve Mobil Programlama"] Eğitim</text>
+                                                }
+                                                else
+                                                {
+                                                    <text>0 Eğitim</text>
+                                                }
+                                            </div>
+                                            <span class="icon-outer">
+                                                <svg class="icon">
+                                                    <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
+                                                </svg>
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <div class="popular-technology__item">
+                                    <div class="popular-technology__icon" style="background: #454fd2;">
+                                        <span class="icon-outer">
+                                            <svg class="icon">
+                                                <use xlink:href="../../assets/img/icons.svg#icon-system-network"></use>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                    <div class="popular-technology__txt">
+                                        Sistem ve Ağ Yönetimi
+                                    </div>
+                                    <div class="popular-technology__bottom">
+                                        <a href="/egitimler/sistem-ve-ag-yonetimi">
+                                            <div>
+                                                @if (Model.EducationCountByCategory.ContainsKey("Sistem ve Ağ Yönetimi"))
+                                                {
+                                                    <text>@Model.EducationCountByCategory["Sistem ve Ağ Yönetimi"] Eğitim</text>
+                                                }
+                                                else
+                                                {
+                                                    <text>0 Eğitim</text>
+                                                }
+                                            </div>
+                                            <span class="icon-outer">
+                                                <svg class="icon">
+                                                    <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
+                                                </svg>
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <div class="popular-technology__item">
+                                    <div class="popular-technology__icon" style="background: #0072cd;">
+                                        <span class="icon-outer">
+                                            <svg class="icon">
+                                                <use xlink:href="../../assets/img/icons.svg#icon-azure"></use>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                    <div class="popular-technology__txt">
+                                        Siber Güvenlik
+                                    </div>
+                                    <div class="popular-technology__bottom">
+                                        <a href="/egitimler/siber-guvenlik">
+                                            <div>
+                                                @if (Model.EducationCountByCategory.ContainsKey("Siber Güvenlik"))
+                                                {
+                                                    <text>@Model.EducationCountByCategory["Siber Güvenlik"] Eğitim</text>
+                                                }
+                                                else
+                                                {
+                                                    <text>0 Eğitim</text>
+                                                }
+                                            </div>
+                                            <span class="icon-outer">
+                                                <svg class="icon">
+                                                    <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
+                                                </svg>
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <div class="popular-technology__item">
+                                    <div class="popular-technology__icon" style="background: #0566dd;">
+                                        <span class="icon-outer">
+                                            <svg class="icon">
+                                                <use xlink:href="../../assets/img/icons.svg#icon-microsoft-azure"></use>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                    <div class="popular-technology__txt">
+                                        Bulut Bilişim
+                                    </div>
+                                    <div class="popular-technology__bottom">
+                                        <a href="/egitimler/bulut-bilisim">
+                                            <div>
+                                                @if (Model.EducationCountByCategory.ContainsKey("Bulut Bilişim"))
+                                                {
+                                                    <text>@Model.EducationCountByCategory["Bulut Bilişim"] Eğitim</text>
+                                                }
+                                                else
+                                                {
+                                                    <text>0 Eğitim</text>
+                                                }
+                                            </div>
+                                            <span class="icon-outer">
+                                                <svg class="icon">
+                                                    <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
+                                                </svg>
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <div class="popular-technology__item">
+                                    <div class="popular-technology__icon" style="background: #222c38;">
+                                        <span class="icon-outer">
+                                            <svg class="icon">
+                                                <use xlink:href="../../assets/img/icons.svg#icon-unity"></use>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                    <div class="popular-technology__txt">
+                                        Oyun Programlama
+                                    </div>
+                                    <div class="popular-technology__bottom">
+                                        <a href="/egitimler/oyun-programlama">
+                                            <div>
+                                                @if (Model.EducationCountByCategory.ContainsKey("Oyun Programlama"))
+                                                {
+                                                    <text>@Model.EducationCountByCategory["Oyun Programlama"] Eğitim</text>
+                                                }
+                                                else
+                                                {
+                                                    <text>0 Eğitim</text>
+                                                }
+                                            </div>
+                                            <span class="icon-outer">
+                                                <svg class="icon">
+                                                    <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
+                                                </svg>
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <div class="popular-technology__item">
+                                    <div class="popular-technology__icon" style="background: #00b5c3;">
+                                        <span class="icon-outer">
+                                            <svg class="icon">
+                                                <use xlink:href="../../assets/img/icons.svg#icon-dynamics"></use>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                    <div class="popular-technology__txt">
+                                        Kurumsal Kaynak Planlama
+                                    </div>
+                                    <div class="popular-technology__bottom">
+                                        <a href="/egitimler/kurumsal-kaynak-planlama">
+                                            <div>
+                                                @if (Model.EducationCountByCategory.ContainsKey("Kurumsal Kaynak Planlama"))
+                                                {
+                                                    <text>@Model.EducationCountByCategory["Kurumsal Kaynak Planlama"] Eğitim</text>
+                                                }
+                                                else
+                                                {
+                                                    <text>0 Eğitim</text>
+                                                }
+                                            </div>
+                                            <span class="icon-outer">
+                                                <svg class="icon">
+                                                    <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
+                                                </svg>
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-pagination"></div>
+
+                        <div class="swiper-button-prev swiper-button-circle reverse">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="swiper-button-next swiper-button-circle reverse">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                                </svg>
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!--/call_section-->
+    </section>
+
+    <section class="section is-popular-projects with-border">
+        <div class="container">
+            <div class="flex-center mb-4">
+                <h2 class="title title-section">Popüler <span class="title--blue">Proje Eğitimleri</span></h2>
+
+                <a href="" class="all-link">
+                    <span>Tüm Eğitimler</span>
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                        </svg>
+                    </span>
+                </a>
+            </div>
+
+            <div class="swiper-container js-card-slider mt-1">
+                <div class="swiper-wrapper">
+                    @await Component.InvokeAsync("PopularEducations")
+                </div>
+                <div class="swiper-pagination"></div>
+
+                <div class="swiper-button-prev swiper-button-circle reverse">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                        </svg>
+                    </span>
+                </div>
+                <div class="swiper-button-next swiper-button-circle reverse">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section is-banner-wrap">
+        <div class="container">
+            <div class="is-banner">
+                <div class="is-banner__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-user-dart"></use>
+                        </svg>
+                    </span>
+                </div>
+
+                <div>
+                    <h6 class="is-banner__title">
+                        Size en uygun proje eğitimlerini <br> <span class="is-banner__title--colored">Birlikte bulalım!</span>
+                    </h6>
+                    <a href="">
+                        Şimdi Başlayın
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                            </svg>
+                        </span>
+                    </a>
+                </div>
+                <div class="is-banner__img">
+                    <img src="~/assets/img/dusunenadam.jpg" alt="">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section is-popular-projects">
+        <div class="container">
+            <div class="flex-center mb-4">
+                <h2 class="title title-section">Yeni Başlayanlar İçin <span class="title--blue">Proje Eğitimleri</span></h2>
+
+                <a href="" class="all-link">
+                    <span>Tüm Eğitimler</span>
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                        </svg>
+                    </span>
+                </a>
+            </div>
+
+
+
+            <div class="swiper-container js-card-slider mt-1">
+                <div class="swiper-wrapper">
+
+                    @foreach (var education in Model.SuggestedEducations)
+                    {
+
+                        var filePath = "";
+                        try
+                        {
+                            filePath = StorageService.DownloadFile(System.IO.Path.GetFileName(education.Medias[0].FileUrl), "media-items").Result;
+                        }
+                        catch
+                        {
+                        }
+
+                        <div class="swiper-slide">
+                            <a href="/kurs-detayi/@education.Base.Id" class="card">
+                                <figure>
+                                    <img src="@filePath" alt="">
+                                </figure>
+
+                                <div class="card__content">
+                                    <h6 class="card__subtitle">@education.Base.CategoryName</h6>
+                                    <h5 class="card__title">@education.Base.Name</h5>
+
+                                    @if (education.Base.Description.Length > 90)
+                                    {
+                                        <p>
+                                            @education.Base.Description.Substring(0, 90)
+                                        </p>
+                                    }
+                                    else
+                                    {
+                                        <p>@education.Base.Description</p>
+                                    }
+                                </div>
+
+                                <div class="card__footer">
+                                    <span class="card__time">
+                                        <span class="icon-outer">
+                                            <svg class="icon">
+                                                <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                                            </svg>
+                                        </span>
+                                        <span>@education.Base.DaysText gün ( @education.Base.HoursPerDayText saat )</span>
+                                    </span>
+                                </div>
+                            </a>
+                        </div>
+                    }
+
+                    <div class="swiper-slide">
+                        <a href="./egitim-detay.php" class="card">
+                            <figure>
+                                <img src="~/assets/img/cardimg1.jpg" alt="">
+                            </figure>
+
+                            <div class="card__content">
+                                <h6 class="card__subtitle">Siber Güvenlik</h6>
+                                <h5 class="card__title">Active Directory Sertifika Servisleri</h5>
+                                <p>
+                                    Bu eğitim; şirketiniz için yeterlde kullanılan ve ileri düzeyde hassas dalatar olarak tanımlanan
+                                </p>
+                            </div>
+
+                            <div class="card__footer">
+                                <span class="card__time">
+                                    <span class="icon-outer">
+                                        <svg class="icon">
+                                            <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                                        </svg>
+                                    </span>
+                                    <span>3 gün ( 12 saat )</span>
+                                </span>
+
+                                <span class="card__money">
+                                    <span>₺</span> 800,00
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="swiper-slide">
+                        <a href="./egitim-detay.php" class="card">
+                            <figure>
+                                <img src="~/assets/img/cardimg2.jpg" alt="">
+                            </figure>
+
+                            <div class="card__content">
+                                <h6 class="card__subtitle">Siber Güvenlik</h6>
+                                <h5 class="card__title">Active Directory Sertifika Servisleri</h5>
+                                <p>
+                                    Bu eğitim; şirketiniz için yeterlde kullanılan ve ileri düzeyde hassas dalatar olarak tanımlanan
+                                </p>
+                            </div>
+
+                            <div class="card__footer">
+                                <span class="card__time">
+                                    <span class="icon-outer">
+                                        <svg class="icon">
+                                            <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                                        </svg>
+                                    </span>
+                                    <span>3 gün ( 12 saat )</span>
+                                </span>
+
+                                <span class="card__money">
+                                    <span>₺</span> 800,00
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="swiper-slide">
+                        <a href="./egitim-detay.php" class="card">
+                            <figure>
+                                <img src="~/assets/img/cardimg3.jpg" alt="">
+                            </figure>
+
+                            <div class="card__content">
+                                <h6 class="card__subtitle">Siber Güvenlik</h6>
+                                <h5 class="card__title">Active Directory Sertifika Servisleri</h5>
+                                <p>
+                                    Bu eğitim; şirketiniz için yeterlde kullanılan ve ileri düzeyde hassas dalatar olarak tanımlanan
+                                </p>
+                            </div>
+
+                            <div class="card__footer">
+                                <span class="card__time">
+                                    <span class="icon-outer">
+                                        <svg class="icon">
+                                            <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                                        </svg>
+                                    </span>
+                                    <span>3 gün ( 12 saat )</span>
+                                </span>
+
+                                <span class="card__money">
+                                    <span>₺</span> 800,00
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="swiper-slide">
+                        <a href="./egitim-detay.php" class="card">
+                            <figure>
+                                <img src="~/assets/img/cardimg4.jpg" alt="">
+                            </figure>
+
+                            <div class="card__content">
+                                <h6 class="card__subtitle">Siber Güvenlik</h6>
+                                <h5 class="card__title">Active Directory Sertifika Servisleri</h5>
+                                <p>
+                                    Bu eğitim; şirketiniz için yeterlde kullanılan ve ileri düzeyde hassas dalatar olarak tanımlanan
+                                </p>
+                            </div>
+
+                            <div class="card__footer">
+                                <span class="card__time">
+                                    <span class="icon-outer">
+                                        <svg class="icon">
+                                            <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                                        </svg>
+                                    </span>
+                                    <span>3 gün ( 12 saat )</span>
+                                </span>
+
+                                <span class="card__money">
+                                    <span>₺</span> 800,00
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="swiper-slide">
+                        <a href="./egitim-detay.php" class="card">
+                            <figure>
+                                <img src="~/assets/img/cardimg5.jpg" alt="">
+                            </figure>
+
+                            <div class="card__content">
+                                <h6 class="card__subtitle">Siber Güvenlik</h6>
+                                <h5 class="card__title">Active Directory Sertifika Servisleri</h5>
+                                <p>
+                                    Bu eğitim; şirketiniz için yeterlde kullanılan ve ileri düzeyde hassas dalatar olarak tanımlanan
+                                </p>
+                            </div>
+
+                            <div class="card__footer">
+                                <span class="card__time">
+                                    <span class="icon-outer">
+                                        <svg class="icon">
+                                            <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                                        </svg>
+                                    </span>
+                                    <span>3 gün ( 12 saat )</span>
+                                </span>
+
+                                <span class="card__money">
+                                    <span>₺</span> 800,00
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="swiper-slide">
+                        <a href="./egitim-detay.php" class="card">
+                            <figure>
+                                <img src="~/assets/img/cardimg6.jpg" alt="">
+                            </figure>
+
+                            <div class="card__content">
+                                <h6 class="card__subtitle">Siber Güvenlik</h6>
+                                <h5 class="card__title">Active Directory Sertifika Servisleri</h5>
+                                <p>
+                                    Bu eğitim; şirketiniz için yeterlde kullanılan ve ileri düzeyde hassas dalatar olarak tanımlanan
+                                </p>
+                            </div>
+
+                            <div class="card__footer">
+                                <span class="card__time">
+                                    <span class="icon-outer">
+                                        <svg class="icon">
+                                            <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                                        </svg>
+                                    </span>
+                                    <span>3 gün ( 12 saat )</span>
+                                </span>
+
+                                <span class="card__money">
+                                    <span>₺</span> 800,00
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="swiper-pagination"></div>
+
+                <div class="swiper-button-prev swiper-button-circle reverse">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                        </svg>
+                    </span>
+                </div>
+                <div class="swiper-button-next swiper-button-circle reverse">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section is-comments">
+        <div class="container">
+            <div class="col-12">
+                <div class="flex-center mb-1">
+                    <h2 class="title title-section">Kursiyer <span class="title--blue">Yorumları</span></h2>
+
+                    <a href="" class="all-link">
+                        <span>Tüm Yorumlar</span>
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                            </svg>
+                        </span>
+                    </a>
+                </div>
+            </div>
+            <div class="swiper-container js-swiper-home-comments">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <div class="is-comments-item">
+                            <figure>
+                                <img src="https://www.buseterim.com.tr/upload/default/2016/8/10/honest1.jpg" alt="" height="80" />
+                            </figure>
+
+                            <div class="main-stars">
+                                <span class="icon-outer icon-star active">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                    </svg>
+                                </span>
+                                <span class="icon-outer icon-star active">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                    </svg>
+                                </span>
+                                <span class="icon-outer icon-star active">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                    </svg>
+                                </span>
+                                <span class="icon-outer icon-star">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                    </svg>
+                                </span>
+                                <span class="icon-outer icon-star">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                    </svg>
+                                </span>
+                            </div>
+
+                            <p class="is-comments__desc">
+                                Eğitimi veren hocalarımız da sektörde büyük tecrübelere sahip insanlardı. Şu anda da Turkcell
+                                Superonline’da Network planlamada görev almaktayım.
+                            </p>
+                            <span class="is-comments__name">Mehmet Fatih BAKACAK</span>
+                            <span class="is-comments__job">Bilgisayar Mühendisi</span>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="is-comments-item">
+                            <figure>
+                                <img src="https://www.buseterim.com.tr/upload/default/2016/8/10/honest1.jpg" alt="" height="80" />
+                            </figure>
+
+                            <div class="main-stars">
+                                <span class="icon-outer icon-star active">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                    </svg>
+                                </span>
+                                <span class="icon-outer icon-star active">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                    </svg>
+                                </span>
+                                <span class="icon-outer icon-star active">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                    </svg>
+                                </span>
+                                <span class="icon-outer icon-star">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                    </svg>
+                                </span>
+                                <span class="icon-outer icon-star">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                    </svg>
+                                </span>
+                            </div>
+
+                            <p class="is-comments__desc">
+                                Eğitimi veren hocalarımız da sektörde büyük tecrübelere sahip insanlardı. Şu anda da Turkcell
+                                Superonline’da Network planlamada görev almaktayım.
+                            </p>
+                            <span class="is-comments__name">Mehmet Fatih BAKACAK</span>
+                            <span class="is-comments__job">Bilgisayar Mühendisi</span>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="is-comments-item">
+                            <figure>
+                                <img src="https://www.buseterim.com.tr/upload/default/2016/8/10/honest1.jpg" alt="" height="80" />
+                            </figure>
+
+                            <div class="main-stars">
+                                <span class="icon-outer icon-star active">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                    </svg>
+                                </span>
+                                <span class="icon-outer icon-star active">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                    </svg>
+                                </span>
+                                <span class="icon-outer icon-star active">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                    </svg>
+                                </span>
+                                <span class="icon-outer icon-star">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                    </svg>
+                                </span>
+                                <span class="icon-outer icon-star">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                    </svg>
+                                </span>
+                            </div>
+
+                            <p class="is-comments__desc">
+                                Eğitimi veren hocalarımız da sektörde büyük tecrübelere sahip insanlardı. Şu anda da Turkcell
+                                Superonline’da Network planlamada görev almaktayım.
+                            </p>
+                            <span class="is-comments__name">Mehmet Fatih BAKACAK</span>
+                            <span class="is-comments__job">Bilgisayar Mühendisi</span>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="is-comments-item">
+                            <figure>
+                                <img src="https://www.buseterim.com.tr/upload/default/2016/8/10/honest1.jpg" alt="" height="80" />
+                            </figure>
+
+                            <div class="main-stars">
+                                <span class="icon-outer icon-star active">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                    </svg>
+                                </span>
+                                <span class="icon-outer icon-star active">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                    </svg>
+                                </span>
+                                <span class="icon-outer icon-star active">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                    </svg>
+                                </span>
+                                <span class="icon-outer icon-star">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                    </svg>
+                                </span>
+                                <span class="icon-outer icon-star">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                    </svg>
+                                </span>
+                            </div>
+
+                            <p class="is-comments__desc">
+                                Eğitimi veren hocalarımız da sektörde büyük tecrübelere sahip insanlardı. Şu anda da Turkcell
+                                Superonline’da Network planlamada görev almaktayım.
+                            </p>
+                            <span class="is-comments__name">Mehmet Fatih BAKACAK</span>
+                            <span class="is-comments__job">Bilgisayar Mühendisi</span>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="is-comments-item">
+                            <figure>
+                                <img src="https://www.buseterim.com.tr/upload/default/2016/8/10/honest1.jpg" alt="" height="80" />
+                            </figure>
+
+                            <div class="main-stars">
+                                <span class="icon-outer icon-star active">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                    </svg>
+                                </span>
+                                <span class="icon-outer icon-star active">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                    </svg>
+                                </span>
+                                <span class="icon-outer icon-star active">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                    </svg>
+                                </span>
+                                <span class="icon-outer icon-star">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                    </svg>
+                                </span>
+                                <span class="icon-outer icon-star">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                    </svg>
+                                </span>
+                            </div>
+
+                            <p class="is-comments__desc">
+                                Eğitimi veren hocalarımız da sektörde büyük tecrübelere sahip insanlardı. Şu anda da Turkcell
+                                Superonline’da Network planlamada görev almaktayım.
+                            </p>
+                            <span class="is-comments__name">Mehmet Fatih BAKACAK</span>
+                            <span class="is-comments__job">Bilgisayar Mühendisi</span>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="is-comments-item">
+                            <figure>
+                                <img src="https://www.buseterim.com.tr/upload/default/2016/8/10/honest1.jpg" alt="" height="80" />
+                            </figure>
+
+                            <div class="main-stars">
+                                <span class="icon-outer icon-star active">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                    </svg>
+                                </span>
+                                <span class="icon-outer icon-star active">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                    </svg>
+                                </span>
+                                <span class="icon-outer icon-star active">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                    </svg>
+                                </span>
+                                <span class="icon-outer icon-star">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                    </svg>
+                                </span>
+                                <span class="icon-outer icon-star">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                    </svg>
+                                </span>
+                            </div>
+
+                            <p class="is-comments__desc">
+                                Eğitimi veren hocalarımız da sektörde büyük tecrübelere sahip insanlardı. Şu anda da Turkcell
+                                Superonline’da Network planlamada görev almaktayım.
+                            </p>
+                            <span class="is-comments__name">Mehmet Fatih BAKACAK</span>
+                            <span class="is-comments__job">Bilgisayar Mühendisi</span>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="is-comments-item">
+                            <figure>
+                                <img src="https://www.buseterim.com.tr/upload/default/2016/8/10/honest1.jpg" alt="" height="80" />
+                            </figure>
+
+                            <div class="main-stars">
+                                <span class="icon-outer icon-star active">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                    </svg>
+                                </span>
+                                <span class="icon-outer icon-star active">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                    </svg>
+                                </span>
+                                <span class="icon-outer icon-star active">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                    </svg>
+                                </span>
+                                <span class="icon-outer icon-star">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                    </svg>
+                                </span>
+                                <span class="icon-outer icon-star">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                    </svg>
+                                </span>
+                            </div>
+
+                            <p class="is-comments__desc">
+                                Eğitimi veren hocalarımız da sektörde büyük tecrübelere sahip insanlardı. Şu anda da Turkcell
+                                Superonline’da Network planlamada görev almaktayım.
+                            </p>
+                            <span class="is-comments__name">Mehmet Fatih BAKACAK</span>
+                            <span class="is-comments__job">Bilgisayar Mühendisi</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-pagination"></div>
+
+                <div class="swiper-button-prev swiper-button-circle reverse">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                        </svg>
+                    </span>
+                </div>
+                <div class="swiper-button-next swiper-button-circle reverse">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+    </section>
 </main>
 
 @section postScripts{
@@ -376,7 +1090,14 @@
             for (var i = 0; i < btnBuys.length; i++) {
                 btnBuys[i].onclick = btnBuy_onClick;
             }
+
+            var btnWishLists = document.getElementsByClassName("btn-addwishlist");
+            for (var i = 0; i < btnWishLists.length; i++) {
+                btnWishLists[i].onclick = btnWishList_onClick;
+            }
+
         });
+
 
         btnIndexSearch.on("click", (e) => {
             e.preventDefault();
@@ -396,5 +1117,9 @@
 
             location.href = "/sepet";
         }
+
+        
+
+
     </script>
 }

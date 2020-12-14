@@ -10,8 +10,7 @@ using NitelikliBilisim.Core.ViewModels.areas.admin.educator_salary;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    [Area("admin"), Authorize(Roles = "Admin")]
-    public class EducatorSalaryController : Controller
+    public class EducatorSalaryController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
         public EducatorSalaryController(UnitOfWork unitOfWork)

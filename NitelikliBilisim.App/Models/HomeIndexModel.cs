@@ -5,7 +5,7 @@ namespace NitelikliBilisim.App.Models
 {
     public class HomeIndexModel
     {
-        public List<EducationVm> SuggestedEducations { get; set; }
+        public List<SuggestedEducationVm> SuggestedEducations { get; set; }
         public Dictionary<string, int> EducationCountByCategory { get; set; }
     }
 }

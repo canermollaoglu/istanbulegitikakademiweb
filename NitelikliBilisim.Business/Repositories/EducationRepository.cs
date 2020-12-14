@@ -1,14 +1,20 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using MUsefulMethods;
+using Nest;
+using Newtonsoft.Json;
 using NitelikliBilisim.Business.PagedEntity;
+using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.DTO;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
+using NitelikliBilisim.Core.Enums.educations;
+using NitelikliBilisim.Core.Enums.user_details;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education;
+using NitelikliBilisim.Core.ViewModels.Main.EducationComment;
 using NitelikliBilisim.Core.ViewModels.search;
 using NitelikliBilisim.Data;
-using NitelikliBilisim.Support.Enums;
-using NitelikliBilisim.Support.Text;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -19,8 +25,48 @@ namespace NitelikliBilisim.Business.Repositories
 {
     public class EducationRepository : BaseRepository<Education, Guid>, IPageableEntity<Education>
     {
-        public EducationRepository(NbDataContext context) : base(context)
+        private readonly IConfiguration _configuration;
+        public EducationRepository(NbDataContext context, IConfiguration configuration) : base(context)
         {
+            _configuration = configuration;
+        }
+
+        public IQueryable<EducationListVm> GetListQueryable()
+        {
+            return from e in Context.Educations
+                   join c in Context.EducationCategories on e.CategoryId equals c.Id
+                   select new EducationListVm
+                   {
+                       Id = e.Id,
+                       Name = e.Name,
+                       Description = e.Description,
+                       CategoryName = c.Name,
+                       Level = (int)e.Level,
+                       Days = e.Days,
+                       HoursPerDay = e.HoursPerDay,
+                       isActive = e.IsActive
+                   };
+        }
+
+        public bool CheckIsCanComment(string userId, Guid educationId)
+        {
+            var group = (from bridge in Context.Bridge_GroupStudents
+                         join eGroup in Context.EducationGroups.Include(x => x.GroupLessonDays) on bridge.Id equals eGroup.Id
+                         where bridge.Id2 == userId && eGroup.EducationId == educationId
+                         select eGroup).FirstOrDefault();
+
+            if (group == null)
+                return false;
+            if (group.GroupLessonDays == null || group.GroupLessonDays.Count == 0)
+                return false;
+
+            var lastDate = group.GroupLessonDays.OrderBy(x => x.DateOfLesson).Last().DateOfLesson;
+            if (DateTime.Now.Date > lastDate)
+            {
+                return true;
+            }
+            return false;
+
         }
 
         public PagedEntity<Education> GetPagedEntity(int page = 0, Expression<Func<Education, bool>> filter = null, int shownRecords = 15)
@@ -133,23 +179,22 @@ namespace NitelikliBilisim.Business.Repositories
                     Description = item.Description,
                     Days = item.Days,
                     HoursPerDay = item.HoursPerDay,
-                    Level = EnumSupport.GetDescription(item.Level),
-                    NewPrice = item.NewPrice,
+                    Level = EnumHelpers.GetDescription(item.Level),
                     IsActive = item.IsActive,
-                    MediaCount = mediaCount.Where(x => x.EducationId == item.Id).Sum(x=>x.Count),
+                    MediaCount = mediaCount.Where(x => x.EducationId == item.Id).Sum(x => x.Count),
                     PartCount = partCount.Where(x => x.EducationId == item.Id).Sum(x => x.Count),
                     GainCount = gainCount.Where(x => x.EducationId == item.Id).Sum(x => x.Count),
                     EducatorCount = educatorCount.Where(x => x.EducationId == item.Id).Sum(x => x.Count),
                     EducationCategories = educationCategories.Count(x => x.EducationId == item.Id) > 0 ?
-                        string.Join(", ", educationCategories.Where(x=>x.EducationId == item.Id).Select(x=>x.ConcattedCategories)) : "-"
+                        string.Join(", ", educationCategories.Where(x => x.EducationId == item.Id).Select(x => x.ConcattedCategories)) : "-"
                 });
 
             return educationDtos;
         }
 
-        public Guid? Insert(Education entity, List<Guid> tagIds, List<EducationMedia> medias, bool isSaveLater = false)
+        public Guid? Insert(Education entity, string[] tags, List<EducationMedia> medias, bool isSaveLater = false)
         {
-            if (tagIds == null || tagIds.Count == 0)
+            if (tags == null || tags.Length == 0)
                 return null;
             if (Context.Educations.Any(x => x.Name == entity.Name))
                 return null;
@@ -166,14 +211,31 @@ namespace NitelikliBilisim.Business.Repositories
 
                     Context.EducationMedias.AddRange(medias);
                     //_context.SaveChanges();
-
+                    var dbTags = Context.EducationTags.ToList();
                     var bridge = new List<Bridge_EducationTag>();
-                    foreach (var tagId in tagIds)
-                        bridge.Add(new Bridge_EducationTag
+                    foreach (var tagName in tags)
+                    {
+                        if (!dbTags.Any(x => x.Name == tagName))
                         {
-                            Id = tagId,
-                            Id2 = educationId
-                        });
+
+                            var educationTag = new EducationTag { Name = tagName };
+                            var model = Context.EducationTags.Add(educationTag);
+                            Context.SaveChanges();
+                            bridge.Add(new Bridge_EducationTag
+                            {
+                                Id = educationTag.Id,
+                                Id2 = educationId
+                            });
+                        }
+                        else
+                        {
+                            bridge.Add(new Bridge_EducationTag
+                            {
+                                Id = dbTags.First(x => x.Name == tagName).Id,
+                                Id2 = educationId
+                            });
+                        }
+                    }
                     var tag = entity.Name.FormatForTag();
                     EducationTag autoTag = null;
                     if (!Context.EducationTags.Any(x => x.Name == tag))
@@ -246,24 +308,54 @@ namespace NitelikliBilisim.Business.Repositories
             return education.IsActive;
         }
 
-        public int Update(Education entity, List<Guid> tagIds, bool isSaveLater = false)
+        public int Update(Education entity, string[] tags, bool isSaveLater = false)
         {
-            var currentCategories = Context.Bridge_EducationTags.Where(x => x.Id2 == entity.Id).ToList();
-
-            Context.Bridge_EducationTags.RemoveRange(currentCategories);
-
-            var newItems = new List<Bridge_EducationTag>();
-            foreach (var tagId in tagIds)
-                newItems.Add(new Bridge_EducationTag
+            using (var transaction = Context.Database.BeginTransaction())
+            {
+                try
                 {
-                    Id = tagId,
-                    Id2 = entity.Id
-                });
+                    var currentTags = Context.Bridge_EducationTags.Where(x => x.Id2 == entity.Id).ToList();
+                    Context.Bridge_EducationTags.RemoveRange(currentTags);
+                    Context.SaveChanges();
+                    var educationId = base.Update(entity);
+                    Context.SaveChanges();
+                    var newItems = new List<Bridge_EducationTag>();
+                    var dbTags = Context.EducationTags.ToList();
+                    foreach (var tagName in tags)
+                    {
+                        if (!dbTags.Any(x => x.Name == tagName))
+                        {
 
-            Context.Bridge_EducationTags.AddRange(newItems);
-            Context.SaveChanges();
+                            var educationTag = new EducationTag { Name = tagName };
+                            var model = Context.EducationTags.Add(educationTag);
+                            Context.SaveChanges();
+                            newItems.Add(new Bridge_EducationTag
+                            {
+                                Id = educationTag.Id,
+                                Id2 = entity.Id
+                            });
+                        }
+                        else
+                        {
+                            newItems.Add(new Bridge_EducationTag
+                            {
+                                Id = dbTags.First(x => x.Name == tagName).Id,
+                                Id2 = entity.Id
+                            });
+                        }
+                    }
+                    Context.Bridge_EducationTags.AddRange(newItems);
+                    Context.SaveChanges();
+                    transaction.Commit();
+                    return educationId;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw new Exception(ex.Message);
+                }
 
-            return base.Update(entity, isSaveLater);
+            }
         }
 
         public List<EducationVm> GetInfiniteScrollSearchResults(string categoryName, string searchText = "", int page = 0, OrderCriteria order = OrderCriteria.Latest, FiltersVm filter = null)
@@ -289,9 +381,10 @@ namespace NitelikliBilisim.Business.Repositories
                     .Select(x => x.EducationId)
                     .ToList();
             }
-            else if(!string.IsNullOrEmpty(categoryName))
+            else if (!string.IsNullOrEmpty(categoryName))
             {
-                var educationCategories = Context.EducationCategories.Select(x => new {
+                var educationCategories = Context.EducationCategories.Select(x => new
+                {
                     Id = x.Id,
                     BaseCategoryId = x.BaseCategoryId,
                     Name = x.Name,
@@ -317,12 +410,13 @@ namespace NitelikliBilisim.Business.Repositories
             }
             else
                 educationIds = Context.Educations.Select(x => x.Id).ToList();
-                
+
 
             var educations = Context.Educations.Include(x => x.Category)
                 .Where(x => educationIds.Contains(x.Id) && x.IsActive);
 
             //var educationGroupRepository = new EducationGroupRepository(Context);
+
 
             if (filter.categories != null)
             {
@@ -367,8 +461,8 @@ namespace NitelikliBilisim.Business.Repositories
                     Name = x.Education.Name,
                     Description = x.Education.Description,
                     CategoryName = x.CategoryName,
-                    Level = EnumSupport.GetDescription(x.Education.Level),
-                    PriceText = x.Education.NewPrice.Value.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
+                    Level = EnumHelpers.GetDescription(x.Education.Level),
+                    //PriceText = x.Education.NewPrice.GetValueOrDefault().ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
                     HoursPerDayText = x.Education.HoursPerDay.ToString(),
                     DaysText = x.Education.Days.ToString(),
                     DaysNumeric = x.Education.Days,
@@ -380,6 +474,11 @@ namespace NitelikliBilisim.Business.Repositories
             }).ToList();
 
             return data;
+        }
+
+        public IQueryable<Education> GetAllEducationsWithCategory()
+        {
+            return Context.Educations.Include(x => x.Category);
         }
 
         public List<EducationVm> GetEducationsByCategory(string category, int page = 0, OrderCriteria order = OrderCriteria.Latest)
@@ -394,7 +493,7 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 var baseCategoryId = Context.EducationCategories.FirstOrDefault(x => x.Name.ToLower() == category.ToLower())?.Id;
 
-                if(baseCategoryId != null)
+                if (baseCategoryId != null)
                 {
                     preList.AddRange(educations.Where(x => x.CategoryId == baseCategoryId));
 
@@ -415,7 +514,7 @@ namespace NitelikliBilisim.Business.Repositories
                     break;
             }
 
-            var educationGroupRepository = new EducationGroupRepository(Context);
+            var educationGroupRepository = new EducationGroupRepository(Context, _configuration);
 
             var query = string.IsNullOrEmpty(category) ? educations : preList.AsQueryable();
 
@@ -443,8 +542,8 @@ namespace NitelikliBilisim.Business.Repositories
                     Name = x.Education.Name,
                     Description = x.Education.Description,
                     CategoryName = x.CategoryName,
-                    Level = EnumSupport.GetDescription(x.Education.Level),
-                    PriceText = x.Education.NewPrice.Value.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
+                    Level = EnumHelpers.GetDescription(x.Education.Level),
+                    //PriceText = x.Education.NewPrice.GetValueOrDefault().ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
                     HoursPerDayText = x.Education.HoursPerDay.ToString(),
                     DaysText = x.Education.Days.ToString(),
                     DaysNumeric = x.Education.Days,
@@ -461,6 +560,22 @@ namespace NitelikliBilisim.Business.Repositories
         public EducationVm GetEducation(Guid id)
         {
             var education = Context.Educations.First(x => x.Id == id);
+
+            var comments = (from comment in Context.EducationComments
+                            join commenter in Context.Users on comment.CommentatorId equals commenter.Id
+                            join student in Context.Customers on commenter.Id equals student.Id
+                            where comment.EducationId == id && comment.ApprovalStatus == CommentApprovalStatus.Approved
+                            orderby comment.ApprovalDate descending
+                            select new CommentDetailVm
+                            {
+                                Point = comment.Points,
+                                Commenter = $"{commenter.Name} {commenter.Surname}",
+                                Date = comment.CreatedDate.ToString("dd MMMM yyyy"),
+                                CommenterJob = student.Job,
+                                Content = comment.Content
+                            }).ToList();
+
+
             var model = new EducationVm
             {
                 Base = new EducationBaseVm
@@ -474,9 +589,15 @@ namespace NitelikliBilisim.Business.Repositories
                     HoursPerDayText = education.HoursPerDay.ToString(),
                     Description = education.Description,
                     Description2 = education.Description2,
-                    PriceNumeric = education.NewPrice.GetValueOrDefault(0),
-                    Level = EnumSupport.GetDescription(education.Level),
-                    PriceText = education.NewPrice.GetValueOrDefault(0).ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"))
+                    IsWishListItem = false,
+                    IsCanComment = false,
+                    Comments = comments,
+                    Point = 0,
+                    PointText = "0.0",
+                    CommentCount = comments.Count(),
+                    //PriceNumeric = education.NewPrice.GetValueOrDefault(0),
+                    Level = EnumHelpers.GetDescription(education.Level),
+                    //PriceText = education.NewPrice.GetValueOrDefault(0).ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"))
                 },
                 Gains = Context.EducationGains.Where(x => x.EducationId == id)
                 .Select(x => new EducationGainVm
@@ -492,6 +613,11 @@ namespace NitelikliBilisim.Business.Repositories
                     MediaType = x.MediaType
                 }).ToList()
             };
+            if (comments.Count > 0)
+            {
+                model.Base.Point = (comments.Sum(x => x.Point) / (double)comments.Count());
+                model.Base.PointText = (comments.Sum(x => x.Point) / comments.Count()).ToString("0.0");
+            }
 
             var parts = Context.EducationParts.Where(x => x.EducationId == id)
                 .OrderBy(o => o.Order)
@@ -561,7 +687,8 @@ namespace NitelikliBilisim.Business.Repositories
             }
             else if (!string.IsNullOrEmpty(categoryName))
             {
-                var educationCategories = Context.EducationCategories.Select(x => new {
+                var educationCategories = Context.EducationCategories.Select(x => new
+                {
                     Id = x.Id,
                     BaseCategoryId = x.BaseCategoryId,
                     Name = x.Name,
@@ -593,7 +720,8 @@ namespace NitelikliBilisim.Business.Repositories
 
             var educations = Context.Educations
                 .Where(x => educationIds.Contains(x.Id) && x.IsActive)
-                .Select(x=>new { 
+                .Select(x => new
+                {
                     Level = x.Level,
                     CategoryName = x.Name,
                     CategoryId = x.CategoryId
@@ -605,19 +733,22 @@ namespace NitelikliBilisim.Business.Repositories
                     BaseCategoryName = y.BaseCategoryId.HasValue ? y.BaseCategory.Name : ""
                 });
 
-            var filterOptions = new FilterOptionsVm();
+            var filterOptions = new FilterOptionsVm
+            {
+                categories = educations.AsEnumerable()
+                    .GroupBy(x => x.CategoryName)
+                    .Select(x => new CategoryOptionVm()
+                    {
+                        BaseCategoryName = x.First().BaseCategoryName,
+                        CategoryName = x.Key,
+                        Count = x.Count()
+                    })
+                    .ToList()
+                    .OrderBy(x => x.BaseCategoryName)
+                    .ThenByDescending(x => x.Count)
+                    .ToList()
+            };
 
-            filterOptions.categories = educations.AsEnumerable()
-                .GroupBy(x => x.CategoryName)
-                .Select(x => new CategoryOptionVm() { 
-                    BaseCategoryName = x.FirstOrDefault().BaseCategoryName,
-                    CategoryName = x.Key,
-                    Count = x.Count()
-                })
-                .ToList()
-                .OrderBy(x => x.BaseCategoryName)
-                .ThenByDescending(x => x.Count)
-                .ToList();
 
             var baseCategories = filterOptions.categories.GroupBy(x => x.BaseCategoryName)
                 .Select(x => new CategoryOptionVm()
@@ -637,9 +768,28 @@ namespace NitelikliBilisim.Business.Repositories
                 .ToDictionary(x => x.Key.ToString(), x => x.Value);
 
             // TODO: locations ve stars
-
             return filterOptions;
         }
+
+
+        /// <summary>
+        /// Kullanıcı tarafından satın alınmış eğitimlere ve bu eğitimlere ait kategorilere ait Id leri döner.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns>Dictionary<CategoryId,EducationId></returns>
+        public List<PurchasedEducationVm> GetPurchasedEducationsByUserId(string userId)
+        {
+            return (from ticket in Context.Tickets
+                    join education in Context.Educations on ticket.EducationId equals education.Id
+                    join category in Context.EducationCategories on education.CategoryId equals category.Id
+                    where ticket.OwnerId == userId
+                    select new PurchasedEducationVm
+                    {
+                        EducationId = education.Id,
+                        CategoryId = category.Id
+                    }).ToList();
+        }
+
 
         public bool IsUnique(string name)
         {

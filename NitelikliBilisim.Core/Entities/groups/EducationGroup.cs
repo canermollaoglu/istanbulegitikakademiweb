@@ -1,4 +1,5 @@
 ﻿using NitelikliBilisim.Core.Abstracts;
+using NitelikliBilisim.Core.Entities.groups;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -29,7 +30,13 @@ namespace NitelikliBilisim.Core.Entities
         public bool IsGroupOpenForAssignment { get; set; }
         public byte Quota { get; set; }
         public decimal ExtraPrice { get; set; }
+        [Column(TypeName = "decimal(8, 2)")]
+        public decimal? NewPrice { get; set; }
+        [Column(TypeName = "decimal(8, 2)")]
+        public decimal? OldPrice { get; set; }
 
         public virtual List<Bridge_GroupStudent> GroupStudents { get; set; }
+        public virtual List<GroupLessonDay> GroupLessonDays { get; set; }
+        public virtual List<GroupExpense> GroupExpenses { get; set; }
     }
 }

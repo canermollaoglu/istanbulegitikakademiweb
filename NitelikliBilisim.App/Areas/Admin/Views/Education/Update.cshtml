@@ -6,7 +6,6 @@
 }
 @section styles{
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
     <link href="~/css/lib/file-uploader.css" rel="stylesheet" />
 }
 @section alerts{
@@ -30,7 +29,27 @@
                     <input type="text" class="form-control" placeholder="Eğitim ismini giriniz..." id="input-name" value="@Model.Education.Name">
                 </div>
             </div>
-            <div class="col-md-12">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Seviyeyi Seçiniz</label>
+                    <select id="select-levels" class="form-control">
+                        @foreach (var item in Model.Levels)
+                        {
+                            if (Model.Education.Level == (EducationLevel)item.Key)
+                            {
+                                <option value="@item.Key" selected>@item.Value</option>
+                            }
+                            else
+                            {
+                                <option value="@item.Key">@item.Value</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            </div>
+        <div class="row">
+            <div class="col-md-6">
                 <div class="form-group">
                     @{
                         var isChecked = Model.Education.IsActive ? "checked" : "";
@@ -51,17 +70,10 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Etiketlerini Seçiniz</label>
-                    <select id="select-categories" multiple="multiple" class="form-control">
-                        @foreach (var item in Model.Tags)
+                    <select id="select-tags" multiple="multiple" class="form-control">
+                        @foreach (var item in Model.RelatedTags)
                         {
-                            if (Model.RelatedCategories.Count(x => x.Id == item.Id) > 0)
-                            {
                                 <option value="@item.Id" selected>@item.Name</option>
-                            }
-                            else
-                            {
-                                <option value="@item.Id">@item.Name</option>
-                            }
                         }
                     </select>
                 </div>
@@ -95,40 +107,12 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>Fiyatı</label>
-                    <input type="text" class="form-control" placeholder="Fiyatı..." id="input-price" value="@Model.Education.NewPrice">
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>Seviyeyi Seçiniz</label>
-                    <select id="select-levels" class="form-control">
-                        @foreach (var item in Model.Levels)
-                        {
-                            if (Model.Education.Level == (EducationLevel)item.Key)
-                            {
-                                <option value="@item.Key" selected>@item.Value</option>
-                            }
-                            else
-                            {
-                                <option value="@item.Key">@item.Value</option>
-                            }
-                        }
-                    </select>
-                </div>
-            </div>
-        </div>
     </form>
 </div>
 
 <p><button id="btn-save" class="btn_1 medium">Kaydet</button></p>
 @section postScripts{
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
-    <script src="~/js/sup/alert-sup.js"></script>
-    <script src="~/js/lib/security-support.js"></script>
     <script src="~/js/lib/file-uploader.js"></script>
     <script src="~/js/areas/admin/admin-education-update.js"></script>
 }

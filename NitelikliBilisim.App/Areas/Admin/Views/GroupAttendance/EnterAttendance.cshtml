@@ -3,6 +3,12 @@
     ViewData["Title"] = "Yoklama Girişi Yap";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
+@section styles{
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+
 <input type="hidden" value="@Model.GroupId" id="_group-id" />
 <input type="hidden" value="@Model.Date" id="_date" />
 <div class="card mb-3">
@@ -54,21 +60,22 @@
             </div>
         </div>
         <div class="row">
-            <div class="offset-md-9 col-md-3">
-                <button id="btn-save" class="btn btn-success btn-block">Kaydet</button>
+            <div class="col-md-12">
+                <button id="btn-save" class="btn btn-outline-success pull-right">Kaydet</button>
             </div>
         </div>
     </div>
 </div>
 
 @section postScripts{
+
     <script>
         var _groupId = document.getElementById("_group-id").value;
         var _date = document.getElementById("_date").value;
         var btnSave = $("#btn-save");
 
         btnSave.on("click", btnSave_onClick);
-
+        var resultAlert = new AlertSupport.ResultAlert();
         function btnSave_onClick() {
             btnSave.off("click");
             var data = {
@@ -89,9 +96,6 @@
                     IsAttended: isAttended,
                     Reason: reason
                 });
-                //console.log(isAttended);
-                //console.log(reason);
-                //console.log(customerId);
             }
 
             $.ajax({
@@ -99,6 +103,25 @@
                 method: "post",
                 data: data,
                 success: (res) => {
+                    if (res.isSuccess) {
+                        resultAlert.display({
+                            success: true,
+                            message: "Yoklama kaydı başarılı!",
+                        });
+                        setTimeout(
+                            function () {
+                                window.location = "/admin/grup-detay/" + _groupId;
+                            }, 4000);
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors
+                        });
+                        setTimeout(
+                            function () {
+                                window.location = "/admin/grup-detay/" + _groupId;
+                            }, 4000);
+                    }
                     btnSave.on("click", btnSave_onClick);
                 }
             });

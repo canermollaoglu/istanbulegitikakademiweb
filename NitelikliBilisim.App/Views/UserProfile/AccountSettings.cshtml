@@ -1,0 +1,393 @@
+﻿
+@using NitelikliBilisim.App.Utility
+@{
+    ViewData["Title"] = "AccountSettings";
+    Layout = "~/Views/Shared/_LayoutHesap.cshtml";
+}
+
+<section class="account account--dashboard">
+    <div class="account-mobile__top">
+        <a asp-controller="UserProfile" asp-action="MyMenu" class="account-mobile__prev">
+            <span class="icon-outer">
+                <svg class="icon">
+                    <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                </svg>
+            </span>
+        </a>
+        <span class="account-mobile__txt">
+            AYARLAR
+        </span>
+    </div>
+    <div class="container">
+        <div class="account__wrp">
+            @await Component.InvokeAsync("MyAccountSidebar", AccountSideBarPageNames.Settings)
+            <div class="account-content">
+                <div class="account-detail">
+                    <div class="account-detail__wrp">
+                        <div class="account-detail__title">
+                            AYARLAR
+                        </div>
+                        <form action="">
+                            <div class="success-messages" style="display: block;">
+                                Kayıt Başarılı
+                            </div>
+                            <div class="accordion accordion--loft">
+                                <div class="accordion__item selected active">
+                                    <div class="accordion__header">
+                                        <span class="icon-outer accordion__icon">
+                                        </span>
+                                        Kullanıcı Bilgileri
+                                    </div>
+                                    <div class="accordion__content">
+                                        <div class="js-calc-accordion-height">
+                                            <div class="accordion__forms">
+                                                <div class="input__column-2">
+                                                    <div class="input__outer no-icon">
+                                                        <div class="input__title">E-posta Adresi</div>
+                                                        <input type="text" class="input input--bordered input--fw input--noshadow"
+                                                               placeholder="E-posta Adresinizi Giriniz" value="zeynep.yildirim@mail.com">
+                                                    </div>
+                                                    <div class="input__outer no-icon icon-password">
+                                                        <div class="input__title">Şifre</div>
+                                                        <input type="password" class="input input--bordered input--fw input--noshadow js-password"
+                                                               placeholder="Şifrenizi Giriniz" value="123456789">
+                                                        <span class="icon-outer js-show-password">
+                                                            <svg class="icon">
+                                                                <use xlink:href="../../assets/img/icons.svg#icon-eye"></use>
+                                                            </svg>
+                                                        </span>
+                                                    </div>
+                                                    <div class="input__outer no-icon icon-password">
+                                                        <div class="input__title">Şifre Tekrar</div>
+                                                        <input type="password" class="input input--bordered input--fw input--noshadow js-password"
+                                                               placeholder="Şifrenizi Tekrar Giriniz" value="123456789">
+                                                        <span class="icon-outer js-show-password">
+                                                            <svg class="icon">
+                                                                <use xlink:href="../../assets/img/icons.svg#icon-eye"></use>
+                                                            </svg>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="input__outer no-icon">
+                                                    <div class="input__title">Profil Resmi</div>
+                                                    <div class="input__select-image">
+                                                        <div class="input__select-image-img">
+                                                            <input type="image" id="accountChangeImg" src="../../assets/img/comment-pp-woman.jpg">
+                                                        </div>
+                                                        <div class="input__select-image-button">
+                                                            <button class="button button-fw js-change-img">
+                                                                <span class="button-txt">
+                                                                    Resmi Değiştir
+                                                                </span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="input__select-image-txt">
+                                                            Maksimum boyut 1 MB.<br>
+                                                            JPG, GIF veya PNG
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion__item">
+                                    <div class="accordion__header">
+                                        <span class="icon-outer accordion__icon">
+                                        </span>
+                                        Kişisel Bilgiler
+                                    </div>
+                                    <div class="accordion__content">
+                                        <div class="js-calc-accordion-height">
+                                            <div class="accordion__forms">
+                                                <div class="input__column-2">
+                                                    <div class="input__outer no-icon">
+                                                        <div class="input__title">Adınız Soyadınız</div>
+                                                        <input type="text" class="input input--bordered input--fw input--noshadow"
+                                                               placeholder="Ad ve Soyadınızı Giriniz" value="Zeynep Yıldırım">
+                                                    </div>
+                                                    <div class="input__outer bordered-select">
+                                                        <div class="select-subject no-icon">
+                                                            <div class="input__title">Cinsiyetiniz</div>
+                                                            <select class="js-cinsiyet-select">
+                                                                <option value="" selected hidden disabled>Cinsiyetinizi Seçiniz</option>
+                                                                <option value="2">Erkek</option>
+                                                                <option value="3" selected>Kadın</option>
+                                                                <option value="4">Belirtmek İstemiyorum</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="input__outer no-icon datepicker--fw icon-datepicker">
+                                                        <div class="input__title">Doğum Tarihiniz</div>
+                                                        <input type="text" class="input input--bordered input--fw input--noshadow js-datepicker"
+                                                               value="14.07.2020" placeholder="Doğum Tarihiniz">
+                                                        <span class="icon-outer">
+                                                            <svg class="icon">
+                                                                <use xlink:href="../../assets/img/icons.svg#icon-date"></use>
+                                                            </svg>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="input__column-2">
+                                                    <div class="input__outer bordered-select input-mb-0">
+                                                        <div class="select-subject no-icon">
+                                                            <div class="input__title">Son Mezun Olduğunuz Okul</div>
+                                                            <select class="js-okul-select">
+                                                                <option value="" hidden disabled selected>Okulunuzu Seçiniz</option>
+                                                                <option value="2">Ege Üniversitesi</option>
+                                                                <option value="3">İstanbul Üniversitesi</option>
+                                                                <option value="4">Uludağ Üniversitesi</option>
+                                                                <option value="5">Hacettepe Üniversitesi</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="input__outer bordered-select input-mb-0">
+                                                        <div class="select-subject no-icon">
+                                                            <div class="input__title">Mesleğiniz / Ünvanınız</div>
+                                                            <select class="js-meslek-select">
+                                                                <option value="" selected hidden disabled>Mesleğinizi Seçiniz</option>
+                                                                <option value="2" selected>Sistem Uzmanı</option>
+                                                                <option value="3">Memur</option>
+                                                                <option value="4">Ön Yüz Geliştiricisi</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="input__outer">
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion__item">
+                                    <div class="accordion__header">
+                                        <span class="icon-outer accordion__icon">
+                                        </span>
+                                        NBUY EĞİTİMLERİNİZ
+                                    </div>
+                                    <div class="accordion__content">
+                                        <div class="js-calc-accordion-height">
+                                            <div class="accordion__forms">
+                                                <div class="input__column-2">
+                                                    <div class="input__outer bordered-select input-mb-0">
+                                                        <div class="select-subject no-icon">
+                                                            <div class="input__title">Eğitim Merkezi</div>
+                                                            <select class="js-egitim-merkezi-select">
+                                                                <option value="" hidden disabled>Eğitim Merkezini Seçiniz</option>
+                                                                <option value="2" selected>Bahçeşehir Üniversitesi</option>
+                                                                <option value="3">Ege Üniversitesi</option>
+                                                                <option value="4">İstanbul Üniversitesi</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="input__outer no-icon datepicker--fw icon-datepicker input-mb-0">
+                                                        <div class="input__title">Eğitim Başlangıç Tarihi</div>
+                                                        <input type="text" class="input input--bordered input--fw input--noshadow js-datepicker"
+                                                               value="08.07.2020" placeholder="Eğitim Başlangıç Tarihini Seçiniz">
+                                                        <span class="icon-outer">
+                                                            <svg class="icon">
+                                                                <use xlink:href="../../assets/img/icons.svg#icon-date"></use>
+                                                            </svg>
+                                                        </span>
+                                                    </div>
+                                                    <div class="input__outer bordered-select input-mb-0">
+                                                        <div class="select-subject no-icon">
+                                                            <div class="input__title">Eğitim Türü</div>
+                                                            <select class="js-cinsiyet-select">
+                                                                <option value="" hidden disabled>Eğitim Türünü Seçiniz</option>
+                                                                <option value="2">Bulut Bilişim</option>
+                                                                <option value="3" selected>Vue</option>
+                                                                <option value="4">React</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion__item">
+                                    <div class="accordion__header">
+                                        <span class="icon-outer accordion__icon">
+                                        </span>
+                                        iletişim bilgileri
+                                    </div>
+                                    <div class="accordion__content">
+                                        <div class="js-calc-accordion-height">
+                                            <div class="accordion__forms">
+                                                <div class="input__column-2">
+                                                    <div class="input__outer input--phone f-column">
+                                                        <div class="input__title">Telefon Numaranız</div>
+                                                        <div>
+                                                            <div class="select-phonecode no-icon bordered-select">
+                                                                <select class="js-phonecode-select">
+                                                                    <option value="" selected hidden disabled>539</option>
+                                                                    <option value="2">540</option>
+                                                                    <option value="3">541</option>
+                                                                    <option value="4">542</option>
+                                                                    <option value="5">543</option>
+                                                                </select>
+                                                            </div>
+                                                            <input type="text" name="cadresphone" id="inputPhoneNumber"
+                                                                   class="input input--bordered input--fw input--noshadow maskedInput"
+                                                                   placeholder="___-__-__">
+                                                        </div>
+                                                    </div>
+                                                    <div class="input__outer no-icon">
+                                                        <div class="input__title">E-posta Adresiniz</div>
+                                                        <input type="text" class="input input--bordered input--fw input--noshadow"
+                                                               placeholder="E-posta Adresinizi Giriniz" value="zeynep.yildirim@mail.com">
+                                                    </div>
+                                                    <div class="input__outer bordered-select">
+                                                        <div class="select-subject no-icon">
+                                                            <div class="input__title">Şehir</div>
+                                                            <select class="js-sehir-select">
+                                                                <option value="" hidden disabled>Şehir Seçiniz</option>
+                                                                <option value="2">İstanbul</option>
+                                                                <option value="3" selected>Bursa</option>
+                                                                <option value="4">Ankara</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="input__column-2">
+                                                    <div class="input__outer no-icon input__link input-mb-0">
+                                                        <div class="input__title">Web Siteniz</div>
+                                                        <div class="input__link-inner">
+                                                            <span>http://</span>
+                                                            <input type="text" class="input input--bordered input--fw input--noshadow"
+                                                                   placeholder="E-posta Adresinizi Giriniz" value="zeynep.yildirim@mail.com">
+                                                        </div>
+                                                    </div>
+                                                    <div class="input__outer no-icon input__link input-mb-0">
+                                                        <div class="input__title">Linkedin Profiliniz</div>
+                                                        <div class="input__link-inner">
+                                                            <span>linkedin.com/</span>
+                                                            <input type="text" class="input input--bordered input--fw input--noshadow"
+                                                                   placeholder="E-posta Adresinizi Giriniz" value="zeynep.yildirim@mail.com">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion__item">
+                                    <div class="accordion__header">
+                                        <span class="icon-outer accordion__icon">
+                                        </span>
+                                        Adres bilgileri
+                                    </div>
+                                    <div class="accordion__content">
+                                        <div class="js-calc-accordion-height">
+                                            <div class="accordion__forms">
+                                                <div class="address-wrp">
+                                                    <div class="address-item selected">
+                                                        <div class="address-button js-select-address">
+                                                            <span class="address-button-radio"></span>
+                                                        </div>
+                                                        <div class="address-cnt js-select-address">
+                                                            <div class="address-title">
+                                                                Ev Adresim
+                                                            </div>
+                                                            <div class="address-txt">
+                                                                Acıbadem Mah. Acıbadem Cad. No:190 Kat:3 Daire:17 <br> Acıbadem Üsküdar İstanbul
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="address-input-wrp">
+                                                        <div class="input__column-flex">
+                                                            <div class="input__outer bordered-select">
+                                                                <div class="select-subject no-icon">
+                                                                    <div class="input__title">Şehir</div>
+                                                                    <select class="js-adres-sehir-select">
+                                                                        <option value="" hidden disabled>Şehir</option>
+                                                                        <option value="2" selected>İstanbul</option>
+                                                                        <option value="3">Bursa</option>
+                                                                        <option value="4">Ankara</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="input__outer bordered-select input-mb-0">
+                                                                <div class="select-subject no-icon">
+                                                                    <div class="input__title">İlçe</div>
+                                                                    <select class="js-adres-ilce-select">
+                                                                        <option value="" hidden disabled>İlçe</option>
+                                                                        <option value="2" selected>Kadıköy</option>
+                                                                        <option value="3">Üsküdar</option>
+                                                                        <option value="4">Ataşehir</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="input__outer input--textarea no-icon">
+                                                            <div class="input__title">Açık Adresiniz</div>
+                                                            <textarea name="cacikadres"
+                                                                      class="input input--fw input--bordered input--noshadow h-150"
+                                                                      placeholder="Adresinizin tamamını buraya yazınız"></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="address-item">
+                                                        <div class="address-button js-select-address">
+                                                            <span class="address-button-radio"></span>
+                                                        </div>
+                                                        <div class="address-cnt js-select-address">
+                                                            <div class="address-title">
+                                                                İş Adresim
+                                                            </div>
+                                                            <div class="address-txt">
+                                                                Acıbadem Mah. Acıbadem Cad. No:190 Kat:3 Daire:17 <br> Acıbadem Üsküdar İstanbul
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="address-input-wrp">
+                                                        <div class="input__column-flex">
+                                                            <div class="input__outer bordered-select">
+                                                                <div class="select-subject no-icon">
+                                                                    <div class="input__title">Şehir</div>
+                                                                    <select class="js-adres-sehir-select">
+                                                                        <option value="" hidden disabled>Şehir</option>
+                                                                        <option value="2" selected>İstanbul</option>
+                                                                        <option value="3">Bursa</option>
+                                                                        <option value="4">Ankara</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="input__outer bordered-select input-mb-0">
+                                                                <div class="select-subject no-icon">
+                                                                    <div class="input__title">İlçe</div>
+                                                                    <select class="js-adres-ilce-select">
+                                                                        <option value="" hidden disabled>İlçe</option>
+                                                                        <option value="2" selected>Kadıköy</option>
+                                                                        <option value="3">Üsküdar</option>
+                                                                        <option value="4">Ataşehir</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="input__outer input--textarea no-icon">
+                                                            <div class="input__title">Açık Adresiniz</div>
+                                                            <textarea name="cacikadres"
+                                                                      class="input input--fw input--bordered input--noshadow h-150"
+                                                                      placeholder="Adresinizin tamamını buraya yazınız"></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="account-detail__setting-btn">
+                                <button href="#0" class="button">
+                                    Değişiklikleri Kaydet
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

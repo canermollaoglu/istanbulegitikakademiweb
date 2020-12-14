@@ -7,6 +7,11 @@
 @section styles{
     <link href="~/assets/css/grey.css" rel="stylesheet">
     <link href="~/assets/css/sale/payment.css" rel="stylesheet" />
+<style>
+    input[type="checkbox"][readonly] {
+        pointer-events: none;
+    }
+</style>
 }
 
 <main>
@@ -54,8 +59,12 @@
                         <!-- FORM TAG START FOR AJAX -->
                         @Html.AntiForgeryToken()
                         <input type="hidden" value="" id="_is-distant-sales-agreement-confirmed" name="IsDistantSalesAgreementConfirmed" />
-                        <input type="hidden" value="" id="_is-individual" name="InvoiceInfo.IsIndividual"/>
+                        <input type="hidden" value="" id="_is-individual" name="InvoiceInfo.IsIndividual" />
                         <input type="hidden" value="" id="_cart-items" name="CartItemsJson" />
+                        <input type="hidden" value="" id="_installmentCount" name="PaymentInfo.Installments" />
+                        <input type="hidden" value="0" id="input-education-total-price" />
+                        <input type="hidden" value="0" id="promotion-discount-amount" />
+                        <input type="hidden" value="" id="_promotion-code" name="PromotionCode" />
                         <div class="box_cart">
                             <div class="form_title">
                                 <h3><strong>1</strong>Ödeme Bilgileri</h3>
@@ -127,6 +136,23 @@
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input" id="chc3DSecure" name="Use3d" value="true">
+                                            <label class="form-check-label" for="exampleCheck1">3D kullanmak istiyorum.</label>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div id="installmentInfo">
+
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
                             <hr>
@@ -242,6 +268,7 @@
                             <div>
                                 <h5>Sipariş Özeti</h5>
                                 <table id="tbody-cart-items"></table>
+                                <span id="promotion-info"></span>
                             </div>
                             <div id="total_cart">
                                 Toplam <span class="float-right" id="txt-total"></span>

@@ -1,12 +1,13 @@
-﻿using Iyzipay.Model;
+﻿using System;
+using Iyzipay.Model;
 using Iyzipay.Request;
-using Microsoft.Extensions.Configuration;
 using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.PaymentModels;
 using NitelikliBilisim.Core.ViewModels.Sales;
 using System.Collections.Generic;
 using System.Globalization;
+using Microsoft.Extensions.Configuration;
 
 namespace NitelikliBilisim.Core.Services.Payments
 {
@@ -15,7 +16,15 @@ namespace NitelikliBilisim.Core.Services.Payments
         private readonly PaymentOptions _options;
         public PaymentService(IConfiguration configuration)
         {
-            _options = configuration.GetSection("IyzicoOptions").Get<PaymentOptions>();
+            var section = configuration.GetSection(PaymentOptions.Key);
+            _options = new PaymentOptions()
+            {
+                ApiKey = section["ApiKey"],
+                SecretKey = section["SecretKey"],
+                BaseUrl = section["BaseUrl"],
+                ThreedsCallbackUrl = section["ThreedsCallbackUrl"],
+            };
+            Console.WriteLine();
         }
         /// <summary>
         /// Ortak ayarlamaların yapıldığı method!
@@ -28,14 +37,15 @@ namespace NitelikliBilisim.Core.Services.Payments
         {
             var totalPrice = 0.0m;
             foreach (var item in cartItems)
-                totalPrice += item.Education.NewPrice.GetValueOrDefault();
+                totalPrice += item.EducationGroup.NewPrice.GetValueOrDefault();
+            decimal paidPrice = totalPrice - data.DiscountAmount;
 
             var request = new CreatePaymentRequest
             {
                 Locale = Locale.TR.ToString(),
                 ConversationId = data.ConversationId.ToString(),
                 Price = totalPrice.ToString(new CultureInfo("en-US")),
-                PaidPrice = totalPrice.ToString(new CultureInfo("en-US")),
+                PaidPrice = paidPrice.ToString(new CultureInfo("en-US")),
                 Currency = Currency.TRY.ToString(),
                 Installment = data.PaymentInfo.Installments,
                 BasketId = data.BasketId.ToString(),
@@ -88,11 +98,11 @@ namespace NitelikliBilisim.Core.Services.Payments
                 var basketItem = new BasketItem
                 {
                     Id = cartItem.InvoiceDetailsId.ToString(),
-                    Name = cartItem.Education.Name,
-                    Category1 = cartItem.Education.Category.BaseCategory.Name,
-                    Category2 = cartItem.Education.Category.Name,
+                    Name = cartItem.EducationGroup.Education.Name,
+                    Category1 = cartItem.EducationGroup.Education.Category.BaseCategory.Name,
+                    Category2 = cartItem.EducationGroup.Education.Category.Name,
                     ItemType = BasketItemType.VIRTUAL.ToString(),
-                    Price = cartItem.Education.NewPrice.GetValueOrDefault().ToString(new CultureInfo("en-US"))
+                    Price = cartItem.EducationGroup.NewPrice.GetValueOrDefault().ToString(new CultureInfo("en-US"))
                 };
                 basketItems.Add(basketItem);
             }

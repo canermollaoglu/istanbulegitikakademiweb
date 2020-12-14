@@ -3,14 +3,18 @@
   "name": "asp.net",
   "private": true,
   "devDependencies": {
-    "bootstrap": "^4.4.1",
-    "devextreme": "^19.2.6",
-    "devextreme-aspnet-data": "^2.5.1",
+    "bootstrap": "^4.5.2",
+    "devextreme": "^19.2.9",
+    "devextreme-aspnet-data": "^2.7.1",
     "font-awesome": "^4.7.0",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.1",
     "select2": "^4.0.13"
   },
   "dependencies": {
-    "@microsoft/signalr": "^3.1.0"
+    "@microsoft/signalr": "^3.1.8",
+    "card": "^2.5.0",
+    "jquery-validation": "^1.19.2",
+    "modal-video": "^2.4.2",
+    "summernote": "^0.8.18"
   }
 }

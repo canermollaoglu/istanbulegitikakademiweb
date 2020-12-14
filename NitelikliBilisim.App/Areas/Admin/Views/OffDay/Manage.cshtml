@@ -1,0 +1,88 @@
+﻿
+@{
+    ViewData["Title"] = "Tatil Günleri Yönetimi";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    <style>
+        .dx-datagrid .dx-link {
+            color: lemonchiffon !important;
+            text-decoration:none !important;
+        }
+    </style>
+
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-plus"></i> Tatil Ekle
+        <button title="Google Calendar Tatil Günleri" class="btn btn-sm pull-right" data-toggle="modal" data-target="#holidaysModal"> <i class="fa fa-calendar pull-right"></i></button>
+    </div>
+    <div class="card-body">
+        <form id="form-add-offDay">
+            @Html.AntiForgeryToken()
+            <div class="row">
+                <div class="col-md-7">
+                    <div class="form-group">
+                        <label>Tatil Nedeni</label>
+                        <input type="text" class="form-control" id="input-offDay-name"  required />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Tarih</label>
+                        <input class="form-control" type="date" value="" id="input-offDay-date" required />
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <button class="btn btn-outline-success btn-block no-label" type="button" id="btn-save"><i class="fa fa-save"></i> Ekle</button>
+
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-table"></i> Tatil Günleri Yönetimi
+    </div>
+    <div class="card-body">
+
+        <div id="offday-grid"></div>
+    </div>
+</div>
+
+
+
+<div class="modal" id="holidaysModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Google Calendar Tatil Günleri</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="calendar-grid"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section postScripts{
+    <script src="~/js/areas/admin/admin-offday-manage.js"></script>
+}

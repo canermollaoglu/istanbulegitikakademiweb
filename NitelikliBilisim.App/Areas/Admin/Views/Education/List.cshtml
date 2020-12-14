@@ -4,11 +4,6 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 @section styles{
-    <link href="~/assets/css/area-admin/dataTables.bootstrap4.css" rel="stylesheet" />
-    <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
-    <link href="~/vendor\devextreme\dist\css\dx.common.css" rel="stylesheet" />
-    <link href="~/vendor\devextreme\dist\css\dx.light.css" rel="stylesheet" />
-
     <style>
         .dx-datagrid-content .dx-datagrid-table .dx-row > td:first-child, .dx-datagrid-content .dx-datagrid-table .dx-row > tr > td:first-child {
             width: 44px !important;
@@ -30,6 +25,7 @@
 <div class="card mb-3">
     <div class="card-header">
         <i class="fa fa-table"></i> Eğitimler
+        <a href="@Url.Action("Add", "Education")" class="btn btn-sm btn-outline-primary pull-right"> Ekle</a>
     </div>
     <div class="card-body">
         <div id="education-grid"></div>
@@ -37,26 +33,52 @@
     <div class="card-footer small text-muted">Veri tarihi: @DateTime.Now</div>
 </div>
 @section postScripts{
-    <script src="~/assets/js/area-admin/jquery.dataTables.js"></script>
-    <script src="~/assets/js/area-admin/dataTables.bootstrap4.js"></script>
-    <script src="~/js/sup/alert-sup.js"></script>
-    <script src="~/vendor\devextreme\dist\js\dx.all.js"></script>
     <script>
         /* fields */
         var confirmModalBuilder = new AlertSupport.ConfirmModalBuilder();
-
+        var resultAlert = new AlertSupport.ResultAlert();
+        var levels = [];
         /* assignments */
         $(document).ready(document_onLoad);
 
         /* events */
         function document_onLoad() {
-            createGrid();
+            loadLevels();
         }
 
+
+        function loadLevels() {
+            $.ajax({
+                url: "/admin/get-education-levels/",
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        levels = res.data;
+                        createGrid();
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: errors
+                        });
+                    }
+                }
+            });
+        }
         /*DataGrid*/
         function createGrid() {
             $("#education-grid").dxDataGrid({
-                dataSource: `get-education-list`,
+                dataSource: DevExpress.data.AspNet.createStore({
+                    key: "id",
+                    loadUrl: "../../api/education/get-education-list"
+                }),
+                remoteOperations: {
+                    paging: true,
+                    filtering: true,
+                    sorting: true,
+                    grouping: true,
+                    summary: true,
+                    groupPaging: true
+                },
                 showBorders: true,
                 showColumnLines: true,
                 showRowLines: true,
@@ -67,11 +89,10 @@
                 },
                 searchPanel: {
                     visible: true,
-                    width: 240,
-                    placeholder: "Search..."
+                    width: 240
                 },
                 paging: {
-                    pageSize: 8
+                    pageSize: 10
                 },
                 onContentReady: function () {
                 },
@@ -80,61 +101,104 @@
                     allowedPageSizes: [5, 10, 20],
                     showInfo: true
                 },
-                columns: [{
-                    headerCellTemplate: $('<i style="padding:0; color: black; font-weight: bolder">#</i>'),
-                    cellTemplate: function (container, options) {
-                        var current = options.data;
-                        if (current.isActive == true) {
-                            $(`<a href="/admin/egitim-guncelle/${current.id}">
-                                                            <i class=\"fa fa-unlock text-success\" style=\"font-size:200%;\"></i></a>`)
-                                .appendTo(container);
+                onExporting: function (e) {
+                    var workbook = new ExcelJS.Workbook();
+                    var worksheet = workbook.addWorksheet('Eğitim Listesi');
+                    DevExpress.excelExporter.exportDataGrid({
+                        worksheet: worksheet,
+                        component: e.component,
+                        customizeCell: function (options) {
+                            var excelCell = options;
+                            excelCell.font = { name: 'Arial', size: 12 };
+                            excelCell.alignment = { horizontal: 'left' };
                         }
-                        else {
-                            $(`<a href="/admin/egitim-guncelle/${current.id}">
-                                                            <i class=\"fa fa-lock text-danger\" style=\"font-size:200%;\"></i></a>`)
-                                .appendTo(container);
-                        }
+                    }).then(function () {
+                        workbook.xlsx.writeBuffer().then(function (buffer) {
+                            saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'Eğitim Listesi' + parseInt(Math.random() * 1000000000) + '.xlsx');
+                        });
+                    });
+                    e.cancel = true;
+                },
+                export: {
+                    enabled: true
+                },
+                headerFilter: {
+                    visible: true
+                },
+                grouping: {
+                    autoExpandAll: true
+                },
+                groupPanel: {
+                    visible: true
+                },
+                columns: [
+                    {
+                        caption: "",
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            if (current.isActive == true) {
+                                $(`<a href="/admin/egitim-guncelle/${current.id}">
+                                                                                                    <i class=\"fa fa-unlock text-success\" style=\"font-size:200%;\"></i></a>`)
+                                    .appendTo(container);
+                            }
+                            else {
+                                $(`<a href="/admin/egitim-guncelle/${current.id}">
+                                                                                                    <i class=\"fa fa-lock text-danger\" style=\"font-size:200%;\"></i></a>`)
+                                    .appendTo(container);
+                            }
+                        },
+                        alignment: "center"
                     },
-                    alignment: "center"
-                }, {
-                    dataField: "name",
-                    headerCellTemplate: $('<i style="color: black; font-weight: bold">İsmi</i>'),
-                    width: 140
+                    {
+                        dataField: "name",
+                        caption: "Eğitim Adı",
+                        width: 250
 
-                }, {
-                    dataField: "educationCategories",
-                    headerCellTemplate: $('<i style="color: black; font-weight: bold">Etiketler</i>'),
-                    width: 250
-                }, {
-                    cellTemplate: function (container, options) {
-                        var current = options.data;
-                        $(`<span>${current.days} gün / ${current.hoursPerDay} saat</span>`)
-                            .appendTo(container);
+                    }, {
+                        caption: "Kategori",
+                        dataField: "categoryName",
+                        width: 200
                     },
-                    headerCellTemplate: $('<i style="color: black; font-weight: bold">Gün / Saat</i>'),
-                    width: 80
-                }, {
-                    dataField: "level",
-                    headerCellTemplate: $('<i style="color: black; font-weight: bold">Seviye</i>'),
-                    width: 60,
-                    alignment: "center"
-                }, {
-                    headerCellTemplate: $('<i style="vertical-align:middle; color: black; font-weight: bold">İşlem</i>'),
-                    allowSearch: false,
-                    cellTemplate: function (container, options) {
-                        var current = options.data;
-                        $(`<a class="btn btn-primary" href="/admin/egitim-medya-yonetimi/${current.id}"><i class=\"fa fa-file-photo-o\"></i><span style="display: block">${current.mediaCount}</span></a>`)
-                            .appendTo(container);
-                        $(`<a class="btn btn-secondary" href="/admin/egitim-parca-yonetimi/${current.id}"><i class=\"fa fa-list-ul\"></i><span style="display: block"> ${current.partCount}</span></a>`)
-                            .appendTo(container);
-                        $(`<a class="btn btn-info" href="/admin/egitim-kazanim-yonetimi/${current.id}"><i class=\"fa fa-gift\"></i><span style="display: block"> ${current.gainCount}</span></a>`)
-                            .appendTo(container);
-                        $(`<a class="btn btn-success" href="/admin/egitmen-ata/${current.id}"><i class=\"fa fa-users\"></i><span style="display: block"> ${current.educatorCount}</span></a>`)
-                            .appendTo(container);
+                    
+                    {
+                        caption: "Gün",
+                        dataField: "days",
+                        width: 80
                     },
-                    width: "auto",
-                    alignment: "center"
-                }
+                    {
+                        caption: "Saat",
+                        dataField: "hoursPerDay",
+                        width: 80
+                    },
+                    {
+                        caption: "Seviye",
+                        dataField: "level",
+                        lookup: {
+                            dataSource: levels,
+                            displayExpr: "value",
+                            valueExpr: "key"
+                        },
+                        width:120
+                    },
+                    {
+                        caption: "İşlem",
+                        allowSearch: false,
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            $(`<a title="Öneri Yönetimi" class="btn btn-warning btn-sm" href="/admin/egitim-oneri-kriteri-yonetimi?educationId=${current.id}"><i class=\"fa fa-lightbulb-o\"></i><span style="display: block"></span></a>`)
+                                .appendTo(container);
+                            $(`<a title="Medya Yönetimi" class="btn btn-primary btn-sm" href="/admin/egitim-medya-yonetimi/${current.id}"><i class=\"fa fa-file-photo-o\"></i><span style="display: block"></span></a>`)
+                                .appendTo(container);
+                            $(`<a title="Parça Yönetimi" class="btn btn-secondary btn-sm" href="/admin/egitim-parca-yonetimi/${current.id}"><i class=\"fa fa-list-ul\"></i><span style="display: block"></span></a>`)
+                                .appendTo(container);
+                            $(`<a title="Neler Öğreneceksiniz?" class="btn btn-info btn-sm" href="/admin/egitim-kazanim-yonetimi/${current.id}"><i class=\"fa fa-gift\"></i><span style="display: block"></span></a>`)
+                                .appendTo(container);
+                            $(`<a title="Eğitmen Ata" class="btn btn-success btn-sm" href="/admin/egitmen-ata/${current.id}"><i class=\"fa fa-users\"></i><span style="display: block"></span></a>`)
+                                .appendTo(container);
+                        },
+                        width: "auto",
+                        alignment: "center"
+                    }
                 ]
             });
         }

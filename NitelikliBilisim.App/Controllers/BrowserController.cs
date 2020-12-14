@@ -1,17 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MUsefulMethods;
+using NitelikliBilisim.App.Controllers.Base;
+using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Enums;
-using NitelikliBilisim.Core.Services;
-using NitelikliBilisim.Core.ViewModels;
-using NitelikliBilisim.Support.Enums;
-using System.Linq;
-using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.Core.Services.Abstracts;
-using System.IO;
-using System.Threading.Tasks;
+using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.search;
-using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -25,23 +24,23 @@ namespace NitelikliBilisim.App.Controllers
             _unitOfWork = unitOfWork;
             _storageService = storageService;
         }
-
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("egitimler/{categoryUrl?}")]
         public IActionResult Courses(string categoryUrl, string s, string showAs = "grid")
         {
             var categoryNames = _unitOfWork.EducationCategory.Get(x => x.IsCurrent && x.BaseCategoryId == null).Select(x => x.Name).ToList();
-            var categoryName = categoryNames.FirstOrDefault(x => StringHelper.UrlFormatConverter(x) == categoryUrl) ?? "";
+            var categoryName = categoryNames.FirstOrDefault(x => StringHelpers.CharacterConverter(x) == categoryUrl) ?? "";
 
             var model = new SearchResultsGetVm
             {
                 CategoryName = categoryName,
                 SearchText = s,
-                OrderCriterias = EnumSupport.ToKeyValuePair<OrderCriteria>(),
+                OrderCriterias = EnumHelpers.ToKeyValuePair<OrderCriteria>(),
                 ShowAs = showAs
             };
             return View(model);
         }
-
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [HttpPost]
         [Route("get-courses")]
         public async Task<IActionResult> GetCourses(string categoryName, string searchText, int page = 0, OrderCriteria order = OrderCriteria.Latest, FiltersVm filter = null)

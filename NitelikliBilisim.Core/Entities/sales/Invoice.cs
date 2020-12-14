@@ -2,6 +2,7 @@
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.PaymentModels;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -33,5 +34,8 @@ namespace NitelikliBilisim.Core.Entities
         public string CreatedIp { get; set; }
         [MaxLength(32)]
         public string UpdatedIp { get; set; }
+        
+        public virtual List<InvoiceDetail> InvoiceDetails { get; set; }
+        public virtual OnlinePaymentInfo OnlinePaymentInfo { get; set; }
     }
 }

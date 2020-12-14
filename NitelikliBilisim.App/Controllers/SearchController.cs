@@ -1,14 +1,15 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using MUsefulMethods;
 using NitelikliBilisim.App.Controllers.Base;
+using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.search;
-using NitelikliBilisim.Support.Enums;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -22,19 +23,19 @@ namespace NitelikliBilisim.App.Controllers
             _unitOfWork = unitOfWork;
             _storageService = storageService;
         }
-
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("arama-sonuclari/{searchText}")]
         public IActionResult SearchResults(string searchText, string showAs = "grid")
         {
             var model = new SearchResultsGetVm
             {
                 SearchText = searchText,
-                OrderCriterias = EnumSupport.ToKeyValuePair<OrderCriteria>(),
+                OrderCriterias = EnumHelpers.ToKeyValuePair<OrderCriteria>(),
                 ShowAs = showAs
             };
             return View(model);
         }
-
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [HttpPost]
         [Route("search-for-courses")]
         public async Task<IActionResult> SearchEducation(string searchText, int page = 0, OrderCriteria order = OrderCriteria.Latest, FiltersVm filter = null)

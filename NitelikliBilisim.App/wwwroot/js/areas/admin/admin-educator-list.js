@@ -50,7 +50,18 @@ function confirm_onClick() {
 /*DataGrid*/
 function createGrid() {
     $("#educator-grid").dxDataGrid({
-        dataSource: `get-educators-list`,
+        dataSource: DevExpress.data.AspNet.createStore({
+            key: "id",
+            loadUrl: "../../api/educator/get-educators-list"
+        }),
+        remoteOperations: {
+            paging: true,
+            filtering: true,
+            sorting: true,
+            grouping: true,
+            summary: true,
+            groupPaging: true
+        },
         showBorders: true,
         showColumnLines: true,
         showRowLines: true,
@@ -60,11 +71,40 @@ function createGrid() {
         },
         searchPanel: {
             visible: true,
-            width: 240,
-            placeholder: "Search..."
+            width: 240
+        },
+        onExporting: function (e) {
+            var workbook = new ExcelJS.Workbook();
+            var worksheet = workbook.addWorksheet('Eğitmen Listesi');
+            DevExpress.excelExporter.exportDataGrid({
+                worksheet: worksheet,
+                component: e.component,
+                customizeCell: function (options) {
+                    var excelCell = options;
+                    excelCell.font = { name: 'Arial', size: 12 };
+                    excelCell.alignment = { horizontal: 'left' };
+                }
+            }).then(function () {
+                workbook.xlsx.writeBuffer().then(function (buffer) {
+                    saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'Eğitmen Listesi' + parseInt(Math.random() * 1000000000) + '.xlsx');
+                });
+            });
+            e.cancel = true;
+        },
+        export: {
+            enabled: true
+        },
+        headerFilter: {
+            visible: true
+        },
+        grouping: {
+            autoExpandAll: true
+        },
+        groupPanel: {
+            visible: true
         },
         paging: {
-            pageSize: 5
+            pageSize: 10
         },
         onContentReady: function () {
             var deleteButtons = $(".btn-confirmation-modal-trigger");
@@ -79,34 +119,36 @@ function createGrid() {
             showInfo: true
         },
         columns: [{
-            dataField: "title",
-            headerCellTemplate: $('<i style="color: black; font-weight: bold">Ünvan</i>')
+            dataField: "fullName",
+            caption:"Eğitmen Adı",
+            width: 160
         },
         {
-            dataField: "fullName",
-            headerCellTemplate: $('<i style="color: black; font-weight: bold">Eğitmen Adı</i>'),
-            width:160
+            dataField: "title",
+            caption:"Ünvan"
         },
         {
             dataField: "phone",
-            headerCellTemplate: $('<i style="color: black; font-weight: bold">Telefon</i>'),
-            width: 130
+            caption:"Telefon",
+            width: 130,
+            allowSorting: false
         },
         {
             dataField: "email",
-            headerCellTemplate: $('<i style="color: black; font-weight: bold">E-Posta</i>'),
-            width: 280
+            caption:"E-Posta",
+            width: 280,
+            allowSorting: false
         },
         {
-            headerCellTemplate: $('<i style="color: black; font-weight: bold">İşlemler</i>'),
+            caption:"İşlem",
             allowSearch: false,
             cellTemplate: function (container, options) {
                 var current = options.data;
-                $(`<a class="btn btn-warning" href="/admin/egitmen-guncelle/${current.id}"><i class=\"fa fa-edit\"></i></a>`)
+                $(`<a title="Detay" class="btn btn-outline-success btn-sm" href="/admin/egitmen-detay/${current.id}"><i class=\"fa fa-id-card-o\"></i></a>`)
                     .appendTo(container);
-                $(`<a class="btn btn-primary" href="/admin/egitmen-sosyal-medya-guncelle/${current.id}"><i class=\"fa fa-chain\"></i><span>${current.socialMediaCount}</span></a>`)
+                $(`<a title="Güncelle" class="btn btn-outline-warning btn-sm" href="/admin/egitmen-guncelle/${current.id}"><i class=\"fa fa-edit\"></i></a>`)
                     .appendTo(container);
-                $(`<button class="btn-confirmation-modal-trigger btn btn-danger" data-url="/admin/delete-educator?educatorId=${current.id}" style="cursor:pointer;"><i class=\"fa fa-trash\"></i></button>`)
+                $(`<button title="Sil" class="btn-confirmation-modal-trigger btn btn-outline-danger btn-sm" data-url="/admin/delete-educator?educatorId=${current.id}" style="cursor:pointer;"><i class=\"fa fa-trash\"></i></button>`)
                     .appendTo(container);
             },
             alignment: "center",
@@ -115,3 +157,5 @@ function createGrid() {
         ]
     });
 }
+
+

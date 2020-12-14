@@ -1,9 +1,17 @@
 ﻿using NitelikliBilisim.Core.Enums;
+using NitelikliBilisim.Core.ViewModels.Main.EducationComment;
 using System;
 using System.Collections.Generic;
 
 namespace NitelikliBilisim.Core.ViewModels
 {
+    public class SuggestedEducationVm : EducationVm
+    {
+        /// <summary>
+        /// Kriterlere uygunluk puanı
+        /// </summary>
+        public double AppropriateCriterionCount { get; set; }
+    }
     public class EducationVm
     {
         public EducationBaseVm Base { get; set; }
@@ -20,14 +28,31 @@ namespace NitelikliBilisim.Core.ViewModels
         public string CategoryName { get; set; }
         public string Description { get; set; }
         public string Description2 { get; set; }
-        public decimal PriceNumeric { get; set; }
-        public string PriceText { get; set; }
         public byte DaysNumeric { get; set; }
         public string DaysText { get; set; }
         public byte HoursPerDayNumeric { get; set; }
         public string HoursPerDayText { get; set; }
         public string Level { get; set; }
         public string StartDateText { get; set; }
+        public bool IsWishListItem { get; set; }
+        public List<CommentDetailVm> Comments { get; set; }
+        public bool IsCanComment { get; set; }
+        public double Point { get; set; }
+        public string PointText { get; set; }
+        public int CommentCount { get; set; }
+    }
+
+    public class EducationListVm
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public string CategoryName { get; set; }
+        public string Description { get; set; }
+        public int Level { get; set; }
+        public byte HoursPerDay { get; set; }
+        public byte Days { get; set; }
+        public bool isActive { get; set; }
+
     }
     public class EducationMediaVm
     {

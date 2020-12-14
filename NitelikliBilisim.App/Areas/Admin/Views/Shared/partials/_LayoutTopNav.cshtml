@@ -6,7 +6,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-default fixed-top" id="mainNav">
     <div id="logo">
-        <a href="/"><img class="sitelogo" src="~/assets/img/nb_logo_sm.png" width="149" height="42" data-retina="true" alt=""></a>
+        <a href="/"><img class="sitelogo" src="~/admin/img/nb_logo_sm.png" width="149" height="42" data-retina="true" alt=""></a>
     </div>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -20,56 +20,7 @@
                 </a>
                 <ul class="sidenav-second-level collapse show" id="collapseYonetim">
                     <li>
-                        <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseCategories" data-parent="#exampleAccordion">Kategoriler</a>
-                        <ul class="sidenav-third-level collapse" id="collapseCategories">
-                            <li>
-                                <a href="@Url.Action("List", "EducationCategory")">Listele</a>
-                            </li>
-                            <li>
-                                <a href="@Url.Action("Add", "EducationCategory")">Ekle</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseTags" data-parent="#exampleAccordion">Etiketler</a>
-                        <ul class="sidenav-third-level collapse" id="collapseTags">
-                            <li>
-                                <a href="@Url.Action("List", "EducationTag")">Listele</a>
-                            </li>
-                            <li>
-                                <a href="@Url.Action("Add", "EducationTag")">Ekle</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseEducations" data-parent="#exampleAccordion">Eğitimler</a>
-                        <ul class="sidenav-third-level collapse" id="collapseEducations">
-                            <li>
-                                <a href="@Url.Action("List", "Education")">Listele</a>
-                            </li>
-                            <li>
-                                <a href="@Url.Action("Add", "Education")">Ekle</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseSuggestions" data-parent="#exampleAccordion">Öneri Yönetimi</a>
-                        <ul class="sidenav-third-level collapse" id="collapseSuggestions">
-                            <li>
-                                <a href="@Url.Action("Manage", "Suggestion")">Yönet</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseEgitmenler" data-parent="#exampleAccordion">Eğitmenler</a>
-                        <ul class="sidenav-third-level collapse" id="collapseEgitmenler">
-                            <li>
-                                <a href="@Url.Action("List", "Educator")">Listele</a>
-                            </li>
-                            <li>
-                                <a href="@Url.Action("Add", "Educator")">Ekle</a>
-                            </li>
-                        </ul>
+                        <a href="@Url.Action("Index", "Student")">Öğrenci Yönetimi</a>
                     </li>
                     <li>
                         <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseGroups" data-parent="#exampleAccordion">Gruplar</a>
@@ -80,16 +31,125 @@
                             <li>
                                 <a href="/admin/grup-olustur">Oluştur</a>
                             </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseReports" data-parent="#exampleAccordion">Raporlar</a>
-                        <ul class="sidenav-third-level collapse" id="collapseReports">
                             <li>
-                                <a href="/raporlar/satis">Satış Raporları</a>
+                                <a href="@Url.Action("Index", "HelpDocuments",new {documentName ="egy-01" })">Döküman</a>
                             </li>
                         </ul>
                     </li>
+
+                    <li>
+                        <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseEducations" data-parent="#exampleAccordion">Eğitimler</a>
+                        <ul class="sidenav-third-level collapse" id="collapseEducations">
+                            <li>
+                                <a href="@Url.Action("List", "Education")">Listele</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("List", "EducationCategory")">Kategoriler</a>
+
+                            </li>
+                            <li>
+                                <a href="@Url.Action("List", "EducationTag")">Etiketler</a>
+
+                            </li>
+                            <li>
+                                <a href="@Url.Action("List", "EducationSuggestionCriterion")">Öneri Kriterleri</a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapsePromotions" data-parent="#exampleAccordion">Promosyon Yönetimi</a>
+                        <ul class="sidenav-third-level collapse" id="collapsePromotions">
+                            <li>
+                                <a href="@Url.Action("List", "EducationPromotion")">Kupon Kodları</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("BasketBasedPromotionList", "EducationPromotion")">Promosyonlar</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("Add", "EducationPromotion")">Oluştur</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("Index", "HelpDocuments",new {documentName ="ky-01" })">Döküman</a>
+                            </li>
+                        </ul>
+                    </li>
+
+
+                    <li>
+                        <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseEgitmenler" data-parent="#exampleAccordion">Eğitmenler</a>
+                        <ul class="sidenav-third-level collapse" id="collapseEgitmenler">
+                            <li>
+                                <a href="@Url.Action("List", "Educator")">Listele</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("List","EducatorCertificate")">Eğitmen Sertifikaları</a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseBlog" data-parent="#exampleAccordion">Blog</a>
+                        <ul class="sidenav-third-level collapse" id="collapseBlog">
+                            <li>
+                                <a href="@Url.Action("Add", "BlogPost")">Yeni Ekle</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("List", "BlogPost")">Tüm Yazılar</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("List", "BlogCategory")">Kategoriler</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("List", "BlogTag")">Etiketler</a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseReports" data-parent="#exampleAccordion">Raporlar</a>
+                        <ul class="sidenav-third-level collapse" id="collapseReports">
+                            @*<li>
+                    <a href="/raporlar/satis">Satış Raporları</a>
+                </li>*@
+                            <li>
+                                <a href="@Url.Action("SalesReport","EarningsReport")">Genel Satış Raporu</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("GroupBasedSalesReport","EarningsReport")">Grup Bazlı Satış Raporu</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseOther" data-parent="#exampleAccordion">Diğer Ayarlar</a>
+                        <ul class="sidenav-third-level collapse" id="collapseOther">
+                            <li>
+                                <a href="@Url.Action("Manage", "Offday")">Tatil Günleri</a>
+                            </li>
+
+                            <li>
+                                <a href="@Url.Action("List", "GroupExpenseType")">Grup Gider Tipleri</a>
+                            </li>
+
+                            <li>
+                                <a href="@Url.Action("List", "EducationHost")">Eğitim Kurumları</a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseApplications" data-parent="#exampleAccordion">Başvurular</a>
+                        <ul class="sidenav-third-level collapse" id="collapseApplications">
+                            <li>
+                                <a href="@Url.Action("List", "EducatorApplication")">Eğitmen Başvuruları</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("List", "CorporateMembershipApplication")">Kurumsal Üyelik Başvuruları</a>
+                            </li>
+                        </ul>
+                    </li>
+
+
                 </ul>
             </li>
         </ul>

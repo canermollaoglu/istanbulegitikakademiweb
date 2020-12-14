@@ -6,17 +6,16 @@
         function Cart() {
 
         }
-
         Cart.prototype.ensureStorageCreated = function () {
             if (!localStorage.getItem("cart"))
                 localStorage.setItem("cart", JSON.stringify([]));
         }
 
-        Cart.prototype.addToCart = function (educationId, hostId) {
+        Cart.prototype.addToCart = function (educationId, hostId,groupId,imageUrl,newPrice,educationName) {
             this.ensureStorageCreated();
             var deserialized = JSON.parse(localStorage.getItem("cart"));
             if (deserialized.filter(x => x.educationId == educationId).length === 0) {
-                deserialized.push({ educationId: educationId, hostId: hostId });
+                deserialized.push({ educationId: educationId, hostId: hostId,groupId:groupId,imageUrl:imageUrl,newPrice:newPrice,educationName:educationName });
                 localStorage.setItem("cart", JSON.stringify(deserialized));
             }
         }
@@ -41,6 +40,7 @@
 
         Cart.prototype.clearCart = function () {
             localStorage.setItem("cart", JSON.stringify([]));
+            localStorage.setItem("promotionCode", "");
         }
 
         return Cart;

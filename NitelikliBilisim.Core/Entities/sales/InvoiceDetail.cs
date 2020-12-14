@@ -15,9 +15,11 @@ namespace NitelikliBilisim.Core.Entities
         public Guid EducationId { get; set; }
         public decimal PriceAtCurrentDate { get; set; }
         public bool IsUsedAsTicket { get; set; }
+        public Guid GroupId { get; set; }
 
         [ForeignKey("Invoice")]
         public Guid InvoiceId { get; set; }
         public virtual Invoice Invoice { get; set; }
+        public virtual OnlinePaymentDetailsInfo OnlinePaymentDetailInfo { get; set; }
     }
 }

@@ -1,6 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Nest;
 using NitelikliBilisim.Business.Repositories;
+using NitelikliBilisim.Business.Repositories.BlogRepositories;
+using NitelikliBilisim.Core.Entities.groups;
 using NitelikliBilisim.Data;
+using NitelikliBilisim.Notificator.Services;
 
 namespace NitelikliBilisim.Business.UoW
 {
@@ -16,7 +21,6 @@ namespace NitelikliBilisim.Business.UoW
         private EducatorRepository _educator;
         private EducatorSocialMediaRepository _educatorSocialMedia;
         private StudentEducationInfoRepository _studentEducationInfo;
-        private EducationSuggestionRepository _suggestionRepository;
         private CustomerRepository _customerRepository;
         private BridgeEducationEducatorRepository _bridgeEducationEducatorRepository;
         private EducationGroupRepository _educationGroupRepository;
@@ -30,21 +34,63 @@ namespace NitelikliBilisim.Business.UoW
         private GroupAttendanceRepository _groupAttendanceRepository;
         private EmailRepository _emailRepository;
         private EducatorSalaryRepository _educatorSalaryRepository;
-        private GroupMaterialRepository _groupMaterialRepository;
-        public UnitOfWork(NbDataContext context)
+        private EducatorCertificateRepository _educatorCertificateRepository;
+        private StateRepository _stateRepository;
+        private CityRepository _cityRepository;
+        private AddressRepository _addressRepository;
+        private EducationHostImageRepository _educationHostImageRepository;
+        private OffDayRepository _offDayRepository;
+        private EducationDayRepository _educationDayRepository;
+        private EducationSuggestionCriterionRepository _educationSuggestionCriterionRepository;
+        private WishListRepository _wishListItemRepository;
+        private SuggestionRepository _suggestionRepository;
+        private BlogPostRepository _blogPostRepository;
+        private BlogCategoryRepository _blogCategoryRepository;
+        private BlogTagRepository _blogTagRepository;
+        private InvoiceRepository _invoiceRepository;
+        private InvoiceDetailRepository _invoiceDetailRepository;
+        private GroupExpenseRepository _groupExpenseRepository;
+        private GroupExpenseTypeRepository _groupExpenseTypeRepository;
+        private EducationHostClassroomRepository _educationHostClassroomRepository;
+        private EducationPromotionCodeRepository _educationPromotionCodeRepository;
+        private EducationPromotionItemRepository _educationPromotionItemRepository;
+        private EducationPromotionConditionRepository _educationPromotionConditionRepository;
+        private EducatorApplicationRepository _educatorApplicationRespository;
+        private CorporateMembershipApplicationRepository _corporateMembershipApplicationRepository;
+        private EducationCommentRepository _educationCommentRepository;
+
+        private IElasticClient _elasticClient;
+        private IConfiguration _configuration;
+        private IEmailSender _emailSender;
+        public UnitOfWork(NbDataContext context, IElasticClient elasticClient,IConfiguration configuration,IEmailSender emailSender)
         {
+            _elasticClient = elasticClient;
             _context = context;
+            _configuration = configuration;
+            _emailSender = emailSender;
         }
         public int Save()
         {
             _context.EnsureAutoHistory();
             return _context.SaveChanges();
         }
+        public EducationCommentRepository EducationComment => _educationCommentRepository ?? new EducationCommentRepository(_context);
+        public CorporateMembershipApplicationRepository CorporateMembershipApplication => _corporateMembershipApplicationRepository ??= new CorporateMembershipApplicationRepository(_context);
+        public EducatorApplicationRepository EducatorApplication => _educatorApplicationRespository ??= new EducatorApplicationRepository(_context);
+        public EducationPromotionConditionRepository EducationPromotionCondition => _educationPromotionConditionRepository ??= new EducationPromotionConditionRepository(_context);
+        public EducationPromotionItemRepository EducationPromotionItem => _educationPromotionItemRepository ??= new EducationPromotionItemRepository(_context);
+        public EducationPromotionCodeRepository EducationPromotionCode => _educationPromotionCodeRepository ??= new EducationPromotionCodeRepository(_context);
+        public EducationHostClassroomRepository ClassRoom => _educationHostClassroomRepository ??= new EducationHostClassroomRepository(_context);
+        public GroupExpenseRepository GroupExpense => _groupExpenseRepository ??= new GroupExpenseRepository(_context);
+        public GroupExpenseTypeRepository GroupExpenseType => _groupExpenseTypeRepository ??= new GroupExpenseTypeRepository(_context);
+        public InvoiceDetailRepository InvoiceDetail => _invoiceDetailRepository ??= new InvoiceDetailRepository(_context);
+        public InvoiceRepository Invoice => _invoiceRepository ??= new InvoiceRepository(_context);
+        public SuggestionRepository Suggestions => _suggestionRepository ??= new SuggestionRepository(_context, _elasticClient,_configuration);
         public EducationCategoryRepository EducationCategory => _educationCategoryRepository ??= new EducationCategoryRepository(_context);
 
         public EducationTagRepository EducationTag => _educationTagRepository ??= new EducationTagRepository(_context);
 
-        public EducationRepository Education => _education ??= new EducationRepository(_context);
+        public EducationRepository Education => _education ??= new EducationRepository(_context,_configuration);
 
         public EducationMediaItemRepository EducationMedia => _educationMediaItem ??= new EducationMediaItemRepository(_context);
 
@@ -58,14 +104,12 @@ namespace NitelikliBilisim.Business.UoW
 
         public StudentEducationInfoRepository StudentEducationInfo => _studentEducationInfo ??= new StudentEducationInfoRepository(_context);
 
-        public EducationSuggestionRepository Suggestion => _suggestionRepository ??= new EducationSuggestionRepository(_context);
-
         public CustomerRepository Customer => _customerRepository ??= new CustomerRepository(_context);
 
         public BridgeEducationEducatorRepository Bridge_EducationEducator => _bridgeEducationEducatorRepository ??= new BridgeEducationEducatorRepository(_context);
-        public EducationGroupRepository EducationGroup => _educationGroupRepository ??= new EducationGroupRepository(_context);
+        public EducationGroupRepository EducationGroup => _educationGroupRepository ??= new EducationGroupRepository(_context,_configuration);
 
-        public EducationHostRepository EductionHost => _educationHostRepository ??= new EducationHostRepository(_context);
+        public EducationHostRepository EducationHost => _educationHostRepository ??= new EducationHostRepository(_context);
 
         public WeekDaysOfGroupRepository WeekDaysOfGroup => _weekDaysOfGroupRepository ??= new WeekDaysOfGroupRepository(_context);
 
@@ -75,7 +119,7 @@ namespace NitelikliBilisim.Business.UoW
         {
             get
             {
-                return _saleRepository ?? (_saleRepository = new SaleRepository(_context));
+                return _saleRepository ?? (_saleRepository = new SaleRepository(_context,_emailSender));
             }
         }
         public TempSaleDataRepository TempSaleData
@@ -120,12 +164,25 @@ namespace NitelikliBilisim.Business.UoW
                 return _educatorSalaryRepository ?? (_educatorSalaryRepository = new EducatorSalaryRepository(_context));
             }
         }
-        public GroupMaterialRepository Material
+        
+        public EducatorCertificateRepository EducatorCertificate
         {
             get
             {
-                return _groupMaterialRepository ?? (_groupMaterialRepository = new GroupMaterialRepository(_context));
+                return _educatorCertificateRepository ?? (_educatorCertificateRepository = new EducatorCertificateRepository(_context));
             }
         }
-    }
+        
+        public StateRepository State => _stateRepository ??= new StateRepository(_context);
+        public CityRepository City => _cityRepository ??= new CityRepository(_context);
+        public AddressRepository Address => _addressRepository ??= new AddressRepository(_context);
+        public EducationHostImageRepository EducationHostImage => _educationHostImageRepository ??= new EducationHostImageRepository(_context);
+        public OffDayRepository OffDay => _offDayRepository ??= new OffDayRepository(_context);
+        public EducationDayRepository EducationDay => _educationDayRepository ??= new EducationDayRepository(_context);
+        public EducationSuggestionCriterionRepository EducationSuggestionCriterion => _educationSuggestionCriterionRepository ??= new EducationSuggestionCriterionRepository(_context);
+        public WishListRepository WishListItem => _wishListItemRepository ??= new WishListRepository(_context);
+        public BlogPostRepository BlogPost => _blogPostRepository ??= new BlogPostRepository(_context);
+        public BlogCategoryRepository BlogCategory => _blogCategoryRepository ??= new BlogCategoryRepository(_context);
+        public BlogTagRepository BlogTag => _blogTagRepository ??= new BlogTagRepository(_context);
+     }
 }

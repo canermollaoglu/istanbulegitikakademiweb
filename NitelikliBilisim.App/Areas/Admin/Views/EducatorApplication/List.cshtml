@@ -1,0 +1,195 @@
+﻿@{
+    ViewData["Title"] = "Eğitmen Başvuruları";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-table"></i> Eğitmen Başvuru Listesi
+    </div>
+    <div class="card-body">
+        <div id="educator-application-grid"></div>
+    </div>
+    <div class="card-footer small text-muted">Veri tarihi: @DateTime.Now</div>
+</div>
+
+@section postScripts{
+
+    <script>
+        /* fields */
+        /* assignments */
+        $(document).ready(document_onLoad);
+
+        /* events */
+        function document_onLoad() {
+            createGrid();
+        }
+
+        /*DataGrid*/
+        function createGrid() {
+            $("#educator-application-grid").dxDataGrid({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    key: "id",
+                    loadUrl: "../../api/educatorapplication/get-educator-applications"
+                }),
+                remoteOperations: {
+                    paging: true,
+                    filtering: true,
+                    sorting: true,
+                    grouping: true,
+                    summary: true,
+                    groupPaging: true
+                },
+                showBorders: true,
+                showColumnLines: true,
+                showRowLines: true,
+                wordWrapEnabled: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                searchPanel: {
+                    visible: true,
+                    width: 240
+                },
+                paging: {
+                    pageSize: 10
+                },
+                groupPanel: {
+                    visible: true
+                },
+                grouping: {
+                    autoExpandAll: true
+                },
+                headerFilter: {
+                    visible: true
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10, 20],
+                    showInfo: true
+                },
+                onExporting: function (e) {
+                    var workbook = new ExcelJS.Workbook();
+                    var worksheet = workbook.addWorksheet('Eğitmen Başvuruları');
+                    DevExpress.excelExporter.exportDataGrid({
+                        worksheet: worksheet,
+                        component: e.component,
+                        customizeCell: function (options) {
+                            var excelCell = options;
+                            excelCell.font = { name: 'Arial', size: 12 };
+                            excelCell.alignment = { horizontal: 'left' };
+                        }
+                    }).then(function () {
+                        workbook.xlsx.writeBuffer().then(function (buffer) {
+                            saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'Eğitmen Başvuru Listesi' + parseInt(Math.random() * 1000000000) + '.xlsx');
+                        });
+                    });
+                    e.cancel = true;
+                },
+                export: {
+                    enabled: true
+                },
+                columns: [
+                    {
+                        caption: "Başvuru Tarihi",
+                        dataField: "createdDate",
+                        dataType: 'date',
+                        format: 'dd/MM/yyyy',
+                        width: 160,
+                        sortOrder:"desc"
+                    },
+                    {
+                        caption: "Ad Soyad",
+                        dataField: "nameSurname",
+                        width: 200
+
+                    }, {
+                        caption: "Telefon",
+                        dataField: "phone",
+                        width:200
+                    },
+
+                    {
+                        caption: "E-Posta",
+                        dataField: "email",
+                        width: 250
+                    },
+                    {
+                        caption: "Durum",
+                        allowSearch: false,
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            var div = $('<div class="btn-group" style="display: inline-flex; width:"auto"></div>');
+                            if (current.isViewed) {
+                                $(`<span class="text-success"><i title="Görüldü" class="fa fa-check"></i></span>`)
+                                    .appendTo(div);
+                            } else {
+                                $(`<button type="button" title="Görüldü olarak işaretle" onClick="setViewedStatus('${current.id}')" class="btn btn-outline-success btn-sm"><i class="fa fa-eye"></i></button>`)
+                                    .appendTo(div);
+                            }
+                            div.appendTo(container);
+
+                        },
+                        alignment: "center"
+                    },
+                    {
+                        caption: "İşlem",
+                        allowSearch: false,
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            var div = $('<div class="btn-group" style="display: inline-flex; width:"auto"></div>');
+                            $(`<a class="btn btn-outline-primary btn-sm" href="/admin/egitmen-cv-goruntule?eId=${current.id}">CV Görüntüle</a>`)
+                                .appendTo(div);
+                            div.appendTo(container);
+
+                        },
+                        alignment: "center"
+                    }
+                ],
+                masterDetail: {
+                    enabled: true,
+                    template: function (container, options) {
+                        var currentEducatorApplication = options.data;
+                        var currentDiv = $("<div>")
+                            .appendTo(container);
+                        var content = `<div class="card border-info mb-3">`+
+                            ` <div class="card-header font-weight-bold">Ön Yazı</div>`+
+                            `<div class="card-body"><p>${currentEducatorApplication.note}</p></div></div>`
+                        currentDiv.append(content);
+                    }
+                }
+            });
+        }
+
+
+
+        function setViewedStatus(eAId) {
+            var resultAlert = new AlertSupport.ResultAlert();
+            $.ajax({
+                url: `/admin/EducatorApplication/SetViewedStatus?eAId=${eAId}`,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        resultAlert.display({
+                            success: true,
+                            message: "Göründü bilgisi güncellendi.",
+                        });
+                        $("#educator-application-grid").dxDataGrid("instance").refresh();
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors,
+                            message: "İşlem başarısız"
+                        });
+                    }
+                }
+            });
+        }
+
+    </script>
+}

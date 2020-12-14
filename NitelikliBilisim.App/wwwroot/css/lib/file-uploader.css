@@ -72,3 +72,37 @@ p {
     cursor: pointer;
     border-radius: 50%;
 }
+
+.file-upload-container-blog-post-image {
+    background-image: url('../../img/nb_letter_logo_sm.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    min-height: 250px;
+    max-height: 250px;
+    max-width: 424px;
+    min-width: 224px;
+    display: block;
+    margin: 0;
+    padding: 0.1%;
+    cursor: pointer;
+    color: rgba(50,50,50,1);
+    border: 1px dashed black;
+    font-size: 75%;
+    font-style: italic;
+}
+
+.img-after-preview-with-blog-post-image {
+    background-size: cover;
+    min-height: 250px;
+    max-height: 250px;
+    width: 100%;
+    margin: 0;
+    padding: 1.1%;
+    padding-left: inherit;
+    padding-top: initial;
+    cursor: pointer;
+}
+
+.file-upload-container-with-blog-post-image input[type="file"] {
+    display: none;
+}

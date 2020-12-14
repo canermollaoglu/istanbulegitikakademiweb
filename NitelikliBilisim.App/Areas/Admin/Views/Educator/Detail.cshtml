@@ -1,0 +1,284 @@
+﻿@model NitelikliBilisim.Core.ViewModels.areas.admin.educator.EducatorDetailVm
+@using NitelikliBilisim.Core.Services.Abstracts
+@inject IStorageService StorageService
+@{
+    ViewData["Title"] = "Eğitmen Detayları";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@section styles{
+    <style>
+        .form-check-label {
+            cursor: pointer;
+        }
+
+        .table td {
+            padding: .40rem !important;
+        }
+    </style>
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+@{
+    var filePath = "";
+    try
+    {
+        filePath = StorageService.DownloadFile(System.IO.Path.GetFileName(Model.AvatarPath), "educator-photos").Result;
+    }
+    catch
+    {
+    }
+}
+<!--Genel Bilgileri-->
+<div class="row">
+    <div class="col-md-5">
+        <div class="card border-info mb-3">
+            <div class="card-header">
+                <i class="fa fa-id-card-o"></i> Eğitmen Detayları
+                <a class="pull-right" title="Sosyal Medya Profilleri" href="/admin/egitmen-sosyal-medya-guncelle/@Model.Id"><i class="fa fa-users"></i></a>
+            </div>
+            <input type="hidden" value="@Model.Id" id="educatorId" />
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <td style="text-align:center;" colspan="2"><img src="@(string.IsNullOrEmpty(filePath)?"/img/nb_letter_logo_sm.png":filePath)" class="img-thumbnail" width="150" height="150" /></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Kullanıcı Adı</b>
+                            </td>
+                            <td>
+                                @Model.UserName
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Adı</b>
+                            </td>
+                            <td>
+                                @Model.Name
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Soyadı</b>
+                            </td>
+                            <td>
+                                @Model.Surname
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Telefon</b>
+                            </td>
+                            <td>@Model.Phone</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Email</b>
+                            </td>
+                            <td>@Model.Email</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Ünvan</b>
+                            </td>
+                            <td>@Model.Title</td>
+
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Banka</b>
+                            </td>
+                            <td> @Model.Bank</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>IBAN</b>
+                            </td>
+                            <td> @Model.IBAN</td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align:middle"><b>Sertifikalar</b></td>
+                            <td>
+                                <ul class="list-group list-group-flush">
+                                    @foreach (var certificate in Model.Certificates)
+                                    {
+
+                                        <li class="list-group-item"><img height="35" src="@StorageService.DownloadFile(System.IO.Path.GetFileName(certificate.CertificateImagePath), "educator-certificate-images").Result"/> @certificate.Name</li>
+                                    }
+                                </ul>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="card border-info mb-2">
+            <div class="card-header">
+                <i class="fa fa-caret-right"></i> Eğitmen Hakkında Kısa Açıklama
+            </div>
+            <div class="card-body">
+                <p>@Model.ShortDescription</p>
+            </div>
+        </div>
+
+        <div class="card border-info mb-2">
+            <div class="card-header">
+                <i class="fa fa-history"></i> Biyografi
+            </div>
+            <div class="card-body">
+                <p>@Model.Biography</p>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Gruplar-->
+<div class="row">
+    <div class="col-md-12">
+        <div class="card border-info mb-3">
+            <div class="card-header">
+                <i class="fa fa-users"></i>  Gruplar
+            </div>
+            <div class="card-body">
+                <div id="grid-educator-groups">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section postScripts{
+    <script type="text/javascript">
+        /* elements */
+        var educatorId = $("#educatorId").val();
+        var divEducatorCertificates = $("#div-educator-certificates");
+
+        /* assignments */
+        $(document).ready(document_onLoad);
+
+        /* events */
+        function document_onLoad() {
+            createEducatorGroupsGrid();
+        }
+
+        /* DataGrid */
+        function createEducatorGroupsGrid() {
+            var SERVICE_URL = `../../api/educator/get-educator-groups-by-educator-id?educatorId=${educatorId}`
+            $("#grid-educator-groups").dxDataGrid({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    loadUrl: SERVICE_URL
+                }),
+                remoteOperations: {
+                    paging: true,
+                    filtering: true,
+                    sorting: true,
+                    grouping: true,
+                    summary: true,
+                    groupPaging: true
+                },
+                showBorders: true,
+                showColumnLines: true,
+                rowAlternationEnabled: true,
+                showRowLines: true,
+                wordWrapEnabled: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                searchPanel: {
+                    visible: true
+                },
+                paging: {
+                    pageSize: 10
+                },
+                grouping: {
+                    autoExpandAll: true
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10, 20],
+                    showInfo: true
+                },
+                headerFilter: {
+                    visible: true
+                },
+                groupPanel: {
+                    visible: true
+                },
+                export: {
+                    enabled: true,
+                },
+                onExporting: function (e) {
+                    var workbook = new ExcelJS.Workbook();
+                    var worksheet = workbook.addWorksheet('Eğitmen Grup Listesi');
+                    DevExpress.excelExporter.exportDataGrid({
+                        worksheet: worksheet,
+                        component: e.component,
+                        customizeCell: function (options) {
+                            var excelCell = options;
+                            excelCell.font = { name: 'Arial', size: 12 };
+                            excelCell.alignment = { horizontal: 'left' };
+                        }
+                    }).then(function () {
+                        workbook.xlsx.writeBuffer().then(function (buffer) {
+                            saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'Egitmen Grup Listesi' + parseInt(Math.random() * 1000000000) + '.xlsx');
+                        });
+                    });
+                    e.cancel = true;
+                },
+                columns: [
+                    {
+                        caption: "Başlangıç Tarihi",
+                        dataField: "startDate",
+                        dataType: "date",
+                        format: "dd/MM/yyyy",
+                        sortOrder: "desc",
+                        width: 150
+                    },
+                    {
+                        caption: "Grup Adı",
+                        dataField: "name",
+                        width: 100
+                    },
+                    {
+                        caption: "Eğitim Adı",
+                        dataField: "educationName"
+                    },
+                    {
+                        caption: "Kurum",
+                        dataField: "hostName",
+                        width: 250
+                    },
+                    {
+                        caption: "Hakediş",
+                        dataField: "educatorSalary",
+                        customizeText: function (educatorSalary) {
+                            return educatorSalary.value + " ₺";
+                        },
+                        alignment: "center",
+                        width:120
+                    },
+                    {
+                        caption: "Detay",
+                        allowSearch: false,
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            var div = $('<div class="btn-group" style="display: inline-flex; width:"auto"></div>');
+                            $(`<a class="btn btn-outline-primary btn-sm" href="/admin/grup-detay/${current.id}">Grup Detayı</a>`)
+                                .appendTo(div);
+                            div.appendTo(container);
+                        },
+                        alignment: "center",
+                        width: 110
+                    }
+                ]
+            });
+        }
+
+    </script>
+}

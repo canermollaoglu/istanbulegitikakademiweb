@@ -16,12 +16,12 @@ namespace NitelikliBilisim.Business.Repositories
     public class SaleRepository
     {
         private readonly NbDataContext _context;
-        private readonly EmailSender _emailSender;
+        private readonly IEmailSender _emailSender;
 
-        public SaleRepository(NbDataContext context)
+        public SaleRepository(NbDataContext context,IEmailSender emailSender)
         {
             _context = context;
-            _emailSender = new EmailSender();
+            _emailSender = emailSender;
         }
         public ApplicationUser GetUser(string userId)
         {
@@ -29,18 +29,19 @@ namespace NitelikliBilisim.Business.Repositories
         }
         public List<CartItem> PrepareCartItems(PayData data)
         {
-            var educations = _context.Educations
-               .Where(x => data.CartItems.Select(cartItem => cartItem.EducationId).Contains(x.Id))
-               .Include(x => x.Category)
-               .ThenInclude(x => x.BaseCategory)
+            var groups = _context.EducationGroups
+               .Include(x=>x.Education)
+               .ThenInclude(x=>x.Category)
+               .ThenInclude(x=>x.BaseCategory)
+               .Where(x => data.CartItems.Select(cartItem => cartItem.GroupId).Contains(x.Id))
                .ToList();
 
             var cartItems = new List<CartItem>();
 
-            foreach (var item in educations)
+            foreach (var item in groups)
                 cartItems.Add(new CartItem
                 {
-                    Education = item,
+                    EducationGroup = item,
                     InvoiceDetailsId = Guid.NewGuid()
                 });
 
@@ -124,21 +125,39 @@ namespace NitelikliBilisim.Business.Repositories
                         MerchantPayout = item.MerchantPayout,
                         PaidPrice = item.PaidPrice,
                         Price = item.Price,
-                        BlockageResolveDate = item.BlockageDate
+                        BlockageResolveDate = CalculateTransferDate(DateTime.Now.Date)
                     });
                 }
                 _context.OnlinePaymentDetailsInfos.AddRange(onlinePaymentDetailInfos);
 
                 _context.SaveChanges();
                 transaction.Commit();
+                Auto__AssignTickets(invoiceDetailsIds);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
                 transaction.Rollback();
             }
-            Task.Run(() => Auto__AssignTickets(invoiceDetailsIds));
+            
         }
+
+        private DateTime CalculateTransferDate(DateTime paymentDate)
+        {
+            switch (paymentDate.DayOfWeek)
+            {
+                case DayOfWeek.Monday: return paymentDate.AddDays(9).AddHours(17);
+                case DayOfWeek.Tuesday: return paymentDate.AddDays(8).AddHours(17);
+                case DayOfWeek.Wednesday: return paymentDate.AddDays(7).AddHours(17);
+                case DayOfWeek.Thursday: return paymentDate.AddDays(6).AddHours(17);
+                case DayOfWeek.Friday: return paymentDate.AddDays(5).AddHours(17);
+                case DayOfWeek.Saturday: return paymentDate.AddDays(4).AddHours(17);
+                case DayOfWeek.Sunday: return paymentDate.AddDays(3).AddHours(17);
+                default: return paymentDate.AddDays(9).AddHours(17);
+            }
+
+        }
+
         public bool GetIfCustomerEligibleToFullyCancel(Guid ticketId)
         {
             var groupStartDate = _context.Bridge_GroupStudents.Include(x=>x.Group).First(x => x.TicketId == ticketId).Group.StartDate;
@@ -148,19 +167,16 @@ namespace NitelikliBilisim.Business.Repositories
 
             return !(isGroupStarted || DateTime.Now.Date > invoiceDate.Date);
         }
-        public async void RefundPayment(Guid ticketId)
+        public void RefundPayment(Guid invoiceDetailId,decimal refundPrice)
         {
-            var invoiceDetailsId = _context.Tickets.First(x => x.Id == ticketId).InvoiceDetailsId;
-            var onlinePaymentDetailsInfo = _context.OnlinePaymentDetailsInfos.First(x => x.Id == invoiceDetailsId);
-
+            var onlinePaymentDetailsInfo = _context.OnlinePaymentDetailsInfos.First(x => x.Id == invoiceDetailId);
             onlinePaymentDetailsInfo.IsCancelled = true;
             onlinePaymentDetailsInfo.CancellationDate = DateTime.Now;
-
+            onlinePaymentDetailsInfo.RefundPrice = refundPrice;
             _context.SaveChanges();
-
-            await Auto__UnassignTickets(new List<Guid>() { invoiceDetailsId });
+            Auto__UnassignTickets(new List<Guid>() { invoiceDetailId });
         }
-        public async void CancelPayment(Guid invoiceId)
+        public void CancelPayment(Guid invoiceId)
         {
             var invoiceDetailsIds = _context.InvoiceDetails.Where(x => x.InvoiceId == invoiceId).Select(x => x.Id).ToList();
             var onlinePaymentDetails = _context.OnlinePaymentDetailsInfos.Where(x => invoiceDetailsIds.Contains(x.Id));
@@ -169,11 +185,10 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 item.IsCancelled = true;
                 item.CancellationDate = DateTime.Now;
+                item.RefundPrice = item.PaidPrice;
             }
-
             _context.SaveChanges();
-
-            await Auto__UnassignTickets(invoiceDetailsIds);
+            Auto__UnassignTickets(invoiceDetailsIds);
         }
         private List<InvoiceDetail> CreateInvoiceDetails(List<CartItem> cartItems)
         {
@@ -183,8 +198,9 @@ namespace NitelikliBilisim.Business.Repositories
                 invoiceDetails.Add(new InvoiceDetail
                 {
                     Id = cartItem.InvoiceDetailsId,
-                    EducationId = cartItem.Education.Id,
-                    PriceAtCurrentDate = cartItem.Education.NewPrice.GetValueOrDefault()
+                    EducationId = cartItem.EducationGroup.Education.Id,
+                    GroupId = cartItem.EducationGroup.Id,
+                    PriceAtCurrentDate = cartItem.EducationGroup.NewPrice.GetValueOrDefault()
                 });
             }
 
@@ -223,17 +239,19 @@ namespace NitelikliBilisim.Business.Repositories
                     HostId = hostIds[i],
                     InvoiceDetailsId = item.Id,
                     IsUsed = false,
-                    OwnerId = userId
+                    OwnerId = userId,
+                    GroupId = item.GroupId
                 });
             }
 
             return tickets;
         }
-        private async Task<bool> Auto__AssignTickets(List<Guid> invoiceDetailsIds)
+        private bool Auto__AssignTickets(List<Guid> invoiceDetailsIds)
         {
             try
             {
-                var tickets = _context.Tickets.Include(x => x.Owner).ThenInclude(x => x.User)
+
+                var tickets = _context.Tickets.Include(x=>x.Education).Include(x => x.Owner).ThenInclude(x => x.User)
                     .Where(x => invoiceDetailsIds.Contains(x.InvoiceDetailsId))
                     .ToList();
 
@@ -241,19 +259,18 @@ namespace NitelikliBilisim.Business.Repositories
                 {
                     var firstGroup = _context.EducationGroups
                         .Where(x => x.StartDate.Date > DateTime.Now.Date
-                        && x.EducationId == ticket.EducationId
-                        && x.IsGroupOpenForAssignment
-                        && x.HostId == ticket.HostId)
-                        .OrderBy(o => o.StartDate)
+                        && x.Id == ticket.GroupId
+                        && x.IsGroupOpenForAssignment)
                         .FirstOrDefault();
+
                     if (firstGroup == null)
                     {
-                        await _emailSender.SendAsync(new EmailMessage
+                        Task.Run(()=> _emailSender.SendAsync(new EmailMessage
                         {
                             Subject = "Grup Atamanız Yapılamamıştır | Nitelikli Bilişim",
                             Body = $"{ticket.Education.Name} eğitimine yönelik grupların kontenjanları dolduğu için gruba atamanız yapılamamıştır.",
                             Contacts = new string[]{ ticket.Owner.User.Email }
-                        });
+                        }));
                         return false;
                     }
 
@@ -263,16 +280,30 @@ namespace NitelikliBilisim.Business.Repositories
                         Id2 = ticket.OwnerId,
                         TicketId = ticket.Id
                     });
+                    //grup kontenjanının dolması durumunda IsGroupOpenForAssigment false olarak değiştiriliyor.
+                    var groupStudentsCount = _context.Bridge_GroupStudents.Count(x => x.Id == firstGroup.Id) + 1;
+                    ticket.IsUsed = true;
+                    if (groupStudentsCount == firstGroup.Quota)
+                        firstGroup.IsGroupOpenForAssignment = false;
+                    _context.SaveChanges();
 
-                    await _emailSender.SendAsync(new EmailMessage
+                    Task.Run(()=> _emailSender.SendAsync(new EmailMessage
                     {
                         Subject = "Grup Atamanız Yapılmıştır | Nitelikli Bilişim",
                         Body = $"{ticket.Education.Name} eğitimi için {firstGroup.StartDate.ToShortDateString()} tarihinde başlayacak olan {firstGroup.GroupName} grubuna atamanız yapılmıştır.",
                         Contacts = new string[] { ticket.Owner.User.Email }
-                    });
+                    }));
+                    var adminEmails = GetAdminEmails();
+                    if (groupStudentsCount>=firstGroup.Quota-3)
+                    {
+                        Task.Run(() => _emailSender.SendAsync(new EmailMessage
+                        {
+                            Subject = "Grup Kontenjan Bilgisi | Nitelikli Bilişim",
+                            Body = $"{firstGroup.GroupName} Grup kontenjanının dolması için {firstGroup.Quota-groupStudentsCount} kayıt kalmıştır.",
+                            Contacts =  adminEmails.ToArray()
+                        }));
+                    }
 
-                    ticket.IsUsed = true;
-                    _context.SaveChanges();
                 }
                 return true;
             }
@@ -281,30 +312,43 @@ namespace NitelikliBilisim.Business.Repositories
                 return false;
             }
         }
-        private async Task<bool> Auto__UnassignTickets(List<Guid> invoiceDetailsIds)
+        public List<string> GetAdminEmails()
+        {
+            return _context.UserRoles
+                .Include(x => x.Role)
+                .Include(x => x.User)
+                .Where(x => x.Role.Name == "Admin")
+                .Select(x => x.User.Email)
+                .ToList();
+        }
+        private bool Auto__UnassignTickets(List<Guid> invoiceDetailsIds)
         {
             try
             {
                 var tickets = _context.Tickets.Include(x => x.Education).Include(x => x.Owner).ThenInclude(x => x.User)
                     .Where(x => invoiceDetailsIds.Contains(x.InvoiceDetailsId))
                     .ToList();
-
                 var bridges = _context.Bridge_GroupStudents
                     .Where(x => tickets.Select(x => x.Id).Contains(x.TicketId))
                     .ToList();
+                var groups = _context.EducationGroups.Where(x => bridges.Select(s => s.Id).Contains(x.Id));
+
+                foreach (var bridge in bridges)
+                {
+                    var group = groups.First(x => x.Id == bridge.Id);
+                    group.IsGroupOpenForAssignment = true;
+                    _context.EducationGroups.Update(group);
+                }
                 foreach (var ticket in tickets)
                 {
-                    await _emailSender.SendAsync(new EmailMessage
+                   Task.Run(()=> _emailSender.SendAsync(new EmailMessage
                     {
                         Subject = "Gruptan Ayrıldınız | Nitelikli Bilişim",
                         Body = $"{ticket.Education.Name} eğitimini iptal ettiğiniz için atandığınız gruptan ayrıldınız.",
                         Contacts = new string[] { ticket.Owner.User.Email }
-                    });
-
-                    ticket.IsUsed = true;
+                    }));
                 }
-                    
-                _context.RemoveRange(bridges);
+                _context.Bridge_GroupStudents.RemoveRange(bridges);
                 _context.SaveChanges();
             }
             catch

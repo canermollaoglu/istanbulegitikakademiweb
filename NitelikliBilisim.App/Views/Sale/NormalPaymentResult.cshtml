@@ -1,4 +1,4 @@
-﻿
+﻿@model NitelikliBilisim.Core.ViewModels.Main.Sales.NormalPaymentResultVm
 @{
     Layout = null;
 }
@@ -8,15 +8,18 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>NormalPaymentResult</title>
+    <title>Ödeme Sonucu</title>
 </head>
 <body>
-    <h1>Normal ödeme sonuçlandı</h1>
+    <h1>@Model.Message</h1>
 
     <script src="~/js/sup/cart.js"></script>
     <script>
-        var _cart = new CartSupport.Cart();
-        _cart.clearCart();
+        if ('@Model.Status' == "Success") {
+            var _cart = new CartSupport.Cart();
+            _cart.clearCart();
+        }
+
     </script>
 </body>
 </html>

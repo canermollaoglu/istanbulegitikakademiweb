@@ -1,0 +1,129 @@
+﻿@model NitelikliBilisim.Core.ViewModels.areas.admin.education_suggestion_criterion.EducationSuggestionCriterionManageVm
+@{
+    ViewData["Title"] = "Eğitim Öneri Kriteri Yönetimi";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    <link href="~/vendor\select2/dist/css/select2.min.css" rel="stylesheet" />
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-plus"></i> Eğitim Öneri Kriteri Ekle
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <form id="form-add-education-suggestion-criterion">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" value="@Model.EducationId" id="_education-id" />
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Kriter Tipi</label>
+                                <select id="select-suggestionCriterionTypes" class="form-control">
+                                    @foreach (var item in Model.EducationSuggestionCriterionTypes)
+                                    {
+                                        <option value="@item.Key">@item.Value</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3" id="divMinVal">
+                            <div class="form-group">
+                                <label>Minimum Değer</label>
+                                <input type="number" class="form-control" id="input-minVal" />
+                            </div>
+                        </div>
+                        <div class="col-md-3" id="divMaxVal">
+                            <div class="form-group">
+                                <label>Maksimum Değer</label>
+                                <input type="number" class="form-control" id="input-maksVal" />
+                            </div>
+                        </div>
+                        <div class="col-md-6" id="divCharVal">
+                            <div class="form-group">
+                                <label>Değer</label>
+                                <select id="selectEducationLlist" multiple="multiple" class="form-control">
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <button class="btn btn-success btn-block no-label" type="button" id="btn-save"><i class="fa fa-save"></i> Ekle</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="card mb-3">
+    <div class="card-header">
+        <i  class="fa fa-lightbulb-o"></i> <strong>@Model.EducationName</strong> Eğitimi Öneri Kriterleri
+        <i title="Bu alan @Model.EducationName eğitiminin önerileceği kişilerde aranan kriterleri temsil eder. Öğrenci bu kriterlere ne kadar uyuyorsa bu eğitim daha ön planda önerilir." class="fa fa-question pull-right"></i>
+    </div>
+    <div class="card-body">
+        <div class="row" id="suggestionCriterionsCard">
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="educationSuggestionCriterionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Eğitim Öneri Kriteri Düzenle</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="form-update-education-suggestion-criterion">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="educationSuggestionCriterionId" />
+                    <div class="row">
+                        <div class="col-md-6" id="divUptMinVal">
+                            <div class="form-group">
+                                <label for="recipient-name" class="col-form-label">Minimum Değer:</label>
+                                <input type="number" class="form-control" id="upd_maxVal" />
+                            </div>
+                        </div>
+                        <div class="col-md-6" id="divUptMaxVal">
+                            <div class="form-group">
+                                <label for="message-text" class="col-form-label">Maksimum Değer:</label>
+                                <input type="number" class="form-control" id="upd_minVal" />
+                            </div>
+                        </div>
+                        <div class="col-md-12" id="divUpdCharVal">
+                            <div class="form-group">
+                                <label>Değer</label>
+                                <select id="upd_SelectEducationList" multiple="multiple" class="form-control select2">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                <button type="button" class="btn btn-primary" id="btn-update">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section postScripts{
+    <script src="~/vendor\select2/dist/js/select2.min.js"></script>
+    <script src="~/js/areas/admin/admin-education-suggestion-criterion-manage.js"></script>
+}

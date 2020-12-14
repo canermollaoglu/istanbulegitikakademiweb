@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using MUsefulMethods;
 using NitelikliBilisim.App.Areas.Admin.Models.Education;
 using NitelikliBilisim.App.Areas.Admin.VmCreator.Education;
 using NitelikliBilisim.App.Lexicographer;
@@ -11,7 +13,7 @@ using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Services.Abstracts;
-using NitelikliBilisim.Support.Text;
+using NitelikliBilisim.Core.ViewModels.HelperVM;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,8 +22,7 @@ using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    [Area("Admin"), Authorize(Roles = "Admin")]
-    public class EducationController : TempSecurityController
+    public class EducationController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly EducationVmCreator _vmCreator;
@@ -59,7 +60,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
             //var bannerPath = _fileUploadManager.Upload($"/uploads/media-items/", data.BannerFile.Base64Content, data.BannerFile.Extension, "banner", data.Name);
             var bannerStream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.BannerFile.Base64Content));
-            var bannerFileName = $"{data.Name.FormatForTag()}-banner";
+            var bannerFileName = $"{StringHelpers.FormatForTag(data.Name)}-banner";
             var bannerPath = await _storage.UploadFile(bannerStream, $"{bannerFileName}.{data.BannerFile.Extension.ToLower()}", "media-items");
             var banner = new EducationMedia
             {
@@ -69,7 +70,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
             //var previewPath = _fileManager.Upload($"/uploads/media-items/", data.PreviewFile.Base64Content, data.PreviewFile.Extension, "preview", data.Name);
             var previewStream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.PreviewFile.Base64Content));
-            var previewFileName = $"{data.Name.FormatForTag()}-preview";
+            var previewFileName = $"{StringHelpers.FormatForTag(data.Name)}-preview";
             var previewPath = await _storage.UploadFile(previewStream, $"{previewFileName}.{data.PreviewFile.Extension.ToLower()}", "media-items");
             var preview = new EducationMedia
             {
@@ -83,13 +84,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 Description = data.Description,
                 Description2 = data.Description2,
                 Level = (EducationLevel)data.EducationLevel.GetValueOrDefault(),
-                NewPrice = data.Price.GetValueOrDefault(),
                 Days = data.Days.GetValueOrDefault(),
                 HoursPerDay = data.HoursPerDay.GetValueOrDefault(),
                 CategoryId = data.CategoryId
             };
 
-            _unitOfWork.Education.Insert(education, data.TagIds, new List<EducationMedia> { banner, preview });
+            _unitOfWork.Education.Insert(education, data.Tags, new List<EducationMedia> { banner, preview });
 
             _unitOfWork.Education.CheckEducationState(education.Id);
 
@@ -133,7 +133,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [HttpPost, Route("admin/egitim-guncelle")]
         public IActionResult Update(UpdatePostVm data)
         {
-            if (!ModelState.IsValid || data.TagIds.Count == 0)
+            if (!ModelState.IsValid || data.Tags.Length== 0)
                 return Json(new ResponseModel
                 {
                     isSuccess = false,
@@ -198,6 +198,59 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             {
                 isSuccess = true
             });
+        }
+
+        [Route("admin/education-list-fill-select")]
+        public IActionResult EducationListFillSelect()
+        {
+            try
+            {
+                List<SelectListItem> educationList = _unitOfWork.Education.Get().Select(e => new SelectListItem
+                {
+                    Text = e.Name,
+                    Value = e.Id.ToString()
+                }).ToList();
+
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    data = educationList
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Hata" + ex.Message }
+                }); ;
+            }
+            
+        }
+
+
+        [Route("admin/get-education-levels/")]
+        public IActionResult GetEducationLevelEnums()
+        {
+            try
+            {
+                EnumItemVm[] retVal = EnumHelpers.ToKeyValuePair<EducationLevel>().Select(x =>
+            new EnumItemVm { Key = x.Key, Value = x.Value }).ToArray();
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    data = retVal
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { ex.Message }
+                });
+            }
+
         }
     }
 }

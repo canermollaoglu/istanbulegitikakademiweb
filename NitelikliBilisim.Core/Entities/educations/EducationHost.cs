@@ -1,6 +1,8 @@
 ﻿using NitelikliBilisim.Core.Abstracts;
+using NitelikliBilisim.Core.Entities.educations;
 using NitelikliBilisim.Core.Enums;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -23,5 +25,8 @@ namespace NitelikliBilisim.Core.Entities
         public string Latitude { get; set; }
         [MaxLength(128)]
         public string Longitude { get; set; }
+        public string GoogleMapUrl { get; set; }
+
+        public virtual List<EducationHostImage> EducationHostImages { get; set; }
     }
 }

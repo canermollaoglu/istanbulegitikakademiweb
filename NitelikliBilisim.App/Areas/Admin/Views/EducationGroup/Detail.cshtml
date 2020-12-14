@@ -1,0 +1,508 @@
+﻿@*@model NitelikliBilisim.Core.ViewModels.areas.admin.education_groups.GroupDetailVm*@
+@{
+    ViewData["Title"] = "Grup Detayları";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    <style>
+        .form-check-label {
+            cursor: pointer;
+        }
+
+        .table td {
+            padding: .40rem !important;
+        }
+
+        #loading {
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            position: fixed;
+            display: block;
+            opacity: 0.7;
+            background-color: #fff;
+            z-index: 99999999;
+            text-align: center;
+        }
+
+        #loading-image {
+            position: absolute;
+            top: 45%;
+            left: 45%;
+            z-index: 99999999;
+            height: 100px;
+            width: 100px;
+        }
+    </style>
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+
+<div class="panel-group">
+    <div id="loading">
+        <img id="loading-image" src="~/img/loader.gif" alt="Loading..." />
+    </div>
+    <!--Genel Grup Bilgileri-->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card border-info mb-3">
+                <div class="card-header">
+                    Genel Grup Bilgileri
+                    <button class="btn btn-sm pull-right" data-target="#changeLessonDays" data-toggle="modal" title="Sınıf Değişikliği"><i class="fa fa-home"></i></button>
+                    <button class="btn btn-sm pull-right" data-target="#changeEducator" data-toggle="modal" title="Eğitmen Değişikliği"><i class="fa fa-user"></i></button>
+                    <button class="btn btn-sm pull-right" data-target="#postponementOfGroup" title="Grup Erteleme" data-toggle="modal"><i class="fa fa-share"></i></button>
+                    <a class="btn btn-sm pull-right" target="_blank" title="Satış Raporu" href="/raporlar/grup-bazli-satis-raporu2?groupId=@(ViewData["groupId"])"><i class="fa fa-bar-chart"></i></a>
+                    <button class="btn btn-sm pull-right" title="Bilgileri Güncelle" onclick="editGroup()"><i class="fa fa-edit"></i></button>
+
+                </div>
+                <input type="hidden" value="@ViewData["groupId"]" id="groupId" />
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <b>Grup Adı</b>
+                                </td>
+                                <td>
+                                    <div id="groupName"></div>
+                                    <div id="div-group-name" style="display:none;">
+                                        <input type="text" class="form-control" id="input-group-name" />
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Eğitim Yeri</b>
+                                </td>
+                                <td id="hostName">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Eğitim</b>
+                                </td>
+                                <td id="educationName">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Sınıf</b>
+                                </td>
+                                <td id="classRoomName">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Eğitim Günleri</b>
+                                </td>
+                                <td id="educationWeekDays">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Eğitmen</b>
+                                </td>
+                                <td id="educatorName">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Başlangıç Tarihi</b>
+                                </td>
+                                <td id="startDate">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Bitiş Tarihi</b>
+                                </td>
+                                <td id="endDate">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><b>Kontenjan</b></td>
+                                <td id="quota"></td>
+                            </tr>
+                            <tr>
+                                <td><b>Eğitim Günleri</b></td>
+                                <td id="educationDays"></td>
+                            </tr>
+
+                            <tr>
+                                <td><b>Fiyat</b></td>
+                                <td>
+                                    <div id="newPrice"></div>
+                                    <div id="div-new-price" style="display:none;">
+                                        <input type="number" class="form-control" id="input-new-price" value="0" />
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div id="div-group-edit-save-button" style="display:none;">
+                        <button type="button" id="btn-save-general-information" class="btn btn-outline-success btn-sm pull-right">Kaydet</button>
+                        <button type="button" id="btn-cancel-general-information" class="btn btn-outline-danger btn-sm pull-right" style="margin-right:5px;">İptal</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card border-info mb-3">
+                <div class="card-header">
+                    Mali Durum Tablosu
+                    <button class="btn btn-sm pull-right" id="calculateSalesPriceModalOpen" title="Grup Ücreti Hesaplama Sihirbazı"><i class="fa fa-money"></i></button>
+
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <tbody id="tbody-calculate-group-expense-and-income">
+                        </tbody>
+                    </table>
+                    <div class="alert" id="alertDiv">
+                        <small id="alertMinimumStudent"> </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!--Kayıtlı Öğrenciler-->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card border-info mb-3">
+                <div class="card-header">
+                    <i class="fa fa-users"></i> Öğrenci Listesi
+                    <button type="button" title="Öğrenci Ataması Yap" data-toggle="modal" data-target="#addStudent" class="btn btn-outline-primary btn-sm pull-right" style="margin:0;">Öğrenci Ata</button>
+                </div>
+                <div class="card-body">
+                    <div class="alert" id="purchasesDiv">
+                        <span id="purchasesItemInfo"></span>
+                    </div>
+                    <div id="grid-students"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <!--Grup Giderleri-->
+        <div class="col-md-12">
+            <div class="card border-info mb-3">
+                <div class="card-header">
+                    <i class="fa fa-money"></i> Grup Giderleri
+                    <button type="button" data-toggle="modal" data-target="#addGroupExpenseModal" class="btn btn-outline-primary btn-sm pull-right">Gider Ekle </button>
+                </div>
+                <div class="card-body">
+                    <div id="grid-expenses"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <!--Eğitim Günleri-->
+        <div class="col-md-12">
+            <div class="card border-info mb-3">
+                <div class="card-header">
+                    <i class="fa fa-calendar"></i> Eğitim Günleri
+                </div>
+                <div class="card-body">
+                    <div id="grid-lessonDays"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="addGroupExpenseModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Grup Gideri Ekle</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="form-add-groupexpense">
+                    @Html.AntiForgeryToken()
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="col-form-label">Gider Tipi : </label>
+                                <select class="form-control" id="selectExpenseType">
+                                    
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-form-label">Adet</label>
+                                <input type="number" class="form-control" id="inputCount" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-form-label">Birim Fiyat : </label>
+                                <input type="number" class="form-control" id="inputPrice" />
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="col-form-label">Açıklama : </label>
+                                <textarea type="text" class="form-control" id="inputDescription"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                <button type="button" class="btn btn-primary" id="btn-save">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="calculateSalesPriceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Grup Ücreti Hesaplama Sihirbazı</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="calculateSalesPriceForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label style="margin:auto">Tahmini Katılımcı Sayısı</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="input-expected-student-count" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label style="margin:auto">Kar Oranı</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="input-expected-rate-of-profitability" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        @*<div class="col-md-6">
+            <div class="form-group">
+                <label style="margin:auto">Kayıp Oranı</label>
+                <div class="input-group">
+                    <input type="number" class="form-control" id="input-estimated-loss-rate" value="0" />
+                </div>
+            </div>
+        </div>*@
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label style="margin:auto">KDV Oranı</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="input-kdv" value="8" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label style="margin:auto">Toplam Gider</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control input-sm" id="input-total-expense" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label style="margin:auto">Pos Komisyon Oranı</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="input-commission-rate" value="2.29" />
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </form>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>Hesaplanan Tutar</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="input-sales-price" style="border:2px solid red;" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                    <button type="button" class="btn btn-primary" id="btn-education-price-save">Kaydet</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addStudent" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Grup İçin Ödeme Yapmış Öğrenciler</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>İsim</th>
+                                <th>Soyisim</th>
+                                <th>İşlem</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-tickets">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="changeLessonDays" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Sınıf Değişikliği</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="form-change-lesson-day-classroom">
+                    <div class="form-group">
+                        <label>Sınıf</label>
+                        <select id="selectClassrooms" class="form-control">
+                            @*@foreach (var classRoom in Model.SelectClassRooms)
+                                {
+                                    <option value="@classRoom.Key">@classRoom.Value</option>
+                                }*@
+                        </select>
+                    </div>
+                    <div class="form-group">
+
+                        <input type="radio" checked name="changeClassroomType" value="10">
+                        <label>Tümü</label><br>
+                        <input type="radio" name="changeClassroomType" value="20">
+                        <label>Seçili tarihten itibaren</label><br>
+                        <input type="hidden" value="10" id="selectedType" />
+                    </div>
+
+                    <div class="form-group" style="display:none;" id="inputChangeClassroomStartDate">
+                        <label>Tarih</label>
+                        <input id="input-start-date" class="form-control" type="date" value="" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                <button type="button" class="btn btn-primary" id="btn-lessonday-classroom-save">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="changeEducator" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Eğitmen Değişikliği</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="form-change-educator">
+                    <div class="form-group">
+                        <label>Eğitmen</label>
+                        <select id="selectEducators" class="form-control">
+                            @*@foreach (var educator in Model.SelectEducators)
+                                {
+                                    <option value="@educator.Key">@educator.Value</option>
+                                }*@
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Eğitmen Saatlik Ücreti</label>
+                        <input type="number" class="form-control" id="dailyEducatorPrice" />
+                    </div>
+                    <div class="form-group">
+
+                        <input type="radio" checked name="educatorChangeType" value="10">
+                        <label>Tümü</label><br>
+                        <input type="radio" name="educatorChangeType" value="20">
+                        <label>Seçili tarihten itibaren</label><br>
+                        <input type="hidden" value="10" id="selectedEducatorChangeType" />
+                    </div>
+
+                    <div class="form-group" style="display:none;" id="inputChangeEducatorStartDate">
+                        <label>Tarih</label>
+                        <input id="input-change-educator-start-date" class="form-control" type="date" value="" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                <button type="button" class="btn btn-primary" id="btn-lessonday-educator-save">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="postponementOfGroup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Grup Erteleme</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="form-postponement-of-group">
+                    <div class="form-group">
+                        <label>Başlangıç Tarihi</label>
+                        <input type="date" id="input-group-new-start-date" class="form-control" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                <button type="button" class="btn btn-primary" id="btn-postponement-of-education-save">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section postScripts{
+    <script src="~/js/areas/admin/admin-education-group-detail.js"></script>
+}

@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using MUsefulMethods;
 using NitelikliBilisim.App.Areas.Admin.Models.Category;
 using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Models;
@@ -8,15 +10,13 @@ using NitelikliBilisim.Business.Debugging;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
-using NitelikliBilisim.Support.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    [Area("Admin"), Authorize(Roles = "Admin")]
-    public class EducationCategoryController : TempSecurityController
+    public class EducationCategoryController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
         public EducationCategoryController(UnitOfWork unitOfWork)
@@ -31,7 +31,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             var model = new AddGetVm
             {
                 Categories = data,
-                Types = EnumSupport.ToKeyValuePair<CategoryType>()
+                Types = EnumHelpers.ToKeyValuePair<CategoryType>()
             };
             return View(model);
         }
@@ -157,5 +157,34 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 message = "Silme işlemi başarılı"
             });
         }
+
+        [Route("admin/education-categories-list-fill-select")]
+        public IActionResult EducationCategoryListFillSelect()
+        {
+            try
+            {
+                List<SelectListItem> categoryList = _unitOfWork.EducationCategory.Get().Select(e => new SelectListItem
+                {
+                    Text = e.Name,
+                    Value = e.Id.ToString()
+                }).ToList();
+
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    data = categoryList
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Hata" + ex.Message }
+                }); ;
+            }
+
+        }
+
     }
 }

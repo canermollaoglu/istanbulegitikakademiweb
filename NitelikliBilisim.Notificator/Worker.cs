@@ -1,11 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NitelikliBilisim.Notificator.Services;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace NitelikliBilisim.Notificator
 {
@@ -26,8 +24,8 @@ namespace NitelikliBilisim.Notificator
         {
             _logger.LogWarning("Worker service started.");
 
-            var emailConsumer = new EmailConsumer(_emailLogger);
-            emailConsumer.MainAsync().Wait(cancellationToken);
+            //var emailConsumer = new EmailConsumer(_emailLogger);
+           // emailConsumer.MainAsync().Wait(cancellationToken);
 
             _cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             _executingTask = ExecuteAsync(_cts.Token);

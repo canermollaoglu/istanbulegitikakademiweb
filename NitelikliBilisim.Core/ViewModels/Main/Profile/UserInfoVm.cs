@@ -1,4 +1,7 @@
-﻿using System;
+﻿
+using NitelikliBilisim.Core.Entities.user_details;
+using NitelikliBilisim.Core.Enums.user_details;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -9,6 +12,7 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public _PersonalAccountInfo PersonalAndAccountInfo { get; set; }
         public _EducationInfo EducationInfo { get; set; }
         public List<_Ticket> Tickets { get; set; }
+        public List<EducationVm> WishList { get; set; }
     }
 
     public class _PersonalAccountInfo
@@ -19,12 +23,24 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public string PhoneNumber { get; set; }
         public string UserName { get; set; }
         public string FilePath { get; set; }
+        public Gender Gender { get; set; }
+        public DateTime? DateOfBirth { get; set; }
+        public University LastGraduatedSchool { get; set; }
+        public string Job { get; set; }
+        public City City { get; set; }
+        public string WebSiteUrl { get; set; }
+        public string LinkedInProfileUrl { get; set; }
     }
     public class _EducationInfo
     {
         public string EducationCenter { get; set; }
         public DateTime StartedAt { get; set; }
         public string EducationCategory { get; set; }
+
+        /// <summary>
+        /// Nbuy Eğitimi alan kullanıcılar için eğitimin kaçıncı gününde olduğu bilgisi.
+        /// </summary>
+        public int NBUYCurrentEducationDay { get; set; }
     }
     public class _Ticket
     {
