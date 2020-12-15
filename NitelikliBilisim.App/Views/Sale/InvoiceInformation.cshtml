@@ -26,7 +26,7 @@
                 </div>
                 <div class="checkout-steps__txt">2. FATURA BİLGİLERİ</div>
             </a>
-            <a href="./checkout-3-odeme.php" class="checkout-steps__item">
+            <a href="#" class="checkout-steps__item">
                 <div class="checkout-steps__icon">
                     <span class="icon-outer">
                         <svg class="icon">
@@ -36,7 +36,7 @@
                 </div>
                 <div class="checkout-steps__txt">3. ÖDEME</div>
             </a>
-            <a href="./checkout-4-ozet.php" class="checkout-steps__item">
+            <a href="#" class="checkout-steps__item">
                 <div class="checkout-steps__icon">
                     <span class="icon-outer">
                         <svg class="icon">
@@ -353,7 +353,7 @@
                         </span>
                     </div>
                 </form>
-                <a href="./checkout-3-odeme.php" class="button button-icon-right button-fw checkout__next-button">
+                <a asp-controller="Sale" asp-action="Payment" class="button button-icon-right button-fw checkout__next-button">
                     <span class="button-txt">
                         Ödeme Adımına Geç
                     </span>
@@ -603,7 +603,6 @@
             },
         });
 
-
         /* events */
         function document_onLoad() {
             getCartItems();
@@ -641,7 +640,6 @@
             if (promotionCode) {
                 getPromotionInfo(promotionCode);
             }
-
         }
 
         function getPromotionInfo(promotionCode) {
