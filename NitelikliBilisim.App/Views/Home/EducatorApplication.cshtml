@@ -41,7 +41,12 @@
                     </div>
                 </div>
                 <div class="contact__right">
-                    <form class="contact__form" id="validateForm" method="post" asp-controller="Home" asp-action="EducatorApplication" enctype="multipart/form-data">
+                    <form class="contact__form" id="educator-application-form"
+                          asp-controller="Home" asp-action="EducatorApplication"
+                          enctype="multipart/form-data"
+                          data-ajax-success="onAjaxSuccess"
+                          data-ajax-failure="onAjaxFailed"
+                          data-ajax="true" data-ajax-method="POST">
                         @Html.AntiForgeryToken()
                         <div class="input__outer">
                             <span class="icon-outer input__icon">
@@ -55,7 +60,7 @@
                             <div class="input__outer input--phone">
                                 <div class="select-phonecode">
                                     <select asp-for="PhoneCode" class="js-phonecode-select">
-                                        <option>539</option>
+                                        <option selected>539</option>
                                         <option>540</option>
                                         <option>541</option>
                                         <option>542</option>
@@ -111,6 +116,66 @@
 
 </section>
 
+<div class="modal modal--message success" id="modalSuccessMessage">
+    <div class="modal__close js-close-modal">
+        <span class="icon-outer">
+            <svg class="icon">
+                <use xlink:href="../../assets/img/icons.svg#icon-close"></use>
+            </svg>
+        </span>
+    </div>
+    <div class="modal__content">
+        <div class="side-subscribe__success">
+            <div class="side-subscribe__top">
+                <div class="side-subscribe__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-success"></use>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+            <div class="side-subscribe__content">
+                <div class="side-subscribe__title">Teşekkürler!</div>
+                <div class="side-subscribe__txt">
+                    Talebiniz başarılı bir şekilde iletilmiştir.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal modal--message wrong" id="modalWrongMessage">
+    <div class="modal__close js-close-modal">
+        <span class="icon-outer">
+            <svg class="icon">
+                <use xlink:href="../../assets/img/icons.svg#icon-close"></use>
+            </svg>
+        </span>
+    </div>
+    <div class="modal__content">
+        <div class="side-subscribe__success">
+            <div class="side-subscribe__top">
+                <div class="side-subscribe__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-wrong"></use>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+            <div class="side-subscribe__content">
+                <div class="side-subscribe__title ">Başarısız!</div>
+                <div class="side-subscribe__txt">
+                    Talebiniz iletilememiştir.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
 @section postScripts{
     <script type="text/javascript">
         /* elements */
@@ -120,7 +185,73 @@
             var filename = m[1];
             $('#filename').html(filename);
         });
-        
+
+        var onAjaxSuccess = function (context) {
+            if (context.success) {
+                showModal('modalSuccessMessage');
+            } else {
+                showModal('modalWrongMessage');
+            }
+            $('.contact__form')[0].reset();
+            $('#filename').html("");
+        };
+        var onAjaxFailed = function () {
+            showModal('modalWrongMessage');
+        }
+        function showModal(id) {
+            $('html, body').addClass('no-scroll');
+            $('.main-overlay').addClass('active');
+            $('.modal[id="' + id + '"]').addClass('modal--active');
+            $('.js-open-mobile-menu').removeClass('active');
+            $('.js-open-mobile-menu')
+                .closest('.header-mobile')
+                .removeClass('active');
+            $('html,body').removeClass('scroll-lock');
+        }
+        $('#educator-application-form').validate({
+            errorLabelContainer: $('#educator-application-form div.error'),
+            errorContainer: 'div.error-messages',
+            errorLabelContainer: $('ul', 'div.error-messages'),
+            wrapper: 'li',
+            rules: {
+                NameSurname: {
+                    required: true,
+                },
+                PhoneCode: {
+                    required: true
+                },
+                Phone: {
+                    required: true,
+                },
+                Email: {
+                    required: true,
+                },
+                Note: {
+                    required: true,
+                },
+                Cv: {
+                    required: true,
+                }
+            },
+            messages: {
+                NameSurname: 'Bu alan zorunludur.',
+                PhoneCode: 'Bu alan zorunludur.',
+                Phone: 'Bu alan zorunludur.',
+                Email: 'Bu alan zorunludur.',
+                Note: 'Bu alan zorunludur.',
+                Cv: 'Bu alan zorunludur.'
+            },
+            highlight: function (element) {
+                $(element)
+                    .parent()
+                    .addClass('outer-error');
+            },
+            unhighlight: function (element) {
+                $(element)
+                    .parent()
+                    .removeClass('outer-error');
+            },
+        });
 
     </script>
 } 

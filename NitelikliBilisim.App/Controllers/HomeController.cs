@@ -148,7 +148,10 @@ namespace NitelikliBilisim.App.Controllers
         public IActionResult CorporateMembershipApplication(CorporateMembershipApplicationAddVm model)
         {
             if (!ModelState.IsValid)
-                return View(model);
+                return Json(new ResponseData
+                {
+                    Success = false
+                });
 
             try
             {
@@ -163,12 +166,18 @@ namespace NitelikliBilisim.App.Controllers
                     RequestNote = model.RequestNote,
                     NumberOfEmployees = model.NumberOfEmployees,
                 });
-                return RedirectToAction("Index", "Home");
+                return Json(new ResponseData
+                {
+                    Success = true
+                });
             }
             catch (Exception ex)
             {
                 //Log ex
-                return View();
+                return Json(new ResponseData
+                {
+                    Success = false
+                });
             }
 
         }
@@ -180,7 +189,10 @@ namespace NitelikliBilisim.App.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                return Json(new ResponseData
+                {
+                    Success = false
+                });
             }
             try
             {
@@ -193,12 +205,18 @@ namespace NitelikliBilisim.App.Controllers
                     NameSurname = model.NameSurname,
                     CvUrl = mediaPath
                 });
-                return RedirectToAction("Index", "Home");
+                return Json(new ResponseData
+                {
+                    Success = true
+                });
             }
             catch (Exception ex)
             {
                 //Log ex
-                return RedirectToAction("Index", "Home");
+                return Json(new ResponseData
+                {
+                    Success = false
+                });
             }
         }
 

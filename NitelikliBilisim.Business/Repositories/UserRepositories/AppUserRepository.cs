@@ -182,8 +182,8 @@ namespace NitelikliBilisim.Business.Repositories
                     {
                         eMonth.Weeks.Add(new EducationWeek
                         {
-                            Order = week++,
-                            IsCurrentWeek = currentEducationWeek == week
+                            IsCurrentWeek = currentEducationWeek == week,
+                            Order = week++
                         });
                     }
                 }
