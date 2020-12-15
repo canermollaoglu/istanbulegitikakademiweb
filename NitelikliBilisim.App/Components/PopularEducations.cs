@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.Business.UoW;
+using System.Security.Claims;
 
 namespace NitelikliBilisim.App.Components
 {
@@ -13,7 +14,14 @@ namespace NitelikliBilisim.App.Components
 
         public IViewComponentResult Invoke()
         {
-            return View(_unitOfWork.Suggestions.GetGuestUserSuggestedEducations());
+            var isLoggedIn = HttpContext.User.Identity.IsAuthenticated;
+            if (!isLoggedIn)
+                return View(_unitOfWork.Suggestions.GetGuestUserSuggestedEducations());
+            else
+            {
+                var userId = UserClaimsPrincipal.FindFirstValue(ClaimTypes.NameIdentifier);
+                return View(_unitOfWork.Suggestions.GetUserSuggestedEducations(userId, 5));
+            }
         }
     }
 }
