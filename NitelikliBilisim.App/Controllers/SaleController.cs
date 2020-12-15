@@ -414,9 +414,9 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [HttpGet, Route("odeme-sonucunuz")]
-        public IActionResult NormalPaymentResult(NormalPaymentResultVm model)
+        public IActionResult NormalPaymentResult()
         {
-            return View(model);
+            return View();
         }
 
         [HttpPost, Route("odeme-sonucu")]

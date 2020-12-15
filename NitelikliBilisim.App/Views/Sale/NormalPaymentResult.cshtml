@@ -1,25 +1,244 @@
-﻿@model NitelikliBilisim.Core.ViewModels.Main.Sales.NormalPaymentResultVm
-@{
-    Layout = null;
+﻿@{
+    ViewData["Title"] = "Ödeme Sonucunuz";
+    Layout = "~/Views/Shared/_LayoutCheckout.cshtml";
 }
 
-<!DOCTYPE html>
+<div class="checkout-steps">
+    <div class="container">
+        <div class="checkout-steps__wrp">
+            <a class="checkout-steps__item">
+                <div class="checkout-steps__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="assets/img/icons.svg#icon-basket"></use>
+                        </svg>
+                    </span>
+                </div>
+                <div class="checkout-steps__txt">1. SEPETİM</div>
+            </a>
+            <a class="checkout-steps__item">
+                <div class="checkout-steps__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="assets/img/icons.svg#icon-invoice"></use>
+                        </svg>
+                    </span>
+                </div>
+                <div class="checkout-steps__txt">2. FATURA BİLGİLERİ</div>
+            </a>
+            <a class="checkout-steps__item">
+                <div class="checkout-steps__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="assets/img/icons.svg#icon-credit-card-f"></use>
+                        </svg>
+                    </span>
+                </div>
+                <div class="checkout-steps__txt">3. ÖDEME</div>
+            </a>
+            <a class="checkout-steps__item active">
+                <div class="checkout-steps__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="assets/img/icons.svg#icon-doc-f"></use>
+                        </svg>
+                    </span>
+                </div>
+                <div class="checkout-steps__txt">4. ÖZET</div>
+            </a>
+        </div>
+    </div>
+</div>
+<section class="section section--checkout">
+    <div class="container">
+        <div class="checkout__wrp checkout--single">
+            <div class="checkout__content">
+                <div class="checkout__summary-message successful">
+                    <div class="checkout__summary-message--icon">
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="assets/img/icons.svg#icon-check"></use>
+                            </svg>
+                        </span>
+                    </div>
+                    <div class="checkout__summary-message--title">
+                        İŞLEM <span>BAŞARILI</span>
+                    </div>
+                    <div class="checkout__summary-message--txt">
+                        Siparişiniz başarıyla alınmıştır. Müşteri temsilcilerimiz sizinle en yakın
+                        zamanda iletişime geçecektir.
+                    </div>
+                </div>
+                <span class="checkout__fw-hr no-bg-mobile"></span>
+                <!-- form havale ile gönderilmiş ise üstteki span.checkout__fw-hr kaldırılıp bu kısım eklenecek -->
+                <!-- <div class="checkout__summary--transfer">
+                  <div class="checkout__summary--transfer-title">
+                    <span class="icon-outer">
+                      <svg class="icon">
+                        <use xlink:href="assets/img/icons.svg#icon-info-circle-f"></use>
+                      </svg>
+                    </span>
+                    Havale / EFT <span>&nbsp;İle Ödeme</span>
+                  </div>
+                  <p>
+                    Siparişinizin tamamlanabilmesi için aşağıdaki hesap numarasına siparişinize ait toplam tutarı göndermeniz
+                    gerekmektedir.
+                  </p>
+                  <ul>
+                    <li><strong>Garanti Bankası: </strong>Tunalıhilmi / İzmir</li>
+                    <li><strong>Şube Kodu: </strong>01361 Hesap No : 6295927</li>
+                    <li><strong>IBAN: </strong> TR96 0006 2001 3610 0006 2959 27</li>
+                  </ul>
+                  <p>
+                    Siparişinizin gecikmemesi için, Havale/EFT işlemlerinde açıklama bölümüne sipariş numaranızı yazmanız
+                    yeterlidir.
+                  </p>
+                  <p>
+                    2 iş günü içerisinde ödemesi gelmeyen siparişler iptal edilecektir.
+                  </p>
+                </div> -->
+                <!-- form havale ile gönderilmiş ise eklenilen kısım bitiş -->
+                <div class="checkout__subtop">
+                    <div class="checkout__subtop-title">
+                        ÜRÜNLER
+                    </div>
+                    <div class="checkout__subtop-title ml-auto">
+                        FİYAT
+                    </div>
+                </div>
+                <div class="checkout__product-wrp">
+                    <div class="checkout__product-item">
+                        <a href="./egitim-detay.php" class="checkout__product-left">
+                            <div class="checkout__product-img">
+                                <img src="assets/img/cardimg3.jpg" alt="">
+                            </div>
+                        </a>
+                        <div class="checkout__product-right">
+                            <div class="checkout__product-title">Yerel Sistemlere Yüksek Erişilebilirlik</div>
+                            <div class="checkout__product-new">
+                                <span>₺</span> 700.00
+                            </div>
+                        </div>
+                    </div>
+                    <div class="checkout__product-item">
+                        <a href="./egitim-detay.php" class="checkout__product-left">
+                            <div class="checkout__product-img">
+                                <img src="assets/img/cardimg4.jpg" alt="">
+                            </div>
+                        </a>
+                        <div class="checkout__product-right">
+                            <div class="checkout__product-title">Yerel Sistemlere Yüksek Erişilebilirlik</div>
+                            <div class="checkout__product-new">
+                                <span>₺</span> 700.00
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <span class="checkout__fw-hr"></span>
+                <div class="checkout__price-wrp">
+                    <div class="checkout__price-item">
+                        <div class="checkout__price-title">Ürünler Toplamı</div>
+                        <div class="checkout__price-old">
+                            <span>₺</span> 1,250.00
+                        </div>
+                        <div class="checkout__price-new">
+                            <span>₺</span> 1,550.00
+                        </div>
+                    </div>
+                    <div class="checkout__price-item">
+                        <div class="checkout__price-title">Toplam İndirimler</div>
+                        <div class="checkout__price-new">
+                            <span>₺</span> 249.90
+                        </div>
+                    </div>
+                    <div class="checkout__price-item payment-method">
+                        <div class="checkout__price-title">Ödeme Yöntemi</div>
+                        <div class="checkout__price-payment-method">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <!-- todo: havale ise icon-bank, kredi kartı ise icon-credit-card-f kullanılacak -->
+                                    <use xlink:href="assets/img/icons.svg#icon-credit-card-f"></use>
+                                    <!-- <use xlink:href="assets/img/icons.svg#icon-bank"></use> -->
+                                </svg>
+                            </span>
+                            Kredi Kartı (Tek Çekim)
+                            <!-- Havale / EFT -->
+                        </div>
+                    </div>
+                    <div class="checkout__price-item totaly">
+                        <div class="checkout__price-title">Toplam Tutar</div>
+                        <div class="checkout__price-new">
+                            <span>₺</span> 1.1799.90
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="checkout__summary--buttons">
+                <a asp-controller="Home" asp-action="Index" class="button button-fw button-white button-icon-left button-big">
+                    <span class="button-icon">
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="assets/img/icons.svg#icon-arrow"></use>
+                            </svg>
+                        </span>
+                    </span>
+                    <span class="button-txt">
+                        Anasayfa'ya Dön
+                    </span>
+                </a>
+                <a asp-controller="UserProfile" asp-action="Profile" class="button button-fw button-icon-right button-big">
+                    <span class="button-txt">
+                        Profile Git
+                    </span>
+                    <span class="button-icon">
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="assets/img/icons.svg#icon-arrow"></use>
+                            </svg>
+                        </span>
+                    </span>
+                </a>
+            </div>
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Ödeme Sonucu</title>
-</head>
-<body>
-    <h1>@Model.Message</h1>
-
-    <script src="~/js/sup/cart.js"></script>
-    <script>
-        if ('@Model.Status' == "Success") {
-            var _cart = new CartSupport.Cart();
-            _cart.clearCart();
-        }
-
-    </script>
-</body>
-</html>
+            <!-- todo: İPTAL -->
+             @*<div class="checkout__content">
+                  <div class="checkout__summary-message failed">
+                    <div class="checkout__summary-message--icon">
+                      <span class="icon-outer">
+                        <svg class="icon">
+                          <use xlink:href="assets/img/icons.svg#icon-close"></use>
+                        </svg>
+                      </span>
+                    </div>
+                    <div class="checkout__summary-message--title">
+                      İŞLEM <span>BAŞARISIZ</span>
+                    </div>
+                    <div class="checkout__summary-message--txt">
+                      Aşağıdaki kredi kartınızdan kaynaklanan bir problemden dolayı işleminizi
+                      gerçekleştirelememiştir. Bankanızla iletişime geçmenizi öneririz.
+                    </div>
+                  </div>
+                  <span class="checkout__fw-hr"></span>
+                  <div class="checkout__summary--card">
+                    Kart tipini, class'ta verilen kısıma çekebilirsiniz. Visa, mastercard, visaelectron vb.
+                <div class="card-wrapper card-wrapper--value visa"></div>
+              </div>
+            </div>
+            <div class="checkout__summary--buttons buttons--single">
+              <a href="./checkout-3-odeme.php" class="button button-fw button-icon-left button-big">
+                <span class="button-icon">
+                  <span class="icon-outer">
+                    <svg class="icon">
+                      <use xlink:href="assets/img/icons.svg#icon-arrow"></use>
+                    </svg>
+                  </span>
+                </span>
+                <span class="button-txt">
+                  Ödeme Adımına Geri Dön
+                </span>
+              </a>
+            </div>*@  
+            <!-- todo: İPTAL -->
+        </div>
+    </div>
+</section>
