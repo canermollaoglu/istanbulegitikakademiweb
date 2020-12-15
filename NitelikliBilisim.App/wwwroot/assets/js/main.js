@@ -1757,6 +1757,8 @@ $('a[name=copyElement]').click(function () {
 /* address select */
 
 $('body').on('click', '.js-select-address', function () {
+    var aId = $(this).data("id");
+    localStorage.setItem("_cA", aId );
     if (
         $(this)
             .parent()

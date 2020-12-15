@@ -70,7 +70,7 @@
                             @foreach (var address in Model.Addresses)
                             {
                                 <div class="address-item @(address.IsDefault?"selected":"")">
-                                    <div class="address-button js-select-address js-new-address-func">
+                                    <div class="address-button js-select-address js-new-address-func" data-id="@address.Id">
                                         <span class="address-button-radio"></span>
                                     </div>
                                     <div class="address-cnt js-select-address js-new-address-func">
@@ -371,6 +371,7 @@
 </section>
 <input type="hidden" value="0" id="input-education-total-price" />
 <input type="hidden" value="0" id="promotion-discount-amount" />
+<input type="hidden" value="" id="default-address-id" />
 <div class="modal" id="adresEdit">
     <div class="modal__header">
         <div class="modal__title">Adres Güncelle</div>
@@ -488,7 +489,7 @@
         var inputPromotionCode = $("#promotion-code");
         var inputEducationTotalPrice = $("#input-education-total-price");
         var inputPromotionDiscountAmount = $("#promotion-discount-amount");
-
+        var dAddressId = @Model.DefaultAddressId;
         /* assignments */
         $(document).ready(document_onLoad);
         /*ValidateForms*/ 
@@ -605,6 +606,7 @@
 
         /* events */
         function document_onLoad() {
+            localStorage.setItem("_cA", dAddressId);
             getCartItems();
             checkPromotionCode();
             //getBasketBasedPromotion();

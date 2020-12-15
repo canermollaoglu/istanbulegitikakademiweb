@@ -62,11 +62,12 @@ namespace NitelikliBilisim.App.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             List<InvoiceInfoAddressGetVm> addresses = _unitOfWork.Address.GetInvoiceAddressesByUserId(userId);
             var cities = _unitOfWork.City.Get().OrderBy(x=>x.Order).ToList();
-            
+            var defaultAddress = _unitOfWork.Address.GetDefaultAddress(userId);
             var invoiceInfos = new InvoiceInfoGetVm
             {
                 Addresses = addresses,
-                Cities = cities
+                Cities = cities,
+                DefaultAddressId = defaultAddress != null ? defaultAddress.Id : 0
             };
             return View(invoiceInfos);
         }
@@ -268,12 +269,6 @@ namespace NitelikliBilisim.App.Controllers
                     isSuccess = false,
                     errors = ModelStateUtil.GetErrors(ModelState)
                 });
-            if (!data.InvoiceInfo.IsIndividual && data.CorporateInvoiceInfo == null)
-                return Json(new ResponseModel
-                {
-                    isSuccess = false,
-                    errors = new List<string> { "?" }
-                });
             #endregion
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -325,12 +320,8 @@ namespace NitelikliBilisim.App.Controllers
             {
                 content = await sr.ReadToEndAsync();
             }
-            var cityTowns = JsonConvert.DeserializeObject<CityTownModel>(content);
-            var cityId = data.InvoiceInfo.City;
-            var townId = data.InvoiceInfo.Town;
-            var city = cityTowns.data.First(x => x._id == cityId);
-            data.InvoiceInfo.City = city.name;
-            data.InvoiceInfo.Town = city.towns.First(x => x._id == townId).name;
+            var address = _unitOfWork.Address.GetFullAddressById(data.AddressId);
+            data.InvoiceAddress = address;
 
             var result = manager.Pay(_unitOfWork, data);
             NormalPaymentResultVm paymentResultModel = new NormalPaymentResultVm();
@@ -361,7 +352,6 @@ namespace NitelikliBilisim.App.Controllers
                             Contacts = new[] { customerEmail }
                         });
                     }
-
                     paymentResultModel.Status = PaymentResultStatus.Success;
                     paymentResultModel.Message = "Ödemeniz başarılı bir şekilde gerçekleşmiştir.";
                 }
@@ -370,8 +360,8 @@ namespace NitelikliBilisim.App.Controllers
                     paymentResultModel.Status = PaymentResultStatus.Failure;
                     paymentResultModel.Message = result.Error.ErrorMessage;
                 }
-
-                return RedirectToAction("NormalPaymentResult", "Sale", paymentResultModel);
+                ViewData["PaymentResult"] = paymentResultModel;
+                return RedirectToAction("NormalPaymentResult", "Sale");
             }
 
             if (result.TransactionType == TransactionType.Secure3d)
@@ -397,7 +387,8 @@ namespace NitelikliBilisim.App.Controllers
                 {
                     paymentResultModel.Status = PaymentResultStatus.Failure;
                     paymentResultModel.Message = result.Error.ErrorMessage;
-                    return RedirectToAction("NormalPaymentResult", "Sale", paymentResultModel);
+                    ViewData["PaymentResult"] = paymentResultModel;
+                    return RedirectToAction("NormalPaymentResult", "Sale");
                 }
             }
 
@@ -460,8 +451,8 @@ namespace NitelikliBilisim.App.Controllers
                 retVal.Status = PaymentResultStatus.Failure;
                 retVal.Message = "Ödeme servisinden cevap alınamamıştır. Lütfen yönetici ile iletişime geçiniz.";
             }
-
-            return View(retVal);
+            ViewData["PaymentResult"] = retVal;
+            return RedirectToAction("NormalPaymentResult", "Sale");
         }
 
         [NonAction]

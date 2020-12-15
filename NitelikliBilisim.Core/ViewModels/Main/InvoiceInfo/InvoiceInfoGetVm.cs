@@ -11,5 +11,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.InvoiceInfo
     {
         public List<InvoiceInfoAddressGetVm> Addresses { get; set; }
         public List<City> Cities { get; set; }
+        public int DefaultAddressId { get; set; }
     }
 }

@@ -201,80 +201,80 @@
                                             <div class="checkout__purchase-wrp">
                                                 <p>Taksit seçeneklerini görebilmek için lütfen kart numaranızı giriniz.</p>
                                                 @*<label class="main-radio">
-                                                    <div class="checkout__purchase-item">
-                                                        <div>
-                                                            Peşin
+                                                        <div class="checkout__purchase-item">
+                                                            <div>
+                                                                Peşin
+                                                            </div>
+                                                            <div>
+                                                                <span>₺</span> 1,799.00
+                                                            </div>
+                                                            <div>
+                                                                <span>₺</span> 1,799.00
+                                                            </div>
                                                         </div>
-                                                        <div>
-                                                            <span>₺</span> 1,799.00
+                                                        <input type="radio" checked="checked" name="purchase">
+                                                        <span class="main-radio__checkmark"></span>
+                                                    </label>
+                                                    <label class="main-radio">
+                                                        <div class="checkout__purchase-item">
+                                                            <div>
+                                                                2x
+                                                            </div>
+                                                            <div>
+                                                                <span>₺</span> 900.00
+                                                            </div>
+                                                            <div>
+                                                                <span>₺</span> 1,840.00
+                                                            </div>
                                                         </div>
-                                                        <div>
-                                                            <span>₺</span> 1,799.00
+                                                        <input type="radio" name="purchase">
+                                                        <span class="main-radio__checkmark"></span>
+                                                    </label>
+                                                    <label class="main-radio">
+                                                        <div class="checkout__purchase-item">
+                                                            <div>
+                                                                3x
+                                                            </div>
+                                                            <div>
+                                                                <span>₺</span> 600.00
+                                                            </div>
+                                                            <div>
+                                                                <span>₺</span> 1,925.00
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <input type="radio" checked="checked" name="purchase">
-                                                    <span class="main-radio__checkmark"></span>
-                                                </label>
-                                                <label class="main-radio">
-                                                    <div class="checkout__purchase-item">
-                                                        <div>
-                                                            2x
+                                                        <input type="radio" name="purchase">
+                                                        <span class="main-radio__checkmark"></span>
+                                                    </label>
+                                                    <label class="main-radio">
+                                                        <div class="checkout__purchase-item">
+                                                            <div>
+                                                                4x
+                                                            </div>
+                                                            <div>
+                                                                <span>₺</span> 450.00
+                                                            </div>
+                                                            <div>
+                                                                <span>₺</span> 2,220.00
+                                                            </div>
                                                         </div>
-                                                        <div>
-                                                            <span>₺</span> 900.00
+                                                        <input type="radio" name="purchase">
+                                                        <span class="main-radio__checkmark"></span>
+                                                    </label>
+                                                    <label class="main-radio">
+                                                        <div class="checkout__purchase-item">
+                                                            <div>
+                                                                5x
+                                                            </div>
+                                                            <div>
+                                                                <span>₺</span> 360.00
+                                                            </div>
+                                                            <div>
+                                                                <span>₺</span> 2,225.00
+                                                            </div>
                                                         </div>
-                                                        <div>
-                                                            <span>₺</span> 1,840.00
-                                                        </div>
-                                                    </div>
-                                                    <input type="radio" name="purchase">
-                                                    <span class="main-radio__checkmark"></span>
-                                                </label>
-                                                <label class="main-radio">
-                                                    <div class="checkout__purchase-item">
-                                                        <div>
-                                                            3x
-                                                        </div>
-                                                        <div>
-                                                            <span>₺</span> 600.00
-                                                        </div>
-                                                        <div>
-                                                            <span>₺</span> 1,925.00
-                                                        </div>
-                                                    </div>
-                                                    <input type="radio" name="purchase">
-                                                    <span class="main-radio__checkmark"></span>
-                                                </label>
-                                                <label class="main-radio">
-                                                    <div class="checkout__purchase-item">
-                                                        <div>
-                                                            4x
-                                                        </div>
-                                                        <div>
-                                                            <span>₺</span> 450.00
-                                                        </div>
-                                                        <div>
-                                                            <span>₺</span> 2,220.00
-                                                        </div>
-                                                    </div>
-                                                    <input type="radio" name="purchase">
-                                                    <span class="main-radio__checkmark"></span>
-                                                </label>
-                                                <label class="main-radio">
-                                                    <div class="checkout__purchase-item">
-                                                        <div>
-                                                            5x
-                                                        </div>
-                                                        <div>
-                                                            <span>₺</span> 360.00
-                                                        </div>
-                                                        <div>
-                                                            <span>₺</span> 2,225.00
-                                                        </div>
-                                                    </div>
-                                                    <input type="radio" name="purchase">
-                                                    <span class="main-radio__checkmark"></span>
-                                                </label>*@
+                                                        <input type="radio" name="purchase">
+                                                        <span class="main-radio__checkmark"></span>
+                                                    </label>*@
                                             </div>
                                         </div>
                                     </form>
@@ -564,7 +564,7 @@
                         <span class="main-checkbox__checkmark"></span>
                     </label>
                 </div>
-                <button id="btn-buy" form="validateForm"  class="button button-icon-right button-fw checkout__next-button">
+                <button id="btn-buy" form="validateForm" class="button button-icon-right button-fw checkout__next-button">
                     <span class="button-txt">
                         Siparişi Tamamla
                     </span>
@@ -1064,10 +1064,13 @@
 <input type="hidden" value="0" id="promotion-discount-amount" />
 <input type="hidden" value="" id="_promotion-code" name="PromotionCode" />
 <input type="hidden" value="" id="_installmentCount" name="PaymentInfo.Installments" />
+<input type="hidden" value="0" id="_aId" />
+<input type="hidden" value="" id="_cart-items" name="CartItemsJson"/>
 @section postScripts{
 
     <script type="text/javascript">
         var _cart = new CartSupport.Cart();
+        var cartItems = $("#_cart-items");
         var cardItemsBody = $(".checkout__basket-wrp");
         var inputOwner = $('#input-owner');
         var selectMonths = $("#select-months");
@@ -1083,9 +1086,12 @@
         var _promotionCode = $("#_promotion-code");
         var installmentInfoDiv = $(".checkout__purchase-wrp");
         var inputInstallment = $("#_installmentCount");
+        var aId = $("#_aId");
+
         var btnBuy = $("#btn-buy");
         btnBuy.on("click", btnBuy_onClick);
         $(document).ready(function () {
+            aId.val(localStorage.getItem("_cA"));
             getCartItems();
             checkPromotionCode();
         });
@@ -1147,6 +1153,7 @@
         }
         function getCartItems() {
             var items = _cart.getItems();
+            cartItems.val(JSON.stringify(items));
             var data = {
                 Items: items
             };
@@ -1169,27 +1176,27 @@
             for (var i = 0; i < data.length; i++) {
                 var item = data[i];
                 appended += ` <div class="checkout__basket-item">
-                                            <div class="checkout__basket-img">
-                                                <img src="${item.previewPhoto}" alt="">
-                                            </div>
-                                            <div class="checkout__basket-right">
-                                                <div class="checkout__basket-title">
-                                                   ${item.educationName}
+                                                <div class="checkout__basket-img">
+                                                    <img src="${item.previewPhoto}" alt="">
                                                 </div>
-                                                <div class="checkout__basket-crash">
-                                                    <span class="icon-outer">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-crash"></use>
-                                                        </svg>
-                                                    </span>
-                                                </div>
-                                                <div class="checkout__basket-price">
-                                                    <div class="checkout__price-new">
-                                                        ${item.priceText}
+                                                <div class="checkout__basket-right">
+                                                    <div class="checkout__basket-title">
+                                                       ${item.educationName}
+                                                    </div>
+                                                    <div class="checkout__basket-crash">
+                                                        <span class="icon-outer">
+                                                            <svg class="icon">
+                                                                <use xlink:href="../../assets/img/icons.svg#icon-crash"></use>
+                                                            </svg>
+                                                        </span>
+                                                    </div>
+                                                    <div class="checkout__basket-price">
+                                                        <div class="checkout__price-new">
+                                                            ${item.priceText}
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>`;
+                                            </div>`;
 
             }
 
@@ -1241,7 +1248,6 @@
         function installmentNumber_onChange() {
             var retVal = $("input[name='purchase']:checked").val();
             inputInstallment.val(retVal);
-            alert(retVal);
         }
         function createInstallmentsDiv(data) {
             var content = '';
@@ -1249,39 +1255,40 @@
                 $.each(data.installmentOptions.installmentPrices, function (index, info) {
                     if (info.installmentNumber == 1) {
                         content += `<label class="main-radio">
-                                                    <div class="checkout__purchase-item">
-                                                        <div>
-                                                            Peşin
+                                                        <div class="checkout__purchase-item">
+                                                            <div>
+                                                                Peşin
+                                                            </div>
+                                                            <div>
+                                                                <span>₺</span> ${info.price}
+                                                            </div>
+                                                            <div>
+                                                                <span>₺</span> ${info.totalPrice}
+                                                            </div>
                                                         </div>
-                                                        <div>
-                                                            <span>₺</span> ${info.price}
-                                                        </div>
-                                                        <div>
-                                                            <span>₺</span> ${info.totalPrice}
-                                                        </div>
-                                                    </div>
-                                                    <input type="radio" value="${info.installmentNumber}" checked="checked" name="purchase">
-                                                    <span class="main-radio__checkmark"></span>
-                                                </label>`;
+                                                        <input type="radio" value="${info.installmentNumber}" checked="checked" name="purchase">
+                                                        <span class="main-radio__checkmark"></span>
+                                                    </label>`;
                     } else {
                         content += `<label class="main-radio">
-                                                    <div class="checkout__purchase-item">
-                                                        <div>
-                                                            ${info.installmentNumber} Taksit
+                                                        <div class="checkout__purchase-item">
+                                                            <div>
+                                                                ${info.installmentNumber} Taksit
+                                                            </div>
+                                                            <div>
+                                                                <span>₺</span> ${info.price}
+                                                            </div>
+                                                            <div>
+                                                                <span>₺</span> ${info.totalPrice}
+                                                            </div>
                                                         </div>
-                                                        <div>
-                                                            <span>₺</span> ${info.price}
-                                                        </div>
-                                                        <div>
-                                                            <span>₺</span> ${info.totalPrice}
-                                                        </div>
-                                                    </div>
-                                                    <input type="radio" value="${info.installmentNumber}" name="purchase">
-                                                    <span class="main-radio__checkmark"></span>
-                                                </label>`;
+                                                        <input type="radio" value="${info.installmentNumber}" name="purchase">
+                                                        <span class="main-radio__checkmark"></span>
+                                                    </label>`;
                     }
                 });
             installmentInfoDiv.append(content);
+            resizeAccordionContent();
             inputInstallment.val(1);
         }
 
@@ -1289,7 +1296,7 @@
             btnBuy.off("click");
             var tokenVerifier = new SecuritySupport.TokenVerifier();
             var cart = new CartSupport.Cart();
-            var cartItems = cart.getItems();
+            var cartItemsSt = cart.getItems();
             alert("click");
             var data = tokenVerifier.addToken("form-buy", {
                 Use3d: chc3dSecure.prop("checked"),
@@ -1303,8 +1310,10 @@
                 PaymentInfo: {
                     Installments: inputInstallment.val()
                 },
-                CartItems: cartItems,
-                PromotionCode: _promotionCode.val()
+                CartItems: cartItemsSt,
+                PromotionCode: _promotionCode.val(),
+                AddressId: aId.val(),
+                CartItemsJson: cartItems.val()
             });
             console.log(data);
 
@@ -1317,6 +1326,20 @@
                 },
                 complete: () => { btnBuy.on("click", btnBuy_onClick); }
             });
+        }
+        function resizeAccordionContent() {
+            var accordionContent = $('.accordion__item.selected')
+                .find('.js-calc-accordion-height')
+                .height();
+            $('.accordion__item.selected ')
+                .find('.accordion__content')
+                .css('height', accordionContent + 20);
+            var accordionContentCart = $('.accordion__item.selected-cart')
+                .find('.js-calc-accordion-height')
+                .height();
+            $('.accordion__item.selected-cart ')
+                .find('.accordion__content')
+                .css('height', accordionContentCart + 20);
         }
 
     </script>

@@ -8,6 +8,7 @@ using NitelikliBilisim.Core.ViewModels.Sales;
 using System.Collections.Generic;
 using System.Globalization;
 using Microsoft.Extensions.Configuration;
+using NitelikliBilisim.Core.Enums.user_details;
 
 namespace NitelikliBilisim.Core.Services.Payments
 {
@@ -74,9 +75,9 @@ namespace NitelikliBilisim.Core.Services.Payments
                 IdentityNumber = data.SpecialInfo.IdentityNumber,
                 //LastLoginDate = "2015-10-05 12:43:35",
                 //RegistrationDate = "2013-04-21 15:12:09",
-                RegistrationAddress = data.InvoiceInfo.Address,
+                RegistrationAddress = data.InvoiceAddress.Content,
                 Ip = data.SpecialInfo.Ip,
-                City = data.InvoiceInfo.City,
+                City = data.InvoiceAddress.City.Name,
                 Country = "Turkey",
                 //ZipCode = "34732"
             };
@@ -84,10 +85,10 @@ namespace NitelikliBilisim.Core.Services.Payments
 
             var billingAddress = new Address
             {
-                ContactName = data.InvoiceInfo.IsIndividual ? data.CardInfo.NameOnCard : data.CorporateInvoiceInfo.CompanyName,
-                City = data.InvoiceInfo.City,
+                ContactName = data.InvoiceAddress.AddressType == AddressTypes.Individual ? data.InvoiceAddress.NameSurname: data.InvoiceAddress.CompanyName,
+                City = data.InvoiceAddress.City.Name,
                 Country = "Turkey",
-                Description = data.InvoiceInfo.IsIndividual ? data.InvoiceInfo.Address : $"{data.CorporateInvoiceInfo.CompanyName} {data.CorporateInvoiceInfo.TaxNo} {data.CorporateInvoiceInfo.TaxOffice} - {data.InvoiceInfo.City}",
+                Description = data.InvoiceAddress.AddressType == AddressTypes.Individual? data.InvoiceAddress.Content: $"{data.InvoiceAddress.CompanyName} {data.InvoiceAddress.TaxNumber} {data.InvoiceAddress.TaxOffice} - {data.InvoiceAddress.City.Name}",
                 //ZipCode = "34742"
             };
             request.BillingAddress = billingAddress;
