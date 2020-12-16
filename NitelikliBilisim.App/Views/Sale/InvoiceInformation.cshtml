@@ -650,7 +650,6 @@
             if (promotionCode) {
                 datapromotionCode = promotionCode;
             } else {
-                alert(inputPromotionCode.val());
                 datapromotionCode = inputPromotionCode.val();
             }
             var items = _cart.getItems();
@@ -702,7 +701,7 @@
                                         <div class="checkout__basket-title">
                                            ${item.educationName}
                                         </div>
-                                        <div class="checkout__basket-crash">
+                                        <div class="checkout__basket-crash" data-id="${item.educationId}">
                                             <span class="icon-outer">
                                                 <svg class="icon">
                                                     <use xlink:href="../../assets/img/icons.svg#icon-crash"></use>
@@ -711,7 +710,7 @@
                                         </div>
                                         <div class="checkout__basket-price">
                                             <div class="checkout__price-new">
-                                                ${item.priceText}
+                                                ${formatCurrency(item.priceText)}
                                             </div>
                                         </div>
                                     </div>
@@ -731,31 +730,10 @@
             txtTotal.html(formatCurrency(parseFloat(inputEducationTotalPrice.val() - parseFloat(inputPromotionDiscountAmount.val()))));
         }
         function formatCurrency(total) {
-            return " <span>₺</span> " + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
+            return "<span>₺</span> " + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
         }
-        function setDeleteButtonAttribute(id) {
-            $(".js-delete-product-checkout").attr("data-eid", id);
-        }
-
-        //Remove Cart Item
-        $('body').on('click', '.js-delete-product-checkout', function () {
-            var id = $(this).attr("data-eid");
-            _cart.removeFromCart(id);
-            getCartItems();
-            $('.checkout__product-item:nth-child(1)').fadeOut(250, function () {
-                $(this).remove();
-            });
-            setTimeout(() => {
-                $(this)
-                    .closest('.js-deleted-item')
-                    .remove();
-                if ($('.checkout__product-item').length <= 0) {
-                    $('.checkout__product-wrp, .js-siparis-ozeti').html(
-                        "<div class='mini-basket__empty'><span class='icon-outer button-icon'><svg class='icon'><use xlink:href='../../assets/img/icons.svg#icon-basket-empty'></use></svg></span>Sepetiniz Boş.</div>",
-                    );
-                }
-            }, 400);
-        });
+        
+     
 
         //Remove Promotion Code
         $('body').on('click', '.js-remove-sale', function () {

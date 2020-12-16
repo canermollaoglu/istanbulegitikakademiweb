@@ -12,7 +12,6 @@ namespace NitelikliBilisim.Core.ViewModels.Sales
         public bool Use3d { get; set; }
         [Required]
         public _CardInfo CardInfo { get; set; }
-        [Required]
         public Entities.user_details.Address InvoiceAddress { get; set; }
         public _PaymentInfo PaymentInfo { get; set; } = new _PaymentInfo();
         public _SpecialInfo SpecialInfo { get; set; } = new _SpecialInfo();
@@ -33,7 +32,7 @@ namespace NitelikliBilisim.Core.ViewModels.Sales
         [Required, MaxLength(2)]
         public string MonthOnCard { get; set; }
 
-        [Required, MaxLength(2)]
+        [Required, MaxLength(4)]
         public string YearOnCard { get; set; }
 
         [Required, MinLength(3), MaxLength(3)]

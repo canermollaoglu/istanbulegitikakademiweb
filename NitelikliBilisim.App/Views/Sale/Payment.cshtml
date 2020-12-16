@@ -82,7 +82,7 @@
                                                         <use xlink:href="assets/img/icons.svg#icon-info-circle"></use>
                                                     </svg>
                                                 </span>
-                                                <label for="cardNumber" class="error">cardnumber</label>
+                                                <label for="CardInfo.NumberOnCard" class="error">cardnumber</label>
                                             </li>
                                             <li>
                                                 <span class="icon-outer">
@@ -90,7 +90,7 @@
                                                         <use xlink:href="assets/img/icons.svg#icon-info-circle"></use>
                                                     </svg>
                                                 </span>
-                                                <label for="cardName" class="error">cardname</label>
+                                                <label for="CardInfo.NameOnCard" class="error">cardname</label>
                                             </li>
                                             <li>
                                                 <span class="icon-outer">
@@ -98,7 +98,7 @@
                                                         <use xlink:href="assets/img/icons.svg#icon-info-circle"></use>
                                                     </svg>
                                                 </span>
-                                                <label for="cardMonth" class="error">cardmonth</label>
+                                                <label for="CardInfo.MonthOnCard" class="error">cardmonth</label>
                                             </li>
                                             <li>
                                                 <span class="icon-outer">
@@ -106,7 +106,7 @@
                                                         <use xlink:href="assets/img/icons.svg#icon-info-circle"></use>
                                                     </svg>
                                                 </span>
-                                                <label for="cardYear" class="error">cardyear</label>
+                                                <label for="CardInfo.YearOnCard" class="error">cardyear</label>
                                             </li>
                                             <li>
                                                 <span class="icon-outer">
@@ -137,16 +137,23 @@
                                     <div class='card-wrapper card-wrapper--form'></div>
                                     <form class="card-form" id="form-buy" novalidate method="post" asp-controller="Sale" asp-action="Pay">
                                         @Html.AntiForgeryToken()
+                                        <input type="hidden"  id="_is-distant-sales-agreement-confirmed" name="IsDistantSalesAgreementConfirmed" />
+                                        <input type="hidden" value="0" id="input-education-total-price" />
+                                        <input type="hidden" value="0" id="promotion-discount-amount" />
+                                        <input type="hidden" value="" id="_promotion-code" name="PromotionCode" />
+                                        <input type="hidden" value="" id="_installmentCount" name="PaymentInfo.Installments" />
+                                        <input type="hidden" value="0" id="_aId" name="AddressId" />
+                                        <input type="hidden" value="" id="_cart-items" name="CartItemsJson" />
                                         <div class="input__outer no-icon">
                                             <div class="input__title">Kart Numarası</div>
                                             <input type="text" id="input-card-number"
-                                                   class="input input--bordered input--fw input--noshadow card__number" name="cardNumber"
+                                                   class="input input--bordered input--fw input--noshadow card__number" name="CardInfo.NumberOnCard"
                                                    placeholder="_ _ _ _  _ _ _ _  _ _ _ _  _ _ _ _">
                                         </div>
                                         <div class="input__outer no-icon">
                                             <div class="input__title">Adınız Soyadınız</div>
                                             <input type="text" id="input-owner"
-                                                   class="input input--bordered input--fw input--noshadow card__name" name="cardName"
+                                                   class="input input--bordered input--fw input--noshadow card__name" name="CardInfo.NameOnCard"
                                                    placeholder="Kart Sahibinin Adı Soyadı" />
                                         </div>
                                         <div class="input__column-2 input__column-card">
@@ -154,13 +161,13 @@
                                                 <div>
                                                     <div class="input__title">Ay</div>
                                                     <input type="text" id="select-months"
-                                                           class="input input--bordered input--fw input--noshadow card__expiry" name="cardMonth"
+                                                           class="input input--bordered input--fw input--noshadow card__expiry" name="CardInfo.MonthOnCard"
                                                            placeholder="01" />
                                                 </div>
                                                 <div>
                                                     <div class="input__title">Yıl</div>
                                                     <input type="text" id="select-years"
-                                                           class="input input--bordered input--fw input--noshadow card__expiry" name="cardYear"
+                                                           class="input input--bordered input--fw input--noshadow card__expiry" name="CardInfo.YearOnCard"
                                                            placeholder="2026" />
                                                 </div>
                                             </div>
@@ -170,14 +177,14 @@
                                                               tooltip-text="Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis, odit!.">?</span>
                                                 </div>
                                                 <input type="text" id="input-cvc"
-                                                       class="input input--bordered input--fw input--noshadow card__cvc" name="cardCvc"
+                                                       class="input input--bordered input--fw input--noshadow card__cvc" name="CardInfo.CVC"
                                                        placeholder="_ _ _" />
                                             </div>
                                         </div>
                                         <div class="input__outer">
                                             <label class="main-checkbox">
                                                 <a href="#0">3d secure</a> ile ödeme yapacağım.
-                                                <input type="checkbox" id="chc3dSecure">
+                                                <input type="checkbox" id="chc3dSecure" name="Use3d" value="true" >
                                                 <span class="main-checkbox__checkmark"></span>
                                             </label>
                                         </div>
@@ -201,80 +208,80 @@
                                             <div class="checkout__purchase-wrp">
                                                 <p>Taksit seçeneklerini görebilmek için lütfen kart numaranızı giriniz.</p>
                                                 @*<label class="main-radio">
-                                                        <div class="checkout__purchase-item">
-                                                            <div>
-                                                                Peşin
-                                                            </div>
-                                                            <div>
-                                                                <span>₺</span> 1,799.00
-                                                            </div>
-                                                            <div>
-                                                                <span>₺</span> 1,799.00
-                                                            </div>
-                                                        </div>
-                                                        <input type="radio" checked="checked" name="purchase">
-                                                        <span class="main-radio__checkmark"></span>
-                                                    </label>
-                                                    <label class="main-radio">
-                                                        <div class="checkout__purchase-item">
-                                                            <div>
-                                                                2x
-                                                            </div>
-                                                            <div>
-                                                                <span>₺</span> 900.00
-                                                            </div>
-                                                            <div>
-                                                                <span>₺</span> 1,840.00
-                                                            </div>
-                                                        </div>
-                                                        <input type="radio" name="purchase">
-                                                        <span class="main-radio__checkmark"></span>
-                                                    </label>
-                                                    <label class="main-radio">
-                                                        <div class="checkout__purchase-item">
-                                                            <div>
-                                                                3x
-                                                            </div>
-                                                            <div>
-                                                                <span>₺</span> 600.00
-                                                            </div>
-                                                            <div>
-                                                                <span>₺</span> 1,925.00
-                                                            </div>
-                                                        </div>
-                                                        <input type="radio" name="purchase">
-                                                        <span class="main-radio__checkmark"></span>
-                                                    </label>
-                                                    <label class="main-radio">
-                                                        <div class="checkout__purchase-item">
-                                                            <div>
-                                                                4x
-                                                            </div>
-                                                            <div>
-                                                                <span>₺</span> 450.00
-                                                            </div>
-                                                            <div>
-                                                                <span>₺</span> 2,220.00
-                                                            </div>
-                                                        </div>
-                                                        <input type="radio" name="purchase">
-                                                        <span class="main-radio__checkmark"></span>
-                                                    </label>
-                                                    <label class="main-radio">
-                                                        <div class="checkout__purchase-item">
-                                                            <div>
-                                                                5x
-                                                            </div>
-                                                            <div>
-                                                                <span>₺</span> 360.00
-                                                            </div>
-                                                            <div>
-                                                                <span>₺</span> 2,225.00
-                                                            </div>
-                                                        </div>
-                                                        <input type="radio" name="purchase">
-                                                        <span class="main-radio__checkmark"></span>
-                                                    </label>*@
+                    <div class="checkout__purchase-item">
+                        <div>
+                            Peşin
+                        </div>
+                        <div>
+                            <span>₺</span> 1,799.00
+                        </div>
+                        <div>
+                            <span>₺</span> 1,799.00
+                        </div>
+                    </div>
+                    <input type="radio" checked="checked" name="purchase">
+                    <span class="main-radio__checkmark"></span>
+                </label>
+                <label class="main-radio">
+                    <div class="checkout__purchase-item">
+                        <div>
+                            2x
+                        </div>
+                        <div>
+                            <span>₺</span> 900.00
+                        </div>
+                        <div>
+                            <span>₺</span> 1,840.00
+                        </div>
+                    </div>
+                    <input type="radio" name="purchase">
+                    <span class="main-radio__checkmark"></span>
+                </label>
+                <label class="main-radio">
+                    <div class="checkout__purchase-item">
+                        <div>
+                            3x
+                        </div>
+                        <div>
+                            <span>₺</span> 600.00
+                        </div>
+                        <div>
+                            <span>₺</span> 1,925.00
+                        </div>
+                    </div>
+                    <input type="radio" name="purchase">
+                    <span class="main-radio__checkmark"></span>
+                </label>
+                <label class="main-radio">
+                    <div class="checkout__purchase-item">
+                        <div>
+                            4x
+                        </div>
+                        <div>
+                            <span>₺</span> 450.00
+                        </div>
+                        <div>
+                            <span>₺</span> 2,220.00
+                        </div>
+                    </div>
+                    <input type="radio" name="purchase">
+                    <span class="main-radio__checkmark"></span>
+                </label>
+                <label class="main-radio">
+                    <div class="checkout__purchase-item">
+                        <div>
+                            5x
+                        </div>
+                        <div>
+                            <span>₺</span> 360.00
+                        </div>
+                        <div>
+                            <span>₺</span> 2,225.00
+                        </div>
+                    </div>
+                    <input type="radio" name="purchase">
+                    <span class="main-radio__checkmark"></span>
+                </label>*@
                                             </div>
                                         </div>
                                     </form>
@@ -414,7 +421,7 @@
                         </div>
                     </div>
                 </div>
-                <a href="./checkout-2-fatura.php" class="button button--simple button-left checkout__button-prev">
+                <a asp-controller="Sale" asp-action="InvoiceInformation" class="button button--simple button-left checkout__button-prev">
                     <span class="button-icon">
                         <span class="icon-outer">
                             <svg class="icon">
@@ -438,55 +445,7 @@
                         </div>
                     </div>
                     <div class="checkout__basket-wrp">
-                        <div class="checkout__basket-item">
-                            <div class="checkout__basket-img">
-                                <img src="assets/img/cardimg6.jpg" alt="">
-                            </div>
-                            <div class="checkout__basket-right">
-                                <div class="checkout__basket-title">
-                                    Yerel Sistemlerde
-                                    Yüksek Erişilebilirlik
-                                </div>
-                                <div class="checkout__basket-crash">
-                                    <span class="icon-outer">
-                                        <svg class="icon">
-                                            <use xlink:href="assets/img/icons.svg#icon-crash"></use>
-                                        </svg>
-                                    </span>
-                                </div>
-                                <div class="checkout__basket-price">
-                                    <div class="checkout__price-new">
-                                        <span>₺</span> 700.00
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="checkout__basket-item">
-                            <div class="checkout__basket-img">
-                                <img src="assets/img/cardimg3.jpg" alt="">
-                            </div>
-                            <div class="checkout__basket-right">
-                                <div class="checkout__basket-title">
-                                    ASP.Net Core Web API
-                                    ile JWT Authentication
-                                </div>
-                                <div class="checkout__basket-crash">
-                                    <span class="icon-outer">
-                                        <svg class="icon">
-                                            <use xlink:href="assets/img/icons.svg#icon-crash"></use>
-                                        </svg>
-                                    </span>
-                                </div>
-                                <div class="checkout__basket-price">
-                                    <!-- <div class="checkout__price-old">
-                                      <span>₺</span> 1,250.00
-                                    </div> -->
-                                    <div class="checkout__price-new">
-                                        <span>₺</span> 700.00
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                       
                     </div>
                 </div>
                 <div class="checkout__content no-shadow">
@@ -551,7 +510,7 @@
                     <label class="main-checkbox reverse">
                         <a href="#0" class="js-modal-trigger" data-trigger="onBilgilendirmeFormu">Ön Bilgilendirme</a> formunu
                         okudum ve kabul ediyorum.
-                        <input type="checkbox" id="onBilgilendirme" name="onBilgilendirme" form="validateForm" required>
+                        <input type="checkbox" id="onBilgilendirme" name="onBilgilendirme" form="form-buy" required>
                         <span class="main-checkbox__checkmark"></span>
                     </label>
                     <label class="main-checkbox reverse">
@@ -559,12 +518,12 @@
                             Mesafeli satış
                             sözleşmesi‘ni
                         </a> okudum ve kabul ediyorum.
-                        <input type="checkbox" id="MesafeliSatisSozlesmesi" name="MesafeliSatisSozlesmesi" form="validateForm"
+                        <input type="checkbox" id="MesafeliSatisSozlesmesi" name="MesafeliSatisSozlesmesi" form="form-buy"
                                required>
                         <span class="main-checkbox__checkmark"></span>
                     </label>
                 </div>
-                <button id="btn-buy" form="validateForm" class="button button-icon-right button-fw checkout__next-button">
+                <button id="btn-buy" form="form-buy" class="button button-icon-right button-fw checkout__next-button">
                     <span class="button-txt">
                         Siparişi Tamamla
                     </span>
@@ -1060,12 +1019,7 @@
         </p>
     </div>
 </div>
-<input type="hidden" value="0" id="input-education-total-price" />
-<input type="hidden" value="0" id="promotion-discount-amount" />
-<input type="hidden" value="" id="_promotion-code" name="PromotionCode" />
-<input type="hidden" value="" id="_installmentCount" name="PaymentInfo.Installments" />
-<input type="hidden" value="0" id="_aId" />
-<input type="hidden" value="" id="_cart-items" name="CartItemsJson"/>
+
 @section postScripts{
 
     <script type="text/javascript">
@@ -1087,6 +1041,11 @@
         var installmentInfoDiv = $(".checkout__purchase-wrp");
         var inputInstallment = $("#_installmentCount");
         var aId = $("#_aId");
+        var mss = $("#_is-distant-sales-agreement-confirmed");
+
+        var onBilgilendirme = $("#onBilgilendirme");
+
+
 
         var btnBuy = $("#btn-buy");
         btnBuy.on("click", btnBuy_onClick);
@@ -1095,6 +1054,67 @@
             getCartItems();
             checkPromotionCode();
         });
+
+        $("#onBilgilendirme").change(function () {
+                mss.val(this.checked);
+        });
+
+        $('#form-buy').validate({
+            errorLabelContainer: $('#form-buy div.error'),
+            errorContainer: 'div.error-messages',
+            errorLabelContainer: $('ul', 'div.error-messages'),
+            wrapper: 'li',
+            rules: {
+                "CardInfo.NumberOnCard": {
+                    required: true,
+                },
+                "CardInfo.NameOnCard": {
+                    required: true,
+                },
+                "CardInfo.MonthOnCard": {
+                    required: true,
+                },
+                "CardInfo.YearOnCard": {
+                    required: true,
+                },
+                "CardInfo.CVC": {
+                    required: true,
+                },
+                "purchase": {
+                    required: true,
+                },
+                "IsDistantSalesAgreementConfirmed": {
+                    required: true,
+                },
+                "MesafeliSatisSozlesmesi": {
+                    required: true,
+                },
+            },
+            messages: {
+                "CardInfo.NumberOnCard": 'Kart numarasını girmediniz.',
+                "CardInfo.NameOnCard": 'Adınız ve soyadınızı girmediniz.',
+                "CardInfo.MonthOnCard": 'Kart ayını girmediniz.',
+                "CardInfo.YearOnCard": 'Kart yılını girmediniz.',
+                "CardInfo.CVC": 'CCV kodunu girmediniz.',
+                "purchase": 'Lütfen bir taksit seçimi yapın.',
+                "IsDistantSalesAgreementConfirmed": 'Ön Bilgilendirme formunu onaylayınız.',
+                "MesafeliSatisSozlesmesi": 'Bu alanı işaretleyiniz.'
+            },
+            submitHandler: function () {
+                $successMsg.show();
+            },
+            highlight: function (element) {
+                $(element)
+                    .parent()
+                    .addClass('outer-error');
+            },
+            unhighlight: function (element) {
+                $(element)
+                    .parent()
+                    .removeClass('outer-error');
+            },
+        });
+
 
         function checkPromotionCode() {
             var promotionCode = localStorage.getItem("promotionCode");
@@ -1114,7 +1134,6 @@
             if (promotionCode) {
                 datapromotionCode = promotionCode;
             } else {
-                alert(inputPromotionCode.val());
                 datapromotionCode = inputPromotionCode.val();
             }
             var items = _cart.getItems();
@@ -1293,11 +1312,12 @@
         }
 
         function btnBuy_onClick() {
+            if (!$('#form-buy').isValid())
+                return;
             btnBuy.off("click");
             var tokenVerifier = new SecuritySupport.TokenVerifier();
             var cart = new CartSupport.Cart();
             var cartItemsSt = cart.getItems();
-            alert("click");
             var data = tokenVerifier.addToken("form-buy", {
                 Use3d: chc3dSecure.prop("checked"),
                 CardInfo: {
@@ -1313,7 +1333,8 @@
                 CartItems: cartItemsSt,
                 PromotionCode: _promotionCode.val(),
                 AddressId: aId.val(),
-                CartItemsJson: cartItems.val()
+                CartItemsJson: cartItems.val(),
+                IsDistantSalesAgreementConfirmed:mss
             });
             console.log(data);
 
@@ -1341,6 +1362,23 @@
                 .find('.accordion__content')
                 .css('height', accordionContentCart + 20);
         }
-
+        //Remove Promotion Code
+        $('body').on('click', '.js-remove-sale', function () {
+            $(this)
+                .parent()
+                .fadeOut(300, function () {
+                    $(this).remove();
+                });
+            // $(this).parent().find().fadeOut(100, function () {
+            // 	$(this).remove();
+            // });
+            localStorage.setItem("promotionCode", "");
+            inputPromotionDiscountAmount.val(0);
+            calculateTotalPrice();
+            $('.js-cupon-form')
+                .find('.wizard-loading')
+                .show();
+            $('.js-cupon-form').removeClass('result');
+        });
     </script>
 } 
