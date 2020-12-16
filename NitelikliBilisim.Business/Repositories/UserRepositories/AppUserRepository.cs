@@ -293,7 +293,9 @@ namespace NitelikliBilisim.Business.Repositories
         public MyPanelVm GetPanelInfo(string userId)
         {
             MyPanelVm model = new MyPanelVm();
-            var student = _context.Customers.Include(x => x.User).Include(x=>x.StudentEducationInfos).ThenInclude(x=>x.EducationDays).First(x => x.Id == userId);
+            var student = _context.Customers.Include(x => x.User)
+                .Include(x=>x.StudentEducationInfos).ThenInclude(x=>x.Category)
+                .Include(x=>x.StudentEducationInfos).ThenInclude(x=>x.EducationDays).First(x => x.Id == userId);
             var favoriteEducations = GetUserFavoriteEducationsByUserId(userId);
             var purchasedEducations = GetPurschasedEducationsByUserId(userId);
 
@@ -301,11 +303,15 @@ namespace NitelikliBilisim.Business.Repositories
             model.FavoriteEducationCount = favoriteEducations.Count;
             model.PurchasedEducations = purchasedEducations;
             model.PurchasedEducationCount = purchasedEducations.Count;
+            model.IsNBUY = student.IsNbuyStudent;
             if (student.IsNbuyStudent)
             {
                 var nbuyInfo = student.StudentEducationInfos[0];
                 var totalEducationWeek = (int)Math.Ceiling((nbuyInfo.EducationDays.OrderBy(x => x.Day).Last().Date - nbuyInfo.StartedAt.Date).TotalDays / (double)7);
                 var currentEducationWeek = (int)Math.Ceiling((DateTime.Now.Date - nbuyInfo.StartedAt).TotalDays / (double)7);
+                model.NbuyCategory = nbuyInfo.Category.Name;
+                model.NbuyStartDateText = nbuyInfo.StartedAt.ToString("dd MMMM yyyy");
+                model.NbuyStartDate = nbuyInfo.StartedAt;
                 model.EducationWeek = currentEducationWeek;
                 model.TotalEducationWeek = totalEducationWeek;
             }
