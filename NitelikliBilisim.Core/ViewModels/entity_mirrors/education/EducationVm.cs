@@ -40,6 +40,7 @@ namespace NitelikliBilisim.Core.ViewModels
         public double Point { get; set; }
         public string PointText { get; set; }
         public int CommentCount { get; set; }
+        public string SeoUrl { get; set; }
     }
 
     public class EducationListVm

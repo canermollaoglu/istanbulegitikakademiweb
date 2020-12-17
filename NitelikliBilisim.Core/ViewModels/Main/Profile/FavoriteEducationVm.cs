@@ -14,5 +14,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public string HoursText { get; set; }
         public string DaysText { get; set; }
         public string FeaturedImageUrl { get; set; }
+        public string SeoUrl { get; set; }
     }
 }

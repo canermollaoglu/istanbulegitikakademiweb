@@ -67,6 +67,6 @@ namespace NitelikliBilisim.App.Controllers
                     filterOptions = filterOptions
                 }
             });
-        }
+        }    
     }
 }

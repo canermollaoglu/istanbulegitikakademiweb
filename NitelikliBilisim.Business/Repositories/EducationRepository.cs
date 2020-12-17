@@ -31,6 +31,11 @@ namespace NitelikliBilisim.Business.Repositories
             _configuration = configuration;
         }
 
+        public bool CheckEducationBySeoUrl(string seoUrl)
+        {
+            return Context.Educations.Any(x => x.SeoUrl == seoUrl);
+        }
+
         public IQueryable<EducationListVm> GetListQueryable()
         {
             return from e in Context.Educations
@@ -557,14 +562,14 @@ namespace NitelikliBilisim.Business.Repositories
             return data;
         }
 
-        public EducationVm GetEducation(Guid id)
+        public EducationVm GetEducation(string seoUrl)
         {
-            var education = Context.Educations.First(x => x.Id == id);
-
+            var education = Context.Educations.First(x => x.SeoUrl == seoUrl);
+            
             var comments = (from comment in Context.EducationComments
                             join commenter in Context.Users on comment.CommentatorId equals commenter.Id
                             join student in Context.Customers on commenter.Id equals student.Id
-                            where comment.EducationId == id && comment.ApprovalStatus == CommentApprovalStatus.Approved
+                            where comment.EducationId == education.Id && comment.ApprovalStatus == CommentApprovalStatus.Approved
                             orderby comment.ApprovalDate descending
                             select new CommentDetailVm
                             {
@@ -599,16 +604,16 @@ namespace NitelikliBilisim.Business.Repositories
                     Level = EnumHelpers.GetDescription(education.Level),
                     //PriceText = education.NewPrice.GetValueOrDefault(0).ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"))
                 },
-                Gains = Context.EducationGains.Where(x => x.EducationId == id)
+                Gains = Context.EducationGains.Where(x => x.EducationId == education.Id)
                 .Select(x => new EducationGainVm
                 {
-                    EducationId = id,
+                    EducationId = education.Id,
                     Gain = x.Gain
                 }).ToList(),
-                Medias = Context.EducationMedias.Where(x => x.EducationId == id)
+                Medias = Context.EducationMedias.Where(x => x.EducationId == education.Id)
                 .Select(x => new EducationMediaVm
                 {
-                    EducationId = id,
+                    EducationId = education.Id,
                     FileUrl = x.FileUrl,
                     MediaType = x.MediaType
                 }).ToList()
@@ -619,7 +624,7 @@ namespace NitelikliBilisim.Business.Repositories
                 model.Base.PointText = (comments.Sum(x => x.Point) / comments.Count()).ToString("0.0");
             }
 
-            var parts = Context.EducationParts.Where(x => x.EducationId == id)
+            var parts = Context.EducationParts.Where(x => x.EducationId == education.Id)
                 .OrderBy(o => o.Order)
                 .ToList();
 

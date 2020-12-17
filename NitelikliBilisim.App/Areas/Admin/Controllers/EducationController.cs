@@ -81,6 +81,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             var education = new Education
             {
                 Name = data.Name,
+                SeoUrl = data.SeoUrl,
                 Description = data.Description,
                 Description2 = data.Description2,
                 Level = (EducationLevel)data.EducationLevel.GetValueOrDefault(),

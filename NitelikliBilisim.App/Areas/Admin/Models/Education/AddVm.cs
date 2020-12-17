@@ -30,6 +30,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Models.Education
         public int? EducationLevel { get; set; }
         [Required(ErrorMessage = "Eğitim en az 1 kategoriye ait olmalıdır")]
         public Guid CategoryId { get; set; }
+        [Required(ErrorMessage ="Eğitim için bir Seo Url girmelisiniz.")]
+        public string SeoUrl { get; set; }
         public string[] Tags { get; set; }
     }
     public class AddPostVm : EducationCrudVm

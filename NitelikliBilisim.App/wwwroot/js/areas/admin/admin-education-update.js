@@ -61,6 +61,7 @@ function btnSave_onClick() {
     var data = {
         EducationId: $("#_education-id").val(),
         Name: $("#input-name").val(),
+        SeoUrl:$("#input-seo-url").val(),
         Description: $("#input-description").val(),
         Description2: $("#input-description2").val(),
         Days: $("#input-days").val(),

@@ -232,6 +232,7 @@ namespace NitelikliBilisim.Business.Repositories
                          select new MyCourseDetailVm
                          {
                              EducationId = education.Id,
+                             SeoUrl = education.SeoUrl,
                              EducationName = education.Name,
                              EducationShortDescription = education.Description,
                              EducationFeaturedImage = eImage.FileUrl,
@@ -347,6 +348,7 @@ namespace NitelikliBilisim.Business.Repositories
                                  select new PurchasedEducationVm
                                  {
                                      EducationId = education.Id,
+                                     SeoUrl = education.SeoUrl,
                                      GroupId = eGroup.Id,
                                      Name = education.Name,
                                      CategoryName = category.Name,
@@ -389,6 +391,7 @@ namespace NitelikliBilisim.Business.Repositories
                                   select new FavoriteEducationVm
                                   {
                                       Id = education.Id,
+                                      SeoUrl = education.SeoUrl,
                                       Name = education.Name,
                                       CategoryName = category.Name,
                                       HoursText = (education.HoursPerDay * education.Days).ToString(),

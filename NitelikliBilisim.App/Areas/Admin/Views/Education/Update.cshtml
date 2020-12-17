@@ -47,24 +47,12 @@
                     </select>
                 </div>
             </div>
-            </div>
+        </div>
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    @{
-                        var isChecked = Model.Education.IsActive ? "checked" : "";
-                    }
-                    <label>Eğitimi Kilitle/Aç</label>
-                    <div class="form-check">
-                        <label class="form-check-label text-danger">
-                            <input type="radio" class="form-check-input" name="optradio" id="input-is-active" checked>Kilitle
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <label class="form-check-label text-success">
-                            <input type="radio" class="form-check-input" name="optradio" @isChecked>Aç
-                        </label>
-                    </div>
+                    <label>Seo Url   <i title="- dışında özel karakter girmeyiniz.Tamamen küçük harf olacak şekilde Türkçe karakter kullanmadan oluşturunuz." class="fa fa-question-circle"></i></label>
+                    <input type="text" placeholder="dot-net-core-mvc-egitimi" class="form-control" id="input-seo-url" value="@Model.Education.SeoUrl">
                 </div>
             </div>
             <div class="col-md-6">
@@ -73,7 +61,7 @@
                     <select id="select-tags" multiple="multiple" class="form-control">
                         @foreach (var item in Model.RelatedTags)
                         {
-                                <option value="@item.Id" selected>@item.Name</option>
+                            <option value="@item.Id" selected>@item.Name</option>
                         }
                     </select>
                 </div>
@@ -104,6 +92,27 @@
                 <div class="form-group">
                     <label>Günde Kaç Saat</label>
                     <input type="text" class="form-control" placeholder="Derslerin günlük kaç saat işleneceğinizi giriniz..." id="input-hours-per-day" value="@Model.Education.HoursPerDay">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    @{
+                        var isChecked = Model.Education.IsActive ? "checked" : "";
+                    }
+                    <label>Eğitimi Kilitle/Aç</label>
+                    <div class="form-check">
+                        <label class="form-check-label text-danger">
+                            <input type="radio" class="form-check-input" name="optradio" id="input-is-active" checked>Kilitle
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <label class="form-check-label text-success">
+                            <input type="radio" class="form-check-input" name="optradio" @isChecked>Aç
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>

@@ -23,28 +23,31 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
-        [Route("kurs-detayi/{courseId}")]
-        public IActionResult Details(Guid? courseId, string searchKey)
+        [Route("kurs-detayi/{seoUrl}")]
+        public IActionResult Details(string seoUrl, string searchKey)
         {
-            if (!courseId.HasValue)
+            if (string.IsNullOrEmpty(seoUrl))
                 return Redirect("/");
+            var checkEducation = _unitOfWork.Education.CheckEducationBySeoUrl(seoUrl);
+            if (!checkEducation)
+                return NotFound();
 
-            var educationDetails = _unitOfWork.Education.GetEducation(courseId.Value);
-            var educators = _unitOfWork.Bridge_EducationEducator.GetAssignedEducators(courseId.Value);
+            var educationDetails = _unitOfWork.Education.GetEducation(seoUrl:seoUrl);
+            var educators = _unitOfWork.Bridge_EducationEducator.GetAssignedEducators(educationDetails.Base.Id);
             var isLoggedIn = HttpContext.User.Identity.IsAuthenticated;
             if (isLoggedIn)
             {
                 var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
                 //Yalnızca giriş yapmış ve eğitimi alarak tamamlamış kişiler yorum yapabilir.
-                bool isCanComment = _unitOfWork.Education.CheckIsCanComment(userId, courseId.Value);
+                bool isCanComment = _unitOfWork.Education.CheckIsCanComment(userId, educationDetails.Base.Id);
                 educationDetails.Base.IsCanComment = isCanComment;
                 //Eğitimin favori eğitimlerde bulunup bulunmaması kontrolü.
-                bool status = _unitOfWork.WishListItem.CheckWishListItem(userId, courseId.Value);
+                bool status = _unitOfWork.WishListItem.CheckWishListItem(userId, educationDetails.Base.Id);
                 educationDetails.Base.IsWishListItem = status;
             }
 
 
-            var educationCities = _unitOfWork.EducationGroup.GetAvailableCities(courseId.Value);
+            var educationCities = _unitOfWork.EducationGroup.GetAvailableCities(educationDetails.Base.Id);
 
             var model = new CourseDetailsVm
             {

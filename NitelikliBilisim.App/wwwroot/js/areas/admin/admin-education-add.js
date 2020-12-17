@@ -80,6 +80,7 @@ function btnSave_onClick() {
     var previewFile = fileManager2.getFile();
     var data = {
         Name: $("#input-name").val(),
+        SeoUrl: $("#input-seo-url").val(),
         Description: $("#input-description").val(),
         Description2: $("#input-description2").val(),
         Days: $("#input-days").val(),

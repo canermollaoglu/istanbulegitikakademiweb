@@ -114,7 +114,8 @@ namespace NitelikliBilisim.Business.Repositories
                     HoursPerDayText = x.Education.HoursPerDay.ToString(),
                     DaysText = x.Education.Days.ToString(),
                     DaysNumeric = x.Education.Days,
-                    HoursPerDayNumeric = x.Education.HoursPerDay
+                    HoursPerDayNumeric = x.Education.HoursPerDay,
+                    SeoUrl = x.Education.SeoUrl
                 },
                 Medias = new List<EducationMediaVm> { new EducationMediaVm { EducationId = x.Education.Id, FileUrl = x.EducationPreviewMedia.FileUrl } },
                 AppropriateCriterionCount = 0
@@ -410,7 +411,8 @@ namespace NitelikliBilisim.Business.Repositories
                     HoursPerDayText = x.Education.HoursPerDay.ToString(),
                     DaysText = x.Education.Days.ToString(),
                     DaysNumeric = x.Education.Days,
-                    HoursPerDayNumeric = x.Education.HoursPerDay
+                    HoursPerDayNumeric = x.Education.HoursPerDay,
+                    SeoUrl = x.Education.SeoUrl
                 },
                 Medias = new List<EducationMediaVm> { new EducationMediaVm { EducationId = x.Education.Id, FileUrl = x.EducationPreviewMedia.FileUrl } },
                 AppropriateCriterionCount = educationAndAppropriateCriterion.FirstOrDefault(y => y.Key == x.Education.Id).Value
