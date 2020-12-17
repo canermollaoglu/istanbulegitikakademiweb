@@ -1,5 +1,6 @@
 ﻿/* elements */
 var inputName = document.getElementById("input-name");
+var inputSeoUrl = document.getElementById("input-seo-url");
 var inputDescription = document.getElementById("input-description");
 var btnSave = $("#btn-save");
 
@@ -14,6 +15,7 @@ function btnSave_onClick() {
     btnSave.off("click");
     var data = {
         Id: $("#category-id").val(),
+        SeoUrl: inputSeoUrl.value,
         Name: inputName.value,
         Description: inputDescription.value
     }
