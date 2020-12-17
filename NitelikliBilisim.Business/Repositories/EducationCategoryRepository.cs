@@ -1,5 +1,7 @@
-﻿using NitelikliBilisim.Core.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
+using NitelikliBilisim.Core.ViewModels.Main.Course;
 using NitelikliBilisim.Data;
 using System;
 using System.Collections.Generic;
@@ -34,6 +36,29 @@ namespace NitelikliBilisim.Business.Repositories
             }
 
             return deepestCategories;
+        }
+
+        public List<CoursesPageEducationCategoryVm> GetCoursesPageCategories()
+        {
+            List<CoursesPageEducationCategoryVm> model = new List<CoursesPageEducationCategoryVm>();
+            var baseCategories = _context.EducationCategories.Where(x => !x.BaseCategoryId.HasValue).ToList();
+
+            foreach (var baseCategory in baseCategories)
+            {
+                var category = new CoursesPageEducationCategoryVm();
+                category.Id = baseCategory.Id;
+                category.SeoUrl = baseCategory.SeoUrl;
+                category.Name = baseCategory.Name;
+                var educationCount = _context.Educations.Include(x => x.Category).ThenInclude(x => x.BaseCategory).Count(x => x.Category.BaseCategoryId == baseCategory.Id&& x.IsActive);
+                category.EducationCount = educationCount;
+                model.Add(category);
+            }
+            return model;
+        }
+
+        public List<EducationCategory> GetSubCategories()
+        {
+            return _context.EducationCategories.Where(x => x.BaseCategoryId.HasValue).ToList();
         }
 
         public override Guid Insert(EducationCategory entity, bool isSaveLater = false)

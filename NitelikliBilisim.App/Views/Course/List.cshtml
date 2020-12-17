@@ -1,0 +1,497 @@
+﻿@model NitelikliBilisim.Core.ViewModels.Main.Course.CourseListGetVm
+@{
+    ViewData["Title"] = "List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="subheader">
+    <div class="subheader__wrp">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="./index.php" class="breadcrumb__item">
+                    Anasayfa
+                </a>
+                <a href="#0" class="breadcrumb__item">
+                    Eğitimler
+                </a>
+                <a href="#0" class="breadcrumb__item active">
+                    Web Tasarım ve Mobil Programlama
+                </a>
+            </div>
+            <div class="subheader__cnt">
+                <div class="subheader__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="assets/img/icons.svg#icon-system-network"></use>
+                        </svg>
+                    </span>
+                </div>
+                <div class="subheader__txt-cnt">
+                    <div class="subheader__title">Web Tasarım ve Mobil Programlama</div>
+                    <div class="subheader__txt">Geleceğin web sitelerini kodlayın</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="subheader__img">
+        <img src="./assets/img/subheader-img.jpg" alt="">
+    </div>
+</div>
+<section class="section with-border is-popular-projects listing-first-section o-hidden">
+    <div class="container">
+        <div class="flex-center mb-4">
+            <h2 class="title title-section">POPÜLER <span class="title--blue">EĞİTİMLER</span></h2>
+        </div>
+
+        <div class="swiper-container js-card-slider mt-1">
+            <div class="swiper-wrapper">
+                @await Component.InvokeAsync("PopularEducations")
+            </div>
+            <div class="swiper-pagination"></div>
+
+            <div class="swiper-button-prev swiper-button-circle reverse">
+                <span class="icon-outer">
+                    <svg class="icon">
+                        <use xlink:href="assets/img/icons.svg#icon-arrow"></use>
+                    </svg>
+                </span>
+            </div>
+            <div class="swiper-button-next swiper-button-circle reverse">
+                <span class="icon-outer">
+                    <svg class="icon">
+                        <use xlink:href="assets/img/icons.svg#icon-arrow"></use>
+                    </svg>
+                </span>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<section class="lesson-list">
+    <div class="container">
+        <div class="lesson-list__wrp">
+            <div class="lesson-list__content">
+                <div class="lesson-list__selects mobile-fw-wrap">
+                    <div class="lesson-list__select select-location">
+                        <select class="js-sort-select">
+                            <option value="" selected hidden disabled>Konum</option>
+                            <option value="2">İstanbul</option>
+                            <option value="3">Ankara</option>
+                            <option value="4">izmir</option>
+                            <option value="5">Antalya</option>
+                        </select>
+                        <div class="lesson-list__select--mobile js-open-location-mobile">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="assets/img/icons.svg#icon-map-pin-f"></use>
+                                </svg>
+                            </span>
+                            <div class="js-select-mobile-change">
+                                Konum
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lesson-list__select with-checkbox mobile-fw">
+                        <select class="js-filter-select" multiple="">
+                            <option value="1">Microsoft</option>
+                            <option value="2">Python</option>
+                            <option value="3">Java</option>
+                            <option value="4">Android</option>
+                            <option value="5">Javascript</option>
+                        </select>
+                        <div class="lesson-list__select--mobile js-open-filter-mobile">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="assets/img/icons.svg#icon-filter"></use>
+                                </svg>
+                            </span>
+                            <div class="js-select-mobile-change">
+                                Filtrele
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lesson-list__select ml-auto select-sort">
+                        <select class="js-sort-select">
+                            <option value="" selected hidden disabled>Sırala</option>
+                            <option value="2">Fiyata Göre Artan</option>
+                            <option value="3">Fiyata Göre Azalan</option>
+                            <option value="4">Puana Göre En Yüksek</option>
+                            <option value="5">Seviyeye Göre Başlangıç</option>
+                            <option value="5">Seviyeye Göre İleri Düzey</option>
+                        </select>
+                        <div class="lesson-list__select--mobile js-open-sort-mobile">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="assets/img/icons.svg#icon-sort-gray"></use>
+                                </svg>
+                            </span>
+                            <div class="js-select-mobile-change">
+                                Sırala
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lesson-list__items">
+                    <a href="egitim-detay.php" class="lesson-list__item">
+                        <div class="lesson-list__item-img">
+                            <img src="./assets/img/cardimg6.jpg" alt="">
+                        </div>
+                        <div class="lesson-list__item-cnt">
+                            <div class="lesson-list__item-left">
+                                <div class="lesson-list__item-title">
+                                    Active Directory Sertifika Servisleri
+                                </div>
+                                <div class="lesson-list__item-txt">
+                                    Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse dahi devamlı
+                                    erişilebilir
+                                </div>
+                            </div>
+                            <div class="lesson-list__item-right">
+                                <div class="lesson-list__item-date">
+                                    <span class="icon-outer">
+                                        <svg class="icon">
+                                            <use xlink:href="assets/img/icons.svg#icon-clock"></use>
+                                        </svg>
+                                    </span>
+                                    3 gün ( 12 saat )
+                                </div>
+                                <div class="lesson-list__item-price">
+                                    <span>₺</span> 800,00
+                                </div>
+                                <div class="button v-tablet">
+                                    <span class="button-txt">Sepete Ekle</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="egitim-detay.php" class="lesson-list__item">
+                        <div class="lesson-list__item-img">
+                            <img src="./assets/img/cardimg1.jpg" alt="">
+                        </div>
+                        <div class="lesson-list__item-cnt">
+                            <div class="lesson-list__item-left">
+                                <div class="lesson-list__item-title">
+                                    Active Directory Sertifika Servisleri
+                                </div>
+                                <div class="lesson-list__item-txt">
+                                    Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse dahi devamlı
+                                    erişilebilir
+                                </div>
+                            </div>
+                            <div class="lesson-list__item-right">
+                                <div class="lesson-list__item-date">
+                                    <span class="icon-outer">
+                                        <svg class="icon">
+                                            <use xlink:href="assets/img/icons.svg#icon-clock"></use>
+                                        </svg>
+                                    </span>
+                                    3 gün ( 12 saat )
+                                </div>
+                                <div class="lesson-list__item-price">
+                                    <span>₺</span> 800,00
+                                </div>
+                                <div class="button v-tablet">
+                                    <span class="button-txt">Sepete Ekle</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="egitim-detay.php" class="lesson-list__item">
+                        <div class="lesson-list__item-img">
+                            <img src="./assets/img/cardimg2.jpg" alt="">
+                        </div>
+                        <div class="lesson-list__item-cnt">
+                            <div class="lesson-list__item-left">
+                                <div class="lesson-list__item-title">
+                                    Active Directory Sertifika Servisleri
+                                </div>
+                                <div class="lesson-list__item-txt">
+                                    Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse dahi devamlı
+                                    erişilebilir
+                                </div>
+                            </div>
+                            <div class="lesson-list__item-right">
+                                <div class="lesson-list__item-date">
+                                    <span class="icon-outer">
+                                        <svg class="icon">
+                                            <use xlink:href="assets/img/icons.svg#icon-clock"></use>
+                                        </svg>
+                                    </span>
+                                    3 gün ( 12 saat )
+                                </div>
+                                <div class="lesson-list__item-price">
+                                    <span>₺</span> 800,00
+                                </div>
+                                <div class="button v-tablet">
+                                    <span class="button-txt">Sepete Ekle</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="egitim-detay.php" class="lesson-list__item">
+                        <div class="lesson-list__item-img">
+                            <img src="./assets/img/cardimg3.jpg" alt="">
+                        </div>
+                        <div class="lesson-list__item-cnt">
+                            <div class="lesson-list__item-left">
+                                <div class="lesson-list__item-title">
+                                    Active Directory Sertifika Servisleri
+                                </div>
+                                <div class="lesson-list__item-txt">
+                                    Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse dahi devamlı
+                                    erişilebilir.
+                                </div>
+                            </div>
+                            <div class="lesson-list__item-right">
+                                <div class="lesson-list__item-date">
+                                    <span class="icon-outer">
+                                        <svg class="icon">
+                                            <use xlink:href="assets/img/icons.svg#icon-clock"></use>
+                                        </svg>
+                                    </span>
+                                    3 gün ( 12 saat )
+                                </div>
+                                <div class="lesson-list__item-price">
+                                    <span>₺</span> 800,00
+                                </div>
+                                <div class="button v-tablet">
+                                    <span class="button-txt">Sepete Ekle</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="egitim-detay.php" class="lesson-list__item">
+                        <div class="lesson-list__item-img">
+                            <img src="./assets/img/cardimg4.jpg" alt="">
+                        </div>
+                        <div class="lesson-list__item-cnt">
+                            <div class="lesson-list__item-left">
+                                <div class="lesson-list__item-title">
+                                    Active Directory Sertifika Servisleri
+                                </div>
+                                <div class="lesson-list__item-txt">
+                                    Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse dahi devamlı
+                                    erişilebilir.
+                                </div>
+                            </div>
+                            <div class="lesson-list__item-right">
+                                <div class="lesson-list__item-date">
+                                    <span class="icon-outer">
+                                        <svg class="icon">
+                                            <use xlink:href="assets/img/icons.svg#icon-clock"></use>
+                                        </svg>
+                                    </span>
+                                    3 gün ( 12 saat )
+                                </div>
+                                <div class="lesson-list__item-price">
+                                    <span>₺</span> 800,00
+                                </div>
+                                <div class="button v-tablet">
+                                    <span class="button-txt">Sepete Ekle</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="egitim-detay.php" class="lesson-list__item">
+                        <div class="lesson-list__item-img">
+                            <img src="./assets/img/cardimg5.jpg" alt="">
+                        </div>
+                        <div class="lesson-list__item-cnt">
+                            <div class="lesson-list__item-left">
+                                <div class="lesson-list__item-title">
+                                    Active Directory Sertifika Servisleri
+                                </div>
+                                <div class="lesson-list__item-txt">
+                                    Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse dahi devamlı
+                                    erişilebilir.
+                                </div>
+                            </div>
+                            <div class="lesson-list__item-right">
+                                <div class="lesson-list__item-date">
+                                    <span class="icon-outer">
+                                        <svg class="icon">
+                                            <use xlink:href="assets/img/icons.svg#icon-clock"></use>
+                                        </svg>
+                                    </span>
+                                    3 gün ( 12 saat )
+                                </div>
+                                <div class="lesson-list__item-price">
+                                    <span>₺</span> 800,00
+                                </div>
+                                <div class="button v-tablet">
+                                    <span class="button-txt">Sepete Ekle</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="egitim-detay.php" class="lesson-list__item">
+                        <div class="lesson-list__item-img">
+                            <img src="./assets/img/cardimg6.jpg" alt="">
+                        </div>
+                        <div class="lesson-list__item-cnt">
+                            <div class="lesson-list__item-left">
+                                <div class="lesson-list__item-title">
+                                    Active Directory Sertifika Servisleri
+                                </div>
+                                <div class="lesson-list__item-txt">
+                                    Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse dahi devamlı
+                                    erişilebilir.
+                                </div>
+                            </div>
+                            <div class="lesson-list__item-right">
+                                <div class="lesson-list__item-date">
+                                    <span class="icon-outer">
+                                        <svg class="icon">
+                                            <use xlink:href="assets/img/icons.svg#icon-clock"></use>
+                                        </svg>
+                                    </span>
+                                    3 gün ( 12 saat )
+                                </div>
+                                <div class="lesson-list__item-price">
+                                    <span>₺</span> 800,00
+                                </div>
+                                <div class="button v-tablet">
+                                    <span class="button-txt">Sepete Ekle</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="pagination">
+                    <a class="pagination__item prev">
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="assets/img/icons.svg#icon-small-arrow"></use>
+                            </svg>
+                        </span>
+                    </a>
+                    <a class="pagination__item">1</a>
+                    <a class="pagination__item">2</a>
+                    <a class="pagination__item active">3</a>
+                    <a class="pagination__item">4</a>
+                    <a class="pagination__item next">
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="assets/img/icons.svg#icon-small-arrow"></use>
+                            </svg>
+                        </span>
+                    </a>
+                </div>
+            </div>
+            <div class="lesson-list__side">
+                <div class="side-categories">
+                    <div class="side-categories__title js-mobile-side-categori">
+                        EĞİTİM <span> &nbsp;KATEGORİLERİ</span>
+                        <span class="icon-outer input__icon side-categories__mobile-icon">
+                            <svg class="icon">
+                                <use xlink:href="assets/img/icons.svg#icon-small-arrow"></use>
+                            </svg>
+                        </span>
+                    </div>
+                    <div class="side-categories__cnt js-vertical-magic-line">
+                        <div class="side-categories__item active js-vertical-magic-line-item">
+                            <a>
+                                <span class="side-categories__txt">Tüm Eğitimler</span>
+                                <span class="side-categories__count">@Model.TotalEducationCount</span>
+                            </a>
+                        </div>
+                        @foreach (var category in Model.Categories)
+                        {
+                            <div class="side-categories__item js-vertical-magic-line-item">
+                                <a>
+                                    <span class="side-categories__txt">@category.Name</span>
+                                    <span class="side-categories__count">@category.EducationCount</span>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="side-banner">
+                    <div class="side-banner__cnt">
+                        <div class="side-banner__icon">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="assets/img/icons.svg#icon-user-dart"></use>
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="side-banner__title">
+                            Size en uygun <br>proje eğitimlerini
+                            Birlikte bulalım!
+                        </div>
+                    </div>
+                    <a class="side-banner__footer">
+                        Şimdi Başlayın
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="assets/img/icons.svg#icon-arrow"></use>
+                            </svg>
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="sort-mobile js-sort-mobile">
+    <div class="sort-mobile__top">
+        <span class="icon-outer">
+            <svg class="icon">
+                <use xlink:href="assets/img/icons.svg#icon-sort-gray"></use>
+            </svg>
+        </span>
+        <div class="sort-mobile__top-title">
+            Sırala
+        </div>
+    </div>
+    <div class="sort-mobile__list">
+        <div class="sort-mobile__item">Fiyata Göre Artan</div>
+        <div class="sort-mobile__item">Fiyata Göre Azalan</div>
+        <div class="sort-mobile__item">Puana Göre En Yüksek</div>
+        <div class="sort-mobile__item">Seviyeye Göre Başlangıç</div>
+        <div class="sort-mobile__item">Seviyeye Göre İleri Düzey</div>
+    </div>
+</div>
+<div class="sort-mobile js-filter-mobile">
+    <div class="sort-mobile__top">
+        <span class="icon-outer">
+            <svg class="icon">
+                <use xlink:href="assets/img/icons.svg#icon-filter"></use>
+            </svg>
+        </span>
+        <div class="sort-mobile__top-title">
+            Filtrele
+        </div>
+    </div>
+    <div class="sort-mobile__list">
+        <div class="sort-mobile__item">Oyun Programlama</div>
+        <div class="sort-mobile__item">Microsoft</div>
+        <div class="sort-mobile__item">Python</div>
+        <div class="sort-mobile__item">Java</div>
+        <div class="sort-mobile__item">Android</div>
+        <div class="sort-mobile__item">Javascript</div>
+    </div>
+</div>
+<div class="sort-mobile js-location-mobile">
+    <div class="sort-mobile__top">
+        <span class="icon-outer">
+            <svg class="icon">
+                <use xlink:href="assets/img/icons.svg#icon-map-pin-f"></use>
+            </svg>
+        </span>
+        <div class="sort-mobile__top-title">
+            Konum Seç
+        </div>
+    </div>
+    <div class="sort-mobile__list">
+        <div class="sort-mobile__item">İstanbul</div>
+        <div class="sort-mobile__item">Ankara</div>
+        <div class="sort-mobile__item">İzmir</div>
+        <div class="sort-mobile__item">Bursa</div>
+        <div class="sort-mobile__item">Antalya</div>
+        <div class="sort-mobile__item">Adana</div>
+    </div>
+</div>

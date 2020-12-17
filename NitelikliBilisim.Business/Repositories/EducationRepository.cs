@@ -26,11 +26,16 @@ namespace NitelikliBilisim.Business.Repositories
     public class EducationRepository : BaseRepository<Education, Guid>, IPageableEntity<Education>
     {
         private readonly IConfiguration _configuration;
+
         public EducationRepository(NbDataContext context, IConfiguration configuration) : base(context)
         {
             _configuration = configuration;
         }
 
+        public int TotalEducationCount()
+        {
+            return Context.Educations.Count(x => x.IsActive);
+        }
         public bool CheckEducationBySeoUrl(string seoUrl)
         {
             return Context.Educations.Any(x => x.SeoUrl == seoUrl);

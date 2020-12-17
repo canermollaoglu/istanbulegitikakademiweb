@@ -21,6 +21,15 @@ namespace NitelikliBilisim.App.Controllers
         {
             _unitOfWork = unitOfWork;
         }
+        [Route("egitimler")]
+        public IActionResult List()
+        {
+            CourseListGetVm model = new CourseListGetVm();
+            model.Categories = _unitOfWork.EducationCategory.GetCoursesPageCategories();
+            model.TotalEducationCount = _unitOfWork.Education.TotalEducationCount();
+            return View(model);
+        }
+
 
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("{catSeoUrl}/{seoUrl}")]
