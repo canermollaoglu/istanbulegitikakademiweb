@@ -3,6 +3,7 @@ var selectBaseCategories = document.getElementById("select-base-categories");
 var selectCategoryTypes = document.getElementById("select-category-types");
 var inputName = document.getElementById("input-name");
 var inputDescription = document.getElementById("input-description");
+var inputSeoUrl = document.getElementById("input-seo-url");
 var inputEducationDayCount = document.getElementById("input-educationdaycount");
 var btnSave = $("#btn-save");
 
@@ -36,6 +37,7 @@ function btnSave_onClick() {
     var data = {
         Name: inputName.value,
         Description: inputDescription.value,
+        SeoUrl: inputSeoUrl.value,
         BaseCategoryId: baseCategoryId,
         CategoryType: categoryType,
         EducationDayCount: inputEducationDayCount.value

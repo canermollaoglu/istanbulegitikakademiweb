@@ -29,5 +29,6 @@ namespace NitelikliBilisim.Core.Entities
         public Guid? BaseCategoryId { get; set; }
         [ForeignKey("BaseCategoryId")]
         public virtual EducationCategory BaseCategory { get; set; }
+        public string SeoUrl { get; set; }
     }
 }

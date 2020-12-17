@@ -72,6 +72,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             {
                 Name = data.Name,
                 Description = data.Description,
+                SeoUrl = data.SeoUrl,
                 BaseCategoryId = data.BaseCategoryId,
                 CategoryType = (CategoryType)data.CategoryType,
                 IsCurrent = true
@@ -98,6 +99,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             category.BaseCategoryId = data.BaseCategoryId;
             category.Description = data.Description;
             category.Name = data.Name;
+            category.SeoUrl = data.SeoUrl;
             _unitOfWork.EducationCategory.Update(category);
             return Json(new ResponseModel
             {

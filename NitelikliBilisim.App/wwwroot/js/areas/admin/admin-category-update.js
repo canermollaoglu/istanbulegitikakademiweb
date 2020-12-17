@@ -1,6 +1,7 @@
 ﻿/* elements */
 var selectBaseCategories = document.getElementById("select-base-categories");
 var inputName = document.getElementById("input-name");
+var inputSeoUrl = document.getElementById("input-seo-url");
 var inputDescription = document.getElementById("input-description");
 var btnSave = $("#btn-save");
 
@@ -18,6 +19,7 @@ function btnSave_onClick() {
     var data = {
         CategoryId: $("#_category-id").val(),
         Name: inputName.value,
+        SeoUrl: inputSeoUrl.value,
         Description: inputDescription.value,
         BaseCategoryId: baseCategoryId
     }
