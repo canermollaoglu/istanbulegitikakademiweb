@@ -30,6 +30,8 @@ namespace NitelikliBilisim.Business.Repositories.BlogRepositories
                         {
                             Id = blog.Id,
                             Title = blog.Title,
+                            SeoUrl = blog.SeoUrl,
+                            CategorySeoUrl = blogCategory.SeoUrl,
                             Content = blog.SummaryContent,
                             CreatedDate = blog.CreatedDate.ToShortDateString(),
                             Category = blogCategory.Name,
