@@ -23,6 +23,7 @@ namespace NitelikliBilisim.Business.Repositories.BlogRepositories
             {
                 Id = x.Id,
                 Name = x.Name,
+                SeoUrl=  x.SeoUrl,
                 PostCount = x.BlogPosts.Count()
             }).ToList();
         }

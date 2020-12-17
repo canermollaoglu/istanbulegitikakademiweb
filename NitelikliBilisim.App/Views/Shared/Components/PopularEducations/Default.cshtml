@@ -15,7 +15,7 @@
     {
     }
     <div class="swiper-slide">
-        <a href="/kurs-detayi/@education.Base.SeoUrl" class="card">
+        <a asp-controller="Course" asp-action="Details" asp-route-catSeoUrl="@education.Base.CategorySeoUrl" asp-route-seoUrl="@education.Base.SeoUrl" class="card">
             <figure>
                 <img src="@filePath" alt="">
             </figure>

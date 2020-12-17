@@ -26,7 +26,7 @@
                                 }
 
                                 <div class="swiper-slide">
-                                    <a class="blog-slider-card">
+                                    <a asp-controller="Blog" asp-action="Detail" asp-route-catSeoUrl="@post.CategorySeoUrl" asp-route-seoUrl="@post.SeoUrl"  class="blog-slider-card">
                                         <img src="@featuredImage" alt="">
                                         <div class="blog-slider-card__cnt">
                                             <div class="blog-slider-card__tag">
@@ -111,7 +111,7 @@
                         catch
                         {
                         }
-                        <a href="blog/detay/@post.Id" class="blog-card">
+                        <a asp-controller="Blog" asp-action="Detail" asp-route-catSeoUrl="@post.CategorySeoUrl" asp-route-seoUrl="@post.SeoUrl" class="blog-card">
                             <div class="blog-card__img">
                                 <img src="@featuredImage" alt="">
                             </div>
@@ -193,15 +193,15 @@
                     </div>
                     <div class="side-categories__cnt js-vertical-magic-line">
                         <div class="side-categories__item js-vertical-magic-line-item @(ViewData["CategoryFilter"]==null?"active":"" )">
-                            <a asp-action="List">
+                            <a asp-action="List" asp-route-c="">
                                 <span class="side-categories__txt">Hepsi</span>
                                 <span class="side-categories__count">@Model.TotalBlogPostCount</span>
                             </a>
                         </div>
                         @foreach (var category in Model.Categories)
                         {
-                            <div class="side-categories__item js-vertical-magic-line-item @(ViewData["CategoryFilter"]!=null?(Guid)ViewData["CategoryFilter"] == category.Id?"active":"":"")">
-                                <a asp-action="List" asp-route-c="@category.Id">
+                            <div class="side-categories__item js-vertical-magic-line-item @(ViewData["CategoryFilter"]!=null&&!string.IsNullOrEmpty(ViewData["CategoryFilter"].ToString())?ViewData["CategoryFilter"].ToString() == category.SeoUrl?"active":"":"")">
+                                <a asp-action="List" asp-route-c="@category.SeoUrl">
                                     <span class="side-categories__txt">@category.Name</span>
                                     <span class="side-categories__count">@category.PostCount</span>
                                 </a>

@@ -223,6 +223,7 @@ namespace NitelikliBilisim.Business.Repositories
         {
             var model = (from eGroup in _context.EducationGroups
                          join education in _context.Educations on eGroup.EducationId equals education.Id
+                         join category in _context.EducationCategories on education.CategoryId equals category.Id
                          join educator in _context.Educators on eGroup.EducatorId equals educator.Id
                          join host in _context.EducationHosts on eGroup.HostId equals host.Id
                          join educatorUser in _context.Users on educator.Id equals educatorUser.Id
@@ -233,6 +234,7 @@ namespace NitelikliBilisim.Business.Repositories
                          {
                              EducationId = education.Id,
                              SeoUrl = education.SeoUrl,
+                             CategorySeoUrl = category.SeoUrl,
                              EducationName = education.Name,
                              EducationShortDescription = education.Description,
                              EducationFeaturedImage = eImage.FileUrl,
@@ -352,6 +354,7 @@ namespace NitelikliBilisim.Business.Repositories
                                      GroupId = eGroup.Id,
                                      Name = education.Name,
                                      CategoryName = category.Name,
+                                     CategorySeoUrl = category.SeoUrl,
                                      City = EnumHelpers.GetDescription(host.City),
                                      FeaturedImageUrl = eImage.FileUrl,
                                      EducatorImageUrl = educatorUser.AvatarPath,
@@ -394,6 +397,7 @@ namespace NitelikliBilisim.Business.Repositories
                                       SeoUrl = education.SeoUrl,
                                       Name = education.Name,
                                       CategoryName = category.Name,
+                                      CategorySeoUrl = category.SeoUrl,
                                       HoursText = (education.HoursPerDay * education.Days).ToString(),
                                       DaysText = education.Days.ToString(),
                                       FeaturedImageUrl = featuredImage.FileUrl

@@ -98,7 +98,8 @@ namespace NitelikliBilisim.Business.Repositories
                  {
                      Education = x.Education,
                      EducationPreviewMedia = x.EducationPreviewMedia,
-                     CategoryName = y.Name
+                     CategoryName = y.Name,
+                     CategorySeoUrl = y.SeoUrl
                  }).ToList();
 
             var data = educationsList.Select(x => new SuggestedEducationVm
@@ -109,6 +110,7 @@ namespace NitelikliBilisim.Business.Repositories
                     Name = x.Education.Name,
                     Description = x.Education.Description,
                     CategoryName = x.CategoryName,
+                    CategorySeoUrl = x.CategorySeoUrl,
                     Level = EnumHelpers.GetDescription(x.Education.Level),
                     //PriceText = x.Education.NewPrice.GetValueOrDefault().ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
                     HoursPerDayText = x.Education.HoursPerDay.ToString(),
@@ -395,7 +397,8 @@ namespace NitelikliBilisim.Business.Repositories
                {
                    Education = x.Education,
                    EducationPreviewMedia = x.EducationPreviewMedia,
-                   CategoryName = y.Name
+                   CategoryName = y.Name,
+                   CategorySeoUrl = y.SeoUrl
                }).ToList();
 
             var data = educationsList.Select(x => new SuggestedEducationVm
@@ -406,6 +409,7 @@ namespace NitelikliBilisim.Business.Repositories
                     Name = x.Education.Name,
                     Description = x.Education.Description,
                     CategoryName = x.CategoryName,
+                    CategorySeoUrl = x.CategorySeoUrl,
                     Level = EnumHelpers.GetDescription(x.Education.Level),
                     //PriceText = x.Education.NewPrice.GetValueOrDefault().ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
                     HoursPerDayText = x.Education.HoursPerDay.ToString(),

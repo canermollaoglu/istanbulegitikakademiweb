@@ -23,5 +23,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public string EducationShortDescription { get; set; }
         public List<EducatorCertificate> EducatorCertificates { get; set; }
         public string SeoUrl { get; set; }
+        public string CategorySeoUrl { get; set; }
     }
 }

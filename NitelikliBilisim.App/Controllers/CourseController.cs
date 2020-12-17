@@ -23,7 +23,7 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
-        [Route("kurs-detayi/{seoUrl}")]
+        [Route("{catSeoUrl}/{seoUrl}")]
         public IActionResult Details(string seoUrl, string searchKey)
         {
             if (string.IsNullOrEmpty(seoUrl))
