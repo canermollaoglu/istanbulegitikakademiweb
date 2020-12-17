@@ -14,6 +14,8 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.blog.blogpost
         public Guid CategoryId { get; set; }
         [Required(ErrorMessage = "Etiket alanı boş geçilemez")]
         public string[] Tags { get; set; }
+        [Required(ErrorMessage = "Eğitim için bir Seo Url girmelisiniz.")]
+        public string SeoUrl { get; set; }
         public _PostedFileNotRequired FeaturedImage { get; set; }
 
         [Required(ErrorMessage = "Özet bilgisi boş geçilemez")]

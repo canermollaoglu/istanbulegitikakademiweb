@@ -70,6 +70,7 @@ function btnSave_onClick() {
     var data = {
         Id: $('#input-postId').val(),
         Title: $("#input-title").val(),
+        SeoUrl: $("#input-seo-url").val(),
         SummaryContent: $("#input-summary-content").val(),
         Content: $('#summernote').summernote('code'),
         CategoryId: selectCategory.val(),

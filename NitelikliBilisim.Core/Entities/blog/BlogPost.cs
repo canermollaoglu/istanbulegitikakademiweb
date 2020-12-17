@@ -15,6 +15,7 @@ namespace NitelikliBilisim.Core.Entities.blog
         public string FeaturedImageUrl { get; set; }
         public int ReadingTime { get; set; }
         public bool IsActive { get; set; }
+        public string SeoUrl { get; set; }
         public Guid CategoryId { get; set; }
 
         [ForeignKey("CategoryId")]

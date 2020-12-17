@@ -91,6 +91,7 @@ function btnSave_onClick() {
     var featuredImage = fileManager1.getFile();
     var data = {
         Title: $("#input-title").val(),
+        SeoUrl: $("#input-seo-url").val(),
         Content: $('#summernote').summernote('code'),
         SummaryContent: $('#input-summary-content').val(),
         CategoryId: selectCategory.val(),

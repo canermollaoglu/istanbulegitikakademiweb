@@ -15,5 +15,6 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.blog.blogpost
         public List<BlogTag> Tags { get; set; }
         public string FeaturedImageUrl { get; set; }
         public string SummaryContent { get; set; }
+        public object SeoUrl { get; set; }
     }
 }
