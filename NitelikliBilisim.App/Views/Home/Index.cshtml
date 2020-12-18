@@ -36,7 +36,7 @@
                                 <span class="dropdown__subtitle">Eğitim Arayın</span>
                                 <input type="search" class="dropdown__title js-title" autocomplete="off" value="" />
                             </div>
-
+                            
                             <div class="dropdown__content">
                                 <nav>
                                     <a data-filter-item data-filter-name="active directory sertifika servisleri">
@@ -750,7 +750,7 @@
                 <div class="flex-center mb-1">
                     <h2 class="title title-section">Kursiyer <span class="title--blue">Yorumları</span></h2>
 
-                    <a href="" class="all-link">
+                    <a asp-controller="Home" asp-action="UserComments" class="all-link">
                         <span>Tüm Yorumlar</span>
                         <span class="icon-outer">
                             <svg class="icon">
@@ -762,300 +762,33 @@
             </div>
             <div class="swiper-container js-swiper-home-comments">
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide">
-                        <div class="is-comments-item">
-                            <figure>
-                                <img src="https://www.buseterim.com.tr/upload/default/2016/8/10/honest1.jpg" alt="" height="80" />
-                            </figure>
+                    @foreach (var comment in Model.EducationComments)
+                    {
+                        <div class="swiper-slide">
+                            <div class="is-comments-item">
+                                <figure>
+                                    <img src="@comment.CommenterAvatarPath" alt="" height="80" />
+                                </figure>
 
-                            <div class="main-stars">
-                                <span class="icon-outer icon-star active">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                    </svg>
-                                </span>
-                                <span class="icon-outer icon-star active">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                    </svg>
-                                </span>
-                                <span class="icon-outer icon-star active">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                    </svg>
-                                </span>
-                                <span class="icon-outer icon-star">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                    </svg>
-                                </span>
-                                <span class="icon-outer icon-star">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                    </svg>
-                                </span>
+                                <div class="main-stars">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        <span class="icon-outer icon-star @(i<=comment.Point?"active":"")">
+                                            <svg class="icon">
+                                                <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                            </svg>
+                                        </span>
+                                    }
+                                </div>
+
+                                <p class="is-comments__desc">
+                                    @comment.Content
+                                </p>
+                                <span class="is-comments__name">@comment.CommenterName</span>
+                                <span class="is-comments__job">@comment.CommenterJob</span>
                             </div>
-
-                            <p class="is-comments__desc">
-                                Eğitimi veren hocalarımız da sektörde büyük tecrübelere sahip insanlardı. Şu anda da Turkcell
-                                Superonline’da Network planlamada görev almaktayım.
-                            </p>
-                            <span class="is-comments__name">Mehmet Fatih BAKACAK</span>
-                            <span class="is-comments__job">Bilgisayar Mühendisi</span>
                         </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class="is-comments-item">
-                            <figure>
-                                <img src="https://www.buseterim.com.tr/upload/default/2016/8/10/honest1.jpg" alt="" height="80" />
-                            </figure>
-
-                            <div class="main-stars">
-                                <span class="icon-outer icon-star active">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                    </svg>
-                                </span>
-                                <span class="icon-outer icon-star active">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                    </svg>
-                                </span>
-                                <span class="icon-outer icon-star active">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                    </svg>
-                                </span>
-                                <span class="icon-outer icon-star">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                    </svg>
-                                </span>
-                                <span class="icon-outer icon-star">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                    </svg>
-                                </span>
-                            </div>
-
-                            <p class="is-comments__desc">
-                                Eğitimi veren hocalarımız da sektörde büyük tecrübelere sahip insanlardı. Şu anda da Turkcell
-                                Superonline’da Network planlamada görev almaktayım.
-                            </p>
-                            <span class="is-comments__name">Mehmet Fatih BAKACAK</span>
-                            <span class="is-comments__job">Bilgisayar Mühendisi</span>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class="is-comments-item">
-                            <figure>
-                                <img src="https://www.buseterim.com.tr/upload/default/2016/8/10/honest1.jpg" alt="" height="80" />
-                            </figure>
-
-                            <div class="main-stars">
-                                <span class="icon-outer icon-star active">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                    </svg>
-                                </span>
-                                <span class="icon-outer icon-star active">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                    </svg>
-                                </span>
-                                <span class="icon-outer icon-star active">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                    </svg>
-                                </span>
-                                <span class="icon-outer icon-star">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                    </svg>
-                                </span>
-                                <span class="icon-outer icon-star">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                    </svg>
-                                </span>
-                            </div>
-
-                            <p class="is-comments__desc">
-                                Eğitimi veren hocalarımız da sektörde büyük tecrübelere sahip insanlardı. Şu anda da Turkcell
-                                Superonline’da Network planlamada görev almaktayım.
-                            </p>
-                            <span class="is-comments__name">Mehmet Fatih BAKACAK</span>
-                            <span class="is-comments__job">Bilgisayar Mühendisi</span>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class="is-comments-item">
-                            <figure>
-                                <img src="https://www.buseterim.com.tr/upload/default/2016/8/10/honest1.jpg" alt="" height="80" />
-                            </figure>
-
-                            <div class="main-stars">
-                                <span class="icon-outer icon-star active">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                    </svg>
-                                </span>
-                                <span class="icon-outer icon-star active">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                    </svg>
-                                </span>
-                                <span class="icon-outer icon-star active">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                    </svg>
-                                </span>
-                                <span class="icon-outer icon-star">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                    </svg>
-                                </span>
-                                <span class="icon-outer icon-star">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                    </svg>
-                                </span>
-                            </div>
-
-                            <p class="is-comments__desc">
-                                Eğitimi veren hocalarımız da sektörde büyük tecrübelere sahip insanlardı. Şu anda da Turkcell
-                                Superonline’da Network planlamada görev almaktayım.
-                            </p>
-                            <span class="is-comments__name">Mehmet Fatih BAKACAK</span>
-                            <span class="is-comments__job">Bilgisayar Mühendisi</span>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class="is-comments-item">
-                            <figure>
-                                <img src="https://www.buseterim.com.tr/upload/default/2016/8/10/honest1.jpg" alt="" height="80" />
-                            </figure>
-
-                            <div class="main-stars">
-                                <span class="icon-outer icon-star active">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                    </svg>
-                                </span>
-                                <span class="icon-outer icon-star active">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                    </svg>
-                                </span>
-                                <span class="icon-outer icon-star active">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                    </svg>
-                                </span>
-                                <span class="icon-outer icon-star">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                    </svg>
-                                </span>
-                                <span class="icon-outer icon-star">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                    </svg>
-                                </span>
-                            </div>
-
-                            <p class="is-comments__desc">
-                                Eğitimi veren hocalarımız da sektörde büyük tecrübelere sahip insanlardı. Şu anda da Turkcell
-                                Superonline’da Network planlamada görev almaktayım.
-                            </p>
-                            <span class="is-comments__name">Mehmet Fatih BAKACAK</span>
-                            <span class="is-comments__job">Bilgisayar Mühendisi</span>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class="is-comments-item">
-                            <figure>
-                                <img src="https://www.buseterim.com.tr/upload/default/2016/8/10/honest1.jpg" alt="" height="80" />
-                            </figure>
-
-                            <div class="main-stars">
-                                <span class="icon-outer icon-star active">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                    </svg>
-                                </span>
-                                <span class="icon-outer icon-star active">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                    </svg>
-                                </span>
-                                <span class="icon-outer icon-star active">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                    </svg>
-                                </span>
-                                <span class="icon-outer icon-star">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                    </svg>
-                                </span>
-                                <span class="icon-outer icon-star">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                    </svg>
-                                </span>
-                            </div>
-
-                            <p class="is-comments__desc">
-                                Eğitimi veren hocalarımız da sektörde büyük tecrübelere sahip insanlardı. Şu anda da Turkcell
-                                Superonline’da Network planlamada görev almaktayım.
-                            </p>
-                            <span class="is-comments__name">Mehmet Fatih BAKACAK</span>
-                            <span class="is-comments__job">Bilgisayar Mühendisi</span>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class="is-comments-item">
-                            <figure>
-                                <img src="https://www.buseterim.com.tr/upload/default/2016/8/10/honest1.jpg" alt="" height="80" />
-                            </figure>
-
-                            <div class="main-stars">
-                                <span class="icon-outer icon-star active">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                    </svg>
-                                </span>
-                                <span class="icon-outer icon-star active">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                    </svg>
-                                </span>
-                                <span class="icon-outer icon-star active">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                    </svg>
-                                </span>
-                                <span class="icon-outer icon-star">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                    </svg>
-                                </span>
-                                <span class="icon-outer icon-star">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                    </svg>
-                                </span>
-                            </div>
-
-                            <p class="is-comments__desc">
-                                Eğitimi veren hocalarımız da sektörde büyük tecrübelere sahip insanlardı. Şu anda da Turkcell
-                                Superonline’da Network planlamada görev almaktayım.
-                            </p>
-                            <span class="is-comments__name">Mehmet Fatih BAKACAK</span>
-                            <span class="is-comments__job">Bilgisayar Mühendisi</span>
-                        </div>
-                    </div>
+                    }
                 </div>
                 <div class="swiper-pagination"></div>
 

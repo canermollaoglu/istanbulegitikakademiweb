@@ -54,6 +54,7 @@ namespace NitelikliBilisim.App.Controllers
         {
             var model = new HomeIndexModel();
             model.EducationCountByCategory = _unitOfWork.EducationCategory.GetEducationCountForCategories();
+            model.EducationComments = _unitOfWork.EducationComment.GetHighlightComments(5);
             var isLoggedIn = HttpContext.User.Identity.IsAuthenticated;
             if (!isLoggedIn)
                 model.SuggestedEducations = _unitOfWork.Suggestions.GetGuestUserSuggestedEducations();

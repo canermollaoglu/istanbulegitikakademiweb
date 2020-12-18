@@ -1,11 +1,14 @@
 ﻿using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Enums.user_details;
+using NitelikliBilisim.Core.Services;
+using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_comments;
 using NitelikliBilisim.Core.ViewModels.Main.EducationComment;
 using NitelikliBilisim.Data;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,9 +18,11 @@ namespace NitelikliBilisim.Business.Repositories
     public class EducationCommentRepository : BaseRepository<EducationComment, Guid>
     {
         private readonly NbDataContext _context;
+        private readonly IStorageService _storage;
         public EducationCommentRepository(NbDataContext context) : base(context)
         {
             _context = context;
+            _storage = new StorageService();
         }
 
         public EducationCommentsVm GetEducationComments(Guid? categoryId, int? sortingType, int? pageIndex)
@@ -67,6 +72,29 @@ namespace NitelikliBilisim.Business.Repositories
             retVal.Comments = rawdata.ToList();
 
             return retVal;
+        }
+
+        public List<HighlightCommentVm> GetHighlightComments(int count)
+        {
+            var model = (from comment in _context.EducationComments
+                         join customer in _context.Customers on comment.CommentatorId equals customer.Id
+                         join user in _context.Users on customer.Id equals user.Id
+                         where comment.IsHighLight
+                         select new HighlightCommentVm
+                         {
+                             Id = comment.Id,
+                             Point = comment.Points,
+                             CommenterName = $"{user.Name} {user.Surname}",
+                             CommenterJob = customer.Job,
+                             CommenterAvatarPath = user.AvatarPath,
+                             Content = comment.Content
+                         }).Take(count).ToList();
+            foreach (var comment in model)
+            {
+                comment.CommenterAvatarPath = _storage.DownloadFile(Path.GetFileName(comment.CommenterAvatarPath), Path.GetDirectoryName(comment.CommenterAvatarPath)).Result;
+            }
+
+            return model;
         }
 
         public void ToggleHighlight(Guid commentId)
