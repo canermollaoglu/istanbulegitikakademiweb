@@ -25,6 +25,7 @@ namespace NitelikliBilisim.Core.Entities
         public byte HoursPerDay { get; set; }
         public EducationLevel Level { get; set; }
         public bool IsActive { get; set; }
+        [MaxLength(128)]
         public string SeoUrl { get; set; }
 
         public Guid CategoryId { get; set; }

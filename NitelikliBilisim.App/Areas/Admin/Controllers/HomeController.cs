@@ -27,7 +27,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 });
             url = url.ToLower();
             url = url.Trim();
-            if (url.Length > 100)
+            if (url.Length > 128)
             {
                 url = url.Substring(0, 100);
             }
