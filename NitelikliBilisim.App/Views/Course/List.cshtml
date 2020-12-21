@@ -304,12 +304,7 @@
                 .addClass('active');
             getSearchResults();
         });
-
-
-
-
-
-        function getSearchResults(isLoadMore, filter, order) {
+        function getSearchResults() {
             $.ajax({
                 url: `/get-courses`,
                 method: "post",

@@ -274,5 +274,70 @@ namespace NitelikliBilisim.App.Controllers
             }
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("subscribe-blog")]
+        public IActionResult SubscribeToBlog(string email, string name)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Json(new ResponseData
+                {
+                    Success = false
+                });
+            }
+            try
+            {
+                _unitOfWork.SubscriptionBlog.Insert(new BlogSubscriber { 
+                Email = email,
+                Name = name
+                });
+                return Json(new ResponseData
+                {
+                    Success = true
+                });
+            }
+            catch (Exception ex)
+            {
+                //Log ex
+                return Json(new ResponseData
+                {
+                    Success = false
+                });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("subscribe-newsletter")]
+        public IActionResult SubscribeToNewsletter(string email)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Json(new ResponseData
+                {
+                    Success = false
+                });
+            }
+            try
+            {
+                _unitOfWork.SubscriptionNewsletter.Insert(new NewsletterSubscriber
+                {
+                    Email = email
+                });
+                return Json(new ResponseData
+                {
+                    Success = true
+                });
+            }
+            catch (Exception ex)
+            {
+                //Log ex
+                return Json(new ResponseData
+                {
+                    Success = false
+                });
+            }
+        }
     }
 }

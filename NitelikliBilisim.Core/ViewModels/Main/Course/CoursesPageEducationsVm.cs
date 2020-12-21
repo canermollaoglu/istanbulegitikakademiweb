@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NitelikliBilisim.Core.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,5 +19,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Course
         public Guid? CategoryId { get; set; }
         public string Seo { get; set; }
         public string CSeo { get; set; }
+        public EducationLevel Level { get; set; }
     }
 }

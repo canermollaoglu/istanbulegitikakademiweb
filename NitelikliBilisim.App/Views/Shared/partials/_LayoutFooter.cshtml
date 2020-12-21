@@ -53,13 +53,17 @@
                             Eğitimlerimiz hakkında gelişmeleri almak için bültenimize abone ol!
                         </p>
 
-                        <form action="">
+                        <form method="post" id="newsletter-subscribe-form" asp-action="SubscribeToNewsletter" asp-controller="Home"
+                              data-ajax-success="onNewsletterSubsciptionSuccess"
+                              data-ajax-failure="onNewsletterSubsciptionFailed"
+                              data-ajax="true" data-ajax-method="POST">
+                            @Html.AntiForgeryToken()
                             <span class="icon-outer footer__mail-icon">
                                 <svg class="icon">
                                     <use xlink:href="../../assets/img/icons.svg#icon-mail"></use>
                                 </svg>
                             </span>
-                            <input type="email" placeholder="E-mail Adresiniz" class="input" />
+                            <input type="email" placeholder="E-mail Adresiniz" name="email" class="input" required />
                             <button class="button">
                                 <span class="icon-outer">
                                     <svg class="icon">
@@ -115,3 +119,5 @@
         </div>
     </div>
 </footer>
+
+

@@ -58,6 +58,8 @@ namespace NitelikliBilisim.Business.UoW
         private EducatorApplicationRepository _educatorApplicationRespository;
         private CorporateMembershipApplicationRepository _corporateMembershipApplicationRepository;
         private EducationCommentRepository _educationCommentRepository;
+        private SubscriptionBlogRepository _subscriptionBlogRepository;
+        private SubscriptionNewsletterRepository _subscriptionNewsletterRepository;
 
         private IElasticClient _elasticClient;
         private IConfiguration _configuration;
@@ -74,6 +76,8 @@ namespace NitelikliBilisim.Business.UoW
             _context.EnsureAutoHistory();
             return _context.SaveChanges();
         }
+        public SubscriptionBlogRepository SubscriptionBlog => _subscriptionBlogRepository ?? new SubscriptionBlogRepository(_context);
+        public SubscriptionNewsletterRepository SubscriptionNewsletter => _subscriptionNewsletterRepository ?? new SubscriptionNewsletterRepository(_context);
         public EducationCommentRepository EducationComment => _educationCommentRepository ?? new EducationCommentRepository(_context);
         public CorporateMembershipApplicationRepository CorporateMembershipApplication => _corporateMembershipApplicationRepository ??= new CorporateMembershipApplicationRepository(_context);
         public EducatorApplicationRepository EducatorApplication => _educatorApplicationRespository ??= new EducatorApplicationRepository(_context);

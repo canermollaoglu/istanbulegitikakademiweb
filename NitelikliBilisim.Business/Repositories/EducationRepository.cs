@@ -217,7 +217,8 @@ namespace NitelikliBilisim.Business.Repositories
                                EducationDays = education.Days,
                                EducationHours = education.HoursPerDay * education.Days,
                                Description = education.Description,
-                               CategoryId = education.Category.BaseCategoryId
+                               CategoryId = education.Category.BaseCategoryId,
+                               Level = education.Level
                            }).AsQueryable();
             if (categoryId.HasValue)
             {
@@ -229,7 +230,7 @@ namespace NitelikliBilisim.Business.Repositories
                     rawData = rawData.OrderByDescending(x => x.CreatedDate);
                     break;
                 case OrderCriteria.Popular:
-                    rawData = rawData.OrderByDescending(x => x.CreatedDate);
+                    rawData = rawData.OrderByDescending(x => x.Level);
                     break;
                 default:
                     rawData = rawData.OrderByDescending(x => x.CreatedDate);
