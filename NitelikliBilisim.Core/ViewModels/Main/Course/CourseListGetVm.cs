@@ -11,5 +11,10 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Course
     {
         public List<CoursesPageEducationCategoryVm> Categories { get; set; }
         public int TotalEducationCount { get; set; }
+        public Guid? CategoryId { get; set; }
+        public string CategoryName { get; set; }
+        public string CategoryShortDescription { get; set; }
+        public Dictionary<int, string> OrderTypes { get; set; }
+        public Dictionary<int, string> EducationHostCities { get; set; }
     }
 }

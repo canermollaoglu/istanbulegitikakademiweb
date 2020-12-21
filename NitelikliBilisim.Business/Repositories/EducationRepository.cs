@@ -1,17 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using MUsefulMethods;
-using Nest;
-using Newtonsoft.Json;
 using NitelikliBilisim.Business.PagedEntity;
-using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.DTO;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
-using NitelikliBilisim.Core.Enums.educations;
 using NitelikliBilisim.Core.Enums.user_details;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education;
+using NitelikliBilisim.Core.ViewModels.Main.Course;
 using NitelikliBilisim.Core.ViewModels.Main.EducationComment;
 using NitelikliBilisim.Core.ViewModels.search;
 using NitelikliBilisim.Data;
@@ -200,6 +197,46 @@ namespace NitelikliBilisim.Business.Repositories
                 });
 
             return educationDtos;
+        }
+
+        public List<CoursesPageEducationsVm> GetCoursesPageEducations(Guid? categoryId,int hostCity, int page, OrderCriteria order)
+        {
+            var educations = Context.Educations.Include(x => x.Category);
+            var rawData = (from education in educations
+                           join eImage in Context.EducationMedias on education.Id equals eImage.EducationId
+                           where
+                           eImage.MediaType == EducationMediaType.PreviewPhoto
+                           select new CoursesPageEducationsVm
+                           {
+                               Id = education.Id,
+                               Seo=education.SeoUrl,
+                               CSeo = education.Category.SeoUrl,
+                               CreatedDate = education.CreatedDate,
+                               Name = education.Name,
+                               ImagePath = eImage.FileUrl,
+                               EducationDays = education.Days,
+                               EducationHours = education.HoursPerDay * education.Days,
+                               Description = education.Description,
+                               CategoryId = education.Category.BaseCategoryId
+                           }).AsQueryable();
+            if (categoryId.HasValue)
+            {
+                rawData = rawData.Where(x => x.CategoryId == categoryId.Value);
+            }
+            switch (order)
+            {
+                case OrderCriteria.Latest:
+                    rawData = rawData.OrderByDescending(x => x.CreatedDate);
+                    break;
+                case OrderCriteria.Popular:
+                    rawData = rawData.OrderByDescending(x => x.CreatedDate);
+                    break;
+                default:
+                    rawData = rawData.OrderByDescending(x => x.CreatedDate);
+                    break;
+            }
+            rawData = rawData.Skip((page-1) * 6).Take(6);
+            return rawData.ToList();
         }
 
         public Guid? Insert(Education entity, string[] tags, List<EducationMedia> medias, bool isSaveLater = false)
@@ -570,7 +607,7 @@ namespace NitelikliBilisim.Business.Repositories
         public EducationVm GetEducation(string seoUrl)
         {
             var education = Context.Educations.First(x => x.SeoUrl == seoUrl);
-            
+
             var comments = (from comment in Context.EducationComments
                             join commenter in Context.Users on comment.CommentatorId equals commenter.Id
                             join student in Context.Customers on commenter.Id equals student.Id
@@ -758,7 +795,6 @@ namespace NitelikliBilisim.Business.Repositories
                     .ThenByDescending(x => x.Count)
                     .ToList()
             };
-
 
             var baseCategories = filterOptions.categories.GroupBy(x => x.BaseCategoryName)
                 .Select(x => new CategoryOptionVm()

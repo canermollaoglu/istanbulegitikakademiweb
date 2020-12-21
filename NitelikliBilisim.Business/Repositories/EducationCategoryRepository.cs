@@ -38,6 +38,12 @@ namespace NitelikliBilisim.Business.Repositories
             return deepestCategories;
         }
 
+        public EducationCategory GetCategoryBySeoUrl(string catSeoUrl)
+        {
+            var category = _context.EducationCategories.FirstOrDefault(x => x.SeoUrl == catSeoUrl);
+            return category;
+        }
+
         public List<CoursesPageEducationCategoryVm> GetCoursesPageCategories()
         {
             List<CoursesPageEducationCategoryVm> model = new List<CoursesPageEducationCategoryVm>();

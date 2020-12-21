@@ -1,15 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MUsefulMethods;
 using NitelikliBilisim.App.Controllers.Base;
+using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Enums;
+using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels.Main.Course;
 using System;
-using NitelikliBilisim.App.Filters;
-using MUsefulMethods;
-using NitelikliBilisim.Core.Enums;
 using System.Collections.Generic;
-using NitelikliBilisim.Core.Entities;
+using System.IO;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -17,16 +20,42 @@ namespace NitelikliBilisim.App.Controllers
     public class CourseController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
-        public CourseController(UnitOfWork unitOfWork)
+        private readonly IStorageService _storageService;
+        public CourseController(UnitOfWork unitOfWork,IStorageService storageService)
         {
             _unitOfWork = unitOfWork;
+            _storageService = storageService;
         }
-        [Route("egitimler")]
-        public IActionResult List()
+        [Route("egitimler/{catSeoUrl?}")]
+        public IActionResult List(string catSeoUrl)
         {
             CourseListGetVm model = new CourseListGetVm();
+            if (string.IsNullOrEmpty(catSeoUrl))
+            {
+                model.CategoryName = "Tüm Kategoriler";
+                model.CategoryShortDescription = "Geleceğin web sitelerini kodlayın";
+            }
+            else
+            {
+                var category = _unitOfWork.EducationCategory.GetCategoryBySeoUrl(catSeoUrl);
+                if (category != null)
+                {
+                    model.CategoryId = category.Id;
+                    model.CategoryName = category.Name;
+                    model.CategoryShortDescription = category.Description;
+                }
+                else
+                {
+                    model.CategoryName = "Tüm Kategoriler";
+                    model.CategoryShortDescription = "Geleceğin web sitelerini kodlayın";
+                }
+            }
+
             model.Categories = _unitOfWork.EducationCategory.GetCoursesPageCategories();
+            model.OrderTypes = EnumHelpers.ToKeyValuePair<OrderCriteria>();
+            model.EducationHostCities = EnumHelpers.ToKeyValuePair<HostCity>();
             model.TotalEducationCount = _unitOfWork.Education.TotalEducationCount();
+
             return View(model);
         }
 
@@ -41,7 +70,7 @@ namespace NitelikliBilisim.App.Controllers
             if (!checkEducation)
                 return NotFound();
 
-            var educationDetails = _unitOfWork.Education.GetEducation(seoUrl:seoUrl);
+            var educationDetails = _unitOfWork.Education.GetEducation(seoUrl: seoUrl);
             var educators = _unitOfWork.Bridge_EducationEducator.GetAssignedEducators(educationDetails.Base.Id);
             var isLoggedIn = HttpContext.User.Identity.IsAuthenticated;
             if (isLoggedIn)
@@ -84,7 +113,7 @@ namespace NitelikliBilisim.App.Controllers
                     Content = model.Content,
                     Points = model.Point,
                     EducationId = model.EducationId,
-                    IsEducatorComment=false,
+                    IsEducatorComment = false,
                     CommentatorId = userId
                 });
             }
@@ -163,5 +192,27 @@ namespace NitelikliBilisim.App.Controllers
                 data = model
             });
         }
+
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
+        [HttpPost]
+        [Route("get-courses")]
+        public async Task<IActionResult> GetCourses(Guid? categoryId, int? hostCity, int page=1,OrderCriteria order = OrderCriteria.Latest)
+        {
+            var model = _unitOfWork.Education.GetCoursesPageEducations(categoryId,hostCity.GetValueOrDefault(), page, order);
+
+            foreach (var education in model)
+            {
+                var folder = Path.GetDirectoryName(education.ImagePath);
+                var fileName = Path.GetFileName(education.ImagePath);
+                education.ImagePath = await _storageService.DownloadFile(fileName, folder);
+            }
+            return Json(new ResponseModel
+            {
+                data = model
+            });
+
+        }
+
+
     }
 }
