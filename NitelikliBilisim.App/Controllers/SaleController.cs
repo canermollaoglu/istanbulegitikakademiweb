@@ -90,22 +90,28 @@ namespace NitelikliBilisim.App.Controllers
                     {
                         items = new List<CartItemVm>(),
                         total = 0m.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
-                        totalNumeric = 0
+                        totalNumeric = 0,
+                        oldTotalNumeric =0
                     }
                 });
 
             var cartItems = _vmCreator.GetCartItems(data.Items);
 
             var sum = 0m;
-
-            if (cartItems.Count > 0)
-                cartItems.ForEach(x => sum += x.PriceNumeric);
-
+            var oldPriceSum = 0m;
+            if (cartItems.Count > 0) {
+                foreach (var cartItem in cartItems)
+                {
+                    sum += cartItem.PriceNumeric;
+                    oldPriceSum += cartItem.OldPriceNumeric;
+                }
+            }
             var model = new
             {
                 items = cartItems,
-                total = sum.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
-                totalNumeric = sum
+                totalNumeric = sum,
+                oldTotalNumeric = oldPriceSum,
+                discountAmount = oldPriceSum-sum
             };
 
             return Json(new ResponseModel

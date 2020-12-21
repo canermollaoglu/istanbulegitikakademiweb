@@ -645,7 +645,9 @@ namespace NitelikliBilisim.Business.Repositories
                     EducationName = group.Education.Name,
                     PreviewPhoto = imageUrl,
                     PriceNumeric = group.NewPrice.GetValueOrDefault(),
-                    PriceText = group.NewPrice.GetValueOrDefault().ToString()
+                    PriceText = group.NewPrice.GetValueOrDefault().ToString(),
+                    OldPriceNumeric = group.OldPrice.GetValueOrDefault(),
+                    OldPriceText = group.OldPrice.GetValueOrDefault().ToString()
                 });
             }
             return model;

@@ -9,5 +9,7 @@ namespace NitelikliBilisim.Core.ViewModels.Cart
         public string EducationName { get; set; }
         public decimal PriceNumeric { get; set; }
         public string PriceText { get; set; }
+        public decimal OldPriceNumeric { get; set; }
+        public object OldPriceText { get; set; }
     }
 }

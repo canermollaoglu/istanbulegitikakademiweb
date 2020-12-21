@@ -441,7 +441,6 @@
                             SEPETTEKİ <span class="colored-blue">ÜRÜNLERİM</span>
                         </div>
                         <div class="checkout__top-right">
-                            2 Ürün
                         </div>
                     </div>
                     <div class="checkout__basket-wrp">
@@ -1185,6 +1184,7 @@
                         appendCartItems(res.data.items);
                         inputEducationTotalPrice.val(res.data.totalNumeric);
                         calculateTotalPrice();
+                        $(".checkout__top-right").html(res.data.items.length + " Ürün");
                     }
                 }
             });
