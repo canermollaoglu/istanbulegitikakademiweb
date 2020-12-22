@@ -13,7 +13,6 @@ using NitelikliBilisim.App.Hubs;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Data;
-using System;
 using System.Globalization;
 using System.IO;
 
