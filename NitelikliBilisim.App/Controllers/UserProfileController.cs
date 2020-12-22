@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -12,9 +8,11 @@ using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Managers;
 using NitelikliBilisim.Business.UoW;
-using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Services.Abstracts;
+using System;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Controllers
 {

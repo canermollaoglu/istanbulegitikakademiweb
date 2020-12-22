@@ -3,9 +3,6 @@ using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ViewModels.Main.Blog;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Controllers
 {

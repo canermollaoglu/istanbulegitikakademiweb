@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.Core.Entities;
 using System.Linq;
 using System.Threading.Tasks;
-using NitelikliBilisim.App.Controllers.Base;
 
 namespace NitelikliBilisim.App.Controllers
 {

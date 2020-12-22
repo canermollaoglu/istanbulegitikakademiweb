@@ -2,15 +2,11 @@
 using MUsefulMethods;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Filters;
-using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels;
-using NitelikliBilisim.Core.ViewModels.search;
-using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Controllers
 {
