@@ -36,7 +36,7 @@ using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Controllers
 {
-    public class SaleController : BaseController
+    public class SaleController : Controller
     {
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly UnitOfWork _unitOfWork;
@@ -62,11 +62,12 @@ namespace NitelikliBilisim.App.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             List<InvoiceInfoAddressGetVm> addresses = _unitOfWork.Address.GetInvoiceAddressesByUserId(userId);
             var cities = _unitOfWork.City.Get().OrderBy(x=>x.Order).ToList();
-            
+            var defaultAddress = _unitOfWork.Address.GetDefaultAddress(userId);
             var invoiceInfos = new InvoiceInfoGetVm
             {
                 Addresses = addresses,
-                Cities = cities
+                Cities = cities,
+                DefaultAddressId = defaultAddress != null ? defaultAddress.Id : 0
             };
             return View(invoiceInfos);
         }
@@ -89,22 +90,28 @@ namespace NitelikliBilisim.App.Controllers
                     {
                         items = new List<CartItemVm>(),
                         total = 0m.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
-                        totalNumeric = 0
+                        totalNumeric = 0,
+                        oldTotalNumeric =0
                     }
                 });
 
             var cartItems = _vmCreator.GetCartItems(data.Items);
 
             var sum = 0m;
-
-            if (cartItems.Count > 0)
-                cartItems.ForEach(x => sum += x.PriceNumeric);
-
+            var oldPriceSum = 0m;
+            if (cartItems.Count > 0) {
+                foreach (var cartItem in cartItems)
+                {
+                    sum += cartItem.PriceNumeric;
+                    oldPriceSum += cartItem.OldPriceNumeric;
+                }
+            }
             var model = new
             {
                 items = cartItems,
-                total = sum.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
-                totalNumeric = sum
+                totalNumeric = sum,
+                oldTotalNumeric = oldPriceSum,
+                discountAmount = oldPriceSum-sum
             };
 
             return Json(new ResponseModel
@@ -268,12 +275,6 @@ namespace NitelikliBilisim.App.Controllers
                     isSuccess = false,
                     errors = ModelStateUtil.GetErrors(ModelState)
                 });
-            if (!data.InvoiceInfo.IsIndividual && data.CorporateInvoiceInfo == null)
-                return Json(new ResponseModel
-                {
-                    isSuccess = false,
-                    errors = new List<string> { "?" }
-                });
             #endregion
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -319,18 +320,8 @@ namespace NitelikliBilisim.App.Controllers
             var transactionType = cardInfoChecker.DecideTransactionType(info, data.Use3d);
 
             var manager = new PaymentManager(_paymentService, transactionType);
-            string content;
-            var rootPath = _hostingEnvironment.WebRootPath;
-            using (var sr = new StreamReader(Path.Combine(rootPath, "data/cities.json")))
-            {
-                content = await sr.ReadToEndAsync();
-            }
-            var cityTowns = JsonConvert.DeserializeObject<CityTownModel>(content);
-            var cityId = data.InvoiceInfo.City;
-            var townId = data.InvoiceInfo.Town;
-            var city = cityTowns.data.First(x => x._id == cityId);
-            data.InvoiceInfo.City = city.name;
-            data.InvoiceInfo.Town = city.towns.First(x => x._id == townId).name;
+            var address = _unitOfWork.Address.GetFullAddressById(data.AddressId);
+            data.InvoiceAddress = address;
 
             var result = manager.Pay(_unitOfWork, data);
             NormalPaymentResultVm paymentResultModel = new NormalPaymentResultVm();
@@ -361,17 +352,17 @@ namespace NitelikliBilisim.App.Controllers
                             Contacts = new[] { customerEmail }
                         });
                     }
-
                     paymentResultModel.Status = PaymentResultStatus.Success;
                     paymentResultModel.Message = "Ödemeniz başarılı bir şekilde gerçekleşmiştir.";
+                    paymentResultModel.SuccessDetails = _unitOfWork.InvoiceDetail.GetSuccessPaymentDetails(result.Success.InvoiceDetailIds, result.Success.PromotionId);
                 }
                 else
                 {
                     paymentResultModel.Status = PaymentResultStatus.Failure;
                     paymentResultModel.Message = result.Error.ErrorMessage;
                 }
-
-                return RedirectToAction("NormalPaymentResult", "Sale", paymentResultModel);
+                ViewData["PaymentResult"] = paymentResultModel;
+                return View("NormalPaymentResult");
             }
 
             if (result.TransactionType == TransactionType.Secure3d)
@@ -397,7 +388,8 @@ namespace NitelikliBilisim.App.Controllers
                 {
                     paymentResultModel.Status = PaymentResultStatus.Failure;
                     paymentResultModel.Message = result.Error.ErrorMessage;
-                    return RedirectToAction("NormalPaymentResult", "Sale", paymentResultModel);
+                    ViewData["PaymentResult"] = paymentResultModel;
+                   return View("NormalPaymentResult");
                 }
             }
 
@@ -414,9 +406,9 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [HttpGet, Route("odeme-sonucunuz")]
-        public IActionResult NormalPaymentResult(NormalPaymentResultVm model)
+        public IActionResult NormalPaymentResult()
         {
-            return View(model);
+            return View();
         }
 
         [HttpPost, Route("odeme-sonucu")]
@@ -433,9 +425,10 @@ namespace NitelikliBilisim.App.Controllers
                     var model = manager.CreateCompletionModel(result);
                     if (model == null)
                         return View();
+                    var paymentModelSuccess = _unitOfWork.TempSaleData.Get(data.ConversationId);
                     retVal.Status = PaymentResultStatus.Success;
                     retVal.Message = "Ödemeniz başarılı bir şekilde gerçekleşmiştir.";
-                    var paymentModelSuccess = _unitOfWork.TempSaleData.Get(data.ConversationId);
+                    retVal.SuccessDetails = _unitOfWork.InvoiceDetail.GetSuccessPaymentDetails(paymentModelSuccess.InvoiceDetailIds, paymentModelSuccess.PromotionId);
                     if (!string.IsNullOrEmpty(paymentModelSuccess.PromotionId))
                     {
                         _unitOfWork.EducationPromotionItem.Insert(new EducationPromotionItem
@@ -460,8 +453,8 @@ namespace NitelikliBilisim.App.Controllers
                 retVal.Status = PaymentResultStatus.Failure;
                 retVal.Message = "Ödeme servisinden cevap alınamamıştır. Lütfen yönetici ile iletişime geçiniz.";
             }
-
-            return View(retVal);
+            ViewData["PaymentResult"] = retVal;
+            return View("NormalPaymentResult");
         }
 
         [NonAction]

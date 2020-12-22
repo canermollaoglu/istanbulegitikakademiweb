@@ -24,6 +24,7 @@ namespace NitelikliBilisim.Core.Entities
         public string ApproverId { get; set; }
         [Column(TypeName = "datetime2(3)")]
         public DateTime? ApprovalDate { get; set; }
+        public bool IsHighLight { get; set; }
         public CommentApprovalStatus ApprovalStatus { get; set; }
         public Guid? BaseCommentId { get; set; }
         [ForeignKey("BaseCommentId")]

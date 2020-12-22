@@ -1,0 +1,349 @@
+﻿
+@{
+    ViewData["Title"] = "Ödeme";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    <link href="~/assets/css/grey.css" rel="stylesheet">
+    <link href="~/assets/css/sale/payment.css" rel="stylesheet" />
+<style>
+    input[type="checkbox"][readonly] {
+        pointer-events: none;
+    }
+</style>
+}
+
+<main>
+    <section id="hero_in" class="cart_section">
+        <div class="wrapper">
+            <div class="container">
+                <div class="bs-wizard clearfix">
+                    <div class="bs-wizard-step">
+                        <div class="text-center bs-wizard-stepnum">Sepetiniz</div>
+                        <div class="progress">
+                            <div class="progress-bar"></div>
+                        </div>
+                        <a href="/sepet" class="bs-wizard-dot"></a>
+                    </div>
+
+                    <div class="bs-wizard-step active">
+                        <div class="text-center bs-wizard-stepnum">Ödeme</div>
+                        <div class="progress">
+                            <div class="progress-bar"></div>
+                        </div>
+                        <a href="#0" class="bs-wizard-dot"></a>
+                    </div>
+
+                    <div class="bs-wizard-step disabled">
+                        <div class="text-center bs-wizard-stepnum">Tamamla!</div>
+                        <div class="progress">
+                            <div class="progress-bar"></div>
+                        </div>
+                        <a href="#0" class="bs-wizard-dot"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    @{
+        var isLoggedIn = User.Identity.IsAuthenticated;
+    }
+
+    <form id="form-buy" method="post" asp-controller="Sale" asp-action="Pay">
+        <div class="bg_color_1">
+            <div class="container margin_60_35">
+                <div class="row">
+
+                    <div class="col-lg-8">
+                        <!-- FORM TAG START FOR AJAX -->
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" value="" id="_is-distant-sales-agreement-confirmed" name="IsDistantSalesAgreementConfirmed" />
+                        <input type="hidden" value="" id="_is-individual" name="InvoiceInfo.IsIndividual" />
+                        <input type="hidden" value="" id="_cart-items" name="CartItemsJson" />
+                        <input type="hidden" value="" id="_installmentCount" name="PaymentInfo.Installments" />
+                        <input type="hidden" value="0" id="input-education-total-price" />
+                        <input type="hidden" value="0" id="promotion-discount-amount" />
+                        <input type="hidden" value="" id="_promotion-code" name="PromotionCode" />
+                        <div class="box_cart">
+                            <div class="form_title">
+                                <h3><strong>1</strong>Ödeme Bilgileri</h3>
+                            </div>
+                            <div class="step">
+                                <span class="input">
+                                    <input class="input_field" type="text" id="input-owner" name="CardInfo.NameOnCard">
+                                    <label class="input_label">
+                                        <span class="input__label-content">Kartın Üzerindeki Ad Soyad</span>
+                                    </label>
+                                </span>
+                                <div class="row">
+                                    <div class="col-md-6" id="div-card-number">
+                                        <span class="input">
+                                            <input class="input_field" type="text" id="input-card-number" name="CardInfo.NumberOnCard">
+                                            <label class="input_label">
+                                                <span class="input__label-content">Kart Numarası</span>
+                                            </label>
+                                        </span>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6">
+                                        <img src="~/assets/img/payments.png" alt="Kartlar" class="cards">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 add_top_30">
+                                        <label>Son Kullanma Tarihi</label>
+                                        <div class="row">
+                                            <div class="col-md-6 col-sm-6">
+                                                <div class="form-group select">
+                                                    <div class="styled-select">
+                                                        <select class="required" id="select-months" name="CardInfo.MonthOnCard">
+                                                            <option value="" disabled selected>Ay</option>
+                                                            @for (int i = 1; i <= 12; i++)
+                                                            {
+                                                                <option value="@i.ToString("00")">@i.ToString("00")</option>
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-sm-6">
+                                                <div class="form-group select">
+                                                    <div class="styled-select">
+                                                        <select class="required" id="select-years" name="CardInfo.YearOnCard">
+                                                            <option value="" disabled selected>Yıl</option>
+                                                            @for (int i = @DateTime.Now.Year % 100; i <= (DateTime.Now.Year + 20) % 100; i++)
+                                                            {
+                                                                <option value="@i.ToString("00")">@i.ToString("00")</option>
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 add_top_30">
+                                        <div class="form-group">
+                                            <label>Güvenlik Kodu (CVC) <i class="icon-info-circled" data-toggle="tooltip" data-placement="top" data-html="true" title="<p>Kartınızın arka yüzündeki 3 haneli güvenlik numarasıdır.<img style='width: 50px; float: right' src='/assets/img/ccv-info.png'/></p>"></i></label>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <span class="input">
+                                                        <input class="input_field" maxlength="3" type="text" id="input-cvc" name="CardInfo.CVC">
+                                                        <label class="input_label">
+                                                            <span class="input__label-content">CVC</span>
+                                                        </label>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input" id="chc3DSecure" name="Use3d" value="true">
+                                            <label class="form-check-label" for="exampleCheck1">3D kullanmak istiyorum.</label>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div id="installmentInfo">
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="form_title">
+                                <h3><strong>2</strong>Fatura Bilgileri</h3>
+                            </div>
+                            <div class="step">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6">
+                                        <div class="form-group select">
+                                            <div class="styled-select">
+                                                <select class="required" id="select-provinces" name="InvoiceInfo.City">
+                                                    <option value="" selected="">İl</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6">
+                                        <div class="form-group select">
+                                            <div class="styled-select">
+                                                <select class="required" id="select-districts" name="InvoiceInfo.Town">
+                                                    <option value="" selected="">İlçe</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <span class="input">
+                                            <input class="input_field" type="text" id="input-address" name="InvoiceInfo.Address">
+                                            <label class="input_label">
+                                                <span class="input__label-content">Adres</span>
+                                            </label>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <span class="input">
+                                            <input class="input_field" type="text" id="input-phone" name="InvoiceInfo.Phone">
+                                            <label class="input_label">
+                                                <span class="input__label-content">Telefon</span>
+                                            </label>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <h6>Fatura Tipi</h6>
+                                    <div class="col-md-12">
+                                        <div class="form-group radio_input">
+                                            <label>
+                                                <input type="radio" value="individual" checked="" name="customer-type" class="icheck" style="position: absolute; opacity: 0;" id="chk-customer-type-individual">Bireysel
+                                            </label>
+                                            <label class="">
+                                                <input type="radio" value="corporate" name="customer-type" class="icheck" style="position: absolute; opacity: 0;">Kurumsal
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" id="div-corporate-field" style="display: none">
+                                    <div class="col-md-6 col-md-offset-3">
+                                        <span class="input">
+                                            <input class="input_field" type="text" id="input-company-name" name="CorporateInvoiceInfo.CompanyName">
+                                            <label class="input_label">
+                                                <span class="input__label-content">Firma Adı</span>
+                                            </label>
+                                        </span>
+                                        <span class="input">
+                                            <input class="input_field" type="text" id="input-tax-no" name="CorporateInvoiceInfo.TaxNo">
+                                            <label class="input_label">
+                                                <span class="input__label-content">Vergi No</span>
+                                            </label>
+                                        </span>
+                                        <span class="input">
+                                            <input class="input_field" type="text" id="input-tax-office" name="CorporateInvoiceInfo.TaxOffice">
+                                            <label class="input_label">
+                                                <span class="input__label-content">Vergi Dairesi</span>
+                                            </label>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="form_title">
+                                <h3><strong>3</strong>Sözleşme ve Formlar</h3>
+                            </div>
+                            <div class="step">
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12">
+                                        <h6>Cayma Hakkı</h6>
+                                        <div class="policy-box">
+                                            <partial name="partials/_CaymaHakki" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12">
+                                        <h6><a href="#" data-toggle="modal" data-target="#mss-modal">Mesafeli Satış Sözleşmesi <i class="icon-link-ext"></i></a></h6>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                        </div>
+                        <!-- FORM TAG END FOR AJAX -->
+
+                    </div>
+
+                    <aside class="col-lg-4" id="sidebar">
+                        <div class="box_detail">
+                            <div>
+                                <h5>Sipariş Özeti</h5>
+                                <table id="tbody-cart-items"></table>
+                                <span id="promotion-info"></span>
+                            </div>
+                            <div id="total_cart">
+                                Toplam <span class="float-right" id="txt-total"></span>
+                            </div>
+                            <div class="add_bottom_30">
+                                @*<label>
+                                        <input type="checkbox" class="icheck" style="position: absolute; opacity: 0;">
+                                        <span><a href="#" data-toggle="modal" data-target="#obf-modal">Ön Bilgilendirme Formu</a>'nu okudum ve kabul ediyorum.</span>
+                                    </label>*@
+                                <label>
+                                    <input type="checkbox" class="icheck" style="position: absolute; opacity: 0;" id="chk-confirm-distant-sales">
+                                    <span><a href="#" data-toggle="modal" data-target="#mss-modal">Mesafeli Satış Sözleşmesi</a>'ni okudum ve kabul ediyorum.</span>
+                                </label>
+                            </div>
+                            <div class="row">
+                                @*<div class="col-md-12">
+                                        <a href="/tum-egitimler" class="btn_1 full-width outline"><i class="icon-right"></i> Alışverişe devam et</a>
+                                    </div>*@
+                                <div class="col-md-12">
+                                    <!-- role="button" for ajax -->
+                                    <button class="btn_1 full-width" id="btn-buy">Satın Al</button>
+                                </div>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </div>
+    </form>
+</main>
+
+<div class="modal fade" id="obf-modal" tabindex="-1" role="dialog" aria-labelledby="obfLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="obfLabel">Ön Bilgilendirme Formu</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Lorem ipsum dolor sit amet, in porro albucius qui, in <strong>nec quod novum accumsan</strong>, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus.</p>
+                <p>Lorem ipsum dolor sit amet, in porro albucius qui, in nec quod novum accumsan, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus. Lorem ipsum dolor sit amet, <strong>in porro albucius qui</strong>, in nec quod novum accumsan, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus.</p>
+                <p>Lorem ipsum dolor sit amet, in porro albucius qui, in nec quod novum accumsan, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn_1" data-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="mss-modal" tabindex="-1" role="dialog" aria-labelledby="mssLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="mssLabel">Mesafeli Satış Sözleşmesi</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <partial name="partials/_MesafeliSatisSozlesmesi" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn_1" data-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+@section postScripts{
+    <script src="~/js/lib/security-support.js"></script>
+    <script src="~/assets/js/jquery.payform.min.js"></script>
+    <script src="~/assets/js/jquery.mask.min.js"></script>
+    <script src="~/js/sup/cart.js"></script>
+    <script src="~/js/pages/sale-payment.js"></script>
+}

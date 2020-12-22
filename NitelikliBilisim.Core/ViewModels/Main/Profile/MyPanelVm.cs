@@ -19,5 +19,8 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public int PurchasedEducationCount { get; set; }
         public int EducationWeek { get; set; }
         public int TotalEducationWeek { get; set; }
+        public string NbuyCategory { get; set; }
+        public string NbuyStartDateText { get; set; }
+        public DateTime NbuyStartDate { get; set; }
     }
 }

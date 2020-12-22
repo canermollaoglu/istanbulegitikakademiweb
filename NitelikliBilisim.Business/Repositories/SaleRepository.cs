@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Entities.user_details;
 using NitelikliBilisim.Core.Enums;
+using NitelikliBilisim.Core.Enums.user_details;
 using NitelikliBilisim.Core.PaymentModels;
 using NitelikliBilisim.Core.ViewModels.Sales;
 using NitelikliBilisim.Data;
@@ -51,7 +53,7 @@ namespace NitelikliBilisim.Business.Repositories
         {
             var invoiceDetails = CreateInvoiceDetails(cartItems);
 
-            _CorporateInvoiceInfo corporateInvoiceInfo = !data.InvoiceInfo.IsIndividual ? data.CorporateInvoiceInfo : null;
+            Address corporateInvoiceInfo = data.InvoiceAddress.AddressType == AddressTypes.Corporate ? data.InvoiceAddress : null;
 
             var invoice = CreateInvoice(corporateInvoiceInfo: corporateInvoiceInfo,
                 paymentCount: data.PaymentInfo.Installments,
@@ -68,9 +70,9 @@ namespace NitelikliBilisim.Business.Repositories
                     _context.InvoiceAddresses.Add(new InvoiceAddress
                     {
                         Id = invoice.Id,
-                        Address = data.InvoiceInfo.Address,
-                        City = data.InvoiceInfo.City,
-                        County = data.InvoiceInfo.Town
+                        Address = data.InvoiceAddress.Content,
+                        City = data.InvoiceAddress.City.Name,
+                        County = data.InvoiceAddress.State.Name
                     });
 
                     foreach (var invoiceDetail in invoiceDetails)
@@ -206,7 +208,7 @@ namespace NitelikliBilisim.Business.Repositories
 
             return invoiceDetails;
         }
-        private Invoice CreateInvoice(_CorporateInvoiceInfo corporateInvoiceInfo, byte paymentCount, string userId, TransactionStatus transactionStatus = TransactionStatus.TransactionAwait)
+        private Invoice CreateInvoice(Address corporateInvoiceInfo, byte paymentCount, string userId, TransactionStatus transactionStatus = TransactionStatus.TransactionAwait)
         {
             var invoice = new Invoice
             {
@@ -221,7 +223,7 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 invoice.BillingType = CustomerType.Corporate;
                 invoice.CompanyName = corporateInvoiceInfo.CompanyName;
-                invoice.TaxNo = corporateInvoiceInfo.TaxNo;
+                invoice.TaxNo = corporateInvoiceInfo.TaxNumber;
                 invoice.TaxOffice = corporateInvoiceInfo.TaxOffice;
             }
 

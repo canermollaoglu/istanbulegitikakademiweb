@@ -9,7 +9,7 @@ namespace NitelikliBilisim.Core.ViewModels.Main.InvoiceInfo
 {
     public class InvoiceInfoAddressGetVm
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
         public string City { get; set; }

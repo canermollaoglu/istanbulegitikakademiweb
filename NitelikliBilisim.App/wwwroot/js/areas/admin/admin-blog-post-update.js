@@ -70,6 +70,7 @@ function btnSave_onClick() {
     var data = {
         Id: $('#input-postId').val(),
         Title: $("#input-title").val(),
+        SeoUrl: $("#input-seo-url").val(),
         SummaryContent: $("#input-summary-content").val(),
         Content: $('#summernote').summernote('code'),
         CategoryId: selectCategory.val(),
@@ -111,4 +112,19 @@ function btnSave_onClick() {
         }
     });
 }
-
+$("#input-title").focusout(function () {
+    var title = $("#input-title").val();
+    $.ajax({
+        url: "/admin/create-seo-url",
+        method: "get",
+        data: { title: title },
+        success: (res) => {
+            if (res.isSuccess) {
+                $("#input-seo-url").val(res.data);
+            }
+        },
+        error: (error) => {
+            alert(error.message);
+        }
+    });
+});

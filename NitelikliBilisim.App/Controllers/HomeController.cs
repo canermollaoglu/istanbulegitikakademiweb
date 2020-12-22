@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +8,6 @@ using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Managers;
 using NitelikliBilisim.App.Models;
-using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
@@ -21,7 +19,6 @@ using NitelikliBilisim.Core.ViewModels.Main.EducationComment;
 using NitelikliBilisim.Core.ViewModels.Main.EducatorApplication;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -54,6 +51,7 @@ namespace NitelikliBilisim.App.Controllers
         {
             var model = new HomeIndexModel();
             model.EducationCountByCategory = _unitOfWork.EducationCategory.GetEducationCountForCategories();
+            model.EducationComments = _unitOfWork.EducationComment.GetHighlightComments(5);
             var isLoggedIn = HttpContext.User.Identity.IsAuthenticated;
             if (!isLoggedIn)
                 model.SuggestedEducations = _unitOfWork.Suggestions.GetGuestUserSuggestedEducations();
@@ -148,7 +146,10 @@ namespace NitelikliBilisim.App.Controllers
         public IActionResult CorporateMembershipApplication(CorporateMembershipApplicationAddVm model)
         {
             if (!ModelState.IsValid)
-                return View(model);
+                return Json(new ResponseData
+                {
+                    Success = false
+                });
 
             try
             {
@@ -163,12 +164,18 @@ namespace NitelikliBilisim.App.Controllers
                     RequestNote = model.RequestNote,
                     NumberOfEmployees = model.NumberOfEmployees,
                 });
-                return RedirectToAction("Index", "Home");
+                return Json(new ResponseData
+                {
+                    Success = true
+                });
             }
             catch (Exception ex)
             {
                 //Log ex
-                return View();
+                return Json(new ResponseData
+                {
+                    Success = false
+                });
             }
 
         }
@@ -180,7 +187,10 @@ namespace NitelikliBilisim.App.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                return Json(new ResponseData
+                {
+                    Success = false
+                });
             }
             try
             {
@@ -193,12 +203,18 @@ namespace NitelikliBilisim.App.Controllers
                     NameSurname = model.NameSurname,
                     CvUrl = mediaPath
                 });
-                return RedirectToAction("Index", "Home");
+                return Json(new ResponseData
+                {
+                    Success = true
+                });
             }
             catch (Exception ex)
             {
                 //Log ex
-                return RedirectToAction("Index", "Home");
+                return Json(new ResponseData
+                {
+                    Success = false
+                });
             }
         }
 
@@ -258,5 +274,70 @@ namespace NitelikliBilisim.App.Controllers
             }
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("subscribe-blog")]
+        public IActionResult SubscribeToBlog(string email, string name)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Json(new ResponseData
+                {
+                    Success = false
+                });
+            }
+            try
+            {
+                _unitOfWork.SubscriptionBlog.Insert(new BlogSubscriber { 
+                Email = email,
+                Name = name
+                });
+                return Json(new ResponseData
+                {
+                    Success = true
+                });
+            }
+            catch (Exception ex)
+            {
+                //Log ex
+                return Json(new ResponseData
+                {
+                    Success = false
+                });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("subscribe-newsletter")]
+        public IActionResult SubscribeToNewsletter(string email)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Json(new ResponseData
+                {
+                    Success = false
+                });
+            }
+            try
+            {
+                _unitOfWork.SubscriptionNewsletter.Insert(new NewsletterSubscriber
+                {
+                    Email = email
+                });
+                return Json(new ResponseData
+                {
+                    Success = true
+                });
+            }
+            catch (Exception ex)
+            {
+                //Log ex
+                return Json(new ResponseData
+                {
+                    Success = false
+                });
+            }
+        }
     }
 }

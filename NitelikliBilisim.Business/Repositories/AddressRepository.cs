@@ -26,6 +26,7 @@ namespace NitelikliBilisim.Business.Repositories
                 .Include(x => x.City)
                 .Where(x => x.CustomerId == userId).Select(x => new InvoiceInfoAddressGetVm
                 {
+                    Id = x.Id,
                     Title = x.Title,
                     Content = x.Content,
                     City = x.City.Name,
@@ -83,6 +84,17 @@ namespace NitelikliBilisim.Business.Repositories
             };
             _context.Addresses.Add(address);
             _context.SaveChanges();
+        }
+
+        public Address GetDefaultAddress(string userId)
+        {
+            var retVal = _context.Addresses.FirstOrDefault(x => x.IsDefaultAddress && x.CustomerId == userId);
+            return retVal;
+        }
+
+        public Address GetFullAddressById(int id)
+        {
+          return _context.Addresses.Include(x=>x.City).Include(x=>x.State).FirstOrDefault(x => x.Id == id);
         }
     }
 }

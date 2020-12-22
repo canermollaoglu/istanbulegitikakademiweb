@@ -1,15 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MUsefulMethods;
 using NitelikliBilisim.App.Controllers.Base;
+using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Enums;
+using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels.Main.Course;
 using System;
-using NitelikliBilisim.App.Filters;
-using MUsefulMethods;
-using NitelikliBilisim.Core.Enums;
 using System.Collections.Generic;
-using NitelikliBilisim.Core.Entities;
+using System.IO;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -17,34 +20,72 @@ namespace NitelikliBilisim.App.Controllers
     public class CourseController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
-        public CourseController(UnitOfWork unitOfWork)
+        private readonly IStorageService _storageService;
+        public CourseController(UnitOfWork unitOfWork,IStorageService storageService)
         {
             _unitOfWork = unitOfWork;
+            _storageService = storageService;
+        }
+        [Route("egitimler/{catSeoUrl?}")]
+        public IActionResult List(string catSeoUrl)
+        {
+            CourseListGetVm model = new CourseListGetVm();
+            if (string.IsNullOrEmpty(catSeoUrl))
+            {
+                model.CategoryName = "Tüm Kategoriler";
+                model.CategoryShortDescription = "Geleceğin web sitelerini kodlayın";
+            }
+            else
+            {
+                var category = _unitOfWork.EducationCategory.GetCategoryBySeoUrl(catSeoUrl);
+                if (category != null)
+                {
+                    model.CategoryId = category.Id;
+                    model.CategoryName = category.Name;
+                    model.CategoryShortDescription = category.Description;
+                }
+                else
+                {
+                    model.CategoryName = "Tüm Kategoriler";
+                    model.CategoryShortDescription = "Geleceğin web sitelerini kodlayın";
+                }
+            }
+
+            model.Categories = _unitOfWork.EducationCategory.GetCoursesPageCategories();
+            model.OrderTypes = EnumHelpers.ToKeyValuePair<OrderCriteria>();
+            model.EducationHostCities = EnumHelpers.ToKeyValuePair<HostCity>();
+            model.TotalEducationCount = _unitOfWork.Education.TotalEducationCount();
+
+            return View(model);
         }
 
-        [TypeFilter(typeof(UserLoggerFilterAttribute))]
-        [Route("kurs-detayi/{courseId}")]
-        public IActionResult Details(Guid? courseId, string searchKey)
-        {
-            if (!courseId.HasValue)
-                return Redirect("/");
 
-            var educationDetails = _unitOfWork.Education.GetEducation(courseId.Value);
-            var educators = _unitOfWork.Bridge_EducationEducator.GetAssignedEducators(courseId.Value);
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
+        [Route("{catSeoUrl}/{seoUrl}")]
+        public IActionResult Details(string seoUrl, string searchKey)
+        {
+            if (string.IsNullOrEmpty(seoUrl))
+                return Redirect("/");
+            var checkEducation = _unitOfWork.Education.CheckEducationBySeoUrl(seoUrl);
+            if (!checkEducation)
+                return NotFound();
+
+            var educationDetails = _unitOfWork.Education.GetEducation(seoUrl: seoUrl);
+            var educators = _unitOfWork.Bridge_EducationEducator.GetAssignedEducators(educationDetails.Base.Id);
             var isLoggedIn = HttpContext.User.Identity.IsAuthenticated;
             if (isLoggedIn)
             {
                 var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
                 //Yalnızca giriş yapmış ve eğitimi alarak tamamlamış kişiler yorum yapabilir.
-                bool isCanComment = _unitOfWork.Education.CheckIsCanComment(userId, courseId.Value);
+                bool isCanComment = _unitOfWork.Education.CheckIsCanComment(userId, educationDetails.Base.Id);
                 educationDetails.Base.IsCanComment = isCanComment;
                 //Eğitimin favori eğitimlerde bulunup bulunmaması kontrolü.
-                bool status = _unitOfWork.WishListItem.CheckWishListItem(userId, courseId.Value);
+                bool status = _unitOfWork.WishListItem.CheckWishListItem(userId, educationDetails.Base.Id);
                 educationDetails.Base.IsWishListItem = status;
             }
 
 
-            var educationCities = _unitOfWork.EducationGroup.GetAvailableCities(courseId.Value);
+            var educationCities = _unitOfWork.EducationGroup.GetAvailableCities(educationDetails.Base.Id);
 
             var model = new CourseDetailsVm
             {
@@ -72,7 +113,7 @@ namespace NitelikliBilisim.App.Controllers
                     Content = model.Content,
                     Points = model.Point,
                     EducationId = model.EducationId,
-                    IsEducatorComment=false,
+                    IsEducatorComment = false,
                     CommentatorId = userId
                 });
             }
@@ -151,5 +192,27 @@ namespace NitelikliBilisim.App.Controllers
                 data = model
             });
         }
+
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
+        [HttpPost]
+        [Route("get-courses")]
+        public async Task<IActionResult> GetCourses(Guid? categoryId, int? hostCity, int page=1,OrderCriteria order = OrderCriteria.Latest)
+        {
+            var model = _unitOfWork.Education.GetCoursesPageEducations(categoryId,hostCity.GetValueOrDefault(), page, order);
+
+            foreach (var education in model)
+            {
+                var folder = Path.GetDirectoryName(education.ImagePath);
+                var fileName = Path.GetFileName(education.ImagePath);
+                education.ImagePath = await _storageService.DownloadFile(fileName, folder);
+            }
+            return Json(new ResponseModel
+            {
+                data = model
+            });
+
+        }
+
+
     }
 }

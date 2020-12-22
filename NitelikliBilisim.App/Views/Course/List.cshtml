@@ -1,0 +1,358 @@
+﻿@model NitelikliBilisim.Core.ViewModels.Main.Course.CourseListGetVm
+@{
+    ViewData["Title"] = "List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="subheader">
+    <div class="subheader__wrp">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="./index.php" class="breadcrumb__item">
+                    Anasayfa
+                </a>
+                <a href="#0" class="breadcrumb__item">
+                    Eğitimler
+                </a>
+                <a href="#0" class="breadcrumb__item active">
+                    @Model.CategoryName
+                </a>
+            </div>
+            <div class="subheader__cnt">
+                <div class="subheader__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-system-network"></use>
+                        </svg>
+                    </span>
+                </div>
+                <div class="subheader__txt-cnt">
+                    <div class="subheader__title">@Model.CategoryName</div>
+                    <div class="subheader__txt">@Model.CategoryShortDescription</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="subheader__img">
+        <img src="../../assets/img/subheader-img.jpg" alt="">
+    </div>
+</div>
+<section class="section with-border is-popular-projects listing-first-section o-hidden">
+    <div class="container">
+        <div class="flex-center mb-4">
+            <h2 class="title title-section">POPÜLER <span class="title--blue">EĞİTİMLER</span></h2>
+        </div>
+
+        <div class="swiper-container js-card-slider mt-1">
+            <div class="swiper-wrapper">
+                @await Component.InvokeAsync("PopularEducations")
+            </div>
+            <div class="swiper-pagination"></div>
+
+            <div class="swiper-button-prev swiper-button-circle reverse">
+                <span class="icon-outer">
+                    <svg class="icon">
+                        <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                    </svg>
+                </span>
+            </div>
+            <div class="swiper-button-next swiper-button-circle reverse">
+                <span class="icon-outer">
+                    <svg class="icon">
+                        <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                    </svg>
+                </span>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<section class="lesson-list">
+    <input type="hidden" value="@Model.CategoryId" id="current-category-id" />
+    <input type="hidden" id="current-page" />
+    <input type="hidden" id="current-order" />
+    <input type="hidden" id="current-host-city" />
+    <div class="container">
+        <div class="lesson-list__wrp">
+            <div class="lesson-list__content">
+                <div class="lesson-list__selects mobile-fw-wrap">
+                    <div class="lesson-list__select select-location">
+                        <select class="js-sort-select" id="hostCitySelect">
+                            <option value="" selected hidden disabled>Konum</option>
+                            @foreach (var hostCity in Model.EducationHostCities)
+                            {
+                                <option value="@hostCity.Key">@hostCity.Value</option>
+                            }
+                        </select>
+                        <div class="lesson-list__select--mobile js-open-location-mobile">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-map-pin-f"></use>
+                                </svg>
+                            </span>
+                            <div class="js-select-mobile-change">
+                                Konum
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lesson-list__select with-checkbox mobile-fw">
+                        <select class="js-filter-select" multiple="">
+                            <option value="1">Microsoft</option>
+                            <option value="2">Python</option>
+                            <option value="3">Java</option>
+                            <option value="4">Android</option>
+                            <option value="5">Javascript</option>
+                        </select>
+                        <div class="lesson-list__select--mobile js-open-filter-mobile">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-filter"></use>
+                                </svg>
+                            </span>
+                            <div class="js-select-mobile-change">
+                                Filtrele
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lesson-list__select ml-auto select-sort">
+                        <select class="js-sort-select" id="orderType">
+                            <option value="" selected hidden disabled>Sırala</option>
+                            @foreach (var type in Model.OrderTypes)
+                            {
+                                <option value="@type.Key">@type.Value</option>
+                            }
+                        </select>
+                        <div class="lesson-list__select--mobile js-open-sort-mobile">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-sort-gray"></use>
+                                </svg>
+                            </span>
+                            <div class="js-select-mobile-change">
+                                Sırala
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lesson-list__items">
+
+                </div>
+                <div class="pagination">
+                    <a class="pagination__item prev">
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
+                            </svg>
+                        </span>
+                    </a>
+                    <a class="pagination__item">1</a>
+                    <a class="pagination__item">2</a>
+                    <a class="pagination__item active">3</a>
+                    <a class="pagination__item">4</a>
+                    <a class="pagination__item next">
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
+                            </svg>
+                        </span>
+                    </a>
+                </div>
+            </div>
+            <div class="lesson-list__side">
+                <div class="side-categories">
+                    <div class="side-categories__title js-mobile-side-categori">
+                        EĞİTİM <span> &nbsp;KATEGORİLERİ</span>
+                        <span class="icon-outer input__icon side-categories__mobile-icon">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
+                            </svg>
+                        </span>
+                    </div>
+                    <div class="side-categories__cnt js-vertical-magic-line">
+                        <div class="side-categories__item js-vertical-magic-line-item @(Model.CategoryId == null?"active":"")">
+                            <a class="side-category-item">
+                                <span class="side-categories__txt">Tüm Eğitimler</span>
+                                <span class="side-categories__count">@Model.TotalEducationCount</span>
+                            </a>
+                        </div>
+                        @foreach (var category in Model.Categories)
+                        {
+                            <div class="side-categories__item js-vertical-magic-line-item @(category.Id == Model.CategoryId?"active":"")">
+                                <a data-category-id="@category.Id" class="side-category-item">
+                                    <span class="side-categories__txt">@category.Name</span>
+                                    <span class="side-categories__count">@category.EducationCount</span>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="side-banner">
+                    <div class="side-banner__cnt">
+                        <div class="side-banner__icon">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-user-dart"></use>
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="side-banner__title">
+                            Size en uygun <br>proje eğitimlerini
+                            Birlikte bulalım!
+                        </div>
+                    </div>
+                    <a class="side-banner__footer">
+                        Şimdi Başlayın
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                            </svg>
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="sort-mobile js-sort-mobile">
+    <div class="sort-mobile__top">
+        <span class="icon-outer">
+            <svg class="icon">
+                <use xlink:href="../../assets/img/icons.svg#icon-sort-gray"></use>
+            </svg>
+        </span>
+        <div class="sort-mobile__top-title">
+            Sırala
+        </div>
+    </div>
+    <div class="sort-mobile__list">
+        <div class="sort-mobile__item">Fiyata Göre Artan</div>
+        <div class="sort-mobile__item">Fiyata Göre Azalan</div>
+        <div class="sort-mobile__item">Puana Göre En Yüksek</div>
+        <div class="sort-mobile__item">Seviyeye Göre Başlangıç</div>
+        <div class="sort-mobile__item">Seviyeye Göre İleri Düzey</div>
+    </div>
+</div>
+<div class="sort-mobile js-filter-mobile">
+    <div class="sort-mobile__top">
+        <span class="icon-outer">
+            <svg class="icon">
+                <use xlink:href="../../assets/img/icons.svg#icon-filter"></use>
+            </svg>
+        </span>
+        <div class="sort-mobile__top-title">
+            Filtrele
+        </div>
+    </div>
+    <div class="sort-mobile__list">
+        <div class="sort-mobile__item">Oyun Programlama</div>
+        <div class="sort-mobile__item">Microsoft</div>
+        <div class="sort-mobile__item">Python</div>
+        <div class="sort-mobile__item">Java</div>
+        <div class="sort-mobile__item">Android</div>
+        <div class="sort-mobile__item">Javascript</div>
+    </div>
+</div>
+<div class="sort-mobile js-location-mobile">
+    <div class="sort-mobile__top">
+        <span class="icon-outer">
+            <svg class="icon">
+                <use xlink:href="../../assets/img/icons.svg#icon-map-pin-f"></use>
+            </svg>
+        </span>
+        <div class="sort-mobile__top-title">
+            Konum Seç
+        </div>
+    </div>
+    <div class="sort-mobile__list">
+        <div class="sort-mobile__item">İstanbul</div>
+        <div class="sort-mobile__item">Ankara</div>
+        <div class="sort-mobile__item">İzmir</div>
+        <div class="sort-mobile__item">Bursa</div>
+        <div class="sort-mobile__item">Antalya</div>
+        <div class="sort-mobile__item">Adana</div>
+    </div>
+</div>
+
+
+@section postScripts{
+    <script type="text/javascript">
+        var currentCategoryId = $("#current-category-id");
+        var currentPage = $("#current-page");
+        var currentHostCity = $("#current-host-city");
+        var currentOrder = $("#current-order");
+
+        var lessonsContent = $(".lesson-list__items");
+        $(function () {
+            getSearchResults();
+        });
+
+        $(".js-sort-select").change(function () {
+            currentHostCity.val($("#hostCitySelect").val());
+            currentOrder.val($("#orderType").val());
+            getSearchResults();
+        })
+
+        $(".side-category-item").click(function () {
+            var categoryId = $(this).data("category-id");
+            currentCategoryId.val(categoryId);
+            $(".side-categories__item").removeClass("active");
+            $(this)
+                .closest(".side-categories__item")
+                .addClass('active');
+            getSearchResults();
+        });
+        function getSearchResults() {
+            $.ajax({
+                url: `/get-courses`,
+                method: "post",
+                data: {
+                    categoryId: currentCategoryId.val(),
+                    page: 1,
+                    order: currentOrder.val(),
+                },
+                success: (res) => {
+                    if (res.data.length > 0) {
+                        lessonsContent.html("");
+                    }
+                    $.each(res.data, function (index, e) {
+                        var education = `<a href="/${e.cSeo}/${e.seo}" class="lesson-list__item">
+                            <div class="lesson-list__item-img">
+                                <img src="${e.imagePath}" alt="">
+                            </div>
+                            <div class="lesson-list__item-cnt">
+                                <div class="lesson-list__item-left">
+                                    <div class="lesson-list__item-title">
+                                        ${e.name}
+                                    </div>
+                                    <div class="lesson-list__item-txt">
+                                        ${e.description}
+                                    </div>
+                                </div>
+                                <div class="lesson-list__item-right">
+                                    <div class="lesson-list__item-date">
+                                        <span class="icon-outer">
+                                            <svg class="icon">
+                                                <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                                            </svg>
+                                        </span>
+                                        ${e.educationDays} gün ( ${e.educationHours} saat )
+                                    </div>
+                                    <div class="lesson-list__item-price">
+                                        <span>₺</span> 800,00
+                                    </div>
+                                    <div class="button v-tablet">
+                                        <span class="button-txt">Sepete Ekle</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>`;
+                        lessonsContent.append(education);
+                    });
+                }
+            });
+        }
+    </script>
+}

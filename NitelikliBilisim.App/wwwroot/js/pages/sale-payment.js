@@ -52,7 +52,6 @@ function document_onLoad() {
     inputCvc.payform('formatCardCVC');
     inputPhone.mask("(000) 000 0000");
     isIndividual.value = true;
-    
     getPromotionInfo();
 }
 function customerType_onChange() {

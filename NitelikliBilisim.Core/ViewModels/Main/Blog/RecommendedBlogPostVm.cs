@@ -15,5 +15,7 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Blog
         public string FeaturedImageUrl { get; set; }
         public string ReadingTime { get; set; }
         public Guid Id { get; set; }
+        public string SeoUrl { get; set; }
+        public string CategorySeoUrl { get; set; }
     }
 }

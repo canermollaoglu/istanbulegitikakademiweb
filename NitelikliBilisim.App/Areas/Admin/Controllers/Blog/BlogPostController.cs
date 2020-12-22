@@ -86,6 +86,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             var newBlogPost = new BlogPost
             {
                 Title = data.Title,
+                SeoUrl = data.SeoUrl,
                 CategoryId = data.CategoryId,
                 SummaryContent = data.SummaryContent,
                 Content = data.Content,
@@ -145,7 +146,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 BlogCategories = _unitOfWork.BlogCategory.Get().ToList(),
                 Category = post.Category,
                 Tags = _unitOfWork.BlogPost.GetTagsByBlogPostId(postId),
-                SummaryContent = post.SummaryContent
+                SummaryContent = post.SummaryContent,
+                SeoUrl = post.SeoUrl
             };
 
             return View(model);
@@ -176,6 +178,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 post.Title = data.Title;
                 post.SummaryContent = data.SummaryContent;
                 post.Content = data.Content;
+                post.SeoUrl = data.SeoUrl;
                 post.ReadingTime = CalculateReadingTime(data.Content);
                 post.CategoryId = data.CategoryId;
 

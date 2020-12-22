@@ -182,8 +182,8 @@ namespace NitelikliBilisim.Business.Repositories
                     {
                         eMonth.Weeks.Add(new EducationWeek
                         {
-                            Order = week++,
-                            IsCurrentWeek = currentEducationWeek == week
+                            IsCurrentWeek = currentEducationWeek == week,
+                            Order = week++
                         });
                     }
                 }
@@ -223,6 +223,7 @@ namespace NitelikliBilisim.Business.Repositories
         {
             var model = (from eGroup in _context.EducationGroups
                          join education in _context.Educations on eGroup.EducationId equals education.Id
+                         join category in _context.EducationCategories on education.CategoryId equals category.Id
                          join educator in _context.Educators on eGroup.EducatorId equals educator.Id
                          join host in _context.EducationHosts on eGroup.HostId equals host.Id
                          join educatorUser in _context.Users on educator.Id equals educatorUser.Id
@@ -232,6 +233,8 @@ namespace NitelikliBilisim.Business.Repositories
                          select new MyCourseDetailVm
                          {
                              EducationId = education.Id,
+                             SeoUrl = education.SeoUrl,
+                             CategorySeoUrl = category.SeoUrl,
                              EducationName = education.Name,
                              EducationShortDescription = education.Description,
                              EducationFeaturedImage = eImage.FileUrl,
@@ -293,7 +296,9 @@ namespace NitelikliBilisim.Business.Repositories
         public MyPanelVm GetPanelInfo(string userId)
         {
             MyPanelVm model = new MyPanelVm();
-            var student = _context.Customers.Include(x => x.User).Include(x=>x.StudentEducationInfos).ThenInclude(x=>x.EducationDays).First(x => x.Id == userId);
+            var student = _context.Customers.Include(x => x.User)
+                .Include(x=>x.StudentEducationInfos).ThenInclude(x=>x.Category)
+                .Include(x=>x.StudentEducationInfos).ThenInclude(x=>x.EducationDays).First(x => x.Id == userId);
             var favoriteEducations = GetUserFavoriteEducationsByUserId(userId);
             var purchasedEducations = GetPurschasedEducationsByUserId(userId);
 
@@ -301,11 +306,15 @@ namespace NitelikliBilisim.Business.Repositories
             model.FavoriteEducationCount = favoriteEducations.Count;
             model.PurchasedEducations = purchasedEducations;
             model.PurchasedEducationCount = purchasedEducations.Count;
+            model.IsNBUY = student.IsNbuyStudent;
             if (student.IsNbuyStudent)
             {
                 var nbuyInfo = student.StudentEducationInfos[0];
                 var totalEducationWeek = (int)Math.Ceiling((nbuyInfo.EducationDays.OrderBy(x => x.Day).Last().Date - nbuyInfo.StartedAt.Date).TotalDays / (double)7);
                 var currentEducationWeek = (int)Math.Ceiling((DateTime.Now.Date - nbuyInfo.StartedAt).TotalDays / (double)7);
+                model.NbuyCategory = nbuyInfo.Category.Name;
+                model.NbuyStartDateText = nbuyInfo.StartedAt.ToString("dd MMMM yyyy");
+                model.NbuyStartDate = nbuyInfo.StartedAt;
                 model.EducationWeek = currentEducationWeek;
                 model.TotalEducationWeek = totalEducationWeek;
             }
@@ -341,9 +350,11 @@ namespace NitelikliBilisim.Business.Repositories
                                  select new PurchasedEducationVm
                                  {
                                      EducationId = education.Id,
+                                     SeoUrl = education.SeoUrl,
                                      GroupId = eGroup.Id,
                                      Name = education.Name,
                                      CategoryName = category.Name,
+                                     CategorySeoUrl = category.SeoUrl,
                                      City = EnumHelpers.GetDescription(host.City),
                                      FeaturedImageUrl = eImage.FileUrl,
                                      EducatorImageUrl = educatorUser.AvatarPath,
@@ -383,8 +394,10 @@ namespace NitelikliBilisim.Business.Repositories
                                   select new FavoriteEducationVm
                                   {
                                       Id = education.Id,
+                                      SeoUrl = education.SeoUrl,
                                       Name = education.Name,
                                       CategoryName = category.Name,
+                                      CategorySeoUrl = category.SeoUrl,
                                       HoursText = (education.HoursPerDay * education.Days).ToString(),
                                       DaysText = education.Days.ToString(),
                                       FeaturedImageUrl = featuredImage.FileUrl

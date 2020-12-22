@@ -15,9 +15,12 @@ namespace NitelikliBilisim.Core.Entities.blog
         }
 
         [MaxLength(128)]
+        [Required(ErrorMessage ="Kategori için bir isim girmelisiniz.")]
         public string Name { get; set; }
         [MaxLength(512)]
         public string Description { get; set; }
+        [MaxLength(128),Required(ErrorMessage = "Kategori için bir Seo Url girmelisiniz.")]
+        public string SeoUrl { get; set; }
 
         public virtual List<BlogPost> BlogPosts { get; set; }
 

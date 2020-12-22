@@ -1,4 +1,4 @@
-﻿@model NitelikliBilisim.Core.ViewModels.Main.CorporateMembershipApplication.CorporateMembershipApplicationAddVm 
+﻿@model NitelikliBilisim.Core.ViewModels.Main.CorporateMembershipApplication.CorporateMembershipApplicationAddVm
 @{
     ViewData["Title"] = "Kurumsal Üyelik Talebi";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -40,7 +40,11 @@
                     </div>
                 </div>
                 <div class="contact__right">
-                    <form class="contact__form" id="validateForm" asp-controller="Home" asp-action="CorporateMembershipApplication" method="post">
+                    <form class="contact__form" id="contact-form"
+                          asp-controller="Home" asp-action="CorporateMembershipApplication"
+                          data-ajax-success="onAjaxSuccess"
+                          data-ajax-failure="onAjaxFailed"
+                          data-ajax="true" data-ajax-method="POST">
                         @Html.AntiForgeryToken()
                         <div class="input__column-2">
                             <div class="input__outer">
@@ -63,15 +67,41 @@
                         <div class="input__column-2">
                             <div class="input__outer input--phone">
                                 <div class="select-phonecode">
-                                    <select class="js-phonecode-select" asp-for="PhoneCode" >
-                                        <option selected >539</option>
-                                        <option >540</option>
-                                        <option >541</option>
-                                        <option >542</option>
-                                        <option >543</option>
+                                    <select class="js-phonecode-select" asp-for="PhoneCode">
+                                        <option selected>501</option>
+                                        <option>505</option>
+                                        <option>506</option>
+                                        <option>507</option>
+                                        <option>551</option>
+                                        <option>552</option>
+                                        <option>553</option>
+                                        <option>554</option>
+                                        <option>555</option>
+                                        <option>559</option>
+                                        <option>530</option>
+                                        <option>531</option>
+                                        <option>532</option>
+                                        <option>533</option>
+                                        <option>534</option>
+                                        <option>535</option>
+                                        <option>536</option>
+                                        <option>537</option>
+                                        <option>538</option>
+                                        <option>539</option>
+                                        <option>561</option>
+                                        <option>540</option>
+                                        <option>541</option>
+                                        <option>542</option>
+                                        <option>543</option>
+                                        <option>544</option>
+                                        <option>545</option>
+                                        <option>546</option>
+                                        <option>547</option>
+                                        <option>548</option>
+                                        <option>549</option>
                                     </select>
                                 </div>
-                                <input name="Phone" type="text" id="input-phone-number" class="input input--fw maskedInput"
+                                <input asp-for="Phone" type="text" id="input-phone-number" class="input input--fw maskedInput"
                                        placeholder="___-__-__">
                             </div>
                             <div class="input__outer">
@@ -155,7 +185,7 @@
             </div>
             <div class="side-subscribe__content">
                 <div class="side-subscribe__title">Teşekkürler!</div>
-                <div class="side-subscribe__txt">
+                <div class="side-subscribe__txt" >
                     Talebiniz başarılı bir şekilde iletilmiştir.
                 </div>
             </div>
@@ -182,7 +212,7 @@
                 </div>
             </div>
             <div class="side-subscribe__content">
-                <div class="side-subscribe__title">Gönderim Başarısız!</div>
+                <div class="side-subscribe__title ">Başarısız!</div>
                 <div class="side-subscribe__txt">
                     Talebiniz iletilememiştir.
                 </div>
@@ -191,3 +221,83 @@
     </div>
 </div>
 
+
+@section postScripts{
+    <script>
+        var onAjaxSuccess = function (context) {
+            if (context.success) {
+                showModal('modalSuccessMessage');
+            } else {
+                showModal('modalWrongMessage');
+            }
+            $('.contact__form')[0].reset();
+        };
+        var onAjaxFailed = function () {
+            showModal('modalWrongMessage');
+        }
+        function showModal(id) {
+            $('html, body').addClass('no-scroll');
+            $('.main-overlay').addClass('active');
+            $('.modal[id="' + id + '"]').addClass('modal--active');
+            $('.js-open-mobile-menu').removeClass('active');
+            $('.js-open-mobile-menu')
+                .closest('.header-mobile')
+                .removeClass('active');
+            $('html,body').removeClass('scroll-lock');
+        }
+        $('#contact-form').validate({
+            errorLabelContainer: $('#contact-form div.error'),
+            errorContainer: 'div.error-messages',
+            errorLabelContainer: $('ul', 'div.error-messages'),
+            wrapper: 'li',
+            rules: {
+                CompanyName: {
+                    required: true,
+                },
+                NameSurname: {
+                    required: true
+                },
+                Phone: {
+                    required: true,
+                },
+                CompanySector: {
+                    required: true,
+                },
+                Department: {
+                    required: true,
+                },
+                NumberOfEmployees: {
+                    required: true,
+                },
+                Address: {
+                    required: true,
+                },
+                RequestNote: {
+                    required: true,
+                }
+            },
+            messages: {
+                CompanyName: 'Bu alan zorunludur.',
+                NameSurname: 'Bu alan zorunludur.',
+                Phone: 'Bu alan zorunludur.',
+                CompanySector: 'Bu alan zorunludur.',
+                Department: 'Bu alan zorunludur.',
+                NumberOfEmployees: 'Bu alan zorunludur.',
+                Address: 'Bu alan zorunludur.',
+                RequestNote: 'Bu alan zorunludur.'
+            },
+            highlight: function (element) {
+                $(element)
+                    .parent()
+                    .addClass('outer-error');
+            },
+            unhighlight: function (element) {
+                $(element)
+                    .parent()
+                    .removeClass('outer-error');
+            },
+        });
+
+    </script>
+
+}

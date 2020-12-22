@@ -17,6 +17,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Models.Category
         public string Name { get; set; }
         [Required(ErrorMessage = "Açıklama alanı boş geçilemez"), MaxLength(300, ErrorMessage = "Açıklama alanı en fazla 300 karakter içerebilir")]
         public string Description { get; set; }
+        [Required(ErrorMessage = "Kategori için bir Seo Url girmelisiniz.")]
+        public string SeoUrl { get; set; }
         public Guid? BaseCategoryId { get; set; }
         public int? EducationDayCount { get; set; }
         public int CategoryType { get; set; }

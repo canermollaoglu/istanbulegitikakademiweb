@@ -61,6 +61,7 @@ function btnSave_onClick() {
     var data = {
         EducationId: $("#_education-id").val(),
         Name: $("#input-name").val(),
+        SeoUrl:$("#input-seo-url").val(),
         Description: $("#input-description").val(),
         Description2: $("#input-description2").val(),
         Days: $("#input-days").val(),
@@ -102,5 +103,20 @@ function btnSave_onClick() {
         }
     });
 }
-
+$("#input-name").focusout(function () {
+    var title = $("#input-name").val();
+    $.ajax({
+        url: "/admin/create-seo-url",
+        method: "get",
+        data: { title: title },
+        success: (res) => {
+            if (res.isSuccess) {
+                $("#input-seo-url").val(res.data);
+            }
+        },
+        error: (error) => {
+            alert(error.message);
+        }
+    });
+});
 /* functions */

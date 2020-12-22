@@ -30,6 +30,8 @@ namespace NitelikliBilisim.Business.Repositories.BlogRepositories
                         {
                             Id = blog.Id,
                             Title = blog.Title,
+                            SeoUrl = blog.SeoUrl,
+                            CategorySeoUrl = blogCategory.SeoUrl,
                             Content = blog.SummaryContent,
                             CreatedDate = blog.CreatedDate.ToShortDateString(),
                             Category = blogCategory.Name,
@@ -39,13 +41,18 @@ namespace NitelikliBilisim.Business.Repositories.BlogRepositories
             return data;
         }
 
-        public BlogsVm GetPosts(Guid? categoryId, int? pageIndex)
+        public bool CheckBlogBySeoUrl(string seoUrl)
+        {
+            return _context.BlogPosts.Any(x => x.SeoUrl == seoUrl);
+        }
+
+        public BlogsVm GetPosts(string catSeoUrl, int? pageIndex)
         {
             var retVal = new BlogsVm();
-            var data = _context.BlogPosts.AsQueryable();
-            if (categoryId.HasValue)
+            var data = _context.BlogPosts.Include(x=>x.Category).AsQueryable();
+            if (!string.IsNullOrEmpty(catSeoUrl))
             {
-                data = data.Where(x => x.CategoryId == categoryId);
+                data = data.Where(x => x.Category.SeoUrl == catSeoUrl);
             }
             var totalCount = data.Count();
             pageIndex = pageIndex ?? 1;
@@ -60,7 +67,9 @@ namespace NitelikliBilisim.Business.Repositories.BlogRepositories
                 CreatedDate = x.CreatedDate.ToShortDateString(),
                 Category = x.Category.Name,
                 FeaturedImageUrl = x.FeaturedImageUrl,
-                ReadingTime = x.ReadingTime.ToString()
+                ReadingTime = x.ReadingTime.ToString(),
+                SeoUrl = x.SeoUrl,
+                CategorySeoUrl = x.Category.SeoUrl
             }).ToList();
 
             retVal.Posts = list;
@@ -87,7 +96,9 @@ namespace NitelikliBilisim.Business.Repositories.BlogRepositories
                             CreatedDate = blog.CreatedDate.ToShortDateString(),
                             Category = blogCategory.Name,
                             FeaturedImageUrl = blog.FeaturedImageUrl,
-                            ReadingTime = blog.ReadingTime.ToString()
+                            ReadingTime = blog.ReadingTime.ToString(),
+                            SeoUrl = blog.SeoUrl,
+                            CategorySeoUrl = blogCategory.SeoUrl
                         }).Take(t).ToList();
             return data;
         }
@@ -104,6 +115,18 @@ namespace NitelikliBilisim.Business.Repositories.BlogRepositories
         public BlogPostGetDetailVm GetPostById(Guid id)
         {
             var post = _context.BlogPosts.First(x => x.Id == id);
+            var model = new BlogPostGetDetailVm()
+            {
+                Id = post.Id,
+                Content = post.Content,
+                FeaturedImageUrl = post.FeaturedImageUrl,
+                Title = post.Title
+            };
+            return model;
+        }
+        public BlogPostGetDetailVm GetPostBySeoUrl(string seoUrl)
+        {
+            var post = _context.BlogPosts.First(x => x.SeoUrl == seoUrl);
             var model = new BlogPostGetDetailVm()
             {
                 Id = post.Id,

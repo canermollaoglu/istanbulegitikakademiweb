@@ -16,7 +16,7 @@
     {
     }
     <div class="swiper-slide">
-        <a href="/blog/detay/@post.Id" class="blog-card">
+        <a asp-controller="Blog" asp-action="Detail" asp-route-catSeoUrl="@post.CategorySeoUrl" asp-route-seoUrl="@post.SeoUrl" class="blog-card">
             <div class="blog-card__img">
                 <img src="@image" alt="">
             </div>

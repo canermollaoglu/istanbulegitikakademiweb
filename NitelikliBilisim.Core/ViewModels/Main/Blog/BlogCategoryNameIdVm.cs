@@ -11,5 +11,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Blog
         public Guid Id { get; set; }
         public string Name { get; set; }
         public int PostCount { get; set; }
+        public string SeoUrl { get; set; }
     }
 }

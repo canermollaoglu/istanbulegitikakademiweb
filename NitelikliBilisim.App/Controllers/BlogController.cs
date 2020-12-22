@@ -21,14 +21,18 @@ namespace NitelikliBilisim.App.Controllers
         {
             return View();
         }
-        [Route("blog/detay/{blogId}")]
-        public IActionResult Detail(Guid? blogId)
+        [Route("blog/{catSeoUrl}/{seoUrl}")]
+        public IActionResult Detail(string catSeoUrl, string seoUrl)
         {
-            if (!blogId.HasValue)
-                return RedirectToAction("List");
+            if (string.IsNullOrEmpty(seoUrl) || string.IsNullOrEmpty(catSeoUrl))
+                return Redirect("/");
+            var checkBlogPost = _unitOfWork.BlogPost.CheckBlogBySeoUrl(seoUrl);
+            if (!checkBlogPost)
+                return NotFound();
+
             try
             {
-                var model= _unitOfWork.BlogPost.GetPostById(blogId.Value);
+                var model = _unitOfWork.BlogPost.GetPostBySeoUrl(seoUrl);
                 return View(model);
             }
             catch (Exception)
@@ -36,18 +40,18 @@ namespace NitelikliBilisim.App.Controllers
 
                 throw;
             }
-            
+
         }
-        [Route("blog")]
-        public IActionResult List(Guid? c,int? p)
+        [Route("blog/{c?}")]
+        public IActionResult List(string c, int? p)
         {
-            ViewData["CategoryFilter"] = c.HasValue ? c : ViewData["CategoryFilter"];
+            ViewData["CategoryFilter"] = !string.IsNullOrEmpty(c)? c : ViewData["CategoryFilter"];
             ViewData["Page"] = p.HasValue ? p : ViewData["Page"];
 
             BlogListVm model = new BlogListVm();
             model.Categories = _unitOfWork.BlogCategory.GetListForBlogListPage();
             model.LastBlogPosts = _unitOfWork.BlogPost.LastBlogPosts(5);
-            model.Blogs = _unitOfWork.BlogPost.GetPosts(c,p);
+            model.Blogs = _unitOfWork.BlogPost.GetPosts(c, p);
             model.TotalBlogPostCount = _unitOfWork.BlogPost.TotalBlogPostCount();
             return View(model);
         }

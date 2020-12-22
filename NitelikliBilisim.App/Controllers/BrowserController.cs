@@ -25,7 +25,7 @@ namespace NitelikliBilisim.App.Controllers
             _storageService = storageService;
         }
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
-        [Route("egitimler/{categoryUrl?}")]
+        //[Route("egitimler/{categoryUrl?}")]
         public IActionResult Courses(string categoryUrl, string s, string showAs = "grid")
         {
             var categoryNames = _unitOfWork.EducationCategory.Get(x => x.IsCurrent && x.BaseCategoryId == null).Select(x => x.Name).ToList();
@@ -40,33 +40,33 @@ namespace NitelikliBilisim.App.Controllers
             };
             return View(model);
         }
-        [TypeFilter(typeof(UserLoggerFilterAttribute))]
-        [HttpPost]
-        [Route("get-courses")]
-        public async Task<IActionResult> GetCourses(string categoryName, string searchText, int page = 0, OrderCriteria order = OrderCriteria.Latest, FiltersVm filter = null)
-        {
-            var model = _unitOfWork.Education.GetInfiniteScrollSearchResults(categoryName, searchText, page, order, filter);
+    //    [TypeFilter(typeof(UserLoggerFilterAttribute))]
+    //    [HttpPost]
+    //    [Route("get-courses")]
+    //    public async Task<IActionResult> GetCourses(string categoryName, string searchText, int page = 0, OrderCriteria order = OrderCriteria.Latest, FiltersVm filter = null)
+    //    {
+    //        var model = _unitOfWork.Education.GetInfiniteScrollSearchResults(categoryName, searchText, page, order, filter);
 
-            foreach (var item in model)
-            {
-                for (int i = 0; i < item.Medias.Count; i++)
-                {
-                    var folder = Path.GetDirectoryName(item.Medias[i].FileUrl);
-                    var fileName = Path.GetFileName(item.Medias[i].FileUrl);
-                    item.Medias[i].FileUrl = await _storageService.DownloadFile(fileName, folder);
-                }
-            }
+    //        foreach (var item in model)
+    //        {
+    //            for (int i = 0; i < item.Medias.Count; i++)
+    //            {
+    //                var folder = Path.GetDirectoryName(item.Medias[i].FileUrl);
+    //                var fileName = Path.GetFileName(item.Medias[i].FileUrl);
+    //                item.Medias[i].FileUrl = await _storageService.DownloadFile(fileName, folder);
+    //            }
+    //        }
 
-            var filterOptions = _unitOfWork.Education.GetEducationFilterOptions(categoryName, searchText, filter);
+    //        var filterOptions = _unitOfWork.Education.GetEducationFilterOptions(categoryName, searchText, filter);
 
-            return Json(new ResponseModel
-            {
-                data = new
-                {
-                    model = model,
-                    filterOptions = filterOptions
-                }
-            });
-        }
+    //        return Json(new ResponseModel
+    //        {
+    //            data = new
+    //            {
+    //                model = model,
+    //                filterOptions = filterOptions
+    //            }
+    //        });
+    //    }    
     }
 }

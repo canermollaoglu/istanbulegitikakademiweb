@@ -20,9 +20,68 @@
 
     <partial name="partials/_LayoutFooter" />
     <partial name="partials/_modal-wizard" />
-    <partial name="partials/_LayoutCookieConsent" />
+
+    <div class="modal modal--message success" id="modalSuccessNewsletterSubscribe">
+        <div class="modal__close js-close-modal">
+            <span class="icon-outer">
+                <svg class="icon">
+                    <use xlink:href="../../assets/img/icons.svg#icon-close"></use>
+                </svg>
+            </span>
+        </div>
+        <div class="modal__content">
+            <div class="side-subscribe__success">
+                <div class="side-subscribe__top">
+                    <div class="side-subscribe__icon">
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-success"></use>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+                <div class="side-subscribe__content">
+                    <div class="side-subscribe__title">Teşekkürler!</div>
+                    <div class="side-subscribe__txt">
+                        Abonelik talebiniz başarı ile iletildi.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal modal--message wrong" id="modalWrongNewsletterSubscribe">
+        <div class="modal__close js-close-modal">
+            <span class="icon-outer">
+                <svg class="icon">
+                    <use xlink:href="../../assets/img/icons.svg#icon-close"></use>
+                </svg>
+            </span>
+        </div>
+        <div class="modal__content">
+            <div class="side-subscribe__success">
+                <div class="side-subscribe__top">
+                    <div class="side-subscribe__icon">
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-wrong"></use>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+                <div class="side-subscribe__content">
+                    <div class="side-subscribe__title ">Başarısız!</div>
+                    <div class="side-subscribe__txt">
+                        Abonelik talebiniz alınamadı!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--<partial name="partials/_LayoutCookieConsent" />-->
     <div class='main-overlay overlay js-close-modal'></div>
     <script src="~/assets/js/jquery.min.js"></script>
+    <script src="~/assets/js/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/vendor/select2/dist/js/select2.min.js"></script>
     <script src="~/assets/js/swiper.min.js"></script>
     <!-- <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script> -->
@@ -61,27 +120,49 @@
             __layoutHeaderCartCount.html(`${__cart.getItemCount()} Eğitim`);
             $.each(cartItems, function (index, value) {
                 var item = `<a class="mini-basket__item js-deleted-item" data-eid="${value.educationId}">
-                            <div class="mini-basket__item-img">
-                                <img src="${value.imageUrl}" alt="">
-                            </div>
-                            <div class="mini-basket__item-cnt">
-                                <div class="mini-basket__item-title">${value.educationName}</div>
-                                <div class="mini-basket__item-price">
-                                    <span>₺</span>
-                                    ${value.newPrice}
-                                </div>
-                            </div>
-                            <div class="mini-basket__item-crash js-delete-item">
-                                <span class="icon-outer">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-crash"></use>
-                                    </svg>
-                                </span>
-                            </div>
-                        </a>`;
+                                                <div class="mini-basket__item-img">
+                                                    <img src="${value.imageUrl}" alt="">
+                                                </div>
+                                                <div class="mini-basket__item-cnt">
+                                                    <div class="mini-basket__item-title">${value.educationName}</div>
+                                                    <div class="mini-basket__item-price">
+                                                        <span>₺</span>
+                                                        ${value.newPrice}
+                                                    </div>
+                                                </div>
+                                                <div class="mini-basket__item-crash js-delete-item">
+                                                    <span class="icon-outer">
+                                                        <svg class="icon">
+                                                            <use xlink:href="../../assets/img/icons.svg#icon-crash"></use>
+                                                        </svg>
+                                                    </span>
+                                                </div>
+                                            </a>`;
                 __layoutHeaderCartContent.append(item);
             });
         };
+
+        var onNewsletterSubsciptionSuccess = function (context) {
+            if (context.success) {
+                showModal('modalSuccessNewsletterSubscribe');
+            } else {
+                showModal('modalWrongNewsletterSubscribe');
+            }
+            $('#newsletter-subscribe-form')[0].reset();
+        };
+        var onNewsletterSubsciptionFailed = function () {
+            showModal('modalWrongNewsletterSubscribe');
+        }
+        function showModal(id) {
+            $('html, body').addClass('no-scroll');
+            $('.main-overlay').addClass('active');
+            $('.modal[id="' + id + '"]').addClass('modal--active');
+            $('.js-open-mobile-menu').removeClass('active');
+            $('.js-open-mobile-menu')
+                .closest('.header-mobile')
+                .removeClass('active');
+            $('html,body').removeClass('scroll-lock');
+        }
     </script>
 
     <script src="~/assets/js/main.js"></script>

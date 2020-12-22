@@ -258,6 +258,44 @@ namespace NitelikliBilisim.Data.Migrations
                     b.ToTable("AspNetUserRoles");
                 });
 
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.BlogSubscriber", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedUser")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<bool>("IsCanceled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BlogSubscribers");
+                });
+
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.Bridge_EducationEducator", b =>
                 {
                     b.Property<Guid>("Id")
@@ -535,6 +573,10 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
 
+                    b.Property<string>("SeoUrl")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
@@ -579,6 +621,10 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("SeoUrl")
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
 
@@ -634,6 +680,9 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsEducatorComment")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsHighLight")
                         .HasColumnType("bit");
 
                     b.Property<byte>("Points")
@@ -1371,6 +1420,36 @@ namespace NitelikliBilisim.Data.Migrations
                     b.ToTable("InvoiceDetails");
                 });
 
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.NewsletterSubscriber", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedUser")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("NewsletterSubscribers");
+                });
+
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.OnlinePaymentDetailsInfo", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1662,6 +1741,12 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("nvarchar(512)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("SeoUrl")
+                        .IsRequired()
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
 
@@ -1687,6 +1772,7 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Content")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
@@ -1705,10 +1791,16 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<int>("ReadingTime")
                         .HasColumnType("int");
 
+                    b.Property<string>("SeoUrl")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
                     b.Property<string>("SummaryContent")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
 

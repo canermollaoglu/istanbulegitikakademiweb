@@ -26,7 +26,7 @@
                 </div>
                 <div class="checkout-steps__txt">2. FATURA BİLGİLERİ</div>
             </a>
-            <a href="./checkout-3-odeme.php" class="checkout-steps__item">
+            <a href="#" class="checkout-steps__item">
                 <div class="checkout-steps__icon">
                     <span class="icon-outer">
                         <svg class="icon">
@@ -36,7 +36,7 @@
                 </div>
                 <div class="checkout-steps__txt">3. ÖDEME</div>
             </a>
-            <a href="./checkout-4-ozet.php" class="checkout-steps__item">
+            <a href="#" class="checkout-steps__item">
                 <div class="checkout-steps__icon">
                     <span class="icon-outer">
                         <svg class="icon">
@@ -70,7 +70,7 @@
                             @foreach (var address in Model.Addresses)
                             {
                                 <div class="address-item @(address.IsDefault?"selected":"")">
-                                    <div class="address-button js-select-address js-new-address-func">
+                                    <div class="address-button js-select-address js-new-address-func" data-id="@address.Id">
                                         <span class="address-button-radio"></span>
                                     </div>
                                     <div class="address-cnt js-select-address js-new-address-func">
@@ -127,13 +127,13 @@
                                         <div class="input__column-2">
                                             <div class="input__outer no-icon">
                                                 <div class="input__title">Şirket Adı</div>
-                                                <input name="CompanyName" type="text" class="input input--bordered input--fw input--noshadow" placeholder="Kurum adınızı giriniz" >
+                                                <input name="CompanyName" type="text" class="input input--bordered input--fw input--noshadow" placeholder="Kurum adınızı giriniz">
                                             </div>
                                             <div class="input__outer input--phone f-column">
                                                 <div class="input__title">Telefon Numaranız</div>
                                                 <div>
                                                     <div class="select-phonecode no-icon bordered-select">
-                                                        <select name="PhoneCode" class="js-phonecode-select" >
+                                                        <select name="PhoneCode" class="js-phonecode-select">
                                                             <option value="" selected hidden disabled>539</option>
                                                             <option value="2">540</option>
                                                             <option value="3">541</option>
@@ -141,25 +141,25 @@
                                                             <option value="5">543</option>
                                                         </select>
                                                     </div>
-                                                    <input type="text" name="PhoneNumber" class="input input--bordered input--fw input--noshadow maskedInput inputPhoneNumber" placeholder="___-__-__" >
+                                                    <input type="text" name="PhoneNumber" class="input input--bordered input--fw input--noshadow maskedInput inputPhoneNumber" placeholder="___-__-__">
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="input__column-2">
                                             <div class="input__outer no-icon">
                                                 <div class="input__title">Vergi Dairesi</div>
-                                                <input name="TaxOffice" type="text" class="input input--bordered input--fw input--noshadow" placeholder="Vergi Dairesi" >
+                                                <input name="TaxOffice" type="text" class="input input--bordered input--fw input--noshadow" placeholder="Vergi Dairesi">
                                             </div>
                                             <div class="input__outer no-icon">
                                                 <div class="input__title">Vergi Numaranız</div>
-                                                <input name="TaxNumber" type="text" class="input input--bordered input--fw input--noshadow maskedInput inputVergiNo" placeholder="Vergi Numaranız" >
+                                                <input name="TaxNumber" type="text" class="input input--bordered input--fw input--noshadow maskedInput inputVergiNo" placeholder="Vergi Numaranız">
                                             </div>
                                         </div>
                                         <div class="input__column-2">
                                             <div class="input__outer bordered-select">
                                                 <div class="select-subject no-icon">
                                                     <div class="input__title">İl</div>
-                                                    <select class="js-sehir-select" name="CityId" >
+                                                    <select class="js-sehir-select" name="CityId">
                                                         @foreach (var city in Model.Cities)
                                                         {
                                                             <option value="@city.Id">@city.Name</option>
@@ -170,7 +170,7 @@
                                             <div class="input__outer bordered-select">
                                                 <div class="select-subject no-icon">
                                                     <div class="input__title">İlçe</div>
-                                                    <select class="js-ilce-select" name="StateId" >
+                                                    <select class="js-ilce-select" name="StateId">
                                                         <option value="" selected hidden disabled>İlçe Seçiniz</option>
                                                     </select>
                                                 </div>
@@ -179,12 +179,12 @@
                                         <div class="input__outer input--textarea no-icon">
                                             <div class="input__title">Açık Adresiniz</div>
                                             <textarea name="Content" class="input input--fw input--bordered input--noshadow h-150"
-                                                      placeholder="Adresinizin tamamını buraya yazınız" ></textarea>
+                                                      placeholder="Adresinizin tamamını buraya yazınız"></textarea>
                                         </div>
                                         <div class="input__outer no-icon">
                                             <div class="input__title">Adres Adı</div>
                                             <input name="Title" type="text" class="input input--bordered input--fw input--noshadow"
-                                                   placeholder="Adresinize isim verin" >
+                                                   placeholder="Adresinize isim verin">
                                         </div>
                                         <div class="form__button">
                                             <div class="form__button-left">
@@ -297,7 +297,6 @@
                             SEPETTEKİ <span class="colored-blue">ÜRÜNLERİM</span>
                         </div>
                         <div class="checkout__top-right">
-                            2 Ürün
                         </div>
                     </div>
                     <div class="checkout__basket-wrp">
@@ -313,16 +312,16 @@
                     <div class="checkout__price-wrp js-discounts">
                         <div class="checkout__price-item">
                             <div class="checkout__price-title">Toplam İndirimler</div>
-                            <div class="checkout__price-new">
+                            <div class="checkout__price-new" id="discountAmount">
                                 <span>₺</span> -249.90
                             </div>
                         </div>
                         <div class="checkout__price-item">
                             <div class="checkout__price-title">Ürünler Toplamı</div>
-                            <div class="checkout__price-old">
+                            <div class="checkout__price-old" id="oldPrice">
                                 <span>₺</span> 1,250.00
                             </div>
-                            <div class="checkout__price-new">
+                            <div class="checkout__price-new" id="newPrice">
                                 <span>₺</span> 1,550.00
                             </div>
                         </div>
@@ -353,7 +352,7 @@
                         </span>
                     </div>
                 </form>
-                <a href="./checkout-3-odeme.php" class="button button-icon-right button-fw checkout__next-button">
+                <a asp-controller="Sale" asp-action="Payment" class="button button-icon-right button-fw checkout__next-button">
                     <span class="button-txt">
                         Ödeme Adımına Geç
                     </span>
@@ -371,6 +370,9 @@
 </section>
 <input type="hidden" value="0" id="input-education-total-price" />
 <input type="hidden" value="0" id="promotion-discount-amount" />
+<input type="hidden" value="0" id="input-education-total-old-price" />
+<input type="hidden" value="0" id="input-discount-amount" />
+<input type="hidden" value="" id="default-address-id" />
 <div class="modal" id="adresEdit">
     <div class="modal__header">
         <div class="modal__title">Adres Güncelle</div>
@@ -483,15 +485,19 @@
 
         /* elements */
         var cardItemsBody = $(".checkout__basket-wrp");
-        var txtTotal = $(".checkout__price-new");
+        var txtTotal = $("#newPrice");
+        var txtOldTotal = $("#oldPrice");
+        var txtTotalDiscount = $("#discountAmount");
         var tablePromotionCode = $("#table-promotion-code");
         var inputPromotionCode = $("#promotion-code");
+        var inputEducationTotalOldPrice = $("#input-education-total-old-price");
         var inputEducationTotalPrice = $("#input-education-total-price");
+        var inputDiscountAmount = $("#input-discount-amount");
         var inputPromotionDiscountAmount = $("#promotion-discount-amount");
-
+        var dAddressId = @Model.DefaultAddressId;
         /* assignments */
         $(document).ready(document_onLoad);
-        /*ValidateForms*/ 
+        /*ValidateForms*/
         $('#corporateAddressForm').validate({
             errorLabelContainer: $('#validateForm div.error'),
             errorContainer: 'div.error-messages',
@@ -603,9 +609,9 @@
             },
         });
 
-
         /* events */
         function document_onLoad() {
+            localStorage.setItem("_cA", dAddressId);
             getCartItems();
             checkPromotionCode();
             //getBasketBasedPromotion();
@@ -641,16 +647,14 @@
             if (promotionCode) {
                 getPromotionInfo(promotionCode);
             }
-
         }
 
         function getPromotionInfo(promotionCode) {
             var datapromotionCode;
-            
+
             if (promotionCode) {
                 datapromotionCode = promotionCode;
             } else {
-                alert(inputPromotionCode.val());
                 datapromotionCode = inputPromotionCode.val();
             }
             var items = _cart.getItems();
@@ -676,7 +680,7 @@
                         var result = `<span class="icon-font"><svg class="icon icon-check"><use xlink:href="../../assets/img/icons.svg#icon-check"></use></svg></span>İndirim Başarılı ile Uygulandı!`;
                         $('.js-cupon-form__result').html(result);
                         inputPromotionDiscountAmount.val(res.data.discountAmount);
-                        calculateTotalPrice();
+                        calculatePrices();
                     } else {
                         $('.js-cupon-form')
                             .removeClass('active')
@@ -702,7 +706,7 @@
                                         <div class="checkout__basket-title">
                                            ${item.educationName}
                                         </div>
-                                        <div class="checkout__basket-crash">
+                                        <div class="checkout__basket-crash" data-id="${item.educationId}">
                                             <span class="icon-outer">
                                                 <svg class="icon">
                                                     <use xlink:href="../../assets/img/icons.svg#icon-crash"></use>
@@ -711,7 +715,7 @@
                                         </div>
                                         <div class="checkout__basket-price">
                                             <div class="checkout__price-new">
-                                                ${item.priceText}
+                                                ${formatCurrency(item.priceText)}
                                             </div>
                                         </div>
                                     </div>
@@ -727,35 +731,16 @@
                 );
             }
         }
-        function calculateTotalPrice() {
-            txtTotal.html(formatCurrency(parseFloat(inputEducationTotalPrice.val() - parseFloat(inputPromotionDiscountAmount.val()))));
+        function calculatePrices() {
+            txtTotal.html(formatCurrency(parseFloat(inputEducationTotalPrice.val()) - parseFloat(inputPromotionDiscountAmount.val())));
+            txtOldTotal.html(formatCurrency(parseFloat(inputEducationTotalOldPrice.val())));
+            txtTotalDiscount.html(formatCurrency(parseFloat(inputDiscountAmount.val()) + parseFloat(inputPromotionDiscountAmount.val())));
         }
         function formatCurrency(total) {
-            return " <span>₺</span> " + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
-        }
-        function setDeleteButtonAttribute(id) {
-            $(".js-delete-product-checkout").attr("data-eid", id);
+            return "<span>₺</span> " + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
         }
 
-        //Remove Cart Item
-        $('body').on('click', '.js-delete-product-checkout', function () {
-            var id = $(this).attr("data-eid");
-            _cart.removeFromCart(id);
-            getCartItems();
-            $('.checkout__product-item:nth-child(1)').fadeOut(250, function () {
-                $(this).remove();
-            });
-            setTimeout(() => {
-                $(this)
-                    .closest('.js-deleted-item')
-                    .remove();
-                if ($('.checkout__product-item').length <= 0) {
-                    $('.checkout__product-wrp, .js-siparis-ozeti').html(
-                        "<div class='mini-basket__empty'><span class='icon-outer button-icon'><svg class='icon'><use xlink:href='../../assets/img/icons.svg#icon-basket-empty'></use></svg></span>Sepetiniz Boş.</div>",
-                    );
-                }
-            }, 400);
-        });
+
 
         //Remove Promotion Code
         $('body').on('click', '.js-remove-sale', function () {
@@ -769,7 +754,7 @@
             // });
             localStorage.setItem("promotionCode", "");
             inputPromotionDiscountAmount.val(0);
-            calculateTotalPrice();
+            calculatePrices();
             $('.js-cupon-form')
                 .find('.wizard-loading')
                 .show();
@@ -826,7 +811,10 @@
                     if (res.isSuccess) {
                         appendCartItems(res.data.items);
                         inputEducationTotalPrice.val(res.data.totalNumeric);
-                        calculateTotalPrice();
+                        inputEducationTotalOldPrice.val(res.data.oldTotalNumeric);
+                        inputDiscountAmount.val(res.data.discountAmount);
+                        calculatePrices();
+                        $(".checkout__top-right").html(res.data.items.length + " Ürün");
                     }
                 }
             });

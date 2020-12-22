@@ -20,6 +20,8 @@ namespace NitelikliBilisim.Core.Entities
         public string Description { get; set; }
         public CategoryType CategoryType { get; set; }
         public bool IsCurrent { get; set; }
+        [MaxLength(128)]
+        public string SeoUrl { get; set; }
 
         /// <summary>
         /// NBUY Eğitimleri için eğitim gün sayısı

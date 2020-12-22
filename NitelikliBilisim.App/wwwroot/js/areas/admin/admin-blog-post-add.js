@@ -66,9 +66,22 @@ function document_onLoad() {
     });
 }
 
-
-
-
+$("#input-title").focusout(function () {
+    var title = $("#input-title").val();
+    $.ajax({
+        url: "/admin/create-seo-url",
+        method: "get",
+        data: { title: title },
+        success: (res) => {
+            if (res.isSuccess) {
+                $("#input-seo-url").val(res.data);
+            }
+        },
+        error: (error) => {
+            alert(error.message);
+        }
+    });
+});
 function btnSave_onClick() {
     btnSave.off("click");
     var tags = [];
@@ -91,6 +104,7 @@ function btnSave_onClick() {
     var featuredImage = fileManager1.getFile();
     var data = {
         Title: $("#input-title").val(),
+        SeoUrl: $("#input-seo-url").val(),
         Content: $('#summernote').summernote('code'),
         SummaryContent: $('#input-summary-content').val(),
         CategoryId: selectCategory.val(),

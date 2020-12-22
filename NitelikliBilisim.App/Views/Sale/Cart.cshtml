@@ -4,8 +4,9 @@
     Layout = "~/Views/Shared/_LayoutCheckout.cshtml";
 }
 
-
 <input type="hidden" value="0" id="input-education-total-price" />
+<input type="hidden" value="0" id="input-education-total-old-price" />
+<input type="hidden" value="0" id="input-discount-amount" />
 <input type="hidden" value="0" id="promotion-discount-amount" />
 <div class="checkout-steps">
     <div class="container">
@@ -72,7 +73,7 @@
                         </div>
                     </div>
                     <div class="checkout__product-wrp">
-                        
+
                     </div>
                 </div>
             </div>
@@ -86,22 +87,19 @@
                     <div class="checkout__price-wrp js-discounts">
                         <div class="checkout__price-item">
                             <div class="checkout__price-title">Toplam İndirimler</div>
-                            <div class="checkout__price-new">
+                            <div class="checkout__price-new" id="discountAmount">
                                 <span>₺</span> -249.90
                             </div>
                         </div>
                         <div class="checkout__price-item">
                             <div class="checkout__price-title">Ürünler Toplamı</div>
-                            <div class="checkout__price-old">
+                            <div class="checkout__price-new" id="oldPrice">
                                 <span>₺</span> 1,250.00
-                            </div>
-                            <div class="checkout__price-new">
-
                             </div>
                         </div>
                         <div class="checkout__price-item totaly">
                             <div class="checkout__price-title">Toplam Tutar</div>
-                            <div class="checkout__price-new">
+                            <div class="checkout__price-new" id="newPrice">
                                 <span>₺</span> 1.1799.90
                             </div>
                         </div>
@@ -170,11 +168,16 @@
 
         /* elements */
         var cardItemsBody = $(".checkout__product-wrp");
-        var txtTotal = $(".checkout__price-new");
+        var txtTotal = $("#newPrice");
+        var txtOldTotal = $("#oldPrice");
+        var txtTotalDiscount = $("#discountAmount");
         var tablePromotionCode = $("#table-promotion-code");
 
         var inputPromotionCode = $("#promotion-code");
+        var inputEducationTotalOldPrice = $("#input-education-total-old-price");
         var inputEducationTotalPrice = $("#input-education-total-price");
+        var inputDiscountAmount = $("#input-discount-amount");
+
         var inputPromotionDiscountAmount = $("#promotion-discount-amount");
 
         /* assignments */
@@ -232,7 +235,9 @@
                     if (res.isSuccess) {
                         appendCartItems(res.data.items);
                         inputEducationTotalPrice.val(res.data.totalNumeric);
-                        calculateTotalPrice();
+                        inputEducationTotalOldPrice.val(res.data.oldTotalNumeric);
+                        inputDiscountAmount.val(res.data.discountAmount);
+                        calculatePrices();
                     }
                 }
             });
@@ -270,7 +275,6 @@
                 data: data,
                 success: (res) => {
                     if (res.isSuccess) {
-                        console.log(res);
                         localStorage.setItem("promotionCode", res.data.promotionCode);
                         $('.js-cupon-form .wizard-loading').fadeOut(500);
                         $('.js-cupon-form')
@@ -282,7 +286,7 @@
                         var result = `<span class="icon-font"><svg class="icon icon-check"><use xlink:href="../../assets/img/icons.svg#icon-check"></use></svg></span>İndirim Başarılı ile Uygulandı!`;
                         $('.js-cupon-form__result').html(result);
                         inputPromotionDiscountAmount.val(res.data.discountAmount);
-                        calculateTotalPrice();
+                        calculatePrices();
                     } else {
                         $('.js-cupon-form')
                             .removeClass('active')
@@ -300,25 +304,25 @@
             for (var i = 0; i < data.length; i++) {
                 var item = data[i];
                 appended += `<div class="checkout__product-item">
-                                                <a href="/egitim-detay/${item.educationId}" class="checkout__product-left">
-                                                    <div class="checkout__product-img">
-                                                        <img src="${item.previewPhoto}" alt="">
-                                                    </div>
-                                                </a>
-                                                <div class="checkout__product-right">
-                                                    <div class="checkout__product-title">${item.educationName}</div>
-                                                    <div class="checkout__product-new">
-                                                        <span>₺</span> ${item.priceText}
-                                                    </div>
-                                                </div>
-                                                <div class="checkout__product-crash js-modal-trigger" onclick="setDeleteButtonAttribute('${item.educationId}')" data-trigger="ModalDelete">
-                                                    <span class="icon-outer">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-crash"></use>
-                                                        </svg>
-                                                    </span>
-                                                </div>
-                                            </div>`;
+                                                        <a href="/egitim-detay/${item.educationId}" class="checkout__product-left">
+                                                            <div class="checkout__product-img">
+                                                                <img src="${item.previewPhoto}" alt="">
+                                                            </div>
+                                                        </a>
+                                                        <div class="checkout__product-right">
+                                                            <div class="checkout__product-title">${item.educationName}</div>
+                                                            <div class="checkout__product-new">
+                                                                <span>₺</span> ${item.priceText}
+                                                            </div>
+                                                        </div>
+                                                        <div class="checkout__product-crash js-modal-trigger" onclick="setDeleteButtonAttribute('${item.educationId}')" data-trigger="ModalDelete">
+                                                            <span class="icon-outer">
+                                                                <svg class="icon">
+                                                                    <use xlink:href="../../assets/img/icons.svg#icon-crash"></use>
+                                                                </svg>
+                                                            </span>
+                                                        </div>
+                                                    </div>`;
             }
 
             cardItemsBody.html(appended);
@@ -381,11 +385,14 @@
         //    tablePromotionCode.append(appended);
 
         //}
-        function calculateTotalPrice() {
-            txtTotal.html(formatCurrency(parseFloat(inputEducationTotalPrice.val() - parseFloat(inputPromotionDiscountAmount.val()))));
+        function calculatePrices() {
+            txtTotal.html(formatCurrency(parseFloat(inputEducationTotalPrice.val()) - parseFloat(inputPromotionDiscountAmount.val())));
+            txtOldTotal.html(formatCurrency(parseFloat(inputEducationTotalOldPrice.val())));
+            txtTotalDiscount.html(formatCurrency(parseFloat(inputDiscountAmount.val()) + parseFloat(inputPromotionDiscountAmount.val())));
         }
+
         function formatCurrency(total) {
-            return " <span>₺</span> " + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
+            return "<span>₺</span>" + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
         }
         function setDeleteButtonAttribute(id) {
             $(".js-delete-product-checkout").attr("data-eid", id);
@@ -423,7 +430,7 @@
             // });
             localStorage.setItem("promotionCode", "");
             inputPromotionDiscountAmount.val(0);
-            calculateTotalPrice();
+            calculatePrices();
             $('.js-cupon-form')
                 .find('.wizard-loading')
                 .show();

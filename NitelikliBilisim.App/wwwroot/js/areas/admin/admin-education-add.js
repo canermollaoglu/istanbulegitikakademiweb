@@ -57,6 +57,23 @@ function document_onLoad() {
         validExtensions: ["jpg", "jpeg", "mp4"]
     });
 }
+$("#input-name").focusout(function () {
+    var title = $("#input-name").val();
+    $.ajax({
+        url: "/admin/create-seo-url",
+        method: "get",
+        data: { title: title },
+        success: (res) => {
+            if (res.isSuccess) {
+                $("#input-seo-url").val(res.data);
+            }
+        },
+        error: (error) => {
+            alert(error.message);
+        }
+    });
+});
+
 function btnSave_onClick() {
     btnSave.off("click");
     var tags = [];
@@ -80,6 +97,7 @@ function btnSave_onClick() {
     var previewFile = fileManager2.getFile();
     var data = {
         Name: $("#input-name").val(),
+        SeoUrl: $("#input-seo-url").val(),
         Description: $("#input-description").val(),
         Description2: $("#input-description2").val(),
         Days: $("#input-days").val(),

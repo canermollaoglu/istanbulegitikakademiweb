@@ -23,6 +23,10 @@
                     <input type="text" class="form-control" autocomplete="off" placeholder="Kategori İsmi" id="input-name" value="@Model.Name">
                 </div>
                 <div class="form-group">
+                    <label>Seo Url   <i title="- dışında özel karakter girmeyiniz.Tamamen küçük harf olacak şekilde Türkçe karakter kullanmadan oluşturunuz." class="fa fa-question-circle"></i></label>
+                    <input type="text" class="form-control" id="input-seo-url" value="@Model.SeoUrl">
+                </div>
+                <div class="form-group">
                     <label>Kategori Açıklaması</label>
                     <textarea id="input-description" rows="5" autocomplete="off" class="form-control" style="height:100px;" placeholder="Kategori açıklaması kullanıcılar tarafından görülmeyecektir. Yalnızca admin panelde görülebilir...">@Model.Description</textarea>
                 </div>

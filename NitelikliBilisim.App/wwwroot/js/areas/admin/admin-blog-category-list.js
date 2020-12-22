@@ -2,6 +2,7 @@
 var confirmModalBuilder = new AlertSupport.ConfirmModalBuilder();
 /* elements */
 var inputName = document.getElementById("input-name");
+var inputSeoUrl = document.getElementById("input-seo-url");
 var inputDescription = document.getElementById("input-description");
 var btnSave = $("#btn-save");
 
@@ -46,11 +47,27 @@ function confirm_onClick() {
         }
     });
 }
-
+$("#input-name").focusout(function () {
+    var title = $("#input-name").val();
+    $.ajax({
+        url: "/admin/create-seo-url",
+        method: "get",
+        data: { title: title },
+        success: (res) => {
+            if (res.isSuccess) {
+                $("#input-seo-url").val(res.data);
+            }
+        },
+        error: (error) => {
+            alert(error.message);
+        }
+    });
+});
 function btnSave_onClick() {
     btnSave.off("click");
     var data = {
         Name: inputName.value,
+        SeoUrl: inputSeoUrl.value,
         Description: inputDescription.value
     }
 

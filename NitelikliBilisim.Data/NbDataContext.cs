@@ -153,6 +153,9 @@ namespace NitelikliBilisim.Data
         public DbSet<GroupExpense> GroupExpenses { get; set; }
         public DbSet<GroupExpenseType> GroupExpenseTypes { get; set; }
         public DbSet<EducationPromotionCondition> EducationPromotionConditions{ get; set; }
+        public DbSet<BlogSubscriber> BlogSubscribers { get; set; }
+        public DbSet<NewsletterSubscriber> NewsletterSubscribers { get; set; }
+
 
     }
 }

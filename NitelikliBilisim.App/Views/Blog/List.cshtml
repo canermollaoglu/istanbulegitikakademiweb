@@ -26,7 +26,7 @@
                                 }
 
                                 <div class="swiper-slide">
-                                    <a class="blog-slider-card">
+                                    <a asp-controller="Blog" asp-action="Detail" asp-route-catSeoUrl="@post.CategorySeoUrl" asp-route-seoUrl="@post.SeoUrl"  class="blog-slider-card">
                                         <img src="@featuredImage" alt="">
                                         <div class="blog-slider-card__cnt">
                                             <div class="blog-slider-card__tag">
@@ -111,7 +111,7 @@
                         catch
                         {
                         }
-                        <a href="blog/detay/@post.Id" class="blog-card">
+                        <a asp-controller="Blog" asp-action="Detail" asp-route-catSeoUrl="@post.CategorySeoUrl" asp-route-seoUrl="@post.SeoUrl" class="blog-card">
                             <div class="blog-card__img">
                                 <img src="@featuredImage" alt="">
                             </div>
@@ -193,15 +193,15 @@
                     </div>
                     <div class="side-categories__cnt js-vertical-magic-line">
                         <div class="side-categories__item js-vertical-magic-line-item @(ViewData["CategoryFilter"]==null?"active":"" )">
-                            <a asp-action="List">
+                            <a asp-action="List" asp-route-c="">
                                 <span class="side-categories__txt">Hepsi</span>
                                 <span class="side-categories__count">@Model.TotalBlogPostCount</span>
                             </a>
                         </div>
                         @foreach (var category in Model.Categories)
                         {
-                            <div class="side-categories__item js-vertical-magic-line-item @(ViewData["CategoryFilter"]!=null?(Guid)ViewData["CategoryFilter"] == category.Id?"active":"":"")">
-                                <a asp-action="List" asp-route-c="@category.Id">
+                            <div class="side-categories__item js-vertical-magic-line-item @(ViewData["CategoryFilter"]!=null&&!string.IsNullOrEmpty(ViewData["CategoryFilter"].ToString())?ViewData["CategoryFilter"].ToString() == category.SeoUrl?"active":"":"")">
+                                <a asp-action="List" asp-route-c="@category.SeoUrl">
                                     <span class="side-categories__txt">@category.Name</span>
                                     <span class="side-categories__count">@category.PostCount</span>
                                 </a>
@@ -230,14 +230,19 @@
                         <div class="side-subscribe__txt">Bloğumuzdaki birçok faydalı bilgiden haberdar ol.</div>
                     </div>
                     <div class="side-subscribe__content">
-                        <form class="side-subscribe__form" id="validateForm">
+                        <form class="side-subscribe__form" 
+                              method="post" id="blog-subscribe-form" 
+                              asp-action="SubscribeToBlog" asp-controller="Home"
+                              data-ajax-success="onBlogSubsciptionSuccess"
+                              data-ajax-failure="onBlogSubsciptionFailed"
+                              data-ajax="true" data-ajax-method="POST">
                             <div class="input__outer">
                                 <span class="icon-outer input__icon">
                                     <svg class="icon">
                                         <use xlink:href="../../assets/img/icons.svg#icon-user"></use>
                                     </svg>
                                 </span>
-                                <input name="cname" type="text" class="input input--bordered input--fw input--noshadow"
+                                <input name="name" type="text" class="input input--bordered input--fw input--noshadow"
                                        placeholder="Adınız Soyadınız" required>
                             </div>
                             <div class="input__outer">
@@ -246,11 +251,10 @@
                                         <use xlink:href="../../assets/img/icons.svg#icon-mail"></use>
                                     </svg>
                                 </span>
-                                <input name="cmail" type="email" class="input input--bordered input--fw input--noshadow"
+                                <input name="email" type="email" class="input input--bordered input--fw input--noshadow"
                                        placeholder="Email Adresiniz" required>
                             </div>
-                            <button type="button" class="button button-icon-right button-fw button-big js-modal-trigger"
-                                    data-trigger="modalSuccessMessage" type="submit">
+                            <button type="submit" class="button button-icon-right button-fw button-big">
                                 <span class="button-txt">Kaydol</span>
                                 <span class="icon-outer button-icon">
                                     <svg class="icon">
@@ -289,7 +293,7 @@
     </div>
 </section>
 
-<div class="modal modal--message success" id="modalSuccessMessage">
+<div class="modal modal--message success" id="SubscribeToBlogSuccessMessage">
     <div class="modal__close js-close-modal">
         <span class="icon-outer">
             <svg class="icon">
@@ -319,7 +323,7 @@
         </div>
     </div>
 </div>
-<div class="modal modal--message wrong" id="modalWrongMessage">
+<div class="modal modal--message wrong" id="SubscribeToBlogWrongMessage">
     <div class="modal__close js-close-modal">
         <span class="icon-outer">
             <svg class="icon">
@@ -349,3 +353,65 @@
         </div>
     </div>
 </div>
+
+@section postScripts{ 
+<script>
+
+    $("#blog-subscribe-form").validate({
+        errorLabelContainer: $('#validateForm div.error'),
+        errorContainer: 'div.error-messages',
+        errorLabelContainer: $('ul', 'div.error-messages'),
+        wrapper: 'li',
+        rules: {
+            name: {
+                required: true,
+            },
+            email: {
+                required: true,
+                email: true,
+            }
+        },
+        messages: {
+            name: 'Bu alan zorunludur.',
+            email: {
+                required: 'Bu alan zorunludur.',
+                email: 'Lütfen geçerli bir e-posta adresi giriniz.',
+            }
+        },
+        highlight: function (element) {
+            $(element)
+                .parent()
+                .addClass('outer-error');
+        },
+        unhighlight: function (element) {
+            $(element)
+                .parent()
+                .removeClass('outer-error');
+        },
+    });
+
+
+    var onBlogSubsciptionSuccess = function (context) {
+        if (context.success) {
+            showModal('SubscribeToBlogSuccessMessage');
+        } else {
+            showModal('SubscribeToBlogWrongMessage');
+        }
+        $('#blog-subscribe-form')[0].reset();
+    };
+    var onBlogSubsciptionFailed = function () {
+        showModal('SubscribeToBlogWrongMessage');
+    }
+    function showModal(id) {
+        $('html, body').addClass('no-scroll');
+        $('.main-overlay').addClass('active');
+        $('.modal[id="' + id + '"]').addClass('modal--active');
+        $('.js-open-mobile-menu').removeClass('active');
+        $('.js-open-mobile-menu')
+            .closest('.header-mobile')
+            .removeClass('active');
+        $('html,body').removeClass('scroll-lock');
+    }
+</script>
+
+} 

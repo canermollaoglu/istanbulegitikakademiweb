@@ -9,6 +9,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Sales
     {
         public string Message { get; set; }
         public PaymentResultStatus Status { get; set; }
-
+        public PaymentSuccessDetailVm SuccessDetails { get; set; }
     }
 }

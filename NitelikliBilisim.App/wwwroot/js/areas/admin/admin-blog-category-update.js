@@ -1,5 +1,6 @@
 ﻿/* elements */
 var inputName = document.getElementById("input-name");
+var inputSeoUrl = document.getElementById("input-seo-url");
 var inputDescription = document.getElementById("input-description");
 var btnSave = $("#btn-save");
 
@@ -10,10 +11,27 @@ btnSave.on("click", btnSave_onClick);
 /* events */
 function document_onLoad() {
 }
+$("#input-name").focusout(function () {
+    var title = $("#input-name").val();
+    $.ajax({
+        url: "/admin/create-seo-url",
+        method: "get",
+        data: { title: title },
+        success: (res) => {
+            if (res.isSuccess) {
+                $("#input-seo-url").val(res.data);
+            }
+        },
+        error: (error) => {
+            alert(error.message);
+        }
+    });
+});
 function btnSave_onClick() {
     btnSave.off("click");
     var data = {
         Id: $("#category-id").val(),
+        SeoUrl: inputSeoUrl.value,
         Name: inputName.value,
         Description: inputDescription.value
     }

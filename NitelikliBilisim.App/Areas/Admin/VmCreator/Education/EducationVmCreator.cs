@@ -59,6 +59,7 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.Education
                 Description2 = data.Description2,
                 Level = (EducationLevel)data.EducationLevel,
                 Name = data.Name,
+                SeoUrl = data.SeoUrl,
                 IsActive = data.IsActive
             }, data.Tags);
         }
