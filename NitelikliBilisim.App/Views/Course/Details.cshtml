@@ -61,7 +61,11 @@
 
                                 </div>
                                 <div class="subheader--detail__point-text">
-                                    @Model.Details.Base.PointText Puan <span>(@Model.Details.Base.CommentCount Öğrenci)</span>
+                                    @Model.Details.Base.PointText Puan
+                                    @if (Model.Details.Base.CommentCount > 15)
+                                    {
+                                        <span>(@Model.Details.Base.CommentCount Öğrenci)</span>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -75,19 +79,6 @@
                             Devamını Oku
                         </div>
                         <div class="lesson-detail__infos v-tablet-flex">
-                            <div class="lesson-detail__info">
-                                <span class="icon-outer icon-info">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-c-clock"></use>
-                                    </svg>
-                                </span>
-                                <div class="lesson-detail__info-cnt">
-                                    <span class="lesson-detail__info-txt">Eğitim Süresi</span>
-                                    <span class="lesson-detail__info-title js-data-change-sure">
-                                        @Model.Details.Base.DaysText gün @Model.Details.Base.HoursPerDayText saat
-                                    </span>
-                                </div>
-                            </div>
                             <div class="lesson-detail__info">
                                 <span class="icon-outer icon-info">
                                     <svg class="icon">
@@ -110,6 +101,19 @@
                                     <span class="lesson-detail__info-title js-data-change-tarih">
                                         10 Mayıs
                                         2020
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="lesson-detail__info">
+                                <span class="icon-outer icon-info">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-c-clock"></use>
+                                    </svg>
+                                </span>
+                                <div class="lesson-detail__info-cnt">
+                                    <span class="lesson-detail__info-txt">Eğitim Süresi</span>
+                                    <span class="lesson-detail__info-title js-data-change-sure">
+                                        @Model.Details.Base.DaysText gün @Model.Details.Base.HoursPerDayText saat
                                     </span>
                                 </div>
                             </div>
@@ -141,19 +145,6 @@
                     <div class="lesson-detail__info">
                         <span class="icon-outer icon-info">
                             <svg class="icon">
-                                <use xlink:href="../../assets/img/icons.svg#icon-c-clock"></use>
-                            </svg>
-                        </span>
-                        <div class="lesson-detail__info-cnt">
-                            <span class="lesson-detail__info-txt">Eğitim Süresi</span>
-                            <span class="lesson-detail__info-title js-data-change-sure">
-                                @Model.Details.Base.DaysText gün @Model.Details.Base.HoursPerDayText saat
-                            </span>
-                        </div>
-                    </div>
-                    <div class="lesson-detail__info">
-                        <span class="icon-outer icon-info">
-                            <svg class="icon">
                                 <use xlink:href="../../assets/img/icons.svg#icon-c-human"></use>
                             </svg>
                         </span>
@@ -173,6 +164,19 @@
                             <span class="lesson-detail__info-title js-data-change-tarih">
                                 10 Mayıs
                                 2020
+                            </span>
+                        </div>
+                    </div>
+                    <div class="lesson-detail__info">
+                        <span class="icon-outer icon-info">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-c-clock"></use>
+                            </svg>
+                        </span>
+                        <div class="lesson-detail__info-cnt">
+                            <span class="lesson-detail__info-txt">Eğitim Süresi</span>
+                            <span class="lesson-detail__info-title js-data-change-sure">
+                                @Model.Details.Base.DaysText gün @Model.Details.Base.HoursPerDayText saat
                             </span>
                         </div>
                     </div>
@@ -301,7 +305,7 @@
                                             <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
                                         </svg>
                                     </span>
-                                    @Model.Details.Base.DaysText gün @Model.Details.Base.HoursPerDayText saat
+                                    @Model.Details.Base.DaysText gün (@(Model.Details.Base.HoursPerDayNumeric*Model.Details.Base.DaysNumeric) Saat)
                                 </div>
                             </div>
                             <div class="accordion">
@@ -395,34 +399,32 @@
                             <div class="lesson-detail__comments">
                                 <div class="subheader--detail__point">
                                     <div class="main-stars">
-                                        <span class="icon-outer icon-star active">
-                                            <svg class="icon">
-                                                <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                            </svg>
-                                        </span>
-                                        <span class="icon-outer icon-star active">
-                                            <svg class="icon">
-                                                <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                            </svg>
-                                        </span>
-                                        <span class="icon-outer icon-star active">
-                                            <svg class="icon">
-                                                <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                            </svg>
-                                        </span>
-                                        <span class="icon-outer icon-star">
-                                            <svg class="icon">
-                                                <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                            </svg>
-                                        </span>
-                                        <span class="icon-outer icon-star">
-                                            <svg class="icon">
-                                                <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                            </svg>
-                                        </span>
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            if (i <= Model.Details.Base.Point)
+                                            {
+                                                <span class="icon-outer icon-star active">
+                                                    <svg class="icon">
+                                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                    </svg>
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="icon-outer icon-star">
+                                                    <svg class="icon">
+                                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                    </svg>
+                                                </span>
+                                            }
+                                        }
                                     </div>
                                     <div class="subheader--detail__point-text">
-                                        3.0 Puan <span>(162 Öğrenci)</span>
+                                        @Model.Details.Base.PointText Puan
+                                        @if (Model.Details.Base.CommentCount > 15)
+                                        {
+                                            <span>(@Model.Details.Base.CommentCount Öğrenci)</span>
+                                        }
                                     </div>
                                 </div>
                                 <div class="lesson-detail__comments--wrp">
@@ -639,7 +641,8 @@
                                 else
                                 {
                                     <text> Bu eğitimde birden fazla<br>
-                                        eğitim grubu bulunmaktadır.</text>
+                                        eğitim grubu bulunmaktadır.<br /> 
+                                        Lütfen eğitim almak istediğiniz grubu seçiniz.</text>
                                 }
 
                             </div>
@@ -697,11 +700,11 @@
                                 <div class="lesson-detail__card-priceright">
                                     <div class="lesson-detail__card-price">
                                         <span class="lesson-detail__card-oldprice">
-                                            <span>₺</span>1,250.00
+                                            0.00 <span>TL</span>
                                         </span>
                                         <span class="lesson-detail__card-newprice">
-                                            <span>₺</span>
-                                            <div class="js-data-change-fiyat">500,00</div>
+                                            <div class="js-data-change-fiyat">0,00 </div>
+                                            <span>TL</span>
                                         </span>
                                     </div>
                                     <div class="lesson-detail__card-sale">
@@ -883,7 +886,7 @@
             $('.js-data-change-seviye').text();
             $('.js-data-change-tarih').text(group.startDateText);
             $('.js-data-change-saat').text();
-            $('.js-data-change-fiyat').text(group.newPrice);
+            $('.js-data-change-fiyat').text(group.newPriceText);
             $('.js-data-change-adres').text(group.host.address);
             $('.js-data-change-teachers a').remove();
             $('.js-data-change-teachers').append(educator);

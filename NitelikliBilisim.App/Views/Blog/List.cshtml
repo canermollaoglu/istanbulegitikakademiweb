@@ -26,7 +26,7 @@
                                 }
 
                                 <div class="swiper-slide">
-                                    <a asp-controller="Blog" asp-action="Detail" asp-route-catSeoUrl="@post.CategorySeoUrl" asp-route-seoUrl="@post.SeoUrl"  class="blog-slider-card">
+                                    <a asp-controller="Blog" asp-action="Detail" asp-route-catSeoUrl="@post.CategorySeoUrl" asp-route-seoUrl="@post.SeoUrl" class="blog-slider-card">
                                         <img src="@featuredImage" alt="">
                                         <div class="blog-slider-card__cnt">
                                             <div class="blog-slider-card__tag">
@@ -94,7 +94,16 @@
     <div class="container">
         <div class="blog-list__title">
             <div class="flex-center mb-4">
-                <h2 class="title title-section">GÜNCEL <span class="title--blue">YAZILAR</span></h2>
+                @if (Model.CurrentCategory == null)
+                {
+                    <h2 class="title title-section">GÜNCEL <span class="title--blue">YAZILAR</span></h2>
+                }
+                else
+                {
+                    <h2 class="title title-section"><span class="title--blue">@Model.CurrentCategory</span></h2>
+
+                }
+
             </div>
         </div>
         <div class="blog-list__wrp">
@@ -155,15 +164,15 @@
 
                 </div>
                 <div class="pagination">
-                    @if (Model.Blogs.PageIndex>1)
+                    @if (Model.Blogs.PageIndex > 1)
                     {
-                    <a asp-controller="Blog" asp-action="List" asp-route-c="@ViewData["CategoryFilter"]" asp-route-p="@(Model.Blogs.PageIndex-1)" class="pagination__item prev">
-                        <span class="icon-outer">
-                            <svg class="icon">
-                                <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
-                            </svg>
-                        </span>
-                    </a>
+                        <a asp-controller="Blog" asp-action="List" asp-route-c="@ViewData["CategoryFilter"]" asp-route-p="@(Model.Blogs.PageIndex-1)" class="pagination__item prev">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
+                                </svg>
+                            </span>
+                        </a>
                     }
                     @for (int i = 1; i <= (int)Math.Ceiling(Model.Blogs.TotalCount / (double)8); i++)
                     {
@@ -230,8 +239,8 @@
                         <div class="side-subscribe__txt">Bloğumuzdaki birçok faydalı bilgiden haberdar ol.</div>
                     </div>
                     <div class="side-subscribe__content">
-                        <form class="side-subscribe__form" 
-                              method="post" id="blog-subscribe-form" 
+                        <form class="side-subscribe__form"
+                              method="post" id="blog-subscribe-form"
                               asp-action="SubscribeToBlog" asp-controller="Home"
                               data-ajax-success="onBlogSubsciptionSuccess"
                               data-ajax-failure="onBlogSubsciptionFailed"
@@ -354,64 +363,64 @@
     </div>
 </div>
 
-@section postScripts{ 
-<script>
+@section postScripts{
+    <script>
 
-    $("#blog-subscribe-form").validate({
-        errorLabelContainer: $('#validateForm div.error'),
-        errorContainer: 'div.error-messages',
-        errorLabelContainer: $('ul', 'div.error-messages'),
-        wrapper: 'li',
-        rules: {
-            name: {
-                required: true,
+        $("#blog-subscribe-form").validate({
+            errorLabelContainer: $('#validateForm div.error'),
+            errorContainer: 'div.error-messages',
+            errorLabelContainer: $('ul', 'div.error-messages'),
+            wrapper: 'li',
+            rules: {
+                name: {
+                    required: true,
+                },
+                email: {
+                    required: true,
+                    email: true,
+                }
             },
-            email: {
-                required: true,
-                email: true,
-            }
-        },
-        messages: {
-            name: 'Bu alan zorunludur.',
-            email: {
-                required: 'Bu alan zorunludur.',
-                email: 'Lütfen geçerli bir e-posta adresi giriniz.',
-            }
-        },
-        highlight: function (element) {
-            $(element)
-                .parent()
-                .addClass('outer-error');
-        },
-        unhighlight: function (element) {
-            $(element)
-                .parent()
-                .removeClass('outer-error');
-        },
-    });
+            messages: {
+                name: 'Bu alan zorunludur.',
+                email: {
+                    required: 'Bu alan zorunludur.',
+                    email: 'Lütfen geçerli bir e-posta adresi giriniz.',
+                }
+            },
+            highlight: function (element) {
+                $(element)
+                    .parent()
+                    .addClass('outer-error');
+            },
+            unhighlight: function (element) {
+                $(element)
+                    .parent()
+                    .removeClass('outer-error');
+            },
+        });
 
 
-    var onBlogSubsciptionSuccess = function (context) {
-        if (context.success) {
-            showModal('SubscribeToBlogSuccessMessage');
-        } else {
+        var onBlogSubsciptionSuccess = function (context) {
+            if (context.success) {
+                showModal('SubscribeToBlogSuccessMessage');
+            } else {
+                showModal('SubscribeToBlogWrongMessage');
+            }
+            $('#blog-subscribe-form')[0].reset();
+        };
+        var onBlogSubsciptionFailed = function () {
             showModal('SubscribeToBlogWrongMessage');
         }
-        $('#blog-subscribe-form')[0].reset();
-    };
-    var onBlogSubsciptionFailed = function () {
-        showModal('SubscribeToBlogWrongMessage');
-    }
-    function showModal(id) {
-        $('html, body').addClass('no-scroll');
-        $('.main-overlay').addClass('active');
-        $('.modal[id="' + id + '"]').addClass('modal--active');
-        $('.js-open-mobile-menu').removeClass('active');
-        $('.js-open-mobile-menu')
-            .closest('.header-mobile')
-            .removeClass('active');
-        $('html,body').removeClass('scroll-lock');
-    }
-</script>
+        function showModal(id) {
+            $('html, body').addClass('no-scroll');
+            $('.main-overlay').addClass('active');
+            $('.modal[id="' + id + '"]').addClass('modal--active');
+            $('.js-open-mobile-menu').removeClass('active');
+            $('.js-open-mobile-menu')
+                .closest('.header-mobile')
+                .removeClass('active');
+            $('html,body').removeClass('scroll-lock');
+        }
+    </script>
 
 } 

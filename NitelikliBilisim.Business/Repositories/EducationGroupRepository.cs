@@ -436,6 +436,8 @@ namespace NitelikliBilisim.Business.Repositories
                 catch 
                 {
                 }
+                var culture = CultureInfo.CreateSpecificCulture("tr-TR");
+
                 if (!hostIds.Contains(item.HostId))
                 {
                     hostIds.Add(item.HostId);
@@ -463,9 +465,11 @@ namespace NitelikliBilisim.Business.Repositories
                             Title = educator.Title,
                             ProfilePhoto = url
                         },
-                        OldPrice = item.OldPrice,
-                        NewPrice = item.NewPrice
-                    });
+                        OldPrice = item.OldPrice.GetValueOrDefault(),
+                        OldPriceText = item.OldPrice.GetValueOrDefault().ToString(culture),
+                        NewPrice = item.NewPrice,
+                        NewPriceText = item.NewPrice.GetValueOrDefault().ToString(culture)
+                    }) ;
                 }
             }
             return model;

@@ -12,5 +12,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Blog
         public List<LastBlogPostVm> LastBlogPosts { get; set; }
         public BlogsVm Blogs { get; set; }
         public int TotalBlogPostCount { get; set; }
+        public string CurrentCategory { get; set; }
     }
 }

@@ -49,7 +49,7 @@ namespace NitelikliBilisim.Business.Repositories.BlogRepositories
         public BlogsVm GetPosts(string catSeoUrl, int? pageIndex)
         {
             var retVal = new BlogsVm();
-            var data = _context.BlogPosts.Include(x=>x.Category).AsQueryable();
+            var data = _context.BlogPosts.Include(x=>x.Category).OrderByDescending(x=>x.CreatedDate).AsQueryable();
             if (!string.IsNullOrEmpty(catSeoUrl))
             {
                 data = data.Where(x => x.Category.SeoUrl == catSeoUrl);

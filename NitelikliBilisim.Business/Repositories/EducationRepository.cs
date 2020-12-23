@@ -61,6 +61,7 @@ namespace NitelikliBilisim.Business.Repositories
                          join eGroup in Context.EducationGroups.Include(x => x.GroupLessonDays) on bridge.Id equals eGroup.Id
                          where bridge.Id2 == userId && eGroup.EducationId == educationId
                          select eGroup).FirstOrDefault();
+            var comment = Context.EducationComments.FirstOrDefault(x => x.CommentatorId == userId && x.EducationId == educationId);
 
             if (group == null)
                 return false;
@@ -68,7 +69,7 @@ namespace NitelikliBilisim.Business.Repositories
                 return false;
 
             var lastDate = group.GroupLessonDays.OrderBy(x => x.DateOfLesson).Last().DateOfLesson;
-            if (DateTime.Now.Date > lastDate)
+            if (DateTime.Now.Date > lastDate && comment == null)
             {
                 return true;
             }
@@ -197,6 +198,13 @@ namespace NitelikliBilisim.Business.Repositories
                 });
 
             return educationDtos;
+        }
+
+        public int TotalEducationHours()
+        {
+            var hoursParDay = Context.Educations.Sum(x =>x.HoursPerDay);
+            var hours = Context.Educations.Sum(x => x.Days);
+            return hours*hoursParDay;
         }
 
         public CoursesPagePagedListVm GetCoursesPageEducations(int? hostCity, int page, OrderCriteria order)

@@ -279,18 +279,23 @@
         <div class="commenting-section__txt">
             Yukarıdaki maddelerin haricinde bize aşağıdaki form ile<br> sorularınızı iletebilirsiniz
         </div>
-        <form id="validateForm" class="commenting-section__commenting">
+        <form id="contact-form" class="commenting-section__commenting"
+              action="/sss-form"
+              data-ajax-success="onAjaxSuccess"
+              data-ajax-failure="onAjaxFailed"
+              data-ajax="true" data-ajax-method="POST">
+            @Html.AntiForgeryToken()
             <div class="commenting-box">
                 <div class="commenting-top">
                     <div class="commenting-name">
-                        <input type="text" name="cname" placeholder="Adınız Soyadınız" required>
+                        <input type="text" name="Name" placeholder="Adınız Soyadınız" required>
                     </div>
                     <div class="commenting-branch">
-                        <input type="email" name="signupmail" placeholder="E-mail Adresiniz" required>
+                        <input type="email" name="Email" placeholder="E-mail Adresiniz" required>
                     </div>
                 </div>
                 <div class="commenting-texting">
-                    <textarea placeholder="Yorumlarınızı buradan yazın..." name="cmessage" required></textarea>
+                    <textarea placeholder="Yorumlarınızı buradan yazın..." name="Content" required></textarea>
                 </div>
             </div>
             <div class="commenting-footer">
@@ -303,7 +308,7 @@
                     Sıfırla
                 </div>
                 <div class="commenting-footer-right">
-                    <button class="button button--dark button-big button-fw">
+                    <button type="submit" class="button button--dark button-big button-fw">
                         <span class="button--txt">
                             Soruyu Gönder
                         </span>
@@ -313,3 +318,126 @@
         </form>
     </div>
 </section>
+
+
+<div class="modal modal--message success" id="modalSuccessMessage">
+    <div class="modal__close js-close-modal">
+        <span class="icon-outer">
+            <svg class="icon">
+                <use xlink:href="../../assets/img/icons.svg#icon-close"></use>
+            </svg>
+        </span>
+    </div>
+    <div class="modal__content">
+        <div class="side-subscribe__success">
+            <div class="side-subscribe__top">
+                <div class="side-subscribe__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-success"></use>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+            <div class="side-subscribe__content">
+                <div class="side-subscribe__title">Teşekkürler!</div>
+                <div class="side-subscribe__txt">
+                    Talebiniz başarılı bir şekilde iletilmiştir.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal modal--message wrong" id="modalWrongMessage">
+    <div class="modal__close js-close-modal">
+        <span class="icon-outer">
+            <svg class="icon">
+                <use xlink:href="../../assets/img/icons.svg#icon-close"></use>
+            </svg>
+        </span>
+    </div>
+    <div class="modal__content">
+        <div class="side-subscribe__success">
+            <div class="side-subscribe__top">
+                <div class="side-subscribe__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-wrong"></use>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+            <div class="side-subscribe__content">
+                <div class="side-subscribe__title ">Başarısız!</div>
+                <div class="side-subscribe__txt">
+                    Talebiniz iletilememiştir.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section postScripts{
+    <script>
+        var onAjaxSuccess = function (context) {
+            if (context.success) {
+                showModal('modalSuccessMessage');
+            } else {
+                showModal('modalWrongMessage');
+            }
+            $('.commenting-section__commenting')[0].reset();
+        };
+        var onAjaxFailed = function () {
+            showModal('modalWrongMessage');
+        }
+        function showModal(id) {
+            $('html, body').addClass('no-scroll');
+            $('.main-overlay').addClass('active');
+            $('.modal[id="' + id + '"]').addClass('modal--active');
+            $('.js-open-mobile-menu').removeClass('active');
+            $('.js-open-mobile-menu')
+                .closest('.header-mobile')
+                .removeClass('active');
+            $('html,body').removeClass('scroll-lock');
+        }
+        $('#contact-form').validate({
+            errorLabelContainer: $('#contact-form div.error'),
+            errorContainer: 'div.error-messages',
+            errorLabelContainer: $('ul', 'div.error-messages'),
+            wrapper: 'li',
+            rules: {
+                Name: {
+                    required: true,
+                },
+                Email: {
+                    required: true,
+                    email: true,
+                },
+                Content: {
+                    required: true,
+                }
+            },
+            messages: {
+                Name: 'Bu alan zorunludur.',
+                Email: {
+                    required: 'Bu alan zorunludur.',
+                    email: 'Lütfen geçerli bir e-posta adresi giriniz.',
+                },
+                Content: 'Bu alan zorunludur.'
+            },
+            highlight: function (element) {
+                $(element)
+                    .parent()
+                    .addClass('outer-error');
+            },
+            unhighlight: function (element) {
+                $(element)
+                    .parent()
+                    .removeClass('outer-error');
+            },
+        });
+
+    </script>
+
+}

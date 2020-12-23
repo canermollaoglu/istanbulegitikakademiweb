@@ -14,6 +14,8 @@ namespace NitelikliBilisim.Core.ViewModels
         public decimal? OldPrice { get; set; }
         public decimal? NewPrice { get; set; }
         public EducatorVm Educator { get; set; }
+        public string OldPriceText { get; set; }
+        public string NewPriceText { get; set; }
     }
 
     public class EducationGroupListVm

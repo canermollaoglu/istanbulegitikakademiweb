@@ -33,8 +33,8 @@ namespace NitelikliBilisim.App.Controllers
             CourseListGetVm model = new CourseListGetVm();
             if (string.IsNullOrEmpty(catSeoUrl))
             {
-                model.CategoryName = "Tüm Kategoriler";
-                model.CategoryShortDescription = "Geleceğin web sitelerini kodlayın";
+                model.CategoryName = "Tüm Teknoloji Eğitimleri";
+                model.CategoryShortDescription = "Tüm Teknoloji Eğitimleri";
             }
             else
             {

@@ -155,6 +155,7 @@ namespace NitelikliBilisim.Data
         public DbSet<EducationPromotionCondition> EducationPromotionConditions{ get; set; }
         public DbSet<BlogSubscriber> BlogSubscribers { get; set; }
         public DbSet<NewsletterSubscriber> NewsletterSubscribers { get; set; }
+        public DbSet<ContactForm> ContactForms{ get; set; }
 
 
     }

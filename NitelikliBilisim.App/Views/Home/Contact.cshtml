@@ -83,7 +83,7 @@
                 <div class="contact__item-btn">
                     <a href="tel:02123212121" class="button button--simple">
                         <span class="button-txt">
-                           +90 (212) 321 21 21
+                            +90 (212) 321 21 21
                         </span>
                     </a>
                 </div>
@@ -130,19 +130,14 @@
                 <div class="contact__txt">
                     Kurs başlangıcından sertifika almaya kadar her adımda yanınızdayız.
                 </div>
-                <button class="button js-modal-trigger mt-3" data-trigger="modalSuccessMessage">
-                    <span class="button-txt">
-                        Başarılı
-                    </span>
-                </button>
-                <button class="button js-modal-trigger mt-3" data-trigger="modalWrongMessage">
-                    <span class="button-txt">
-                        Başarısız
-                    </span>
-                </button>
             </div>
             <div class="contact__right">
-                <form class="contact__form" id="validateForm">
+                <form class="contact__form" id="contact-form"
+                      action="/iletisim-formu"
+                      data-ajax-success="onAjaxSuccess"
+                      data-ajax-failure="onAjaxFailed"
+                      data-ajax="true" data-ajax-method="POST">
+                    @Html.AntiForgeryToken()
                     <div class="input__column-2">
                         <div class="input__outer">
                             <span class="icon-outer input__icon">
@@ -150,7 +145,7 @@
                                     <use xlink:href="../../assets/img/icons.svg#icon-user"></use>
                                 </svg>
                             </span>
-                            <input name="cname" type="text" class="input input--fw" placeholder="Adınız Soyadınız" required>
+                            <input name="Name" type="text" class="input input--fw" placeholder="Adınız Soyadınız" required>
                         </div>
                         <div class="input__outer">
                             <span class="icon-outer input__icon">
@@ -158,13 +153,13 @@
                                     <use xlink:href="../../assets/img/icons.svg#icon-mail"></use>
                                 </svg>
                             </span>
-                            <input type="mail" name="cmail" class="input input--fw" placeholder="E-mail Adresiniz" required>
+                            <input type="email" name="Email" class="input input--fw" placeholder="E-mail Adresiniz" required>
                         </div>
                     </div>
                     <div class="input__column-2">
                         <div class="input__outer input--phone">
                             <div class="select-phonecode">
-                                <select class="js-phonecode-select">
+                                <select name="PhoneCode" class="js-phonecode-select">
                                     <option selected>501</option>
                                     <option>505</option>
                                     <option>506</option>
@@ -198,17 +193,17 @@
                                     <option>549</option>
                                 </select>
                             </div>
-                            <input type="text" name="cphone" id="inputPhoneNumber" class="input input--fw maskedInput"
+                            <input type="text" name="Phone" id="inputPhoneNumber" class="input input--fw maskedInput"
                                    placeholder="___-__-__">
                         </div>
                         <div class="input__outer">
                             <div class="select-subject">
-                                <select class="js-subject-select" name="csubject">
-                                    <option value="" selected hidden disabled>Konu</option>
-                                    <option value="2">Konu1</option>
-                                    <option value="3">Konu2</option>
-                                    <option value="4">Konu3</option>
-                                    <option value="5">Konu4</option>
+                                <select class="js-subject-select" name="ContactFormSubject">
+                                    <option value="" selected hidden disabled>Konu Seçiniz</option>
+                                    @foreach (var subject in (Dictionary<int, string>)ViewData["ContactFormSubjects"])
+                                    {
+                                        <option value="@subject.Key">@subject.Value</option>
+                                    }
                                 </select>
                             </div>
                         </div>
@@ -219,10 +214,10 @@
                                 <use xlink:href="../../assets/img/icons.svg#icon-speak-balloon"></use>
                             </svg>
                         </span>
-                        <textarea name="cmessage" class="input input--fw" placeholder="Mesajınızı buraya yazın"></textarea>
+                        <textarea name="Content" class="input input--fw" placeholder="Mesajınızı buraya yazın"></textarea>
                     </div>
                     <div class="form__button">
-                        <button class="button js-modal-trigger" data-trigger="modalSuccessMessage">
+                        <button type="submit" class="button">
                             <span class="button-txt">
                                 Gönder
                             </span>
@@ -232,8 +227,8 @@
             </div>
         </div>
     </div>
-
 </section>
+
 <div class="modal modal--message success" id="modalSuccessMessage">
     <div class="modal__close js-close-modal">
         <span class="icon-outer">
@@ -256,9 +251,7 @@
             <div class="side-subscribe__content">
                 <div class="side-subscribe__title">Teşekkürler!</div>
                 <div class="side-subscribe__txt">
-                    E-bülten'e kaydınız başarıyla sağlanmıştır. Güncel içerikleri
-                    tarafınıza
-                    ulaştıracağız.
+                    Talebiniz başarılı bir şekilde iletilmiştir.
                 </div>
             </div>
         </div>
@@ -284,14 +277,88 @@
                 </div>
             </div>
             <div class="side-subscribe__content">
-                <div class="side-subscribe__title">Gönderim Başarısız!</div>
+                <div class="side-subscribe__title ">Başarısız!</div>
                 <div class="side-subscribe__txt">
-                    E-bülten'e kaydınız başarıyla sağlanmıştır. Güncel içerikleri
-                    tarafınıza
-                    ulaştıracağız.
+                    Talebiniz iletilememiştir.
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+
+@section postScripts{
+    <script>
+        var onAjaxSuccess = function (context) {
+            if (context.success) {
+                showModal('modalSuccessMessage');
+            } else {
+                showModal('modalWrongMessage');
+            }
+            $('.contact__form')[0].reset();
+        };
+        var onAjaxFailed = function () {
+            showModal('modalWrongMessage');
+        }
+        function showModal(id) {
+            $('html, body').addClass('no-scroll');
+            $('.main-overlay').addClass('active');
+            $('.modal[id="' + id + '"]').addClass('modal--active');
+            $('.js-open-mobile-menu').removeClass('active');
+            $('.js-open-mobile-menu')
+                .closest('.header-mobile')
+                .removeClass('active');
+            $('html,body').removeClass('scroll-lock');
+        }
+        $('#contact-form').validate({
+            errorLabelContainer: $('#contact-form div.error'),
+            errorContainer: 'div.error-messages',
+            errorLabelContainer: $('ul', 'div.error-messages'),
+            wrapper: 'li',
+            rules: {
+                Name: {
+                    required: true,
+                },
+                Email: {
+                    required: true,
+                    email: true,
+                },
+                PhoneCode: {
+                    required: true,
+                },
+                Phone: {
+                    required: true,
+                },
+                ContactFormSubject: {
+                    required: true,
+                },
+                Content: {
+                    required: true,
+                }
+            },
+            messages: {
+                Name: 'Bu alan zorunludur.',
+                Email: {
+                    required: 'Bu alan zorunludur.',
+                    email: 'Lütfen geçerli bir e-posta adresi giriniz.',
+                },
+                PhoneCode: 'Bu alan zorunludur.',
+                Phone: 'Bu alan zorunludur.',
+                ContactFormSubject: 'Bu alan zorunludur.',
+                Content: 'Bu alan zorunludur.'
+            },
+            highlight: function (element) {
+                $(element)
+                    .parent()
+                    .addClass('outer-error');
+            },
+            unhighlight: function (element) {
+                $(element)
+                    .parent()
+                    .removeClass('outer-error');
+            },
+        });
+
+    </script>
+
+}
