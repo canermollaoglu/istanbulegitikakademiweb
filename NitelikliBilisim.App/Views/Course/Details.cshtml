@@ -41,7 +41,7 @@
                                 <div class="main-stars">
                                     @for (int i = 1; i <= 5; i++)
                                     {
-                                        if (i<=Model.Details.Base.Point)
+                                        if (i <= Model.Details.Base.Point)
                                         {
                                             <span class="icon-outer icon-star active">
                                                 <svg class="icon">
@@ -342,7 +342,7 @@
                             <div class="lesson-detail__tab-teachers js-data-change-teachers">
                                 @foreach (var educator in Model.Educators)
                                 {
-                                    <a href="egitmen-detay.php" class="lesson-detail__tab-teachers--item">
+                                    <a href="/egitmen-detayi/@educator.EducatorId" class="lesson-detail__tab-teachers--item">
                                         <div class="lesson-detail__tab-teachers--img">
                                             <img class="js-change-teacher-img" src="@educator.ProfilePhoto" alt="">
                                         </div>
@@ -533,8 +533,12 @@
                                 </div>
                                 @if (Model.Details.Base.IsCanComment)
                                 {
-                                    <form class="lesson-detail__commenting" method="post" asp-controller="Course" asp-action="UserCommentPost">
-                                       @Html.AntiForgeryToken()
+                                    <form class="lesson-detail__commenting" id="comment-form"
+                                          action="/usercommentpost"
+                                          data-ajax-success="onCommentFormAjaxSuccess"
+                                          data-ajax-failure="onCommentFormAjaxFailed"
+                                          data-ajax="true" data-ajax-method="POST">
+                                        @Html.AntiForgeryToken()
                                         <input type="hidden" name="EducationId" value="@Model.Details.Base.Id" />
                                         <input type="hidden" name="Point" value="0" id="input-point" />
                                         <div class="lesson-detail__tab-title">
@@ -584,14 +588,14 @@
                                             </div>
                                         </div>
                                         <div class="commenting-footer">
-                                            @*<div class="clear-message">
+                                            <div class="clear-message">
                                                 <span class="icon-outer">
                                                     <svg class="icon">
                                                         <use xlink:href="../../assets/img/icons.svg#icon-circle-close"></use>
                                                     </svg>
                                                 </span>
                                                 Sıfırla
-                                            </div>*@
+                                            </div>
                                             <div class="commenting-footer-right">
                                                 <button type="submit" class="button button--dark button-fw">
                                                     <span class="button--txt">
@@ -754,7 +758,7 @@
 
         <div class="swiper-container js-card-slider mt-1">
             <div class="swiper-wrapper">
-               @await Component.InvokeAsync("PopularEducations") 
+                @await Component.InvokeAsync("PopularEducations")
 
             </div>
             <div class="swiper-pagination"></div>
@@ -784,9 +788,66 @@
     </div>
 </div>
 
+
+<div class="modal modal--message success" id="modalSuccessMessage">
+    <div class="modal__close js-close-modal">
+        <span class="icon-outer">
+            <svg class="icon">
+                <use xlink:href="../../assets/img/icons.svg#icon-close"></use>
+            </svg>
+        </span>
+    </div>
+    <div class="modal__content">
+        <div class="side-subscribe__success">
+            <div class="side-subscribe__top">
+                <div class="side-subscribe__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-success"></use>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+            <div class="side-subscribe__content">
+                <div class="side-subscribe__title">Teşekkürler!</div>
+                <div class="side-subscribe__txt">
+                    Yorumunuz değerlendirilmek üzere tarafımıza ulaşmıştır..
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal modal--message wrong" id="modalWrongMessage">
+    <div class="modal__close js-close-modal">
+        <span class="icon-outer">
+            <svg class="icon">
+                <use xlink:href="../../assets/img/icons.svg#icon-close"></use>
+            </svg>
+        </span>
+    </div>
+    <div class="modal__content">
+        <div class="side-subscribe__success">
+            <div class="side-subscribe__top">
+                <div class="side-subscribe__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-wrong"></use>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+            <div class="side-subscribe__content">
+                <div class="side-subscribe__title ">Başarısız!</div>
+                <div class="side-subscribe__txt">
+                    Talebiniz iletilememiştir.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section postScripts{
 
-    @*<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBwbBlZQaeP0fYu7xTiviCCWGAK3onN-iE&callback=initMap"></script>*@
     <script src="~/js/sup/cart.js"></script>
     <script>
         var cart = new CartSupport.Cart();
@@ -794,12 +855,8 @@
         var educationId = $("#_education-id").val();
         var groups = [];
 
-        //var latitude = 0, longitude = 0;
-        //var markerTitle = "NitelikliBilişim"
 
         /* elements */
-        //var btnBuy = $("#btn-buy");
-        //var btnBuy2 = $("#btn-buy2");
         var selectGroups = $('.educationStateVal');
         var selectCities = $(".educationCityVal");
 
@@ -812,32 +869,13 @@
         /* events */
         function document_onLoad() {
             loadGroups();
-            //initSignalR();
         }
-        //let initSignalR = function () {
-        //    var connection = new signalR.HubConnectionBuilder()
-        //        .withUrl('/messages')
-        //        .build();
-
-        //    //bindConnectionMessage(connection);
-        //    connection.start()
-        //        .then(function () {
-        //            console.log(connection);
-        //            onConnected(connection);
-        //        })
-        //        .catch(function (error) {
-        //            console.error(error.message);
-        //        });
-        //}
 
 
         function selectGroups_onChange() {
             var index = selectGroups.val();
             var group = groups.find(x => x.host.hostId == index);
-            //latitude = group.host.latitude;
-            //longitude = group.host.longitude;
-            //initMap();
-            console.log(group);
+
             var educator = `<a href="/egitmen-detayi/${group.educator.educatorId}" class="lesson-detail__tab-teachers--item"><div class="lesson-detail__tab-teachers--img"><img class="js-change-teacher-img" src="${group.educator.profilePhoto}" alt=""></div><div class="lesson-detail__tab-teachers--cnt"><div class="lesson-detail__tab-teachers--name js-change-teacher-name">${group.educator.name} ${group.educator.surname}</div><div class="lesson-detail__tab-teachers--txt">${group.educator.title}</div></div><div class="lesson-detail__tab-teachers--right"><div class="main-stars"><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span></div>3.0 PUAN</div></a>`;
             $('.js-data-change-merkez-adi').text(group.host.hostName);
             $('.js-data-change-il').text(group.host.city);
@@ -870,7 +908,6 @@
                     selectGroups.selectedIndex = 0;
                     selectGroups_onChange();
                     cartControl();
-                    //initMap();
                 }
             });
 
@@ -938,22 +975,10 @@
         //    location.href = "/sepet";
         //}
 
-        /* functions */
-        //function initMap() {
-        //    var location = { lat: parseFloat(latitude), lng: parseFloat(longitude) };
-        //    var map = new google.maps.Map(document.getElementById('map'), { zoom: 13, center: location });
-        //    var marker = new google.maps.Marker({
-        //        position: location,
-        //        map: map,
-        //        title: markerTitle
-        //    });
-        //}
+
         $('.js-let-point span').click(function () {
             var point = $(this).attr("data-point");
-            alert(point);
-
             $("#input-point").val(point);
-            alert($("#input-point").val());
             $(this)
                 .nextAll()
                 .removeClass('active');
@@ -963,10 +988,9 @@
             $(this).addClass('active');
         });
 
-
         $('.js-btn-fav').click(function () {
             $.ajax({
-                url: "/Course/ToggleWishListItem",
+                url: "/togglewishlistitem",
                 method: "post",
                 data: { educationId },
                 success: (res) => {
@@ -981,6 +1005,26 @@
             });
         });
 
-
+        var onCommentFormAjaxSuccess = function (context) {
+            if (context.success) {
+                showModal('modalSuccessMessage');
+            } else {
+                showModal('modalWrongMessage');
+            }
+            $('#comment-form')[0].reset();
+        };
+        var onCommentFormAjaxFailed = function () {
+            showModal('modalWrongMessage');
+        }
+        function showModal(id) {
+            $('html, body').addClass('no-scroll');
+            $('.main-overlay').addClass('active');
+            $('.modal[id="' + id + '"]').addClass('modal--active');
+            $('.js-open-mobile-menu').removeClass('active');
+            $('.js-open-mobile-menu')
+                .closest('.header-mobile')
+                .removeClass('active');
+            $('html,body').removeClass('scroll-lock');
+        }
     </script>
 }

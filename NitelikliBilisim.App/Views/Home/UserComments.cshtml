@@ -271,7 +271,7 @@
         <div class="pagination">
             @if (Model.PageDetails.PageIndex > 1)
             {
-                <a class="pagination__item prev">
+                <a asp-action="UserComments" asp-route-c="@ViewData["Category"]" asp-route-p="@(Model.PageDetails.PageIndex-1)" class="pagination__item prev">
                     <span class="icon-outer">
                         <svg class="icon">
                             <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
@@ -285,7 +285,7 @@
             }
             @if (Model.PageDetails.PageIndex < (int)Math.Ceiling(Model.PageDetails.TotalCount / (double)6))
             {
-                <a class="pagination__item next">
+                <a asp-action="UserComments" asp-route-c="@ViewData["Category"]" asp-route-p="@(Model.PageDetails.PageIndex+1)" class="pagination__item next">
                     <span class="icon-outer">
                         <svg class="icon">
                             <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
@@ -297,107 +297,6 @@
     </div>
 </section>
 
-<section class="commenting-section">
-    <div class="container">
-        <div class="commenting-section__title">
-            YORUM YAPMAK <span class="colored-blue"> İSTİYORUM</span>
-        </div>
-        <div class="commenting-section__txt">
-            Yukarıdaki maddelerin haricinde bize aşağıdaki form ile<br> sorularınızı iletebilirsiniz
-        </div>
-        <div class="commenting-section__commenting">
-            @if (User.Identity.IsAuthenticated)
-            {
-                <form class="commenting-section__commenting">
-                    <div class="commenting-box">
-                        <div class="commenting-top">
-                            <div class="commenting-name">
-                                <input type="text" placeholder="Adınız Soyadınız*">
-                            </div>
-                            <div class="commenting-select">
-                                <select class="js-commenting-select">
-                                    <option value="" selected hidden disabled>Kurs Alanı</option>
-                                    <option value="2">Asp.Net</option>
-                                    <option value="3">Vue</option>
-                                    <option value="4">React</option>
-                                    <option value="5">Angular</option>
-                                </select>
-                            </div>
-                            <div class="commenting-branch">
-                                <input type="text" placeholder="Mesleğiniz">
-                            </div>
-                            <div class="commenting-pointed">
-                                <span>Puanla</span>
-                                <div class="js-let-point">
-                                    <span class="icon-outer icon-star">
-                                        <svg class="icon">
-                                            <use xlink:href="assets/img/icons.svg#icon-star"></use>
-                                        </svg>
-                                    </span>
-                                    <span class="icon-outer icon-star">
-                                        <svg class="icon">
-                                            <use xlink:href="assets/img/icons.svg#icon-star"></use>
-                                        </svg>
-                                    </span>
-                                    <span class="icon-outer icon-star">
-                                        <svg class="icon">
-                                            <use xlink:href="assets/img/icons.svg#icon-star"></use>
-                                        </svg>
-                                    </span>
-                                    <span class="icon-outer icon-star">
-                                        <svg class="icon">
-                                            <use xlink:href="assets/img/icons.svg#icon-star"></use>
-                                        </svg>
-                                    </span>
-                                    <span class="icon-outer icon-star">
-                                        <svg class="icon">
-                                            <use xlink:href="assets/img/icons.svg#icon-star"></use>
-                                        </svg>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="commenting-texting">
-                            <textarea placeholder="Yorumlarınızı buradan yazın...*"></textarea>
-                        </div>
-                    </div>
-                    <div class="commenting-footer">
-                        <div class="clear-message">
-                            <span class="icon-outer">
-                                <svg class="icon">
-                                    <use xlink:href="assets/img/icons.svg#icon-circle-close"></use>
-                                </svg>
-                            </span>
-                            Sıfırla
-                        </div>
-                        <div class="commenting-footer-right">
-                            <button class="button button--dark button-big button-fw">
-                                <span class="button--txt">
-                                    Yorumu Gönder
-                                </span>
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            }
-            else
-            {
-                <div class="commenting__not-login">
-                    <span class="icon-outer">
-                        <svg class="icon">
-                            <use xlink:href="../../assets/img/icons.svg#icon-speak-balloon"></use>
-                        </svg>
-                    </span>
-                    <div class="commenting__not-login-txt">
-                        Yorum yapabilmek için; <a asp-controller="Account" asp-action="Login">giriş yapmanız</a> üye değilseniz, <a asp-controller="Account" asp-action="Register">üye olmanız</a>
-                        gerekmektedir.
-                    </div>
-                </div>
-            }
-
-        </div>
-    </div>
-</section>
 <div class="sort-mobile js-sort-mobile">
     <div class="sort-mobile__top">
         <span class="icon-outer">

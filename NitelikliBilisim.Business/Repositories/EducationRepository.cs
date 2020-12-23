@@ -199,13 +199,14 @@ namespace NitelikliBilisim.Business.Repositories
             return educationDtos;
         }
 
-        public List<CoursesPageEducationsVm> GetCoursesPageEducations(Guid? categoryId,int hostCity, int page, OrderCriteria order)
+        public CoursesPagePagedListVm GetCoursesPageEducations(int? hostCity, int page, OrderCriteria order)
         {
+            var model = new CoursesPagePagedListVm();
             var educations = Context.Educations.Include(x => x.Category);
             var rawData = (from education in educations
                            join eImage in Context.EducationMedias on education.Id equals eImage.EducationId
                            where
-                           eImage.MediaType == EducationMediaType.PreviewPhoto
+                           eImage.MediaType == EducationMediaType.PreviewPhoto && education.IsActive
                            select new CoursesPageEducationsVm
                            {
                                Id = education.Id,
@@ -220,10 +221,14 @@ namespace NitelikliBilisim.Business.Repositories
                                CategoryId = education.Category.BaseCategoryId,
                                Level = education.Level
                            }).AsQueryable();
-            if (categoryId.HasValue)
+
+            if (hostCity.HasValue)
             {
-                rawData = rawData.Where(x => x.CategoryId == categoryId.Value);
+                var city = (HostCity)hostCity;
+                var educationIds = Context.EducationGroups.Include(x => x.Host).Where(x => x.Host.City == city && x.StartDate>DateTime.Now.Date).Select(x => x.EducationId).ToList();
+                rawData = rawData.Where(x => educationIds.Contains(x.Id));
             }
+
             switch (order)
             {
                 case OrderCriteria.Latest:
@@ -236,8 +241,12 @@ namespace NitelikliBilisim.Business.Repositories
                     rawData = rawData.OrderByDescending(x => x.CreatedDate);
                     break;
             }
+            model.TotalCount = rawData.Count();
+            model.TotalPageCount = (int)Math.Ceiling(rawData.Count() / (double)6);
+            model.PageIndex = page;
             rawData = rawData.Skip((page-1) * 6).Take(6);
-            return rawData.ToList();
+            model.Educations = rawData.ToList();
+            return model;
         }
 
         public Guid? Insert(Education entity, string[] tags, List<EducationMedia> medias, bool isSaveLater = false)

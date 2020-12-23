@@ -4,6 +4,7 @@ using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Services.Abstracts;
@@ -76,10 +77,8 @@ namespace NitelikliBilisim.App.Controllers
             if (isLoggedIn)
             {
                 var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                //Yalnızca giriş yapmış ve eğitimi alarak tamamlamış kişiler yorum yapabilir.
                 bool isCanComment = _unitOfWork.Education.CheckIsCanComment(userId, educationDetails.Base.Id);
                 educationDetails.Base.IsCanComment = isCanComment;
-                //Eğitimin favori eğitimlerde bulunup bulunmaması kontrolü.
                 bool status = _unitOfWork.WishListItem.CheckWishListItem(userId, educationDetails.Base.Id);
                 educationDetails.Base.IsWishListItem = status;
             }
@@ -97,12 +96,16 @@ namespace NitelikliBilisim.App.Controllers
             return View(model);
         }
 
+        [Route("usercommentpost")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult UserCommentPost(UserCommentPostVm model)
         {
             if (!ModelState.IsValid)
-                return View(model);
+                return Json(new ResponseData
+                {
+                    Success = false
+                });
 
             try
             {
@@ -116,17 +119,22 @@ namespace NitelikliBilisim.App.Controllers
                     IsEducatorComment = false,
                     CommentatorId = userId
                 });
+                return Json(new ResponseData
+                {
+                    Success = true
+                });
             }
-            catch (Exception)
+            catch
             {
-                //todo Log
-                throw;
+                return Json(new ResponseData
+                {
+                    Success = false
+                });
             }
-
-            return RedirectToAction("Index", "Home");
+            
         }
 
-
+        [Route("togglewishlistitem")]
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [HttpPost]
         public IActionResult ToggleWishListItem(Guid? educationId)
@@ -196,11 +204,12 @@ namespace NitelikliBilisim.App.Controllers
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [HttpPost]
         [Route("get-courses")]
-        public async Task<IActionResult> GetCourses(Guid? categoryId, int? hostCity, int page=1,OrderCriteria order = OrderCriteria.Latest)
+        public async Task<IActionResult> GetCourses(int? hostCity, int page=1,OrderCriteria order = OrderCriteria.Latest)
         {
-            var model = _unitOfWork.Education.GetCoursesPageEducations(categoryId,hostCity.GetValueOrDefault(), page, order);
-
-            foreach (var education in model)
+            
+            var model = _unitOfWork.Education.GetCoursesPageEducations(hostCity, page, order);
+            
+            foreach (var education in model.Educations)
             {
                 var folder = Path.GetDirectoryName(education.ImagePath);
                 var fileName = Path.GetFileName(education.ImagePath);

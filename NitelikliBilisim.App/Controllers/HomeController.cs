@@ -124,12 +124,12 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [Route("kullanici-yorumlari")]
-        public IActionResult UserComments(Guid? c, int? s, int? p)
+        public IActionResult UserComments(Guid? c, int? s, int p=1)
         {
             UserCommentsPageGetVm retVal = new();
 
             ViewData["SortingType"] = s.HasValue ? s : ViewData["SortingType"];
-            ViewData["Page"] = p.HasValue ? p : ViewData["Page"];
+            ViewData["Page"] = p;
             ViewData["Category"] = c.HasValue ? c : ViewData["Category"];
             //her sayfada 6 yorum.
             retVal.SortingTypes = EnumHelpers.ToKeyValuePair<EducationCommentSortingTypes>();

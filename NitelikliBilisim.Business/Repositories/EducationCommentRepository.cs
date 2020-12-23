@@ -25,7 +25,7 @@ namespace NitelikliBilisim.Business.Repositories
             _storage = new StorageService();
         }
 
-        public EducationCommentsVm GetEducationComments(Guid? categoryId, int? sortingType, int? pageIndex)
+        public EducationCommentsVm GetEducationComments(Guid? categoryId, int? sortingType, int pageIndex = 1)
         {
             var sType = sortingType.HasValue ? (EducationCommentSortingTypes)sortingType : EducationCommentSortingTypes.Date;
             var retVal = new EducationCommentsVm();
@@ -65,10 +65,9 @@ namespace NitelikliBilisim.Business.Repositories
                     rawdata = rawdata.OrderByDescending(x => x.CreatedDate);
                     break;
             }
-            pageIndex = pageIndex ?? 1;
-            rawdata = rawdata.Skip((pageIndex.Value - 1) * 6).Take(6);
             retVal.TotalCount = rawdata.Count();
-            retVal.PageIndex = pageIndex.Value;
+            retVal.PageIndex = pageIndex;
+            rawdata = rawdata.Skip((pageIndex - 1) * 6).Take(6);
             retVal.Comments = rawdata.ToList();
 
             return retVal;
