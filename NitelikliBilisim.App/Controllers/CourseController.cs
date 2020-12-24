@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using MUsefulMethods;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Filters;
@@ -22,10 +23,12 @@ namespace NitelikliBilisim.App.Controllers
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly IStorageService _storageService;
-        public CourseController(UnitOfWork unitOfWork,IStorageService storageService)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public CourseController(UserManager<ApplicationUser> userManager,UnitOfWork unitOfWork,IStorageService storageService)
         {
             _unitOfWork = unitOfWork;
             _storageService = storageService;
+            _userManager = userManager;
         }
         [Route("egitimler/{catSeoUrl?}")]
         public IActionResult List(string catSeoUrl)
@@ -63,7 +66,7 @@ namespace NitelikliBilisim.App.Controllers
 
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("{catSeoUrl}/{seoUrl}")]
-        public IActionResult Details(string seoUrl, string searchKey)
+        public async Task<IActionResult> Details(string seoUrl, string searchKey)
         {
             if (string.IsNullOrEmpty(seoUrl))
                 return Redirect("/");
@@ -77,6 +80,10 @@ namespace NitelikliBilisim.App.Controllers
             if (isLoggedIn)
             {
                 var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var user = await _userManager.FindByIdAsync(userId);
+                var student = _unitOfWork.Customer.GetById(userId);
+                educationDetails.CurrentUserName = $"{user.Name} {user.Surname}";
+                educationDetails.CurrentUserJob = student == null ? "Eğitmen" : string.IsNullOrEmpty(student.Job)?"":student.Job;
                 bool isCanComment = _unitOfWork.Education.CheckIsCanComment(userId, educationDetails.Base.Id);
                 educationDetails.Base.IsCanComment = isCanComment;
                 bool status = _unitOfWork.WishListItem.CheckWishListItem(userId, educationDetails.Base.Id);
@@ -204,10 +211,10 @@ namespace NitelikliBilisim.App.Controllers
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [HttpPost]
         [Route("get-courses")]
-        public async Task<IActionResult> GetCourses(int? hostCity, int page=1,OrderCriteria order = OrderCriteria.Latest)
+        public async Task<IActionResult> GetCourses(Guid? categoryId,int? hostCity, int page=1,OrderCriteria order = OrderCriteria.Latest)
         {
             
-            var model = _unitOfWork.Education.GetCoursesPageEducations(hostCity, page, order);
+            var model = _unitOfWork.Education.GetCoursesPageEducations(categoryId,hostCity, page, order);
             
             foreach (var education in model.Educations)
             {
@@ -222,6 +229,24 @@ namespace NitelikliBilisim.App.Controllers
 
         }
 
+
+        [Route("get-course-comments")]
+        public async Task<IActionResult> GetCourseComments(Guid educationId, int page)
+        {
+            var model = _unitOfWork.EducationComment.GetPagedComments(educationId, page);
+
+            foreach (var comment in model.Comments)
+            {
+                var folder = Path.GetDirectoryName(comment.UserAvatarPath);
+                var fileName = Path.GetFileName(comment.UserAvatarPath);
+                comment.UserAvatarPath= await _storageService.DownloadFile(fileName, folder);
+            }
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = model
+            });
+        }
 
     }
 }

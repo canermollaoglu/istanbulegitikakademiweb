@@ -69,6 +69,7 @@
 </section>
 
 <section class="lesson-list">
+    <input type="hidden" value="@Model.CategoryId" id="current-category-id" />
     <input type="hidden" id="current-page" />
     <input type="hidden" id="current-order" />
     <input type="hidden" id="current-host-city" />
@@ -278,6 +279,7 @@
 
 @section postScripts{
     <script type="text/javascript">
+        var currentCategoryId = $("#current-category-id");
         var currentPage = $("#current-page");
         var currentHostCity = $("#current-host-city");
         var currentOrder = $("#current-order");
@@ -299,6 +301,7 @@
                 url: `/get-courses`,
                 method: "post",
                 data: {
+                    categoryId: currentCategoryId.val(),
                     hostCity: currentHostCity.val(),
                     page: 1,
                     order: currentOrder.val(),
@@ -308,6 +311,7 @@
                         alert("Aradığınız kriterlere uygun eğitim bulunamadı.");
                     }
                     lessonsContent.html("");
+                    console.log(res);
                     $.each(res.data.educations, function (index, e) {
                         var education = `<a href="/${e.cSeo}/${e.seo}" class="lesson-list__item">
                                     <div class="lesson-list__item-img">
@@ -332,7 +336,7 @@
                                                 ${e.educationDays} gün ( ${e.educationHours} saat )
                                             </div>
                                             <div class="lesson-list__item-price">
-                                                <span>₺</span> 800,00
+                                                <span>₺</span> ${e.price}
                                             </div>
                                             <div class="button v-tablet">
                                                 <span class="button-txt">Sepete Ekle</span>

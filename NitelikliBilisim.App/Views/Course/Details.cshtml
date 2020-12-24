@@ -113,7 +113,7 @@
                                 <div class="lesson-detail__info-cnt">
                                     <span class="lesson-detail__info-txt">Eğitim Süresi</span>
                                     <span class="lesson-detail__info-title js-data-change-sure">
-                                        @Model.Details.Base.DaysText gün @Model.Details.Base.HoursPerDayText saat
+                                        @Model.Details.Base.DaysText Gün
                                     </span>
                                 </div>
                             </div>
@@ -125,7 +125,7 @@
                                 </span>
                                 <div class="lesson-detail__info-cnt">
                                     <span class="lesson-detail__info-txt">Eğitim Saati</span>
-                                    <span class="lesson-detail__info-title js-data-change-saat">@hours</span>
+                                    <span class="lesson-detail__info-title js-data-change-saat">@hours Saat</span>
                                 </div>
                             </div>
                         </div>
@@ -176,7 +176,7 @@
                         <div class="lesson-detail__info-cnt">
                             <span class="lesson-detail__info-txt">Eğitim Süresi</span>
                             <span class="lesson-detail__info-title js-data-change-sure">
-                                @Model.Details.Base.DaysText gün @Model.Details.Base.HoursPerDayText saat
+                                @Model.Details.Base.DaysText Gün
                             </span>
                         </div>
                     </div>
@@ -188,7 +188,7 @@
                         </span>
                         <div class="lesson-detail__info-cnt">
                             <span class="lesson-detail__info-txt">Eğitim Saati</span>
-                            <span class="lesson-detail__info-title js-data-change-saat">@hours</span>
+                            <span class="lesson-detail__info-title js-data-change-saat">@hours Saat</span>
                         </div>
                     </div>
                 </div>
@@ -428,100 +428,7 @@
                                     </div>
                                 </div>
                                 <div class="lesson-detail__comments--wrp">
-                                    @foreach (var comment in Model.Details.Base.Comments)
-                                    {
-
-                                        <div class="lesson-detail__comment">
-                                            <div class="lesson-detail__comment-img">
-                                                <img src="~/assets/img/comment-pp.jpg" alt="">
-                                            </div>
-                                            <div class="lesson-detail__comment-cnt">
-                                                <div class="lesson-detail__comment-top">
-                                                    <div class="main-stars">
-                                                        @for (int i = 1; i <= 5; i++)
-                                                        {
-                                                            if (i <= comment.Point)
-                                                            {
-                                                                <span class="icon-outer icon-star active">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                                    </svg>
-                                                                </span>
-                                                            }
-                                                            else
-                                                            {
-
-                                                                <span class="icon-outer icon-star">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                                    </svg>
-                                                                </span>
-                                                            }
-                                                        }
-                                                    </div>
-                                                    <div class="lesson-detail__comment-date">
-                                                        @comment.Date
-                                                    </div>
-                                                </div>
-                                                <div class="lesson-detail__comment-txt">
-                                                    @comment.Content
-                                                </div>
-                                                <div class="lesson-detail__comment-author">
-                                                    <div class="lesson-detail__comment-name">@comment.Commenter</div>
-                                                    <div class="lesson-detail__comment-branch">@comment.CommenterJob</div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="lesson-detail__comment is-load">
-                                            <div class="lesson-detail__comment-img">
-                                                <img src="~/assets/img/comment-pp.jpg" alt="">
-                                            </div>
-                                            <div class="lesson-detail__comment-cnt">
-                                                <div class="lesson-detail__comment-top">
-                                                    <div class="main-stars">
-                                                        <span class="icon-outer icon-star active">
-                                                            <svg class="icon">
-                                                                <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                            </svg>
-                                                        </span>
-                                                        <span class="icon-outer icon-star active">
-                                                            <svg class="icon">
-                                                                <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                            </svg>
-                                                        </span>
-                                                        <span class="icon-outer icon-star active">
-                                                            <svg class="icon">
-                                                                <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                            </svg>
-                                                        </span>
-                                                        <span class="icon-outer icon-star">
-                                                            <svg class="icon">
-                                                                <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                            </svg>
-                                                        </span>
-                                                        <span class="icon-outer icon-star">
-                                                            <svg class="icon">
-                                                                <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                            </svg>
-                                                        </span>
-                                                    </div>
-                                                    <div class="lesson-detail__comment-date">
-                                                        10 Mayıs 2020
-                                                    </div>
-                                                </div>
-                                                <div class="lesson-detail__comment-txt">
-                                                    Eğitimi veren hocalarımız da sektörde büyük tecrübelere
-                                                    sahip insanlardı. Şu anda da Turkcell Superonline’da Network planlamada görev almaktayım.
-                                                </div>
-                                                <div class="lesson-detail__comment-author">
-                                                    <div class="lesson-detail__comment-name">Mehmet Fatih BAKACAK</div>
-                                                    <div class="lesson-detail__comment-branch">Bilgisayar Mühendisi</div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    }
+                                    
                                 </div>
                                 <div class="lesson-detail__comments--button js-load-comment">
                                     <div class="button button--load-more">
@@ -549,10 +456,10 @@
                                         <div class="commenting-box">
                                             <div class="commenting-top">
                                                 <div class="commenting-name">
-                                                    <input type="text" name="Name" placeholder="Adınız...">
+                                                    <input type="text" name="Name" value="@Model.Details.CurrentUserName" readonly placeholder="Adınız...">
                                                 </div>
                                                 <div class="commenting-branch">
-                                                    <input type="text" name="Job" placeholder="Mesleğiniz...">
+                                                    <input type="text" name="Job" value="@Model.Details.CurrentUserJob" readonly placeholder="Mesleğiniz...">
                                                 </div>
                                                 <div class="commenting-pointed">
                                                     <span>Puanla</span>
@@ -641,7 +548,7 @@
                                 else
                                 {
                                     <text> Bu eğitimde birden fazla<br>
-                                        eğitim grubu bulunmaktadır.<br /> 
+                                        eğitim grubu bulunmaktadır.<br />
                                         Lütfen eğitim almak istediğiniz grubu seçiniz.</text>
                                 }
 
@@ -854,6 +761,8 @@
     <script src="~/js/sup/cart.js"></script>
     <script>
         var cart = new CartSupport.Cart();
+        var commentPageIndex = 1;
+        var commentContainer = $(".lesson-detail__comments--wrp");
         /* fields */
         var educationId = $("#_education-id").val();
         var groups = [];
@@ -872,6 +781,7 @@
         /* events */
         function document_onLoad() {
             loadGroups();
+            loadComments();
         }
 
 
@@ -915,6 +825,56 @@
             });
 
         }
+        function loadComments() {
+            $.ajax({
+                url: `/get-course-comments?educationId=${educationId}&page=${commentPageIndex}`,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        commentPageIndex++;
+                        var comments = res.data.comments;
+                        if (!res.data.isLoadCommentButtonActive) {
+                            $(".js-load-comment").hide();
+                        }
+                        $.each(comments, function (i, v) {
+                            var comment = v;
+                            var points = "";
+                            for (var i = 1; i <= 5; i++) {
+                                if (i<=comment.point) {
+                                    points+=(`<span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span>`);
+                                } else {
+                                    points+=(`<span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span>`);
+                                }
+                            }
+                            var content = ` <div class="lesson-detail__comment">
+                                            <div class="lesson-detail__comment-img">
+                                                <img src="${comment.userAvatarPath}" alt="">
+                                            </div>
+                                            <div class="lesson-detail__comment-cnt">
+                                                <div class="lesson-detail__comment-top">
+                                                    <div class="main-stars">
+                                                                ${points}
+                                                    </div>
+                                                    <div class="lesson-detail__comment-date">
+                                                        ${comment.createdDateText}
+                                                    </div>
+                                                </div>
+                                                <div class="lesson-detail__comment-txt">
+                                                    ${comment.content}
+                                                </div>
+                                                <div class="lesson-detail__comment-author">
+                                                    <div class="lesson-detail__comment-name">${comment.userName} ${comment.userSurname}</div>
+                                                    <div class="lesson-detail__comment-branch">${!comment.userJob?"":comment.userJob}</div>
+                                                </div>
+                                            </div>
+                                        </div>`;
+                            commentContainer.append(content);
+                        });
+                    }
+                }   
+            });
+        }
+
         function removeSelectGroupOptions() {
             $(selectGroups).find('option').remove().end();
         }
@@ -967,17 +927,6 @@
                 $('.js-btn-basket').removeClass("active");
             }
         }
-        //function btnBuy_onClick() {
-        //    var index = selectGroups.val();
-        //    var group = groups.find(x => x.host.hostId == index);
-        //    var cart = new CartSupport.Cart();
-        //    var hostId = group.host.hostId;
-        //    var groupId = group.groupId;
-        //    cart.addToCart(_educationId, hostId, groupId);
-
-        //    location.href = "/sepet";
-        //}
-
 
         $('.js-let-point span').click(function () {
             var point = $(this).attr("data-point");
@@ -1006,6 +955,11 @@
                     }
                 }
             });
+        });
+
+        $('body').on('click', '.js-load-comment', function () {
+            loadComments();
+            //$('.lesson-detail__comment.is-load').addClass('is-loaded');
         });
 
         var onCommentFormAjaxSuccess = function (context) {

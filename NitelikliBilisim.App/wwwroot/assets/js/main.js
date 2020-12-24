@@ -2159,7 +2159,3 @@ if ($('.mini-basket__item').length <= 0) {
     );
     $('.mini-basket__footer').hide();
 }
-
-$('body').on('click', '.js-load-comment', function () {
-    $('.lesson-detail__comment.is-load').addClass('is-loaded');
-});

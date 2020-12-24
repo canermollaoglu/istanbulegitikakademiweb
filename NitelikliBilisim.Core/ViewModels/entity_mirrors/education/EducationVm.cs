@@ -20,6 +20,8 @@ namespace NitelikliBilisim.Core.ViewModels
         public List<EducationGainVm> Gains { get; set; }
         public int TotalPartCount { get; set; }
         public int TotalDuration { get; set; }
+        public string CurrentUserName { get; set; }
+        public string CurrentUserJob { get; set; }
     }
     public class EducationBaseVm
     {
@@ -42,6 +44,7 @@ namespace NitelikliBilisim.Core.ViewModels
         public int CommentCount { get; set; }
         public string SeoUrl { get; set; }
         public string CategorySeoUrl { get; set; }
+        public string Price { get; set; }
     }
 
     public class EducationListVm

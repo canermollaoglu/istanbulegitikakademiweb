@@ -207,10 +207,11 @@ namespace NitelikliBilisim.Business.Repositories
             return hours*hoursParDay;
         }
 
-        public CoursesPagePagedListVm GetCoursesPageEducations(int? hostCity, int page, OrderCriteria order)
+        public CoursesPagePagedListVm GetCoursesPageEducations(Guid? categoryId,int? hostCity, int page, OrderCriteria order)
         {
             var model = new CoursesPagePagedListVm();
             var educations = Context.Educations.Include(x => x.Category);
+            var hostId = Guid.Parse(_configuration.GetSection("SiteGeneralOptions").GetSection("PriceLocationId").Value);
             var rawData = (from education in educations
                            join eImage in Context.EducationMedias on education.Id equals eImage.EducationId
                            where
@@ -229,6 +230,10 @@ namespace NitelikliBilisim.Business.Repositories
                                CategoryId = education.Category.BaseCategoryId,
                                Level = education.Level
                            }).AsQueryable();
+            if (categoryId.HasValue)
+            {
+                rawData = rawData.Where(x => x.CategoryId == categoryId.Value);
+            }
 
             if (hostCity.HasValue)
             {
@@ -253,7 +258,12 @@ namespace NitelikliBilisim.Business.Repositories
             model.TotalPageCount = (int)Math.Ceiling(rawData.Count() / (double)6);
             model.PageIndex = page;
             rawData = rawData.Skip((page-1) * 6).Take(6);
-            model.Educations = rawData.ToList();
+            var filteredEducations = rawData.ToList();
+            foreach (var education in filteredEducations)
+            {
+                education.Price = Context.EducationGroups.OrderByDescending(x => x.CreatedDate).FirstOrDefault(y => y.HostId == hostId && y.EducationId == education.Id).NewPrice.GetValueOrDefault().ToString(CultureInfo.CreateSpecificCulture("tr-TR"));
+            }
+            model.Educations = filteredEducations;
             return model;
         }
 

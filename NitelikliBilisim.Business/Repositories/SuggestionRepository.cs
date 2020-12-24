@@ -24,11 +24,13 @@ namespace NitelikliBilisim.Business.Repositories
         private readonly NbDataContext _context;
         private readonly IElasticClient _elasticClient;
         private readonly SuggestionSystemOptions _options;
+        private readonly IConfiguration _configuration;
 
         public SuggestionRepository(NbDataContext context, IElasticClient elasticClient, IConfiguration configuration)
         {
             _context = context;
             _elasticClient = elasticClient;
+            _configuration = configuration;
             _options = configuration.GetSection("EducationSuggestionSystemOptions").Get<SuggestionSystemOptions>(); ;
         }
 
@@ -101,7 +103,7 @@ namespace NitelikliBilisim.Business.Repositories
                      CategoryName = y.Name,
                      CategorySeoUrl = y.SeoUrl
                  }).ToList();
-
+            var hostId = Guid.Parse(_configuration.GetSection("SiteGeneralOptions").GetSection("PriceLocationId").Value);
             var data = educationsList.Select(x => new SuggestedEducationVm
             {
                 Base = new EducationBaseVm
@@ -112,7 +114,7 @@ namespace NitelikliBilisim.Business.Repositories
                     CategoryName = x.CategoryName,
                     CategorySeoUrl = x.CategorySeoUrl,
                     Level = EnumHelpers.GetDescription(x.Education.Level),
-                    //PriceText = x.Education.NewPrice.GetValueOrDefault().ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
+                    Price = _context.EducationGroups.OrderByDescending(x => x.CreatedDate).FirstOrDefault(y => y.HostId == hostId && y.EducationId == x.Education.Id).NewPrice.GetValueOrDefault().ToString(CultureInfo.CreateSpecificCulture("tr-TR")),
                     HoursPerDayText = x.Education.HoursPerDay.ToString(),
                     DaysText = x.Education.Days.ToString(),
                     DaysNumeric = x.Education.Days,
@@ -401,6 +403,8 @@ namespace NitelikliBilisim.Business.Repositories
                    CategorySeoUrl = y.SeoUrl
                }).ToList();
 
+            var hostId = Guid.Parse(_configuration.GetSection("SiteGeneralOptions").GetSection("PriceLocationId").Value);
+
             var data = educationsList.Select(x => new SuggestedEducationVm
             {
                 Base = new EducationBaseVm
@@ -411,7 +415,7 @@ namespace NitelikliBilisim.Business.Repositories
                     CategoryName = x.CategoryName,
                     CategorySeoUrl = x.CategorySeoUrl,
                     Level = EnumHelpers.GetDescription(x.Education.Level),
-                    //PriceText = x.Education.NewPrice.GetValueOrDefault().ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
+                    Price = _context.EducationGroups.OrderByDescending(x=>x.CreatedDate).FirstOrDefault(y => y.HostId == hostId && y.EducationId == x.Education.Id).NewPrice.GetValueOrDefault().ToString(CultureInfo.CreateSpecificCulture("tr-TR")),
                     HoursPerDayText = x.Education.HoursPerDay.ToString(),
                     DaysText = x.Education.Days.ToString(),
                     DaysNumeric = x.Education.Days,
