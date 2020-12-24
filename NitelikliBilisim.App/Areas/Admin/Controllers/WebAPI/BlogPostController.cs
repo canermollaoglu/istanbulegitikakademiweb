@@ -31,7 +31,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.WebAPI
                 Title = x.Title,
                 CategoryName = x.Category.Name,
                 CreatedDate = x.CreatedDate,
-                ReadingTime = x.ReadingTime
+                ReadingTime = x.ReadingTime,
+                IsHighLight = x.IsHighLight
             });
             return Ok(DataSourceLoader.Load(data, loadOptions));
 

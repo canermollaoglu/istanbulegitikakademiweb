@@ -34,10 +34,11 @@ namespace NitelikliBilisim.Business.Repositories.BlogRepositories
                             CategorySeoUrl = blogCategory.SeoUrl,
                             Content = blog.SummaryContent,
                             CreatedDate = blog.CreatedDate.ToShortDateString(),
+                            Date = blog.CreatedDate,
                             Category = blogCategory.Name,
                             FeaturedImageUrl = blog.FeaturedImageUrl,
                             ReadingTime = blog.ReadingTime.ToString()
-                        }).Take(5).ToList();
+                        }).OrderByDescending(x=>x.Date).Take(5).ToList();
             return data;
         }
 
@@ -89,17 +90,19 @@ namespace NitelikliBilisim.Business.Repositories.BlogRepositories
             var data = (from blog in _context.BlogPosts
                         join blogCategory in _context.BlogCategories on blog.CategoryId equals blogCategory.Id
                         orderby blog.CreatedDate descending
+                        where blog.IsHighLight
                         select new LastBlogPostVm
                         {
                             Id = blog.Id,
                             Title = blog.Title,
+                            Date = blog.CreatedDate,
                             CreatedDate = blog.CreatedDate.ToShortDateString(),
                             Category = blogCategory.Name,
                             FeaturedImageUrl = blog.FeaturedImageUrl,
                             ReadingTime = blog.ReadingTime.ToString(),
                             SeoUrl = blog.SeoUrl,
                             CategorySeoUrl = blogCategory.SeoUrl
-                        }).Take(t).ToList();
+                        }).OrderByDescending(x=>x.Date).Take(t).ToList();
             return data;
         }
 

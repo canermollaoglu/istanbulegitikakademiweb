@@ -228,6 +228,29 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
         }
 
+        [HttpGet]
+        public IActionResult TogglePostHighLight(Guid postId)
+        {
+            try
+            {
+                var post = _unitOfWork.BlogPost.GetById(postId);
+                post.IsHighLight  = post.IsHighLight == true?false:true;
+                _unitOfWork.BlogPost.Update(post);
+                return Json(new ResponseModel
+                {
+                    isSuccess = true
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { $"Hata: {ex.Message}" }
+                });
+            }
+
+        }
 
         #region Helper Methods 
         /// <summary>

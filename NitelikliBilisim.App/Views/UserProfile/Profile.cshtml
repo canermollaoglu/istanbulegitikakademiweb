@@ -2068,6 +2068,7 @@
                         <div class="account-dashboard__courses-slider">
                             <div class="swiper-container js-dash-course-slider mt-1">
                                 <div class="swiper-wrapper">
+
                                     @foreach (var course in Model.FavoriteEducations)
                                     {
                                         var bannerUrl = "";
@@ -2164,93 +2165,7 @@
                         <div class="account-dashboard__courses-slider">
                             <div class="swiper-container js-dash-course-slider mt-1">
                                 <div class="swiper-wrapper">
-                                    <div class="swiper-slide">
-                                        <div class="card card--course">
-                                            <figure>
-                                                <img src="../../assets/img/cardimg6.jpg" alt="">
-                                            </figure>
-
-                                            <div class="card__main">
-                                                <div class="card__content">
-                                                    <h6 class="card__subtitle">Siber Güvenlik</h6>
-                                                    <h5 class="card__title">Active Directory Sertifika Servisleri</h5>
-                                                </div>
-
-                                                <div class="card__footer">
-                                                    <span class="card__time">
-                                                        <span class="icon-outer">
-                                                            <svg class="icon">
-                                                                <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                            </svg>
-                                                        </span>
-                                                        <span>3 gün ( 12 saat )</span>
-                                                    </span>
-
-                                                    <span class="card__money">
-                                                        <span>₺</span> 800,00
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="swiper-slide">
-                                        <div class="card card--course">
-                                            <figure>
-                                                <img src="../../assets/img/cardimg5.jpg" alt="">
-                                            </figure>
-
-                                            <div class="card__main">
-                                                <div class="card__content">
-                                                    <h6 class="card__subtitle">Siber Güvenlik</h6>
-                                                    <h5 class="card__title">Active Directory Sertifika Servisleri</h5>
-                                                </div>
-
-                                                <div class="card__footer">
-                                                    <span class="card__time">
-                                                        <span class="icon-outer">
-                                                            <svg class="icon">
-                                                                <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                            </svg>
-                                                        </span>
-                                                        <span>3 gün ( 12 saat )</span>
-                                                    </span>
-
-                                                    <span class="card__money">
-                                                        <span>₺</span> 800,00
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="swiper-slide">
-                                        <div class="card card--course">
-                                            <figure>
-                                                <img src="../../assets/img/cardimg4.jpg" alt="">
-                                            </figure>
-
-                                            <div class="card__main">
-                                                <div class="card__content">
-                                                    <h6 class="card__subtitle">Siber Güvenlik</h6>
-                                                    <h5 class="card__title">Active Directory Sertifika Servisleri</h5>
-                                                </div>
-
-                                                <div class="card__footer">
-                                                    <span class="card__time">
-                                                        <span class="icon-outer">
-                                                            <svg class="icon">
-                                                                <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                            </svg>
-                                                        </span>
-                                                        <span>3 gün ( 12 saat )</span>
-                                                    </span>
-
-                                                    <span class="card__money">
-                                                        <span>₺</span> 800,00
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    @await Component.InvokeAsync("SuggestedEducations")
                                 </div>
                                 <div class="swiper-pagination"></div>
                             </div>
@@ -2270,7 +2185,7 @@
         $('.js-btn-fav').click(function () {
             var educationId = $(this).attr("data-eid");
             $.ajax({
-                url: "/Course/ToggleWishListItem",
+                url: "/togglewishlistitem",
                 method: "post",
                 data: { educationId },
                 success: (res) => {
