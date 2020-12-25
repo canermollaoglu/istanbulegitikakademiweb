@@ -11,5 +11,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.EducationComment
         public Dictionary<int, string> SortingTypes { get; set; }
         public Dictionary<Guid, string> EducationCategories { get; set; }
         public EducationCommentsVm PageDetails { get; set; }
+        public List<FeaturedCommentVm> FeaturedComments { get; set; }
     }
 }

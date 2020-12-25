@@ -184,6 +184,13 @@ namespace NitelikliBilisim.App.Lexicographer
             _dictionary.Add("AdminContactFAQFormList",
               new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Sıkça Sorulan Sorular Sayfası İletişim Talepleri", url: null) });
 
+            /*Featured Comment*/
+            _dictionary.Add("AdminFeaturedCommentAdd",
+              new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Öne Çıkarılan Yorum Ekle", url: null) });
+            _dictionary.Add("AdminFeaturedCommentList",
+              new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Öne Çıkarılan Yorumlar", url: null) });
+
+            
 
 
         }

@@ -1,6 +1,5 @@
 ﻿@model NitelikliBilisim.Core.ViewModels.Main.EducationComment.UserCommentsPageGetVm
 @using NitelikliBilisim.Core.Services.Abstracts
-@using NitelikliBilisim.Core.Enums
 @using MUsefulMethods
 @inject IStorageService StorageService
 @{
@@ -16,7 +15,55 @@
                 <div class="subheader__slider">
                     <div class="swiper-container js-comment-card-slider">
                         <div class="swiper-wrapper">
-                            <div class="swiper-slide">
+                            @foreach (var featuredComment in Model.FeaturedComments)
+                            {
+                                var featuredImage = "";
+                                try
+                                {
+                                    featuredImage = StorageService.DownloadFile(System.IO.Path.GetFileName(featuredComment.PreviewImage), System.IO.Path.GetDirectoryName(featuredComment.PreviewImage)).Result;
+                                }
+                                catch
+                                {
+                                }
+
+                                <div class="swiper-slide">
+                                    <div class="comment-slider-card">
+                                        <div class="comment-slider-card__cnt">
+                                            <div class="comment-slider-card__icon">
+                                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="59px"
+                                                     height="45px">
+                                                    <text kerning="auto" font-family="Myriad Pro" fill="rgb(0, 0, 0)"
+                                                          transform="matrix( 1.00022414459494, 0, 0, 0.99980177798945,0.55601381578379, 85.0341019070173)"
+                                                          font-size="124.025px">
+                                                        <tspan font-size="124.025px" font-family="Proxima Nova" fill="#60D9DB">&#8220;</tspan>
+                                                    </text>
+                                                </svg>
+                                            </div>
+                                            <div class="comment-slider-card__txt">
+                                                @featuredComment.Content
+                                            </div>
+                                            <div class="comment-slider-card__name">
+                                               @featuredComment.Name @featuredComment.Surname
+                                            </div>
+                                            <div class="comment-slider-card__branch">
+                                               @featuredComment.Title
+                                            </div>
+                                        </div>
+                                        <div class="comment-slider-card__video js-video-btn" data-video-id="oxiU6A8MEMM">
+                                            <img src="@featuredImage" alt="">
+                                            <div class="card-play">
+                                                <span class="icon-outer">
+                                                    <svg class="icon">
+                                                        <use xlink:href="../../assets/img/icons.svg#icon-play"></use>
+                                                    </svg>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            @*<div class="swiper-slide">
                                 <div class="comment-slider-card">
                                     <div class="comment-slider-card__cnt">
                                         <div class="comment-slider-card__icon">
@@ -52,81 +99,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="comment-slider-card">
-                                    <div class="comment-slider-card__cnt">
-                                        <div class="comment-slider-card__icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="59px"
-                                                 height="45px">
-                                                <text kerning="auto" font-family="Myriad Pro" fill="rgb(0, 0, 0)"
-                                                      transform="matrix( 1.00022414459494, 0, 0, 0.99980177798945,0.55601381578379, 85.0341019070173)"
-                                                      font-size="124.025px">
-                                                    <tspan font-size="124.025px" font-family="Proxima Nova" fill="#60D9DB">&#8220;</tspan>
-                                                </text>
-                                            </svg>
-                                        </div>
-                                        <div class="comment-slider-card__txt">
-                                            Merhabalar, Ben Mehmet Fatih Bakacak. İstanbul Teknik Üniversitesi Telekomünikasyon Mühendisliği
-                                            mezunuyum. Şu anda yine İstanbul Üniversitesi’nde Uydu Haberleşmesi ve Uzaktan algılama üzerine
-                                            yüksek lisans yapmaktayım...
-                                        </div>
-                                        <div class="comment-slider-card__name">
-                                            Mehmet Fatih BAKACAK
-                                        </div>
-                                        <div class="comment-slider-card__branch">
-                                            Bilgisayar Mühendisi
-                                        </div>
-                                    </div>
-                                    <div class="comment-slider-card__video js-video-btn" data-video-id="oxiU6A8MEMM">
-                                        <img src="../../assets/img/comment-card-img.jpg" alt="">
-                                        <div class="card-play">
-                                            <span class="icon-outer">
-                                                <svg class="icon">
-                                                    <use xlink:href="../../assets/img/icons.svg#icon-play"></use>
-                                                </svg>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="comment-slider-card">
-                                    <div class="comment-slider-card__cnt">
-                                        <div class="comment-slider-card__icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="59px"
-                                                 height="45px">
-                                                <text kerning="auto" font-family="Myriad Pro" fill="rgb(0, 0, 0)"
-                                                      transform="matrix( 1.00022414459494, 0, 0, 0.99980177798945,0.55601381578379, 85.0341019070173)"
-                                                      font-size="124.025px">
-                                                    <tspan font-size="124.025px" font-family="Proxima Nova" fill="#60D9DB">&#8220;</tspan>
-                                                </text>
-                                            </svg>
-                                        </div>
-                                        <div class="comment-slider-card__txt">
-                                            Merhabalar, Ben Mehmet Fatih Bakacak. İstanbul Teknik Üniversitesi Telekomünikasyon Mühendisliği
-                                            mezunuyum. Şu anda yine İstanbul Üniversitesi’nde Uydu Haberleşmesi ve Uzaktan algılama üzerine
-                                            yüksek lisans yapmaktayım...
-                                        </div>
-                                        <div class="comment-slider-card__name">
-                                            Mehmet Fatih BAKACAK
-                                        </div>
-                                        <div class="comment-slider-card__branch">
-                                            Bilgisayar Mühendisi
-                                        </div>
-                                    </div>
-                                    <div class="comment-slider-card__video js-video-btn" data-video-id="oxiU6A8MEMM">
-                                        <img src="../../assets/img/comment-card-img.jpg" alt="">
-                                        <div class="card-play">
-                                            <span class="icon-outer">
-                                                <svg class="icon">
-                                                    <use xlink:href="../../assets/img/icons.svg#icon-play"></use>
-                                                </svg>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            </div>*@
                         </div>
 
                         <div class="swiper-button-prev swiper-button-circle">

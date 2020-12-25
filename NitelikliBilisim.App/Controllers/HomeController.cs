@@ -239,7 +239,6 @@ namespace NitelikliBilisim.App.Controllers
         public IActionResult UserComments(Guid? c, int? s, int p=1)
         {
             UserCommentsPageGetVm retVal = new();
-
             ViewData["SortingType"] = s.HasValue ? s : ViewData["SortingType"];
             ViewData["Page"] = p;
             ViewData["Category"] = c.HasValue ? c : ViewData["Category"];
@@ -248,6 +247,8 @@ namespace NitelikliBilisim.App.Controllers
             retVal.EducationCategories = _unitOfWork.EducationCategory.GetEducationCategoryDictionary();
             retVal.PageDetails = _unitOfWork.EducationComment.GetEducationComments(c, s, p);
 
+            //Featured Comments
+            retVal.FeaturedComments = _unitOfWork.FeaturedComment.GetFeaturedComments();
             return View(retVal);
         }
 
@@ -400,13 +401,23 @@ namespace NitelikliBilisim.App.Controllers
             }
             try
             {
+               var result= _unitOfWork.SubscriptionBlog.CheckSubscriber(email);
+                if (result)
+                    return Json(new ResponseData
+                    {
+                        Success = false,
+                        Message ="Zaten blog aboneliğiniz bulunmaktadır."
+                    });
+
+
                 _unitOfWork.SubscriptionBlog.Insert(new BlogSubscriber { 
                 Email = email,
                 Name = name
                 });
                 return Json(new ResponseData
                 {
-                    Success = true
+                    Success = true,
+                    Message= "E-bülten'e kaydınız başarıyla sağlanmıştır. Güncel içerikleri tarafınıza ulaştıracağız."
                 });
             }
             catch (Exception ex)
@@ -414,7 +425,8 @@ namespace NitelikliBilisim.App.Controllers
                 //Log ex
                 return Json(new ResponseData
                 {
-                    Success = false
+                    Success = false,
+                    Message = "Beklenmeyen bir hata ile karşılaşıldı. Lütfen daha sonra tekrar deneyiniz."
                 });
             }
         }
@@ -433,13 +445,23 @@ namespace NitelikliBilisim.App.Controllers
             }
             try
             {
+                var result = _unitOfWork.SubscriptionNewsletter.CheckSubscriber(email);
+                if (result)
+                    return Json(new ResponseData
+                    {
+                        Success = false,
+                        Message = "Zaten blog aboneliğiniz bulunmaktadır."
+                    });
+
+
                 _unitOfWork.SubscriptionNewsletter.Insert(new NewsletterSubscriber
                 {
                     Email = email
                 });
                 return Json(new ResponseData
                 {
-                    Success = true
+                    Success = true,
+                    Message = "Abonelik talebiniz başarı ile alındı."
                 });
             }
             catch (Exception ex)
@@ -447,7 +469,8 @@ namespace NitelikliBilisim.App.Controllers
                 //Log ex
                 return Json(new ResponseData
                 {
-                    Success = false
+                    Success = false,
+                    Message= "Beklenmeyen bir hata ile karşılaşıldı. Lütfen daha sonra tekrar deneyiniz."
                 });
             }
         }
