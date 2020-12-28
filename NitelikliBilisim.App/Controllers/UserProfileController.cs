@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -8,6 +9,7 @@ using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Managers;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Services.Abstracts;
 using System;
@@ -163,5 +165,25 @@ namespace NitelikliBilisim.App.Controllers
 
         }
 
+        [Route("haftaya-ozel-kurslar")]
+        public IActionResult GetEducationsOfTheWeeks(int week)
+        {
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var model = _unitOfWork.Suggestions.GetEducationsOfTheWeek(week, userId);
+                return Json(new ResponseData
+                {
+                    Success = true,
+                    Data = model
+                });
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
     }
 }

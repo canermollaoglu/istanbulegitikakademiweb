@@ -146,6 +146,41 @@ namespace NitelikliBilisim.Business.Repositories
             return retVal;
         }
 
+        public List<SuggestedEducationVm> GetEducationsOfTheWeek(int week,string userId)
+        {
+            var studentInfo = _context.StudentEducationInfos.FirstOrDefault(x => x.CustomerId == userId);
+            if (studentInfo == null)
+                return null;
+            var educationDay = _context.EducationDays.Where(x => x.StudentEducationInfoId == studentInfo.Id && x.Date <= DateTime.Now).OrderByDescending(c => c.Date).FirstOrDefault();
+            int nearestDay = educationDay != null ? educationDay.Day : 0;
+            
+            var educations = _context.Educations.Include(c => c.Category).Include(x => x.EducationSuggestionCriterions).Where(x => x.IsActive);
+            var thisWeekEducations = new Dictionary<Guid,double>();
+            foreach (var education in educations)
+            {
+                if (education.EducationSuggestionCriterions!=null && education.EducationSuggestionCriterions.Count>0)
+                {
+                    foreach (var criterion in education.EducationSuggestionCriterions)
+                    {
+                        if (criterion.CriterionType == CriterionType.EducationDay)
+                        {
+                            if (nearestDay <= criterion.MaxValue && nearestDay >= criterion.MinValue)
+                                thisWeekEducations.Add(education.Id, 3);//İçinde bulunulan hafta en öncelikli olduğu için sıra 3 
+                            else if (criterion.MaxValue<nearestDay-7 && criterion.MaxValue>nearestDay-14)
+                                thisWeekEducations.Add(education.Id, 2);//önceki hafta için sıra 2 
+                            else if (criterion.MinValue>nearestDay+7 && criterion.MinValue<nearestDay+14)
+                                thisWeekEducations.Add(education.Id, 1);//sonraki hafta için sıra 1
+                        }
+                    }
+                }
+            }
+            if (thisWeekEducations.Count>4)
+            {
+                thisWeekEducations = thisWeekEducations.OrderByDescending(x => x.Value).Take(4).ToDictionary(x=>x.Key,x=>x.Value);
+            }
+            return FillSuggestedEducationList(thisWeekEducations);
+        }
+
 
 
         #region 1 KRİTERLERE GÖRE EĞİTİM ÖNERİLERİ
