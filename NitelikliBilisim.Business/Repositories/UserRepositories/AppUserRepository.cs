@@ -336,7 +336,7 @@ namespace NitelikliBilisim.Business.Repositories
                 var totalEducationWeek = (int)Math.Ceiling((nbuyInfo.EducationDays.OrderBy(x => x.Day).Last().Date - nbuyInfo.StartedAt.Date).TotalDays / (double)7);
                 var currentEducationWeek = (int)Math.Ceiling((DateTime.Now.Date - nbuyInfo.StartedAt).TotalDays / (double)7);
                 model.NbuyCategory = nbuyInfo.Category.Name;
-                model.NbuyStartDateText = nbuyInfo.StartedAt.ToString("dd MMMM yyyy");
+                model.NbuyStartDateText = nbuyInfo.StartedAt.ToString("dd MMM yyyy");
                 model.NbuyStartDate = nbuyInfo.StartedAt;
                 model.EducationWeek = currentEducationWeek;
                 model.TotalEducationWeek = totalEducationWeek;

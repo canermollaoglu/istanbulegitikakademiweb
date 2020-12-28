@@ -138,7 +138,7 @@
                             </div>
                         }
 
-                        <div class="checkout__product-item">
+                        @*<div class="checkout__product-item">
                             <a href="./egitim-detay.php" class="checkout__product-left">
                                 <div class="checkout__product-img">
                                     <img src="assets/img/cardimg4.jpg" alt="">
@@ -150,7 +150,7 @@
                                     <span>₺</span> 700.00
                                 </div>
                             </div>
-                        </div>
+                        </div>*@
                     </div>
                     <span class="checkout__fw-hr"></span>
                     <div class="checkout__price-wrp">
@@ -264,7 +264,7 @@
     </div>
 </section>
 
-@section postScripts{postScripts
+@section postScripts{
     <script type="text/javascript">
 
         if ('@(((NormalPaymentResultVm)ViewData["PaymentResult"]).Status)' == "Success") {
@@ -273,6 +273,4 @@
             localStorage.removeItem("promotionCode");
         }
     </script>
-
-
 } 
