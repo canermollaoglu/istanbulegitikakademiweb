@@ -17,5 +17,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public string Phone { get; set; }
         public string LinkedIn { get; set; }
         public string WebSite { get; set; }
+        public string AvatarPath { get; set; }
     }
 }

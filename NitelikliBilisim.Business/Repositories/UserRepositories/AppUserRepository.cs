@@ -166,6 +166,7 @@ namespace NitelikliBilisim.Business.Repositories
                        join student in _context.Customers on user.Id equals student.Id
                        select new MyAccountSettingsGeneralInformationVm
                        {
+                           AvatarPath = user.AvatarPath,
                            Email = user.Email,
                            Name = user.Name,
                            Surname = user.Surname,
@@ -178,6 +179,9 @@ namespace NitelikliBilisim.Business.Repositories
                        }).First();
 
             model.GeneralInformation = data;
+            model.Addresses = _context.Addresses.Include(x=>x.City).Include(x=>x.State).Where(x => x.CustomerId == userId).ToList();
+            model.Universities = _context.Universities.ToList();
+            model.Cities = _context.Cities.OrderBy(x=>x.Order).ToList();
             return model;
         }
 
