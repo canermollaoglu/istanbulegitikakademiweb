@@ -1,4 +1,4 @@
-﻿
+﻿@model NitelikliBilisim.Core.ViewModels.Main.Profile.MyAccountSettingsGetVm 
 @using NitelikliBilisim.App.Utility
 @{
     ViewData["Title"] = "AccountSettings";
@@ -45,7 +45,7 @@
                                                     <div class="input__outer no-icon">
                                                         <div class="input__title">E-posta Adresi</div>
                                                         <input type="text" class="input input--bordered input--fw input--noshadow"
-                                                               placeholder="E-posta Adresinizi Giriniz" value="zeynep.yildirim@mail.com">
+                                                               placeholder="E-posta Adresinizi Giriniz" value="@Model.GeneralInformation.Email">
                                                     </div>
                                                     <div class="input__outer no-icon icon-password">
                                                         <div class="input__title">Şifre</div>
@@ -120,7 +120,7 @@
                                                     <div class="input__outer no-icon datepicker--fw icon-datepicker">
                                                         <div class="input__title">Doğum Tarihiniz</div>
                                                         <input type="text" class="input input--bordered input--fw input--noshadow js-datepicker"
-                                                               value="14.07.2020" placeholder="Doğum Tarihiniz">
+                                                               value="@Model.GeneralInformation.DateOfBirth" placeholder="Doğum Tarihiniz">
                                                         <span class="icon-outer">
                                                             <svg class="icon">
                                                                 <use xlink:href="../../assets/img/icons.svg#icon-date"></use>
@@ -237,7 +237,7 @@
                                                     <div class="input__outer no-icon">
                                                         <div class="input__title">E-posta Adresiniz</div>
                                                         <input type="text" class="input input--bordered input--fw input--noshadow"
-                                                               placeholder="E-posta Adresinizi Giriniz" value="zeynep.yildirim@mail.com">
+                                                               placeholder="E-posta Adresinizi Giriniz" value="@Model.GeneralInformation.Email">
                                                     </div>
                                                     <div class="input__outer bordered-select">
                                                         <div class="select-subject no-icon">
@@ -257,7 +257,7 @@
                                                         <div class="input__link-inner">
                                                             <span>http://</span>
                                                             <input type="text" class="input input--bordered input--fw input--noshadow"
-                                                                   placeholder="E-posta Adresinizi Giriniz" value="zeynep.yildirim@mail.com">
+                                                                   placeholder="Website Adresinizi Giriniz" value="@Model.GeneralInformation.WebSite">
                                                         </div>
                                                     </div>
                                                     <div class="input__outer no-icon input__link input-mb-0">
@@ -265,7 +265,7 @@
                                                         <div class="input__link-inner">
                                                             <span>linkedin.com/</span>
                                                             <input type="text" class="input input--bordered input--fw input--noshadow"
-                                                                   placeholder="E-posta Adresinizi Giriniz" value="zeynep.yildirim@mail.com">
+                                                                   placeholder="Linkedin Adresinizi Giriniz" value="@Model.GeneralInformation.LinkedIn">
                                                         </div>
                                                     </div>
                                                 </div>

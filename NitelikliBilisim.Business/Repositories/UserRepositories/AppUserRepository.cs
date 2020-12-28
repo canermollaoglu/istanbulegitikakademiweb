@@ -158,6 +158,29 @@ namespace NitelikliBilisim.Business.Repositories
             return model;
         }
 
+        public MyAccountSettingsGetVm GetAccoutSettingsPageData(string userId)
+        {
+            MyAccountSettingsGetVm model = new();
+            var data = (from user in _context.Users
+                       where user.Id == userId
+                       join student in _context.Customers on user.Id equals student.Id
+                       select new MyAccountSettingsGeneralInformationVm
+                       {
+                           Email = user.Email,
+                           Name = user.Name,
+                           Surname = user.Surname,
+                           DateOfBirth = student.DateOfBirth,
+                           Job = student.Job,
+                           LastGraduatedSchoolId = student.LastGraduatedSchoolId,
+                           Phone = user.PhoneNumber,
+                           LinkedIn = student.LinkedInProfileUrl,
+                           WebSite = student.WebSiteUrl
+                       }).First();
+
+            model.GeneralInformation = data;
+            return model;
+        }
+
         public ForYouPageGetVm GetForYouPageData(string userId)
         {
             var infos = _context.Customers

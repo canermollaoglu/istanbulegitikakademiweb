@@ -303,7 +303,7 @@
                 data: {
                     categoryId: currentCategoryId.val(),
                     hostCity: currentHostCity.val(),
-                    page: 1,
+                    page: currentPage.val(),
                     order: currentOrder.val(),
                 },
                 success: (res) => {
@@ -314,47 +314,73 @@
                     console.log(res);
                     $.each(res.data.educations, function (index, e) {
                         var education = `<a href="/${e.cSeo}/${e.seo}" class="lesson-list__item">
-                                    <div class="lesson-list__item-img">
-                                        <img src="${e.imagePath}" alt="">
-                                    </div>
-                                    <div class="lesson-list__item-cnt">
-                                        <div class="lesson-list__item-left">
-                                            <div class="lesson-list__item-title">
-                                                ${e.name}
+                                        <div class="lesson-list__item-img">
+                                            <img src="${e.imagePath}" alt="">
+                                        </div>
+                                        <div class="lesson-list__item-cnt">
+                                            <div class="lesson-list__item-left">
+                                                <div class="lesson-list__item-title">
+                                                    ${e.name}
+                                                </div>
+                                                <div class="lesson-list__item-txt">
+                                                    ${e.description}
+                                                </div>
                                             </div>
-                                            <div class="lesson-list__item-txt">
-                                                ${e.description}
+                                            <div class="lesson-list__item-right">
+                                                <div class="lesson-list__item-date">
+                                                    <span class="icon-outer">
+                                                        <svg class="icon">
+                                                            <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                                                        </svg>
+                                                    </span>
+                                                    ${e.educationDays} gün ( ${e.educationHours} saat )
+                                                </div>
+                                                <div class="lesson-list__item-price">
+                                                    <span>₺</span> ${e.price}
+                                                </div>
+                                                <div class="button v-tablet">
+                                                    <span class="button-txt">Sepete Ekle</span>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="lesson-list__item-right">
-                                            <div class="lesson-list__item-date">
-                                                <span class="icon-outer">
-                                                    <svg class="icon">
-                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                    </svg>
-                                                </span>
-                                                ${e.educationDays} gün ( ${e.educationHours} saat )
-                                            </div>
-                                            <div class="lesson-list__item-price">
-                                                <span>₺</span> ${e.price}
-                                            </div>
-                                            <div class="button v-tablet">
-                                                <span class="button-txt">Sepete Ekle</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>`;
+                                    </a>`;
                         lessonsContent.append(education);
                     });
 
                     paginationContent.html("");
+                    var prev = `<a class="pagination__item prev" onclick=changePage('${res.data.pageIndex - 1}')>
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
+                                </svg>
+                            </span>
+                        </a>`;
+                    var next = `<a class="pagination__item next" onclick=changePage('${res.data.pageIndex + 1}')>
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
+                                </svg>
+                            </span>
+                        </a>`;
+                    if (res.data.pageIndex > 1) {
+                        paginationContent.append(prev);
+                    }
                     for (var i = 1; i <= res.data.totalPageCount; i++) {
 
-                        var page = `<a class="pagination__item ${i==res.data.pageIndex?'active':''}" data-page=${i}>${i}</a>`;
+                        var page = `<a onclick="changePage('${i}')" class="pagination__item ${i == res.data.pageIndex ? 'active' : ''}" >${i}</a>`;
                         paginationContent.append(page);
                     }
+                    if (res.data.pageIndex < res.data.totalPageCount) {
+                        paginationContent.append(next);
+                    }
+
                 }
             });
+        }
+
+        function changePage(page) {
+            currentPage.val(page);
+            getSearchResults();
         }
     </script>
 }

@@ -126,7 +126,9 @@ namespace NitelikliBilisim.App.Controllers
         [Route("hesap/ayarlar")]
         public IActionResult AccountSettings()
         {
-            return View();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var model = _userUnitOfWork.User.GetAccoutSettingsPageData(userId);
+            return View(model);
         }
 
         [Route("sana-ozel")]
@@ -138,7 +140,7 @@ namespace NitelikliBilisim.App.Controllers
             return View(model);
         }
 
-        
+        [Route("profil-resmi-degistir")]
         public async Task<IActionResult> ChangeProfileImage(IFormFile ProfileImage)
         {
             try
