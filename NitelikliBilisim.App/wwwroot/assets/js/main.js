@@ -925,6 +925,14 @@ $(document).ready(function () {
         },
     });
 
+    $('.account-dashboard__courses .swiper-container').each(function () {
+        if ($(this).find('.swiper-slide').length > 3) {
+            $(this).find('.swiper-pagination').addClass('showed');
+        }
+        if ($(this).find('.swiper-slide').length == 0) {
+            $(this).parent().find('.account-empty-content').addClass('showed');
+        }
+    });
     var dashboardWeekSlider = new Swiper('.js-dashboard-week-slider', {
         autoplay: false,
         keyboard: false,

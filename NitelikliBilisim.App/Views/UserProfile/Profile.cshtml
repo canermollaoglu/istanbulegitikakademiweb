@@ -1977,6 +1977,16 @@
                                 </div>
                                 <div class="swiper-pagination"></div>
                             </div>
+                            <div class="account-empty-content">
+                                <span class="icon-outer">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-empty-content"></use>
+                                    </svg>
+                                </span>
+                                <span>
+                                    Hiç Kursun yok.
+                                </span>
+                            </div>
                         </div>
                     </div>
                     <div class="account-dashboard__courses">
@@ -2050,6 +2060,16 @@
                                 </div>
                                 <div class="swiper-pagination"></div>
                             </div>
+                            <div class="account-empty-content">
+                                <span class="icon-outer">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-empty-content"></use>
+                                    </svg>
+                                </span>
+                                <span>
+                                    Sertifikan yok.
+                                </span>
+                            </div>
                         </div>
                     </div>
                     <div class="account-dashboard__courses">
@@ -2068,7 +2088,6 @@
                         <div class="account-dashboard__courses-slider">
                             <div class="swiper-container js-dash-course-slider mt-1">
                                 <div class="swiper-wrapper">
-
                                     @foreach (var course in Model.FavoriteEducations)
                                     {
                                         var bannerUrl = "";
@@ -2112,18 +2131,29 @@
                                                             <span>@course.DaysText gün ( @course.HoursText saat )</span>
                                                         </span>
 
-                                                        @*<span class="card__money">
-                                                <span>₺</span> 800,00
-                                            </span>*@
+                                                        <span class="card__money">
+                                                                <span>₺</span> @course.Price
+                                                            </span>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     }
-
                                 </div>
                                 <div class="swiper-pagination"></div>
                             </div>
+
+                            <div class="account-empty-content">
+                                <span class="icon-outer">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-empty-content"></use>
+                                    </svg>
+                                </span>
+                                <span>
+                                    Favori kursun yok.
+                                </span>
+                            </div>
+
                         </div>
                     </div>
                     <div class="custom-banner blue mt-5">

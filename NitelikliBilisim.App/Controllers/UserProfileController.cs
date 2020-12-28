@@ -20,14 +20,16 @@ namespace NitelikliBilisim.App.Controllers
     public class UserProfileController : BaseController
     {
         private readonly UserUnitOfWork _userUnitOfWork;
+        private readonly UnitOfWork _unitOfWork;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IStorageService _storageService;
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly FileUploadManager _fileManager;
-        public UserProfileController(UserUnitOfWork userUnitOfWork, UserManager<ApplicationUser> userManager, IStorageService storageService, IWebHostEnvironment hostingEnvironment)
+        public UserProfileController(UnitOfWork unitOfWork,UserUnitOfWork userUnitOfWork, UserManager<ApplicationUser> userManager, IStorageService storageService, IWebHostEnvironment hostingEnvironment)
         {
             _userUnitOfWork = userUnitOfWork;
             _userManager = userManager;
+            _unitOfWork = unitOfWork;
             _storageService = storageService;
             _hostingEnvironment = hostingEnvironment;
             _fileManager = new FileUploadManager(_hostingEnvironment, "jpg", "jpeg");
@@ -132,6 +134,7 @@ namespace NitelikliBilisim.App.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var model = _userUnitOfWork.User.GetForYouPageData(userId);
+            model.Educators = _unitOfWork.Educator.GetEducatorsAboutUsPage();
             return View(model);
         }
 

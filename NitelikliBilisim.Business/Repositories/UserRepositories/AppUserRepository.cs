@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using MUsefulMethods;
 using Newtonsoft.Json;
 using NitelikliBilisim.Core.Entities;
-using NitelikliBilisim.Core.Entities.promotion;
 using NitelikliBilisim.Core.Entities.user_details;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Enums.promotion;
-using NitelikliBilisim.Core.Enums.user_details;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.Main.Profile;
 using NitelikliBilisim.Data;
@@ -22,12 +21,13 @@ namespace NitelikliBilisim.Business.Repositories
     {
         private readonly NbDataContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IConfiguration _configuration;
 
-
-        public AppUserRepository(NbDataContext context, UserManager<ApplicationUser> userManager)
+        public AppUserRepository(NbDataContext context, UserManager<ApplicationUser> userManager,IConfiguration configuration)
         {
             _context = context;
             _userManager = userManager;
+            _configuration = configuration;
         }
         public MyAccountSidebarVm GetMyAccountSidebarInfo(string userId, string currentPageName)
         {
@@ -386,6 +386,8 @@ namespace NitelikliBilisim.Business.Repositories
         {
             var wishListItems = _context.Wishlist.Where(x => x.Id == userId).ToList();
             List<Guid> wishListEducationIds = wishListItems.Select(x => x.Id2).ToList();
+            var hostId = Guid.Parse(_configuration.GetSection("SiteGeneralOptions").GetSection("PriceLocationId").Value);
+            var currentCulture = CultureInfo.CreateSpecificCulture("tr-TR");
             var educationsList = (from education in _context.Educations
                                   join featuredImage in _context.EducationMedias on education.Id equals featuredImage.EducationId
                                   join category in _context.EducationCategories on education.CategoryId equals category.Id
@@ -398,6 +400,7 @@ namespace NitelikliBilisim.Business.Repositories
                                       Name = education.Name,
                                       CategoryName = category.Name,
                                       CategorySeoUrl = category.SeoUrl,
+                                      Price = _context.EducationGroups.OrderByDescending(x => x.CreatedDate).FirstOrDefault(y => y.HostId == hostId && y.EducationId == education.Id).NewPrice.GetValueOrDefault().ToString(currentCulture),
                                       HoursText = (education.HoursPerDay * education.Days).ToString(),
                                       DaysText = education.Days.ToString(),
                                       FeaturedImageUrl = featuredImage.FileUrl
