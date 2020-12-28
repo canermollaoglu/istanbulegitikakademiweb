@@ -864,13 +864,17 @@ $(document).ready(function () {
 
     var swiper = new Swiper('.js-dash-course-slider', {
         keyboard: true,
-        loop: true,
+        loop: false,
         spaceBetween: 30,
         speed: 650,
-        simulateTouch: false,
-        grabCursor: false,
+        simulateTouch: true,
+        grabCursor: true,
         slidesPerView: 3,
         spaceBetween: 30,
+        pagination: {
+            el: '.js-dash-course-slider .swiper-pagination',
+            clickable: true,
+        },
         breakpoints: {
             1350: {
                 slidesPerView: 3,
@@ -880,28 +884,24 @@ $(document).ready(function () {
             },
             576: {
                 slidesPerView: 1.1,
-                pagination: {
-                    el: '.swiper-pagination',
-                    clickable: true,
-                },
             },
             320: {
                 slidesPerView: 1.1,
                 spaceBetween: 15,
-                pagination: {
-                    el: '.swiper-pagination',
-                    clickable: true,
-                },
             },
         },
     });
     var swiper = new Swiper('.js-dash-certificate-slider', {
         keyboard: true,
-        loop: true,
+        loop: false,
         spaceBetween: 30,
         speed: 650,
         simulateTouch: true,
         grabCursor: false,
+        pagination: {
+            el: '.js-dash-certificate-slider .swiper-pagination',
+            clickable: true,
+        },
         breakpoints: {
             // when window width is >= 640px
             768: {
@@ -909,18 +909,10 @@ $(document).ready(function () {
             },
             576: {
                 slidesPerView: 1.8,
-                pagination: {
-                    el: '.swiper-pagination',
-                    clickable: true,
-                },
             },
             320: {
                 slidesPerView: 1.8,
                 spaceBetween: 15,
-                pagination: {
-                    el: '.swiper-pagination',
-                    clickable: true,
-                },
             },
         },
     });

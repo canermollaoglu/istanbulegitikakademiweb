@@ -14,14 +14,7 @@ namespace NitelikliBilisim.App.Components
 
         public IViewComponentResult Invoke()
         {
-            var isLoggedIn = HttpContext.User.Identity.IsAuthenticated;
-            if (!isLoggedIn)
-                return View(_unitOfWork.Suggestions.GetGuestUserSuggestedEducations());
-            else
-            {
-                var userId = UserClaimsPrincipal.FindFirstValue(ClaimTypes.NameIdentifier);
-                return View(_unitOfWork.Suggestions.GetUserSuggestedEducations(userId, 5));
-            }
+                return View(_unitOfWork.Education.GetPopularEducations(5));
         }
     }
 }

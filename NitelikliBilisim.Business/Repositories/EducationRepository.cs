@@ -909,5 +909,55 @@ namespace NitelikliBilisim.Business.Repositories
 
             return data;
         }
+
+        public List<EducationVm> GetPopularEducations(int count)
+        {
+            //var comments = Context.EducationComments
+            //    .GroupBy(x => x.EducationId)
+            //    .Select(x => new
+            //    {
+            //        Id = x.Key,
+            //        Point = x.Sum(y => y.Points)
+            //    }).OrderByDescending(x=>x.Point).ToDictionary(x=>x.Id,x=>x.Point);
+
+
+
+            var educationsList = Context.Educations.Where(x => x.IsActive).OrderByDescending(x => x.CreatedDate).Take(count)
+                  .Join(Context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Id, r => r.EducationId, (x, y) => new
+                  {
+                      Education = x,
+                      EducationPreviewMedia = y
+                  })
+                  .Join(Context.EducationCategories, l => l.Education.CategoryId, r => r.Id, (x, y) => new
+                  {
+                      Education = x.Education,
+                      EducationPreviewMedia = x.EducationPreviewMedia,
+                      CategoryName = y.Name,
+                      CategorySeoUrl = y.SeoUrl
+                  }).ToList();
+            var hostId = Guid.Parse(_configuration.GetSection("SiteGeneralOptions").GetSection("PriceLocationId").Value);
+            var data = educationsList.Select(x => new EducationVm
+            {
+                Base = new EducationBaseVm
+                {
+                    Id = x.Education.Id,
+                    Name = x.Education.Name,
+                    Description = x.Education.Description,
+                    CategoryName = x.CategoryName,
+                    CategorySeoUrl = x.CategorySeoUrl,
+                    Level = EnumHelpers.GetDescription(x.Education.Level),
+                    Price = Context.EducationGroups.OrderByDescending(x => x.CreatedDate).FirstOrDefault(y => y.HostId == hostId && y.EducationId == x.Education.Id).NewPrice.GetValueOrDefault().ToString(CultureInfo.CreateSpecificCulture("tr-TR")),
+                    HoursPerDayText = x.Education.HoursPerDay.ToString(),
+                    DaysText = x.Education.Days.ToString(),
+                    DaysNumeric = x.Education.Days,
+                    HoursPerDayNumeric = x.Education.HoursPerDay,
+                    SeoUrl = x.Education.SeoUrl
+                },
+                Medias = new List<EducationMediaVm> { new EducationMediaVm { EducationId = x.Education.Id, FileUrl = x.EducationPreviewMedia.FileUrl } },
+            }
+     ).ToList();
+
+            return data;
+        }
     }
 }

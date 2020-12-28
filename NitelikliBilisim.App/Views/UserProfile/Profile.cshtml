@@ -1915,7 +1915,7 @@
                             <div class="account-dashboard__subtop-title">
                                 KURSLARIM <span class="colored-light-purple">(@Model.PurchasedEducationCount)</span>
                             </div>
-                            <a href="./egitim-listeleme.php" class="account-dashboard__subtop-right">
+                            <a asp-controller="UserProfile" asp-action="MyCourses" class="account-dashboard__subtop-right">
                                 <span class="icon-outer icon-show-more">
                                     <svg class="icon">
                                         <use xlink:href="../../assets/img/icons.svg#icon-show-more"></use>
@@ -1939,7 +1939,7 @@
                                             educatorImage = StorageService.DownloadFile(System.IO.Path.GetFileName(education.EducatorImageUrl), System.IO.Path.GetDirectoryName(education.EducatorImageUrl)).Result;
                                         }
                                         <div class="swiper-slide">
-                                            <div class="card card--course">
+                                            <a asp-controller="Course" asp-action="Details" asp-route-catSeoUrl="@education.CategorySeoUrl" asp-route-seoUrl="@education.SeoUrl" as class="card card--course">
                                                 <figure>
                                                     <img src="@bannerUrl" alt="">
                                                 </figure>
@@ -1971,7 +1971,7 @@
                                                         </span>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </a>
                                         </div>
                                     }
                                 </div>
@@ -2077,7 +2077,7 @@
                             <div class="account-dashboard__subtop-title">
                                 FAVORİ KURSLARIM <span class="colored-light-purple">(@Model.FavoriteEducationCount)</span>
                             </div>
-                            <a href="./egitim-listeleme.php" class="account-dashboard__subtop-right">
+                            <a asp-controller="UserProfile" asp-action="MyFavoriteCourses" class="account-dashboard__subtop-right">
                                 <span class="icon-outer icon-show-more">
                                     <svg class="icon">
                                         <use xlink:href="../../assets/img/icons.svg#icon-show-more"></use>
@@ -2098,7 +2098,7 @@
                                         }
 
                                         <div class="swiper-slide" id="fav-e-@(course.Id)">
-                                            <div class="card card--course">
+                                            <a asp-controller="Course" asp-action="Details" asp-route-catSeoUrl="@course.CategorySeoUrl" asp-route-seoUrl="@course.SeoUrl" class="card card--course">
                                                 <div class="card__favorite js-btn-fav" data-eid="@(course.Id)">
                                                     <span class="icon-outer fill">
                                                         <svg class="icon">
@@ -2136,7 +2136,7 @@
                                                             </span>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </a>
                                         </div>
                                     }
                                 </div>

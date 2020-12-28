@@ -691,7 +691,7 @@ namespace NitelikliBilisim.App.Controllers
                 throw;
             }
         }
-
+        [Route("sepet/kurumsal-adres-ekle")]
         public IActionResult AddCorporateAddress(AddCorporateAddressPostVm model)
         {
             if (!ModelState.IsValid)
@@ -712,6 +712,7 @@ namespace NitelikliBilisim.App.Controllers
             }
 
         }
+        [Route("sepet/bireysel-adres-ekle")]
         public IActionResult AddIndividualAddress(AddIndividualAddressPostVm model)
         {
             if (!ModelState.IsValid)
