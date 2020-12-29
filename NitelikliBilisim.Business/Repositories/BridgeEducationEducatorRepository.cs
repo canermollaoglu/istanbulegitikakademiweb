@@ -60,7 +60,7 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 var folder = Path.GetDirectoryName(item.ProfilePhoto);
                 var fileName = Path.GetFileName(item.ProfilePhoto);
-                item.ProfilePhoto = storage.DownloadFile(fileName, folder).Result;
+                item.ProfilePhoto = storage.BlobUrl+item.ProfilePhoto;
             }
 
             return model;

@@ -46,7 +46,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             var post = _unitOfWork.BlogPost.GetByIdWithCategory(postId);
             BlogPostGetVM model = new BlogPostGetVM();
             model.Title = post.Title;
-            model.FeaturedImageUrl = _storage.DownloadFile(Path.GetFileName(post.FeaturedImageUrl), "blog-featured-images").Result;
+            model.FeaturedImageUrl = _storage.BlobUrl+post.FeaturedImageUrl;
             model.Category = post.Category;
             model.Content = post.Content;
             model.Id = post.Id;
@@ -228,6 +228,29 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
         }
 
+        [HttpGet]
+        public IActionResult TogglePostHighLight(Guid postId)
+        {
+            try
+            {
+                var post = _unitOfWork.BlogPost.GetById(postId);
+                post.IsHighLight  = post.IsHighLight == true?false:true;
+                _unitOfWork.BlogPost.Update(post);
+                return Json(new ResponseModel
+                {
+                    isSuccess = true
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { $"Hata: {ex.Message}" }
+                });
+            }
+
+        }
 
         #region Helper Methods 
         /// <summary>

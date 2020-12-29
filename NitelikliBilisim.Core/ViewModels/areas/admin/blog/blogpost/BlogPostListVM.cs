@@ -9,5 +9,6 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.blog.blogpost
         public string CategoryName { get; set; }
         public DateTime CreatedDate { get; set; }
         public int ReadingTime { get; set; }
+        public bool IsHighLight { get; set; }
     }
 }

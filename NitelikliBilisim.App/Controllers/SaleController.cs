@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
@@ -29,7 +28,6 @@ using NitelikliBilisim.Notificator.Services;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -693,7 +691,7 @@ namespace NitelikliBilisim.App.Controllers
                 throw;
             }
         }
-
+        [Route("sepet/kurumsal-adres-ekle")]
         public IActionResult AddCorporateAddress(AddCorporateAddressPostVm model)
         {
             if (!ModelState.IsValid)
@@ -714,6 +712,7 @@ namespace NitelikliBilisim.App.Controllers
             }
 
         }
+        [Route("sepet/bireysel-adres-ekle")]
         public IActionResult AddIndividualAddress(AddIndividualAddressPostVm model)
         {
             if (!ModelState.IsValid)

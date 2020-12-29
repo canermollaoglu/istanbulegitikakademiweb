@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using Nest;
 using NitelikliBilisim.Business.Repositories;
 using NitelikliBilisim.Business.Repositories.BlogRepositories;
-using NitelikliBilisim.Core.Entities.groups;
 using NitelikliBilisim.Data;
 using NitelikliBilisim.Notificator.Services;
 
@@ -60,6 +59,8 @@ namespace NitelikliBilisim.Business.UoW
         private EducationCommentRepository _educationCommentRepository;
         private SubscriptionBlogRepository _subscriptionBlogRepository;
         private SubscriptionNewsletterRepository _subscriptionNewsletterRepository;
+        private ContactFormRepository _contactFormRepository;
+        private FeaturedCommentRepository _featuredCommentRepository;
 
         private IElasticClient _elasticClient;
         private IConfiguration _configuration;
@@ -76,6 +77,8 @@ namespace NitelikliBilisim.Business.UoW
             _context.EnsureAutoHistory();
             return _context.SaveChanges();
         }
+        public FeaturedCommentRepository FeaturedComment => _featuredCommentRepository ?? new FeaturedCommentRepository(_context);
+        public ContactFormRepository ContactForm => _contactFormRepository?? new ContactFormRepository(_context);
         public SubscriptionBlogRepository SubscriptionBlog => _subscriptionBlogRepository ?? new SubscriptionBlogRepository(_context);
         public SubscriptionNewsletterRepository SubscriptionNewsletter => _subscriptionNewsletterRepository ?? new SubscriptionNewsletterRepository(_context);
         public EducationCommentRepository EducationComment => _educationCommentRepository ?? new EducationCommentRepository(_context);

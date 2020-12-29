@@ -1,0 +1,131 @@
+﻿@{
+    ViewData["Title"] = "S.S.S. İletişim Talepleri";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-table"></i> Sıkça Sorulan Sorular Sayfası İletişim Talepleri
+    </div>
+    <div class="card-body">
+        <div id="contact-form-grid"></div>
+    </div>
+    <div class="card-footer small text-muted">Veri tarihi: @DateTime.Now</div>
+</div>
+
+@section postScripts{
+
+    <script>
+        /* assignments */
+        $(document).ready(document_onLoad);
+
+        /* events */
+        function document_onLoad() {
+            createGrid();
+        }
+
+        /*DataGrid*/
+        function createGrid() {
+            $("#contact-form-grid").dxDataGrid({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    key: "id",
+                    loadUrl: "../../api/contactform/get-faq-contact-forms"
+                }),
+                remoteOperations: {
+                    paging: true,
+                    filtering: true,
+                    sorting: true,
+                    grouping: true,
+                    summary: true,
+                    groupPaging: true
+                },
+                showBorders: true,
+                showColumnLines: true,
+                showRowLines: true,
+                wordWrapEnabled: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                searchPanel: {
+                    visible: true,
+                    width: 240
+                },
+                paging: {
+                    pageSize: 10
+                },
+                groupPanel: {
+                    visible: true
+                },
+                grouping: {
+                    autoExpandAll: true
+                },
+                headerFilter: {
+                    visible: true
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10, 20],
+                    showInfo: true
+                },
+                onExporting: function (e) {
+                    var workbook = new ExcelJS.Workbook();
+                    var worksheet = workbook.addWorksheet('SSS İletişim Talepleri');
+                    DevExpress.excelExporter.exportDataGrid({
+                        worksheet: worksheet,
+                        component: e.component,
+                        customizeCell: function (options) {
+                            var excelCell = options;
+                            excelCell.font = { name: 'Arial', size: 12 };
+                            excelCell.alignment = { horizontal: 'left' };
+                        }
+                    }).then(function () {
+                        workbook.xlsx.writeBuffer().then(function (buffer) {
+                            saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'SSS Iletisim Talepleri' + parseInt(Math.random() * 1000000000) + '.xlsx');
+                        });
+                    });
+                    e.cancel = true;
+                },
+                export: {
+                    enabled: true
+                },
+                columns: [
+                    {
+                        caption: "Başvuru Tarihi",
+                        dataField: "createdDate",
+                        dataType: 'date',
+                        format: 'dd/MM/yyyy',
+                        width: 160,
+                        sortOrder: "desc"
+                    },
+                    {
+                        caption: "Ad Soyad",
+                        dataField: "name"
+                    },
+                    {
+                        caption: "Email",
+                        dataField: "email",
+                        width: 260
+
+                    },
+                ],
+                masterDetail: {
+                    enabled: true,
+                    template: function (container, options) {
+                        var currentForm = options.data;
+                        var currentDiv = $("<div class='row'>")
+                            .appendTo(container);
+                        var content = `<div class="col-md-12">` +
+                            `<div class="card border-info mb-3">`+
+                            ` <div class="card-header font-weight-bold">Mesaj</div>` +
+                            `<div class="card-body"><p>${currentForm.content}</p></div></div></div>`;
+                        currentDiv.append(content);
+                    }
+                }
+            });
+        }
+    </script>
+}

@@ -63,7 +63,7 @@
                         <div class="login__header-line--progress" style="width: 50%;"></div>
                     </div>
                 </div>
-                <form id="validateForm" class="login__content" method="post" asp-controller="Account" asp-action="Register">
+                <form id="registerForm" class="login__content">
                     <div class="login__form login__form-step1 active">
                         <div class="formStep1">
                             <div class="input__outer">
@@ -127,10 +127,10 @@
                             <label class="main-checkbox reverse login__checkbox">
                                 niteliklibilisim.com.tr‘ye ait <a href="#0">kullanım politikalarını</a> ve
                                 <a href="#0">gizlilik sözleşmesini</a> okudum, kabul ediyorum.
-                                <input type="checkbox" id="chk-terms-and-conditions" class="login-checkbox" name="onBilgilendirme" required>
+                                <input type="checkbox" id="chk-terms-and-conditions" class="login-checkbox" name="AcceptedTerms" required>
                                 <span class="main-checkbox__checkmark"></span>
                             </label>
-                            <button type="submit" class="button button-fw js-next-step2">
+                            <button type="button" class="button button-fw js-next-step2">
                                 Devam et
                             </button>
                         </div>
@@ -180,7 +180,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <button type="submit" class="button button-fw js-button-step-finish login__finish-button">
+                            <button type="button" class="button button-fw js-button-step-finish login__finish-button">
                                 Kaydol
                             </button>
                         </div>
@@ -223,12 +223,88 @@
         var inputPassword = $("#input-password");
         var inputConfirmPassword = $("#input-confirm-password");
         var chkTermsAndConditions = document.getElementById("chk-terms-and-conditions");
-        var btnSubmit = $("#btn-submit");
 
+        $('.js-next-step2').bind('change click', function () {
+            if ($('#registerForm').valid()) {
+                $('.login__form-step1').removeClass('active');
+                $('.login__form-step2').addClass('active');
+                var loginContentHeight = $('.login__content .login__form.active').height();
+                $('.login__content').css('height', loginContentHeight);
+                $('.login__is-logined').css('top', loginContentHeight + 20);
+                $('.login__header-line--progress').css('width', '100%');
+                $('.circle-step1').addClass('preved');
+                $('.circle-step2').addClass('active');
+                $('.js-login-header-step1').removeClass('active');
+                $('.js-login-header-step2').addClass('active');
+                $('.js-password-equal').hide();
+            //}
+        }});
+
+        $('.login__finish-button').click(function () {
+            btnSubmit_onClick();
+        });
+        
+
+        $('#registerForm').validate({
+            errorLabelContainer: $('#registerForm div.error'),
+            errorContainer: 'div.error-messages',
+            errorLabelContainer: $('ul', 'div.error-messages'),
+            wrapper: 'li',
+            rules: {
+                Name: {
+                    required: true,
+                },
+                Email: {
+                    required: true,
+                    email: true,
+                },
+                Surname: {
+                    required: true,
+                },
+                Phone: {
+                    required: true,
+                },
+                UserName: {
+                    required: true,
+                },
+                Password: {
+                    required: true,
+                },
+                ConfirmPassword: {
+                    equalTo: "#input-password"
+                },
+                AcceptedTerms: {
+                    required: true,
+                },
+            },
+            messages: {
+                Name: 'Bu alan zorunludur.',
+                Surname: 'Bu alan zorunludur.',
+                Password: 'Bu alan zorunludur.',
+                ConfirmPassword: 'Şifreler uyuşmuyor.',
+                UserName: 'Bu alan zorunludur.',
+                Phone: 'Bu alan zorunludur.',
+                Email: {
+                    required: 'Bu alan zorunludur.',
+                    email: 'Lütfen geçerli bir e-posta adresi giriniz.',
+                },
+                AcceptedTerms: 'Bu alan zorunludur.'
+            },
+            highlight: function (element) {
+                $(element)
+                    .parent()
+                    .addClass('outer-error');
+            },
+            unhighlight: function (element) {
+                $(element)
+                    .parent()
+                    .removeClass('outer-error');
+            },
+        });
+        
         /* assignments */
         $(document).ready(document_onLoad);
         window.onbeforeunload = window_onBeforeUnload;
-        btnSubmit.on("click", btnSubmit_onClick);
 
         /* events */
         function document_onLoad() {
@@ -240,17 +316,19 @@
 
         }
         function window_onBeforeUnload() {
-            if (__envoy.isStorageExists("register")) {
-                __envoy.setRegisterForm({
-                    name: inputName.val(),
-                    surname: inputSurname.val(),
-                    email: inputEmail.val(),
-                    phone: inputPhone.val(),
-                    isNbuy: selectIsNbuyStudent.options[selectIsNbuyStudent.selectedIndex].value
-                });
-            }
+            //if (__envoy.isStorageExists("register")) {
+            //    __envoy.setRegisterForm({
+            //        name: inputName.val(),
+            //        surname: inputSurname.val(),
+            //        email: inputEmail.val(),
+            //        phone: inputPhone.val(),
+            //        isNbuy: selectIsNbuyStudent.options[selectIsNbuyStudent.selectedIndex].value
+            //    });
+            //}
         }
-        function btnSubmit_onClick() {
+        function btnSubmit_onClick(e) {
+           // e.preventDetault();
+
             var data = {
                 Name: inputName.val(),
                 Surname: inputSurname.val(),

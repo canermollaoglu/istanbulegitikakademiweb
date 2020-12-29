@@ -4,6 +4,7 @@ using NitelikliBilisim.Core.Enums.user_details;
 using NitelikliBilisim.Core.Services;
 using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_comments;
+using NitelikliBilisim.Core.ViewModels.Main.Course;
 using NitelikliBilisim.Core.ViewModels.Main.EducationComment;
 using NitelikliBilisim.Data;
 using System;
@@ -25,7 +26,7 @@ namespace NitelikliBilisim.Business.Repositories
             _storage = new StorageService();
         }
 
-        public EducationCommentsVm GetEducationComments(Guid? categoryId, int? sortingType, int? pageIndex)
+        public EducationCommentsVm GetEducationComments(Guid? categoryId, int? sortingType, int pageIndex = 1)
         {
             var sType = sortingType.HasValue ? (EducationCommentSortingTypes)sortingType : EducationCommentSortingTypes.Date;
             var retVal = new EducationCommentsVm();
@@ -65,10 +66,9 @@ namespace NitelikliBilisim.Business.Repositories
                     rawdata = rawdata.OrderByDescending(x => x.CreatedDate);
                     break;
             }
-            pageIndex = pageIndex ?? 1;
-            rawdata = rawdata.Skip((pageIndex.Value - 1) * 6).Take(6);
             retVal.TotalCount = rawdata.Count();
-            retVal.PageIndex = pageIndex.Value;
+            retVal.PageIndex = pageIndex;
+            rawdata = rawdata.Skip((pageIndex - 1) * 6).Take(6);
             retVal.Comments = rawdata.ToList();
 
             return retVal;
@@ -91,7 +91,7 @@ namespace NitelikliBilisim.Business.Repositories
                          }).Take(count).ToList();
             foreach (var comment in model)
             {
-                comment.CommenterAvatarPath = _storage.DownloadFile(Path.GetFileName(comment.CommenterAvatarPath), Path.GetDirectoryName(comment.CommenterAvatarPath)).Result;
+                comment.CommenterAvatarPath = _storage.BlobUrl + comment.CommenterAvatarPath;
             }
 
             return model;
@@ -100,13 +100,13 @@ namespace NitelikliBilisim.Business.Repositories
         public void ToggleHighlight(Guid commentId)
         {
             var comment = _context.EducationComments.First(x => x.Id == commentId);
-            comment.IsHighLight = comment.IsHighLight?false:true;
+            comment.IsHighLight = comment.IsHighLight ? false : true;
             _context.SaveChanges();
         }
 
         public void SetCommentStatus(Guid commentId, CommentApprovalStatus status)
         {
-           var comment = _context.EducationComments.First(x => x.Id == commentId);
+            var comment = _context.EducationComments.First(x => x.Id == commentId);
             comment.ApprovalStatus = status;
             _context.SaveChanges();
         }
@@ -133,6 +133,35 @@ namespace NitelikliBilisim.Business.Repositories
                            IsHighlight = comment.IsHighLight
                        };
             return data;
+        }
+
+        public CoursePageCommentsVm GetPagedComments(Guid educationId, int page)
+        {
+            var model = new CoursePageCommentsVm();
+            var comments = (from educationComment in _context.EducationComments
+                            join user in _context.Users on educationComment.CommentatorId equals user.Id
+                            join student in _context.Customers on user.Id equals student.Id into st
+                            from student in st.DefaultIfEmpty()
+                            where educationComment.EducationId == educationId
+                            && educationComment.ApprovalStatus == CommentApprovalStatus.Approved
+                            select new PagedCommentVm
+                            {
+                                Id = educationComment.Id,
+                                UserName = user.Name,
+                                UserSurname = user.Surname,
+                                UserAvatarPath = user.AvatarPath,
+                                CreatedDateText = educationComment.CreatedDate.ToString("dd MMMM yyyy"),
+                                CreatedDate = educationComment.CreatedDate,
+                                Point = educationComment.Points,
+                                UserJob = student.Job,
+                                Content = educationComment.Content
+                            }).AsQueryable();
+
+
+            model.IsLoadCommentButtonActive = page * 4 >= comments.Count() ? false : true;
+            comments = comments.OrderByDescending(x => x.CreatedDate).Skip((page - 1) * 4).Take(4);
+            model.Comments = comments.ToList();
+            return model;
         }
     }
 }

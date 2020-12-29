@@ -90,7 +90,8 @@ namespace NitelikliBilisim.Business.Repositories
                     {
                         Category = x,
                         Education = y
-                    }).ToList()
+                    }).Where(x=>x.Education.IsActive)
+                    .ToList()
                     .GroupBy(x => x.Category)
                     .Select(x => new
                     {

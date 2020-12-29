@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NitelikliBilisim.Core.ViewModels.Main.AboutUs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,7 +15,7 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public string NbuyEndDate { get; set; }
         public string EducationCategory { get; set; }
         public List<EducationMonth> EducationMonths { get; set; } = new List<EducationMonth>();
-
+        public List<EducatorListVm> Educators { get; set; }
     }
 
     public class EducationMonth

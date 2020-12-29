@@ -44,6 +44,28 @@ function confirm_onClick() {
     });
 }
 
+function toggleHighLight(id) {
+    var resultAlert = new AlertSupport.ResultAlert();
+    $.ajax({
+        url: `/admin/blogpost/TogglePostHighLight?postId=${id}`,
+        method: "get",
+        success: (res) => {
+            if (res.isSuccess) {
+                resultAlert.display({
+                    success: true,
+                    message: "İşlem başarılı.",
+                });
+                $("#blog-post-grid").dxDataGrid("instance").refresh();
+            } else {
+                resultAlert.display({
+                    success: false,
+                    errors: res.errors,
+                    message: "İşlem başarısız"
+                });
+            }
+        }
+    });
+}
 /*DataGrid*/
 function createGrid() {
     $("#blog-post-grid").dxDataGrid({
@@ -118,10 +140,18 @@ function createGrid() {
                 caption: "Yönet",
                 cellTemplate: function (container, options) {
                     var current = options.data;
+                    console.log(current);
                     $(`<a title="Önizle" class="btn btn-outline-primary btn-sm" href="/admin/blogpost/preview?postId=${current.id}"><i class="fa fa-eye"></i></a>`)
                         .appendTo(container);
                     $(`<a title="Düzenle" class="btn btn-outline-warning btn-sm" href="/admin/blogpost/update?postId=${current.id}"><i class="fa fa-edit"></i></a>`)
                         .appendTo(container);
+                    if (current.isHighLight) {
+                        $(`<button type="button" title="Öne çıkarılanlardan kaldır."  class="btn btn-outline-warning btn-sm" onClick="toggleHighLight('${current.id}')" style="cursor:pointer;"><i class="fa fa-thumbs-o-down"></i></button>`)
+                            .appendTo(container);
+                    } else {
+                        $(`<button type="button" title="Öne çıkar." class="btn btn-outline-success btn-sm"  onClick="toggleHighLight('${current.id}')" style="cursor:pointer;"><i class="fa fa-thumbs-o-up"></i></button>`)
+                            .appendTo(container);
+                    }
                     $(`<a title="Sil" class="btn btn-outline-danger btn-sm btn-confirmation-modal-trigger" data-url="/admin/blogpost/delete?postId=${current.id}" style="cursor:pointer;"><i class="fa fa-trash"></i></a>`)
                         .appendTo(container);
                 },

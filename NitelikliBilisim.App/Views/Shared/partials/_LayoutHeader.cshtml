@@ -621,11 +621,11 @@
                             if (User.IsInRole("Educator"))
                             {
 
-                                profileImage = StorageService.DownloadFile(System.IO.Path.GetFileName(user.AvatarPath), "educator-photos").Result;
+                                profileImage = StorageService.BlobUrl+user.AvatarPath;
                             }
                             else if (User.IsInRole("User"))
                             {
-                                profileImage = StorageService.DownloadFile(System.IO.Path.GetFileName(user.AvatarPath), "user-avatars").Result;
+                                profileImage = StorageService.BlobUrl+user.AvatarPath;
                             }
                         }
                         catch

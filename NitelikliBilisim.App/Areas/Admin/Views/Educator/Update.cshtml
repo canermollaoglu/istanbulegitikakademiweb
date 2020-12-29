@@ -28,7 +28,7 @@
                                 var filePath = "";
                                 try
                                 {
-                                    filePath = StorageService.DownloadFile(System.IO.Path.GetFileName(Model.FilePath), "educator-photos").Result;
+                                    filePath = StorageService.BlobUrl+Model.FilePath;
                                 }
                                 catch
                                 {

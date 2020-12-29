@@ -34,7 +34,7 @@
                             var educationImage = "";
                             if (!string.IsNullOrEmpty(comment.EducationFeaturedImage))
                             {
-                                educationImage = StorageService.DownloadFile(System.IO.Path.GetFileName(comment.EducationFeaturedImage), System.IO.Path.GetDirectoryName(comment.EducationFeaturedImage)).Result;
+                                educationImage = StorageService.BlobUrl+comment.EducationFeaturedImage;
                             }
                             
                             <div class="account-comment">

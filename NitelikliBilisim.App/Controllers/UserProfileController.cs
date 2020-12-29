@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -15,6 +12,9 @@ using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Services.Abstracts;
+using System;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -22,14 +22,16 @@ namespace NitelikliBilisim.App.Controllers
     public class UserProfileController : BaseController
     {
         private readonly UserUnitOfWork _userUnitOfWork;
+        private readonly UnitOfWork _unitOfWork;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IStorageService _storageService;
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly FileUploadManager _fileManager;
-        public UserProfileController(UserUnitOfWork userUnitOfWork, UserManager<ApplicationUser> userManager, IStorageService storageService, IWebHostEnvironment hostingEnvironment)
+        public UserProfileController(UnitOfWork unitOfWork,UserUnitOfWork userUnitOfWork, UserManager<ApplicationUser> userManager, IStorageService storageService, IWebHostEnvironment hostingEnvironment)
         {
             _userUnitOfWork = userUnitOfWork;
             _userManager = userManager;
+            _unitOfWork = unitOfWork;
             _storageService = storageService;
             _hostingEnvironment = hostingEnvironment;
             _fileManager = new FileUploadManager(_hostingEnvironment, "jpg", "jpeg");
@@ -126,7 +128,9 @@ namespace NitelikliBilisim.App.Controllers
         [Route("hesap/ayarlar")]
         public IActionResult AccountSettings()
         {
-            return View();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var model = _userUnitOfWork.User.GetAccoutSettingsPageData(userId);
+            return View(model);
         }
 
         [Route("sana-ozel")]
@@ -134,10 +138,11 @@ namespace NitelikliBilisim.App.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var model = _userUnitOfWork.User.GetForYouPageData(userId);
+            model.Educators = _unitOfWork.Educator.GetEducatorsAboutUsPage();
             return View(model);
         }
 
-        
+        [Route("profil-resmi-degistir")]
         public async Task<IActionResult> ChangeProfileImage(IFormFile ProfileImage)
         {
             try
@@ -146,19 +151,36 @@ namespace NitelikliBilisim.App.Controllers
                 var fileName = StringHelpers.FormatForTag($"{user.Name} {user.Surname}");
                 var dbPath = await _storageService.UploadFile(ProfileImage.OpenReadStream(), $"{fileName}-{ProfileImage.FileName}", "user-avatars");
                 user.AvatarPath = dbPath;
-
                 await _userManager.UpdateAsync(user);
-
                 return RedirectToAction("Profile", "UserProfile");
             }
             catch (Exception)
             {
-
                 throw;
             }
                
 
         }
 
+        [Route("haftaya-ozel-kurslar")]
+        public IActionResult GetEducationsOfTheWeeks(int week)
+        {
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var model = _unitOfWork.Suggestions.GetEducationsOfTheWeek(week, userId);
+                return Json(new ResponseData
+                {
+                    Success = true,
+                    Data = model
+                });
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
     }
 }

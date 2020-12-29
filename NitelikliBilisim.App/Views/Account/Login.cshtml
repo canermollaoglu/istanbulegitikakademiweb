@@ -14,7 +14,7 @@
     <section class="login">
         <partial name="partials/_header-simple" />
         <div class="login__img">
-            <a href="./index.php" class="login__logo">
+            <a asp-controller="Home" asp-action="Index" class="login__logo">
                 <img src="~/assets/img/logo-white.svg" alt="">
             </a>
             <img src="~/assets/img/giris-yap-img.jpg" class="login__img-img pos-0" alt="">
@@ -28,7 +28,7 @@
                 <div class="login__title">
                     GİRİŞ <span class="colored-blue">YAP</span>
                 </div>
-                <form id="validateForm" class="login__content" action="giris-yap" method="post">
+                <form id="loginForm" class="login__content" action="giris-yap" method="post">
                     <div asp-validation-summary="All"></div>
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
@@ -81,5 +81,35 @@
     <script src="~/vendor/modal-video/js/jquery-modal-video.min.js"></script>
     <script src="~/vendor/card/dist/card.js"></script>
     <script src="~/assets/js/main.js"></script>
+    <script>
+        $('#loginForm').validate({
+            errorLabelContainer: $('#validateForm div.error'),
+            errorContainer: 'div.error-messages',
+            errorLabelContainer: $('ul', 'div.error-messages'),
+            wrapper: 'li',
+            rules: {
+                UserName: {
+                    required: true,
+                },
+                Password: {
+                    required: true,
+                }
+            },
+            messages: {
+                UserName: 'Lütfen kullanıcı adınızı giriniz.',
+                Password: 'Lütfen şifrenizi giriniz.',
+            },
+            highlight: function (element) {
+                $(element)
+                    .parent()
+                    .addClass('outer-error');
+            },
+            unhighlight: function (element) {
+                $(element)
+                    .parent()
+                    .removeClass('outer-error');
+            },
+        });
+    </script>
 </body>
 </html>

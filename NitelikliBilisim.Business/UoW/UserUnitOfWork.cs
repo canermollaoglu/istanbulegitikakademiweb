@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using NitelikliBilisim.Business.Repositories;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Data;
@@ -14,17 +15,19 @@ namespace NitelikliBilisim.Business.UoW
         private readonly UserManager<ApplicationUser> _userManager;
         private AppUserRepository _appUserRepository;
         private UserGroupRepository _userGroupRepository;
-        public UserUnitOfWork(NbDataContext context, UserManager<ApplicationUser> userManager)
+        private readonly IConfiguration _configuration;
+        public UserUnitOfWork(NbDataContext context, UserManager<ApplicationUser> userManager,IConfiguration configuration)
         {
             _context = context;
             _userManager = userManager;
+            _configuration = configuration;
         }
         
         public AppUserRepository User
         {
             get
             {
-                return _appUserRepository ?? (_appUserRepository = new AppUserRepository(_context, _userManager));
+                return _appUserRepository ?? (_appUserRepository = new AppUserRepository(_context, _userManager,_configuration));
             }
         }
         public UserGroupRepository Group

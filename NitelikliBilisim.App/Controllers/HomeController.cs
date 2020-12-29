@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using MUsefulMethods;
 using Nest;
 using NitelikliBilisim.App.Controllers.Base;
@@ -17,6 +18,8 @@ using NitelikliBilisim.Core.ViewModels.Main.AboutUs;
 using NitelikliBilisim.Core.ViewModels.Main.CorporateMembershipApplication;
 using NitelikliBilisim.Core.ViewModels.Main.EducationComment;
 using NitelikliBilisim.Core.ViewModels.Main.EducatorApplication;
+using NitelikliBilisim.Core.ViewModels.Main.Home;
+using NitelikliBilisim.Notificator.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -34,9 +37,12 @@ namespace NitelikliBilisim.App.Controllers
         private readonly FileUploadManager _fileManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IStorageService _storageService;
+        private readonly IEmailSender _emailSender;
+        private readonly IConfiguration _configuration;
         private ISession _session => _httpContextAccessor.HttpContext.Session;
-        public HomeController(IWebHostEnvironment hostingEnvironment, UnitOfWork unitOfWork, RoleManager<ApplicationRole> roleManager, IElasticClient elasticClient, IHttpContextAccessor httpContextAccessor, IStorageService storageService)
+        public HomeController(IConfiguration configuration,IEmailSender emailSender,IWebHostEnvironment hostingEnvironment, UnitOfWork unitOfWork, RoleManager<ApplicationRole> roleManager, IElasticClient elasticClient, IHttpContextAccessor httpContextAccessor, IStorageService storageService)
         {
+            _configuration = configuration;
             _hostingEnvironment = hostingEnvironment;
             _fileManager = new FileUploadManager(_hostingEnvironment, "pdf", "doc");
             _httpContextAccessor = httpContextAccessor;
@@ -44,6 +50,7 @@ namespace NitelikliBilisim.App.Controllers
             CheckRoles().Wait();
             _storageService = storageService;
             _unitOfWork = unitOfWork;
+            _emailSender = emailSender;
         }
 
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
@@ -96,20 +103,125 @@ namespace NitelikliBilisim.App.Controllers
         {
             AboutUsGetVm model = new();
             model.Hosts = _unitOfWork.EducationHost.EducationHostList();
-
+            model.TotalEducatorCount = _unitOfWork.Educator.GetEducatorCount();
+            model.TotalEducationHours = _unitOfWork.Education.TotalEducationHours();
+            model.Educators = _unitOfWork.Educator.GetEducatorsAboutUsPage();
             return View(model);
         }
 
         [Route("iletisim")]
         public IActionResult Contact()
         {
+            ViewData["ContactFormSubjects"] = EnumHelpers.ToKeyValuePair<ContactFormSubjects>(); 
             return View();
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("iletisim-formu")]
+        public IActionResult Contact(ContactFormPostVm model)
+        {
+            if (!ModelState.IsValid)
+                return Json(new ResponseData
+                {
+                    Success = false
+                });
+
+            try
+            {
+                _unitOfWork.ContactForm.Insert(new ContactForm
+                {
+                    Name = model.Name,
+                    Phone = model.PhoneCode+model.Phone,
+                    Subject = EnumHelpers.GetDescription(model.ContactFormSubject),
+                    Email = model.Email,
+                    Content = model.Content,
+                    ContactFormType = ContactFormTypes.ContactForm
+                });
+
+                string htmlBody = "<b>Konu :</b>" + EnumHelpers.GetDescription(model.ContactFormSubject)+"<br/>";
+                htmlBody += "<b>Ad Soyad :</b>" + model.Name + "<br/>";
+                htmlBody += "<b>Telefon :</b>" +model.PhoneCode+ model.Phone + "<br/>";
+                htmlBody += "<b>E-Posta :</b>" + model.Email + "<br/>";
+                htmlBody += "<b>Mesaj :</b>" + model.Content + "<br/>";
+                string[] adminEmails = _configuration.GetSection("SiteGeneralOptions").GetSection("AdminEmails").Value.Split(";");
+
+                _emailSender.SendAsync(new EmailMessage
+                {
+                    Body = htmlBody,
+                    Subject = "Nitelikli Bilişim İletişim Formu",
+                    Contacts = adminEmails
+                });
+               
+                return Json(new ResponseData
+                {
+                    Success = true
+                });
+            }
+            catch (Exception ex)
+            {
+                //Log ex
+                return Json(new ResponseData
+                {
+                    Success = false
+                });
+            }
+
+        }
+
         [Route("sikca-sorulan-sorular")]
         public IActionResult FrequentlyAskedQuestions()
         {
             return View();
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("sss-form")]
+        public IActionResult FrequentlyAskedQuestionsForm(FAQContactFormPostVm model)
+        {
+            if (!ModelState.IsValid)
+                return Json(new ResponseData
+                {
+                    Success = false
+                });
+
+            try
+            {
+                _unitOfWork.ContactForm.Insert(new ContactForm
+                {
+                    Name = model.Name,
+                    Email = model.Email,
+                    Content = model.Content,
+                    ContactFormType = ContactFormTypes.SSS
+                });
+                string htmlBody = "<b>Ad Soyad :</b>" + model.Name + "<br/>";
+                htmlBody += "<b>E-Posta :</b>" + model.Email + "<br/>";
+                htmlBody += "<b>Mesaj :</b>" + model.Content + "<br/>";
+                string[] adminEmails = _configuration.GetSection("SiteGeneralOptions").GetSection("AdminEmails").Value.Split(";");
+
+                _emailSender.SendAsync(new EmailMessage
+                {
+                    Body = htmlBody,
+                    Subject = "Nitelikli Bilişim S.S.S. Sayfası İletişim Formu",
+                    Contacts = adminEmails
+                });
+
+                return Json(new ResponseData
+                {
+                    Success = true
+                });
+            }
+            catch (Exception ex)
+            {
+                //Log ex
+                return Json(new ResponseData
+                {
+                    Success = false
+                });
+            }
+        }
+
+
 
         [Route("kurumsal-uyelik-basvurusu")]
         public IActionResult CorporateMembershipApplication()
@@ -124,18 +236,19 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [Route("kullanici-yorumlari")]
-        public IActionResult UserComments(Guid? c, int? s, int? p)
+        public IActionResult UserComments(Guid? c, int? s, int p=1)
         {
             UserCommentsPageGetVm retVal = new();
-
             ViewData["SortingType"] = s.HasValue ? s : ViewData["SortingType"];
-            ViewData["Page"] = p.HasValue ? p : ViewData["Page"];
+            ViewData["Page"] = p;
             ViewData["Category"] = c.HasValue ? c : ViewData["Category"];
             //her sayfada 6 yorum.
             retVal.SortingTypes = EnumHelpers.ToKeyValuePair<EducationCommentSortingTypes>();
             retVal.EducationCategories = _unitOfWork.EducationCategory.GetEducationCategoryDictionary();
             retVal.PageDetails = _unitOfWork.EducationComment.GetEducationComments(c, s, p);
 
+            //Featured Comments
+            retVal.FeaturedComments = _unitOfWork.FeaturedComment.GetFeaturedComments();
             return View(retVal);
         }
 
@@ -288,13 +401,23 @@ namespace NitelikliBilisim.App.Controllers
             }
             try
             {
+               var result= _unitOfWork.SubscriptionBlog.CheckSubscriber(email);
+                if (result)
+                    return Json(new ResponseData
+                    {
+                        Success = false,
+                        Message ="Zaten blog aboneliğiniz bulunmaktadır."
+                    });
+
+
                 _unitOfWork.SubscriptionBlog.Insert(new BlogSubscriber { 
                 Email = email,
                 Name = name
                 });
                 return Json(new ResponseData
                 {
-                    Success = true
+                    Success = true,
+                    Message= "E-bülten'e kaydınız başarıyla sağlanmıştır. Güncel içerikleri tarafınıza ulaştıracağız."
                 });
             }
             catch (Exception ex)
@@ -302,7 +425,8 @@ namespace NitelikliBilisim.App.Controllers
                 //Log ex
                 return Json(new ResponseData
                 {
-                    Success = false
+                    Success = false,
+                    Message = "Beklenmeyen bir hata ile karşılaşıldı. Lütfen daha sonra tekrar deneyiniz."
                 });
             }
         }
@@ -321,13 +445,23 @@ namespace NitelikliBilisim.App.Controllers
             }
             try
             {
+                var result = _unitOfWork.SubscriptionNewsletter.CheckSubscriber(email);
+                if (result)
+                    return Json(new ResponseData
+                    {
+                        Success = false,
+                        Message = "Zaten blog aboneliğiniz bulunmaktadır."
+                    });
+
+
                 _unitOfWork.SubscriptionNewsletter.Insert(new NewsletterSubscriber
                 {
                     Email = email
                 });
                 return Json(new ResponseData
                 {
-                    Success = true
+                    Success = true,
+                    Message = "Abonelik talebiniz başarı ile alındı."
                 });
             }
             catch (Exception ex)
@@ -335,7 +469,8 @@ namespace NitelikliBilisim.App.Controllers
                 //Log ex
                 return Json(new ResponseData
                 {
-                    Success = false
+                    Success = false,
+                    Message= "Beklenmeyen bir hata ile karşılaşıldı. Lütfen daha sonra tekrar deneyiniz."
                 });
             }
         }

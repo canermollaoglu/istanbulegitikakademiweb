@@ -9,12 +9,12 @@
     var educationImage = "";
     if (!string.IsNullOrEmpty(Model.EducationFeaturedImage))
     {
-        educationImage = StorageService.DownloadFile(System.IO.Path.GetFileName(Model.EducationFeaturedImage), System.IO.Path.GetDirectoryName(Model.EducationFeaturedImage)).Result;
+        educationImage = StorageService.BlobUrl+Model.EducationFeaturedImage;
     }
     var educatorImage = "";
     if (!string.IsNullOrEmpty(Model.EducatorAvatarPath))
     {
-        educatorImage = StorageService.DownloadFile(System.IO.Path.GetFileName(Model.EducatorAvatarPath), System.IO.Path.GetDirectoryName(Model.EducatorAvatarPath)).Result;
+        educatorImage = StorageService.BlobUrl+Model.EducatorAvatarPath;
     }
 }
 
@@ -177,7 +177,7 @@
                                             var certificateImage = "";
                                             if (!string.IsNullOrEmpty(Model.EducatorAvatarPath))
                                             {
-                                                certificateImage = StorageService.DownloadFile(System.IO.Path.GetFileName(certificate.CertificateImagePath), System.IO.Path.GetDirectoryName(certificate.CertificateImagePath)).Result;
+                                                certificateImage = StorageService.BlobUrl+certificate.CertificateImagePath;
                                             }
                                             <div class="account-course-detail__teacher-tag">
                                                 <img src="@certificateImage" alt="">

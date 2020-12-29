@@ -1,0 +1,149 @@
+﻿@{
+    ViewData["Title"] = "Öne Çıkarılan Yorum Ekle";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@section styles{
+    <link href="~/css/lib/file-uploader.css" rel="stylesheet" />
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="box_general padding_bottom">
+    <div class="header_box version_2">
+        <h2><i class="fa fa-file"></i>Öne Çıkarılan Yorum Ekleme</h2>
+    </div>
+    <form id="form-add-featured-comment">
+        @Html.AntiForgeryToken()
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label>Ad</label>
+                    <input type="text" class="form-control" placeholder="Öğrenci adı giriniz..." id="input-name">
+                </div>
+                <div class="form-group">
+                    <label>Soyad</label>
+                    <input type="text" class="form-control" placeholder="Öğrenci soyadı giriniz..." id="input-surname">
+                </div>
+                <div class="form-group">
+                    <label>Meslek</label>
+                    <input type="text" class="form-control" placeholder="Meslek giriniz..." id="input-title">
+                </div>
+                <div class="form-group">
+                    <label>Yorum</label>
+                    <textarea class="form-control" rows="5" maxlength="230" placeholder="Maksimum 230 karakter içeren bir yorum giriniz..." id="input-comment"></textarea>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Ön İzleme (mp4)</label>
+                    <div class="file-upload-container" id="file-upload-container-for-preview">
+                        <img class="img-after-preview" id="img-after-preview-for-preview" />
+                        <p><i class="fa fa-file"></i> Video yüklemek için tıklayınız...</p>
+                        <input type="file" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Ön İzleme (jpeg)</label>
+                    <div class="file-upload-container" id="file-upload-container-for-preview-image">
+                        <img class="img-after-preview" id="img-after-preview-for-preview-image" />
+                        <p><i class="fa fa-file"></i> Fotoğraf yüklemek için tıklayınız...</p>
+                        <input type="file" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="row">
+        <div class="col-md-12">
+            <button id="btn-save" class="btn btn-outline-success pull-right">Kaydet</button>
+
+        </div>
+    </div>
+</div>
+
+@section postScripts{
+    <script src="~/js/lib/file-uploader.js"></script>
+
+<script>
+    /* elements */
+    var btnSave = $("#btn-save");
+    var fileManager = null;
+    var fileManager2 = null;
+
+    /* assignments */
+    $(document).ready(document_onLoad);
+    btnSave.on("click", btnSave_onClick);
+
+
+
+    /* events */
+    function document_onLoad() {
+        fileManager = new UploadSupport.FileUploader();
+        fileManager2 = new UploadSupport.FileUploader();
+        fileManager.set({
+            container: "file-upload-container-for-preview",
+            preview: "img-after-preview-for-preview",
+            validExtensions: ["mp4"]
+        });
+        fileManager2.set({
+            container: "file-upload-container-for-preview-image",
+            preview: "img-after-preview-for-preview-image",
+            validExtensions: ["jpg", "jpeg"]
+        });
+    }
+   
+
+    function btnSave_onClick() {
+        btnSave.off("click");
+        var resultAlert = new AlertSupport.ResultAlert();
+        var previewFile = fileManager.getFile();
+        var previewImageFile = fileManager2.getFile();
+        var data = {
+            Name: $("#input-name").val(),
+            Surname: $("#input-surname").val(),
+            Title: $("#input-title").val(),
+            Comment: $("#input-comment").val(),
+            PreviewFile: {
+                Base64Content: previewFile.base64content,
+                Extension: previewFile.extension
+            },
+            PreviewImageFile: {
+                Base64Content: previewImageFile.base64content,
+                Extension: previewImageFile.extension
+            }
+        };
+        var tokenVerifier = new SecuritySupport.TokenVerifier();
+        data = tokenVerifier.addToken("form-add-education", data);
+        $.ajax({
+            url: "",
+            method: "post",
+            data: data,
+            success: (res) => {
+                if (res.isSuccess) {
+                    $("#form-add-featured-comment")[0].reset();
+                    resultAlert.display({
+                        success: true,
+                        message: "Kayıt işlemi başarılı! Listeye gitmek için {link}",
+                        redirectElement: {
+                            content: "tıklayınız",
+                            link: "/admin/one-cikarilan-yorumlar"
+                        }
+                    });
+                } else {
+                    resultAlert.display({
+                        success: false,
+                        errors: res.errors,
+                        message: "İşlem başarısız"
+                    });
+                }
+
+                btnSave.on("click", btnSave_onClick);
+            },
+            error: (error) => {
+                alert(error.message);
+            }
+        });
+    }
+</script>
+}

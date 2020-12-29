@@ -178,6 +178,21 @@ namespace NitelikliBilisim.App.Lexicographer
             _dictionary.Add("AdminEducationCommentList",
                new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Eğitim Yorumları", url: null) });
 
+            /*Contact Forms*/
+            _dictionary.Add("AdminContactFormList",
+              new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "İletişim Talepleri", url: null) });
+            _dictionary.Add("AdminContactFAQFormList",
+              new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Sıkça Sorulan Sorular Sayfası İletişim Talepleri", url: null) });
+
+            /*Featured Comment*/
+            _dictionary.Add("AdminFeaturedCommentAdd",
+              new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Öne Çıkarılan Yorum Ekle", url: null) });
+            _dictionary.Add("AdminFeaturedCommentList",
+              new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Öne Çıkarılan Yorumlar", url: null) });
+
+            
+
+
         }
 
         public static BreadCrumbItem[] ReadPart(string part)

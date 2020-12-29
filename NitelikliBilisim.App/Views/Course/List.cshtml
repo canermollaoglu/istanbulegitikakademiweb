@@ -1,6 +1,6 @@
 ﻿@model NitelikliBilisim.Core.ViewModels.Main.Course.CourseListGetVm
 @{
-    ViewData["Title"] = "List";
+    ViewData["Title"] = Model.CategoryName;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -172,7 +172,7 @@
                     </div>
                     <div class="side-categories__cnt js-vertical-magic-line">
                         <div class="side-categories__item js-vertical-magic-line-item @(Model.CategoryId == null?"active":"")">
-                            <a class="side-category-item">
+                            <a asp-controller="Course" asp-action="List" asp-route-catSeoUrl="" class="side-category-item">
                                 <span class="side-categories__txt">Tüm Eğitimler</span>
                                 <span class="side-categories__count">@Model.TotalEducationCount</span>
                             </a>
@@ -180,7 +180,7 @@
                         @foreach (var category in Model.Categories)
                         {
                             <div class="side-categories__item js-vertical-magic-line-item @(category.Id == Model.CategoryId?"active":"")">
-                                <a data-category-id="@category.Id" class="side-category-item">
+                                <a asp-controller="Course" asp-action="List" asp-route-catSeoUrl="@category.SeoUrl" class="side-category-item">
                                     <span class="side-categories__txt">@category.Name</span>
                                     <span class="side-categories__count">@category.EducationCount</span>
                                 </a>
@@ -283,8 +283,9 @@
         var currentPage = $("#current-page");
         var currentHostCity = $("#current-host-city");
         var currentOrder = $("#current-order");
-
         var lessonsContent = $(".lesson-list__items");
+        var paginationContent = $(".pagination");
+
         $(function () {
             getSearchResults();
         });
@@ -295,64 +296,91 @@
             getSearchResults();
         })
 
-        $(".side-category-item").click(function () {
-            var categoryId = $(this).data("category-id");
-            currentCategoryId.val(categoryId);
-            $(".side-categories__item").removeClass("active");
-            $(this)
-                .closest(".side-categories__item")
-                .addClass('active');
-            getSearchResults();
-        });
         function getSearchResults() {
             $.ajax({
                 url: `/get-courses`,
                 method: "post",
                 data: {
                     categoryId: currentCategoryId.val(),
-                    page: 1,
+                    hostCity: currentHostCity.val(),
+                    page: currentPage.val(),
                     order: currentOrder.val(),
                 },
                 success: (res) => {
-                    if (res.data.length > 0) {
-                        lessonsContent.html("");
+                    if (res.data.educations.length == 0) {
+                        alert("Aradığınız kriterlere uygun eğitim bulunamadı.");
                     }
-                    $.each(res.data, function (index, e) {
+                    lessonsContent.html("");
+                    console.log(res);
+                    $.each(res.data.educations, function (index, e) {
                         var education = `<a href="/${e.cSeo}/${e.seo}" class="lesson-list__item">
-                            <div class="lesson-list__item-img">
-                                <img src="${e.imagePath}" alt="">
-                            </div>
-                            <div class="lesson-list__item-cnt">
-                                <div class="lesson-list__item-left">
-                                    <div class="lesson-list__item-title">
-                                        ${e.name}
-                                    </div>
-                                    <div class="lesson-list__item-txt">
-                                        ${e.description}
-                                    </div>
-                                </div>
-                                <div class="lesson-list__item-right">
-                                    <div class="lesson-list__item-date">
-                                        <span class="icon-outer">
-                                            <svg class="icon">
-                                                <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                            </svg>
-                                        </span>
-                                        ${e.educationDays} gün ( ${e.educationHours} saat )
-                                    </div>
-                                    <div class="lesson-list__item-price">
-                                        <span>₺</span> 800,00
-                                    </div>
-                                    <div class="button v-tablet">
-                                        <span class="button-txt">Sepete Ekle</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>`;
+                                        <div class="lesson-list__item-img">
+                                            <img src="${e.imagePath}" alt="">
+                                        </div>
+                                        <div class="lesson-list__item-cnt">
+                                            <div class="lesson-list__item-left">
+                                                <div class="lesson-list__item-title">
+                                                    ${e.name}
+                                                </div>
+                                                <div class="lesson-list__item-txt">
+                                                    ${e.description}
+                                                </div>
+                                            </div>
+                                            <div class="lesson-list__item-right">
+                                                <div class="lesson-list__item-date">
+                                                    <span class="icon-outer">
+                                                        <svg class="icon">
+                                                            <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                                                        </svg>
+                                                    </span>
+                                                    ${e.educationDays} gün ( ${e.educationHours} saat )
+                                                </div>
+                                                <div class="lesson-list__item-price">
+                                                    <span>₺</span> ${e.price}
+                                                </div>
+                                                <div class="button v-tablet">
+                                                    <span class="button-txt">Sepete Ekle</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>`;
                         lessonsContent.append(education);
                     });
+
+                    paginationContent.html("");
+                    var prev = `<a class="pagination__item prev" onclick=changePage('${res.data.pageIndex - 1}')>
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
+                                </svg>
+                            </span>
+                        </a>`;
+                    var next = `<a class="pagination__item next" onclick=changePage('${res.data.pageIndex + 1}')>
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
+                                </svg>
+                            </span>
+                        </a>`;
+                    if (res.data.pageIndex > 1) {
+                        paginationContent.append(prev);
+                    }
+                    for (var i = 1; i <= res.data.totalPageCount; i++) {
+
+                        var page = `<a onclick="changePage('${i}')" class="pagination__item ${i == res.data.pageIndex ? 'active' : ''}" >${i}</a>`;
+                        paginationContent.append(page);
+                    }
+                    if (res.data.pageIndex < res.data.totalPageCount) {
+                        paginationContent.append(next);
+                    }
+
                 }
             });
+        }
+
+        function changePage(page) {
+            currentPage.val(page);
+            getSearchResults();
         }
     </script>
 }

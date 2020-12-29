@@ -9,7 +9,7 @@
     var filePath = "";
     try
     {
-        filePath = StorageService.DownloadFile(System.IO.Path.GetFileName(Model.FeaturedImageUrl), System.IO.Path.GetDirectoryName(Model.FeaturedImageUrl)).Result;
+        filePath = StorageService.BlobUrl+Model.FeaturedImageUrl;
     }
     catch
     {

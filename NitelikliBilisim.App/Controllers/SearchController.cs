@@ -1,6 +1,4 @@
-﻿using System.IO;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MUsefulMethods;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Filters;
@@ -10,6 +8,8 @@ using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.search;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -47,7 +47,7 @@ namespace NitelikliBilisim.App.Controllers
                 {
                     var folder = Path.GetDirectoryName(item.Medias[i].FileUrl);
                     var fileName = Path.GetFileName(item.Medias[i].FileUrl);
-                    item.Medias[i].FileUrl = await _storageService.DownloadFile(fileName, folder);
+                    item.Medias[i].FileUrl = _storageService.BlobUrl+item.Medias[i].FileUrl;
                 }
             }
             return Json(new ResponseModel

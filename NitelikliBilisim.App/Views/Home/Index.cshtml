@@ -410,7 +410,7 @@
             <div class="flex-center mb-4">
                 <h2 class="title title-section">Popüler <span class="title--blue">Proje Eğitimleri</span></h2>
 
-                <a href="" class="all-link">
+                <a asp-controller="Course" asp-action="List" class="all-link">
                     <span>Tüm Eğitimler</span>
                     <span class="icon-outer">
                         <svg class="icon">
@@ -480,7 +480,7 @@
             <div class="flex-center mb-4">
                 <h2 class="title title-section">Yeni Başlayanlar İçin <span class="title--blue">Proje Eğitimleri</span></h2>
 
-                <a href="" class="all-link">
+                <a asp-controller="Course" asp-action="List" class="all-link">
                     <span>Tüm Eğitimler</span>
                     <span class="icon-outer">
                         <svg class="icon">
@@ -489,240 +489,10 @@
                     </span>
                 </a>
             </div>
-
-
-
             <div class="swiper-container js-card-slider mt-1">
                 <div class="swiper-wrapper">
-
-                    @foreach (var education in Model.SuggestedEducations)
-                    {
-
-                        var filePath = "";
-                        try
-                        {
-                            filePath = StorageService.DownloadFile(System.IO.Path.GetFileName(education.Medias[0].FileUrl), "media-items").Result;
-                        }
-                        catch
-                        {
-                        }
-
-                        <div class="swiper-slide">
-                            <a href="/@education.Base.CategorySeoUrl/@education.Base.SeoUrl" class="card">
-                                <figure>
-                                    <img src="@filePath" alt="">
-                                </figure>
-
-                                <div class="card__content">
-                                    <h6 class="card__subtitle">@education.Base.CategoryName</h6>
-                                    <h5 class="card__title">@education.Base.Name</h5>
-
-                                    @if (education.Base.Description.Length > 90)
-                                    {
-                                        <p>
-                                            @education.Base.Description.Substring(0, 90)
-                                        </p>
-                                    }
-                                    else
-                                    {
-                                        <p>@education.Base.Description</p>
-                                    }
-                                </div>
-
-                                <div class="card__footer">
-                                    <span class="card__time">
-                                        <span class="icon-outer">
-                                            <svg class="icon">
-                                                <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                            </svg>
-                                        </span>
-                                        <span>@education.Base.DaysText gün ( @education.Base.HoursPerDayText saat )</span>
-                                    </span>
-                                </div>
-                            </a>
-                        </div>
-                    }
-
-                    <div class="swiper-slide">
-                        <a href="./egitim-detay.php" class="card">
-                            <figure>
-                                <img src="~/assets/img/cardimg1.jpg" alt="">
-                            </figure>
-
-                            <div class="card__content">
-                                <h6 class="card__subtitle">Siber Güvenlik</h6>
-                                <h5 class="card__title">Active Directory Sertifika Servisleri</h5>
-                                <p>
-                                    Bu eğitim; şirketiniz için yeterlde kullanılan ve ileri düzeyde hassas dalatar olarak tanımlanan
-                                </p>
-                            </div>
-
-                            <div class="card__footer">
-                                <span class="card__time">
-                                    <span class="icon-outer">
-                                        <svg class="icon">
-                                            <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                        </svg>
-                                    </span>
-                                    <span>3 gün ( 12 saat )</span>
-                                </span>
-
-                                <span class="card__money">
-                                    <span>₺</span> 800,00
-                                </span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="swiper-slide">
-                        <a href="./egitim-detay.php" class="card">
-                            <figure>
-                                <img src="~/assets/img/cardimg2.jpg" alt="">
-                            </figure>
-
-                            <div class="card__content">
-                                <h6 class="card__subtitle">Siber Güvenlik</h6>
-                                <h5 class="card__title">Active Directory Sertifika Servisleri</h5>
-                                <p>
-                                    Bu eğitim; şirketiniz için yeterlde kullanılan ve ileri düzeyde hassas dalatar olarak tanımlanan
-                                </p>
-                            </div>
-
-                            <div class="card__footer">
-                                <span class="card__time">
-                                    <span class="icon-outer">
-                                        <svg class="icon">
-                                            <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                        </svg>
-                                    </span>
-                                    <span>3 gün ( 12 saat )</span>
-                                </span>
-
-                                <span class="card__money">
-                                    <span>₺</span> 800,00
-                                </span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="swiper-slide">
-                        <a href="./egitim-detay.php" class="card">
-                            <figure>
-                                <img src="~/assets/img/cardimg3.jpg" alt="">
-                            </figure>
-
-                            <div class="card__content">
-                                <h6 class="card__subtitle">Siber Güvenlik</h6>
-                                <h5 class="card__title">Active Directory Sertifika Servisleri</h5>
-                                <p>
-                                    Bu eğitim; şirketiniz için yeterlde kullanılan ve ileri düzeyde hassas dalatar olarak tanımlanan
-                                </p>
-                            </div>
-
-                            <div class="card__footer">
-                                <span class="card__time">
-                                    <span class="icon-outer">
-                                        <svg class="icon">
-                                            <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                        </svg>
-                                    </span>
-                                    <span>3 gün ( 12 saat )</span>
-                                </span>
-
-                                <span class="card__money">
-                                    <span>₺</span> 800,00
-                                </span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="swiper-slide">
-                        <a href="./egitim-detay.php" class="card">
-                            <figure>
-                                <img src="~/assets/img/cardimg4.jpg" alt="">
-                            </figure>
-
-                            <div class="card__content">
-                                <h6 class="card__subtitle">Siber Güvenlik</h6>
-                                <h5 class="card__title">Active Directory Sertifika Servisleri</h5>
-                                <p>
-                                    Bu eğitim; şirketiniz için yeterlde kullanılan ve ileri düzeyde hassas dalatar olarak tanımlanan
-                                </p>
-                            </div>
-
-                            <div class="card__footer">
-                                <span class="card__time">
-                                    <span class="icon-outer">
-                                        <svg class="icon">
-                                            <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                        </svg>
-                                    </span>
-                                    <span>3 gün ( 12 saat )</span>
-                                </span>
-
-                                <span class="card__money">
-                                    <span>₺</span> 800,00
-                                </span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="swiper-slide">
-                        <a href="./egitim-detay.php" class="card">
-                            <figure>
-                                <img src="~/assets/img/cardimg5.jpg" alt="">
-                            </figure>
-
-                            <div class="card__content">
-                                <h6 class="card__subtitle">Siber Güvenlik</h6>
-                                <h5 class="card__title">Active Directory Sertifika Servisleri</h5>
-                                <p>
-                                    Bu eğitim; şirketiniz için yeterlde kullanılan ve ileri düzeyde hassas dalatar olarak tanımlanan
-                                </p>
-                            </div>
-
-                            <div class="card__footer">
-                                <span class="card__time">
-                                    <span class="icon-outer">
-                                        <svg class="icon">
-                                            <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                        </svg>
-                                    </span>
-                                    <span>3 gün ( 12 saat )</span>
-                                </span>
-
-                                <span class="card__money">
-                                    <span>₺</span> 800,00
-                                </span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="swiper-slide">
-                        <a href="./egitim-detay.php" class="card">
-                            <figure>
-                                <img src="~/assets/img/cardimg6.jpg" alt="">
-                            </figure>
-
-                            <div class="card__content">
-                                <h6 class="card__subtitle">Siber Güvenlik</h6>
-                                <h5 class="card__title">Active Directory Sertifika Servisleri</h5>
-                                <p>
-                                    Bu eğitim; şirketiniz için yeterlde kullanılan ve ileri düzeyde hassas dalatar olarak tanımlanan
-                                </p>
-                            </div>
-
-                            <div class="card__footer">
-                                <span class="card__time">
-                                    <span class="icon-outer">
-                                        <svg class="icon">
-                                            <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                        </svg>
-                                    </span>
-                                    <span>3 gün ( 12 saat )</span>
-                                </span>
-
-                                <span class="card__money">
-                                    <span>₺</span> 800,00
-                                </span>
-                            </div>
-                        </a>
-                    </div>
+                    @await Component.InvokeAsync("BeginnerEducations")
+                    
                 </div>
                 <div class="swiper-pagination"></div>
 

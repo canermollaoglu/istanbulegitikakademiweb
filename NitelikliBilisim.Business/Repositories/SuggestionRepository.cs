@@ -24,11 +24,13 @@ namespace NitelikliBilisim.Business.Repositories
         private readonly NbDataContext _context;
         private readonly IElasticClient _elasticClient;
         private readonly SuggestionSystemOptions _options;
+        private readonly IConfiguration _configuration;
 
         public SuggestionRepository(NbDataContext context, IElasticClient elasticClient, IConfiguration configuration)
         {
             _context = context;
             _elasticClient = elasticClient;
+            _configuration = configuration;
             _options = configuration.GetSection("EducationSuggestionSystemOptions").Get<SuggestionSystemOptions>(); ;
         }
 
@@ -101,7 +103,7 @@ namespace NitelikliBilisim.Business.Repositories
                      CategoryName = y.Name,
                      CategorySeoUrl = y.SeoUrl
                  }).ToList();
-
+            var hostId = Guid.Parse(_configuration.GetSection("SiteGeneralOptions").GetSection("PriceLocationId").Value);
             var data = educationsList.Select(x => new SuggestedEducationVm
             {
                 Base = new EducationBaseVm
@@ -112,7 +114,7 @@ namespace NitelikliBilisim.Business.Repositories
                     CategoryName = x.CategoryName,
                     CategorySeoUrl = x.CategorySeoUrl,
                     Level = EnumHelpers.GetDescription(x.Education.Level),
-                    //PriceText = x.Education.NewPrice.GetValueOrDefault().ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
+                    Price = _context.EducationGroups.OrderByDescending(x => x.CreatedDate).FirstOrDefault(y => y.HostId == hostId && y.EducationId == x.Education.Id).NewPrice.GetValueOrDefault().ToString(CultureInfo.CreateSpecificCulture("tr-TR")),
                     HoursPerDayText = x.Education.HoursPerDay.ToString(),
                     DaysText = x.Education.Days.ToString(),
                     DaysNumeric = x.Education.Days,
@@ -142,6 +144,41 @@ namespace NitelikliBilisim.Business.Repositories
             retVal.AddRange(userActionBased);
             retVal = retVal.GroupBy(x => x.EducationId).Select(y => new EducationPoint { EducationId = y.Key, Point = Math.Round(y.Sum(x => x.Point),2),Education=educations.First(x=>x.Id == y.Key) }).ToList();
             return retVal;
+        }
+
+        public List<SuggestedEducationVm> GetEducationsOfTheWeek(int week,string userId)
+        {
+            var studentInfo = _context.StudentEducationInfos.FirstOrDefault(x => x.CustomerId == userId);
+            if (studentInfo == null)
+                return null;
+            var educationDay = _context.EducationDays.Where(x => x.StudentEducationInfoId == studentInfo.Id && x.Date <= DateTime.Now).OrderByDescending(c => c.Date).FirstOrDefault();
+            int nearestDay = educationDay != null ? educationDay.Day : 0;
+            
+            var educations = _context.Educations.Include(c => c.Category).Include(x => x.EducationSuggestionCriterions).Where(x => x.IsActive);
+            var thisWeekEducations = new Dictionary<Guid,double>();
+            foreach (var education in educations)
+            {
+                if (education.EducationSuggestionCriterions!=null && education.EducationSuggestionCriterions.Count>0)
+                {
+                    foreach (var criterion in education.EducationSuggestionCriterions)
+                    {
+                        if (criterion.CriterionType == CriterionType.EducationDay)
+                        {
+                            if (nearestDay <= criterion.MaxValue && nearestDay >= criterion.MinValue)
+                                thisWeekEducations.Add(education.Id, 3);//İçinde bulunulan hafta en öncelikli olduğu için sıra 3 
+                            else if (criterion.MaxValue<nearestDay-7 && criterion.MaxValue>nearestDay-14)
+                                thisWeekEducations.Add(education.Id, 2);//önceki hafta için sıra 2 
+                            else if (criterion.MinValue>nearestDay+7 && criterion.MinValue<nearestDay+14)
+                                thisWeekEducations.Add(education.Id, 1);//sonraki hafta için sıra 1
+                        }
+                    }
+                }
+            }
+            if (thisWeekEducations.Count>4)
+            {
+                thisWeekEducations = thisWeekEducations.OrderByDescending(x => x.Value).Take(4).ToDictionary(x=>x.Key,x=>x.Value);
+            }
+            return FillSuggestedEducationList(thisWeekEducations);
         }
 
 
@@ -401,6 +438,8 @@ namespace NitelikliBilisim.Business.Repositories
                    CategorySeoUrl = y.SeoUrl
                }).ToList();
 
+            var hostId = Guid.Parse(_configuration.GetSection("SiteGeneralOptions").GetSection("PriceLocationId").Value);
+
             var data = educationsList.Select(x => new SuggestedEducationVm
             {
                 Base = new EducationBaseVm
@@ -411,7 +450,7 @@ namespace NitelikliBilisim.Business.Repositories
                     CategoryName = x.CategoryName,
                     CategorySeoUrl = x.CategorySeoUrl,
                     Level = EnumHelpers.GetDescription(x.Education.Level),
-                    //PriceText = x.Education.NewPrice.GetValueOrDefault().ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
+                    Price = _context.EducationGroups.OrderByDescending(x=>x.CreatedDate).FirstOrDefault(y => y.HostId == hostId && y.EducationId == x.Education.Id).NewPrice.GetValueOrDefault().ToString(CultureInfo.CreateSpecificCulture("tr-TR")),
                     HoursPerDayText = x.Education.HoursPerDay.ToString(),
                     DaysText = x.Education.Days.ToString(),
                     DaysNumeric = x.Education.Days,

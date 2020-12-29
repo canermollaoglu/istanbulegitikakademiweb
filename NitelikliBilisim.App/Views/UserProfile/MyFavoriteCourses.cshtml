@@ -50,7 +50,7 @@
                                     var bannerUrl = "";
                                     if (!string.IsNullOrEmpty(course.FeaturedImageUrl))
                                     {
-                                        bannerUrl = StorageService.DownloadFile(System.IO.Path.GetFileName(course.FeaturedImageUrl), System.IO.Path.GetDirectoryName(course.FeaturedImageUrl)).Result;
+                                        bannerUrl = StorageService.BlobUrl+course.FeaturedImageUrl;
                                     }
                                     <div class="account-courses__item">
                                         <a href="#0" class="account-courses__item-cnt">

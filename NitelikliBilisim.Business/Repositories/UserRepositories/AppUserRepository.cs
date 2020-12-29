@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using MUsefulMethods;
 using Newtonsoft.Json;
 using NitelikliBilisim.Core.Entities;
-using NitelikliBilisim.Core.Entities.promotion;
 using NitelikliBilisim.Core.Entities.user_details;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Enums.promotion;
-using NitelikliBilisim.Core.Enums.user_details;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.Main.Profile;
 using NitelikliBilisim.Data;
@@ -22,12 +21,13 @@ namespace NitelikliBilisim.Business.Repositories
     {
         private readonly NbDataContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IConfiguration _configuration;
 
-
-        public AppUserRepository(NbDataContext context, UserManager<ApplicationUser> userManager)
+        public AppUserRepository(NbDataContext context, UserManager<ApplicationUser> userManager,IConfiguration configuration)
         {
             _context = context;
             _userManager = userManager;
+            _configuration = configuration;
         }
         public MyAccountSidebarVm GetMyAccountSidebarInfo(string userId, string currentPageName)
         {
@@ -155,6 +155,33 @@ namespace NitelikliBilisim.Business.Repositories
                 WishList = _wishList
             };
 
+            return model;
+        }
+
+        public MyAccountSettingsGetVm GetAccoutSettingsPageData(string userId)
+        {
+            MyAccountSettingsGetVm model = new();
+            var data = (from user in _context.Users
+                       where user.Id == userId
+                       join student in _context.Customers on user.Id equals student.Id
+                       select new MyAccountSettingsGeneralInformationVm
+                       {
+                           AvatarPath = user.AvatarPath,
+                           Email = user.Email,
+                           Name = user.Name,
+                           Surname = user.Surname,
+                           DateOfBirth = student.DateOfBirth,
+                           Job = student.Job,
+                           LastGraduatedSchoolId = student.LastGraduatedSchoolId,
+                           Phone = user.PhoneNumber,
+                           LinkedIn = student.LinkedInProfileUrl,
+                           WebSite = student.WebSiteUrl
+                       }).First();
+
+            model.GeneralInformation = data;
+            model.Addresses = _context.Addresses.Include(x=>x.City).Include(x=>x.State).Where(x => x.CustomerId == userId).ToList();
+            model.Universities = _context.Universities.ToList();
+            model.Cities = _context.Cities.OrderBy(x=>x.Order).ToList();
             return model;
         }
 
@@ -313,7 +340,7 @@ namespace NitelikliBilisim.Business.Repositories
                 var totalEducationWeek = (int)Math.Ceiling((nbuyInfo.EducationDays.OrderBy(x => x.Day).Last().Date - nbuyInfo.StartedAt.Date).TotalDays / (double)7);
                 var currentEducationWeek = (int)Math.Ceiling((DateTime.Now.Date - nbuyInfo.StartedAt).TotalDays / (double)7);
                 model.NbuyCategory = nbuyInfo.Category.Name;
-                model.NbuyStartDateText = nbuyInfo.StartedAt.ToString("dd MMMM yyyy");
+                model.NbuyStartDateText = nbuyInfo.StartedAt.ToString("dd MMM yyyy");
                 model.NbuyStartDate = nbuyInfo.StartedAt;
                 model.EducationWeek = currentEducationWeek;
                 model.TotalEducationWeek = totalEducationWeek;
@@ -386,6 +413,8 @@ namespace NitelikliBilisim.Business.Repositories
         {
             var wishListItems = _context.Wishlist.Where(x => x.Id == userId).ToList();
             List<Guid> wishListEducationIds = wishListItems.Select(x => x.Id2).ToList();
+            var hostId = Guid.Parse(_configuration.GetSection("SiteGeneralOptions").GetSection("PriceLocationId").Value);
+            var currentCulture = CultureInfo.CreateSpecificCulture("tr-TR");
             var educationsList = (from education in _context.Educations
                                   join featuredImage in _context.EducationMedias on education.Id equals featuredImage.EducationId
                                   join category in _context.EducationCategories on education.CategoryId equals category.Id
@@ -398,6 +427,7 @@ namespace NitelikliBilisim.Business.Repositories
                                       Name = education.Name,
                                       CategoryName = category.Name,
                                       CategorySeoUrl = category.SeoUrl,
+                                      Price = _context.EducationGroups.OrderByDescending(x => x.CreatedDate).FirstOrDefault(y => y.HostId == hostId && y.EducationId == education.Id).NewPrice.GetValueOrDefault().ToString(currentCulture),
                                       HoursText = (education.HoursPerDay * education.Days).ToString(),
                                       DaysText = education.Days.ToString(),
                                       FeaturedImageUrl = featuredImage.FileUrl

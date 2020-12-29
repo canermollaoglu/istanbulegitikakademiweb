@@ -16,5 +16,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Blog
         public string ReadingTime { get; set; }
         public string SeoUrl { get; set; }
         public string CategorySeoUrl { get; set; }
+        public DateTime Date { get; set; }
     }
 }

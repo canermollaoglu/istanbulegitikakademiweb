@@ -2,11 +2,6 @@
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.Business.UoW;
-using NitelikliBilisim.Core.ViewModels.Main.Educator;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Controllers
 {

@@ -27,7 +27,7 @@
                             var filePath = "";
                             try
                             {
-                                filePath = StorageService.DownloadFile(System.IO.Path.GetFileName(Model.CertificateImagePath), "educator-certificate-images").Result;
+                                filePath = StorageService.BlobUrl+Model.CertificateImagePath;
                             }
                             catch
                             {

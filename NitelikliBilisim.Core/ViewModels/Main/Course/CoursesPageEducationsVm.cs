@@ -20,5 +20,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Course
         public string Seo { get; set; }
         public string CSeo { get; set; }
         public EducationLevel Level { get; set; }
+        public string Price { get; set; }
     }
 }

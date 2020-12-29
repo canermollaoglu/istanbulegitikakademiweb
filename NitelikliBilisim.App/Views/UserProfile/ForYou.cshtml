@@ -4016,61 +4016,29 @@
 
             <div class="swiper-container js-teacher-slider">
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide">
-                        <div class="teacher-card">
-                            <div class="teacher-card__img">
-                                <img src="assets/img/teacher-img.jpg" alt="">
+                    @foreach (var educator in Model.Educators)
+                    {
+                        var filePath = "";
+                        try
+                        {
+                            filePath = StorageService.BlobUrl+educator.AvatarPath;
+                        }
+                        catch
+                        {
+                        }
+                        <div class="swiper-slide">
+                            <div  class="teacher-card">
+                                <div class="teacher-card__img">
+                                    <img src="@filePath" alt="@($"{educator.Name} {educator.Surname}")">
+                                </div>
+                                <a asp-controller="Educator" asp-action="Details" asp-route-educatorId="@educator.Id" class="teacher-card__cnt">
+                                    <div class="teacher-card__title">@educator.Name @educator.Surname</div>
+                                    <div class="teacher-card__branch">@educator.Title</div>
+                                </a>
                             </div>
-                            <a href="./egitmen-detay.php" class="teacher-card__cnt">
-                                <div class="teacher-card__title">Avşar Kaan Asan</div>
-                                <div class="teacher-card__branch">Web Yazılım Uzmanı</div>
-                            </a>
                         </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <a href="./egitmen-detay.php" class="teacher-card">
-                            <div class="teacher-card__img">
-                                <img src="assets/img/teacher-2.jpg" alt="">
-                            </div>
-                            <div class="teacher-card__cnt">
-                                <div class="teacher-card__title">Avşar Kaan Asan</div>
-                                <div class="teacher-card__branch">Web Yazılım Uzmanı</div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="swiper-slide">
-                        <a href="./egitmen-detay.php" class="teacher-card">
-                            <div class="teacher-card__img">
-                                <img src="assets/img/teacher-2.jpg" alt="">
-                            </div>
-                            <div class="teacher-card__cnt">
-                                <div class="teacher-card__title">Avşar Kaan Asan</div>
-                                <div class="teacher-card__branch">Web Yazılım Uzmanı</div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="swiper-slide">
-                        <a href="./egitmen-detay.php" class="teacher-card">
-                            <div class="teacher-card__img">
-                                <img src="assets/img/teacher-img.jpg" alt="">
-                            </div>
-                            <div class="teacher-card__cnt">
-                                <div class="teacher-card__title">Avşar Kaan Asan</div>
-                                <div class="teacher-card__branch">Web Yazılım Uzmanı</div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="swiper-slide">
-                        <a href="./egitmen-detay.php" class="teacher-card">
-                            <div class="teacher-card__img">
-                                <img src="assets/img/teacher-2.jpg" alt="">
-                            </div>
-                            <div class="teacher-card__cnt">
-                                <div class="teacher-card__title">Avşar Kaan Asan</div>
-                                <div class="teacher-card__branch">Web Yazılım Uzmanı</div>
-                            </div>
-                        </a>
-                    </div>
+                    }
+
                 </div>
                 <div class="swiper-pagination"></div>
                 <div class="swiper-button-prev swiper-button-circle reverse">

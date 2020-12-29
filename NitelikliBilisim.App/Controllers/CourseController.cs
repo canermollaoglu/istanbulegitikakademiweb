@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using MUsefulMethods;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Services.Abstracts;
@@ -21,10 +23,12 @@ namespace NitelikliBilisim.App.Controllers
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly IStorageService _storageService;
-        public CourseController(UnitOfWork unitOfWork,IStorageService storageService)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public CourseController(UserManager<ApplicationUser> userManager,UnitOfWork unitOfWork,IStorageService storageService)
         {
             _unitOfWork = unitOfWork;
             _storageService = storageService;
+            _userManager = userManager;
         }
         [Route("egitimler/{catSeoUrl?}")]
         public IActionResult List(string catSeoUrl)
@@ -32,8 +36,8 @@ namespace NitelikliBilisim.App.Controllers
             CourseListGetVm model = new CourseListGetVm();
             if (string.IsNullOrEmpty(catSeoUrl))
             {
-                model.CategoryName = "Tüm Kategoriler";
-                model.CategoryShortDescription = "Geleceğin web sitelerini kodlayın";
+                model.CategoryName = "Tüm Teknoloji Eğitimleri";
+                model.CategoryShortDescription = "Tüm Teknoloji Eğitimleri";
             }
             else
             {
@@ -62,7 +66,7 @@ namespace NitelikliBilisim.App.Controllers
 
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("{catSeoUrl}/{seoUrl}")]
-        public IActionResult Details(string seoUrl, string searchKey)
+        public async Task<IActionResult> Details(string seoUrl, string searchKey)
         {
             if (string.IsNullOrEmpty(seoUrl))
                 return Redirect("/");
@@ -76,10 +80,12 @@ namespace NitelikliBilisim.App.Controllers
             if (isLoggedIn)
             {
                 var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                //Yalnızca giriş yapmış ve eğitimi alarak tamamlamış kişiler yorum yapabilir.
+                var user = await _userManager.FindByIdAsync(userId);
+                var student = _unitOfWork.Customer.GetById(userId);
+                educationDetails.CurrentUserName = $"{user.Name} {user.Surname}";
+                educationDetails.CurrentUserJob = student == null ? "Eğitmen" : string.IsNullOrEmpty(student.Job)?"":student.Job;
                 bool isCanComment = _unitOfWork.Education.CheckIsCanComment(userId, educationDetails.Base.Id);
                 educationDetails.Base.IsCanComment = isCanComment;
-                //Eğitimin favori eğitimlerde bulunup bulunmaması kontrolü.
                 bool status = _unitOfWork.WishListItem.CheckWishListItem(userId, educationDetails.Base.Id);
                 educationDetails.Base.IsWishListItem = status;
             }
@@ -97,12 +103,16 @@ namespace NitelikliBilisim.App.Controllers
             return View(model);
         }
 
+        [Route("usercommentpost")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult UserCommentPost(UserCommentPostVm model)
         {
             if (!ModelState.IsValid)
-                return View(model);
+                return Json(new ResponseData
+                {
+                    Success = false
+                });
 
             try
             {
@@ -116,17 +126,22 @@ namespace NitelikliBilisim.App.Controllers
                     IsEducatorComment = false,
                     CommentatorId = userId
                 });
+                return Json(new ResponseData
+                {
+                    Success = true
+                });
             }
-            catch (Exception)
+            catch
             {
-                //todo Log
-                throw;
+                return Json(new ResponseData
+                {
+                    Success = false
+                });
             }
-
-            return RedirectToAction("Index", "Home");
+            
         }
 
-
+        [Route("togglewishlistitem")]
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [HttpPost]
         public IActionResult ToggleWishListItem(Guid? educationId)
@@ -196,15 +211,14 @@ namespace NitelikliBilisim.App.Controllers
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [HttpPost]
         [Route("get-courses")]
-        public async Task<IActionResult> GetCourses(Guid? categoryId, int? hostCity, int page=1,OrderCriteria order = OrderCriteria.Latest)
+        public IActionResult GetCourses(Guid? categoryId,int? hostCity, int page=1,OrderCriteria order = OrderCriteria.Latest)
         {
-            var model = _unitOfWork.Education.GetCoursesPageEducations(categoryId,hostCity.GetValueOrDefault(), page, order);
-
-            foreach (var education in model)
+            
+            var model = _unitOfWork.Education.GetCoursesPageEducations(categoryId,hostCity, page, order);
+            
+            foreach (var education in model.Educations)
             {
-                var folder = Path.GetDirectoryName(education.ImagePath);
-                var fileName = Path.GetFileName(education.ImagePath);
-                education.ImagePath = await _storageService.DownloadFile(fileName, folder);
+                education.ImagePath = _storageService.BlobUrl + education.ImagePath;
             }
             return Json(new ResponseModel
             {
@@ -213,6 +227,22 @@ namespace NitelikliBilisim.App.Controllers
 
         }
 
+
+        [Route("get-course-comments")]
+        public IActionResult GetCourseComments(Guid educationId, int page)
+        {
+            var model = _unitOfWork.EducationComment.GetPagedComments(educationId, page);
+
+            foreach (var comment in model.Comments)
+            {
+                comment.UserAvatarPath=  _storageService.BlobUrl+comment.UserAvatarPath;
+            }
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = model
+            });
+        }
 
     }
 }

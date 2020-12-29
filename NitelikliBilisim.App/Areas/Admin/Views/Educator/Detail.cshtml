@@ -23,7 +23,7 @@
     var filePath = "";
     try
     {
-        filePath = StorageService.DownloadFile(System.IO.Path.GetFileName(Model.AvatarPath), "educator-photos").Result;
+        filePath = StorageService.BlobUrl+Model.AvatarPath;
     }
     catch
     {

@@ -617,7 +617,7 @@
                                 var avatarPath = "";
                                 if (!string.IsNullOrEmpty(user.AvatarPath))
                                 {
-                                    avatarPath = @StorageService.DownloadFile(System.IO.Path.GetFileName(user.AvatarPath), System.IO.Path.GetDirectoryName(user.AvatarPath)).Result;
+                                    avatarPath = @StorageService.BlobUrl+user.AvatarPath;
                                 }
                                 else
                                 {

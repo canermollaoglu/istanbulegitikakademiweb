@@ -1,7 +1,7 @@
 ﻿@using NitelikliBilisim.Core.ViewModels
 @using NitelikliBilisim.Core.Services.Abstracts
 @inject IStorageService StorageService
-@model List<SuggestedEducationVm>
+@model List<EducationVm>
 
 
 @foreach (var education in Model)
@@ -9,7 +9,7 @@
     var filePath = "";
     try
     {
-        filePath = StorageService.DownloadFile(System.IO.Path.GetFileName(education.Medias[0].FileUrl), "media-items").Result;
+        filePath = StorageService.BlobUrl+education.Medias[0].FileUrl;
     }
     catch
     {
@@ -45,9 +45,9 @@
                     <span>@education.Base.DaysText gün ( @education.Base.HoursPerDayText saat )</span>
                 </span>
 
-                @*<span class="card__money">
-                        <span>₺</span> 800,00
-                    </span>*@
+                <span class="card__money">
+                        <span>₺</span> @education.Base.Price
+                </span>
             </div>
         </a>
     </div>

@@ -9,7 +9,7 @@
     var avatarPath = "";
     try
     {
-        avatarPath = StorageService.DownloadFile(System.IO.Path.GetFileName(Model.AvatarPath), "educator-photos").Result;
+        avatarPath = StorageService.BlobUrl+Model.AvatarPath;
     }
     catch
     {
@@ -41,7 +41,7 @@
                                 var certificateImage = "";
                                 try
                                 {
-                                    certificateImage = StorageService.DownloadFile(System.IO.Path.GetFileName(certificate.CertificateImagePath),System.IO.Path.GetDirectoryName(certificate.CertificateImagePath)).Result;
+                                    certificateImage = StorageService.BlobUrl+certificate.CertificateImagePath;
                                 }
                                 catch
                                 {

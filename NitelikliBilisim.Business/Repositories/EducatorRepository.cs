@@ -12,6 +12,7 @@ using System.Linq;
 using MUsefulMethods;
 using NitelikliBilisim.Core.Enums.user_details;
 using NitelikliBilisim.Core.ViewModels.Main.Educator;
+using NitelikliBilisim.Core.ViewModels.Main.AboutUs;
 
 namespace NitelikliBilisim.Business.Repositories
 {
@@ -89,6 +90,24 @@ namespace NitelikliBilisim.Business.Repositories
             return base.Update(entity, isSaveLater);
         }
 
+        public int GetEducatorCount()
+        {
+            return _context.Educators.Count();
+        }
+
+        public List<EducatorListVm> GetEducatorsAboutUsPage()
+        {
+            var data = _context.Educators.Include(x => x.User).Select(x => new EducatorListVm
+            {
+                Id = x.Id,
+                Name = x.User.Name,
+                Surname = x.User.Surname,
+                Title = x.Title,
+                AvatarPath = x.User.AvatarPath
+            });
+            return data.ToList();
+        }
+
         /// <summary>
         /// Admin Tarafında kullanılıyor.
         /// </summary>
@@ -146,10 +165,10 @@ namespace NitelikliBilisim.Business.Repositories
                 ShortDescription = educator.ShortDescription,
                 Biography = educator.Biography,
                 Certificates = certificates,
-                FacebookUrl = facebook!=null?facebook.Link:"#",
-                TwitterUrl = twitter !=null?twitter.Link:"#",
-                LinkedInUrl = linkedIn !=null? linkedIn.Link:"#",
-                GooglePlusUrl = google!=null?google.Link:"#"
+                FacebookUrl = facebook != null ? facebook.Link : "#",
+                TwitterUrl = twitter != null ? twitter.Link : "#",
+                LinkedInUrl = linkedIn != null ? linkedIn.Link : "#",
+                GooglePlusUrl = google != null ? google.Link : "#"
             };
             return retVal;
         }

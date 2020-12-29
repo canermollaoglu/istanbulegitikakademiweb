@@ -1,8 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using NitelikliBilisim.App.Areas.Admin.Controllers;
-using NitelikliBilisim.App.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace NitelikliBilisim.App.Controllers
 {
