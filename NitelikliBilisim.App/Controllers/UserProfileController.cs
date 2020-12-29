@@ -151,14 +151,11 @@ namespace NitelikliBilisim.App.Controllers
                 var fileName = StringHelpers.FormatForTag($"{user.Name} {user.Surname}");
                 var dbPath = await _storageService.UploadFile(ProfileImage.OpenReadStream(), $"{fileName}-{ProfileImage.FileName}", "user-avatars");
                 user.AvatarPath = dbPath;
-
                 await _userManager.UpdateAsync(user);
-
                 return RedirectToAction("Profile", "UserProfile");
             }
             catch (Exception)
             {
-
                 throw;
             }
                

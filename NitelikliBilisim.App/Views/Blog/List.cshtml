@@ -19,7 +19,7 @@
                                 var featuredImage = "";
                                 try
                                 {
-                                    featuredImage = StorageService.DownloadFile(System.IO.Path.GetFileName(post.FeaturedImageUrl), System.IO.Path.GetDirectoryName(post.FeaturedImageUrl)).Result;
+                                    featuredImage = StorageService.BlobUrl+post.FeaturedImageUrl;
                                 }
                                 catch
                                 {
@@ -115,7 +115,7 @@
                         var featuredImage = "";
                         try
                         {
-                            featuredImage = StorageService.DownloadFile(System.IO.Path.GetFileName(post.FeaturedImageUrl), System.IO.Path.GetDirectoryName(post.FeaturedImageUrl)).Result;
+                            featuredImage = StorageService.BlobUrl+post.FeaturedImageUrl;
                         }
                         catch
                         {

@@ -117,7 +117,7 @@
                             var eImage = "";
                             try
                             {
-                                eImage = StorageService.DownloadFile(System.IO.Path.GetFileName(education.ImagePath), System.IO.Path.GetDirectoryName(education.ImagePath)).Result;
+                                eImage = StorageService.BlobUrl+education.ImagePath;
                             }
                             catch
                             {

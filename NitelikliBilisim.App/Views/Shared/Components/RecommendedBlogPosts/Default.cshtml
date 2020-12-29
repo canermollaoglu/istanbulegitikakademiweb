@@ -10,7 +10,7 @@
     var image = "";
     try
     {
-        image = StorageService.DownloadFile(System.IO.Path.GetFileName(post.FeaturedImageUrl), System.IO.Path.GetDirectoryName(post.FeaturedImageUrl)).Result;
+        image = StorageService.BlobUrl+post.FeaturedImageUrl;
     }
     catch
     {

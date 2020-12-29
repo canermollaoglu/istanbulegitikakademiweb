@@ -1931,12 +1931,12 @@
                                         var bannerUrl = "";
                                         if (!string.IsNullOrEmpty(education.FeaturedImageUrl))
                                         {
-                                            bannerUrl = StorageService.DownloadFile(System.IO.Path.GetFileName(education.FeaturedImageUrl), System.IO.Path.GetDirectoryName(education.FeaturedImageUrl)).Result;
+                                            bannerUrl = StorageService.BlobUrl+education.FeaturedImageUrl;
                                         }
                                         var educatorImage = "";
                                         if (!string.IsNullOrEmpty(education.EducatorImageUrl))
                                         {
-                                            educatorImage = StorageService.DownloadFile(System.IO.Path.GetFileName(education.EducatorImageUrl), System.IO.Path.GetDirectoryName(education.EducatorImageUrl)).Result;
+                                            educatorImage = StorageService.BlobUrl+education.EducatorImageUrl;
                                         }
                                         <div class="swiper-slide">
                                             <a asp-controller="Course" asp-action="Details" asp-route-catSeoUrl="@education.CategorySeoUrl" asp-route-seoUrl="@education.SeoUrl" as class="card card--course">
@@ -2093,7 +2093,7 @@
                                         var bannerUrl = "";
                                         if (!string.IsNullOrEmpty(course.FeaturedImageUrl))
                                         {
-                                            bannerUrl = StorageService.DownloadFile(System.IO.Path.GetFileName(course.FeaturedImageUrl), System.IO.Path.GetDirectoryName(course.FeaturedImageUrl)).Result;
+                                            bannerUrl = StorageService.BlobUrl+course.FeaturedImageUrl;
 
                                         }
 

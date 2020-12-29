@@ -4021,7 +4021,7 @@
                         var filePath = "";
                         try
                         {
-                            filePath = StorageService.DownloadFile(System.IO.Path.GetFileName(educator.AvatarPath), System.IO.Path.GetDirectoryName(educator.AvatarPath)).Result;
+                            filePath = StorageService.BlobUrl+educator.AvatarPath;
                         }
                         catch
                         {

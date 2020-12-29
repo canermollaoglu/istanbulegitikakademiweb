@@ -375,7 +375,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 };
                 try
                 {
-                    educationHostImageVm.FullPath = _storage.DownloadFile(Path.GetFileName(image.FileUrl), "education-host-images").Result;
+                    educationHostImageVm.FullPath = _storage.BlobUrl+image.FileUrl;
                 }
                 catch
                 {

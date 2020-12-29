@@ -53,7 +53,7 @@
                                     var featuredImage = "";
                                     if (!string.IsNullOrEmpty(group.FeaturedImageUrl))
                                     {
-                                        featuredImage = StorageService.DownloadFile(System.IO.Path.GetFileName(group.FeaturedImageUrl), System.IO.Path.GetDirectoryName(group.FeaturedImageUrl)).Result;
+                                        featuredImage = StorageService.BlobUrl+group.FeaturedImageUrl;
                                     }
                                     <div class="account-courses__item">
                                         <a href="#0" class="account-courses__item-cnt">

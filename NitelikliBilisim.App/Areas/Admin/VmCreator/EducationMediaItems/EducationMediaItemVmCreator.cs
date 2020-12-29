@@ -45,7 +45,7 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.EducationMediaItems
 
                 try
                 {
-                    media.FileUrl = _storageService.DownloadFile(System.IO.Path.GetFileName(item.FileUrl), "media-items").Result;
+                    media.FileUrl = _storageService.BlobUrl+item.FileUrl;
                 }
                 catch
                 {

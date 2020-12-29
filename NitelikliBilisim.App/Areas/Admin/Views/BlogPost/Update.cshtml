@@ -73,7 +73,7 @@
                             var filePath = "";
                             try
                             {
-                                filePath = StorageService.DownloadFile(System.IO.Path.GetFileName(Model.FeaturedImageUrl), "blog-featured-images").Result;
+                                filePath = StorageService.BlobUrl+Model.FeaturedImageUrl;
                             }
                             catch
                             {

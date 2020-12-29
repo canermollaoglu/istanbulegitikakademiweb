@@ -1837,32 +1837,7 @@ if ($('.login__form').length > 0) {
     var loginContentHeight = $('.login__content .login__form.active').height();
     $('.login__content').css('height', loginContentHeight);
     $('.login__is-logined').css('top', loginContentHeight + 20);
-    $('.js-next-step2').bind('change click', function () {
-        var element1 = $("input[name='Name']");
-        var element2 = $("input[name='Surname']");
-        var element3 = $("input[name='Password']");
-        var element4 = $("input[name='ConfirmPassword']");
-        if (element1.val() == '' || element2.val() == '' || element3.val() == '' || element4.val() == '') {
-            console.log('tum formlar basarili');
-        } else if (element3.val() != element4.val()) {
-            console.log('şifreler eşit değil');
-            $('.js-password-equal').show();
-        } else if (!$('.login-checkbox').is(':checked')) {
-            console.log('checked');
-        } else {
-            $('.login__form-step1').removeClass('active');
-            $('.login__form-step2').addClass('active');
-            var loginContentHeight = $('.login__content .login__form.active').height();
-            $('.login__content').css('height', loginContentHeight);
-            $('.login__is-logined').css('top', loginContentHeight + 20);
-            $('.login__header-line--progress').css('width', '100%');
-            $('.circle-step1').addClass('preved');
-            $('.circle-step2').addClass('active');
-            $('.js-login-header-step1').removeClass('active');
-            $('.js-login-header-step2').addClass('active');
-            $('.js-password-equal').hide();
-        }
-    });
+    
     $('.js-login-header-step1').click(function () {
         $('.login__form-step1').addClass('active');
         $('.login__form-step2').removeClass('active');
@@ -1879,18 +1854,7 @@ if ($('.login__form').length > 0) {
     });
 
     var $validator = $('#validateError').validate();
-    $('#js-next-step2').click(function () {
-        var errors;
-
-        if (!$('#validateForm .input').val()) {
-            /* Build up errors object, name of input and error message: */
-            errors = {
-                signupname: 'Please enter an ID to check',
-            };
-            /* Show errors on the form */
-            $validator.showErrors(errors);
-        }
-    });
+    
 
     $(document).on('change', '.js-signup-select', function () {
         var loginStep2TrueHeight = $('.login__is-true').height();
@@ -1908,9 +1872,7 @@ if ($('.login__form').length > 0) {
             $('.login__is-logined').css('top', '225px');
         }
     });
-    $('.login__finish-button').click(function () {
-        btnSubmit_onClick();
-    });
+    
 }
 
 $('#accountSideImg').on('change', function () {

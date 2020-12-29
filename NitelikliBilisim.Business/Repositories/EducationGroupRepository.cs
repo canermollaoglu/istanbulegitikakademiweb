@@ -31,7 +31,7 @@ namespace NitelikliBilisim.Business.Repositories
         private readonly NbDataContext _context;
         private readonly IConfiguration _configuration;
         private readonly IStorageService _storageService;
-       
+
 
         public EducationGroupRepository(NbDataContext context, IConfiguration configuration) : base(context)
         {
@@ -165,7 +165,7 @@ namespace NitelikliBilisim.Business.Repositories
             };
         }
 
-       public Dictionary<Guid, string> GetAllGroupsDictionary()
+        public Dictionary<Guid, string> GetAllGroupsDictionary()
         {
             return _context.EducationGroups.OrderByDescending(x => x.StartDate).ToDictionary(x => x.Id, x => x.GroupName + " - " + x.StartDate.ToShortDateString());
         }
@@ -173,7 +173,7 @@ namespace NitelikliBilisim.Business.Repositories
         public List<GroupLessonDayGetListVm> GetLessonDaysByGroupId(Guid groupId)
         {
             var lessonDays = (from lessonDay in _context.GroupLessonDays
-                              join eGroup in _context.EducationGroups.Include(x=>x.Education) on lessonDay.GroupId equals eGroup.Id
+                              join eGroup in _context.EducationGroups.Include(x => x.Education) on lessonDay.GroupId equals eGroup.Id
                               join educator in _context.Users on lessonDay.EducatorId equals educator.Id into le
                               from educator in le.DefaultIfEmpty()
                               join classRoom in _context.Classrooms on lessonDay.ClassroomId equals classRoom.Id into lc
@@ -184,7 +184,7 @@ namespace NitelikliBilisim.Business.Repositories
                                   ClassRoomName = classRoom.Name,
                                   DateOfLesson = lessonDay.DateOfLesson,
                                   EducatorFullName = $"{educator.Name} {educator.Surname}",
-                                  EducatorSalary = lessonDay.EducatorSalary.GetValueOrDefault()*eGroup.Education.HoursPerDay,
+                                  EducatorSalary = lessonDay.EducatorSalary.GetValueOrDefault() * eGroup.Education.HoursPerDay,
                                   Id = lessonDay.Id,
                                   HasAttendanceRecord = lessonDay.HasAttendanceRecord
                               }).OrderBy(x => x.DateOfLesson).ToList();
@@ -393,9 +393,9 @@ namespace NitelikliBilisim.Business.Repositories
         /// </summary>
         /// <param name="educationId"></param>
         /// <returns></returns>
-        public Dictionary<int,string> GetAvailableCities(Guid educationId)
+        public Dictionary<int, string> GetAvailableCities(Guid educationId)
         {
-            var groups = _context.EducationGroups.Include(x=>x.Host).Where(x => x.StartDate.Date > DateTime.Now.Date && x.EducationId == educationId && x.IsGroupOpenForAssignment);
+            var groups = _context.EducationGroups.Include(x => x.Host).Where(x => x.StartDate.Date > DateTime.Now.Date && x.EducationId == educationId && x.IsGroupOpenForAssignment);
             Dictionary<int, string> cities = new Dictionary<int, string>();
             foreach (var group in groups)
             {
@@ -408,35 +408,33 @@ namespace NitelikliBilisim.Business.Repositories
             return cities;
 
         }
-        public List<GroupVm> GetFirstAvailableGroups(Guid educationId,int? cityId = null)
+        public List<GroupVm> GetFirstAvailableGroups(Guid educationId, int? cityId = null)
         {
             var groups = _context.EducationGroups
                 .Include(x => x.Host)
-                .Where(x => x.StartDate.Date > DateTime.Now.Date && x.EducationId == educationId && x.IsGroupOpenForAssignment )
+                .Where(x => x.StartDate.Date > DateTime.Now.Date && x.EducationId == educationId && x.IsGroupOpenForAssignment)
                 .OrderBy(o => o.StartDate)
                 .ToList();
             if (cityId.HasValue)
             {
                 groups = groups.Where(x => x.Host.City == (HostCity)cityId).ToList();
             }
-            var educators = _context.Educators.Include(x=>x.User).ToList();
+            var educators = _context.Educators.Include(x => x.User).ToList();
 
             var model = new List<GroupVm>();
             var hostIds = new List<Guid>();
             var storage = new StorageService();
-            foreach (var item in groups) {
+            foreach (var item in groups)
+            {
                 var educator = educators.First(x => x.Id == item.EducatorId);
                 var folder = Path.GetDirectoryName(educator.User.AvatarPath);
                 var fileName = Path.GetFileName(educator.User.AvatarPath);
                 var url = string.Empty;
-                try
-                {
-                    url = storage.DownloadFile(fileName, folder).Result;
-                }
-                catch 
-                {
-                }
+                url = storage.BlobUrl + educator.User.AvatarPath;
+
                 var culture = CultureInfo.CreateSpecificCulture("tr-TR");
+
+                var discountRate = ((item.OldPrice - item.NewPrice) * 100) / (decimal)(item.OldPrice);
 
                 if (!hostIds.Contains(item.HostId))
                 {
@@ -468,8 +466,9 @@ namespace NitelikliBilisim.Business.Repositories
                         OldPrice = item.OldPrice.GetValueOrDefault(),
                         OldPriceText = item.OldPrice.GetValueOrDefault().ToString(culture),
                         NewPrice = item.NewPrice,
-                        NewPriceText = item.NewPrice.GetValueOrDefault().ToString(culture)
-                    }) ;
+                        NewPriceText = item.NewPrice.GetValueOrDefault().ToString(culture),
+                        DiscountRate= Math.Round(discountRate.GetValueOrDefault())
+                    });
                 }
             }
             return model;
@@ -642,7 +641,7 @@ namespace NitelikliBilisim.Business.Repositories
             foreach (var group in groups)
             {
                 var imagePath = _context.EducationMedias.First(x => x.EducationId == group.EducationId && x.MediaType == EducationMediaType.PreviewPhoto).FileUrl;
-                var imageUrl = _storageService.DownloadFile(System.IO.Path.GetFileName(imagePath), Path.GetDirectoryName(imagePath)).Result;
+                var imageUrl = _storageService.BlobUrl + imagePath;
                 model.Add(new CartItemVm
                 {
                     EducationId = group.EducationId,

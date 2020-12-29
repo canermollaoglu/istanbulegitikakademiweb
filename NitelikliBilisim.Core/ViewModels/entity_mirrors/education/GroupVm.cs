@@ -16,6 +16,7 @@ namespace NitelikliBilisim.Core.ViewModels
         public EducatorVm Educator { get; set; }
         public string OldPriceText { get; set; }
         public string NewPriceText { get; set; }
+        public decimal DiscountRate { get; set; }
     }
 
     public class EducationGroupListVm

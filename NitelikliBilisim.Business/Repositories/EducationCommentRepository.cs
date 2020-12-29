@@ -91,7 +91,7 @@ namespace NitelikliBilisim.Business.Repositories
                          }).Take(count).ToList();
             foreach (var comment in model)
             {
-                comment.CommenterAvatarPath = _storage.DownloadFile(Path.GetFileName(comment.CommenterAvatarPath), Path.GetDirectoryName(comment.CommenterAvatarPath)).Result;
+                comment.CommenterAvatarPath = _storage.BlobUrl + comment.CommenterAvatarPath;
             }
 
             return model;

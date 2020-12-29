@@ -20,7 +20,7 @@
                                 var featuredImage = "";
                                 try
                                 {
-                                    featuredImage = StorageService.DownloadFile(System.IO.Path.GetFileName(featuredComment.PreviewImage), System.IO.Path.GetDirectoryName(featuredComment.PreviewImage)).Result;
+                                    featuredImage = StorageService.BlobUrl+featuredComment.PreviewImage;
                                 }
                                 catch
                                 {
@@ -175,7 +175,7 @@
                 var profileImage = "";
                 try
                 {
-                    profileImage = StorageService.DownloadFile(System.IO.Path.GetFileName(comment.AvatarPath), System.IO.Path.GetDirectoryName(comment.AvatarPath)).Result;
+                    profileImage = StorageService.BlobUrl+comment.AvatarPath;
                 }
                 catch
                 {

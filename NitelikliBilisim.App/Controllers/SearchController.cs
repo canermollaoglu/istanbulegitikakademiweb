@@ -47,7 +47,7 @@ namespace NitelikliBilisim.App.Controllers
                 {
                     var folder = Path.GetDirectoryName(item.Medias[i].FileUrl);
                     var fileName = Path.GetFileName(item.Medias[i].FileUrl);
-                    item.Medias[i].FileUrl = await _storageService.DownloadFile(fileName, folder);
+                    item.Medias[i].FileUrl = _storageService.BlobUrl+item.Medias[i].FileUrl;
                 }
             }
             return Json(new ResponseModel

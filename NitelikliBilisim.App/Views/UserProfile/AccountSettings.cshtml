@@ -6,7 +6,7 @@
     var avatarPath = "";
     try
     {
-        avatarPath = StorageService.DownloadFile(System.IO.Path.GetFileName(Model.GeneralInformation.AvatarPath), System.IO.Path.GetDirectoryName(Model.GeneralInformation.AvatarPath)).Result;
+        avatarPath = StorageService.BlobUrl+Model.GeneralInformation.AvatarPath;
     }
     catch
     {

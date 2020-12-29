@@ -24,7 +24,7 @@
     var filePath = "";
     try
     {
-        filePath = StorageService.DownloadFile(System.IO.Path.GetFileName(Model.AvatarPath), "user-avatars").Result;
+        filePath = StorageService.BlobUrl+Model.AvatarPath;
     }
     catch
     {

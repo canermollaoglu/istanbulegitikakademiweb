@@ -6,7 +6,7 @@
     var userAvatarPath = "";
     if (!string.IsNullOrEmpty(Model.AvatarPath))
     {
-        userAvatarPath = StorageService.DownloadFile(System.IO.Path.GetFileName(Model.AvatarPath), System.IO.Path.GetDirectoryName(Model.AvatarPath)).Result;
+        userAvatarPath = StorageService.BlobUrl+Model.AvatarPath;
     }
     else
     {

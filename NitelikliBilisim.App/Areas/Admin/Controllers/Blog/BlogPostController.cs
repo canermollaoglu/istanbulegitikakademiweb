@@ -46,7 +46,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             var post = _unitOfWork.BlogPost.GetByIdWithCategory(postId);
             BlogPostGetVM model = new BlogPostGetVM();
             model.Title = post.Title;
-            model.FeaturedImageUrl = _storage.DownloadFile(Path.GetFileName(post.FeaturedImageUrl), "blog-featured-images").Result;
+            model.FeaturedImageUrl = _storage.BlobUrl+post.FeaturedImageUrl;
             model.Category = post.Category;
             model.Content = post.Content;
             model.Id = post.Id;

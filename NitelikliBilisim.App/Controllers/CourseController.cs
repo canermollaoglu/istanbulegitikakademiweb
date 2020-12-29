@@ -211,16 +211,14 @@ namespace NitelikliBilisim.App.Controllers
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [HttpPost]
         [Route("get-courses")]
-        public async Task<IActionResult> GetCourses(Guid? categoryId,int? hostCity, int page=1,OrderCriteria order = OrderCriteria.Latest)
+        public IActionResult GetCourses(Guid? categoryId,int? hostCity, int page=1,OrderCriteria order = OrderCriteria.Latest)
         {
             
             var model = _unitOfWork.Education.GetCoursesPageEducations(categoryId,hostCity, page, order);
             
             foreach (var education in model.Educations)
             {
-                var folder = Path.GetDirectoryName(education.ImagePath);
-                var fileName = Path.GetFileName(education.ImagePath);
-                education.ImagePath = await _storageService.DownloadFile(fileName, folder);
+                education.ImagePath = _storageService.BlobUrl + education.ImagePath;
             }
             return Json(new ResponseModel
             {
@@ -231,15 +229,13 @@ namespace NitelikliBilisim.App.Controllers
 
 
         [Route("get-course-comments")]
-        public async Task<IActionResult> GetCourseComments(Guid educationId, int page)
+        public IActionResult GetCourseComments(Guid educationId, int page)
         {
             var model = _unitOfWork.EducationComment.GetPagedComments(educationId, page);
 
             foreach (var comment in model.Comments)
             {
-                var folder = Path.GetDirectoryName(comment.UserAvatarPath);
-                var fileName = Path.GetFileName(comment.UserAvatarPath);
-                comment.UserAvatarPath= await _storageService.DownloadFile(fileName, folder);
+                comment.UserAvatarPath=  _storageService.BlobUrl+comment.UserAvatarPath;
             }
             return Json(new ResponseModel
             {
