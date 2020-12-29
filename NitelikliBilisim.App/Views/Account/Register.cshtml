@@ -63,7 +63,7 @@
                         <div class="login__header-line--progress" style="width: 50%;"></div>
                     </div>
                 </div>
-                <form id="validateForm" class="login__content" method="post" asp-controller="Account" asp-action="Register">
+                <form id="registerForm" class="login__content">
                     <div class="login__form login__form-step1 active">
                         <div class="formStep1">
                             <div class="input__outer">
@@ -127,10 +127,10 @@
                             <label class="main-checkbox reverse login__checkbox">
                                 niteliklibilisim.com.tr‘ye ait <a href="#0">kullanım politikalarını</a> ve
                                 <a href="#0">gizlilik sözleşmesini</a> okudum, kabul ediyorum.
-                                <input type="checkbox" id="chk-terms-and-conditions" class="login-checkbox" name="onBilgilendirme" required>
+                                <input type="checkbox" id="chk-terms-and-conditions" class="login-checkbox" name="AcceptedTerms" required>
                                 <span class="main-checkbox__checkmark"></span>
                             </label>
-                            <button type="submit" class="button button-fw js-next-step2">
+                            <button type="button" class="button button-fw js-next-step2">
                                 Devam et
                             </button>
                         </div>
@@ -225,6 +225,63 @@
         var chkTermsAndConditions = document.getElementById("chk-terms-and-conditions");
         var btnSubmit = $("#btn-submit");
 
+
+        $('#registerForm').validate({
+            errorLabelContainer: $('#registerForm div.error'),
+            errorContainer: 'div.error-messages',
+            errorLabelContainer: $('ul', 'div.error-messages'),
+            wrapper: 'li',
+            rules: {
+                Name: {
+                    required: true,
+                },
+                Email: {
+                    required: true,
+                    email: true,
+                },
+                Surname: {
+                    required: true,
+                },
+                Phone: {
+                    required: true,
+                },
+                UserName: {
+                    required: true,
+                },
+                Password: {
+                    required: true,
+                },
+                ConfirmPassword: {
+                    equalTo:"#input-password"
+                },
+                AcceptedTerms: {
+                    required: true,
+                },
+            },
+            messages: {
+                Name: 'Bu alan zorunludur.',
+                Surname: 'Bu alan zorunludur.',
+                Password: 'Bu alan zorunludur.',
+                ConfirmPassword: 'Şifreler uyuşmuyor.',
+                UserName: 'Bu alan zorunludur.',
+                Phone: 'Bu alan zorunludur.',
+                Email: {
+                    required: 'Bu alan zorunludur.',
+                    email: 'Lütfen geçerli bir e-posta adresi giriniz.',
+                },
+                AcceptedTerms: 'Bu alan zorunludur.'
+            },
+            highlight: function (element) {
+                $(element)
+                    .parent()
+                    .addClass('outer-error');
+            },
+            unhighlight: function (element) {
+                $(element)
+                    .parent()
+                    .removeClass('outer-error');
+            },
+        });
         /* assignments */
         $(document).ready(document_onLoad);
         window.onbeforeunload = window_onBeforeUnload;

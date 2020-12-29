@@ -1838,10 +1838,10 @@ if ($('.login__form').length > 0) {
     $('.login__content').css('height', loginContentHeight);
     $('.login__is-logined').css('top', loginContentHeight + 20);
     $('.js-next-step2').bind('change click', function () {
-        var element1 = $("input[name='signupname']");
-        var element2 = $("input[name='signupmail']");
-        var element3 = $("input[name='signuppassword']");
-        var element4 = $("input[name='signuppasswordagain']");
+        var element1 = $("input[name='Name']");
+        var element2 = $("input[name='Surname']");
+        var element3 = $("input[name='Password']");
+        var element4 = $("input[name='ConfirmPassword']");
         if (element1.val() == '' || element2.val() == '' || element3.val() == '' || element4.val() == '') {
             console.log('tum formlar basarili');
         } else if (element3.val() != element4.val()) {
