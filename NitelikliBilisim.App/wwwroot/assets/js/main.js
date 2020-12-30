@@ -1480,23 +1480,7 @@ if ($('.with-magic-line').length > 0) {
     });
 }
 
-// normal tab
-if ($('.with-normal-tab').length > 0) {
-    $(document).ready(function () {
-        $('.js-main-tab-item a').click(function (e) {
-            var $tabs = $(this).closest('.with-normal-tab');
-            $tabs.find('.js-main-tab-item').removeClass('active');
-            $(this)
-                .parent()
-                .addClass('active');
 
-            $tabs.find('div.main-tab__item').removeClass('active');
-            $(this.hash).addClass('active');
-
-            e.preventDefault();
-        });
-    });
-}
 
 $('#validateForm').validate({
     errorLabelContainer: $('#validateForm div.error'),

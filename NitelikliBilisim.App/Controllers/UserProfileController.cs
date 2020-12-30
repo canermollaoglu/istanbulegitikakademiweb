@@ -162,7 +162,7 @@ namespace NitelikliBilisim.App.Controllers
 
         }
 
-        [Route("haftaya-ozel-kurslar")]
+        [Route("get-education-of-the-week")]
         public IActionResult GetEducationsOfTheWeeks(int week)
         {
             try
