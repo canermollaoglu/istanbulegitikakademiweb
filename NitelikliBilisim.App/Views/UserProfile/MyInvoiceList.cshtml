@@ -1,0 +1,139 @@
+﻿@model List<NitelikliBilisim.Core.ViewModels.Main.Profile.CustomerInvoiceListVm>
+@using NitelikliBilisim.Core.Services.Abstracts
+@using NitelikliBilisim.App.Utility
+@inject IStorageService StorageService
+@{
+    ViewData["Title"] = "Faturalarım";
+    Layout = "~/Views/Shared/_LayoutHesap.cshtml";
+}
+<section class="account account--dashboard">
+    <div class="account-mobile__top">
+        <a href="./hesap-menu.php" class="account-mobile__prev">
+            <span class="icon-outer">
+                <svg class="icon">
+                    <use xlink:href="assets/img/icons.svg#icon-arrow"></use>
+                </svg>
+            </span>
+        </a>
+        <span class="account-mobile__txt">
+            FATURALARIM
+        </span>
+    </div>
+    <div class="container">
+        <div class="account__wrp">
+            @await Component.InvokeAsync("MyAccountSidebar", AccountSideBarPageNames.MyInvoices)
+            <div class="account-content">
+                <div class="account-detail">
+                    <div class="account-detail__wrp">
+                        <div class="account-detail__title">
+                            FATURALARIM
+                        </div>
+                        <div class="account-courses certificate">
+                            <div class="account-courses__top">
+                                <div class="account-courses__top-course">
+                                    FATURA NO
+                                </div>
+                                <div class="account-courses__top-item dated">
+                                    TARİH
+                                </div>
+                                <div class="account-courses__top-item certificate-name">
+                                    TUTAR
+                                </div>
+                                <div class="account-courses__top-item downloaded">
+                                    İNDİR
+                                </div>
+                            </div>
+                            <div class="account-courses__wrp">
+                                @foreach (var invoice in Model)
+                                {
+                                <div class="account-courses__item">
+                                    <a asp-controller="UserProfile" asp-action="InvoiceDetails" asp-route-invoiceId="@invoice.Id" class="account-courses__item-cnt">
+                                        <div class="account-courses__item-img">
+                                        </div>
+                                        <div class="account-courses__item-title" style="text-align:center !important;">
+                                            @invoice.PaymentId
+                                        </div>
+                                    </a>
+                                    <div class="account-courses__item-item dated">
+                                        @invoice.Date.ToString("dd MMMM yyyy")
+                                    </div>
+                                    <div class="account-courses__item-item certificate-name">
+                                        @invoice.PaidPrice TL
+                                    </div>
+
+
+                                    @if (string.IsNullOrEmpty(invoice.FileUrl))
+                                    {
+                                        <div class="account-courses__item-item downloaded">
+                                            <a class="button button-fw button-yellow button-icon-right">
+                                                <span class="button-txt">Hazırlanıyor</span>
+                                                <span class="button-icon">
+                                                    <span class="icon-outer">
+                                                        <svg class="icon">
+                                                            <use xlink:href="assets/img/icons.svg#icon-clock"></use>
+                                                        </svg>
+                                                    </span>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="account-courses__item-item downloaded">
+                                            <a href="@(StorageService.BlobUrl+invoice.FileUrl)" class="button button-fw button-icon-right">
+                                                <span class="button-txt">PDF İndir</span>
+                                                <span class="button-icon">
+                                                    <span class="icon-outer">
+                                                        <svg class="icon">
+                                                            <use xlink:href="assets/img/icons.svg#icon-long-arrow"></use>
+                                                        </svg>
+                                                    </span>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    }
+                                </div>
+                                }
+
+                                @*<div class="account-courses__item">
+                                    <a href="#0" class="account-courses__item-cnt">
+                                        <div class="account-courses__item-img">
+                                            <img src="./assets/img/certificate.jpg" alt="">
+                                        </div>
+                                        <div class="account-courses__item-title">
+                                            Web Yazılım Uzmanlığı Sertifikası
+                                        </div>
+                                    </a>
+                                    <div class="account-courses__item-item certificate-name">
+                                        ASP.Net Core Web API ile
+                                        JWT Authentication
+                                    </div>
+                                    <div class="account-courses__item-item dated">
+                                        10 Mart 2020
+                                    </div>
+                                    <div class="account-courses__item-item downloaded">
+                                        <a href="#0" class="button button-fw button-yellow button-icon-right">
+                                            <span class="button-txt">Hazırlanıyor</span>
+                                            <span class="button-icon">
+                                                <span class="icon-outer">
+                                                    <svg class="icon">
+                                                        <use xlink:href="assets/img/icons.svg#icon-clock"></use>
+                                                    </svg>
+                                                </span>
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>*@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+<div class="js-tooltip tooltip tooltip-top account-dashboard__started-tooltip">
+    <div class="tooltip__title">
+    </div>
+</div>

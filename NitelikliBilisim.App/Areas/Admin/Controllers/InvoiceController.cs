@@ -55,7 +55,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             {
                 var invoice = _unitOfWork.Invoice.GetByIdWithCustomer(data.InvoiceId);
 
-                 var mediaFileName = $"{StringHelpers.FormatForTag(invoice.Customer.User.Name+invoice.Customer.User.Surname+"-"+Guid.NewGuid())}";
+                 var mediaFileName = $"{StringHelpers.FormatForTag(invoice.Customer.User.Name+invoice.Customer.User.Surname+"-"+invoice.OnlinePaymentInfo.PaymentId)}";
                 var mediaPath = await _storage.UploadFile(data.PostedFile.OpenReadStream(), $"{mediaFileName}.{Path.GetExtension(data.PostedFile.FileName.ToLower())}", "invoices");
 
                 invoice.InvoicePdfUrl = mediaPath;

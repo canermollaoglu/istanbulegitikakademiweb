@@ -43,7 +43,7 @@ namespace NitelikliBilisim.Business.Repositories
 
         public Invoice GetByIdWithCustomer(Guid invoiceId)
         {
-            return _context.Invoices.Include(x => x.Customer).ThenInclude(x => x.User).First(x => x.Id == invoiceId);
+            return _context.Invoices.Include(x=>x.OnlinePaymentInfo).Include(x => x.Customer).ThenInclude(x => x.User).First(x => x.Id == invoiceId);
         }
     }
 }

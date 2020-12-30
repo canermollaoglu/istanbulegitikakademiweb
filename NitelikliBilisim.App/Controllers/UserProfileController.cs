@@ -111,6 +111,19 @@ namespace NitelikliBilisim.App.Controllers
             var model = _userUnitOfWork.User.GetCustomerComments(userId);
             return View(model);
         }
+        [Route("hesap/faturalarim")]
+        public IActionResult MyInvoiceList()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var model = _userUnitOfWork.User.GetCustomerInvoices(userId);
+            return View(model);
+        }
+        [Route("hesap/fatura-detay")]
+        public IActionResult InvoiceDetails(Guid invoiceId)
+        {
+            var model = _userUnitOfWork.User.GetCustomerInvoiceDetails(invoiceId);
+            return View(model);
+        }
         [Route("hesap/indirim-kuponlarim")]
         public IActionResult MyCoupons()
         {

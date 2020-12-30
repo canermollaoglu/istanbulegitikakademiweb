@@ -23,7 +23,7 @@ namespace NitelikliBilisim.Business.Repositories
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
 
-        public AppUserRepository(NbDataContext context, UserManager<ApplicationUser> userManager,IConfiguration configuration)
+        public AppUserRepository(NbDataContext context, UserManager<ApplicationUser> userManager, IConfiguration configuration)
         {
             _context = context;
             _userManager = userManager;
@@ -158,30 +158,81 @@ namespace NitelikliBilisim.Business.Repositories
             return model;
         }
 
+        public InvoiceDetailsVm GetCustomerInvoiceDetails(Guid invoiceId)
+        {
+            InvoiceDetailsVm model = new();
+            var totalPrice = 0m;
+            var cultureInfo = CultureInfo.CreateSpecificCulture("tr-TR");
+            var invoice = _context.Invoices.Include(x => x.OnlinePaymentInfo).Include(x=>x.InvoiceDetails).First(x => x.Id == invoiceId);
+            var groupIds = invoice.InvoiceDetails.Select(x => x.GroupId).ToList();
+            var groups = _context.EducationGroups.Where(x => groupIds.Contains(x.Id)).ToList();
+            totalPrice = groups != null && groups.Count > 0 ? groups.Sum(x => x.OldPrice.GetValueOrDefault()) : 0m;
+
+            model.TotalPrice = totalPrice.ToString(cultureInfo);
+            model.PaidPrice = invoice.OnlinePaymentInfo.PaidPrice.ToString(cultureInfo);
+            model.DiscountAmount = (totalPrice - invoice.OnlinePaymentInfo.PaidPrice).ToString(cultureInfo);
+            model.PaymentId = invoice.OnlinePaymentInfo.PaymentId;
+            model.Date = invoice.CreatedDate;
+            model.InstallmentInfo = invoice.PaymentCount;
+            var details = (from invoiceDetail in _context.InvoiceDetails
+                          join onlinePaymentDetailInfo in _context.OnlinePaymentDetailsInfos on invoiceDetail.Id equals onlinePaymentDetailInfo.Id
+                          join education in _context.Educations on invoiceDetail.EducationId equals education.Id
+                          join category in _context.EducationCategories on education.CategoryId equals category.Id
+                           join educationImage in _context.EducationMedias on education.Id equals educationImage.EducationId
+                          where educationImage.MediaType == EducationMediaType.PreviewPhoto && invoiceDetail.InvoiceId == invoiceId
+                          select new InvoiceDetailListVm
+                          {
+                              Id = invoiceDetail.Id,
+                              PaidPrice = onlinePaymentDetailInfo.PaidPrice.ToString(cultureInfo),
+                              Education = education.Name,
+                              EducationImage = educationImage.FileUrl,
+                              CategorySeoUrl = category.SeoUrl,
+                              EducationSeoUrl = education.SeoUrl
+                          }).ToList();
+            model.Details = details;
+            return model;
+        }
+
+        public List<CustomerInvoiceListVm> GetCustomerInvoices(string userId)
+        {
+            var data = (from invoice in _context.Invoices
+                        join onlinePayment in _context.OnlinePaymentInfos on invoice.Id equals onlinePayment.Id
+                        where invoice.CustomerId == userId
+                        select new CustomerInvoiceListVm
+                        {
+                            Id = invoice.Id,
+                            PaymentId = onlinePayment.PaymentId,
+                            Date = invoice.CreatedDate,
+                            PaidPrice = onlinePayment.PaidPrice,
+                            FileUrl = invoice.InvoicePdfUrl
+                        }).ToList();
+            return data;
+        }
+
         public MyAccountSettingsGetVm GetAccoutSettingsPageData(string userId)
         {
             MyAccountSettingsGetVm model = new();
             var data = (from user in _context.Users
-                       where user.Id == userId
-                       join student in _context.Customers on user.Id equals student.Id
-                       select new MyAccountSettingsGeneralInformationVm
-                       {
-                           AvatarPath = user.AvatarPath,
-                           Email = user.Email,
-                           Name = user.Name,
-                           Surname = user.Surname,
-                           DateOfBirth = student.DateOfBirth,
-                           Job = student.Job,
-                           LastGraduatedSchoolId = student.LastGraduatedSchoolId,
-                           Phone = user.PhoneNumber,
-                           LinkedIn = student.LinkedInProfileUrl,
-                           WebSite = student.WebSiteUrl
-                       }).First();
+                        where user.Id == userId
+                        join student in _context.Customers on user.Id equals student.Id
+                        select new MyAccountSettingsGeneralInformationVm
+                        {
+                            AvatarPath = user.AvatarPath,
+                            Email = user.Email,
+                            Name = user.Name,
+                            Surname = user.Surname,
+                            DateOfBirth = student.DateOfBirth,
+                            Job = student.Job,
+                            LastGraduatedSchoolId = student.LastGraduatedSchoolId,
+                            Phone = user.PhoneNumber,
+                            LinkedIn = student.LinkedInProfileUrl,
+                            WebSite = student.WebSiteUrl
+                        }).First();
 
             model.GeneralInformation = data;
-            model.Addresses = _context.Addresses.Include(x=>x.City).Include(x=>x.State).Where(x => x.CustomerId == userId).ToList();
+            model.Addresses = _context.Addresses.Include(x => x.City).Include(x => x.State).Where(x => x.CustomerId == userId).ToList();
             model.Universities = _context.Universities.ToList();
-            model.Cities = _context.Cities.OrderBy(x=>x.Order).ToList();
+            model.Cities = _context.Cities.OrderBy(x => x.Order).ToList();
             return model;
         }
 
@@ -205,7 +256,7 @@ namespace NitelikliBilisim.Business.Repositories
                 eMonth.Order = i;
                 for (int j = 1; j <= 4; j++)
                 {
-                    if (week<=totalEducationWeeks)
+                    if (week <= totalEducationWeeks)
                     {
                         eMonth.Weeks.Add(new EducationWeek
                         {
@@ -324,8 +375,8 @@ namespace NitelikliBilisim.Business.Repositories
         {
             MyPanelVm model = new MyPanelVm();
             var student = _context.Customers.Include(x => x.User)
-                .Include(x=>x.StudentEducationInfos).ThenInclude(x=>x.Category)
-                .Include(x=>x.StudentEducationInfos).ThenInclude(x=>x.EducationDays).First(x => x.Id == userId);
+                .Include(x => x.StudentEducationInfos).ThenInclude(x => x.Category)
+                .Include(x => x.StudentEducationInfos).ThenInclude(x => x.EducationDays).First(x => x.Id == userId);
             var favoriteEducations = GetUserFavoriteEducationsByUserId(userId);
             var purchasedEducations = GetPurschasedEducationsByUserId(userId);
 
