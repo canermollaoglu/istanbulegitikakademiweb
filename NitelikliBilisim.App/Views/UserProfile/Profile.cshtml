@@ -251,7 +251,7 @@
                                             if (i == Model.EducationWeek)
                                                 slideClass = "active";
                                             <div class="swiper-slide account-dashboard__week-slide @slideClass js-main-tab-item">
-                                                <a href="#week@(i)" data-week="@i" class="account-dashboard__week-item">
+                                                <a href="#week@(i)" class="account-dashboard__week-item">
                                                     <span>Hafta</span>
                                                     <div>@i</div>
                                                 </a>
@@ -1299,7 +1299,70 @@
                                                     </div>
                                                 </a>
                                             </div>
-
+                                            <div class="swiper-slide">
+                                                <a href="egitim-detay.php" class="lesson-list__item">
+                                                    <div class="lesson-list__item-img">
+                                                        <img src="../../assets/img/cardimg4.jpg" alt="">
+                                                    </div>
+                                                    <div class="lesson-list__item-cnt">
+                                                        <div class="lesson-list__item-left">
+                                                            <div class="lesson-list__item-title">
+                                                                Active Directory Sertifika Servisleri
+                                                            </div>
+                                                            <div class="lesson-list__item-txt">
+                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
+                                                                dahi devamlı
+                                                                erişilebilir
+                                                            </div>
+                                                        </div>
+                                                        <div class="lesson-list__item-right">
+                                                            <div class="lesson-list__item-date">
+                                                                <span class="icon-outer">
+                                                                    <svg class="icon">
+                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                                                                    </svg>
+                                                                </span>
+                                                                3 gün ( 12 saat )
+                                                            </div>
+                                                            <div class="lesson-list__item-price">
+                                                                <span>₺</span> 200,00
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                            <div class="swiper-slide">
+                                                <a href="egitim-detay.php" class="lesson-list__item">
+                                                    <div class="lesson-list__item-img">
+                                                        <img src="../../assets/img/cardimg5.jpg" alt="">
+                                                    </div>
+                                                    <div class="lesson-list__item-cnt">
+                                                        <div class="lesson-list__item-left">
+                                                            <div class="lesson-list__item-title">
+                                                                Active Directory Sertifika Servisleri
+                                                            </div>
+                                                            <div class="lesson-list__item-txt">
+                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
+                                                                dahi devamlı
+                                                                erişilebilir
+                                                            </div>
+                                                        </div>
+                                                        <div class="lesson-list__item-right">
+                                                            <div class="lesson-list__item-date">
+                                                                <span class="icon-outer">
+                                                                    <svg class="icon">
+                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                                                                    </svg>
+                                                                </span>
+                                                                3 gün ( 12 saat )
+                                                            </div>
+                                                            <div class="lesson-list__item-price">
+                                                                <span>₺</span> 1200,00
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </div>
                                         </div>
                                         <!-- If we need pagination -->
                                         <div class="swiper-pagination"></div>
@@ -2162,75 +2225,5 @@
                 }
             });
         });
-
-        // normal tab
-        if ($('.with-normal-tab').length > 0) {
-            $(document).ready(function () {
-                $('.js-main-tab-item a').click(function (e) {
-                    var week = $(this).data("week");
-                    loadSuggestedEducations(week);
-                    var $tabs = $(this).closest('.with-normal-tab');
-                    $tabs.find('.js-main-tab-item').removeClass('active');
-                    $(this)
-                        .parent()
-                        .addClass('active');
-
-                    $tabs.find('div.main-tab__item').removeClass('active');
-                    $(this.hash).addClass('active');
-
-                    e.preventDefault();
-                });
-            });
-        }
-
-        function loadSuggestedEducations(week) {
-            var container = $("#week" + week).find(".swiper-wrapper");
-            
-            $.ajax({
-                url: `/get-education-of-the-week?week=${week}`,
-                method: "get",
-                success: (res) => {
-                   
-                    var educations = res.data;
-                    var content = ` <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg6.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 800,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>`;
-                    
-                }
-            });
-
-
-
-        }
-
     </script>
 }
