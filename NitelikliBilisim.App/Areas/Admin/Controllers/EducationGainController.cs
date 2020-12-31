@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Areas.Admin.VmCreator.EducationGains;
 using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Models;
@@ -8,7 +7,6 @@ using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_gains;
 using System;
 using System.Collections.Generic;
-using NitelikliBilisim.App.Filters;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
