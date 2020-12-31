@@ -93,8 +93,10 @@
                         <div class="select-index-dropdown">
                             <select class="js-index-location-select">
                                 <option value="" selected hidden disabled>Konum Seçin</option>
-                                <option value="2">İstanbul</option>
-                                <option value="3">Ankara</option>
+                                @foreach (var city in Model.HostCities)
+                                {
+                                    <option value="@city.Key">@city.Value</option>
+                                }
                             </select>
                         </div>
 
