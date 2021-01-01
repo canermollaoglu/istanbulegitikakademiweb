@@ -361,6 +361,35 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 var group = _unitOfWork.EducationGroup.GetById(data.GroupId);
                 group.GroupName = data.GroupName;
                 group.NewPrice = data.NewPrice;
+                group.OldPrice = data.OldPrice;
+                _unitOfWork.EducationGroup.Update(group);
+                return Json(new ResponseModel
+                {
+                    isSuccess = true
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { $"Hata: {ex.Message}" }
+                });
+            }
+        }
+        public IActionResult ChangeNewPrice(UpdateGroupNewPriceVm data)
+        {
+            if (!ModelState.IsValid)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = ModelStateUtil.GetErrors(ModelState)
+                });
+
+            try
+            {
+                var group = _unitOfWork.EducationGroup.GetById(data.GroupId);
+                group.NewPrice = data.NewPrice.GetValueOrDefault();
                 _unitOfWork.EducationGroup.Update(group);
                 return Json(new ResponseModel
                 {

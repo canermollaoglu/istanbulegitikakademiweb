@@ -190,8 +190,9 @@ namespace NitelikliBilisim.App.Lexicographer
             _dictionary.Add("AdminFeaturedCommentList",
               new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Öne Çıkarılan Yorumlar", url: null) });
 
-            
-
+            /*Invoices*/
+            _dictionary.Add("AdminInvoices",
+              new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Fatura Yönetimi", url: null) });
 
         }
 

@@ -14,6 +14,7 @@ var inputStartDate = $("#input-start-date");
 var inputChangeEducatorStartDate = $("#input-change-educator-start-date");
 var inputGroupName = $("#input-group-name");
 var inputnewPrice = $("#input-new-price");
+var inputOldPrice = $("#input-old-price");
 var inputGroupNewDate = $("#input-group-new-start-date");
 var inputNewSalesPrice = $("#input-sales-price");
 
@@ -22,6 +23,7 @@ var inputExpectedStudentCount = $("#input-expected-student-count");
 var inputTotalExpenses = $("#input-total-expense");
 
 var divNewPrice = $("#div-new-price");
+var divOldPrice = $("#div-old-price");
 var divGroupName = $("#div-group-name");
 var divGroupEditSaveButton = $("#div-group-edit-save-button");
 
@@ -127,7 +129,6 @@ function btnSave_onClick() {
         complete: () => {
             btnSave.on("click", btnSave_onClick);
             $("#grid-expenses").dxDataGrid("instance").refresh();
-            calculateGroupExpenseAndIncome();
             getGroupDetailsAndCalculationsTable();
         }
     });
@@ -219,7 +220,7 @@ function confirm_onClick() {
         success: (res) => {
             if (res.isSuccess) {
                 $("#grid-expenses").dxDataGrid("instance").refresh();
-                calculateGroupExpenseAndIncome();
+                getGroupDetailsAndCalculationsTable();
             } else {
                 var resultAlert = new AlertSupport.ResultAlert();
                 resultAlert.display({
@@ -243,7 +244,6 @@ function btnUnassign_onClick() {
             getGroupDetailsAndCalculationsTable();
             $("#grid-students").dxDataGrid("instance").refresh();
             createEligibleTicketTable();
-            calculateGroupExpenseAndIncome();
         }
     });
 }
@@ -261,7 +261,6 @@ function btnAssign_onClick() {
             getGroupDetailsAndCalculationsTable();
             $("#grid-students").dxDataGrid("instance").refresh();
             createEligibleTicketTable();
-            calculateGroupExpenseAndIncome();
         }
     });
 }
@@ -293,11 +292,10 @@ function btnEducationPriceSave_onClick() {
     btnEducationPriceSave.off("click");
     var data = {
         GroupId: groupId.val(),
-        GroupName: $("#groupName").text(),
         NewPrice: inputNewSalesPrice.val()
     }
     $.ajax({
-        url: "/admin/EducationGroup/ChangeGeneralInformation",
+        url: "/admin/EducationGroup/ChangeNewPrice",
         method: "post",
         data: data,
         success: (res) => {
@@ -397,7 +395,8 @@ function btnSaveGeneralInformation_onClick() {
     var data = {
         GroupId: groupId.val(),
         GroupName: inputGroupName.val(),
-        NewPrice: inputnewPrice.val()
+        NewPrice: inputnewPrice.val(),
+        OldPrice: inputOldPrice.val()
     }
 
     $.ajax({
@@ -408,7 +407,6 @@ function btnSaveGeneralInformation_onClick() {
             if (res.isSuccess) {
                 saveGroup();
                 getGroupDetailsAndCalculationsTable();
-                calculateGroupExpenseAndIncome();
             } else {
                 var resultAlert = new AlertSupport.ResultAlert();
                 resultAlert.display({
@@ -434,6 +432,8 @@ function editGroup() {
     divGroupName.show();
     $("#newPrice").hide();
     divNewPrice.show();
+    $("#oldPrice").hide();
+    divOldPrice.show();
     divGroupEditSaveButton.show();
 }
 function saveGroup() {
@@ -441,6 +441,8 @@ function saveGroup() {
     divGroupName.hide();
     $("#newPrice").show();
     divNewPrice.hide();
+    $("#oldPrice").show();
+    divOldPrice.hide();
     divGroupEditSaveButton.hide();
 }
 
@@ -608,6 +610,9 @@ function fillGroupDetailInfo(data) {
     $("#alertDiv").addClass(alertStyle);
     if (data.newPrice != null) {
         inputnewPrice.val(data.newPrice);
+    }
+    if (data.oldPrice != null) {
+        inputOldPrice.val(data.oldPrice);
     }
 }
 

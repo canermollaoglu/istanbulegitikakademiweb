@@ -137,8 +137,10 @@
                                     <div class='card-wrapper card-wrapper--form'></div>
                                     <form class="card-form" id="form-buy" novalidate method="post" asp-controller="Sale" asp-action="Pay">
                                         @Html.AntiForgeryToken()
-                                        <input type="hidden"  id="_is-distant-sales-agreement-confirmed" name="IsDistantSalesAgreementConfirmed" />
+                                        <input type="hidden" id="_is-distant-sales-agreement-confirmed" name="IsDistantSalesAgreementConfirmed" />
                                         <input type="hidden" value="0" id="input-education-total-price" />
+                                        <input type="hidden" value="0" id="input-education-total-old-price" />
+                                        <input type="hidden" value="0" id="input-discount-amount" />
                                         <input type="hidden" value="0" id="promotion-discount-amount" />
                                         <input type="hidden" value="" id="_promotion-code" name="PromotionCode" />
                                         <input type="hidden" value="" id="_installmentCount" name="PaymentInfo.Installments" />
@@ -184,7 +186,7 @@
                                         <div class="input__outer">
                                             <label class="main-checkbox">
                                                 <a href="#0">3d secure</a> ile ödeme yapacağım.
-                                                <input type="checkbox" id="chc3dSecure" name="Use3d" value="true" >
+                                                <input type="checkbox" id="chc3dSecure" name="Use3d" value="true">
                                                 <span class="main-checkbox__checkmark"></span>
                                             </label>
                                         </div>
@@ -456,24 +458,26 @@
                     <div class="checkout__price-wrp js-discounts">
                         <div class="checkout__price-item">
                             <div class="checkout__price-title">Toplam İndirimler</div>
-                            <div class="checkout__price-new">
-                                <span>₺</span> -249.90
+                            <div class="checkout__price-new" id="discountAmount">
+                                <span>₺</span> 0.00
                             </div>
                         </div>
                         <div class="checkout__price-item">
                             <div class="checkout__price-title">Ürünler Toplamı</div>
-                            <div class="checkout__price-old">
-                                <span>₺</span> 1,250.00
+                            <div class="checkout__price-old" >
+                                <span>₺</span> 0.00
                             </div>
                             <div class="checkout__price-new">
-                                <span>₺</span> 1,550.00
+                                <div class="checkout__price-new" id="oldPrice">
+                                <span>₺</span> 0.00
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="checkout__price-item totaly">
                         <div class="checkout__price-title">Toplam Tutar</div>
-                        <div class="checkout__price-new">
-                            <span>₺</span> 1.1799.90
+                        <div class="checkout__price-new" id="newPrice">
+                            <span>₺</span> 0.00
                         </div>
                     </div>
                 </div>
@@ -1041,8 +1045,12 @@
         var inputInstallment = $("#_installmentCount");
         var aId = $("#_aId");
         var mss = $("#_is-distant-sales-agreement-confirmed");
-
         var onBilgilendirme = $("#onBilgilendirme");
+        var inputEducationTotalOldPrice = $("#input-education-total-old-price");
+        var inputDiscountAmount = $("#input-discount-amount");
+        var txtTotal = $("#newPrice");
+        var txtOldTotal = $("#oldPrice");
+        var txtTotalDiscount = $("#discountAmount");
 
 
 
@@ -1125,8 +1133,10 @@
         function formatCurrency(total) {
             return " <span>₺</span> " + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
         }
-        function calculateTotalPrice() {
-            txtTotal.html(formatCurrency(parseFloat(inputEducationTotalPrice.val() - parseFloat(inputPromotionDiscountAmount.val()))));
+        function calculatePrices() {
+            txtTotal.html(formatCurrency(parseFloat(inputEducationTotalPrice.val()) - parseFloat(inputPromotionDiscountAmount.val())));
+            txtOldTotal.html(formatCurrency(parseFloat(inputEducationTotalOldPrice.val())));
+            txtTotalDiscount.html(formatCurrency(parseFloat(inputDiscountAmount.val()) + parseFloat(inputPromotionDiscountAmount.val())));
         }
         function getPromotionInfo(promotionCode) {
             var datapromotionCode;
@@ -1157,7 +1167,7 @@
                         var result = `<span class="icon-font"><svg class="icon icon-check"><use xlink:href="../../assets/img/icons.svg#icon-check"></use></svg></span>İndirim Başarılı ile Uygulandı!`;
                         $('.js-cupon-form__result').html(result);
                         inputPromotionDiscountAmount.val(res.data.discountAmount);
-                        calculateTotalPrice();
+                        calculatePrices();
                         _promotionCode.val(res.data.promotionCode);
                     } else {
                         $('.js-cupon-form')
@@ -1183,7 +1193,9 @@
                     if (res.isSuccess) {
                         appendCartItems(res.data.items);
                         inputEducationTotalPrice.val(res.data.totalNumeric);
-                        calculateTotalPrice();
+                        inputEducationTotalOldPrice.val(res.data.oldTotalNumeric);
+                        inputDiscountAmount.val(res.data.discountAmount);
+                        calculatePrices();
                         $(".checkout__top-right").html(res.data.items.length + " Ürün");
                     }
                 }
@@ -1336,7 +1348,6 @@
                 CartItemsJson: cartItems.val(),
                 IsDistantSalesAgreementConfirmed:mss
             });
-            console.log(data);
 
             $.ajax({
                 url: "/pay",
@@ -1374,7 +1385,7 @@
             // });
             localStorage.setItem("promotionCode", "");
             inputPromotionDiscountAmount.val(0);
-            calculateTotalPrice();
+            calculatePrices();
             $('.js-cupon-form')
                 .find('.wizard-loading')
                 .show();

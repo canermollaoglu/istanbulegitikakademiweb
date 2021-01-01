@@ -34,7 +34,8 @@ namespace NitelikliBilisim.Core.Entities
         public string CreatedIp { get; set; }
         [MaxLength(32)]
         public string UpdatedIp { get; set; }
-        
+        public string InvoicePdfUrl { get; set; }
+
         public virtual List<InvoiceDetail> InvoiceDetails { get; set; }
         public virtual OnlinePaymentInfo OnlinePaymentInfo { get; set; }
     }

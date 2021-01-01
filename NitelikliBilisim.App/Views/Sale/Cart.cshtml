@@ -88,19 +88,19 @@
                         <div class="checkout__price-item">
                             <div class="checkout__price-title">Toplam İndirimler</div>
                             <div class="checkout__price-new" id="discountAmount">
-                                <span>₺</span> -249.90
+                                <span>₺</span> -0.90
                             </div>
                         </div>
                         <div class="checkout__price-item">
                             <div class="checkout__price-title">Ürünler Toplamı</div>
                             <div class="checkout__price-new" id="oldPrice">
-                                <span>₺</span> 1,250.00
+                                <span>₺</span> 0.00
                             </div>
                         </div>
                         <div class="checkout__price-item totaly">
                             <div class="checkout__price-title">Toplam Tutar</div>
                             <div class="checkout__price-new" id="newPrice">
-                                <span>₺</span> 1.1799.90
+                                <span>₺</span> 0.00
                             </div>
                         </div>
                     </div>
@@ -206,9 +206,8 @@
                     .parent()
                     .remove('.cupon-error');
                 $('.js-cupon-form').addClass('active');
-                getPromotionInfo();
                 setTimeout(function () {
-
+                    getPromotionInfo();
                     //var newItem =
                     //    '<div class="checkout__price-item"><div class="checkout__price-title">******** Kodu İndirimi</div><div class="checkout__price-new"><span>₺</span> -64.90</div><div class="checkout__product-crash js-remove-sale"><span class="icon-outer"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-crash"></use></svg></span></div></div>';
 
@@ -281,7 +280,7 @@
                             .removeClass('active')
                             .addClass('result');
                         inputPromotionCode.val('');
-                        var newItem = `<div class="checkout__price-item"><div class="checkout__price-title">${res.data.name} Kodu İndirimi</div><div class="checkout__price-new"> ${formatCurrency(res.data.discountAmount)}</div><div class="checkout__product-crash js-remove-sale"><span class="icon-outer"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-crash"></use></svg></span></div></div>`;
+                        var newItem = `<div class="checkout__price-item"><div class="checkout__price-title">${res.data.promotionCode} Kodu İndirimi</div><div class="checkout__price-new"> ${formatCurrency(res.data.discountAmount)}</div><div class="checkout__product-crash js-remove-sale"><span class="icon-outer"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-crash"></use></svg></span></div></div>`;
                         $('.js-discounts').append(newItem);
                         var result = `<span class="icon-font"><svg class="icon icon-check"><use xlink:href="../../assets/img/icons.svg#icon-check"></use></svg></span>İndirim Başarılı ile Uygulandı!`;
                         $('.js-cupon-form__result').html(result);
