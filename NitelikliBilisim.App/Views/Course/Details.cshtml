@@ -607,12 +607,12 @@
                                 <div class="lesson-detail__card-priceright">
                                     <div class="lesson-detail__card-price">
                                         <span class="lesson-detail__card-oldprice">
-                                            <i class="js-data-change-eskifiyat">0,00</i><span>TL</span> 
+                                            <i class="js-data-change-eskifiyat">0,00</i><span> TL</span> 
                                             
                                         </span>
                                         <span class="lesson-detail__card-newprice">
                                             <div class="js-data-change-fiyat">0,00 </div>
-                                            <span>TL</span>
+                                            
                                         </span>
                                     </div>
                                     <div class="lesson-detail__card-sale">
@@ -684,7 +684,7 @@
         </span>
         <span class="lesson-detail__card-newprice">
             <span>₺</span>
-            <div class="js-data-change-fiyat">500,00</div>
+            <div class="js-data-change-fiyat">0,00</div>
         </span>
     </div>
     <div class="button button--navy-blue button-icon-right button-fw js-btn-basket">
@@ -799,7 +799,7 @@
             $('.js-data-change-saat').text();
             $('.lesson-detail__card-sale').text('%'+group.discountRate);
             $('.js-data-change-eskifiyat').text(group.oldPriceText);
-            $('.js-data-change-fiyat').text(group.newPriceText);
+            $('.js-data-change-fiyat').text(group.newPriceText+" TL");
             $('.js-data-change-adres').text(group.host.address);
             $('.js-data-change-teachers a').remove();
             $('.js-data-change-teachers').append(educator);

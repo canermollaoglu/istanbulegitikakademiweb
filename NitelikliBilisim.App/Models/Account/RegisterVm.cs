@@ -23,10 +23,6 @@ namespace NitelikliBilisim.App.Models.Account
         [Display(Name = "Soyad")]
         public string Surname { get; set; }
 
-        [Required(ErrorMessage = "Kullanıcı Adı alanı gereklidir.")]
-        [Display(Name = "Kullanıcı Adı")]
-        public string UserName { get; set; }
-
         [Required(ErrorMessage = "E-Posta alanı gereklidir.")]
         [EmailAddress]
         public string Email { get; set; }

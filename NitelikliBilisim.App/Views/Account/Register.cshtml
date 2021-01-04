@@ -93,14 +93,6 @@
                             <div class="input__outer">
                                 <span class="icon-outer input__icon">
                                     <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-user"></use>
-                                    </svg>
-                                </span>
-                                <input name="UserName" id="input-username" type="text" class="input input--fw" placeholder="Kullanıcı adınız" required>
-                            </div>
-                            <div class="input__outer">
-                                <span class="icon-outer input__icon">
-                                    <svg class="icon">
                                         <use xlink:href="../../assets/img/icons.svg#icon-mail"></use>
                                     </svg>
                                 </span>
@@ -327,8 +319,6 @@
             //}
         }
         function btnSubmit_onClick(e) {
-           // e.preventDetault();
-
             var data = {
                 Name: inputName.val(),
                 Surname: inputSurname.val(),
@@ -344,7 +334,7 @@
                 AcceptedTerms: chkTermsAndConditions.checked
             };
             var tokenVerifier = new SecuritySupport.TokenVerifier();
-            data = tokenVerifier.addToken("wrapped", data);
+            data = tokenVerifier.addToken("registerForm", data);
             $.ajax({
                 url: "kayit-ol",
                 method: "post",

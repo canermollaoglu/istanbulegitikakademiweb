@@ -68,7 +68,7 @@ namespace NitelikliBilisim.App.Controllers
             var user = new ApplicationUser()
             {
                 Name = model.Name,
-                UserName = model.UserName,
+                UserName = model.Email,
                 Surname = model.Surname,
                 Email = model.Email,
                 PhoneNumber = model.Phone
