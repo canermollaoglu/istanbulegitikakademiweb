@@ -211,7 +211,7 @@
         var selectEducationCategories = document.getElementById("select-education-categories");
         var selectIsNbuyStudent = document.getElementById("select-isnbuy-student");
         var inputDateWhenBegun = $("#input-date-when-begun");
-        var inputUsername = $("#input-username");
+        //var inputUsername = $("#input-username");
         var inputPassword = $("#input-password");
         var inputConfirmPassword = $("#input-confirm-password");
         var chkTermsAndConditions = document.getElementById("chk-terms-and-conditions");
@@ -256,9 +256,9 @@
                 Phone: {
                     required: true,
                 },
-                UserName: {
-                    required: true,
-                },
+                //UserName: {
+                //    required: true,
+                //},
                 Password: {
                     required: true,
                 },
@@ -274,7 +274,7 @@
                 Surname: 'Bu alan zorunludur.',
                 Password: 'Bu alan zorunludur.',
                 ConfirmPassword: 'Şifreler uyuşmuyor.',
-                UserName: 'Bu alan zorunludur.',
+               // UserName: 'Bu alan zorunludur.',
                 Phone: 'Bu alan zorunludur.',
                 Email: {
                     required: 'Bu alan zorunludur.',
@@ -326,7 +326,7 @@
                 Phone: inputPhone.val(),
                 Password: inputPassword.val(),
                 ConfirmPassword: inputConfirmPassword.val(),
-                UserName: inputUsername.val(),
+                //UserName: inputUsername.val(),
                 IsNbuyStudent: selectIsNbuyStudent.options[selectIsNbuyStudent.selectedIndex].value,
                 StartedAt: inputDateWhenBegun.val(),
                 EducationCenter: selectEducationCenters.options[selectEducationCenters.selectedIndex].value,
