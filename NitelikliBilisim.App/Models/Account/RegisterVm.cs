@@ -42,7 +42,7 @@ namespace NitelikliBilisim.App.Models.Account
         public string ConfirmPassword { get; set; }
 
         public bool IsNbuyStudent { get; set; }
-        public int EducationCenter { get; set; }
+        public int? EducationCenter { get; set; }
         public Guid? EducationCategory { get; set; }
         public string StartedAt { get; set; }
         public bool AcceptedTerms { get; set; }

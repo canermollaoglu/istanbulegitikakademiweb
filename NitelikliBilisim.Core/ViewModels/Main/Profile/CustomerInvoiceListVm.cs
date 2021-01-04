@@ -10,7 +10,7 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
     {
         public Guid Id { get; set; }
         public DateTime Date { get; set; }
-        public decimal PaidPrice { get; set; }
+        public string PaidPrice { get; set; }
         public string FileUrl { get; set; }
         public string PaymentId { get; set; }
     }
