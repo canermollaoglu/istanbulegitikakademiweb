@@ -195,6 +195,8 @@ namespace NitelikliBilisim.Business.Repositories
 
         public List<CustomerInvoiceListVm> GetCustomerInvoices(string userId)
         {
+            var culture = CultureInfo.CreateSpecificCulture("tr-TR");
+
             var data = (from invoice in _context.Invoices
                         join onlinePayment in _context.OnlinePaymentInfos on invoice.Id equals onlinePayment.Id
                         where invoice.CustomerId == userId
@@ -203,7 +205,7 @@ namespace NitelikliBilisim.Business.Repositories
                             Id = invoice.Id,
                             PaymentId = onlinePayment.PaymentId,
                             Date = invoice.CreatedDate,
-                            PaidPrice = onlinePayment.PaidPrice,
+                            PaidPrice = onlinePayment.PaidPrice.ToString(culture),
                             FileUrl = invoice.InvoicePdfUrl
                         }).ToList();
             return data;
