@@ -1,0 +1,202 @@
+﻿@{
+    ViewData["Title"] = "Blog Reklam Bannerleri";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-table"></i> Blog Reklam Bannerleri Listesi
+        <a asp-controller="BannerAd" asp-action="Add" class="btn btn-outline-primary btn-sm pull-right">Ekle</a>
+    </div>
+    <div class="card-body">
+        <div id="blog-banner-ads-grid"></div>
+    </div>
+    <div class="card-footer small text-muted">Veri tarihi: @DateTime.Now</div>
+</div>
+
+@section postScripts{
+
+    <script>
+        /* fields */
+        var confirmModalBuilder = new AlertSupport.ConfirmModalBuilder();
+
+        /* assignments */
+        $(document).ready(document_onLoad);
+
+        /* events */
+        function document_onLoad() {
+            
+            confirmModalBuilder.buildModal({
+                title: "Emin misiniz?",
+                bodyText: "Seçmiş olduğunuz kayıt kalıcı olarak silinecektir.",
+                cancelText: "Hayır, iptal et",
+                confirmText: "Evet, eminim",
+                onConfirmClick: confirm_onClick
+            });
+            createGrid();
+        }
+
+        function btnConfirmationModalTrigger_onClick() {
+            var url = this.getAttribute("data-url");
+            confirmModalBuilder.setUrl(url);
+            confirmModalBuilder.display();
+        }
+
+
+        function confirm_onClick() {
+            var url = this.getAttribute("data-url");
+            $.ajax({
+                url: url,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        createGrid();
+                    } else {
+                        var resultAlert = new AlertSupport.ResultAlert();
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors,
+                            message: "Hataları düzeltiniz"
+                        });
+                    }
+                }
+            });
+        }
+
+        /*DataGrid*/
+        function createGrid() {
+            $("#blog-banner-ads-grid").dxDataGrid({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    key: "id",
+                    loadUrl: "../../api/bannerad/get-blog-banner-ads"
+                }),
+                remoteOperations: {
+                    paging: true,
+                    filtering: true,
+                    sorting: true,
+                    grouping: true,
+                    summary: true,
+                    groupPaging: true
+                },
+                showBorders: true,
+                showColumnLines: true,
+                showRowLines: true,
+                wordWrapEnabled: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                searchPanel: {
+                    visible: true,
+                    width: 240
+                },
+                paging: {
+                    pageSize: 10
+                },
+                onContentReady: function () {
+                    var deleteButtons = $(".btn-confirmation-modal-trigger");
+                    for (var i = 0; i < deleteButtons.length; i++) {
+                        var btn = deleteButtons[i];
+                        btn.onclick = btnConfirmationModalTrigger_onClick;
+                    }
+                },
+                groupPanel: {
+                    visible: true
+                },
+                grouping: {
+                    autoExpandAll: true
+                },
+                headerFilter: {
+                    visible: true
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10, 20],
+                    showInfo: true
+                },
+                onExporting: function (e) {
+                    var workbook = new ExcelJS.Workbook();
+                    var worksheet = workbook.addWorksheet('Kurumsal Üyelik Başvuruları');
+                    DevExpress.excelExporter.exportDataGrid({
+                        worksheet: worksheet,
+                        component: e.component,
+                        customizeCell: function (options) {
+                            var excelCell = options;
+                            excelCell.font = { name: 'Arial', size: 12 };
+                            excelCell.alignment = { horizontal: 'left' };
+                        }
+                    }).then(function () {
+                        workbook.xlsx.writeBuffer().then(function (buffer) {
+                            saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'Kurumsal Üyelik Başvuru Listesi' + parseInt(Math.random() * 1000000000) + '.xlsx');
+                        });
+                    });
+                    e.cancel = true;
+                },
+                export: {
+                    enabled: true
+                },
+                columns: [
+                    {
+                        caption: "Eklenme Tarihi",
+                        dataField: "createdDate",
+                        dataType: 'date',
+                        format: 'dd/MM/yyyy',
+                        width: 160,
+                        sortOrder: "desc"
+                    },
+                    {
+                        caption: "Kod",
+                        dataField: "code",
+
+                    },
+                    {
+                        caption: "1. Başlık",
+                        dataField: "title1",
+
+                    },
+                    {
+                        caption: "2. Başlık",
+                        dataField: "title2",
+
+                    }, {
+                        caption: "İlgili Uygulama Url",
+                        dataField: "relatedApplicationUrl"
+                    },
+                    {
+                        caption: "Yönet",
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            $(`<a title="Düzenle" class="btn btn-outline-warning btn-sm" href="/admin/bannerad/update?bannerAdId=${current.id}" style="cursor:pointer;"><i class="fa fa-edit"></i></a>`)
+                                .appendTo(container);
+                            $(`<a title="Sil" class="btn btn-outline-danger btn-sm btn-confirmation-modal-trigger" data-url="/admin/bannerad/delete?bannerAdId=${current.id}" style="cursor:pointer;"><i class="fa fa-trash"></i></a>`)
+                                .appendTo(container);
+                        },
+                        width: 100
+                    }
+                ],
+                masterDetail: {
+                    enabled: true,
+                    template: function (container, options) {
+                        var currentbanner = options.data;
+                        var currentDiv = $("<div class='row'>")
+                            .appendTo(container);
+                        var address = `<div class="col-md-4">` +
+                            `<div class="card border-info mb-3">`+
+                            ` <div class="card-header font-weight-bold">Görsel</div>` +
+                            `<div class="card-body"><img width="200" height="90" src="https://niteliklidatastore.blob.core.windows.net/${currentbanner.imageUrl}"></div></div></div>`;
+                        var note = `<div class="col-md-8">` +
+                            `<div class="card border-info mb-3">` +
+                            ` <div class="card-header font-weight-bold">Reklam Metni</div>` +
+                            `<div class="card-body"><p>${currentbanner.content}</p></div></div></div>`;
+                        currentDiv.append(address);
+                        currentDiv.append(note);
+                    }
+                }
+            });
+        }
+
+    </script>
+}

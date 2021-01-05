@@ -61,6 +61,7 @@ namespace NitelikliBilisim.Business.UoW
         private SubscriptionNewsletterRepository _subscriptionNewsletterRepository;
         private ContactFormRepository _contactFormRepository;
         private FeaturedCommentRepository _featuredCommentRepository;
+        private BannerAdsRepository _bannerAdsRepository;
 
         private IElasticClient _elasticClient;
         private IConfiguration _configuration;
@@ -77,11 +78,11 @@ namespace NitelikliBilisim.Business.UoW
             _context.EnsureAutoHistory();
             return _context.SaveChanges();
         }
-        public FeaturedCommentRepository FeaturedComment => _featuredCommentRepository ?? new FeaturedCommentRepository(_context);
-        public ContactFormRepository ContactForm => _contactFormRepository?? new ContactFormRepository(_context);
-        public SubscriptionBlogRepository SubscriptionBlog => _subscriptionBlogRepository ?? new SubscriptionBlogRepository(_context);
-        public SubscriptionNewsletterRepository SubscriptionNewsletter => _subscriptionNewsletterRepository ?? new SubscriptionNewsletterRepository(_context);
-        public EducationCommentRepository EducationComment => _educationCommentRepository ?? new EducationCommentRepository(_context);
+        public FeaturedCommentRepository FeaturedComment => _featuredCommentRepository ??= new FeaturedCommentRepository(_context);
+        public ContactFormRepository ContactForm => _contactFormRepository??= new ContactFormRepository(_context);
+        public SubscriptionBlogRepository SubscriptionBlog => _subscriptionBlogRepository ??= new SubscriptionBlogRepository(_context);
+        public SubscriptionNewsletterRepository SubscriptionNewsletter => _subscriptionNewsletterRepository ??= new SubscriptionNewsletterRepository(_context);
+        public EducationCommentRepository EducationComment => _educationCommentRepository ??= new EducationCommentRepository(_context);
         public CorporateMembershipApplicationRepository CorporateMembershipApplication => _corporateMembershipApplicationRepository ??= new CorporateMembershipApplicationRepository(_context);
         public EducatorApplicationRepository EducatorApplication => _educatorApplicationRespository ??= new EducatorApplicationRepository(_context);
         public EducationPromotionConditionRepository EducationPromotionCondition => _educationPromotionConditionRepository ??= new EducationPromotionConditionRepository(_context);
@@ -191,5 +192,6 @@ namespace NitelikliBilisim.Business.UoW
         public BlogPostRepository BlogPost => _blogPostRepository ??= new BlogPostRepository(_context);
         public BlogCategoryRepository BlogCategory => _blogCategoryRepository ??= new BlogCategoryRepository(_context);
         public BlogTagRepository BlogTag => _blogTagRepository ??= new BlogTagRepository(_context);
+        public BannerAdsRepository BannerAds => _bannerAdsRepository ??= new BannerAdsRepository(_context);
      }
 }
