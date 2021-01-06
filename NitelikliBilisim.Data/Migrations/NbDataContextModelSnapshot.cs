@@ -664,6 +664,12 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<int?>("EducationDayCount")
                         .HasColumnType("int");
 
+                    b.Property<string>("IconColor")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IconUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsCurrent")
                         .HasColumnType("bit");
 
@@ -1820,6 +1826,52 @@ namespace NitelikliBilisim.Data.Migrations
                     b.ToTable("Wishlist");
                 });
 
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.blog.BannerAd", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedUser")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("IconUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RelatedApplicationUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title1")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BannerAds");
+                });
+
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.blog.BlogCategory", b =>
                 {
                     b.Property<Guid>("Id")
@@ -2565,7 +2617,7 @@ namespace NitelikliBilisim.Data.Migrations
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.Education", b =>
                 {
                     b.HasOne("NitelikliBilisim.Core.Entities.EducationCategory", "Category")
-                        .WithMany()
+                        .WithMany("Educations")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -2990,6 +3042,11 @@ namespace NitelikliBilisim.Data.Migrations
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.Education", b =>
                 {
                     b.Navigation("EducationSuggestionCriterions");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationCategory", b =>
+                {
+                    b.Navigation("Educations");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationGroup", b =>

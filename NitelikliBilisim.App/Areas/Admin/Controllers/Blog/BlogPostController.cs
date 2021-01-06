@@ -46,12 +46,39 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             var post = _unitOfWork.BlogPost.GetByIdWithCategory(postId);
             BlogPostGetVM model = new BlogPostGetVM();
             model.Title = post.Title;
-            model.FeaturedImageUrl = _storage.BlobUrl+post.FeaturedImageUrl;
+            model.FeaturedImageUrl = _storage.BlobUrl + post.FeaturedImageUrl;
             model.Category = post.Category;
             model.Content = post.Content;
             model.Id = post.Id;
             model.CreatedDate = post.UpdatedDate ??= post.CreatedDate;
             model.ReadingTime = post.ReadingTime;
+
+            if (post.Content.Contains("[##") && post.Content.Contains("##]"))
+            {
+                var index = post.Content.IndexOf("[##");
+                var lastChar = post.Content.IndexOf("##]", index);
+
+                var code = post.Content.Substring(index + 3, lastChar - index - 3);
+                var banner = _unitOfWork.BannerAds.GetBannerByCode(code);
+                if (banner != null)
+                {
+                    var htmlContent = "<a href=\"#0\" class=\"custom-banner white\">";
+                    htmlContent += "<div class=\"custom-banner__icon\">";
+                    htmlContent += "<span class=\"icon-outer\">";
+                    htmlContent += "<svg class=\"icon\">";
+                    htmlContent += $"<use xlink:href=\"assets/img/icons.svg#{banner.IconUrl}\"></use>";
+                    htmlContent += "</svg>";
+                    htmlContent += "</span></div>";
+                    htmlContent += "<div class=\"custom-banner__cnt\">";
+                    htmlContent += $"<div class=\"custom-banner__title\">{banner.Title1}<span class=\"title--blue\">{banner.Title2}</span></div>";
+                    htmlContent += $"<div class=\"custom-banner__txt\">{banner.Content}</div>";
+                    htmlContent += "</div>";
+                    htmlContent += "<div class=\"custom-banner__img\">";
+                    htmlContent += $"<img src=\"{_storage.BlobUrl+banner.ImageUrl}\">";
+                    htmlContent += "</div></a>";
+                    model.Content= post.Content.Replace("[##" + code + "##]", htmlContent);
+                }
+            }
 
             return View(model);
         }
@@ -183,12 +210,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 post.CategoryId = data.CategoryId;
 
                 int retVal = _unitOfWork.BlogPost.Update(post, data.Tags);
-               
-                    return Json(new ResponseModel
-                    {
-                        isSuccess = true,
-                        message = "Yazı başarıyla güncellenmiştir."
-                    });
+
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    message = "Yazı başarıyla güncellenmiştir."
+                });
             }
             catch (Exception ex)
             {
@@ -234,7 +261,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             try
             {
                 var post = _unitOfWork.BlogPost.GetById(postId);
-                post.IsHighLight  = post.IsHighLight == true?false:true;
+                post.IsHighLight = post.IsHighLight == true ? false : true;
                 _unitOfWork.BlogPost.Update(post);
                 return Json(new ResponseModel
                 {

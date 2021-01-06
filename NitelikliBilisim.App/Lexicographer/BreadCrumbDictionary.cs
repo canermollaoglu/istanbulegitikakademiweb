@@ -194,6 +194,14 @@ namespace NitelikliBilisim.App.Lexicographer
             _dictionary.Add("AdminInvoices",
               new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Fatura Yönetimi", url: null) });
 
+            /*Banner Ads*/
+            _dictionary.Add("AdminBlogBannerAd",
+             new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Blog Reklam Bannerleri", url: null) });
+            _dictionary.Add("AdminBlogBannerAdAdd",
+             new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Blog Reklam Banner Ekle", url: null) });
+            _dictionary.Add("AdminBlogBannerAdUpdate",
+            new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Blog Reklam Banner Düzenle", url: null) });
+
         }
 
         public static BreadCrumbItem[] ReadPart(string part)

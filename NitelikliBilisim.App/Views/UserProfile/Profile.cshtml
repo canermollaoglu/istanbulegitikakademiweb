@@ -11,195 +11,6 @@
     <link href="~/css/lib/file-uploader.css" rel="stylesheet" />
 }
 
-@*<main>
-        <section id="hero_in" class="general">
-            <div class="wrapper">
-                <div class="container">
-                    <h1 class="fadeInUp"><span></span>@Model.PersonalAndAccountInfo.FirstName @Model.PersonalAndAccountInfo.LastName</h1>
-                </div>
-            </div>
-        </section>
-        <div class="container margin_60_35">
-            <div class="row">
-                <aside class="col-lg-3" id="sidebar">
-                    <div class="profile">
-                        @{
-                            var filePath = "";
-                            try
-                            {
-                                filePath = StorageService.DownloadFile(System.IO.Path.GetFileName(Model.PersonalAndAccountInfo.FilePath), "user-avatars").Result;
-                            }
-                            catch
-                            {
-                            }
-                        }
-
-                        <figure>
-                            <div class="profile-avatar-upload-container" id="file-upload-for-customer-photo">
-                                <img class="profile-img-after-preview" src="@filePath" id="img-after-preview-for-customer-photo">
-                                <input id="input-avatar" type="file" style="display: none" />
-                            </div>
-                        </figure>
-
-                        <a class="btn btn-sm btn-block btn-secondary text-light" id="btn-save-avatar" style="display: none">Kaydet</a>
-
-                        <ul class="list-group">
-                            <li class="list-group-item">
-                                <a href="#bilgilerim"><i class="icon-user"></i> Bilgilerim</a>
-                            </li>
-                            <li class="list-group-item">
-                                <a href="#hesap-bilgileri"><i class="icon-key"></i> Hesabım</a>
-                            </li>
-                            <li class="list-group-item">
-                                <a href="#egitim-gecmisi"><i class="icon-book-open"></i> Eğitimlerim</a>
-                            </li>
-                            <li class="list-group-item">
-                                <a href="/faturalarim"><i class="icon-money"></i> Faturalarım</a> <i class="icon-link"></i>
-                            </li>
-                        </ul>
-                    </div>
-                </aside>
-
-                <div class="col-lg-9">
-                    <div class="box_teacher">
-                        <div id="bilgilerim" class="indent_title_in">
-                            <i class="pe-7s-user"></i>
-                            <h3>Kişisel ve Hesap Bilgileri</h3>
-                            <p>Mussum ipsum cacilds, vidis litro abertis.</p>
-                        </div>
-                        <div class="wrapper_indent">
-                            <h6>Kişisel Bilgiler <i class="icon-edit"></i></h6>
-                            <p><b>İsim Soyisim: </b>@Model.PersonalAndAccountInfo.FirstName @Model.PersonalAndAccountInfo.LastName</p>
-                            <p><b>Telefon: </b>@Model.PersonalAndAccountInfo.PhoneNumber</p>
-                            <p><b>E-Posta: </b>@Model.PersonalAndAccountInfo.Email</p>
-                            <h6>Hesap Bilgileri <i class="icon-edit"></i></h6>
-                            <p><b>Kullanıcı Adı: </b>@Model.PersonalAndAccountInfo.UserName</p>
-                        </div>
-                        <hr class="styled_2">
-                        <div class="indent_title_in">
-                            <i class="pe-7s-display1"></i>
-                            <h3 id="hesap-bilgileri">Eğitimlerim</h3>
-                            <p>Mussum ipsum cacilds, vidis litro abertis.</p>
-                        </div>
-                        <div class="wrapper_indent">
-                            <p>Mei ut decore accusam consequat, alii dignissim no usu. Phaedrum intellegat sit ut, no pri mutat eirmod. In eum iriure perpetua adolescens, pri dicunt prodesset et. Vis dicta postulant ad.</p>
-                            <table class="table table-responsive table-striped add_bottom_30">
-                                <thead>
-                                    <tr>
-                                        <th>Eğitim</th>
-                                        <th>Kurum</th>
-                                        <th>Gruba Atandı</th>
-                                        <th>İşlemler</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var ticket in Model.Tickets)
-                                    {
-                                        <tr>
-                                            <td><a href="/kurs-detayi/@ticket.EducationId">@ticket.EducationName</a></td>
-                                            <td>@ticket.HostName (@ticket.HostCity)</td>
-                                            <td>
-                                                @if (ticket.IsUsed)
-                                                {
-                                                    <i class="icon-ok text-success"></i>
-                                                }
-                                                else
-                                                {
-                                                    <i class="icon-cancel text-danger"></i>
-                                                }
-                                            </td>
-                                            <td>
-                                                <div class="btn-group">
-                                                    @if (ticket.IsUsed)
-                                                    {
-                                                        <a href="/gruplarim/@ticket.TicketId" class="btn btn-primary"><i class="icon-info text-light"></i></a>
-                                                    }
-                                                    else
-                                                    {
-                                                        <a href="#" class="btn btn-dark"><i class="icon-cancel text-light"></i></a>
-                                                    }
-                                                    <a href="#" class="btn btn-info"><i class="icon-comment-empty text-light"></i></a>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    }
-                                    @if (Model.Tickets == null || Model.Tickets.Count == 0)
-                                    {
-                                        <tr>
-                                            <td colspan="4">Henüz eğitim satın almadınız</td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                        <hr class="styled_2">
-                        <div class="indent_title_in">
-                            <i class="pe-7s-key"></i>
-                            <h3 id="egitim-gecmisi">Eğitim Geçmişi</h3>
-                            <p>Mussum ipsum cacilds, vidis litro abertis.</p>
-                        </div>
-                        <div class="wrapper_indent">
-                            @if (Model.EducationInfo != null)
-                            {
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <ul class="list_3">
-                                            <li>
-                                                <strong>@Model.EducationInfo.EducationCategory</strong>
-                                                <p>
-                                                    @Model.EducationInfo.EducationCenter (@Model.EducationInfo.StartedAt.ToShortDateString())<br />
-                                                    Eğitiminizin @Model.EducationInfo.NBUYCurrentEducationDay. günündesiniz.
-                                                </p>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="alert alert-info">
-                                    <strong>Nitelikli Bilişim Uzman Yetiştirme eğitimi kayıtlı değildir.</strong> Eğer siteye kayıt esnasında eğitim bilgilerini boş geçtiyseniz aşağıdaki düğmeye tıklayarak bilgilerinizi girebilirsiniz.
-                                </div>
-                                <button class="btn btn-primary"><i class="icon-plus"></i> Eğitim Ekle</button>
-                            }
-                        </div>
-                        <hr class="styled_2">
-                        <div class="indent_title_in">
-                            <i class="pe-7s-key"></i>
-                            <h3 id="egitim-gecmisi">Favori Eğitimlerim</h3>
-                            <p>Mussum ipsum cacilds, vidis litro abertis.</p>
-                        </div>
-                        <div class="wrapper_indent">
-                            @if (Model.WishList != null && Model.WishList.Count > 0)
-                            {
-                                foreach (var education in Model.WishList)
-                                {
-                                    <div class="row" id="wdiv_@education.Base.Id">
-                                        <div class="col-md-6">
-                                            <ul class="list_3">
-                                                <li>
-                                                    <strong>@education.Base.Name</strong>
-                                                    <p>@education.Base.DaysText gün @education.Base.HoursPerDayText saat  <a data-education-id="@education.Base.Id" class="btn btn-sm btn-default pull-right btn-removeWishListItem">x</a></p>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                }
-
-                            }
-                            else
-                            {
-                                <div class="alert alert-info">
-                                    <strong>Favori eklenmiş eğitim bulunamadı.</strong>
-                                </div>
-                            }
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>*@
-
 <section class="account account--dashboard">
     <div class="account-mobile__top">
         <a asp-controller="UserProfile" asp-action="MyMenu" class="account-mobile__prev">
@@ -249,8 +60,8 @@
                                         {
                                             var slideClass = "";
                                             if (i == Model.EducationWeek)
-                                                slideClass = "active";
-                                            <div class="swiper-slide account-dashboard__week-slide @slideClass js-main-tab-item">
+                                                slideClass = "offset";
+                                            <div class="swiper-slide account-dashboard__week-slide js-main-tab-item @slideClass">
                                                 <a href="#week@(i)" class="account-dashboard__week-item">
                                                     <span>Hafta</span>
                                                     <div>@i</div>
@@ -1931,12 +1742,12 @@
                                         var bannerUrl = "";
                                         if (!string.IsNullOrEmpty(education.FeaturedImageUrl))
                                         {
-                                            bannerUrl = StorageService.BlobUrl+education.FeaturedImageUrl;
+                                            bannerUrl = StorageService.BlobUrl + education.FeaturedImageUrl;
                                         }
                                         var educatorImage = "";
                                         if (!string.IsNullOrEmpty(education.EducatorImageUrl))
                                         {
-                                            educatorImage = StorageService.BlobUrl+education.EducatorImageUrl;
+                                            educatorImage = StorageService.BlobUrl + education.EducatorImageUrl;
                                         }
                                         <div class="swiper-slide">
                                             <a asp-controller="Course" asp-action="Details" asp-route-catSeoUrl="@education.CategorySeoUrl" asp-route-seoUrl="@education.SeoUrl" as class="card card--course">
@@ -2093,7 +1904,7 @@
                                         var bannerUrl = "";
                                         if (!string.IsNullOrEmpty(course.FeaturedImageUrl))
                                         {
-                                            bannerUrl = StorageService.BlobUrl+course.FeaturedImageUrl;
+                                            bannerUrl = StorageService.BlobUrl + course.FeaturedImageUrl;
 
                                         }
 
@@ -2132,8 +1943,8 @@
                                                         </span>
 
                                                         <span class="card__money">
-                                                                <span>₺</span> @course.Price
-                                                            </span>
+                                                            <span>₺</span> @course.Price
+                                                        </span>
                                                     </div>
                                                 </div>
                                             </a>

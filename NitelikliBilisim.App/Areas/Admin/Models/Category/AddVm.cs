@@ -19,6 +19,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Models.Category
         public string Description { get; set; }
         [Required(ErrorMessage = "Kategori için bir Seo Url girmelisiniz.")]
         public string SeoUrl { get; set; }
+        public string IconUrl { get; set; }
+        public string IconColor { get; set; }
         public Guid? BaseCategoryId { get; set; }
         public int? EducationDayCount { get; set; }
         public int CategoryType { get; set; }

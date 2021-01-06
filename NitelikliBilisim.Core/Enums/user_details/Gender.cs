@@ -5,8 +5,10 @@ namespace NitelikliBilisim.Core.Enums.user_details
     public enum Gender
     {
         [Description("Erkek")]
-        Individual = 1000,
+        Male = 1010,
         [Description("Kadın")]
-        Corporate = 2000
+        Female= 1020,
+        [Description("Belirtmek İstemiyorum")]
+        Undefined = 1030
     }
 }

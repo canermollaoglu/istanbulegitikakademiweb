@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using NitelikliBilisim.Business.Repositories;
 using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.ViewModels.Main.Profile;
 using NitelikliBilisim.Data;
 using System;
 using System.Collections.Generic;
@@ -37,5 +38,6 @@ namespace NitelikliBilisim.Business.UoW
                 return _userGroupRepository ?? (_userGroupRepository = new UserGroupRepository(_context));
             }
         }
+
     }
 }

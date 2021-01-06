@@ -8,10 +8,12 @@ using MUsefulMethods;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Managers;
+using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Services.Abstracts;
+using NitelikliBilisim.Core.ViewModels.Main.Profile;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -27,7 +29,7 @@ namespace NitelikliBilisim.App.Controllers
         private readonly IStorageService _storageService;
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly FileUploadManager _fileManager;
-        public UserProfileController(UnitOfWork unitOfWork,UserUnitOfWork userUnitOfWork, UserManager<ApplicationUser> userManager, IStorageService storageService, IWebHostEnvironment hostingEnvironment)
+        public UserProfileController(UnitOfWork unitOfWork, UserUnitOfWork userUnitOfWork, UserManager<ApplicationUser> userManager, IStorageService storageService, IWebHostEnvironment hostingEnvironment)
         {
             _userUnitOfWork = userUnitOfWork;
             _userManager = userManager;
@@ -79,7 +81,7 @@ namespace NitelikliBilisim.App.Controllers
         public IActionResult MyMenu()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            return View(_userUnitOfWork.User.GetMyAccountSidebarInfo(userId,null));
+            return View(_userUnitOfWork.User.GetMyAccountSidebarInfo(userId, null));
         }
 
         [Route("hesap/kurslarim")]
@@ -171,7 +173,7 @@ namespace NitelikliBilisim.App.Controllers
             {
                 throw;
             }
-               
+
 
         }
 
@@ -193,6 +195,60 @@ namespace NitelikliBilisim.App.Controllers
 
                 throw;
             }
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("kullanici-iletisim-bilgisi-guncelle")]
+        public IActionResult UpdateUserContactInfo(UpdateUserContactInfoVm model)
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData["Error"] = ModelStateUtil.GetErrors(ModelState);
+            }
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                model.UserId = userId;
+                _userUnitOfWork.User.UpdateUserContactInfo(model);
+                TempData["Success"] = "Bilgileriniz başarıyla güncellendi!";
+                return RedirectToAction("AccountSettings", "UserProfile");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "İşleminiz gerçekleştirilemedi! Lütfen tekrar deneyiniz.";
+                //todo log
+                throw;
+            }
+            
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("kullanici-kisisel-bilgiler-guncelle")]
+        public IActionResult UpdateUserInfo(UpdateUserInfoVm model)
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData["Error"] = ModelStateUtil.GetErrors(ModelState);
+            }
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                model.UserId = userId;
+                _userUnitOfWork.User.UpdateUserInfo(model);
+                TempData["Success"] = "Bilgileriniz başarıyla güncellendi!";
+                return RedirectToAction("AccountSettings", "UserProfile");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "İşleminiz gerçekleştirilemedi! Lütfen tekrar deneyiniz.";
+                //todo log
+                throw;
+            }
+
 
         }
     }

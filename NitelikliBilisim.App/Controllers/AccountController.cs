@@ -68,7 +68,7 @@ namespace NitelikliBilisim.App.Controllers
             var user = new ApplicationUser()
             {
                 Name = model.Name,
-                UserName = model.UserName,
+                UserName = model.Email,
                 Surname = model.Surname,
                 Email = model.Email,
                 PhoneNumber = model.Phone
@@ -94,7 +94,7 @@ namespace NitelikliBilisim.App.Controllers
                     {
                         CustomerId = user.Id,
                         StartedAt = Convert.ToDateTime(model.StartedAt),
-                        EducationCenter = (EducationCenter)model.EducationCenter,
+                        EducationCenter = (EducationCenter)model.EducationCenter.Value,
                         CategoryId = model.EducationCategory.Value
                     };
                     var studentEducationInfoId = _unitOfWork.StudentEducationInfo.Insert(studentEducationInformation);

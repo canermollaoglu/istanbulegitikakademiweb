@@ -157,6 +157,7 @@ namespace NitelikliBilisim.Data
         public DbSet<NewsletterSubscriber> NewsletterSubscribers { get; set; }
         public DbSet<ContactForm> ContactForms{ get; set; }
         public DbSet<FeaturedComment> FeaturedComments{ get; set; }
+        public DbSet<BannerAd> BannerAds { get; set; }
 
 
     }

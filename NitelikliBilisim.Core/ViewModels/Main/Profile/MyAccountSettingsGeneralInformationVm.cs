@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NitelikliBilisim.Core.Enums.user_details;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,5 +19,7 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public string LinkedIn { get; set; }
         public string WebSite { get; set; }
         public string AvatarPath { get; set; }
+        public int? CityId { get; set; }
+        public Gender Gender { get; set; }
     }
 }

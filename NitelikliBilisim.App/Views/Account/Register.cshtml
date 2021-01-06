@@ -93,14 +93,6 @@
                             <div class="input__outer">
                                 <span class="icon-outer input__icon">
                                     <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-user"></use>
-                                    </svg>
-                                </span>
-                                <input name="UserName" id="input-username" type="text" class="input input--fw" placeholder="Kullanıcı adınız" required>
-                            </div>
-                            <div class="input__outer">
-                                <span class="icon-outer input__icon">
-                                    <svg class="icon">
                                         <use xlink:href="../../assets/img/icons.svg#icon-mail"></use>
                                     </svg>
                                 </span>
@@ -146,6 +138,7 @@
                                     <select class="js-signup-select" id="select-isnbuy-student" name="IsNbuyStudent">
                                         <option value="false" hidden selected disabled>Seçiniz</option>
                                         <option value="true">Evet, Aldım.</option>
+                                        <option value="true">Devam Ediyorum.</option>
                                         <option value="false">Hayır, Almadım.</option>
                                     </select>
                                 </div>
@@ -219,7 +212,6 @@
         var selectEducationCategories = document.getElementById("select-education-categories");
         var selectIsNbuyStudent = document.getElementById("select-isnbuy-student");
         var inputDateWhenBegun = $("#input-date-when-begun");
-        var inputUsername = $("#input-username");
         var inputPassword = $("#input-password");
         var inputConfirmPassword = $("#input-confirm-password");
         var chkTermsAndConditions = document.getElementById("chk-terms-and-conditions");
@@ -237,13 +229,11 @@
                 $('.js-login-header-step1').removeClass('active');
                 $('.js-login-header-step2').addClass('active');
                 $('.js-password-equal').hide();
-            //}
         }});
 
         $('.login__finish-button').click(function () {
             btnSubmit_onClick();
         });
-        
 
         $('#registerForm').validate({
             errorLabelContainer: $('#registerForm div.error'),
@@ -264,9 +254,6 @@
                 Phone: {
                     required: true,
                 },
-                UserName: {
-                    required: true,
-                },
                 Password: {
                     required: true,
                 },
@@ -282,7 +269,6 @@
                 Surname: 'Bu alan zorunludur.',
                 Password: 'Bu alan zorunludur.',
                 ConfirmPassword: 'Şifreler uyuşmuyor.',
-                UserName: 'Bu alan zorunludur.',
                 Phone: 'Bu alan zorunludur.',
                 Email: {
                     required: 'Bu alan zorunludur.',
@@ -327,8 +313,6 @@
             //}
         }
         function btnSubmit_onClick(e) {
-           // e.preventDetault();
-
             var data = {
                 Name: inputName.val(),
                 Surname: inputSurname.val(),
@@ -336,7 +320,7 @@
                 Phone: inputPhone.val(),
                 Password: inputPassword.val(),
                 ConfirmPassword: inputConfirmPassword.val(),
-                UserName: inputUsername.val(),
+                //UserName: inputUsername.val(),
                 IsNbuyStudent: selectIsNbuyStudent.options[selectIsNbuyStudent.selectedIndex].value,
                 StartedAt: inputDateWhenBegun.val(),
                 EducationCenter: selectEducationCenters.options[selectEducationCenters.selectedIndex].value,
@@ -344,7 +328,7 @@
                 AcceptedTerms: chkTermsAndConditions.checked
             };
             var tokenVerifier = new SecuritySupport.TokenVerifier();
-            data = tokenVerifier.addToken("wrapped", data);
+            data = tokenVerifier.addToken("registerForm", data);
             $.ajax({
                 url: "kayit-ol",
                 method: "post",

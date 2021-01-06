@@ -13,5 +13,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public List<University> Universities { get; set; }
         public List<Address> Addresses { get; set; }
         public List<City> Cities { get; set; }
+        public Dictionary<int, string> Genders { get; set; }
     }
 }

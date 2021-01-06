@@ -5,6 +5,34 @@
 }
 @section styles{
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
+  <style>
+        .popular-technology__icon {
+            width: 55px;
+            height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            position: relative;
+            z-index: 1
+        }
+
+        span.icon-outer {
+            position: relative;
+            top: -2px;
+            font-size: 20px
+        }
+
+        .icon {
+            display: inline-block;
+            width: 1em;
+            height: 1em;
+            stroke-width: 0;
+            stroke: currentColor;
+            fill: currentColor;
+            color: white;
+        }
+    </style>
 }
 @section alerts{
     <partial name="partials/_Alert" />
@@ -39,7 +67,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Slogan</label>
-                    <textarea id="input-description" rows="5" class="form-control"  placeholder="Tek cümlelik bir slogan girilmelidir. Eğitim listesi sayfasında Kategori Adı altında görüntülenir."></textarea>
+                    <textarea id="input-description" rows="5" class="form-control" placeholder="Tek cümlelik bir slogan girilmelidir. Eğitim listesi sayfasında Kategori Adı altında görüntülenir."></textarea>
                 </div>
             </div>
             <div class="col-md-6">
@@ -62,9 +90,9 @@
                         </div>
                     </div>
                 </div>
-             
+
             </div>
-            
+
         </div>
         <div class="row">
             <div class="col-md-6">
@@ -73,10 +101,95 @@
                     <input type="text" placeholder="dot-net-core-mvc-egitimi" class="form-control" id="input-seo-url" value="">
                 </div>
             </div>
+            <div class="col-md-6" id="div-iconurl">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>İkon Url   </label>
+                            <input type="text" placeholder="Yalnızca ikon ismini giriniz." class="form-control" id="input-icon-url" value="">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>İkon Renk Kodu</label>
+                            <input type="text" placeholder="#454fd2"  class="form-control" id="input-color-code" value="">
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
         </div>
     </form>
 </div>
+<div class="row mt-5 box_general padding_bottom">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-2">
 
+                <div class="popular-technology__icon" style="background: #0072cd;">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-azure"></use>
+                        </svg>
+                    </span>
+                </div>
+                icon-azure
+            </div>
+            <div class="col-md-2">
+                <div class="popular-technology__icon" style="background: #0072cd;">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-window-code"></use>
+                        </svg>
+                    </span>
+                </div>
+                icon-window-code
+            </div>
+            <div class="col-md-2">
+                <div class="popular-technology__icon" style="background: #0072cd;">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-system-network"></use>
+                        </svg>
+                    </span>
+                </div>
+                icon-system-network
+            </div>
+            <div class="col-md-2">
+                <div class="popular-technology__icon" style="background: #0072cd;">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-microsoft-azure"></use>
+                        </svg>
+                    </span>
+                </div>
+                icon-microsoft-azure
+            </div>
+            <div class="col-md-2">
+                <div class="popular-technology__icon" style="background: #0072cd;">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-unity"></use>
+                        </svg>
+                    </span>
+                </div>
+                icon-unity
+            </div>
+            <div class="col-md-2">
+                <div class="popular-technology__icon" style="background: #0072cd;">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-dynamics"></use>
+                        </svg>
+                    </span>
+                </div>
+                icon-dynamics
+            </div>
+        </div>
+    </div>
+   
+
+</div>
 <p><button id="btn-save" class="btn_1 medium">Kaydet</button></p>
 @section postScripts{
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>

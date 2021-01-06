@@ -1,0 +1,231 @@
+﻿
+@{
+    ViewData["Title"] = "Reklam Banneri Yazı";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@section styles{
+    <link href="~/css/lib/file-uploader.css" rel="stylesheet" />
+    <style>
+        .popular-technology__icon {
+            width: 55px;
+            height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            position: relative;
+            z-index: 1
+        }
+
+        span.icon-outer {
+            position: relative;
+            top: -2px;
+            font-size: 20px
+        }
+
+        .icon {
+            display: inline-block;
+            width: 1em;
+            height: 1em;
+            stroke-width: 0;
+            stroke: currentColor;
+            fill: currentColor;
+            color: white;
+        }
+    </style>
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="box_general padding_bottom">
+    <div class="header_box version_2">
+        <h2><i class="fa fa-file"></i>Reklam Banneri Ekle</h2>
+    </div>
+    <form id="form-add-banner-ad">
+        @Html.AntiForgeryToken()
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label>1. Başlık</label>
+                    <input type="text" class="form-control" id="input-title1">
+                </div>
+                <div class="form-group">
+                    <label>2. Başlık</label>
+                    <input type="text" class="form-control" id="input-title2">
+                </div>
+                <div class="form-group">
+                    <label>Reklam Metni</label>
+                    <textarea type="text" rows="3" class="form-control" id="input-content"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>İlgili Uygulama Url</label>
+                    <input type="text" class="form-control" id="input-related-application-url">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Reklam Kodu</label>
+                    <input type="text" class="form-control" id="input-code">
+                </div>
+                <div class="form-group">
+                    <label>İkon Url</label>
+                    <input type="text" class="form-control" id="input-icon-url">
+                </div>
+                <div class="form-group">
+                    <label>Reklam Görseli</label>
+                    <div class="file-upload-container-blog-post-image" id="file-upload-container-for-banner">
+                        <img class="img-after-preview-with-blog-post-image" id="img-after-preview-for-banner" />
+                        <p><i class="fa fa-file"></i> Resim yüklemek için tıklayınız...</p>
+                        <input type="file" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="row mt-5">
+        <div class="col-md-2">
+
+            <div class="popular-technology__icon" style="background: #0072cd;">
+                <span class="icon-outer">
+                    <svg class="icon">
+                        <use xlink:href="../../assets/img/icons.svg#icon-azure"></use>
+                    </svg>
+                </span>
+            </div>
+            icon-azure
+        </div>
+        <div class="col-md-2">
+            <div class="popular-technology__icon" style="background: #0072cd;">
+                <span class="icon-outer">
+                    <svg class="icon">
+                        <use xlink:href="../../assets/img/icons.svg#icon-window-code"></use>
+                    </svg>
+                </span>
+            </div>
+            icon-window-code
+        </div>
+        <div class="col-md-2">
+            <div class="popular-technology__icon" style="background: #0072cd;">
+                <span class="icon-outer">
+                    <svg class="icon">
+                        <use xlink:href="../../assets/img/icons.svg#icon-system-network"></use>
+                    </svg>
+                </span>
+            </div>
+            icon-system-network
+        </div>
+        <div class="col-md-2">
+            <div class="popular-technology__icon" style="background: #0072cd;">
+                <span class="icon-outer">
+                    <svg class="icon">
+                        <use xlink:href="../../assets/img/icons.svg#icon-microsoft-azure"></use>
+                    </svg>
+                </span>
+            </div>
+            icon-microsoft-azure
+        </div>
+        <div class="col-md-2">
+            <div class="popular-technology__icon" style="background: #0072cd;">
+                <span class="icon-outer">
+                    <svg class="icon">
+                        <use xlink:href="../../assets/img/icons.svg#icon-unity"></use>
+                    </svg>
+                </span>
+            </div>
+            icon-unity
+        </div>
+        <div class="col-md-2">
+            <div class="popular-technology__icon" style="background: #0072cd;">
+                <span class="icon-outer">
+                    <svg class="icon">
+                        <use xlink:href="../../assets/img/icons.svg#icon-dynamics"></use>
+                    </svg>
+                </span>
+            </div>
+            icon-dynamics
+        </div>
+        
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <button id="btn-save" class="btn btn-sm btn-success pull-right">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section postScripts{
+    <script src="~/js/lib/file-uploader.js"></script>
+    <script>
+        /* elements */
+        var btnSave = $("#btn-save");
+
+
+        /* assignments */
+        $(document).ready(document_onLoad);
+        btnSave.on("click", btnSave_onClick);
+
+
+        /* events */
+        function document_onLoad() {
+            fileManager1 = new UploadSupport.FileUploader();
+            fileManager1.set({
+                container: "file-upload-container-for-banner",
+                preview: "img-after-preview-for-banner",
+                validExtensions: ["jpg", "jpeg"],
+                style: { content: "Resim Yükle" }
+            });
+        }
+        function btnSave_onClick() {
+            btnSave.off("click");
+            var resultAlert = new AlertSupport.ResultAlert();
+            var featuredImage = fileManager1.getFile();
+            var data = {
+                Title1: $("#input-title1").val(),
+                Title2: $("#input-title2").val(),
+                Content: $('#input-content').val(),
+                Code: $("#input-code").val(),
+                IconUrl: $("#input-icon-url").val(),
+                RelatedApplicationUrl: $("#input-related-application-url").val(),
+                FeaturedImage: {
+                    Base64Content: featuredImage.base64content,
+                    Extension: featuredImage.extension
+                }
+            };
+            var tokenVerifier = new SecuritySupport.TokenVerifier();
+            data = tokenVerifier.addToken("form-add-banner-ad", data);
+            $.ajax({
+                url: "",
+                method: "post",
+                data: data,
+                success: (res) => {
+                    if (res.isSuccess) {
+                        $("#form-add-banner-ad")[0].reset();
+                        resultAlert.display({
+                            success: true,
+                            message: "Kayıt işlemi başarılı! Listeye gitmek için {link}",
+                            redirectElement: {
+                                content: "tıklayınız",
+                                link: "/admin/blog-reklam-listesi"
+                            }
+                        });
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors,
+                            message: "İşlem başarısız"
+                        });
+                    }
+
+                    btnSave.on("click", btnSave_onClick);
+                },
+                error: (error) => {
+                    alert(error.message);
+                }
+            });
+        }
+
+
+    </script>
+}

@@ -7,6 +7,7 @@ using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Entities.user_details;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Enums.promotion;
+using NitelikliBilisim.Core.Enums.user_details;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.Main.Profile;
 using NitelikliBilisim.Data;
@@ -163,7 +164,7 @@ namespace NitelikliBilisim.Business.Repositories
             InvoiceDetailsVm model = new();
             var totalPrice = 0m;
             var cultureInfo = CultureInfo.CreateSpecificCulture("tr-TR");
-            var invoice = _context.Invoices.Include(x => x.OnlinePaymentInfo).Include(x=>x.InvoiceDetails).First(x => x.Id == invoiceId);
+            var invoice = _context.Invoices.Include(x => x.OnlinePaymentInfo).Include(x => x.InvoiceDetails).First(x => x.Id == invoiceId);
             var groupIds = invoice.InvoiceDetails.Select(x => x.GroupId).ToList();
             var groups = _context.EducationGroups.Where(x => groupIds.Contains(x.Id)).ToList();
             totalPrice = groups != null && groups.Count > 0 ? groups.Sum(x => x.OldPrice.GetValueOrDefault()) : 0m;
@@ -175,26 +176,48 @@ namespace NitelikliBilisim.Business.Repositories
             model.Date = invoice.CreatedDate;
             model.InstallmentInfo = invoice.PaymentCount;
             var details = (from invoiceDetail in _context.InvoiceDetails
-                          join onlinePaymentDetailInfo in _context.OnlinePaymentDetailsInfos on invoiceDetail.Id equals onlinePaymentDetailInfo.Id
-                          join education in _context.Educations on invoiceDetail.EducationId equals education.Id
-                          join category in _context.EducationCategories on education.CategoryId equals category.Id
+                           join onlinePaymentDetailInfo in _context.OnlinePaymentDetailsInfos on invoiceDetail.Id equals onlinePaymentDetailInfo.Id
+                           join education in _context.Educations on invoiceDetail.EducationId equals education.Id
+                           join category in _context.EducationCategories on education.CategoryId equals category.Id
                            join educationImage in _context.EducationMedias on education.Id equals educationImage.EducationId
-                          where educationImage.MediaType == EducationMediaType.PreviewPhoto && invoiceDetail.InvoiceId == invoiceId
-                          select new InvoiceDetailListVm
-                          {
-                              Id = invoiceDetail.Id,
-                              PaidPrice = onlinePaymentDetailInfo.PaidPrice.ToString(cultureInfo),
-                              Education = education.Name,
-                              EducationImage = educationImage.FileUrl,
-                              CategorySeoUrl = category.SeoUrl,
-                              EducationSeoUrl = education.SeoUrl
-                          }).ToList();
+                           where educationImage.MediaType == EducationMediaType.PreviewPhoto && invoiceDetail.InvoiceId == invoiceId
+                           select new InvoiceDetailListVm
+                           {
+                               Id = invoiceDetail.Id,
+                               PaidPrice = onlinePaymentDetailInfo.PaidPrice.ToString(cultureInfo),
+                               Education = education.Name,
+                               EducationImage = educationImage.FileUrl,
+                               CategorySeoUrl = category.SeoUrl,
+                               EducationSeoUrl = education.SeoUrl
+                           }).ToList();
             model.Details = details;
             return model;
         }
 
+        public int UpdateUserInfo(UpdateUserInfoVm model)
+        {
+            var user = _context.Customers.Include(x => x.User).First(x => x.Id == model.UserId);
+            user.DateOfBirth = model.BirthDate;
+            user.LastGraduatedSchoolId = model.LastGraduatedSchoolId;
+            user.Gender = model.Gender;
+           return _context.SaveChanges();
+        }
+
+        public int UpdateUserContactInfo(UpdateUserContactInfoVm model)
+        {
+
+            var user = _context.Customers.Include(x => x.User).First(x => x.Id == model.UserId);
+            user.User.PhoneNumber = model.PhoneNumber;
+            user.LinkedInProfileUrl = model.LinkedIn;
+            user.WebSiteUrl = model.Website;
+            user.CityId = model.CityId;
+            return _context.SaveChanges();
+        }
+
         public List<CustomerInvoiceListVm> GetCustomerInvoices(string userId)
         {
+            var culture = CultureInfo.CreateSpecificCulture("tr-TR");
+
             var data = (from invoice in _context.Invoices
                         join onlinePayment in _context.OnlinePaymentInfos on invoice.Id equals onlinePayment.Id
                         where invoice.CustomerId == userId
@@ -203,7 +226,7 @@ namespace NitelikliBilisim.Business.Repositories
                             Id = invoice.Id,
                             PaymentId = onlinePayment.PaymentId,
                             Date = invoice.CreatedDate,
-                            PaidPrice = onlinePayment.PaidPrice,
+                            PaidPrice = onlinePayment.PaidPrice.ToString(culture),
                             FileUrl = invoice.InvoicePdfUrl
                         }).ToList();
             return data;
@@ -226,13 +249,16 @@ namespace NitelikliBilisim.Business.Repositories
                             LastGraduatedSchoolId = student.LastGraduatedSchoolId,
                             Phone = user.PhoneNumber,
                             LinkedIn = student.LinkedInProfileUrl,
-                            WebSite = student.WebSiteUrl
+                            WebSite = student.WebSiteUrl,
+                            CityId = student.CityId,
+                            Gender = student.Gender
                         }).First();
 
             model.GeneralInformation = data;
             model.Addresses = _context.Addresses.Include(x => x.City).Include(x => x.State).Where(x => x.CustomerId == userId).ToList();
             model.Universities = _context.Universities.ToList();
             model.Cities = _context.Cities.OrderBy(x => x.Order).ToList();
+            model.Genders = EnumHelpers.ToKeyValuePair<Gender>();
             return model;
         }
 

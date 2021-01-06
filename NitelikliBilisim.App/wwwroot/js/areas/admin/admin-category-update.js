@@ -3,6 +3,9 @@ var selectBaseCategories = document.getElementById("select-base-categories");
 var inputName = document.getElementById("input-name");
 var inputSeoUrl = document.getElementById("input-seo-url");
 var inputDescription = document.getElementById("input-description");
+var inputEducationDayCount = document.getElementById("input-educationdaycount");
+var inputIconUrl = document.getElementById("input-icon-url");
+var inputIconColor = document.getElementById("input-color-code");
 var btnSave = $("#btn-save");
 
 /* assignments */
@@ -21,7 +24,10 @@ function btnSave_onClick() {
         Name: inputName.value,
         SeoUrl: inputSeoUrl.value,
         Description: inputDescription.value,
-        BaseCategoryId: baseCategoryId
+        BaseCategoryId: baseCategoryId,
+        IconUrl: inputIconUrl.value,
+        EducationDayCount: inputEducationDayCount.value,
+        IconColor: inputIconColor.value
     }
 
     var tokenVerfier = new SecuritySupport.TokenVerifier();
@@ -39,7 +45,7 @@ function btnSave_onClick() {
                     message: "İşlem başarılı. Anasayfaya dönmek için {link}",
                     redirectElement: {
                         content: "tıklayınız",
-                        link: "/"
+                        link: "/admin/kategoriler"
                     }
                 });
             } else {

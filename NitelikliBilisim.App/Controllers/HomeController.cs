@@ -274,7 +274,7 @@ namespace NitelikliBilisim.App.Controllers
                     CompanySector = model.CompanySector,
                     NameSurname = model.NameSurname,
                     Department = model.Department,
-                    Phone = model.PhoneCode + model.Phone,
+                    Phone = model.Phone,
                     RequestNote = model.RequestNote,
                     NumberOfEmployees = model.NumberOfEmployees,
                 });
@@ -313,7 +313,7 @@ namespace NitelikliBilisim.App.Controllers
                 {
                     Email = model.Email,
                     Note = model.Note,
-                    Phone = model.PhoneCode + model.Phone,
+                    Phone = model.Phone,
                     NameSurname = model.NameSurname,
                     CvUrl = mediaPath
                 });
