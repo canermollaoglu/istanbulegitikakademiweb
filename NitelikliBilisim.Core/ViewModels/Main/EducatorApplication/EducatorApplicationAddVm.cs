@@ -11,8 +11,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.EducatorApplication
         [Required]
         public string Phone { get; set; }
         [Required]
-        public string PhoneCode { get; set; }
-        [Required]
         public string NameSurname { get; set; }
         [Required]
         public IFormFile Cv { get; set; }

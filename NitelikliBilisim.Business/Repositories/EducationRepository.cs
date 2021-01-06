@@ -8,6 +8,7 @@ using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Enums.user_details;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education;
+using NitelikliBilisim.Core.ViewModels.Main;
 using NitelikliBilisim.Core.ViewModels.Main.Course;
 using NitelikliBilisim.Core.ViewModels.Main.EducationComment;
 using NitelikliBilisim.Core.ViewModels.search;
@@ -958,6 +959,49 @@ namespace NitelikliBilisim.Business.Repositories
      ).ToList();
 
             return data;
+        }
+
+        public HeaderEducationMenuVm GetHeaderEducationMenu()
+        {
+            var model = new HeaderEducationMenuVm();
+            var allCategories = Context.EducationCategories;
+            var allEducations = Context.Educations.Where(x => x.IsActive).Include(x=>x.Category);
+
+            var baseCategories = allCategories.Where(x => x.BaseCategoryId == null);
+            var subCategories = allCategories.Where(x => x.BaseCategoryId != null).Include(x=>x.Educations);
+            foreach (var baseCategory in baseCategories)
+            {
+                var baseCategoryModel = new HeaderBaseCategory();
+                baseCategoryModel.Id = baseCategory.Id;
+                baseCategoryModel.Name = baseCategory.Name;
+                baseCategoryModel.SeoUrl = baseCategory.SeoUrl;
+                baseCategoryModel.IconUrl = baseCategory.IconUrl;
+                baseCategoryModel.IconColor = baseCategory.IconColor;
+                baseCategoryModel.TotalEducationCount = allEducations.Where(x => x.Category.BaseCategoryId == baseCategory.Id).Count().ToString();
+                var currentBaseCategorySubCategories = subCategories.Where(x => x.BaseCategoryId == baseCategory.Id);
+                foreach (var subCategory in currentBaseCategorySubCategories)
+                {
+                    var subCategoryModel = new HeaderSubCategory();
+                    subCategoryModel.Name = subCategory.Name;
+                    subCategoryModel.SeoUrl = subCategory.SeoUrl;
+                    subCategoryModel.Id = subCategory.Id;
+
+                    foreach (var education in subCategory.Educations.Where(x=>x.IsActive))
+                    {
+                        var educationModel = new HeaderEducation();
+                        educationModel.Id = education.Id;
+                        educationModel.Name = education.Name;
+                        educationModel.SeoUrl = education.SeoUrl;
+
+                        subCategoryModel.Educations.Add(educationModel);
+                    }
+                    baseCategoryModel.SubCategories.Add(subCategoryModel);
+                }
+
+                model.BaseCategories.Add(baseCategoryModel);
+
+            }
+            return model;
         }
     }
 }

@@ -73,6 +73,9 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 Name = data.Name,
                 Description = data.Description,
                 SeoUrl = data.SeoUrl,
+                IconUrl = data.IconUrl,
+                IconColor = data.IconColor,
+                EducationDayCount = data.EducationDayCount,
                 BaseCategoryId = data.BaseCategoryId,
                 CategoryType = (CategoryType)data.CategoryType,
                 IsCurrent = true
@@ -100,6 +103,10 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             category.Description = data.Description;
             category.Name = data.Name;
             category.SeoUrl = data.SeoUrl;
+            category.EducationDayCount = data.EducationDayCount;
+            category.IconUrl = data.IconUrl;
+            category.IconColor = data.IconColor;
+
             _unitOfWork.EducationCategory.Update(category);
             return Json(new ResponseModel
             {

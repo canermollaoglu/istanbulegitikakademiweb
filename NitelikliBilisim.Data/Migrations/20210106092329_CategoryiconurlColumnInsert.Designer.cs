@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NitelikliBilisim.Data;
 
 namespace NitelikliBilisim.Data.Migrations
 {
     [DbContext(typeof(NbDataContext))]
-    partial class NbDataContextModelSnapshot : ModelSnapshot
+    [Migration("20210106092329_CategoryiconurlColumnInsert")]
+    partial class CategoryiconurlColumnInsert
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -663,9 +665,6 @@ namespace NitelikliBilisim.Data.Migrations
 
                     b.Property<int?>("EducationDayCount")
                         .HasColumnType("int");
-
-                    b.Property<string>("IconColor")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("IconUrl")
                         .HasColumnType("nvarchar(max)");
@@ -2617,7 +2616,7 @@ namespace NitelikliBilisim.Data.Migrations
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.Education", b =>
                 {
                     b.HasOne("NitelikliBilisim.Core.Entities.EducationCategory", "Category")
-                        .WithMany("Educations")
+                        .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -3042,11 +3041,6 @@ namespace NitelikliBilisim.Data.Migrations
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.Education", b =>
                 {
                     b.Navigation("EducationSuggestionCriterions");
-                });
-
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationCategory", b =>
-                {
-                    b.Navigation("Educations");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationGroup", b =>

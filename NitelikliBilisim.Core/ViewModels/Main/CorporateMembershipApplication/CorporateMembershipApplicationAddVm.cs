@@ -16,8 +16,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.CorporateMembershipApplication
         [Required, MaxLength(100)]
         public string NameSurname { get; set; }
         [Required, MaxLength(15)]
-        public string PhoneCode { get; set; }
-        [Required, MaxLength(15)]
         public string Phone { get; set; }
         [Required, MaxLength(100)]
         public string Department { get; set; }

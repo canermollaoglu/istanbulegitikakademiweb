@@ -671,6 +671,7 @@ $(document).ready(function () {
                 $(this).addClass('selected');
                 $tabs.find('div.main-tab__item').removeClass('active');
                 $(this.hash).addClass('active');
+                $tabs.addClass('active');
 
                 e.preventDefault();
             });
@@ -972,31 +973,20 @@ $(document).ready(function () {
         slidesPerView: 1,
         spaceBetween: 0,
         speed: 600,
+        pagination: {
+            el: '.js-week-private-slider .swiper-pagination',
+            clickable: true,
+        },
         navigation: {
             nextEl: '.account-dashboard__week-content .swiper-button-next',
             prevEl: '.account-dashboard__week-content .swiper-button-prev',
-        },
-        pagination: {
-            el: '.swiper-pagination',
-            clickable: true,
         },
         breakpoints: {
             // when window width is >= 640px
             768: {
                 slidesPerView: 'auto',
             },
-            576: {
-                pagination: {
-                    el: '.swiper-pagination',
-                    clickable: true,
-                },
-            },
-            320: {
-                pagination: {
-                    el: '.swiper-pagination',
-                    clickable: true,
-                },
-            },
+            576: {},
         },
     });
 
@@ -1152,8 +1142,10 @@ $(document).ready(function () {
     $('.js-comment-sort-select').select2({});
     $('.js-comment-app-select').select2({});
     $('.js-simple-filter-select').select2({});
-    $('.js-sehir-select').select2({});
-    $('.js-ilce-select').select2({});
+    $('.js-sehir-select').select2({
+        dropdownParent: $('.accordion'),});
+    $('.js-ilce-select').select2({
+        dropdownParent: $('.accordion'),});
     $('.js-level-select').select2({});
     $('.js-signup-select').select2({});
     $('.js-education-place-select').select2({
@@ -1170,18 +1162,22 @@ $(document).ready(function () {
     });
     $('.js-okul-select').select2({
         placeholder: 'Okulunuzu Seçiniz',
+        dropdownParent: $('.accordion'),
     });
     $('.js-meslek-select').select2({
         placeholder: 'Mesleğinizi Seçiniz',
+        dropdownParent: $('.accordion'),
     });
     $('.js-egitim-merkezi-select').select2({
         placeholder: 'Eğitim Merkezini Seçiniz',
     });
     $('.js-adres-sehir-select').select2({
         placeholder: 'Şehir Seçiniz',
+        dropdownParent: $('.accordion'),
     });
     $('.js-adres-ilce-select').select2({
         placeholder: 'İlçe Seçiniz',
+        dropdownParent: $('.accordion'),
     });
     $('.js-commenting-select').select2({
         dropdownParent: $('.commenting-select'),
@@ -1213,7 +1209,7 @@ $(document).ready(function () {
     }
 
     $('.inputPhoneNumber').each(function () {
-        $(this).inputmask('999-99-99');
+        $(this).inputmask('(999) 999-9999');
     });
     $('.inputVergiNo').each(function () {
         $(this).inputmask('99999999999');
@@ -1497,7 +1493,6 @@ if ($('.with-normal-tab').length > 0) {
         });
     });
 }
-
 $('#validateForm').validate({
     errorLabelContainer: $('#validateForm div.error'),
     errorContainer: 'div.error-messages',

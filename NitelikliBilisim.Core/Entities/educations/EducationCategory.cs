@@ -1,6 +1,7 @@
 ﻿using NitelikliBilisim.Core.Abstracts;
 using NitelikliBilisim.Core.Enums;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -22,7 +23,8 @@ namespace NitelikliBilisim.Core.Entities
         public bool IsCurrent { get; set; }
         [MaxLength(128)]
         public string SeoUrl { get; set; }
-
+        public string IconUrl { get; set; }
+        public string IconColor { get; set; }
         /// <summary>
         /// NBUY Eğitimleri için eğitim gün sayısı
         /// </summary>
@@ -31,5 +33,6 @@ namespace NitelikliBilisim.Core.Entities
         public Guid? BaseCategoryId { get; set; }
         [ForeignKey("BaseCategoryId")]
         public virtual EducationCategory BaseCategory { get; set; }
+        public virtual List<Education> Educations { get; set; }
     }
 }

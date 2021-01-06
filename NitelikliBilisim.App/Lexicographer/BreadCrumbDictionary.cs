@@ -202,8 +202,6 @@ namespace NitelikliBilisim.App.Lexicographer
             _dictionary.Add("AdminBlogBannerAdUpdate",
             new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Blog Reklam Banner Düzenle", url: null) });
 
-            
-
         }
 
         public static BreadCrumbItem[] ReadPart(string part)

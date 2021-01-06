@@ -6,7 +6,7 @@
     var avatarPath = "";
     try
     {
-        avatarPath = StorageService.BlobUrl+Model.GeneralInformation.AvatarPath;
+        avatarPath = StorageService.BlobUrl + Model.GeneralInformation.AvatarPath;
     }
     catch
     {
@@ -35,10 +35,13 @@
                         <div class="account-detail__title">
                             AYARLAR
                         </div>
-                        @*<form action="" method="post">*@
-                        <div class="success-messages" style="display: block;">
-                            Kayıt Başarılı
-                        </div>
+                        @if (TempData["Success"] != null)
+                        {
+                            <div class="success-messages" style="display: block;">
+                                @TempData["Success"]
+                            </div>
+                        }
+
                         <div class="accordion accordion--loft">
                             <div class="accordion__item selected active">
                                 <div class="accordion__header">
@@ -81,7 +84,7 @@
                                                 <div class="input__select-image">
                                                     <div class="input__select-image-img">
                                                         <input type="image" id="accountChangeImg" src="@avatarPath">
-                                                        <form method="post" id="imageForm" enctype="multipart/form-data" action="/profil-resmi-degistir">
+                                                        <form method="post" id="imageForm2" enctype="multipart/form-data" action="/profil-resmi-degistir">
                                                             <input type="file" id="accountSettingsImage" name="ProfileImage" style="display: none;" />
                                                         </form>
                                                     </div>
@@ -98,6 +101,11 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            <div class="account-detail__setting-btn">
+                                                <button href="#0" class="button">
+                                                    Değişiklikleri Kaydet
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -111,62 +119,85 @@
                                 <div class="accordion__content">
                                     <div class="js-calc-accordion-height">
                                         <div class="accordion__forms">
-                                            <div class="input__column-2">
-                                                <div class="input__outer no-icon">
-                                                    <div class="input__title">Adınız Soyadınız</div>
-                                                    <input type="text" class="input input--bordered input--fw input--noshadow" readonly
-                                                           placeholder="Ad ve Soyadınızı Giriniz" value="@Model.GeneralInformation.Name @Model.GeneralInformation.Surname">
-                                                </div>
-                                                <div class="input__outer bordered-select">
-                                                    <div class="select-subject no-icon">
-                                                        <div class="input__title">Cinsiyetiniz</div>
-                                                        <select class="js-cinsiyet-select">
-                                                            <option value="" selected hidden disabled>Cinsiyetinizi Seçiniz</option>
-                                                            <option value="2">Erkek</option>
-                                                            <option value="3" selected>Kadın</option>
-                                                            <option value="4">Belirtmek İstemiyorum</option>
-                                                        </select>
+                                            <form action="/kullanici-kisisel-bilgiler-guncelle" method="post">
+                                                @Html.AntiForgeryToken()
+                                                <div class="input__column-2">
+                                                    <div class="input__outer no-icon">
+                                                        <div class="input__title">Adınız Soyadınız</div>
+                                                        <input type="text" class="input input--bordered input--fw input--noshadow" readonly
+                                                               placeholder="Ad ve Soyadınızı Giriniz" value="@Model.GeneralInformation.Name @Model.GeneralInformation.Surname">
                                                     </div>
-                                                </div>
-                                                <div class="input__outer no-icon datepicker--fw icon-datepicker">
-                                                    <div class="input__title">Doğum Tarihiniz</div>
-                                                    <input type="text" class="input input--bordered input--fw input--noshadow js-datepicker"
-                                                           value="@Model.GeneralInformation.DateOfBirth" placeholder="Doğum Tarihiniz">
-                                                    <span class="icon-outer">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-date"></use>
-                                                        </svg>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="input__column-2">
-                                                <div class="input__outer bordered-select input-mb-0">
-                                                    <div class="select-subject no-icon">
-                                                        <div class="input__title">Son Mezun Olduğunuz Okul</div>
-                                                        <select class="js-okul-select">
-                                                            <option value="" hidden disabled selected>Okulunuzu Seçiniz</option>
-                                                            @foreach (var university in Model.Universities.OrderBy(x => x.Name))
-                                                            {
-                                                                <option value="@university.Id">@university.Name</option>
-                                                            }
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="input__outer bordered-select input-mb-0">
-                                                    <div class="select-subject no-icon">
-                                                        <div class="input__title">Mesleğiniz / Ünvanınız</div>
-                                                        <select class="js-meslek-select">
-                                                            <option value="" selected hidden disabled>Mesleğinizi Seçiniz</option>
-                                                            <option value="2" selected>Sistem Uzmanı</option>
-                                                            <option value="3">Memur</option>
-                                                            <option value="4">Ön Yüz Geliştiricisi</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="input__outer">
+                                                    <div class="input__outer bordered-select">
+                                                        <div class="select-subject no-icon">
+                                                            <div class="input__title">Cinsiyetiniz</div>
+                                                            <select name="Gender" class="js-cinsiyet-select">
+                                                                <option value="" selected hidden disabled>Cinsiyetinizi Seçiniz</option>
+                                                                @foreach (var gender in Model.Genders)
+                                                                {
+                                                                    if (gender.Key == (int)Model.GeneralInformation.Gender)
+                                                                    {
+                                                                        <option value="@gender.Key" selected>@gender.Value</option>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <option value="@gender.Key">@gender.Value</option>
+                                                                    }
 
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="input__outer no-icon datepicker--fw icon-datepicker">
+                                                        <div class="input__title">Doğum Tarihiniz</div>
+                                                        <input type="text" name="BirthDate" class="input input--bordered input--fw input--noshadow js-datepicker"
+                                                               value="@(Model.GeneralInformation.DateOfBirth.HasValue?Model.GeneralInformation.DateOfBirth.Value.ToString("dd/MM/yyyy"):"")" placeholder="Doğum Tarihiniz">
+                                                        <span class="icon-outer">
+                                                            <svg class="icon">
+                                                                <use xlink:href="../../assets/img/icons.svg#icon-date"></use>
+                                                            </svg>
+                                                        </span>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                                <div class="input__column-2">
+                                                    <div class="input__outer bordered-select input-mb-0">
+                                                        <div class="select-subject no-icon">
+                                                            <div class="input__title">Son Mezun Olduğunuz Okul</div>
+                                                            <select name="LastGraduatedSchoolId" class="js-okul-select">
+                                                                <option value="" hidden disabled selected>Okulunuzu Seçiniz</option>
+                                                                @foreach (var university in Model.Universities.OrderBy(x => x.Name))
+                                                                {
+                                                                    if (university.Id == Model.GeneralInformation.LastGraduatedSchoolId)
+                                                                    {
+                                                                        <option value="@university.Id" selected>@university.Name</option>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                    <option value="@university.Id">@university.Name</option>
+                                                                    }
+
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="input__outer bordered-select input-mb-0">
+                                                        <div class="select-subject no-icon">
+                                                            <div class="input__title">Mesleğiniz / Ünvanınız</div>
+                                                            <select class="js-meslek-select">
+                                                                <option value="" selected hidden disabled>Mesleğinizi Seçiniz</option>
+                                                                <option value="2" selected>Sistem Uzmanı</option>
+                                                                <option value="3">Memur</option>
+                                                                <option value="4">Ön Yüz Geliştiricisi</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="account-detail__setting-btn">
+                                                    <button type="submit" class="button">
+                                                        Değişiklikleri Kaydet
+                                                    </button>
+                                                </div>
+                                            </form>
+                                           
                                         </div>
                                     </div>
                                 </div>
@@ -214,6 +245,11 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            <div class="account-detail__setting-btn">
+                                                <button href="#0" class="button">
+                                                    Değişiklikleri Kaydet
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -227,59 +263,68 @@
                                 <div class="accordion__content">
                                     <div class="js-calc-accordion-height">
                                         <div class="accordion__forms">
-                                            <div class="input__column-2">
-                                                <div class="input__outer input--phone f-column">
-                                                    <div class="input__title">Telefon Numaranız</div>
-                                                    <div>
-                                                        <div class="select-phonecode no-icon bordered-select">
-                                                            <select class="js-phonecode-select">
-                                                                <option value="" selected hidden disabled>539</option>
-                                                                <option value="2">540</option>
-                                                                <option value="3">541</option>
-                                                                <option value="4">542</option>
-                                                                <option value="5">543</option>
+                                            <form id="contact-info-form" action="/kullanici-iletisim-bilgisi-guncelle" method="post">
+                                                @Html.AntiForgeryToken()
+                                                <div class="input__column-2">
+                                                    <div class="input__outer input--phone f-column">
+                                                        <div class="input__title">Telefon Numaranız</div>
+                                                        <div>
+                                                            <input type="text" name="PhoneNumber" id="inputPhoneNumber"
+                                                                   class="input input--bordered input--fw input--noshadow inputPhoneNumber"
+                                                                   value="@Model.GeneralInformation.Phone"
+                                                                   placeholder="___-__-__">
+                                                        </div>
+                                                    </div>
+                                                    <div class="input__outer no-icon">
+                                                        <div class="input__title">E-posta Adresiniz</div>
+                                                        <input type="text" class="input input--bordered input--fw input--noshadow"
+                                                               placeholder="E-posta Adresinizi Giriniz" value="@Model.GeneralInformation.Email">
+                                                    </div>
+                                                    <div class="input__outer bordered-select">
+                                                        <div class="select-subject no-icon">
+                                                            <div class="input__title">Şehir</div>
+                                                            <select name="CityId" class="js-sehir-select">
+                                                                <option value="" hidden disabled>Şehir Seçiniz</option>
+                                                                @foreach (var city in Model.Cities)
+                                                                {
+                                                                    if (city.Id == Model.GeneralInformation.CityId)
+                                                                    {
+                                                                        <option value="@city.Id" selected>@city.Name</option>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <option value="@city.Id">@city.Name</option>
+                                                                    }
+
+                                                                }
                                                             </select>
                                                         </div>
-                                                        <input type="text" name="cadresphone" id="inputPhoneNumber"
-                                                               class="input input--bordered input--fw input--noshadow maskedInput"
-                                                               placeholder="___-__-__">
                                                     </div>
                                                 </div>
-                                                <div class="input__outer no-icon">
-                                                    <div class="input__title">E-posta Adresiniz</div>
-                                                    <input type="text" class="input input--bordered input--fw input--noshadow"
-                                                           placeholder="E-posta Adresinizi Giriniz" value="@Model.GeneralInformation.Email">
-                                                </div>
-                                                <div class="input__outer bordered-select">
-                                                    <div class="select-subject no-icon">
-                                                        <div class="input__title">Şehir</div>
-                                                        <select class="js-sehir-select">
-                                                            <option value="" hidden disabled>Şehir Seçiniz</option>
-                                                            <option value="2">İstanbul</option>
-                                                            <option value="3" selected>Bursa</option>
-                                                            <option value="4">Ankara</option>
-                                                        </select>
+                                                <div class="input__column-2">
+                                                    <div class="input__outer no-icon input__link input-mb-0">
+                                                        <div class="input__title">Web Siteniz</div>
+                                                        <div class="input__link-inner">
+                                                            <span>http://</span>
+                                                            <input type="text" name="Website" class="input input--bordered input--fw input--noshadow"
+                                                                   placeholder="Website Adresinizi Giriniz" value="@Model.GeneralInformation.WebSite">
+                                                        </div>
+                                                    </div>
+                                                    <div class="input__outer no-icon input__link input-mb-0">
+                                                        <div class="input__title">Linkedin Profiliniz</div>
+                                                        <div class="input__link-inner">
+                                                            <span>linkedin.com/</span>
+                                                            <input type="text" name="LinkedIn" class="input input--bordered input--fw input--noshadow"
+                                                                   placeholder="Linkedin Adresinizi Giriniz" value="@Model.GeneralInformation.LinkedIn">
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="input__column-2">
-                                                <div class="input__outer no-icon input__link input-mb-0">
-                                                    <div class="input__title">Web Siteniz</div>
-                                                    <div class="input__link-inner">
-                                                        <span>http://</span>
-                                                        <input type="text" class="input input--bordered input--fw input--noshadow"
-                                                               placeholder="Website Adresinizi Giriniz" value="@Model.GeneralInformation.WebSite">
-                                                    </div>
+                                                <div class="account-detail__setting-btn">
+                                                    <button type="submit" class="button">
+                                                        Değişiklikleri Kaydet
+                                                    </button>
                                                 </div>
-                                                <div class="input__outer no-icon input__link input-mb-0">
-                                                    <div class="input__title">Linkedin Profiliniz</div>
-                                                    <div class="input__link-inner">
-                                                        <span>linkedin.com/</span>
-                                                        <input type="text" class="input input--bordered input--fw input--noshadow"
-                                                               placeholder="Linkedin Adresinizi Giriniz" value="@Model.GeneralInformation.LinkedIn">
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
@@ -392,21 +437,26 @@
                                                                   placeholder="Adresinizin tamamını buraya yazınız"></textarea>
                                                     </div>
                                                 </div>
+                                                <div class="account-detail__setting-btn">
+                                                    <button href="#0" class="button">
+                                                        Değişiklikleri Kaydet
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="account-detail__setting-btn">
-                            <button href="#0" class="button">
-                                Değişiklikleri Kaydet
-                            </button>
-                        </div>
-                        @*</form>*@
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
+@section postScripts{
+    <script type="text/javascript">
+
+    </script>
+}

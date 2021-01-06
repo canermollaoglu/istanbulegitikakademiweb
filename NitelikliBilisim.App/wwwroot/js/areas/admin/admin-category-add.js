@@ -5,6 +5,8 @@ var inputName = document.getElementById("input-name");
 var inputDescription = document.getElementById("input-description");
 var inputSeoUrl = document.getElementById("input-seo-url");
 var inputEducationDayCount = document.getElementById("input-educationdaycount");
+var inputIconUrl = document.getElementById("input-icon-url");
+var inputIconColor = document.getElementById("input-color-code");
 var btnSave = $("#btn-save");
 
 /* assignments */
@@ -17,15 +19,19 @@ function document_onLoad() {
     selectCategoryTypes.addEventListener('change', function () {
         if (this.value == '1010' && selectBaseCategories.value == '') {
             $('#div-educationdaycount').slideDown(500);
+            $('#div-iconurl').slideDown(500);
         } else {
             $('#div-educationdaycount').slideUp(500);
+            $('#div-iconurl').slideUp(500);
         }
     });
     $(selectBaseCategories).on('select2:selecting', function (e) {
         if (e.params.args.data.id == "" && selectCategoryTypes.value === '1010') {
             $('#div-educationdaycount').slideDown(500);
+            $('#div-iconurl').slideDown(500);
         } else {
             $('#div-educationdaycount').slideUp(500);
+            $('#div-iconurl').slideUp(500);
         }
 
     })
@@ -40,10 +46,12 @@ function btnSave_onClick() {
         SeoUrl: inputSeoUrl.value,
         BaseCategoryId: baseCategoryId,
         CategoryType: categoryType,
-        EducationDayCount: inputEducationDayCount.value
+        EducationDayCount: inputEducationDayCount.value,
+        IconUrl: inputIconUrl.value,
+        IconColor: inputIconColor.value
     }
 
-    var tokenVerfier = new SecuritySupport.TokenVerifier();
+    var tokenVerfier = new SecuritySupport.TokenVerifier(); 
     data = tokenVerfier.addToken("form-add-category", data);
 
     $.ajax({
