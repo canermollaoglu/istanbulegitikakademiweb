@@ -108,7 +108,7 @@ namespace NitelikliBilisim.Business.Repositories
                 FilePath = customer.User.AvatarPath,
                 DateOfBirth = customer.DateOfBirth,
                 Gender = customer.Gender,
-                Job = customer.Job,
+                Job = EnumHelpers.GetDescription(customer.Job),
                 LinkedInProfileUrl = customer.LinkedInProfileUrl,
                 WebSiteUrl = customer.WebSiteUrl
             };
@@ -200,6 +200,7 @@ namespace NitelikliBilisim.Business.Repositories
             user.DateOfBirth = model.BirthDate;
             user.LastGraduatedSchoolId = model.LastGraduatedSchoolId;
             user.Gender = model.Gender;
+            user.Job = model.Job;
            return _context.SaveChanges();
         }
 
@@ -258,7 +259,8 @@ namespace NitelikliBilisim.Business.Repositories
             model.Addresses = _context.Addresses.Include(x => x.City).Include(x => x.State).Where(x => x.CustomerId == userId).ToList();
             model.Universities = _context.Universities.ToList();
             model.Cities = _context.Cities.OrderBy(x => x.Order).ToList();
-            model.Genders = EnumHelpers.ToKeyValuePair<Gender>();
+            model.Genders = EnumHelpers.ToKeyValuePair<Genders>();
+            model.Jobs = EnumHelpers.ToKeyValuePair<Jobs>();
             return model;
         }
 

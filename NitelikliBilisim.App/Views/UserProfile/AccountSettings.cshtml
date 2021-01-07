@@ -182,11 +182,20 @@
                                                     <div class="input__outer bordered-select input-mb-0">
                                                         <div class="select-subject no-icon">
                                                             <div class="input__title">Mesleğiniz / Ünvanınız</div>
-                                                            <select class="js-meslek-select">
+                                                            <select name="Job" class="js-meslek-select">
                                                                 <option value="" selected hidden disabled>Mesleğinizi Seçiniz</option>
-                                                                <option value="2" selected>Sistem Uzmanı</option>
-                                                                <option value="3">Memur</option>
-                                                                <option value="4">Ön Yüz Geliştiricisi</option>
+                                                                @foreach (var job in Model.Jobs)
+                                                                {
+                                                                    if ((int)Model.GeneralInformation.Job == job.Key)
+                                                                    {
+                                                                        <option value="@job.Key" selected>@job.Value</option>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <option value="@job.Key">@job.Value</option>
+                                                                    }
+
+                                                                }
                                                             </select>
                                                         </div>
                                                     </div>

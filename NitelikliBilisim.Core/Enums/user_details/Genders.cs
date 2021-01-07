@@ -2,7 +2,7 @@
 
 namespace NitelikliBilisim.Core.Enums.user_details
 {
-    public enum Gender
+    public enum Genders
     {
         [Description("Erkek")]
         Male = 1010,

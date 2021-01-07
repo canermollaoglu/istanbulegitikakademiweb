@@ -83,7 +83,7 @@ namespace NitelikliBilisim.App.Controllers
                 var user = await _userManager.FindByIdAsync(userId);
                 var student = _unitOfWork.Customer.GetById(userId);
                 educationDetails.CurrentUserName = $"{user.Name} {user.Surname}";
-                educationDetails.CurrentUserJob = student == null ? "Eğitmen" : string.IsNullOrEmpty(student.Job)?"":student.Job;
+                educationDetails.CurrentUserJob = student == null ? "Eğitmen" : EnumHelpers.GetDescription(student.Job);
                 bool isCanComment = _unitOfWork.Education.CheckIsCanComment(userId, educationDetails.Base.Id);
                 educationDetails.Base.IsCanComment = isCanComment;
                 bool status = _unitOfWork.WishListItem.CheckWishListItem(userId, educationDetails.Base.Id);

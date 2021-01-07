@@ -647,7 +647,7 @@ namespace NitelikliBilisim.Business.Repositories
                                 Point = comment.Points,
                                 Commenter = $"{commenter.Name} {commenter.Surname}",
                                 Date = comment.CreatedDate.ToString("dd MMMM yyyy"),
-                                CommenterJob = student.Job,
+                                CommenterJob = EnumHelpers.GetDescription(student.Job),
                                 Content = comment.Content
                             }).ToList();
 
