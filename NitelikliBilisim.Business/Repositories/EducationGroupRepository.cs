@@ -635,6 +635,7 @@ namespace NitelikliBilisim.Business.Repositories
 
         public List<CartItemVm> GetGroupCartItems(List<_CartItem> items)
         {
+            var cultureInfo = CultureInfo.CreateSpecificCulture("tr-TR");
             var groups = _context.EducationGroups.Include(x => x.Education).Where(x => items.Select(x => x.GroupId).Contains(x.Id)).OrderBy(x => x.Education.Name);
             //var educations = _unitOfWork.Education.Get(x => items.Select(x => x.EducationId).Contains(x.Id), x => x.OrderBy(o => o.Name));
             var model = new List<CartItemVm>();
@@ -648,7 +649,7 @@ namespace NitelikliBilisim.Business.Repositories
                     EducationName = group.Education.Name,
                     PreviewPhoto = imageUrl,
                     PriceNumeric = group.NewPrice.GetValueOrDefault(),
-                    PriceText = group.NewPrice.GetValueOrDefault().ToString(),
+                    PriceText = group.NewPrice.GetValueOrDefault().ToString(cultureInfo),
                     OldPriceNumeric = group.OldPrice.GetValueOrDefault(),
                     OldPriceText = group.OldPrice.GetValueOrDefault().ToString()
                 });

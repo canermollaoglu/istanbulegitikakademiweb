@@ -457,27 +457,28 @@
                     </div>
                     <div class="checkout__price-wrp js-discounts">
                         <div class="checkout__price-item">
-                            <div class="checkout__price-title">Toplam İndirimler</div>
-                            <div class="checkout__price-new" id="discountAmount">
-                                <span>₺</span> 0.00
-                            </div>
-                        </div>
-                        <div class="checkout__price-item">
                             <div class="checkout__price-title">Ürünler Toplamı</div>
-                            <div class="checkout__price-old" >
-                                <span>₺</span> 0.00
+                            <div class="checkout__price-old">
+                                 0,00 <span>TL</span>
                             </div>
                             <div class="checkout__price-new">
                                 <div class="checkout__price-new" id="oldPrice">
-                                <span>₺</span> 0.00
+                                     0,00 <span>TL</span>
                                 </div>
                             </div>
                         </div>
+                        <div class="checkout__price-item">
+                            <div class="checkout__price-title">Toplam İndirimler</div>
+                            <div class="checkout__price-new" id="discountAmount">
+                                 0,00 <span>TL</span>
+                            </div>
+                        </div>
+
                     </div>
                     <div class="checkout__price-item totaly">
                         <div class="checkout__price-title">Toplam Tutar</div>
                         <div class="checkout__price-new" id="newPrice">
-                            <span>₺</span> 0.00
+                             0,00 <span>TL</span>
                         </div>
                     </div>
                 </div>
@@ -1131,7 +1132,7 @@
         }
 
         function formatCurrency(total) {
-            return " <span>₺</span> " + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
+            return parseFloat(total, 10).toFixed(2).toString().replace(".", ",") + " <span>TL</span>";
         }
         function calculatePrices() {
             txtTotal.html(formatCurrency(parseFloat(inputEducationTotalPrice.val()) - parseFloat(inputPromotionDiscountAmount.val())));

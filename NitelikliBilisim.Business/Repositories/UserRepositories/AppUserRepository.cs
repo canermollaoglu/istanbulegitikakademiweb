@@ -365,6 +365,7 @@ namespace NitelikliBilisim.Business.Repositories
 
         public MyCourseDetailVm GetPurschasedEducationDetail(string userId, Guid groupId)
         {
+            CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("tr-TR");
             var model = (from eGroup in _context.EducationGroups
                          join education in _context.Educations on eGroup.EducationId equals education.Id
                          join category in _context.EducationCategories on education.CategoryId equals category.Id
@@ -386,7 +387,7 @@ namespace NitelikliBilisim.Business.Repositories
                              EducatorName = $"{educatorUser.Name} {educatorUser.Surname}",
                              EducatorTitle = educator.Title,
                              EducatorAvatarPath = educatorUser.AvatarPath,
-                             PriceText = eGroup.NewPrice,
+                             PriceText = eGroup.NewPrice.GetValueOrDefault().ToString(cultureInfo),
                              Days = education.Days.ToString(),
                              Hours = (education.Days * education.HoursPerDay).ToString(),
                              Host = host.HostName

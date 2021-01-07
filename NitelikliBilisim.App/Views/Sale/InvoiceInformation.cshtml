@@ -295,16 +295,16 @@
                         <div class="checkout__price-item">
                             <div class="checkout__price-title">Toplam İndirimler</div>
                             <div class="checkout__price-new" id="discountAmount">
-                                <span>₺</span> -249.90
+                                 0,90<span>TL</span>
                             </div>
                         </div>
                         <div class="checkout__price-item">
                             <div class="checkout__price-title">Ürünler Toplamı</div>
                             <div class="checkout__price-old" id="oldPrice">
-                                <span>₺</span> 1,250.00
+                                 0,00<span>TL</span>
                             </div>
                             <div class="checkout__price-new" id="newPrice">
-                                <span>₺</span> 1,550.00
+                                 0,00<span>TL</span>
                             </div>
                         </div>
                     </div>
@@ -719,7 +719,7 @@
             txtTotalDiscount.html(formatCurrency(parseFloat(inputDiscountAmount.val()) + parseFloat(inputPromotionDiscountAmount.val())));
         }
         function formatCurrency(total) {
-            return "<span>₺</span> " + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
+            return parseFloat(total, 10).toFixed(2).toString().replace(".", ",") + " <span>TL</span>";
         }
 
 
