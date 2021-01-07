@@ -46,7 +46,6 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 Title = model.Title,
                 Content = model.Content,
-                PhoneCode = model.PhoneCode,
                 PhoneNumber = model.PhoneNumber,
                 CityId = model.CityId,
                 StateId = model.StateId,
@@ -72,7 +71,6 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 Title = model.Title,
                 Content = model.Content,
-                PhoneCode = model.PhoneCode,
                 PhoneNumber = model.PhoneNumber,
                 NameSurname = model.NameSurname,
                 CityId = model.CityId,

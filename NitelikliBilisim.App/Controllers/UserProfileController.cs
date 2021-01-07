@@ -221,14 +221,14 @@ namespace NitelikliBilisim.App.Controllers
                 //todo log
                 throw;
             }
-            
+
 
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("kullanici-kisisel-bilgiler-guncelle")]
-        public IActionResult UpdateUserInfo(UpdateUserInfoVm model)
+        public IActionResult UpdateStudentInfo(UpdateStudentInfoVm model)
         {
             if (!ModelState.IsValid)
             {
@@ -238,7 +238,7 @@ namespace NitelikliBilisim.App.Controllers
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 model.UserId = userId;
-                _userUnitOfWork.User.UpdateUserInfo(model);
+                _userUnitOfWork.User.UpdateStudentInfo(model);
                 TempData["Success"] = "Bilgileriniz başarıyla güncellendi!";
                 return RedirectToAction("AccountSettings", "UserProfile");
             }
@@ -251,5 +251,82 @@ namespace NitelikliBilisim.App.Controllers
 
 
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("kullanici-bilgileri-guncelle")]
+        public async Task<IActionResult> UpdateUserInfo(UpdateUserInfoVm model)
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData["Error"] = ModelStateUtil.GetErrors(ModelState);
+            }
+            try
+            {
+                var user = await _userManager.GetUserAsync(HttpContext.User);
+                if (model.OldPassword != null && model.NewPassword != null && model.ConfirmNewPassword != null)
+                {
+                    if (model.NewPassword == model.ConfirmNewPassword)
+                    {
+                        var retVal = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+                        if (retVal.Succeeded)
+                        {
+
+                        }
+                    }
+                }
+
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                model.UserId = userId;
+                if (model.ProfileImage != null)
+                {
+
+                    var fileName = StringHelpers.FormatForTag($"{user.Name} {user.Surname}");
+                    var dbPath = await _storageService.UploadFile(model.ProfileImage.OpenReadStream(), $"{fileName}-{model.ProfileImage.FileName}", "user-avatars");
+                    user.AvatarPath = dbPath;
+                    await _userManager.UpdateAsync(user);
+                }
+
+                //_userUnitOfWork.User.UpdateUserInfo(model);
+                TempData["Success"] = "Bilgileriniz başarıyla güncellendi!";
+                return RedirectToAction("AccountSettings", "UserProfile");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "İşleminiz gerçekleştirilemedi! Lütfen tekrar deneyiniz.";
+                //todo log
+                throw;
+            }
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("nbuy-egitim-bilgileri-guncelle")]
+        public  IActionResult UpdateNbuyEducationInfos(UpdateNBUYEducationInfoVm model)
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData["Error"] = ModelStateUtil.GetErrors(ModelState);
+                return RedirectToAction("AccountSettings", "UserProfile");
+            }
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                model.UserId = userId;
+                _userUnitOfWork.User.UpdateNbuyEducationInfo(model);
+                
+                TempData["Success"] = "Bilgileriniz başarıyla güncellendi!";
+                return RedirectToAction("AccountSettings", "UserProfile");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "İşleminiz gerçekleştirilemedi! Lütfen tekrar deneyiniz.";
+                //todo log
+                throw;
+            }
+
+        }
+
     }
 }

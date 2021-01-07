@@ -132,15 +132,6 @@
                                             <div class="input__outer input--phone f-column">
                                                 <div class="input__title">Telefon Numaranız</div>
                                                 <div>
-                                                    <div class="select-phonecode no-icon bordered-select">
-                                                        <select name="PhoneCode" class="js-phonecode-select">
-                                                            <option value="" selected hidden disabled>539</option>
-                                                            <option value="2">540</option>
-                                                            <option value="3">541</option>
-                                                            <option value="4">542</option>
-                                                            <option value="5">543</option>
-                                                        </select>
-                                                    </div>
                                                     <input type="text" name="PhoneNumber" class="input input--bordered input--fw input--noshadow maskedInput inputPhoneNumber" placeholder="___-__-__">
                                                 </div>
                                             </div>
@@ -211,17 +202,8 @@
                                             <div class="input__outer input--phone f-column">
                                                 <div class="input__title">Telefon Numaranız</div>
                                                 <div>
-                                                    <div class="select-phonecode no-icon bordered-select">
-                                                        <select name="PhoneCode" class="js-phonecode-select" required>
-                                                            <option value="" selected hidden disabled>539</option>
-                                                            <option value="2">540</option>
-                                                            <option value="3">541</option>
-                                                            <option value="4">542</option>
-                                                            <option value="5">543</option>
-                                                        </select>
-                                                    </div>
                                                     <input type="text" name="PhoneNumber" id=""
-                                                           class="input input--bordered input--fw input--noshadow maskedInput inputPhoneNumber"
+                                                           class="input input--bordered input--fw input--noshadow inputPhoneNumber"
                                                            placeholder="___-__-__" required>
                                                 </div>
                                             </div>
@@ -405,7 +387,7 @@
                             </select>
                         </div>
                         <input type="text" name="cadresphone" id=""
-                               class="input input--bordered input--fw input--noshadow maskedInput inputPhoneNumber"
+                               class="input input--bordered input--fw input--noshadow inputPhoneNumber"
                                placeholder="___-__-__">
                     </div>
                 </div>
@@ -779,14 +761,14 @@
                         if (!res.data.length)
                             $(selectStates).prop("disabled", true);
                     } else {
-                        selectStates.html(`<option value="">İlçe Seçiniz</option>`);
+                        selectStates.html(`<option value="" disabled>İlçe Seçiniz</option>`);
                         $(selectStates).prop("disabled", true);
                     }
                 }
             });
         };
         function fillStates(data) {
-            $(selectStates).html(`<option value="">İlçe Seçiniz</option>`);
+            $(selectStates).html(`<option value="" disabled >İlçe Seçiniz</option>`);
             var appended = "";
             for (var i = 0; i < data.length; i++) {
                 var state = data[i];

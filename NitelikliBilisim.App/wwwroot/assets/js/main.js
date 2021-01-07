@@ -1150,6 +1150,7 @@ $(document).ready(function () {
     $('.js-signup-select').select2({});
     $('.js-education-place-select').select2({
         placeholder: 'Eğitim Yerini Seçiniz',
+        dropdownParent: $('.accordion'),
     });
     $('.js-education-categori-select').select2({
         placeholder: 'Eğitim Kategorisi Seçiniz',
@@ -1160,6 +1161,11 @@ $(document).ready(function () {
     $('.js-cinsiyet-select').select2({
         placeholder: 'Cinsiyetinizi Seçiniz',
     });
+    $('.js-education-type-select').select2({
+        placeholder: 'Eğitim Kategorinizi Seçiniz',
+        dropdownParent: $('.accordion'),
+    });
+   
     $('.js-okul-select').select2({
         placeholder: 'Okulunuzu Seçiniz',
         dropdownParent: $('.accordion'),
@@ -1170,6 +1176,7 @@ $(document).ready(function () {
     });
     $('.js-egitim-merkezi-select').select2({
         placeholder: 'Eğitim Merkezini Seçiniz',
+        dropdownParent: $('.accordion'),
     });
     $('.js-adres-sehir-select').select2({
         placeholder: 'Şehir Seçiniz',
@@ -1873,22 +1880,21 @@ if ($('.login__form').length > 0) {
 $('#accountSideImg').on('change', function () {
     $("#imageForm").submit();
 });
-$("#accountSettingsImage").on('change', function () {
-    $("#imageForm").submit();
-});
 
-$("input[type='image']").click(function () {
-    $("input[id='accountSideImg']").click();
-});
+
+//$("input[type='image']").click(function () {
+//    $("input[id='accountSideImg']").click();
+//});
 
 $('.account-side__img-edit').click(function () {
     $("input[id='accountSideImg']").click();
 });
 $('.js-change-img').click(function () {
-    $("input[id='accountChangeImg']").click();
+    $("input[id='accountSettingsImg']").click();
 });
 
 $('.js-datepicker').datepicker({
+    dateFormat: 'dd/mm/yy',
     days: ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'],
     daysShort: ['Paz', 'Pzt', 'Sal', 'Çrş', 'Prş', 'Cum', 'Cts'],
     autoHide: true,

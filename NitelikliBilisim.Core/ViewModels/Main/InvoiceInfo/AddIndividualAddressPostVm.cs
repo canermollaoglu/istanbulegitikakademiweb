@@ -17,6 +17,5 @@ namespace NitelikliBilisim.Core.ViewModels.Main.InvoiceInfo
         public string CustomerId { get; set; }
         public bool IsDefaultAddress { get; set; }
         public string PhoneNumber { get; set; }
-        public string PhoneCode { get; set; }
     }
 }
