@@ -10,7 +10,8 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
     public class UpdateUserInfoVm
     {
         public string UserId { get; set; }
-        public Gender Gender { get; set; }
+        public Genders Gender { get; set; }
+        public Jobs Job { get; set; }
         public DateTime? BirthDate { get; set; }
         public int? LastGraduatedSchoolId { get; set; }
 

@@ -13,13 +13,13 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public string Name { get; set; }
         public string Surname { get; set; }
         public DateTime? DateOfBirth { get; set; }
-        public string Job { get; set; }
+        public Jobs Job { get; set; }
         public int? LastGraduatedSchoolId { get; set; }
         public string Phone { get; set; }
         public string LinkedIn { get; set; }
         public string WebSite { get; set; }
         public string AvatarPath { get; set; }
         public int? CityId { get; set; }
-        public Gender Gender { get; set; }
+        public Genders Gender { get; set; }
     }
 }

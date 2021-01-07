@@ -240,7 +240,7 @@ namespace NitelikliBilisim.Business.Repositories
                     CustomerFullName = $"{x.Customer.User.Name} {x.Customer.User.Surname}",
                     CustomerId = x.Customer.User.Id,
                     Email = x.Customer.User.Email,
-                    Job = x.Customer.Job,
+                    Job = EnumHelpers.GetDescription(x.Customer.Job),
                     PhoneNumber = x.Customer.User.PhoneNumber,
                     NonAttendance = groupAttendances.Count(c => c.CustomerId == x.Customer.Id),
                     IsNbuyStudent = x.Customer.IsNbuyStudent

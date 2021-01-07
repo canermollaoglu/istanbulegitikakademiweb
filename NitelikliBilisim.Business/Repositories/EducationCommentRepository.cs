@@ -1,4 +1,5 @@
-﻿using NitelikliBilisim.Core.Entities;
+﻿using MUsefulMethods;
+using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Enums.user_details;
 using NitelikliBilisim.Core.Services;
@@ -49,7 +50,7 @@ namespace NitelikliBilisim.Business.Repositories
                                Point = comment.Points,
                                UserName = $"{user.Name} {user.Surname}",
                                AvatarPath = user.AvatarPath,
-                               Job = student.Job
+                               Job = EnumHelpers.GetDescription(student.Job)
                            }).AsQueryable();
             switch (sType)
             {
@@ -85,7 +86,7 @@ namespace NitelikliBilisim.Business.Repositories
                              Id = comment.Id,
                              Point = comment.Points,
                              CommenterName = $"{user.Name} {user.Surname}",
-                             CommenterJob = customer.Job,
+                             CommenterJob = EnumHelpers.GetDescription(customer.Job),
                              CommenterAvatarPath = user.AvatarPath,
                              Content = comment.Content
                          }).Take(count).ToList();
@@ -153,7 +154,7 @@ namespace NitelikliBilisim.Business.Repositories
                                 CreatedDateText = educationComment.CreatedDate.ToString("dd MMMM yyyy"),
                                 CreatedDate = educationComment.CreatedDate,
                                 Point = educationComment.Points,
-                                UserJob = student.Job,
+                                UserJob = EnumHelpers.GetDescription(student.Job),
                                 Content = educationComment.Content
                             }).AsQueryable();
 

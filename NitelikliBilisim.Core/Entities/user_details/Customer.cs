@@ -15,13 +15,13 @@ namespace NitelikliBilisim.Core.Entities
         public ApplicationUser User { get; set; }
         public CustomerType CustomerType { get; set; }
         public bool IsNbuyStudent { get; set; }
-        public Gender Gender { get; set; }
+        public Genders Gender { get; set; }
         public DateTime? DateOfBirth { get; set; }
         /// <summary>
         /// Son Mezun Olunan Okul
         /// </summary>
         public int? LastGraduatedSchoolId { get; set; }
-        public string Job { get; set; }
+        public Jobs Job { get; set; }
         public int? CityId { get; set; }
         public string WebSiteUrl { get; set; }
         public string LinkedInProfileUrl { get; set; }
