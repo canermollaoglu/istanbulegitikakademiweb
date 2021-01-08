@@ -51,10 +51,15 @@ function document_onLoad() {
             ['color', ['color']],
             ['para', ['ul', 'ol', 'paragraph']],
             ['table', ['table']],
-            ['insert', ['link', 'picture', 'video']],
+            ['insert', ['link', 'picture']],
             ['view', ['fullscreen', 'codeview', 'help']]
+        ],
+        fontNames: ['Proxima Nova'],
+        styleTags: [
+            { title: 'Baslik', tag: 'h2', className: 'blog-detail__title', value: 'h2' },
+            { title: 'Özet', tag: 'h1', className: 'blog-detail__blockquote', value: 'h1' },
+            { title: 'Paragraf', tag: 'p', className: 'blog-detail__txt', value: 'p' }
         ]
-
     });
 
     fileManager1 = new UploadSupport.FileUploader();
