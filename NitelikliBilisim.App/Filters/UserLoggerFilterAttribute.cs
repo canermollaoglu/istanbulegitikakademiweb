@@ -41,8 +41,26 @@ namespace NitelikliBilisim.App.Filters
                 context.HttpContext.Session.SetString("userSessionId", Guid.NewGuid().ToString());
             }
             //if (context.HttpContext.Request.Method.Equals("POST"))
-            
+
             //Admin işlemleri log dışı tutuluyor.
+            if (descriptor.ControllerName == "Blog" && descriptor.ActionName == "Detail")
+            {
+                if (context.ActionArguments["seoUrl"]!=null && context.ActionArguments["catSeoUrl"]!=null)
+                {
+                    BlogViewLog bViewLog = new BlogViewLog
+                    {
+                        SeoUrl = context.ActionArguments["seoUrl"],
+                        CatSeoUrl = context.ActionArguments["catSeoUrl"],
+                        SessionId = context.HttpContext.Session.GetString("userSessionId"),
+                        IpAddress = context.HttpContext.Connection.RemoteIpAddress.ToString(),
+                        UserId = context.HttpContext.User.Identity.IsAuthenticated ? context.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier) : null
+                    };
+                    CheckBlogViewLogIndex();
+                    var response = _elasticClient.IndexDocument(bViewLog);
+                    Console.WriteLine(response.IsValid);
+                }
+            }
+
             if (currentUserRoleName != "Admin")
             {
                 #region Create and Insert TransactionLog
@@ -115,6 +133,15 @@ namespace NitelikliBilisim.App.Filters
             {
                 _elasticClient.Indices.Create(ElasticSearchIndexNameUtility.TransactionLogIndex, index =>
                    index.Map<TransactionLog>(x => x.AutoMap()));
+            }
+        }
+
+        private void CheckBlogViewLogIndex() {
+            var response = _elasticClient.Indices.Exists(ElasticSearchIndexNameUtility.BlogViewLogIndex);
+            if (!response.Exists)
+            {
+                _elasticClient.Indices.Create(ElasticSearchIndexNameUtility.BlogViewLogIndex, index =>
+                   index.Map<BlogViewLog>(x => x.AutoMap()));
             }
         }
 

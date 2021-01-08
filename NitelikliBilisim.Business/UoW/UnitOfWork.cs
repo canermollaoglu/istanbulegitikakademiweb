@@ -189,7 +189,7 @@ namespace NitelikliBilisim.Business.UoW
         public EducationDayRepository EducationDay => _educationDayRepository ??= new EducationDayRepository(_context);
         public EducationSuggestionCriterionRepository EducationSuggestionCriterion => _educationSuggestionCriterionRepository ??= new EducationSuggestionCriterionRepository(_context);
         public WishListRepository WishListItem => _wishListItemRepository ??= new WishListRepository(_context);
-        public BlogPostRepository BlogPost => _blogPostRepository ??= new BlogPostRepository(_context);
+        public BlogPostRepository BlogPost => _blogPostRepository ??= new BlogPostRepository(_context,_elasticClient);
         public BlogCategoryRepository BlogCategory => _blogCategoryRepository ??= new BlogCategoryRepository(_context);
         public BlogTagRepository BlogTag => _blogTagRepository ??= new BlogTagRepository(_context);
         public BannerAdsRepository BannerAds => _bannerAdsRepository ??= new BannerAdsRepository(_context);
