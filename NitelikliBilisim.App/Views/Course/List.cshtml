@@ -80,6 +80,8 @@
                     <div class="lesson-list__select select-location">
                         <select class="js-sort-select" id="hostCitySelect">
                             <option value="" selected hidden disabled>Konum</option>
+                            <option value="">Tümü</option>
+
                             @foreach (var hostCity in Model.EducationHostCities)
                             {
                                 <option value="@hostCity.Key">@hostCity.Value</option>

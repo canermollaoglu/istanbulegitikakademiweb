@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Controllers.Base;
+using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels.Main.Blog;
@@ -22,6 +23,8 @@ namespace NitelikliBilisim.App.Controllers
         {
             return View();
         }
+
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("blog/{catSeoUrl}/{seoUrl}")]
         public IActionResult Detail(string catSeoUrl, string seoUrl)
         {
@@ -71,8 +74,8 @@ namespace NitelikliBilisim.App.Controllers
 
         }
 
-        
 
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("blog/{c?}")]
         public IActionResult List(string c, int? p)
         {

@@ -1,0 +1,144 @@
+@import '../utilities/variables';
+
+.user-dropdown {
+  background: #fff;
+  position: absolute;
+  left: 0px;
+  top: calc(100% + 10px);
+  width: 250px;
+  border-radius: 4px;
+  padding: 25px 30px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateX(-5px) translateY(90px);
+  transition: 0.3s;
+  z-index: 6;
+  box-shadow: $boxShadow;
+
+  @include bp(desktop) {
+    left: auto !important;
+    right: 0;
+  }
+
+  @media(max-width: 1070px) {
+    transform: translateX(-87px) translateY(90px);
+  }
+
+  @include bp(tablet-big) {
+    transform: translateX(-55px) translateY(90px);
+  }
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 30px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid #fff;
+
+    @include bp(desktop) {
+      left: 65px;
+    }
+
+    @include bp(tablet-big) {
+      left: 85.5px;
+    }
+  }
+
+  &.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: all;
+    transform: translateX(-5px) translateY(70px);
+
+    @media(max-width: 1070px) {
+      transform: translateX(-87px) translateY(70px);
+    }
+
+    @include bp(tablet-big) {
+      transform: translateX(-55px) translateY(70px);
+    }
+  }
+
+  &__top {
+    position: relative;
+    padding-bottom: 10px;
+
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: -30px;
+      width: calc(100% + 60px);
+      height: 1px;
+      background: $c-softBorder;
+    }
+  }
+
+  &__name {
+    font-weight: 700;
+    font-size: 17px;
+    color: rgba($colorNavyBlue, .8);
+  }
+
+  &__mail {
+    color: $c-simpleText;
+    font-weight: 500;
+    font-size: 13px;
+    margin-top: 3px;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    margin-top: 5px;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    border-bottom: 1px solid $c-softBorder;
+    padding: 10px 10px 10px 0;
+    font-weight: 500 !important;
+    color: rgba($colorNavyBlue, .6) !important;
+    transition: .3s;
+    font-size: 16px !important;
+
+    &:hover {
+      color: $colorBlue !important;
+
+      span {
+        color: $colorBlue;
+      }
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    span {
+      color: $c-simpleText;
+      margin-right: 10px;
+      position: relative;
+      top: -1.5px;
+      font-size: 14px;
+      transition: .3s;
+    }
+  }
+
+  &__footer {
+    margin-top: 10px;
+
+    .button-icon {
+      top: 2px;
+      font-size: 13px;
+      transform: rotate(0);
+      margin-right: 0 !important;
+    }
+  }
+}

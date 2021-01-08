@@ -1,0 +1,61 @@
+.title {
+  font-size: 14px;
+  font-weight: 800;
+  text-transform: uppercase;
+
+  &--small {
+    font-size: 16px;
+  }
+
+  &.title-section {
+    font-size: 22px;
+    margin-bottom: 0;
+  }
+
+  &--blue {
+    color: $colorBlue;
+  }
+}
+
+.all-link {
+  color: #4d579f;
+  font-size: 14px;
+  font-weight: 500;
+
+  span {
+    margin-left: 15px;
+    transition: $transition;
+
+    &:last-child {
+      position: relative;
+      top: -1px;
+      right: 0;
+    }
+  }
+
+  &:hover {
+    text-decoration: none;
+    color: $colorBlue;
+
+    span {
+      &:last-child {
+        right: -8px;
+      }
+    }
+  }
+}
+
+.txt-section {
+  font-weight: 400;
+  font-size: 17px;
+  color: rgba($colorNavyBlue, .8);
+
+  @include bp(tablet-small) {
+    font-size: 15px;
+  }
+
+  &.txt-centered {
+    width: 100%;
+    text-align: center;
+  }
+}

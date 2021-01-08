@@ -12,6 +12,7 @@ using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels.Main.Profile;
 using System;
@@ -148,11 +149,35 @@ namespace NitelikliBilisim.App.Controllers
             return View(model);
         }
 
-        [Route("sana-ozel")]
-        public IActionResult ForYou()
+        [Route("sana-ozel/{catSeoUrl?}")]
+        public IActionResult ForYou(string catSeoUrl)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var model = _userUnitOfWork.User.GetForYouPageData(userId);
+            if (string.IsNullOrEmpty(catSeoUrl))
+            {
+                model.CategoryName = "Tüm Teknoloji Eğitimleri";
+                model.CategoryShortDescription = "Tüm Teknoloji Eğitimleri";
+            }
+            else
+            {
+                var category = _unitOfWork.EducationCategory.GetCategoryBySeoUrl(catSeoUrl);
+                if (category != null)
+                {
+                    model.CategoryId = category.Id;
+                    model.CategoryName = category.Name;
+                    model.CategoryShortDescription = category.Description;
+                }
+                else
+                {
+                    model.CategoryName = "Tüm Kategoriler";
+                    model.CategoryShortDescription = "Geleceğin web sitelerini kodlayın";
+                }
+            }
+            model.Categories = _unitOfWork.EducationCategory.GetCoursesPageCategories();
+            model.OrderTypes = EnumHelpers.ToKeyValuePair<OrderCriteria>();
+            model.EducationHostCities = EnumHelpers.ToKeyValuePair<HostCity>();
+            model.TotalEducationCount = _unitOfWork.Education.TotalEducationCount();
             model.Educators = _unitOfWork.Educator.GetEducatorsAboutUsPage();
             return View(model);
         }

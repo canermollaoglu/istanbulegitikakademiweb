@@ -1,0 +1,77 @@
+@import '../utilities/variables';
+
+.main-tab {
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 60%;
+    margin: 0 auto;
+    position: relative;
+
+    @include bp(tablet-small) {
+      max-width: 100%;
+    }
+
+    &:before {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: -30%;
+      width: calc(100% + 60%);
+      background: $c-softBorder;
+      height: 1px;
+    }
+  }
+
+  &__item {
+    opacity: 0;
+    position: absolute;
+    transition: 0.3s;
+    width: 100%;
+    transform: translateY(30px);
+    border-radius: 4px;
+    pointer-events: none;
+    visibility: hidden;
+
+    @include bp(tablet-small) {
+      white-space: nowrap;
+    }
+
+    &>.swiper-container {
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    &.active,
+    &.selected {
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: 0.25s;
+      pointer-events: all;
+      visibility: visible;
+
+      &>.swiper-container {
+        pointer-events: all;
+        z-index: 1;
+      }
+    }
+  }
+
+  &__content {
+    position: relative;
+    margin-top: 50px;
+
+    .swiper-container {
+      overflow: initial;
+    }
+
+    .swiper-pagination {
+      bottom: -75px;
+
+      @include bp(tablet-small) {
+        bottom: -50px;
+      }
+    }
+  }
+}

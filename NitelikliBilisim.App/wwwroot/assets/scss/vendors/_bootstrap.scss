@@ -1,0 +1,26 @@
+@import "bootstrap-reboot";
+@import "bootstrap-grid";
+
+// @media (min-width: 576px) {
+
+//   .container,
+//   .container-sm {
+//     max-width: calc(100% - 35px);
+//   }
+// }
+
+@media (min-width: 768px) {
+  .container {
+    max-width: calc(100% - 35px);
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .container {
+    padding-left: 50px;
+    padding-right: 50px;
+    max-width: 1400px;
+  }
+}

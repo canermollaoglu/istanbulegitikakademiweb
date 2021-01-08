@@ -1894,13 +1894,14 @@ $('.js-change-img').click(function () {
 });
 
 $('.js-datepicker').datepicker({
-    dateFormat: 'dd/mm/yy',
+    format: 'dd.mm.yyyy',
     days: ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'],
     daysShort: ['Paz', 'Pzt', 'Sal', 'Çrş', 'Prş', 'Cum', 'Cts'],
     autoHide: true,
     container: '.datepicker-containered',
 });
 $('.js-panel-datepicker').datepicker({
+    format: 'dd.mm.yyyy',
     days: ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'],
     daysShort: ['Paz', 'Pzt', 'Sal', 'Çrş', 'Prş', 'Cum', 'Cts'],
     autoHide: true,

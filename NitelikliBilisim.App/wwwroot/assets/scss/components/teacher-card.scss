@@ -1,0 +1,57 @@
+@import '../utilities/variables';
+
+.teacher-card {
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: $boxShadow;
+  overflow: hidden;
+  transition: .3s;
+  display: block;
+
+  &:hover {
+    transform: translateY(-15px);
+    box-shadow: $boxShadowHover;
+
+    .teacher-card {
+      &__title {
+        color: $colorBlue;
+      }
+    }
+  }
+
+  &__img {
+    width: 100%;
+    height: 300px;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__title {
+    color: $colorNavyBlue;
+    padding: 20px;
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+    border-bottom: 1px solid $c-softBorder;
+    transition: .3s;
+  }
+
+  &__branch {
+    color: rgba(#363c52, .5);
+    padding: 20px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+  }
+}
