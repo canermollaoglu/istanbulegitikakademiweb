@@ -94,7 +94,7 @@
                     <span>Eğitimler</span>
                 </span>
 
-                 @await Component.InvokeAsync("HeaderEducationsMenu")
+                @await Component.InvokeAsync("HeaderEducationsMenu")
 
                 <nav class="header__links">
                     <li>
@@ -131,25 +131,15 @@
                         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                         var user = await UserManager.FindByIdAsync(userId);
                         var profileImage = "";
-                        try
-                        {
-                            if (User.IsInRole("Educator"))
-                            {
 
-                                profileImage = StorageService.BlobUrl+user.AvatarPath;
-                            }
-                            else if (User.IsInRole("User"))
-                            {
-                                profileImage = StorageService.BlobUrl+user.AvatarPath;
-                            }
-                        }
-                        catch
-                        {
-                        }
-                        if (string.IsNullOrEmpty(profileImage))
+                        if (string.IsNullOrEmpty(user.AvatarPath))
                         {
                             profileImage = "../../img/nb_letter_logo_sm.png";
-                                
+
+                        }
+                        else
+                        {
+                            profileImage = StorageService.BlobUrl + user.AvatarPath;
                         }
 
                         <!-- giriş yapılmış -->
@@ -259,8 +249,8 @@
                 </div>
             </div>
         </div>
-                    @await Component.InvokeAsync("MobileHeaderEducationsMenu")
-       
+        @await Component.InvokeAsync("MobileHeaderEducationsMenu")
+
     </div>
 
 </header>

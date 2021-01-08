@@ -4,12 +4,13 @@
     ViewData["Title"] = "Hesap Ayarları";
     Layout = "~/Views/Shared/_LayoutHesap.cshtml";
     var avatarPath = "";
-    try
+    if (string.IsNullOrEmpty(Model.GeneralInformation.AvatarPath))
+    {
+        avatarPath = "../../img/nb_letter_logo_sm.png";
+    }
+    else
     {
         avatarPath = StorageService.BlobUrl + Model.GeneralInformation.AvatarPath;
-    }
-    catch
-    {
     }
 }
 
