@@ -1,0 +1,63 @@
+@import '../utilities/variables';
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  @include bp(desktop) {
+    display: -webkit-box;
+    overflow: hidden;
+    overflow-x: auto;
+    width: calc(100%);
+    margin-left: -15px;
+    padding-left: 15px;
+    position: relative;
+  }
+
+  @include bp(mobile) {
+    width: 100vw;
+  }
+
+  &__item {
+    color: rgba(#fff, .5);
+    font-weight: 300;
+    font-size: 15px;
+    padding-right: 15px;
+    margin-right: 15px;
+    position: relative;
+    transition: .3s;
+
+    @include bp(desktop) {
+      white-space: nowrap;
+    }
+
+    &:hover {
+      color: rgba(#fff, 1);
+    }
+
+    &:after {
+      content: '/';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    &:last-child {
+      padding-right: 0;
+
+      &:after {
+        display: none;
+      }
+    }
+
+    &.active {
+      color: rgba(#fff, .8);
+
+      &:hover {
+        color: rgba(#fff, 1);
+      }
+    }
+  }
+}

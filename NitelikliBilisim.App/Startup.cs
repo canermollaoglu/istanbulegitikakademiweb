@@ -48,6 +48,7 @@ namespace NitelikliBilisim.App
                 options.User.AllowedUserNameCharacters = null;
                 options.User.RequireUniqueEmail = true;
                 options.Password.RequireUppercase = false;
+                options.SignIn.RequireConfirmedEmail = true;
             })
                 .AddEntityFrameworkStores<NbDataContext>()
                 //.AddUserStore<UserStore<ApplicationUser, ApplicationRole, NbDataContext>>()

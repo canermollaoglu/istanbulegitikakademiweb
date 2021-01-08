@@ -1,4 +1,5 @@
 ﻿using NitelikliBilisim.Core.ViewModels.Main.AboutUs;
+using NitelikliBilisim.Core.ViewModels.Main.Course;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,13 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public string EducationCategory { get; set; }
         public List<EducationMonth> EducationMonths { get; set; } = new List<EducationMonth>();
         public List<EducatorListVm> Educators { get; set; }
+        public List<CoursesPageEducationCategoryVm> Categories { get; set; }
+        public Dictionary<int, string> OrderTypes { get; set; }
+        public Dictionary<int, string> EducationHostCities { get; set; }
+        public int TotalEducationCount { get; set; }
+        public string CategoryName { get; set; }
+        public string CategoryShortDescription { get; set; }
+        public Guid? CategoryId { get; set; }
     }
 
     public class EducationMonth

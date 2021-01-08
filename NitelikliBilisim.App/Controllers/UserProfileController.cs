@@ -12,6 +12,7 @@ using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels.Main.Profile;
 using System;
@@ -148,11 +149,35 @@ namespace NitelikliBilisim.App.Controllers
             return View(model);
         }
 
-        [Route("sana-ozel")]
-        public IActionResult ForYou()
+        [Route("sana-ozel/{catSeoUrl?}")]
+        public IActionResult ForYou(string catSeoUrl)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var model = _userUnitOfWork.User.GetForYouPageData(userId);
+            if (string.IsNullOrEmpty(catSeoUrl))
+            {
+                model.CategoryName = "Tüm Teknoloji Eğitimleri";
+                model.CategoryShortDescription = "Tüm Teknoloji Eğitimleri";
+            }
+            else
+            {
+                var category = _unitOfWork.EducationCategory.GetCategoryBySeoUrl(catSeoUrl);
+                if (category != null)
+                {
+                    model.CategoryId = category.Id;
+                    model.CategoryName = category.Name;
+                    model.CategoryShortDescription = category.Description;
+                }
+                else
+                {
+                    model.CategoryName = "Tüm Kategoriler";
+                    model.CategoryShortDescription = "Geleceğin web sitelerini kodlayın";
+                }
+            }
+            model.Categories = _unitOfWork.EducationCategory.GetCoursesPageCategories();
+            model.OrderTypes = EnumHelpers.ToKeyValuePair<OrderCriteria>();
+            model.EducationHostCities = EnumHelpers.ToKeyValuePair<HostCity>();
+            model.TotalEducationCount = _unitOfWork.Education.TotalEducationCount();
             model.Educators = _unitOfWork.Educator.GetEducatorsAboutUsPage();
             return View(model);
         }
@@ -221,14 +246,14 @@ namespace NitelikliBilisim.App.Controllers
                 //todo log
                 throw;
             }
-            
+
 
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("kullanici-kisisel-bilgiler-guncelle")]
-        public IActionResult UpdateUserInfo(UpdateUserInfoVm model)
+        public IActionResult UpdateStudentInfo(UpdateStudentInfoVm model)
         {
             if (!ModelState.IsValid)
             {
@@ -238,7 +263,7 @@ namespace NitelikliBilisim.App.Controllers
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 model.UserId = userId;
-                _userUnitOfWork.User.UpdateUserInfo(model);
+                _userUnitOfWork.User.UpdateStudentInfo(model);
                 TempData["Success"] = "Bilgileriniz başarıyla güncellendi!";
                 return RedirectToAction("AccountSettings", "UserProfile");
             }
@@ -251,5 +276,82 @@ namespace NitelikliBilisim.App.Controllers
 
 
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("kullanici-bilgileri-guncelle")]
+        public async Task<IActionResult> UpdateUserInfo(UpdateUserInfoVm model)
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData["Error"] = ModelStateUtil.GetErrors(ModelState);
+            }
+            try
+            {
+                var user = await _userManager.GetUserAsync(HttpContext.User);
+                if (model.OldPassword != null && model.NewPassword != null && model.ConfirmNewPassword != null)
+                {
+                    if (model.NewPassword == model.ConfirmNewPassword)
+                    {
+                        var retVal = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+                        if (retVal.Succeeded)
+                        {
+
+                        }
+                    }
+                }
+
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                model.UserId = userId;
+                if (model.ProfileImage != null)
+                {
+
+                    var fileName = StringHelpers.FormatForTag($"{user.Name} {user.Surname}");
+                    var dbPath = await _storageService.UploadFile(model.ProfileImage.OpenReadStream(), $"{fileName}-{model.ProfileImage.FileName}", "user-avatars");
+                    user.AvatarPath = dbPath;
+                    await _userManager.UpdateAsync(user);
+                }
+
+                //_userUnitOfWork.User.UpdateUserInfo(model);
+                TempData["Success"] = "Bilgileriniz başarıyla güncellendi!";
+                return RedirectToAction("AccountSettings", "UserProfile");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "İşleminiz gerçekleştirilemedi! Lütfen tekrar deneyiniz.";
+                //todo log
+                throw;
+            }
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("nbuy-egitim-bilgileri-guncelle")]
+        public  IActionResult UpdateNbuyEducationInfos(UpdateNBUYEducationInfoVm model)
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData["Error"] = ModelStateUtil.GetErrors(ModelState);
+                return RedirectToAction("AccountSettings", "UserProfile");
+            }
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                model.UserId = userId;
+                _userUnitOfWork.User.UpdateNbuyEducationInfo(model);
+                
+                TempData["Success"] = "Bilgileriniz başarıyla güncellendi!";
+                return RedirectToAction("AccountSettings", "UserProfile");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "İşleminiz gerçekleştirilemedi! Lütfen tekrar deneyiniz.";
+                //todo log
+                throw;
+            }
+
+        }
+
     }
 }

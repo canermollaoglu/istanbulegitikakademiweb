@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Nest;
 using NitelikliBilisim.Core.ESOptions.ESEntities;
+using NitelikliBilisim.App.Utility;
 using System;
 
 namespace NitelikliBilisim.App.Extensions
@@ -20,12 +21,17 @@ namespace NitelikliBilisim.App.Extensions
             var settings = new ConnectionSettings(new Uri(url))
                  .DefaultIndex(defaultIndex)
                  .DefaultMappingFor<TransactionLog>(m => m
-                    .IndexName("ut_log")
+                    .IndexName(ElasticSearchIndexNameUtility.TransactionLogIndex)
                     .IdProperty(p => p.Id)
                 )
                  .DefaultMappingFor<ExceptionInfo>(m => m
-                 .IndexName("exception_log")
-                 .IdProperty(p => p.Id));
+                 .IndexName(ElasticSearchIndexNameUtility.ExceptionLogIndex)
+                 .IdProperty(p => p.Id))
+                 .DefaultMappingFor<BlogViewLog>(m=> m
+                 .IndexName(ElasticSearchIndexNameUtility.BlogViewLogIndex)
+                 .IdProperty(p=>p.Id));
+
+            
             settings.BasicAuthentication(userName, password);
 
             var client = new ElasticClient(settings);

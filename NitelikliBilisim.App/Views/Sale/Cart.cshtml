@@ -86,21 +86,21 @@
                     </div>
                     <div class="checkout__price-wrp js-discounts">
                         <div class="checkout__price-item">
-                            <div class="checkout__price-title">Toplam İndirimler</div>
-                            <div class="checkout__price-new" id="discountAmount">
-                                <span>₺</span> -0.90
+                            <div class="checkout__price-title">Ürünler Toplamı</div>
+                            <div class="checkout__price-new" id="oldPrice">
+                                0.00 <span>TL</span>
                             </div>
                         </div>
                         <div class="checkout__price-item">
-                            <div class="checkout__price-title">Ürünler Toplamı</div>
-                            <div class="checkout__price-new" id="oldPrice">
-                                <span>₺</span> 0.00
+                            <div class="checkout__price-title">Toplam İndirimler</div>
+                            <div class="checkout__price-new" id="discountAmount">
+                                -0.90 <span>TL</span>
                             </div>
                         </div>
                         <div class="checkout__price-item totaly">
                             <div class="checkout__price-title">Toplam Tutar</div>
                             <div class="checkout__price-new" id="newPrice">
-                                <span>₺</span> 0.00
+                                0.00 <span>TL</span>
                             </div>
                         </div>
                     </div>
@@ -311,7 +311,7 @@
                                                         <div class="checkout__product-right">
                                                             <div class="checkout__product-title">${item.educationName}</div>
                                                             <div class="checkout__product-new">
-                                                                <span>₺</span> ${item.priceText}
+                                                                 ${item.priceText} <span>TL</span>
                                                             </div>
                                                         </div>
                                                         <div class="checkout__product-crash js-modal-trigger" onclick="setDeleteButtonAttribute('${item.educationId}')" data-trigger="ModalDelete">
@@ -391,7 +391,7 @@
         }
 
         function formatCurrency(total) {
-            return "<span>₺</span>" + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
+            return parseFloat(total, 10).toFixed(2).toString().replace(".",",") + " <span>TL</span>";
         }
         function setDeleteButtonAttribute(id) {
             $(".js-delete-product-checkout").attr("data-eid", id);

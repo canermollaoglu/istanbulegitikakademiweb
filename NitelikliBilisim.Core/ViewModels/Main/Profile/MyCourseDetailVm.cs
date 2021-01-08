@@ -12,7 +12,7 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public Guid EducationId { get; set; }
         public string EducatorId { get; set; }
         public string EducationName { get; set; }
-        public decimal? PriceText { get; set; }
+        public string PriceText { get; set; }
         public string Days { get; set; }
         public string Hours { get; set; }
         public string Host { get; set; }

@@ -1,0 +1,252 @@
+.banner {
+  background-color: #459af0;
+  border-radius: 10px;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+  transition: $transition;
+  width: 100%;
+
+  &:not(:last-child) {
+    margin-bottom: 30px;
+  }
+
+  &__content {
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 26px;
+    padding: 30px;
+
+    p {
+      margin-bottom: 12px;
+    }
+
+    a {
+      font-size: 14px;
+
+      img {
+        margin-left: 10px;
+        transition: $transition;
+      }
+
+      &:hover {
+        text-decoration: none;
+
+        img {
+          transform: translateX(8px);
+        }
+      }
+    }
+  }
+
+  &__image {
+    margin: 0;
+
+    img {
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+}
+
+.custom-banner {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 40px;
+  position: relative;
+  overflow: hidden;
+
+  @include bp(tablet-small) {
+    padding: 20px;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &.white {
+    background: #fff;
+    box-shadow: $boxShadow;
+    border-radius: 4px;
+  }
+
+  &.blue {
+    background: $colorBlue;
+    box-shadow: none;
+    border-radius: 4px;
+
+    .custom-banner {
+      &__title {
+        color: #fff;
+      }
+
+      &__img {
+        &:after {
+          background: $colorBlue;
+        }
+      }
+
+      &__cnt {
+        a {
+          color: #fff;
+          font-size: 18px;
+          line-height: 20px;
+          margin-top: 15px;
+
+          @include bp(tablet-small) {
+            background: rgba(#fff, .2);
+            border-radius: 4px;
+            padding: 20px;
+            font-size: 16px;
+          }
+
+          span {
+            margin-left: 14px;
+            vertical-align: baseline;
+            transition: all 300ms;
+            position: relative;
+            top: -2px;
+            right: 0;
+            font-size: 14px;
+            transition: .3s;
+          }
+
+          &:hover {
+            span {
+              right: -8px;
+            }
+          }
+        }
+      }
+
+      &__icon {
+        background: none;
+        border-radius: none;
+        box-shadow: none;
+
+        svg {
+          font-size: 102px;
+          color: #fff;
+        }
+      }
+    }
+  }
+
+  &__icon {
+    background: $colorBlue;
+    color: #fff;
+    font-size: 38px;
+    margin-right: 25px;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 10px 10px 42px -8px rgba($colorBlue, .85);
+
+    &.f-s-mobile {
+      @include bp(tablet-small) {
+        svg {
+          font-size: 60px !important;
+        }
+      }
+    }
+
+    @include bp(tablet-small) {
+      margin-right: 0;
+      margin-bottom: 20px;
+      width: 70px;
+      height: 70px;
+      margin-bottom: 10px;
+
+      svg {
+        font-size: 40px !important;
+      }
+    }
+  }
+
+  &__cnt {
+    width: 60%;
+
+    @include bp(tablet) {
+      width: 55%;
+    }
+
+    @include bp(tablet-small) {
+      width: 100%;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+  }
+
+  &__title {
+    color: $colorNavyBlue;
+    font-weight: 700;
+    font-size: 21px;
+
+    @include bp(tablet-small) {
+      font-size: 17px;
+      margin-bottom: 20px;
+    }
+  }
+
+  &__txt {
+    color: #888595;
+  }
+
+  &__img {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 30%;
+    height: 100%;
+    clip-path: circle(78.9% at 84% 50%);
+    overflow: hidden;
+
+    @include bp(tablet-small) {
+      position: static;
+      width: calc(100vw - 30px);
+      margin-left: -0px;
+      margin-bottom: -20px;
+      clip-path: circle(74.9% at 50% 100%);
+    }
+
+    &:after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: calc(-100% + 170px);
+      width: 200px;
+      height: 200px;
+      transform: translateY(-50%);
+      background: #fff;
+      border-radius: 50%;
+
+      @media(max-width:1400px) {
+        display: none;
+      }
+
+      @include bp(desktop) {
+        right: calc(-100% + 0px);
+      }
+
+      @include bp(tablet-small) {
+        display: none;
+      }
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+
+      @include bp(tablet) {
+        object-position: center;
+      }
+
+    }
+  }
+}

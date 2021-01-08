@@ -1,0 +1,18 @@
+.swiper-container {
+  .swiper-slide {
+    background-color: transparent;
+  }
+
+  .swiper-pagination-bullet {
+    background: #d1d7ea;
+    opacity: 1;
+    border-radius: 4px;
+    transition: $transition;
+  }
+
+  .swiper-pagination-bullet-active {
+    background-color: #4d579f;
+    border-radius: 4px;
+    width: 60px;
+  }
+}

@@ -1,0 +1,268 @@
+@import '../utilities/variables';
+
+.accordion {
+	border-radius: 4px;
+	overflow: hidden;
+	box-shadow: $boxShadow;
+
+	&--big {
+		box-shadow: none;
+		overflow: initial;
+
+		.accordion {
+			&__item {
+				padding: 0;
+				border-bottom: none;
+				background: transparent;
+
+				&.selected {
+					.accordion__content {}
+				}
+
+				&.active {
+					.accordion {
+						&__icon {
+							background: $colorBlue;
+						}
+
+						&__header {
+							padding-bottom: 25px;
+							border-bottom: 1px solid $c-softBorder;
+							margin-bottom: 30px;
+						}
+					}
+				}
+			}
+
+			&__header {
+				flex-direction: row-reverse;
+				justify-content: space-between;
+			}
+
+			&__content {
+				&>div {
+					padding-top: 0;
+				}
+			}
+
+			&__icon {
+				margin-right: 0;
+				margin-left: 20px;
+				width: 35px;
+				height: 35px;
+				background: #f7f9fc;
+				border-radius: 4px;
+				flex-shrink: 0;
+				box-shadow: none;
+
+				&:before,
+				&:after {
+					background: #999db2;
+				}
+			}
+		}
+	}
+
+	&--loft {
+		box-shadow: none;
+
+		.accordion {
+
+			&__item {
+				background: transparent;
+				border-bottom: none;
+				padding: 0;
+				margin-bottom: 30px;
+
+				&.active {
+					.accordion {
+
+						&__icon {
+							background: $colorBlue;
+
+							&:before {
+								transform: translateY(-50%) rotate(180deg);
+								background: transparent;
+								top: calc(50% - 3px);
+								border-top-color: #fff;
+							}
+						}
+					}
+				}
+			}
+
+			&__header {
+				background: #f0f4fa;
+				border-radius: 4px;
+				padding: 10px 15px;
+				flex-direction: row-reverse;
+				justify-content: space-between;
+				font-weight: 700;
+				color: $c-simpleText;
+				font-size: 16px;
+				text-transform: uppercase;
+			}
+
+			&__icon {
+				border-radius: 4px;
+				background: #fff;
+				margin-right: 0;
+				margin-left: 20px;
+				width: 35px;
+				height: 35px;
+
+				&:before,
+				&:after {
+					display: none;
+				}
+
+				&:before {
+					border: 6px solid transparent;
+					border-top-color: #748eb5;
+					background: transparent;
+					content: '';
+					margin-left: -6px;
+					transform: translateY(-50%);
+					position: absolute;
+					top: calc(50% + 3px);
+					transition: 0.3s;
+					display: inline;
+				}
+			}
+		}
+	}
+
+	&__item {
+		padding: 25px;
+		background: #f7f9fc;
+		border-bottom: 1px solid $c-softBorder;
+		cursor: pointer;
+		transition: 0.3s;
+
+		@include bp(tablet-small) {
+			padding: 20px;
+		}
+
+		&:last-child {
+			border-bottom: none;
+		}
+
+		&.disabled {
+			opacity: 0.4;
+			pointer-events: none;
+		}
+
+		&.active {
+			background: #fff;
+
+			.accordion {
+				&__icon {
+					background: $colorNavyBlue;
+
+					&:before {
+						transform: translate(-50%, -50%) rotate(90deg);
+						background: #fff;
+					}
+
+					&:after {
+						opacity: 0;
+					}
+				}
+			}
+		}
+	}
+
+	&__header {
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+		color: rgba($colorNavyBlue, 0.8);
+		font-size: 17px;
+		font-weight: 400;
+
+		@include bp(tablet-small) {
+			font-size: 16px;
+		}
+	}
+
+	&__icon {
+		width: 30px;
+		height: 30px;
+		background: #fff;
+		position: relative;
+		margin-right: 20px;
+		border-radius: 50%;
+		box-shadow: $boxShadow;
+		transition: 0.3s;
+		flex-shrink: 0;
+
+		@include bp(tablet-small) {
+			margin-right: 15px;
+		}
+
+		&:before,
+		&:after {
+			content: '';
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			background: $colorNavyBlue;
+			transition: 0.3s;
+			opacity: 1;
+		}
+
+		&:before {
+			width: 2px;
+			height: 10px;
+		}
+
+		&:after {
+			width: 10px;
+			height: 2px;
+		}
+	}
+
+	&__content {
+		overflow: hidden;
+		height: 0;
+		transition: 0.3s;
+
+		&>div {
+			padding-top: 15px;
+		}
+
+		ul {
+			margin: 0;
+			padding: 0;
+
+			li {
+				color: rgba($colorNavyBlue, 0.7);
+				list-style: none;
+				display: flex;
+				align-items: center;
+				padding-left: 6px;
+				margin-bottom: 5px;
+				font-weight: 400;
+
+				&:last-child {
+					margin-bottom: 0;
+				}
+
+				span {
+					color: #c7d2e1;
+					position: relative;
+					top: -1px;
+					margin-right: 27px;
+				}
+			}
+		}
+
+		p {
+			color: rgba($colorNavyBlue, 0.8);
+			font-weight: 400;
+			padding-left: 50px;
+			margin-bottom: 0;
+		}
+	}
+}

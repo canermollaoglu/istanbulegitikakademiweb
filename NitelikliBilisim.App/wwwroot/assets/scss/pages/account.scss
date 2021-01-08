@@ -1,0 +1,465 @@
+@import '../utilities/variables';
+
+.account {
+  padding-top: calc(112px + 30px);
+  padding-bottom: 100px;
+
+  @include bp(tablet-big) {
+    padding-top: 70px;
+  }
+
+  &>.container {
+    @include bp(tablet-big) {
+      max-width: 100%;
+    }
+
+    @include bp(tablet) {
+      padding-top: 30px;
+    }
+
+    @include bp(tablet-small) {
+      padding-top: 0;
+    }
+  }
+
+  @include bp(laptop) {
+    overflow: hidden;
+  }
+
+  @include bp(tablet-small) {
+    margin-bottom: 0px;
+    padding-top: 0;
+    padding-bottom: 50px;
+  }
+
+  &-empty-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    display: none;
+
+    &.showed {
+      display: flex;
+    }
+
+    &>span.icon-outer {
+      color: $colorBlue;
+
+      &>svg {
+        font-size: 72px;
+      }
+    }
+
+    &>span:last-child {
+      font-size: 18px;
+    }
+  }
+
+  &-detail {
+    &__setting-btn {
+      width: 100%;
+      display: flex;
+      padding-top: 35px;
+      padding-bottom: 35px;
+
+      @include bp(tablet-small) {
+        margin-left: 0;
+        padding-top: 0;
+      }
+
+      button {
+        margin-left: auto;
+        margin-right: auto;
+
+        @include bp(tablet-small) {
+          margin-left: 0;
+          margin-right: 0;
+          width: 100%;
+        }
+      }
+    }
+
+    &__wrp {
+      background: #fff;
+      border-radius: 4px;
+      padding: 30px;
+
+      @include bp(tablet-big) {
+        padding: 20px;
+      }
+    }
+
+    &__title {
+      color: $colorBlue;
+      font-weight: 700;
+      margin-bottom: 20px;
+
+      &--link {
+        display: flex;
+        align-items: center;
+        transition: 0.3s;
+        padding-bottom: 25px;
+        border-bottom: 1px solid $c-softBorder;
+
+        &:hover {
+          color: $colorLightPurple;
+        }
+
+        span {
+          transform: rotate(180deg) translateY(-1px);
+          margin-right: 20px;
+        }
+      }
+    }
+  }
+
+  &__wrp {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  &-side {
+    width: 350px;
+    flex-shrink: 0;
+    margin-right: 30px;
+    position: relative;
+    z-index: 3;
+
+    @include bp(desktop) {
+      width: 300px;
+      margin-right: 25px;
+    }
+
+    @include bp(tablet-big) {
+      width: 250px;
+    }
+
+    @include bp(tablet) {
+      display: none;
+    }
+
+    &__menu {
+      width: 100%;
+      background: #fff;
+      border-radius: 4px;
+      position: sticky;
+      top: 10px;
+    }
+
+    &__top {
+      padding: 30px;
+      padding-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      @include bp(tablet-big) {
+        padding: 20px;
+      }
+
+      @include bp(tablet-small) {
+        padding: 30px;
+        padding-bottom: 20px;
+      }
+    }
+
+    &__img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      position: relative;
+      margin-bottom: 30px;
+
+      &:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba($colorNavyBlue, 0.3);
+        transition: 0.3s;
+        opacity: 0;
+        pointer-events: none;
+        border-radius: 50%;
+      }
+
+      &:hover {
+        &:before {
+          opacity: 1;
+        }
+
+        .account-side__img-edit {
+          background: $colorBlue;
+          color: #fff;
+        }
+      }
+
+      &-img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        outline: none;
+      }
+
+      &-edit {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: #f0f4fa;
+        color: $colorBlue;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        font-size: 12px;
+        transition: 0.3s;
+        cursor: pointer;
+      }
+    }
+
+    &__name {
+      color: $colorGreyDark;
+      font-weight: 700;
+      font-size: 19px;
+      position: relative;
+    }
+
+    &__nbuy {
+      position: absolute;
+      top: -2px;
+      right: -35px;
+      color: $colorBlue;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    &__branch {
+      color: rgba(#363c52, 0.7);
+      font-weight: 400;
+      margin-top: -2px;
+      text-align: center;
+    }
+
+    &__university {
+      background: #f4f7fb;
+      color: rgba($c-simpleText, 0.87);
+      padding: 8px 25px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      margin-top: 12px;
+      font-weight: 500;
+      font-size: 15px;
+
+      @include bp(tablet) {
+        padding: 8px 15px;
+        font-size: 14px;
+        width: auto;
+      }
+
+      @include bp(tablet-small) {
+        padding: 8px 25px;
+        font-size: 15px;
+        width: auto;
+      }
+
+      span {
+        color: #9aadca;
+        position: relative;
+        top: -1px;
+        margin-right: 10px;
+      }
+    }
+
+    &__list {
+      display: flex;
+      flex-direction: column;
+      margin: 0;
+      padding: 0;
+    }
+
+    &__item {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+      position: relative;
+      overflow: hidden;
+      z-index: 2;
+      cursor: pointer;
+
+      @include bp(r-tablet-small) {
+
+        &.active,
+        &:hover {
+          a {
+            color: $colorBlue;
+
+            span {
+              color: $colorBlue;
+            }
+          }
+        }
+      }
+
+      a {
+        padding: 15px 30px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        font-weight: 400;
+        color: $c-simpleText;
+        transition: 0.3s;
+
+        span {
+          position: relative;
+          top: -2px;
+          color: #b9c6da;
+          margin-right: 15px;
+          transition: 0.3s;
+        }
+      }
+    }
+
+    &__footer {
+      border-top: 1px solid $c-softBorder;
+      padding: 10px 0;
+      margin-top: 10px;
+    }
+  }
+
+  &-content {
+    width: calc(100% - 350px - 30px);
+
+    @include bp(desktop) {
+      width: calc(100% - 320px - 0px);
+    }
+
+    @include bp(tablet-big) {
+      width: calc(100% - 260px - 0px);
+    }
+
+    @include bp(tablet) {
+      width: 100%;
+      padding-top: 40px;
+    }
+  }
+}
+
+@include bp(r-tablet-small) {
+  .account-mobile__top {
+    display: none;
+  }
+}
+
+@include bp(tablet-small) {
+  .account-mobile {
+    &__top {
+      width: 100%;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      max-width: 576px;
+      margin: auto;
+
+      &:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: -92px;
+        width: 768px;
+        height: 1px;
+        background: $c-softBorder;
+      }
+    }
+
+    &__prev {
+      position: absolute;
+      top: calc(50% - 1px);
+      left: 20px;
+      transform: translateY(-50%) rotate(180deg);
+      color: $c-simpleText;
+      padding: 20px;
+      padding-right: 0;
+
+      &>span {
+        svg {}
+      }
+    }
+
+    &__txt {
+      font-size: 19px;
+      font-weight: 700;
+      color: $c-simpleText;
+    }
+
+    .vertical-magic-line {
+      display: none;
+    }
+
+    .account-side {
+      &__menu {
+        background: transparent;
+      }
+
+      &__item {
+        border-bottom: 1px solid $c-softBorder;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        a {
+          font-weight: 500;
+
+          span {
+            margin-right: 30px;
+          }
+        }
+      }
+
+      &__list {
+        padding-left: 15px;
+        padding-right: 15px;
+        max-width: 576px;
+        margin: 0 auto;
+      }
+
+      &__footer {
+        &>div {
+          padding-left: 15px;
+          padding-right: 15px;
+
+          &>a {
+            background: $colorBlue;
+            color: #fff;
+            border-radius: 4px;
+            text-align: center;
+            justify-content: center;
+            position: relative;
+
+            span {
+              color: #fff;
+              position: absolute;
+              top: calc(50% - 1px);
+              transform: translatey(-50%);
+              left: 30px;
+            }
+          }
+        }
+      }
+
+      &__university {
+        background: #ebf1fa;
+      }
+    }
+  }
+}

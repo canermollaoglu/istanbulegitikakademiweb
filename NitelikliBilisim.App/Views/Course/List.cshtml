@@ -80,6 +80,8 @@
                     <div class="lesson-list__select select-location">
                         <select class="js-sort-select" id="hostCitySelect">
                             <option value="" selected hidden disabled>Konum</option>
+                            <option value="">Tümü</option>
+
                             @foreach (var hostCity in Model.EducationHostCities)
                             {
                                 <option value="@hostCity.Key">@hostCity.Value</option>
@@ -336,7 +338,7 @@
                                                     ${e.educationDays} gün ( ${e.educationHours} saat )
                                                 </div>
                                                 <div class="lesson-list__item-price">
-                                                     ${e.price} TL
+                                                     ${e.price} <span>TL</span>
                                                 </div>
                                                 <div class="button v-tablet">
                                                     <span class="button-txt">Sepete Ekle</span>

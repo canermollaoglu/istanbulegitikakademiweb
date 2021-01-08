@@ -4,12 +4,13 @@
     ViewData["Title"] = "Hesap Ayarları";
     Layout = "~/Views/Shared/_LayoutHesap.cshtml";
     var avatarPath = "";
-    try
+    if (string.IsNullOrEmpty(Model.GeneralInformation.AvatarPath))
+    {
+        avatarPath = "../../img/nb_letter_logo_sm.png";
+    }
+    else
     {
         avatarPath = StorageService.BlobUrl + Model.GeneralInformation.AvatarPath;
-    }
-    catch
-    {
     }
 }
 
@@ -52,60 +53,66 @@
                                 <div class="accordion__content">
                                     <div class="js-calc-accordion-height">
                                         <div class="accordion__forms">
-                                            <div class="input__column-2">
+                                            <form method="post" action="/kullanici-bilgileri-guncelle" enctype="multipart/form-data">
+                                                @Html.AntiForgeryToken()
+                                                <div class="input__column-2">
+                                                    <div class="input__outer no-icon icon-password">
+                                                        <div class="input__title">Eski Şifre</div>
+                                                        <input type="password" name="OldPassword" class="input input--bordered input--fw input--noshadow js-password"
+                                                               placeholder="Eski Şifrenizi Giriniz">
+                                                        <span class="icon-outer js-show-password">
+                                                            <svg class="icon">
+                                                                <use xlink:href="../../assets/img/icons.svg#icon-eye"></use>
+                                                            </svg>
+                                                        </span>
+                                                    </div>
+                                                    <div class="input__outer no-icon icon-password">
+                                                        <div class="input__title">Yeni Şifre</div>
+                                                        <input type="password" name="NewPassword" class="input input--bordered input--fw input--noshadow js-password"
+                                                               placeholder="Yeni Şifrenizi Giriniz">
+                                                        <span class="icon-outer js-show-password">
+                                                            <svg class="icon">
+                                                                <use xlink:href="../../assets/img/icons.svg#icon-eye"></use>
+                                                            </svg>
+                                                        </span>
+                                                    </div>
+                                                    <div class="input__outer no-icon icon-password">
+                                                        <div class="input__title">Yeni Şifre Tekrar</div>
+                                                        <input type="password" name="ConfirmNewPassword" class="input input--bordered input--fw input--noshadow js-password"
+                                                               placeholder="Yeni Şifrenizi Tekrar Giriniz">
+                                                        <span class="icon-outer js-show-password">
+                                                            <svg class="icon">
+                                                                <use xlink:href="../../assets/img/icons.svg#icon-eye"></use>
+                                                            </svg>
+                                                        </span>
+                                                    </div>
+                                                </div>
                                                 <div class="input__outer no-icon">
-                                                    <div class="input__title">E-posta Adresi</div>
-                                                    <input type="text" class="input input--bordered input--fw input--noshadow"
-                                                           placeholder="E-posta Adresinizi Giriniz" value="@Model.GeneralInformation.Email">
-                                                </div>
-                                                <div class="input__outer no-icon icon-password">
-                                                    <div class="input__title">Şifre</div>
-                                                    <input type="password" class="input input--bordered input--fw input--noshadow js-password"
-                                                           placeholder="Şifrenizi Giriniz" value="123456789">
-                                                    <span class="icon-outer js-show-password">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-eye"></use>
-                                                        </svg>
-                                                    </span>
-                                                </div>
-                                                <div class="input__outer no-icon icon-password">
-                                                    <div class="input__title">Şifre Tekrar</div>
-                                                    <input type="password" class="input input--bordered input--fw input--noshadow js-password"
-                                                           placeholder="Şifrenizi Tekrar Giriniz" value="123456789">
-                                                    <span class="icon-outer js-show-password">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-eye"></use>
-                                                        </svg>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="input__outer no-icon">
-                                                <div class="input__title">Profil Resmi</div>
-                                                <div class="input__select-image">
-                                                    <div class="input__select-image-img">
-                                                        <input type="image" id="accountChangeImg" src="@avatarPath">
-                                                        <form method="post" id="imageForm2" enctype="multipart/form-data" action="/profil-resmi-degistir">
-                                                            <input type="file" id="accountSettingsImage" name="ProfileImage" style="display: none;" />
-                                                        </form>
-                                                    </div>
-                                                    <div class="input__select-image-button">
-                                                        <a class="button button-fw js-change-img">
-                                                            <span class="button-txt">
-                                                                Resmi Değiştir
-                                                            </span>
-                                                        </a>
-                                                    </div>
-                                                    <div class="input__select-image-txt">
-                                                        Maksimum boyut 1 MB.<br>
-                                                        JPG, GIF veya PNG
+                                                    <div class="input__title">Profil Resmi</div>
+                                                    <div class="input__select-image">
+                                                        <div class="input__select-image-img">
+                                                            <input type="image" id="accountChangeImg" src="@avatarPath">
+                                                            <input type="file" id="accountSettingsImg" name="ProfileImage" style="display: none;" />
+                                                        </div>
+                                                        <div class="input__select-image-button">
+                                                            <a class="button button-fw js-change-img">
+                                                                <span class="button-txt">
+                                                                    Resmi Değiştir
+                                                                </span>
+                                                            </a>
+                                                        </div>
+                                                        <div class="input__select-image-txt">
+                                                            Maksimum boyut 1 MB.<br>
+                                                            JPG, GIF veya PNG
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="account-detail__setting-btn">
-                                                <button href="#0" class="button">
-                                                    Değişiklikleri Kaydet
-                                                </button>
-                                            </div>
+                                                <div class="account-detail__setting-btn">
+                                                    <button type="submit" class="button">
+                                                        Değişiklikleri Kaydet
+                                                    </button>
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
@@ -172,7 +179,7 @@
                                                                     }
                                                                     else
                                                                     {
-                                                                    <option value="@university.Id">@university.Name</option>
+                                                                        <option value="@university.Id">@university.Name</option>
                                                                     }
 
                                                                 }
@@ -206,11 +213,13 @@
                                                     </button>
                                                 </div>
                                             </form>
-                                           
+
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            @if (Model.GeneralInformation.IsNbuyStudent && Model.GeneralInformation.NbuyInformation!=null)
+                            {
                             <div class="accordion__item">
                                 <div class="accordion__header">
                                     <span class="icon-outer accordion__icon">
@@ -220,22 +229,32 @@
                                 <div class="accordion__content">
                                     <div class="js-calc-accordion-height">
                                         <div class="accordion__forms">
+                                            <form method="post" action="/nbuy-egitim-bilgileri-guncelle">
+                                                @Html.AntiForgeryToken()
                                             <div class="input__column-2">
                                                 <div class="input__outer bordered-select input-mb-0">
                                                     <div class="select-subject no-icon">
                                                         <div class="input__title">Eğitim Merkezi</div>
-                                                        <select class="js-egitim-merkezi-select">
+                                                        <select name="EducationCenter" class="js-egitim-merkezi-select">
                                                             <option value="" hidden disabled>Eğitim Merkezini Seçiniz</option>
-                                                            <option value="2" selected>Bahçeşehir Üniversitesi</option>
-                                                            <option value="3">Ege Üniversitesi</option>
-                                                            <option value="4">İstanbul Üniversitesi</option>
+                                                            @foreach (var educationCenter in Model.EducationCenters)
+                                                            {
+                                                                if ((int)Model.GeneralInformation.NbuyInformation.EducationCenter == educationCenter.Key)
+                                                                {
+                                                                    <option value="@educationCenter.Key" selected>@educationCenter.Value</option>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <option value="@educationCenter.Key">@educationCenter.Value</option>
+                                                                }
+                                                            }
                                                         </select>
                                                     </div>
                                                 </div>
                                                 <div class="input__outer no-icon datepicker--fw icon-datepicker input-mb-0">
                                                     <div class="input__title">Eğitim Başlangıç Tarihi</div>
-                                                    <input type="text" class="input input--bordered input--fw input--noshadow js-datepicker"
-                                                           value="08.07.2020" placeholder="Eğitim Başlangıç Tarihini Seçiniz">
+                                                    <input type="text" name="StartAt" class="input input--bordered input--fw input--noshadow js-datepicker"
+                                                           value="@Model.GeneralInformation.NbuyInformation.StartAt.ToString("dd.MM.yyyy")" placeholder="Eğitim Başlangıç Tarihini Seçiniz">
                                                     <span class="icon-outer">
                                                         <svg class="icon">
                                                             <use xlink:href="../../assets/img/icons.svg#icon-date"></use>
@@ -245,24 +264,35 @@
                                                 <div class="input__outer bordered-select input-mb-0">
                                                     <div class="select-subject no-icon">
                                                         <div class="input__title">Eğitim Türü</div>
-                                                        <select class="js-cinsiyet-select">
+                                                        <select name="EducationCategoryId" class="js-education-type-select">
                                                             <option value="" hidden disabled>Eğitim Türünü Seçiniz</option>
-                                                            <option value="2">Bulut Bilişim</option>
-                                                            <option value="3" selected>Vue</option>
-                                                            <option value="4">React</option>
+                                                            @foreach (var category in Model.EducationCategories)
+                                                            {
+                                                                if (Model.GeneralInformation.NbuyInformation.CategoryId == category.Key)
+                                                                {
+                                                                    <option value="@category.Key" selected>@category.Value</option>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <option value="@category.Key">@category.Value</option>
+                                                                }
+
+                                                            }
                                                         </select>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="account-detail__setting-btn">
-                                                <button href="#0" class="button">
+                                                <button type="submit" class="button">
                                                     Değişiklikleri Kaydet
                                                 </button>
                                             </div>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            }
                             <div class="accordion__item">
                                 <div class="accordion__header">
                                     <span class="icon-outer accordion__icon">
@@ -348,6 +378,52 @@
                                     <div class="js-calc-accordion-height">
                                         <div class="accordion__forms">
                                             <div class="address-wrp">
+                                                @if (Model.Addresses.Count == 0)
+                                                {
+                                                    <div class="address-item">
+                                                        <div class="address-button js-select-address">
+                                                            <span class="address-button-radio"></span>
+                                                        </div>
+                                                        <div class="address-cnt js-select-address">
+                                                            <div class="address-title">
+                                                                Fatura Adresim
+                                                            </div>
+                                                            <div class="address-txt">
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="address-input-wrp">
+                                                        <div class="input__column-flex">
+                                                            <div class="input__outer bordered-select">
+                                                                <div class="select-subject no-icon">
+                                                                    <div class="input__title">Şehir</div>
+                                                                    <select class="js-adres-sehir-select">
+                                                                        <option value="" hidden disabled>Şehir</option>
+                                                                        @foreach (var city in Model.Cities)
+                                                                        {
+                                                                            <option value="@city.Id">@city.Name</option>
+                                                                        }
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="input__outer bordered-select input-mb-0">
+                                                                <div class="select-subject no-icon">
+                                                                    <div class="input__title">İlçe</div>
+                                                                    <select class="js-adres-ilce-select">
+                                                                        <option value="" hidden disabled>İlçe</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="input__outer input--textarea no-icon">
+                                                            <div class="input__title">Açık Adresiniz</div>
+                                                            <textarea name="Content"
+                                                                      class="input input--fw input--bordered input--noshadow h-150"
+                                                                      placeholder="Adresinizin tamamını buraya yazınız"></textarea>
+                                                        </div>
+                                                    </div>
+                                                }
                                                 @foreach (var address in Model.Addresses)
                                                 {
                                                     <div class="address-item @(address.IsDefaultAddress?"selected":"")">
@@ -372,7 +448,14 @@
                                                                         <option value="" hidden disabled>Şehir</option>
                                                                         @foreach (var city in Model.Cities)
                                                                         {
-                                                                            <option value="@city.Id">@city.Name</option>
+                                                                            if (address.CityId == city.Id)
+                                                                            {
+                                                                                <option value="@city.Id" selected>@city.Name</option>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <option value="@city.Id">@city.Name</option>
+                                                                            }
                                                                         }
                                                                     </select>
                                                                 </div>
@@ -381,71 +464,29 @@
                                                                 <div class="select-subject no-icon">
                                                                     <div class="input__title">İlçe</div>
                                                                     <select class="js-adres-ilce-select">
-                                                                        <option value="" hidden disabled>İlçe</option>
-                                                                        <option value="2" selected>Kadıköy</option>
-                                                                        <option value="3">Üsküdar</option>
-                                                                        <option value="4">Ataşehir</option>
+                                                                        @foreach (var states in address.City.States)
+                                                                        {
+                                                                            if (address.StateId == states.Id)
+                                                                            {
+                                                                                <option value="@states.Id" selected>@states.Name</option>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <option value="@states.Id">@states.Name</option>
+                                                                            }
+                                                                        }
                                                                     </select>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div class="input__outer input--textarea no-icon">
                                                             <div class="input__title">Açık Adresiniz</div>
-                                                            <textarea name="cacikadres"
+                                                            <textarea name="Content"
                                                                       class="input input--fw input--bordered input--noshadow h-150"
                                                                       placeholder="Adresinizin tamamını buraya yazınız">@address.Content</textarea>
                                                         </div>
                                                     </div>
                                                 }
-
-
-
-
-                                                <div class="address-item">
-                                                    <div class="address-button js-select-address">
-                                                        <span class="address-button-radio"></span>
-                                                    </div>
-                                                    <div class="address-cnt js-select-address">
-                                                        <div class="address-title">
-                                                            İş Adresim
-                                                        </div>
-                                                        <div class="address-txt">
-                                                            Acıbadem Mah. Acıbadem Cad. No:190 Kat:3 Daire:17 <br> Acıbadem Üsküdar İstanbul
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="address-input-wrp">
-                                                    <div class="input__column-flex">
-                                                        <div class="input__outer bordered-select">
-                                                            <div class="select-subject no-icon">
-                                                                <div class="input__title">Şehir</div>
-                                                                <select class="js-adres-sehir-select">
-                                                                    <option value="" hidden disabled>Şehir</option>
-                                                                    <option value="2" selected>İstanbul</option>
-                                                                    <option value="3">Bursa</option>
-                                                                    <option value="4">Ankara</option>
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                        <div class="input__outer bordered-select input-mb-0">
-                                                            <div class="select-subject no-icon">
-                                                                <div class="input__title">İlçe</div>
-                                                                <select class="js-adres-ilce-select">
-                                                                    <option value="" hidden disabled>İlçe</option>
-                                                                    <option value="2" selected>Kadıköy</option>
-                                                                    <option value="3">Üsküdar</option>
-                                                                    <option value="4">Ataşehir</option>
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="input__outer input--textarea no-icon">
-                                                        <div class="input__title">Açık Adresiniz</div>
-                                                        <textarea name="cacikadres"
-                                                                  class="input input--fw input--bordered input--noshadow h-150"
-                                                                  placeholder="Adresinizin tamamını buraya yazınız"></textarea>
-                                                    </div>
-                                                </div>
                                                 <div class="account-detail__setting-btn">
                                                     <button href="#0" class="button">
                                                         Değişiklikleri Kaydet

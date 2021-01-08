@@ -2462,6 +2462,8 @@ namespace NitelikliBilisim.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CityId");
+
                     b.ToTable("States");
                 });
 
@@ -3020,6 +3022,17 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Navigation("StudentEducationInfo");
                 });
 
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.user_details.State", b =>
+                {
+                    b.HasOne("NitelikliBilisim.Core.Entities.user_details.City", "City")
+                        .WithMany("States")
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("City");
+                });
+
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.ApplicationRole", b =>
                 {
                     b.Navigation("UserRoles");
@@ -3090,6 +3103,11 @@ namespace NitelikliBilisim.Data.Migrations
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.blog.BlogCategory", b =>
                 {
                     b.Navigation("BlogPosts");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.user_details.City", b =>
+                {
+                    b.Navigation("States");
                 });
 #pragma warning restore 612, 618
         }

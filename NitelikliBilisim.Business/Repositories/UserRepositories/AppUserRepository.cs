@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using MUsefulMethods;
 using Newtonsoft.Json;
 using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Entities.helper;
 using NitelikliBilisim.Core.Entities.user_details;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Enums.promotion;
@@ -193,18 +194,33 @@ namespace NitelikliBilisim.Business.Repositories
             model.Details = details;
             return model;
         }
-
-        public int UpdateUserInfo(UpdateUserInfoVm model)
+        public bool UpdateNbuyEducationInfo(UpdateNBUYEducationInfoVm model)
+        {
+            var info = _context.StudentEducationInfos.FirstOrDefault(x => x.CustomerId == model.UserId);
+            if (info.StartedAt != model.StartAt || info.CategoryId != model.EducationCategoryId)
+            {
+                var oldDates = _context.EducationDays.Where(x => x.StudentEducationInfoId == info.Id);
+                _context.EducationDays.RemoveRange(oldDates);
+                CreateEducationDays(info.Id, model.EducationCategoryId, model.StartAt);
+            }
+            info.CategoryId = model.EducationCategoryId;
+            info.EducationCenter = model.EducationCenter;
+            info.StartedAt = model.StartAt;
+            
+            return _context.SaveChanges() > 0 ? true : false;
+        }
+        public bool UpdateStudentInfo(UpdateStudentInfoVm model)
         {
             var user = _context.Customers.Include(x => x.User).First(x => x.Id == model.UserId);
             user.DateOfBirth = model.BirthDate;
             user.LastGraduatedSchoolId = model.LastGraduatedSchoolId;
             user.Gender = model.Gender;
             user.Job = model.Job;
-           return _context.SaveChanges();
+            return _context.SaveChanges() > 0 ? true : false;
         }
 
-        public int UpdateUserContactInfo(UpdateUserContactInfoVm model)
+
+        public bool UpdateUserContactInfo(UpdateUserContactInfoVm model)
         {
 
             var user = _context.Customers.Include(x => x.User).First(x => x.Id == model.UserId);
@@ -212,7 +228,7 @@ namespace NitelikliBilisim.Business.Repositories
             user.LinkedInProfileUrl = model.LinkedIn;
             user.WebSiteUrl = model.Website;
             user.CityId = model.CityId;
-            return _context.SaveChanges();
+            return _context.SaveChanges() > 0 ? true : false;
         }
 
         public List<CustomerInvoiceListVm> GetCustomerInvoices(string userId)
@@ -252,17 +268,39 @@ namespace NitelikliBilisim.Business.Repositories
                             LinkedIn = student.LinkedInProfileUrl,
                             WebSite = student.WebSiteUrl,
                             CityId = student.CityId,
-                            Gender = student.Gender
+                            Gender = student.Gender,
+                            IsNbuyStudent = student.IsNbuyStudent
                         }).First();
 
+            if (data.IsNbuyStudent)
+            {
+                var nbuyInfo = _context.StudentEducationInfos.FirstOrDefault(x => x.CustomerId == userId);
+                if (nbuyInfo!=null)
+                {
+                    data.NbuyInformation = new NbuyInformationVm
+                    {
+                        Id = nbuyInfo.Id,
+                        CategoryId = nbuyInfo.CategoryId,
+                        StartAt = nbuyInfo.StartedAt,
+                        EducationCenter = nbuyInfo.EducationCenter
+                    };
+                }
+            }
+
+
+
             model.GeneralInformation = data;
-            model.Addresses = _context.Addresses.Include(x => x.City).Include(x => x.State).Where(x => x.CustomerId == userId).ToList();
+            model.Addresses = _context.Addresses.Include(x => x.City).ThenInclude(x=>x.States).Include(x => x.State).Where(x => x.CustomerId == userId).ToList();
             model.Universities = _context.Universities.ToList();
             model.Cities = _context.Cities.OrderBy(x => x.Order).ToList();
             model.Genders = EnumHelpers.ToKeyValuePair<Genders>();
             model.Jobs = EnumHelpers.ToKeyValuePair<Jobs>();
+            model.EducationCenters = EnumHelpers.ToKeyValuePair<EducationCenter>();
+            model.EducationCategories = _context.EducationCategories.Where(x => x.BaseCategoryId == null).ToDictionary(x=>x.Id,x=>x.Name);
             return model;
         }
+
+        
 
         public ForYouPageGetVm GetForYouPageData(string userId)
         {
@@ -327,6 +365,7 @@ namespace NitelikliBilisim.Business.Repositories
 
         public MyCourseDetailVm GetPurschasedEducationDetail(string userId, Guid groupId)
         {
+            CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("tr-TR");
             var model = (from eGroup in _context.EducationGroups
                          join education in _context.Educations on eGroup.EducationId equals education.Id
                          join category in _context.EducationCategories on education.CategoryId equals category.Id
@@ -348,7 +387,7 @@ namespace NitelikliBilisim.Business.Repositories
                              EducatorName = $"{educatorUser.Name} {educatorUser.Surname}",
                              EducatorTitle = educator.Title,
                              EducatorAvatarPath = educatorUser.AvatarPath,
-                             PriceText = eGroup.NewPrice,
+                             PriceText = eGroup.NewPrice.GetValueOrDefault().ToString(cultureInfo),
                              Days = education.Days.ToString(),
                              Hours = (education.Days * education.HoursPerDay).ToString(),
                              Host = host.HostName
@@ -557,6 +596,75 @@ namespace NitelikliBilisim.Business.Repositories
 
             return retVal;
         }
+
+
+        #region Helper Functions
+        /// <summary>
+        /// Girilen parametrelere göre NBUY eğitimi alan öğrencinin eğitim günlerini db ye ekler.
+        /// </summary>
+        /// <param name="studentEducationInfoId">Öğrencinin aldığı NBUY eğitiminin tutulduğu tablo.</param>
+        /// <param name="categoryId">NBUY eğitimi alan öğrencinin aldığı eğitim kategorisi.</param>
+        /// <param name="startDate">NBUY eğitim başlangıç tarihi.</param>
+        private void CreateEducationDays(Guid studentEducationInfoId, Guid categoryId, DateTime startDate)
+        {
+            //Tatil Günleri
+            var offDays = _context.OffDays.Where(x => x.Year == DateTime.Now.Year || x.Year == DateTime.Now.Year - 1 || x.Year == DateTime.Now.Year + 1).ToList();
+            //Kullanıcının aldığı Nbuy Eğitimi ve eğitimin süresi
+            var nbuyCategory = _context.EducationCategories.First(x=>x.Id == categoryId);
+            var educationDayCount = nbuyCategory.EducationDayCount.HasValue ? nbuyCategory.EducationDayCount.Value : 0;
+            //Kullanıcının eğitime başlangıç tarihi 
+            var activeDate = startDate;
+            for (int i = 0; i < educationDayCount; i++)
+            {
+                activeDate = activeDate.AddDays(1);
+                if (checkWeekdays(activeDate) && checkNotHoliday(activeDate, offDays))
+                {
+                    _context.EducationDays.Add(new EducationDay
+                    {
+                        Date = activeDate,
+                        Day = i + 1,
+                        StudentEducationInfoId = studentEducationInfoId
+                    });
+                }
+                else
+                {
+                    i--;
+                }
+            }
+            _context.SaveChanges();
+        }
+
+        /// <summary>
+        /// Parametre olarak gönderilen tarihin hafta içi olması durumunu kontrol eder.
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns>Hafta içi ise true döner.</returns>
+        private bool checkWeekdays(DateTime date)
+        {
+            if (!(date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday))
+                return true;
+            else
+                return false;
+        }
+        /// <summary>
+        /// Parametre olarak gönderilen aktif günün tatil olup olmaması durumunu kontrol eder.
+        /// </summary>
+        /// <param name="date">Geçerli gün</param>
+        /// <param name="offDays">Tatil günleri listesi</param>
+        /// <returns>Tatil değil ise true döner.</returns>
+        private bool checkNotHoliday(DateTime date, List<OffDay> offDays)
+        {
+            foreach (var offDay in offDays)
+            {
+                if (offDay.Date.Date == date.Date)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        #endregion
+
         #region Test
         public List<MyInvoicesVm> GetUserInvoices(string userId)
         {

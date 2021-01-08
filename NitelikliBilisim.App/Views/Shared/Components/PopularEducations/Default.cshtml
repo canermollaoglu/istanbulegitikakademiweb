@@ -22,16 +22,16 @@
 
             <div class="card__content">
                 <h6 class="card__subtitle">@education.Base.CategoryName</h6>
-                <h5 class="card__title">@education.Base.Name</h5>
+                <h5 class="card__title" style="min-height:55px;">@education.Base.Name</h5>
                 @if (education.Base.Description.Length > 90)
                 {
-                    <p>
+                    <p style="min-height:68px;">
                         @education.Base.Description.Substring(0, 90)
                     </p>
                 }
                 else
                 {
-                    <p>@education.Base.Description</p>
+                    <p style="min-height:68px;">@education.Base.Description</p>
                 }
             </div>
 
@@ -46,7 +46,7 @@
                 </span>
 
                 <span class="card__money">
-                        <span>₺</span> @education.Base.Price
+                         @education.Base.Price <span>TL</span>
                 </span>
             </div>
         </a>

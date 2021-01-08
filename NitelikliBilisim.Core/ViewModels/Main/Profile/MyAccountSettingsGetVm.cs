@@ -1,4 +1,5 @@
-﻿using NitelikliBilisim.Core.Entities.user_details;
+﻿using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Entities.user_details;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +16,7 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public List<City> Cities { get; set; }
         public Dictionary<int, string> Genders { get; set; }
         public Dictionary<int, string> Jobs { get; set; }
+        public Dictionary<int, string> EducationCenters { get; set; }
+        public Dictionary<Guid, string> EducationCategories { get; set; }
     }
 }

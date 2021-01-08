@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Nest;
 using NitelikliBilisim.Core.Entities.blog;
+using NitelikliBilisim.Core.ESOptions.ESEntities;
 using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels.Main.Blog;
 using NitelikliBilisim.Data;
@@ -12,9 +14,11 @@ namespace NitelikliBilisim.Business.Repositories.BlogRepositories
     public class BlogPostRepository : BaseRepository<BlogPost, Guid>
     {
         NbDataContext _context;
-        public BlogPostRepository(NbDataContext context) : base(context)
+        private readonly IElasticClient _elasticClient;
+        public BlogPostRepository(NbDataContext context,IElasticClient elasticClient) : base(context)
         {
             _context = context;
+            _elasticClient = elasticClient;
         }
 
         public BlogPost GetByIdWithCategory(Guid postId)
@@ -40,6 +44,11 @@ namespace NitelikliBilisim.Business.Repositories.BlogRepositories
                             FeaturedImageUrl = blog.FeaturedImageUrl,
                             ReadingTime = blog.ReadingTime.ToString()
                         }).OrderByDescending(x=>x.Date).Take(5).ToList();
+            foreach (var post in data)
+            {
+                post.ViewCount = GetBlogPostViewCount(post.SeoUrl, post.CategorySeoUrl);
+            }
+
             return data;
         }
 
@@ -73,6 +82,10 @@ namespace NitelikliBilisim.Business.Repositories.BlogRepositories
                 SeoUrl = x.SeoUrl,
                 CategorySeoUrl = x.Category.SeoUrl
             }).ToList();
+            foreach (var post in list)
+            {
+                post.ViewCount = GetBlogPostViewCount(post.SeoUrl, post.CategorySeoUrl);
+            }
 
             retVal.Posts = list;
             retVal.TotalCount = totalCount;
@@ -104,6 +117,10 @@ namespace NitelikliBilisim.Business.Repositories.BlogRepositories
                             SeoUrl = blog.SeoUrl,
                             CategorySeoUrl = blogCategory.SeoUrl
                         }).OrderByDescending(x=>x.Date).Take(t).ToList();
+            foreach (var post in data)
+            {
+                post.ViewCount = GetBlogPostViewCount(post.SeoUrl, post.CategorySeoUrl);
+            }
             return data;
         }
 
@@ -257,5 +274,21 @@ namespace NitelikliBilisim.Business.Repositories.BlogRepositories
                 throw new Exception(ex.Message);
             }
         }
+
+        public int GetBlogPostViewCount(string seoUrl, string catSeoUrl)
+        {
+            int count = 0;
+            var counts = _elasticClient.Count<BlogViewLog>(s =>
+            s.Query(
+                q =>
+                q.Term(t => t.CatSeoUrl, catSeoUrl) &&
+                q.Term(t => t.SeoUrl, seoUrl)));
+            if (counts.IsValid)
+            {
+                count = (int)counts.Count;
+            }
+            return count;
+        }
+
     }
 }

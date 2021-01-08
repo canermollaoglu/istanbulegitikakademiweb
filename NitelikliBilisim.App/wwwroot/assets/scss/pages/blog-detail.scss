@@ -1,0 +1,118 @@
+@import '../utilities/variables';
+
+.blog-detail {
+  position: relative;
+  top: 2px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -150px;
+    left: 0;
+    width: 100%;
+    height: 150px;
+    background: #f2f7fd;
+  }
+
+  .custom-banner {
+    margin-bottom: 50px;
+
+    @include bp(tablet-small) {
+      margin-bottom: 25px;
+    }
+  }
+
+  &__w80 {
+    max-width: 75%;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-bottom: 75px;
+
+    @include bp(tablet-big) {
+      max-width: 100%;
+      padding-bottom: 50px;
+    }
+  }
+
+  &__main-img {
+    width: 100%;
+    height: 500px;
+    margin-top: 30px;
+    z-index: 2;
+    border-radius: 4px;
+    overflow: hidden;
+
+    @include bp(tablet-small) {
+      height: 240px;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__blockquote {
+    color: rgba($colorNavyBlue, .8);
+    font-weight: 600;
+    position: relative;
+    top: -20px;
+    border-bottom: 1px solid $c-softBorder;
+    margin-bottom: 30px;
+    padding-bottom: 50px;
+    font-size: 16px;
+
+    @include bp(tablet-small) {
+      margin-bottom: 5px;
+      padding-bottom: 25px;
+    }
+  }
+
+  &__title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+
+    @include bp(tablet-small) {
+      margin-bottom: 10px;
+    }
+  }
+
+  &__txt {
+    color: rgba($colorNavyBlue, .8);
+    font-weight: 400;
+    margin-bottom: 50px;
+
+    @include bp(tablet-small) {
+      margin-bottom: 25px;
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &__img {
+    width: 100%;
+    height: 350px;
+    margin-top: 30px;
+    z-index: 2;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 50px;
+
+    @include bp(tablet-small) {
+      margin-bottom: 25px;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+}

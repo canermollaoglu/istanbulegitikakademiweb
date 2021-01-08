@@ -21,5 +21,7 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public string AvatarPath { get; set; }
         public int? CityId { get; set; }
         public Genders Gender { get; set; }
+        public NbuyInformationVm NbuyInformation { get; set; }
+        public bool IsNbuyStudent { get; set; }
     }
 }

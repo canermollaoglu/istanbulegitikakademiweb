@@ -1,0 +1,36 @@
+@import '../utilities/variables';
+
+.side-search {
+  background: #fff;
+  box-shadow: $boxShadow;
+  transition: .3s;
+  padding: 0 25px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  border-radius: 4px;
+  margin-bottom: 30px;
+
+  &.active {
+    box-shadow: $boxShadowHover;
+  }
+
+  &>span {
+    color: $colorBlue;
+    font-size: 15px;
+    margin-right: 20px;
+  }
+
+  &>input {
+    width: 100%;
+    outline: none;
+    height: 70px;
+    border: none;
+    color: #110c2c;
+    font-weight: 600;
+
+    &::placeholder {
+      color: rgba($c-simpleText-2, .8);
+    }
+  }
+}

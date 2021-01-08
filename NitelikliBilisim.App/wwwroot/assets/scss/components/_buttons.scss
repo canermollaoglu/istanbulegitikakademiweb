@@ -1,0 +1,259 @@
+.button {
+  align-items: center;
+  justify-content: center;
+  background-color: $colorBlue;
+  border: 0;
+  border-radius: 4px;
+  color: #fff;
+  display: inline-flex;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  line-height: 1;
+  outline: none;
+  padding: 18px 24px;
+  transition: .3s;
+
+  &-icon {
+    transition: .3s;
+  }
+
+  &-txt {
+    transition: .3s;
+  }
+
+  &-fw {
+    width: 100%;
+  }
+
+  &-big {
+    padding: 22px 24px;
+  }
+
+  &-icon-right {
+    text-align: center;
+    justify-content: center;
+
+    .button-txt {
+      margin-left: auto;
+    }
+
+    .button-icon {
+      margin-left: auto;
+    }
+  }
+
+  &-icon-left {
+    text-align: center;
+    justify-content: center;
+
+    .button-txt {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .button-icon {
+      margin-right: auto;
+      transform: rotate(180deg);
+    }
+  }
+
+  &:hover {
+    background-color: #2981da;
+    // TODO: Hover'da renk kodu tam olarak ne olacak?
+    color: #fff;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &--ghost {
+    background-color: transparent;
+    color: #e9f1fb;
+    opacity: 0.7;
+
+    &:hover {
+      background-color: transparent;
+      opacity: 1;
+    }
+  }
+
+  &-white {
+    background: #fff;
+
+    .button-txt,
+    .button-icon {
+      color: $c-simpleText;
+    }
+
+    &:hover {
+      background: $colorBlue;
+
+      .button-txt,
+      .button-icon {
+        color: #fff;
+      }
+    }
+
+    &.button--simple {
+      background: transparent;
+
+      .button-txt {
+        color: #fff;
+      }
+
+      .button-icon {
+        color: #fff;
+      }
+    }
+  }
+
+  &-yellow {
+    background: #ffba00;
+
+    .button-txt,
+    .button-icon {
+      color: #fff;
+    }
+
+    &:hover {
+      background: #efae00;
+    }
+
+  }
+
+
+  &--simple {
+    background-color: transparent;
+    color: #4d579f;
+    transition: .3s;
+
+    &.button-left {
+      .button-icon {
+        margin-left: 0;
+        margin-right: 15px;
+        transform: rotate(-180deg);
+      }
+
+      &:hover {
+        .button-icon {
+          transform: rotate(-180deg) translateX(10px);
+        }
+      }
+    }
+
+    .button-txt {
+      transition: .3s;
+    }
+
+    .button-icon {
+      margin-left: 10px;
+      position: relative;
+      top: -1px;
+      transition: .3s;
+    }
+
+    &:hover {
+      background: transparent;
+      color: $colorBlue;
+
+      .button-icon {
+        transform: translateX(10px);
+      }
+    }
+  }
+
+  &--light {
+    background-color: #fff;
+    color: $colorBlue;
+
+    &:hover {
+      background-color: #eee;
+      color: $colorBlue;
+    }
+  }
+
+  &--dark {
+    background: #012b69;
+    color: #fff;
+    font-weight: 700;
+  }
+
+  &--navy-blue {
+    background: $colorNavyBlue;
+    color: #fff;
+  }
+
+  &--load-more {
+    background: #fff;
+    box-shadow: $boxShadow;
+    justify-content: space-between;
+    min-width: 265px;
+    font-weight: 600;
+
+    @include bp(tablet-small) {
+      min-width: 100%;
+      max-width: 100%;
+    }
+
+    .button {
+      &-txt {
+        color: #73737d;
+      }
+
+      &-icon {
+        color: #012b69;
+        transform: rotate(90deg);
+        font-size: 12px;
+        transition: .3s;
+      }
+    }
+
+    &:hover {
+      .button {
+        &-txt {
+          color: #fff;
+        }
+
+        &-icon {
+          color: #fff;
+        }
+      }
+    }
+  }
+
+  &-icon:first-child:not(:last-child) {
+    margin-right: 12px;
+    position: relative;
+    top: -1px;
+  }
+}
+
+.clear-message {
+  display: flex;
+  align-items: center;
+  color: #5a5f81;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: .3s;
+
+  &:hover {
+    color: $colorBlue;
+
+    span {
+      color: $colorBlue;
+    }
+  }
+
+  span {
+    color: #aeb0be;
+    margin-right: 10px;
+    position: relative;
+    top: -2px;
+    transition: .3s;
+  }
+}

@@ -87,7 +87,7 @@ namespace NitelikliBilisim.App.Controllers
                     data = new
                     {
                         items = new List<CartItemVm>(),
-                        total = 0m.ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
+                        total = 0m.ToString(CultureInfo.CreateSpecificCulture("tr-TR")),
                         totalNumeric = 0,
                         oldTotalNumeric =0
                     }

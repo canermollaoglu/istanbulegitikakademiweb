@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MUsefulMethods;
@@ -8,6 +9,7 @@ using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Models.Account;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Entities.helper;
 using NitelikliBilisim.Core.Entities.user_details;
@@ -17,9 +19,11 @@ using NitelikliBilisim.Notificator.Services;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -30,7 +34,7 @@ namespace NitelikliBilisim.App.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UnitOfWork _unitOfWork;
-        private readonly IEmailSender _emailSender; 
+        private readonly IEmailSender _emailSender;
 
 
         public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, UnitOfWork unitOfWork,IEmailSender emailSender)
@@ -40,7 +44,7 @@ namespace NitelikliBilisim.App.Controllers
             _unitOfWork = unitOfWork;
             _emailSender = emailSender;
         }
-
+        
         [Route("kayit-ol")]
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
         public IActionResult Register()
@@ -103,7 +107,16 @@ namespace NitelikliBilisim.App.Controllers
                 }
                 if (result.Succeeded)
                 {
-                    //TODO mail gönder
+                    var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    var htmlToken = HttpUtility.UrlEncode(token);
+                    var confirmationLink =$"{ Request.Scheme}://{Request.Host}{Request.PathBase}/email-aktivasyonu?token={htmlToken}&email={user.Email}";
+                    var message = $"Email adresinizi onaylamak için <a href=\"{confirmationLink}\">tıklayınız.</a>";
+                    await _emailSender.SendAsync(new EmailMessage
+                    {
+                        Contacts = new string[] { user.Email },
+                        Subject = "Nitelikli Bilişim Email Aktivasyonu",
+                        Body = message
+                    });
                 }
             }
             else
@@ -120,6 +133,29 @@ namespace NitelikliBilisim.App.Controllers
                 isSuccess = true
             });
         }
+
+
+        [HttpGet]
+        [Route("email-aktivasyonu")]
+        public async Task<IActionResult> ConfirmEmail(string token, string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+                ViewData["Message"] = "Eski veya geçersiz bir başvuruda bulundunuz!";
+            var result = await _userManager.ConfirmEmailAsync(user, token);
+            if (result.Succeeded)
+            {
+                ViewData["Message"] = "Email adresiniz onaylanmıştır. Giriş yapabilirsiniz.";
+            }
+            else
+            {
+                ViewData["Message"] = "Eski veya geçersiz bir başvuruda bulundunuz!";
+            }
+            return View();
+        }
+        
+
+
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("giris-yap")]
         public async Task<IActionResult> Login(string returnUrl = null)
