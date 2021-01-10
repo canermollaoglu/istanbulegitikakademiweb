@@ -2016,14 +2016,8 @@ $('body').on('click', '.sort-mobile__item', function () {
     $('.sort-mobile').removeClass('active');
     $('.main-overlay').removeClass('active');
 });
-$('body').on('click', '.js-location-mobile .sort-mobile__item', function () {
-    var sortMobileText = $(this).text();
-    $('.js-open-location-mobile .js-select-mobile-change').text(sortMobileText);
-});
-$('body').on('click', '.js-sort-mobile .sort-mobile__item', function () {
-    var sortMobileText = $(this).text();
-    $('.js-open-sort-mobile .js-select-mobile-change').text(sortMobileText);
-});
+
+
 $('body').on('click', '.js-filter-mobile .sort-mobile__item', function () {
     var sortMobileText = $(this).text();
     $('.js-open-filter-mobile .js-select-mobile-change').text(sortMobileText);
