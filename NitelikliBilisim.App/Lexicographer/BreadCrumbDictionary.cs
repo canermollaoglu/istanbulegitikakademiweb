@@ -187,9 +187,13 @@ namespace NitelikliBilisim.App.Lexicographer
             /*Featured Comment*/
             _dictionary.Add("AdminFeaturedCommentAdd",
               new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Öne Çıkarılan Yorum Ekle", url: null) });
+            _dictionary.Add("AdminFeaturedCommentUpdate",
+              new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Öne Çıkarılan Yorum Güncelle", url: null) });
             _dictionary.Add("AdminFeaturedCommentList",
               new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Öne Çıkarılan Yorumlar", url: null) });
 
+
+            
             /*Invoices*/
             _dictionary.Add("AdminInvoices",
               new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Fatura Yönetimi", url: null) });

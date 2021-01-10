@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 
 namespace NitelikliBilisim.Core.ViewModels.areas.admin.featured_comment
 {
-    public class FeaturedCommentAddPostVm
+    public class FeaturedCommentUpdatePostVm
     {
+        [Required]
+        public Guid Id { get; set; }
         [Required(ErrorMessage = "Ad alanı boş olamaz")]
         public string Name { get; set; }
         [Required(ErrorMessage = "Soyad alanı boş olamaz")]
@@ -19,15 +21,11 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.featured_comment
         public string Comment { get; set; }
 
         public string VideoUrl { get; set; }
-        public _PostedFile PreviewImageFile { get; set; }
-
+        public _PostedFileNotRequired PreviewImageFile { get; set; }
     }
-
-    public class _PostedFile
+    public class _PostedFileNotRequired
     {
-        [Required(ErrorMessage = "Dosya içeriği boş olamaz")]
         public string Base64Content { get; set; }
-        [Required(ErrorMessage = "Dosya uzantısı boş olamaz")]
         public string Extension { get; set; }
     }
 }
