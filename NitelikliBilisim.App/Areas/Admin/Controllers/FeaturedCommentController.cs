@@ -36,6 +36,15 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             return View();
         }
 
+        [Route("admin/one-cikarilan-yorum/guncelle")]
+        public IActionResult Update(Guid id)
+        {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminFeaturedCommentUpdate");
+            var featuredComment = _unitOfWork.FeaturedComment.GetById(id);
+            featuredComment.PreviewImageFileUrl = _storage.BlobUrl + featuredComment.PreviewImageFileUrl;
+            return View(featuredComment);
+        }
+
         [Route("admin/one-cikarilan-yorum/ekle")]
         [HttpPost]
         public async Task<IActionResult> Add(FeaturedCommentAddPostVm data)
@@ -49,9 +58,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     errors = errors
                 });
             }
-            var previewStream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.PreviewFile.Base64Content));
-            var previewFileName = $"{StringHelpers.FormatForTag(data.Name)}-preview";
-            var previewPath = await _storage.UploadFile(previewStream, $"{previewFileName}.{data.PreviewFile.Extension.ToLower()}", "featured-comment-medias");
 
             var previewImageStream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.PreviewImageFile.Base64Content));
             var previewImageFileName = $"{StringHelpers.FormatForTag(data.Name)}-preview";
@@ -61,13 +67,53 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             {
                 Name = data.Name,
                 Surname = data.Surname,
-                Title= data.Title,
+                Title = data.Title,
                 Content = data.Comment,
-                FileUrl = previewPath,
+                FileUrl = data.VideoUrl,
                 PreviewImageFileUrl = previewImagePath
             };
 
             _unitOfWork.FeaturedComment.Insert(featuredComment);
+
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                message = "Yorum başarıyla eklenmiştir"
+            });
+
+        }
+
+
+        [Route("admin/one-cikarilan-yorum/guncelle")]
+        [HttpPost]
+        public async Task<IActionResult> Update(FeaturedCommentUpdatePostVm data)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelStateUtil.GetErrors(ModelState);
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = errors
+                });
+            }
+
+            var featuredComment = _unitOfWork.FeaturedComment.GetById(data.Id);
+
+            featuredComment.Name = data.Name;
+            featuredComment.Surname = data.Surname;
+            featuredComment.Title = data.Title;
+            featuredComment.Content = data.Comment;
+            featuredComment.FileUrl = data.VideoUrl;
+            if (data.PreviewImageFile.Base64Content != null)
+            {
+                var previewImageStream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.PreviewImageFile.Base64Content));
+                var previewImageFileName = $"{StringHelpers.FormatForTag(data.Name)}-preview";
+                var previewImagePath = await _storage.UploadFile(previewImageStream, $"{previewImageFileName}.{data.PreviewImageFile.Extension.ToLower()}", "featured-comment-medias");
+                featuredComment.PreviewImageFileUrl = previewImagePath;
+            }
+
+            _unitOfWork.FeaturedComment.Update(featuredComment);
 
             return Json(new ResponseModel
             {

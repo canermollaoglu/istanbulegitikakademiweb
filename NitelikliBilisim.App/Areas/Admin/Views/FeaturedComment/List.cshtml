@@ -130,8 +130,8 @@
                         allowSearch: false,
                         cellTemplate: function (container, options) {
                             var current = options.data;
-                            //$(`<a title="Güncelle" class="btn btn-outline-warning btn-sm" href="/admin/egitim-kurumlari/guncelle?educationHostId=${current.id}"><i class="fa fa-edit"></i></a>`)
-                            //    .appendTo(container);
+                            $(`<a title="Güncelle" class="btn btn-outline-warning btn-sm" href="/admin/one-cikarilan-yorum/guncelle?id=${current.id}"><i class="fa fa-edit"></i></a>`)
+                                .appendTo(container);
                             $(`<button title="Sil" class="btn btn-outline-danger btn-sm" onClick="btnConfirmationModalTrigger_onClick(this)" data-url="/admin/one-cikarilan-yorumlar/sil?featuredCommentId=${current.id}" style="cursor:pointer;"><i class="fa fa-trash"></i></button>`)
                                 .appendTo(container);
                         },

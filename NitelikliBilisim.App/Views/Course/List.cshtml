@@ -142,24 +142,6 @@
 
                 </div>
                 <div class="pagination">
-                    <a class="pagination__item prev">
-                        <span class="icon-outer">
-                            <svg class="icon">
-                                <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
-                            </svg>
-                        </span>
-                    </a>
-                    <a class="pagination__item">1</a>
-                    <a class="pagination__item">2</a>
-                    <a class="pagination__item active">3</a>
-                    <a class="pagination__item">4</a>
-                    <a class="pagination__item next">
-                        <span class="icon-outer">
-                            <svg class="icon">
-                                <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
-                            </svg>
-                        </span>
-                    </a>
                 </div>
             </div>
             <div class="lesson-list__side">
@@ -230,11 +212,10 @@
         </div>
     </div>
     <div class="sort-mobile__list">
-        <div class="sort-mobile__item">Fiyata Göre Artan</div>
-        <div class="sort-mobile__item">Fiyata Göre Azalan</div>
-        <div class="sort-mobile__item">Puana Göre En Yüksek</div>
-        <div class="sort-mobile__item">Seviyeye Göre Başlangıç</div>
-        <div class="sort-mobile__item">Seviyeye Göre İleri Düzey</div>
+        @foreach (var type in Model.OrderTypes)
+        {
+            <div class="sort-mobile__item" data-id="@type.Key">@type.Value</div>
+        }
     </div>
 </div>
 <div class="sort-mobile js-filter-mobile">
@@ -269,12 +250,11 @@
         </div>
     </div>
     <div class="sort-mobile__list">
-        <div class="sort-mobile__item">İstanbul</div>
-        <div class="sort-mobile__item">Ankara</div>
-        <div class="sort-mobile__item">İzmir</div>
-        <div class="sort-mobile__item">Bursa</div>
-        <div class="sort-mobile__item">Antalya</div>
-        <div class="sort-mobile__item">Adana</div>
+        @*<div class="sort-mobile__item">İstanbul</div>*@
+        @foreach (var hostCity in Model.EducationHostCities)
+        {
+            <div class="sort-mobile__item"  data-id="@hostCity.Key">@hostCity.Value</div>
+        }
     </div>
 </div>
 
@@ -379,6 +359,21 @@
                 }
             });
         }
+
+        $('body').on('click', '.js-location-mobile .sort-mobile__item', function () {
+            var locationId = $(this).data("id");
+            var sortMobileText = $(this).text();
+            $('.js-open-location-mobile .js-select-mobile-change').text(sortMobileText);
+            currentHostCity.val(locationId);
+            getSearchResults();
+        });
+        $('body').on('click', '.js-sort-mobile .sort-mobile__item', function () {
+            var orderTypeId = $(this).data("id");
+            var sortMobileText = $(this).text();
+            $('.js-open-sort-mobile .js-select-mobile-change').text(sortMobileText);
+            currentOrder.val(orderTypeId);
+            getSearchResults();
+        });
 
         function changePage(page) {
             currentPage.val(page);
