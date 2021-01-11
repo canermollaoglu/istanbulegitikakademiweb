@@ -16,5 +16,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.EducationComment
         public string AvatarPath { get; set; }
         public string Job { get; set; }
         public string Date { get; set; }
+        public Guid CategoryId { get; set; }
     }
 }
