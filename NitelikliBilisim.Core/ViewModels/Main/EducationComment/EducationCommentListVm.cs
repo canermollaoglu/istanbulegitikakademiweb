@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NitelikliBilisim.Core.Enums.user_details;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,5 +18,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.EducationComment
         public string Job { get; set; }
         public string Date { get; set; }
         public Guid CategoryId { get; set; }
+        public Jobs JobCode { get; set; }
     }
 }

@@ -50,8 +50,9 @@ namespace NitelikliBilisim.Business.Repositories
                                Point = comment.Points,
                                UserName = $"{user.Name} {user.Surname}",
                                AvatarPath = user.AvatarPath,
-                               Job = EnumHelpers.GetDescription(student.Job)
+                               JobCode = student.Job
                            }).AsQueryable();
+
 
             if (categoryId !=null)
             {
@@ -75,6 +76,7 @@ namespace NitelikliBilisim.Business.Repositories
                     break;
             }
             retVal.TotalCount = rawdata.Count();
+            retVal.TotalPageCount = (int)Math.Ceiling(rawdata.Count() / (double)6);
             retVal.PageIndex = pageIndex;
             rawdata = rawdata.Skip((pageIndex - 1) * 6).Take(6);
             retVal.Comments = rawdata.ToList();

@@ -40,7 +40,7 @@ namespace NitelikliBilisim.App.Controllers
         private readonly IEmailSender _emailSender;
         private readonly IConfiguration _configuration;
         private ISession _session => _httpContextAccessor.HttpContext.Session;
-        public HomeController(IConfiguration configuration,IEmailSender emailSender,IWebHostEnvironment hostingEnvironment, UnitOfWork unitOfWork, RoleManager<ApplicationRole> roleManager, IElasticClient elasticClient, IHttpContextAccessor httpContextAccessor, IStorageService storageService)
+        public HomeController(IConfiguration configuration, IEmailSender emailSender, IWebHostEnvironment hostingEnvironment, UnitOfWork unitOfWork, RoleManager<ApplicationRole> roleManager, IElasticClient elasticClient, IHttpContextAccessor httpContextAccessor, IStorageService storageService)
         {
             _configuration = configuration;
             _hostingEnvironment = hostingEnvironment;
@@ -113,7 +113,7 @@ namespace NitelikliBilisim.App.Controllers
         [Route("iletisim")]
         public IActionResult Contact()
         {
-            ViewData["ContactFormSubjects"] = EnumHelpers.ToKeyValuePair<ContactFormSubjects>(); 
+            ViewData["ContactFormSubjects"] = EnumHelpers.ToKeyValuePair<ContactFormSubjects>();
             return View();
         }
 
@@ -133,16 +133,16 @@ namespace NitelikliBilisim.App.Controllers
                 _unitOfWork.ContactForm.Insert(new ContactForm
                 {
                     Name = model.Name,
-                    Phone = model.PhoneCode+model.Phone,
+                    Phone = model.Phone,
                     Subject = EnumHelpers.GetDescription(model.ContactFormSubject),
                     Email = model.Email,
                     Content = model.Content,
                     ContactFormType = ContactFormTypes.ContactForm
                 });
 
-                string htmlBody = "<b>Konu :</b>" + EnumHelpers.GetDescription(model.ContactFormSubject)+"<br/>";
+                string htmlBody = "<b>Konu :</b>" + EnumHelpers.GetDescription(model.ContactFormSubject) + "<br/>";
                 htmlBody += "<b>Ad Soyad :</b>" + model.Name + "<br/>";
-                htmlBody += "<b>Telefon :</b>" +model.PhoneCode+ model.Phone + "<br/>";
+                htmlBody += "<b>Telefon :</b>" +  model.Phone + "<br/>";
                 htmlBody += "<b>E-Posta :</b>" + model.Email + "<br/>";
                 htmlBody += "<b>Mesaj :</b>" + model.Content + "<br/>";
                 string[] adminEmails = _configuration.GetSection("SiteGeneralOptions").GetSection("AdminEmails").Value.Split(";");
@@ -153,7 +153,7 @@ namespace NitelikliBilisim.App.Controllers
                     Subject = "Nitelikli Bilişim İletişim Formu",
                     Contacts = adminEmails
                 });
-               
+
                 return Json(new ResponseData
                 {
                     Success = true
@@ -237,7 +237,7 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [Route("kullanici-yorumlari")]
-        public IActionResult UserComments(Guid? c, int? s, int p=1)
+        public IActionResult UserComments(Guid? c, int? s, int p = 1)
         {
             UserCommentsPageGetVm retVal = new();
             ViewData["SortingType"] = s.HasValue ? s : ViewData["SortingType"];
@@ -253,6 +253,21 @@ namespace NitelikliBilisim.App.Controllers
             return View(retVal);
         }
 
+        [Route("get-comments")]
+        public IActionResult GetFilteredComments(Guid? categoryId, int? sType, int page = 1)
+        {
+            var comments = _unitOfWork.EducationComment.GetEducationComments(categoryId, sType, page);
+
+            foreach (var comment in comments.Comments)
+            {
+                comment.AvatarPath = _storageService.BlobUrl + comment.AvatarPath;
+                comment.Job = EnumHelpers.GetDescription(comment.JobCode);
+            }
+            return Json(new ResponseModel
+            {
+                data = comments
+            });
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -402,23 +417,24 @@ namespace NitelikliBilisim.App.Controllers
             }
             try
             {
-               var result= _unitOfWork.SubscriptionBlog.CheckSubscriber(email);
+                var result = _unitOfWork.SubscriptionBlog.CheckSubscriber(email);
                 if (result)
                     return Json(new ResponseData
                     {
                         Success = false,
-                        Message ="Zaten blog aboneliğiniz bulunmaktadır."
+                        Message = "Zaten blog aboneliğiniz bulunmaktadır."
                     });
 
 
-                _unitOfWork.SubscriptionBlog.Insert(new BlogSubscriber { 
-                Email = email,
-                Name = name
+                _unitOfWork.SubscriptionBlog.Insert(new BlogSubscriber
+                {
+                    Email = email,
+                    Name = name
                 });
                 return Json(new ResponseData
                 {
                     Success = true,
-                    Message= "E-bülten'e kaydınız başarıyla sağlanmıştır. Güncel içerikleri tarafınıza ulaştıracağız."
+                    Message = "E-bülten'e kaydınız başarıyla sağlanmıştır. Güncel içerikleri tarafınıza ulaştıracağız."
                 });
             }
             catch (Exception ex)
@@ -471,7 +487,7 @@ namespace NitelikliBilisim.App.Controllers
                 return Json(new ResponseData
                 {
                     Success = false,
-                    Message= "Beklenmeyen bir hata ile karşılaşıldı. Lütfen daha sonra tekrar deneyiniz."
+                    Message = "Beklenmeyen bir hata ile karşılaşıldı. Lütfen daha sonra tekrar deneyiniz."
                 });
             }
         }
