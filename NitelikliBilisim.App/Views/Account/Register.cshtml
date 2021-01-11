@@ -85,10 +85,10 @@
                             <div class="input__outer">
                                 <span class="icon-outer input__icon">
                                     <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-user"></use>
+                                        <use xlink:href="../../assets/img/icons.svg#icon-phone"></use>
                                     </svg>
                                 </span>
-                                <input name="Phone" id="input-phone" type="text" class="input input--fw" placeholder="Telefon numaranız" required>
+                                <input name="Phone" id="input-phone" type="text" class="input input--fw inputPhoneNumber" placeholder="Telefon numaranız" required>
                             </div>
                             <div class="input__outer">
                                 <span class="icon-outer input__icon">
@@ -136,10 +136,9 @@
                                 </p>
                                 <div class="input__outer select-signup no-icon">
                                     <select class="js-signup-select" id="select-isnbuy-student" name="IsNbuyStudent">
-                                        <option value="false" hidden selected disabled>Seçiniz</option>
+                                        <option value="false" selected>Hayır, Almadım.</option>
                                         <option value="true">Evet, Aldım.</option>
                                         <option value="true">Devam Ediyorum.</option>
-                                        <option value="false">Hayır, Almadım.</option>
                                     </select>
                                 </div>
                                 <div class="login__is-true">
@@ -262,7 +261,7 @@
                 },
                 AcceptedTerms: {
                     required: true,
-                },
+                }
             },
             messages: {
                 Name: 'Bu alan zorunludur.',
@@ -290,7 +289,6 @@
         
         /* assignments */
         $(document).ready(document_onLoad);
-        window.onbeforeunload = window_onBeforeUnload;
 
         /* events */
         function document_onLoad() {
@@ -301,17 +299,7 @@
             }
 
         }
-        function window_onBeforeUnload() {
-            //if (__envoy.isStorageExists("register")) {
-            //    __envoy.setRegisterForm({
-            //        name: inputName.val(),
-            //        surname: inputSurname.val(),
-            //        email: inputEmail.val(),
-            //        phone: inputPhone.val(),
-            //        isNbuy: selectIsNbuyStudent.options[selectIsNbuyStudent.selectedIndex].value
-            //    });
-            //}
-        }
+        
         function btnSubmit_onClick(e) {
             var data = {
                 Name: inputName.val(),
@@ -320,7 +308,6 @@
                 Phone: inputPhone.val(),
                 Password: inputPassword.val(),
                 ConfirmPassword: inputConfirmPassword.val(),
-                //UserName: inputUsername.val(),
                 IsNbuyStudent: selectIsNbuyStudent.options[selectIsNbuyStudent.selectedIndex].value,
                 StartedAt: inputDateWhenBegun.val(),
                 EducationCenter: selectEducationCenters.options[selectEducationCenters.selectedIndex].value,
@@ -339,18 +326,6 @@
                     }
                 }
             });
-        }
-
-
-        /* functions */
-        function setStoredData(stored) {
-            inputName.val(stored.name);
-            inputSurname.val(stored.surname);
-            inputEmail.val(stored.email);
-            inputPhone.val(stored.phone);
-            if (stored.isNbuy != null) {
-
-            }
         }
     </script>
 </body>

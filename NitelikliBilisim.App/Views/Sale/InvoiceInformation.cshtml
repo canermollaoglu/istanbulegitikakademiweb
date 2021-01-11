@@ -81,7 +81,7 @@
                                             @address.Content <br> @address.State/@address.City
                                         </div>
                                     </div>
-                                    <div class="address-edit js-modal-trigger" data-trigger="adresEdit">
+                                    <div class="address-edit" onclick="loadAddressInfo('@address.Id', '@((int)address.AddressType)')">
                                         <span class="icon-outer">
                                             <svg class="icon">
                                                 <use xlink:href="../../assets/img/icons.svg#icon-pencil"></use>
@@ -122,8 +122,9 @@
                                             <span class="main-radio__checkmark"></span>
                                         </label>
                                     </div>
-                                    <form id="corporateAddressForm" action="sepet/kurumsal-adres-ekle" novalidate class="address__form-change addressKurumsal"
+                                    <form id="corporateAddressForm" method="post" action="sepet/kurumsal-adres-ekle" novalidate class="address__form-change addressKurumsal"
                                           style="display: block;">
+                                        @Html.AntiForgeryToken()
                                         <div class="input__column-2">
                                             <div class="input__outer no-icon">
                                                 <div class="input__title">Şirket Adı</div>
@@ -192,7 +193,8 @@
                                             </div>
                                         </div>
                                     </form>
-                                    <form id="individualAddressForm" action="/sepet/bireysel-adres-ekle" class="address__form-change addressBireysel">
+                                    <form id="individualAddressForm" method="post" action="/sepet/bireysel-adres-ekle" class="address__form-change addressBireysel">
+                                        @Html.AntiForgeryToken()
                                         <div class="input__column-2">
                                             <div class="input__outer no-icon">
                                                 <div class="input__title">Adınız Soyadınız</div>
@@ -295,16 +297,16 @@
                         <div class="checkout__price-item">
                             <div class="checkout__price-title">Toplam İndirimler</div>
                             <div class="checkout__price-new" id="discountAmount">
-                                 0,90<span>TL</span>
+                                0,90<span>TL</span>
                             </div>
                         </div>
                         <div class="checkout__price-item">
                             <div class="checkout__price-title">Ürünler Toplamı</div>
                             <div class="checkout__price-old" id="oldPrice">
-                                 0,00<span>TL</span>
+                                0,00<span>TL</span>
                             </div>
                             <div class="checkout__price-new" id="newPrice">
-                                 0,00<span>TL</span>
+                                0,00<span>TL</span>
                             </div>
                         </div>
                     </div>
@@ -355,9 +357,11 @@
 <input type="hidden" value="0" id="input-education-total-old-price" />
 <input type="hidden" value="0" id="input-discount-amount" />
 <input type="hidden" value="" id="default-address-id" />
-<div class="modal" id="adresEdit">
+
+
+<div class="modal" id="individualAdressEdit">
     <div class="modal__header">
-        <div class="modal__title">Adres Güncelle</div>
+        <div class="modal__title">Bireysel Adres Güncelle</div>
         <div class="modal__close js-close-modal">
             <span class="icon-outer">
                 <svg class="icon">
@@ -367,78 +371,54 @@
         </div>
     </div>
     <div class="modal__content">
-        <form id="validateForm" novalidate>
+        <form id="individualAddressUpdateForm" method="post" action="/sepet/bireysel-adres-guncelle" novalidate>
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="Id" id="update-i-id" />
+
             <div class="input__column-2">
                 <div class="input__outer no-icon">
-                    <div class="input__title">Şirket Adı</div>
-                    <input name="csirket" type="text" class="input input--bordered input--fw input--noshadow"
-                           placeholder="Kurum adınızı giriniz">
+                    <div class="input__title">Adınız Soyadınız</div>
+                    <input name="UpdateINameSurname" id="update-i-name-surname" type="text" class="input input--bordered input--fw input--noshadow"
+                           placeholder="Adınızı Soyadınızı giriniz">
                 </div>
                 <div class="input__outer input--phone f-column">
                     <div class="input__title">Telefon Numaranız</div>
                     <div>
-                        <div class="select-phonecode no-icon bordered-select">
-                            <select class="js-phonecode-select">
-                                <option value="" selected hidden disabled>539</option>
-                                <option value="2">540</option>
-                                <option value="3">541</option>
-                                <option value="4">542</option>
-                                <option value="5">543</option>
-                            </select>
-                        </div>
-                        <input type="text" name="cadresphone" id=""
+                        <input type="text" name="UpdateIPhone" id="update-i-phone"
                                class="input input--bordered input--fw input--noshadow inputPhoneNumber"
                                placeholder="___-__-__">
                     </div>
                 </div>
             </div>
             <div class="input__column-2">
-                <div class="input__outer no-icon">
-                    <div class="input__title">Vergi Dairesi</div>
-                    <input name="cVdaire" type="text" class="input input--bordered input--fw input--noshadow"
-                           placeholder="Vergi Dairesi">
-                </div>
-                <div class="input__outer no-icon">
-                    <div class="input__title">Vergi Numaranız</div>
-                    <input name="cVno" type="text"
-                           class="input input--bordered input--fw input--noshadow maskedInput inputVergiNo"
-                           placeholder="Vergi Numaranız">
-                </div>
-            </div>
-            <div class="input__column-2">
                 <div class="input__outer bordered-select">
                     <div class="select-subject no-icon">
                         <div class="input__title">İl</div>
-                        <select class="js-sehir-select" name="csehir">
-                            <option value="" selected hidden disabled>Şehir Seçiniz</option>
-                            <option value="2">Şehir1</option>
-                            <option value="3">Şehir2</option>
-                            <option value="4">Şehir3</option>
-                            <option value="5">Şehir4</option>
+                        <select class="js-sehir-select" name="UpdateICityId" id="update-i-city">
+                            @foreach (var city in Model.Cities)
+                            {
+                                <option value="@city.Id">@city.Name</option>
+                            }
                         </select>
                     </div>
                 </div>
                 <div class="input__outer bordered-select">
                     <div class="select-subject no-icon">
                         <div class="input__title">İlçe</div>
-                        <select class="js-ilce-select" name="cilce">
+                        <select class="js-ilce-select" name="UpdateIStateId" id="update-i-state">
                             <option value="" selected hidden disabled>İlçe Seçiniz</option>
-                            <option value="2">İlçe1</option>
-                            <option value="3">İlçe2</option>
-                            <option value="4">İlçe3</option>
-                            <option value="5">İlçe4</option>
                         </select>
                     </div>
                 </div>
             </div>
             <div class="input__outer input--textarea no-icon">
                 <div class="input__title">Açık Adresiniz</div>
-                <textarea name="cacikadres" class="input input--fw input--bordered input--noshadow h-150"
+                <textarea name="UpdateIContent" id="update-i-content" class="input input--fw input--bordered input--noshadow h-150"
                           placeholder="Adresinizin tamamını buraya yazınız"></textarea>
             </div>
             <div class="input__outer no-icon">
                 <div class="input__title">Adres Adı</div>
-                <input name="cacikad" type="text" class="input input--bordered input--fw input--noshadow"
+                <input name="UpdateITitle" id="update-i-title" type="text" class="input input--bordered input--fw input--noshadow"
                        placeholder="Adresinize isim verin">
             </div>
             <div class="form__button">
@@ -449,6 +429,98 @@
                 </div>
                 <div class="form__button-right">
                     <button class="button button-fw">
+                        <span class="button-txt">
+                            Adresi Kaydet
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="modal" id="corporateAdressEdit">
+    <div class="modal__header">
+        <div class="modal__title">Kurumsal Adres Güncelle</div>
+        <div class="modal__close js-close-modal">
+            <span class="icon-outer">
+                <svg class="icon">
+                    <use xlink:href="../../assets/img/icons.svg#icon-close"></use>
+                </svg>
+            </span>
+        </div>
+    </div>
+    <div class="modal__content">
+        <form id="corporateAddressUpdateForm" method="post" action="/sepet/kurumsal-adres-guncelle" novalidate>
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="Id" id="update-c-id" />
+            <div class="input__column-2">
+                <div class="input__outer no-icon">
+                    <div class="input__title">Şirket Adı</div>
+                    <input name="UpdateCCompanyName" id="update-c-company-name" type="text" class="input input--bordered input--fw input--noshadow"
+                           placeholder="Kurum adınızı giriniz">
+                </div>
+                <div class="input__outer input--phone f-column">
+                    <div class="input__title">Telefon Numaranız</div>
+                    <div>
+                        <input type="text" name="UpdateCPhone" id="update-c-phone"
+                               class="input input--bordered input--fw input--noshadow inputPhoneNumber"
+                               placeholder="___-__-__">
+                    </div>
+                </div>
+            </div>
+            <div class="input__column-2">
+                <div class="input__outer no-icon">
+                    <div class="input__title">Vergi Dairesi</div>
+                    <input name="UpdateCTaxOffice" id="update-c-tax-office" type="text" class="input input--bordered input--fw input--noshadow"
+                           placeholder="Vergi Dairesi">
+                </div>
+                <div class="input__outer no-icon">
+                    <div class="input__title">Vergi Numaranız</div>
+                    <input name="UpdateCTaxNumber" id="update-c-tax-number" type="text"
+                           class="input input--bordered input--fw input--noshadow maskedInput inputVergiNo"
+                           placeholder="Vergi Numaranız">
+                </div>
+            </div>
+            <div class="input__column-2">
+                <div class="input__outer bordered-select">
+                    <div class="select-subject no-icon">
+                        <div class="input__title">İl</div>
+                        <select class="js-sehir-select" name="UpdateCCityId" id="update-c-city">
+                            @foreach (var city in Model.Cities)
+                            {
+                                <option value="@city.Id">@city.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="input__outer bordered-select">
+                    <div class="select-subject no-icon">
+                        <div class="input__title">İlçe</div>
+                        <select class="js-ilce-select" name="UpdateCStateId" id="update-c-state">
+                            <option value="" selected hidden disabled>İlçe Seçiniz</option>
+
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="input__outer input--textarea no-icon">
+                <div class="input__title">Açık Adresiniz</div>
+                <textarea name="UpdateCContent" id="update-c-content" class="input input--fw input--bordered input--noshadow h-150"
+                          placeholder="Adresinizin tamamını buraya yazınız"></textarea>
+            </div>
+            <div class="input__outer no-icon">
+                <div class="input__title">Adres Adı</div>
+                <input name="UpdateCTitle" id="update-c-title" type="text" class="input input--bordered input--fw input--noshadow"
+                       placeholder="Adresinize isim verin">
+            </div>
+            <div class="form__button">
+                <div class="form__button-left">
+                    <span>
+                        * Adres açıklaması yazınız.
+                    </span>
+                </div>
+                <div class="form__button-right">
+                    <button type="submit" class="button button-fw">
                         <span class="button-txt">
                             Adresi Kaydet
                         </span>
@@ -489,9 +561,6 @@
                 CompanyName: {
                     required: true,
                 },
-                PhoneCode: {
-                    required: true,
-                },
                 PhoneNumber: {
                     required: true,
                 },
@@ -516,7 +585,6 @@
             },
             messages: {
                 CompanyName: 'Bu alan zorunludur.',
-                PhoneCode: 'Bu alan zorunludur.',
                 PhoneNumber:'Bu alan zorunludur.',
                 TaxNumber: 'Bu alan zorunludur.',
                 TaxOffice: 'Bu alan zorunludur.',
@@ -548,9 +616,6 @@
                 NameSurname: {
                     required: true,
                 },
-                PhoneCode: {
-                    required: true,
-                },
                 PhoneNumber: {
                     required: true,
                 },
@@ -569,7 +634,6 @@
             },
             messages: {
                 NameSurname: 'Bu alan zorunludur.',
-                PhoneCode: 'Bu alan zorunludur.',
                 PhoneNumber: 'Bu alan zorunludur.',
                 CityId: 'Bu alan zorunludur.',
                 StateId: 'Bu alan zorunludur.',
@@ -590,12 +654,113 @@
                     .removeClass('outer-error');
             },
         });
+        $('#corporateAddressUpdateForm').validate({
+            errorLabelContainer: $('#validateForm div.error'),
+            errorContainer: 'div.error-messages',
+            errorLabelContainer: $('ul', 'div.error-messages'),
+            wrapper: 'li',
+            rules: {
+                UpdateCCompanyName: {
+                    required: true,
+                },
+                UpdateCPhone: {
+                    required: true,
+                },
+                UpdateCTaxNumber: {
+                    required: true,
+                },
+                UpdateCTaxOffice: {
+                    required: true,
+                },
+                UpdateCCityId: {
+                    required: true,
+                },
+                UpdateCStateId: {
+                    required: true,
+                },
+                UpdateCContent: {
+                    required: true,
+                },
+                UpdateCTitle: {
+                    required: true,
+                }
+            },
+            messages: {
+                UpdateCCompanyName: 'Bu alan zorunludur.',
+                UpdateCPhone: 'Bu alan zorunludur.',
+                UpdateCTaxNumber: 'Bu alan zorunludur.',
+                UpdateCTaxOffice: 'Bu alan zorunludur.',
+                UpdateCCityId: 'Bu alan zorunludur.',
+                UpdateCStateId: 'Bu alan zorunludur.',
+                UpdateCContent: 'Bu alan zorunludur.',
+                UpdateCTitle: 'Bu alan zorunludur.'
+            },
+            highlight: function (element) {
+                $(element)
+                    .parent()
+                    .addClass('outer-error');
+            },
+            unhighlight: function (element) {
+                $(element)
+                    .parent()
+                    .removeClass('outer-error');
+            },
+        });
+        $('#individualAddressUpdateForm').validate(
+            {
+                errorLabelContainer: $('#validateForm div.error'),
+                errorContainer: 'div.error-messages',
+                errorLabelContainer: $('ul', 'div.error-messages'),
+                wrapper: 'li',
+                rules: {
+                    UpdateINameSurname: {
+                        required: true,
+                    },
+                    UpdateIPhone: {
+                        required: true,
+                    },
+                    UpdateICityId: {
+                        required: true,
+                    },
+                    UpdateIStateId: {
+                        required: true,
+                    },
+                    UpdateIContent: {
+                        required: true,
+                    },
+                    UpdateITitle: {
+                        required: true,
+                    }
+                },
+                messages: {
+                    UpdateINameSurname: 'Bu alan zorunludur.',
+                    UpdateIPhone: 'Bu alan zorunludur.',
+                    UpdateICityId: 'Bu alan zorunludur.',
+                    UpdateIStateId: 'Bu alan zorunludur.',
+                    UpdateIContent: 'Bu alan zorunludur.',
+                    UpdateITitle: 'Bu alan zorunludur.'
+                },
+                submitHandler: function () {
+                    $successMsg.show();
+                },
+                highlight: function (element) {
+                    $(element)
+                        .parent()
+                        .addClass('outer-error');
+                },
+                unhighlight: function (element) {
+                    $(element)
+                        .parent()
+                        .removeClass('outer-error');
+                },
+            });
 
         /* events */
         function document_onLoad() {
             localStorage.setItem("_cA", dAddressId);
             getCartItems();
             checkPromotionCode();
+            $('.js-sehir-select').trigger("change");
             //getBasketBasedPromotion();
         }
 
@@ -650,7 +815,6 @@
                 data: data,
                 success: (res) => {
                     if (res.isSuccess) {
-                        console.log(res);
                         localStorage.setItem("promotionCode", res.data.promotionCode);
                         $('.js-cupon-form .wizard-loading').fadeOut(500);
                         $('.js-cupon-form')
@@ -724,6 +888,54 @@
 
 
 
+        //Update address
+        function loadAddressInfo(id, type) {
+            $.ajax({
+                url: `/get-address-info?addressId=${id}`,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        var address = res.data;
+                        if (type == 1010) {
+                            $("#update-i-content").val(address.content);
+                            $("#update-i-title").val(address.title);
+                            $("#update-i-phone").val(address.phoneNumber);
+                            $("#update-i-name-surname").val(address.nameSurname);
+                            $("#update-i-id").val(address.id);
+                            $("#update-i-city").val(address.cityId).trigger('change');
+                            $("#update-i-state").val(address.stateId).trigger('change');
+                            modalShow("individualAdressEdit");
+                        } else {
+                            $("#update-c-id").val(address.id);
+                            $("#update-c-title").val(address.title);
+                            $("#update-c-content").val(address.content);
+                            $("#update-c-tax-number").val(address.taxNumber);
+                            $("#update-c-tax-office").val(address.taxOffice);
+                            $("#update-c-phone").val(address.phoneNumber);
+                            $("#update-c-company-name").val(address.companyName);
+                            $("#update-c-city").val(address.cityId).trigger('change');
+                            $("#update-c-state").val(address.stateId).trigger('change');
+                            modalShow("corporateAdressEdit");
+                        }
+                        console.log(res);
+                    } else {
+                        console.log(res);
+                    }
+                }
+            });
+        }
+
+        function modalShow(id) {
+            $('html, body').addClass('no-scroll');
+            $('.main-overlay').addClass('active');
+            $('.modal[id="'+id+'"]').addClass('modal--active');
+            $('.js-open-mobile-menu').removeClass('active');
+            $('.js-open-mobile-menu')
+                .closest('.header-mobile')
+                .removeClass('active');
+            $('html,body').removeClass('scroll-lock');
+        }
+
         //Remove Promotion Code
         $('body').on('click', '.js-remove-sale', function () {
             $(this)
@@ -743,7 +955,6 @@
             $('.js-cupon-form').removeClass('result');
         });
 
-
         var selectStates = $('.js-ilce-select');
         $('.js-sehir-select').on("change", function () {
             loadStates($(this).val());
@@ -755,11 +966,7 @@
                 method: "get",
                 success: (res) => {
                     if (res.success) {
-                        console.log(res);
                         fillStates(res.data);
-                        $(selectStates).prop("disabled", false);
-                        if (!res.data.length)
-                            $(selectStates).prop("disabled", true);
                     } else {
                         selectStates.html(`<option value="" disabled>İlçe Seçiniz</option>`);
                         $(selectStates).prop("disabled", true);
@@ -772,14 +979,11 @@
             var appended = "";
             for (var i = 0; i < data.length; i++) {
                 var state = data[i];
-                console.log(state);
                 appended += `<option value="${state.id}">${state.name}</option>`;
             }
 
             $(selectStates).append(appended);
         }
-
-
         function getCartItems() {
             var items = _cart.getItems();
             var data = {

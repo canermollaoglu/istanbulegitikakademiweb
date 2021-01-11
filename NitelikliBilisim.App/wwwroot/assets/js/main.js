@@ -1129,10 +1129,6 @@ $(document).ready(function () {
         // dropdownParent: $('.select-subject'),
         placeholder: 'Konum Seçiniz',
     });
-    $('.js-phonecode-select').select2({
-        // dropdownParent: $('.select-phonecode'),
-        placeholder: '540',
-    });
     $('.js-custom-select').select2({
         dropdownParent: $('.custom-select'),
     });
@@ -1148,6 +1144,7 @@ $(document).ready(function () {
         dropdownParent: $('.accordion'),});
     $('.js-level-select').select2({});
     $('.js-signup-select').select2({});
+    
     $('.js-education-place-select').select2({
         placeholder: 'Eğitim Yerini Seçiniz',
         dropdownParent: $('.accordion'),
@@ -1216,7 +1213,7 @@ $(document).ready(function () {
     }
 
     $('.inputPhoneNumber').each(function () {
-        $(this).inputmask('(999) 999-9999');
+        $(this).inputmask('(599) 999-9999');
     });
     $('.inputVergiNo').each(function () {
         $(this).inputmask('99999999999');

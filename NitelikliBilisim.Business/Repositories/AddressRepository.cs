@@ -31,7 +31,8 @@ namespace NitelikliBilisim.Business.Repositories
                     Content = x.Content,
                     City = x.City.Name,
                     State = x.State.Name,
-                    IsDefault = x.IsDefaultAddress
+                    IsDefault = x.IsDefaultAddress,
+                    AddressType = x.AddressType
                 }).ToList();
         }
 
