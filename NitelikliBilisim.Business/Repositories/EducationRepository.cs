@@ -11,6 +11,7 @@ using NitelikliBilisim.Core.ViewModels.areas.admin.education;
 using NitelikliBilisim.Core.ViewModels.Main;
 using NitelikliBilisim.Core.ViewModels.Main.Course;
 using NitelikliBilisim.Core.ViewModels.Main.EducationComment;
+using NitelikliBilisim.Core.ViewModels.Main.Home;
 using NitelikliBilisim.Core.ViewModels.search;
 using NitelikliBilisim.Data;
 using System;
@@ -76,6 +77,31 @@ namespace NitelikliBilisim.Business.Repositories
             }
             return false;
 
+        }
+
+        public List<EducationSearchTag> GetEducationSearchTags()
+        {
+            List<EducationSearchTag> searchTags = new(); 
+            var educations = Context.Educations.Select(x => new { x.Id, x.Name }).ToList();
+            var bridge = (from b in Context.Bridge_EducationTags
+                         join t in Context.EducationTags on b.Id equals t.Id
+                         select new
+                         {
+                             b.Id2,
+                             t.Name
+                         }).ToList();
+
+            foreach (var education in educations)
+            {
+                var tags = bridge.Where(x => x.Id2 == education.Id).Select(x => x.Name).ToList();
+                tags.Add(education.Name);
+                searchTags.Add(new EducationSearchTag
+                {
+                    EducationName = education.Name,
+                    Tags = string.Join(" ", tags.ToArray())
+                });
+            }
+            return searchTags;
         }
 
         public PagedEntity<Education> GetPagedEntity(int page = 0, Expression<Func<Education, bool>> filter = null, int shownRecords = 15)

@@ -1,6 +1,6 @@
 ﻿@model NitelikliBilisim.Core.ViewModels.Main.Course.CourseListGetVm
 @{
-    ViewData["Title"] = Model.CategoryName;
+    ViewData["Title"] = "Arama Sonuçları";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -15,7 +15,7 @@
                     Eğitimler
                 </a>
                 <a href="#0" class="breadcrumb__item active">
-                    @Model.CategoryName
+                    Arama Sonuçları
                 </a>
             </div>
             <div class="subheader__cnt">
@@ -27,8 +27,8 @@
                     </span>
                 </div>
                 <div class="subheader__txt-cnt">
-                    <div class="subheader__title">@Model.CategoryName</div>
-                    <div class="subheader__txt">@Model.CategoryShortDescription</div>
+                    <div class="subheader__title">Arama Sonuçları</div>
+                    <div class="subheader__txt">x kelimesi arama sonuçları</div>
                 </div>
             </div>
         </div>
@@ -37,36 +37,7 @@
         <img src="../../assets/img/subheader-img.jpg" alt="">
     </div>
 </div>
-<section class="section with-border is-popular-projects listing-first-section o-hidden">
-    <div class="container">
-        <div class="flex-center mb-4">
-            <h2 class="title title-section">POPÜLER <span class="title--blue">EĞİTİMLER</span></h2>
-        </div>
 
-        <div class="swiper-container js-card-slider mt-1">
-            <div class="swiper-wrapper">
-                @await Component.InvokeAsync("PopularEducations")
-            </div>
-            <div class="swiper-pagination"></div>
-
-            <div class="swiper-button-prev swiper-button-circle reverse">
-                <span class="icon-outer">
-                    <svg class="icon">
-                        <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
-                    </svg>
-                </span>
-            </div>
-            <div class="swiper-button-next swiper-button-circle reverse">
-                <span class="icon-outer">
-                    <svg class="icon">
-                        <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
-                    </svg>
-                </span>
-            </div>
-        </div>
-
-    </div>
-</section>
 
 <section class="lesson-list">
     <input type="hidden" value="@Model.CategoryId" id="current-category-id" />
@@ -186,7 +157,7 @@
                             Birlikte bulalım!
                         </div>
                     </div>
-                    <a class="side-banner__footer js-modal-trigger" data-trigger="egitimSihirbazi"">
+                    <a class="side-banner__footer js-modal-trigger" data-trigger="egitimSihirbazi" ">
                         Şimdi Başlayın
                         <span class="icon-outer">
                             <svg class="icon">
@@ -199,6 +170,38 @@
         </div>
     </div>
 </section>
+
+<section class="section with-border is-popular-projects listing-first-section o-hidden">
+    <div class="container">
+        <div class="flex-center mb-4">
+            <h2 class="title title-section">POPÜLER <span class="title--blue">EĞİTİMLER</span></h2>
+        </div>
+
+        <div class="swiper-container js-card-slider mt-1">
+            <div class="swiper-wrapper">
+                @await Component.InvokeAsync("PopularEducations")
+            </div>
+            <div class="swiper-pagination"></div>
+
+            <div class="swiper-button-prev swiper-button-circle reverse">
+                <span class="icon-outer">
+                    <svg class="icon">
+                        <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                    </svg>
+                </span>
+            </div>
+            <div class="swiper-button-next swiper-button-circle reverse">
+                <span class="icon-outer">
+                    <svg class="icon">
+                        <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                    </svg>
+                </span>
+            </div>
+        </div>
+
+    </div>
+</section>
+
 
 <div class="sort-mobile js-sort-mobile">
     <div class="sort-mobile__top">
@@ -252,7 +255,7 @@
     <div class="sort-mobile__list">
         @foreach (var hostCity in Model.EducationHostCities)
         {
-            <div class="sort-mobile__item"  data-id="@hostCity.Key">@hostCity.Value</div>
+            <div class="sort-mobile__item" data-id="@hostCity.Key">@hostCity.Value</div>
         }
     </div>
 </div>
@@ -295,54 +298,54 @@
                     console.log(res);
                     $.each(res.data.educations, function (index, e) {
                         var education = `<a href="/${e.cSeo}/${e.seo}" class="lesson-list__item">
-                                        <div class="lesson-list__item-img">
-                                            <img src="${e.imagePath}" alt="">
-                                        </div>
-                                        <div class="lesson-list__item-cnt">
-                                            <div class="lesson-list__item-left">
-                                                <div class="lesson-list__item-title">
-                                                    ${e.name}
+                                            <div class="lesson-list__item-img">
+                                                <img src="${e.imagePath}" alt="">
+                                            </div>
+                                            <div class="lesson-list__item-cnt">
+                                                <div class="lesson-list__item-left">
+                                                    <div class="lesson-list__item-title">
+                                                        ${e.name}
+                                                    </div>
+                                                    <div class="lesson-list__item-txt">
+                                                        ${e.description}
+                                                    </div>
                                                 </div>
-                                                <div class="lesson-list__item-txt">
-                                                    ${e.description}
+                                                <div class="lesson-list__item-right">
+                                                    <div class="lesson-list__item-date">
+                                                        <span class="icon-outer">
+                                                            <svg class="icon">
+                                                                <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                                                            </svg>
+                                                        </span>
+                                                        ${e.educationDays} gün ( ${e.educationHours} saat )
+                                                    </div>
+                                                    <div class="lesson-list__item-price">
+                                                         ${e.price} <span>TL</span>
+                                                    </div>
+                                                    <div class="button v-tablet">
+                                                        <span class="button-txt">Sepete Ekle</span>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="lesson-list__item-right">
-                                                <div class="lesson-list__item-date">
-                                                    <span class="icon-outer">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                        </svg>
-                                                    </span>
-                                                    ${e.educationDays} gün ( ${e.educationHours} saat )
-                                                </div>
-                                                <div class="lesson-list__item-price">
-                                                     ${e.price} <span>TL</span>
-                                                </div>
-                                                <div class="button v-tablet">
-                                                    <span class="button-txt">Sepete Ekle</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>`;
+                                        </a>`;
                         lessonsContent.append(education);
                     });
 
                     paginationContent.html("");
                     var prev = `<a class="pagination__item prev" onclick=changePage('${res.data.pageIndex - 1}')>
-                            <span class="icon-outer">
-                                <svg class="icon">
-                                    <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
-                                </svg>
-                            </span>
-                        </a>`;
+                                <span class="icon-outer">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
+                                    </svg>
+                                </span>
+                            </a>`;
                     var next = `<a class="pagination__item next" onclick=changePage('${res.data.pageIndex + 1}')>
-                            <span class="icon-outer">
-                                <svg class="icon">
-                                    <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
-                                </svg>
-                            </span>
-                        </a>`;
+                                <span class="icon-outer">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
+                                    </svg>
+                                </span>
+                            </a>`;
                     if (res.data.pageIndex > 1) {
                         paginationContent.append(prev);
                     }

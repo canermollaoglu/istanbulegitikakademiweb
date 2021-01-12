@@ -36,33 +36,13 @@
                                 <span class="dropdown__subtitle">Eğitim Arayın</span>
                                 <input type="search" class="dropdown__title js-title" autocomplete="off" value="" />
                             </div>
-                            
+
                             <div class="dropdown__content">
                                 <nav>
-                                    <a data-filter-item data-filter-name="active directory sertifika servisleri">
-                                        Active Directory
-                                        Sertifika Servisleri
-                                    </a>
-                                    <a data-filter-item data-filter-name="asp.net core web api ile jwt
-                      authentication">
-                                        ASP.Net Core Web API ile JWT
-                                        Authentication
-                                    </a>
-                                    <a data-filter-item data-filter-name="yerel sistemlerde yüksek erişilebilirlik">
-                                        Yerel Sistemlerde
-                                        Yüksek Erişilebilirlik
-                                    </a>
-                                    <a data-filter-item data-filter-name="asp.net core web api ile jwt
-                      authentication">
-                                        ASP.Net Core Web API ile JWT
-                                        Authentication
-                                    </a>
-                                    <a data-filter-item data-filter-name="yerel sistemlerde yüksek erişilebilirlik">
-                                        Yerel Sistemlerde
-                                        Yüksek Erişilebilirlik
-                                    </a>
-                                    <a data-filter-item data-filter-name="vue js">Vue JS</a>
-                                    <a data-filter-item data-filter-name="vue navite">Vue Navite</a>
+                                    @foreach (var item in Model.EducationSearchTags)
+                                    {
+                                        <a data-filter-item data-filter-name="@item.Tags">@item.EducationName</a>
+                                    }
                                 </nav>
                             </div>
                         </div>
@@ -135,7 +115,7 @@
 
                             <div>
                                 <figure>
-                                    <img src="~/assets/img/icons/icon-ranking-up.svg"/>
+                                    <img src="~/assets/img/icons/icon-ranking-up.svg" />
                                 </figure>
 
                                 <span>
@@ -146,7 +126,7 @@
 
                             <div>
                                 <figure>
-                                    <img src="~/assets/img/icons/icon-certificate.svg"/>
+                                    <img src="~/assets/img/icons/icon-certificate.svg" />
                                 </figure>
 
                                 <span>
@@ -157,7 +137,7 @@
 
                             <div>
                                 <figure>
-                                    <img src="~/assets/img/icons/icon-speaker-human.svg"/>
+                                    <img src="~/assets/img/icons/icon-speaker-human.svg" />
                                 </figure>
 
                                 <span>
@@ -494,7 +474,7 @@
             <div class="swiper-container js-card-slider mt-1">
                 <div class="swiper-wrapper">
                     @await Component.InvokeAsync("BeginnerEducations")
-                    
+
                 </div>
                 <div class="swiper-pagination"></div>
 
@@ -623,7 +603,7 @@
             location.href = "/sepet";
         }
 
-        
+
 
 
     </script>

@@ -152,8 +152,10 @@ namespace NitelikliBilisim.Business.Repositories
             if (studentInfo == null)
                 return null;
             var educationDay = _context.EducationDays.Where(x => x.StudentEducationInfoId == studentInfo.Id && x.Date <= DateTime.Now).OrderByDescending(c => c.Date).FirstOrDefault();
-            int nearestDay = educationDay != null ? educationDay.Day : 0;
-            
+            //int nearestDay = educationDay != null ? educationDay.Day : 0;
+
+            int nearestDay = (int)(DateTime.Now.Date - studentInfo.StartedAt).TotalDays;
+
             var educations = _context.Educations.Include(c => c.Category).Include(x => x.EducationSuggestionCriterions).Where(x => x.IsActive);
             var thisWeekEducations = new Dictionary<Guid,double>();
             foreach (var education in educations)
@@ -166,9 +168,9 @@ namespace NitelikliBilisim.Business.Repositories
                         {
                             if (nearestDay <= criterion.MaxValue && nearestDay >= criterion.MinValue)
                                 thisWeekEducations.Add(education.Id, 3);//İçinde bulunulan hafta en öncelikli olduğu için sıra 3 
-                            else if (criterion.MaxValue<nearestDay-7 && criterion.MaxValue>nearestDay-14)
+                            else if (criterion.MaxValue<=nearestDay-7 && criterion.MaxValue>=nearestDay-14)
                                 thisWeekEducations.Add(education.Id, 2);//önceki hafta için sıra 2 
-                            else if (criterion.MinValue>nearestDay+7 && criterion.MinValue<nearestDay+14)
+                            else if (criterion.MinValue<=nearestDay+7 && criterion.MinValue>nearestDay)
                                 thisWeekEducations.Add(education.Id, 1);//sonraki hafta için sıra 1
                         }
                     }

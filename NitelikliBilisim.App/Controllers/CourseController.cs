@@ -63,6 +63,16 @@ namespace NitelikliBilisim.App.Controllers
             return View(model);
         }
 
+        [Route("arama-sonuclari")]
+        public IActionResult SearchResults()
+        {
+            CourseListGetVm model = new CourseListGetVm();
+            model.Categories = _unitOfWork.EducationCategory.GetCoursesPageCategories();
+            model.OrderTypes = EnumHelpers.ToKeyValuePair<OrderCriteria>();
+            model.EducationHostCities = EnumHelpers.ToKeyValuePair<HostCity>();
+            model.TotalEducationCount = _unitOfWork.Education.TotalEducationCount();
+            return View(model);
+        }
 
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("{catSeoUrl}/{seoUrl}")]

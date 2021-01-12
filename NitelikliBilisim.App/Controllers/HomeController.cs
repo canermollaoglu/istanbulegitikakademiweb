@@ -59,15 +59,8 @@ namespace NitelikliBilisim.App.Controllers
             var model = new HomeIndexModel();
             model.EducationCountByCategory = _unitOfWork.EducationCategory.GetEducationCountForCategories();
             model.EducationComments = _unitOfWork.EducationComment.GetHighlightComments(5);
+            model.EducationSearchTags = _unitOfWork.Education.GetEducationSearchTags();
             model.HostCities = EnumHelpers.ToKeyValuePair<HostCity>();
-            var isLoggedIn = HttpContext.User.Identity.IsAuthenticated;
-            if (!isLoggedIn)
-                model.SuggestedEducations = _unitOfWork.Suggestions.GetGuestUserSuggestedEducations();
-            else
-            {
-                var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                model.SuggestedEducations = _unitOfWork.Suggestions.GetUserSuggestedEducations(userId, 5);
-            }
 
             return View(model);
         }
@@ -237,18 +230,11 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [Route("kullanici-yorumlari")]
-        public IActionResult UserComments(Guid? c, int? s, int p = 1)
+        public IActionResult UserComments()
         {
             UserCommentsPageGetVm retVal = new();
-            ViewData["SortingType"] = s.HasValue ? s : ViewData["SortingType"];
-            ViewData["Page"] = p;
-            ViewData["Category"] = c.HasValue ? c : ViewData["Category"];
-            //her sayfada 6 yorum.
             retVal.SortingTypes = EnumHelpers.ToKeyValuePair<EducationCommentSortingTypes>();
             retVal.EducationCategories = _unitOfWork.EducationCategory.GetEducationCategoryDictionary();
-            retVal.PageDetails = _unitOfWork.EducationComment.GetEducationComments(c, s, p);
-
-            //Featured Comments
             retVal.FeaturedComments = _unitOfWork.FeaturedComment.GetFeaturedComments();
             return View(retVal);
         }
