@@ -331,6 +331,37 @@ namespace NitelikliBilisim.App.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("default-adres-guncelle")]
+        public  IActionResult UpdateDefaultAddress(int? defaultAddressId)
+        {
+            if (!defaultAddressId.HasValue)
+            {
+                TempData["Error"] = "Lütfen sayfayı yenileyerek tekrar deneyiniz.";
+                return RedirectToAction("AccountSettings", "UserProfile");
+            }
+            if (!ModelState.IsValid)
+            {
+                TempData["Error"] = ModelStateUtil.GetErrors(ModelState);
+                return RedirectToAction("AccountSettings", "UserProfile");
+            }
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                _unitOfWork.Address.UpdateDefaultAddress(defaultAddressId.Value,userId);
+                
+                return RedirectToAction("AccountSettings", "UserProfile");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "İşleminiz gerçekleştirilemedi! Lütfen tekrar deneyiniz.";
+                //todo log
+                throw;
+            }
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         [Route("nbuy-egitim-bilgileri-guncelle")]
         public  IActionResult UpdateNbuyEducationInfos(UpdateNBUYEducationInfoVm model)
         {

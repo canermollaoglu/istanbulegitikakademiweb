@@ -87,7 +87,7 @@
                                                         </span>
                                                     </div>
                                                 </div>
-                                                <div class="input__outer no-icon">
+                                                @*<div class="input__outer no-icon">
                                                     <div class="input__title">Profil Resmi</div>
                                                     <div class="input__select-image">
                                                         <div class="input__select-image-img">
@@ -106,7 +106,7 @@
                                                             JPG, GIF veya PNG
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </div>*@
                                                 <div class="account-detail__setting-btn">
                                                     <button type="submit" class="button">
                                                         Değişiklikleri Kaydet
@@ -378,120 +378,77 @@
                                     <div class="js-calc-accordion-height">
                                         <div class="accordion__forms">
                                             <div class="address-wrp">
-                                                @if (Model.Addresses.Count == 0)
-                                                {
-                                                    <div class="address-item">
-                                                        <div class="address-button js-select-address">
-                                                            <span class="address-button-radio"></span>
-                                                        </div>
-                                                        <div class="address-cnt js-select-address">
-                                                            <div class="address-title">
-                                                                Fatura Adresim
-                                                            </div>
-                                                            <div class="address-txt">
+                                                <form method="post" action="/default-adres-guncelle">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="defaultAddressId" id="input-default-address-id"/>
+                                                    @if (Model.Addresses.Count == 0)
+                                                    {
+                                                        @*<div class="address-item">
+                <div class="address-button js-select-address">
+                    <span class="address-button-radio"></span>
+                </div>
+                <div class="address-cnt js-select-address">
+                    <div class="address-title">
+                        Fatura Adresim
+                    </div>
+                    <div class="address-txt">
 
+                    </div>
+                </div>
+            </div>
+            <div class="address-input-wrp">
+                <div class="input__column-flex">
+                    <div class="input__outer bordered-select">
+                        <div class="select-subject no-icon">
+                            <div class="input__title">Şehir</div>
+                            <select class="js-adres-sehir-select">
+                                <option value="" hidden disabled>Şehir</option>
+                                @foreach (var city in Model.Cities)
+                                {
+                                    <option value="@city.Id">@city.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input__outer bordered-select input-mb-0">
+                        <div class="select-subject no-icon">
+                            <div class="input__title">İlçe</div>
+                            <select class="js-adres-ilce-select">
+                                <option value="" hidden disabled>İlçe</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="input__outer input--textarea no-icon">
+                    <div class="input__title">Açık Adresiniz</div>
+                    <textarea name="Content"
+                              class="input input--fw input--bordered input--noshadow h-150"
+                              placeholder="Adresinizin tamamını buraya yazınız"></textarea>
+                </div>
+            </div>*@
+                                                    }
+                                                    @foreach (var address in Model.Addresses)
+                                                    {
+                                                        <div class="address-item @(address.IsDefaultAddress?"selected":"")">
+                                                            <div class="address-button js-select-address-account" data-id="@address.Id">
+                                                                <span class="address-button-radio"></span>
                                                             </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="address-input-wrp">
-                                                        <div class="input__column-flex">
-                                                            <div class="input__outer bordered-select">
-                                                                <div class="select-subject no-icon">
-                                                                    <div class="input__title">Şehir</div>
-                                                                    <select class="js-adres-sehir-select">
-                                                                        <option value="" hidden disabled>Şehir</option>
-                                                                        @foreach (var city in Model.Cities)
-                                                                        {
-                                                                            <option value="@city.Id">@city.Name</option>
-                                                                        }
-                                                                    </select>
+                                                            <div class="address-cnt js-select-address-account" data-id="@address.Id">
+                                                                <div class="address-title">
+                                                                    @address.Title
                                                                 </div>
-                                                            </div>
-                                                            <div class="input__outer bordered-select input-mb-0">
-                                                                <div class="select-subject no-icon">
-                                                                    <div class="input__title">İlçe</div>
-                                                                    <select class="js-adres-ilce-select">
-                                                                        <option value="" hidden disabled>İlçe</option>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="input__outer input--textarea no-icon">
-                                                            <div class="input__title">Açık Adresiniz</div>
-                                                            <textarea name="Content"
-                                                                      class="input input--fw input--bordered input--noshadow h-150"
-                                                                      placeholder="Adresinizin tamamını buraya yazınız"></textarea>
-                                                        </div>
-                                                    </div>
-                                                }
-                                                @foreach (var address in Model.Addresses)
-                                                {
-                                                    <div class="address-item @(address.IsDefaultAddress?"selected":"")">
-                                                        <div class="address-button js-select-address">
-                                                            <span class="address-button-radio"></span>
-                                                        </div>
-                                                        <div class="address-cnt js-select-address">
-                                                            <div class="address-title">
-                                                                @address.Title
-                                                            </div>
-                                                            <div class="address-txt">
-                                                                @address.Content <br> @address.State.Name @address.City.Name
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="address-input-wrp">
-                                                        <div class="input__column-flex">
-                                                            <div class="input__outer bordered-select">
-                                                                <div class="select-subject no-icon">
-                                                                    <div class="input__title">Şehir</div>
-                                                                    <select class="js-adres-sehir-select">
-                                                                        <option value="" hidden disabled>Şehir</option>
-                                                                        @foreach (var city in Model.Cities)
-                                                                        {
-                                                                            if (address.CityId == city.Id)
-                                                                            {
-                                                                                <option value="@city.Id" selected>@city.Name</option>
-                                                                            }
-                                                                            else
-                                                                            {
-                                                                                <option value="@city.Id">@city.Name</option>
-                                                                            }
-                                                                        }
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                            <div class="input__outer bordered-select input-mb-0">
-                                                                <div class="select-subject no-icon">
-                                                                    <div class="input__title">İlçe</div>
-                                                                    <select class="js-adres-ilce-select">
-                                                                        @foreach (var states in address.City.States)
-                                                                        {
-                                                                            if (address.StateId == states.Id)
-                                                                            {
-                                                                                <option value="@states.Id" selected>@states.Name</option>
-                                                                            }
-                                                                            else
-                                                                            {
-                                                                                <option value="@states.Id">@states.Name</option>
-                                                                            }
-                                                                        }
-                                                                    </select>
+                                                                <div class="address-txt">
+                                                                    @address.Content <br> @address.State.Name @address.City.Name
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="input__outer input--textarea no-icon">
-                                                            <div class="input__title">Açık Adresiniz</div>
-                                                            <textarea name="Content"
-                                                                      class="input input--fw input--bordered input--noshadow h-150"
-                                                                      placeholder="Adresinizin tamamını buraya yazınız">@address.Content</textarea>
-                                                        </div>
+                                                    }
+                                                    <div class="account-detail__setting-btn">
+                                                        <button type="submit" class="button">
+                                                            Değişiklikleri Kaydet
+                                                        </button>
                                                     </div>
-                                                }
-                                                <div class="account-detail__setting-btn">
-                                                    <button href="#0" class="button">
-                                                        Değişiklikleri Kaydet
-                                                    </button>
-                                                </div>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
@@ -507,6 +464,33 @@
 
 @section postScripts{
     <script type="text/javascript">
+        
 
+        $('body').on('click', '.js-select-address-account', function () {
+            var aId = $(this).data("id");
+            $("#input-default-address-id").val(aId);
+            if (
+                $(this)
+                    .parent()
+                    .hasClass('selected')
+            ) {
+                $(this)
+                    .parent()
+                    .removeClass('selected');
+            } else {
+                $('.address-item').removeClass('selected');
+                $(this)
+                    .parent()
+                    .addClass('selected');
+            }
+            if ($('.address-item').hasClass('selected')) {
+                $('.js-new-address').removeClass('active');
+                $('.js-new-address')
+                    .find('.accordion__content')
+                    .css('height', '0');
+            } else {
+                $('.js-new-address').removeClass('disabled');
+            }
+        });
     </script>
 }
