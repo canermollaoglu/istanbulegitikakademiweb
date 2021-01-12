@@ -84,6 +84,8 @@ namespace NitelikliBilisim.Data
                 .HasKey(x => new { x.Id, x.Id2 });
             builder.Entity<Bridge_BlogPostTag>()
                 .HasKey(x => new { x.Id, x.Id2 });
+            builder.Entity<Bridge_EducatorCategory>()
+                .HasKey(x => new { x.Id, x.Id2 });
 
             builder.Entity<ApplicationUserRole>(userRole =>
             {
@@ -158,6 +160,7 @@ namespace NitelikliBilisim.Data
         public DbSet<ContactForm> ContactForms{ get; set; }
         public DbSet<FeaturedComment> FeaturedComments{ get; set; }
         public DbSet<BannerAd> BannerAds { get; set; }
+        public DbSet<Bridge_EducatorCategory> Bridge_EducatorCategories { get; set; }
 
 
     }

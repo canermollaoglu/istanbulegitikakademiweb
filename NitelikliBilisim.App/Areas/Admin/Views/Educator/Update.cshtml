@@ -12,6 +12,7 @@
 @section alerts{
     <partial name="partials/_Alert" />
 }
+
 <form id="form-update-educator">
     @Html.AntiForgeryToken()
     <div class="box_general padding_bottom">
@@ -111,12 +112,32 @@
                                     {
                                         if (Model.RelatedCertificates.Any(x => x.Id == item.Id))
                                         {
-                                            <option selected data-image="@StorageService.DownloadFile(System.IO.Path.GetFileName(item.CertificateImagePath), "educator-certificate-images").Result" value="@item.Id">@item.Name</option>
+                                            <option selected data-image="@(StorageService.BlobUrl+item.CertificateImagePath)" value="@item.Id">@item.Name</option>
 
                                         }
                                         else
                                         {
-                                            <option data-image="@StorageService.DownloadFile(System.IO.Path.GetFileName(item.CertificateImagePath), "educator-certificate-images").Result" value="@item.Id">@item.Name</option>
+                                            <option data-image="@(StorageService.BlobUrl+item.CertificateImagePath)" value="@item.Id">@item.Name</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Eğitmenin Uzmanlık Alanları</label>
+                                <select id="select-education-categories" multiple="multiple" class="form-control">
+                                    @foreach (var item in Model.EducationCategories)
+                                    {
+                                        if (Model.RelatedCategories.Any(x => x.Id == item.Id))
+                                        {
+                                            <option selected value="@item.Id">@item.Name</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.Id">@item.Name</option>
                                         }
                                     }
                                 </select>

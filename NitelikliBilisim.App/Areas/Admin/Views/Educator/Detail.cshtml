@@ -106,7 +106,7 @@
                                     @foreach (var certificate in Model.Certificates)
                                     {
 
-                                        <li class="list-group-item"><img height="35" src="@StorageService.DownloadFile(System.IO.Path.GetFileName(certificate.CertificateImagePath), "educator-certificate-images").Result"/> @certificate.Name</li>
+                                        <li class="list-group-item"><img height="35" src="@(StorageService.BlobUrl+certificate.CertificateImagePath)"/> @certificate.Name</li>
                                     }
                                 </ul>
                             </td>

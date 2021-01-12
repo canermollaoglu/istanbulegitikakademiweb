@@ -4,7 +4,7 @@ var fileManager = new UploadSupport.FileUploader();
 /* elements */
 var btnSave = $("#btn-save");
 var selectCertificates = $("#select-certificates");
-
+var selectEducationCategories = $("#select-education-categories");
 /* assignments */
 $(document).ready(document_onLoad);
 btnSave.on("click", btnSave_onClick);
@@ -15,6 +15,9 @@ function document_onLoad() {
         templateResult: formatState,
         templateSelection: formatState,
         placeholder: "Sertifika seçiniz..."
+    });
+    selectEducationCategories.select2({
+        placeholder:"Uzmanlık alanlarını seçiniz..."
     });
 
     fileManager.set({
@@ -28,6 +31,7 @@ function btnSave_onClick() {
     btnSave.off("click");
     var file = fileManager.getFile();
     var certificateIds = selectCertificates.val();
+    var categoryIds = selectEducationCategories.val();
     var data = {
         Name: $("#input-name").val(),
         Biography: $("#input-biography").val(),
@@ -47,6 +51,7 @@ function btnSave_onClick() {
             Extension: file.extension
         },
         CertificateIds: certificateIds,
+        EducatorCategoryIds: categoryIds,
         Bank: $("#select-bank").val(),
         IBAN: $("#input-iban").val()
     }

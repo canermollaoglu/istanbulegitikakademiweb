@@ -1,4 +1,5 @@
-﻿using NitelikliBilisim.Core.Entities.user_details;
+﻿using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Entities.user_details;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -19,6 +20,7 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.educator
         public List<EducatorCertificate> RelatedCertificates { get; set; }
         public int Bank { get; set; }
         public string IBAN { get; set; }
+        public List<EducationCategory> RelatedCategories { get; set; }
     }
 
     public class UpdatePostVm : AddPostVm
@@ -45,6 +47,7 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.educator
         [Required(ErrorMessage = "Kısa Açıklama alanı boş geçilemez"), MaxLength(400, ErrorMessage = "Kısa Açıklama alanı en fazla 400 karakter içerebilir.")]
         public string ShortDescription { get; set; }
         public List<int> CertificateIds { get; set; }
+        public List<Guid> CategoryIds { get; set; }
         public int Bank { get; set; }
         public string IBAN { get; set; }
 
