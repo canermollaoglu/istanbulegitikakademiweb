@@ -1867,17 +1867,16 @@ if ($('.login__form').length > 0) {
     
 }
 
-$('#accountSideImg').on('change', function () {
-    $("#imageForm").submit();
+$('.accountSideImg').on('change', function () {
+    $(".imageForm").submit();
 });
 
 
-//$("input[type='image']").click(function () {
-//    $("input[id='accountSideImg']").click();
-//});
-
+$('.account-side__img-img').click(function () {
+    $("input[class='accountSideImg']").click();
+});
 $('.account-side__img-edit').click(function () {
-    $("input[id='accountSideImg']").click();
+    $("input[class='accountSideImg']").click();
 });
 $('.js-change-img').click(function () {
     $("input[id='accountSettingsImg']").click();
