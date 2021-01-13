@@ -24,7 +24,7 @@ namespace NitelikliBilisim.Business.Repositories
         {
             _context = context;
         }
-        public string Insert(Educator entity, List<int> certificateIds, bool isSaveLater = false)
+        public string Insert(Educator entity, List<int> certificateIds,List<Guid> categoryIds, bool isSaveLater = false)
         {
             string educatorId = base.Insert(entity, isSaveLater);
 
@@ -42,6 +42,22 @@ namespace NitelikliBilisim.Business.Repositories
                 Context.Bridge_EducatorEducatorCertificates.AddRange(bridge);
                 Context.SaveChanges();
             }
+
+            if (categoryIds != null && categoryIds.Count > 0)
+            {
+                var bridge = new List<Bridge_EducatorCategory>();
+                foreach (var categoryId in categoryIds)
+                {
+                    bridge.Add(new Bridge_EducatorCategory
+                    {
+                        Id = educatorId,
+                        Id2 = categoryId
+                    });
+                }
+                Context.Bridge_EducatorCategories.AddRange(bridge);
+                Context.SaveChanges();
+            }
+
             return educatorId;
         }
 
@@ -66,10 +82,12 @@ namespace NitelikliBilisim.Business.Repositories
             return data;
         }
 
-        public int Update(Educator entity, List<int> certificateIds, bool isSaveLater = false)
+        public int Update(Educator entity, List<int> certificateIds,List<Guid> categoryIds, bool isSaveLater = false)
         {
             var _certificates = Context.Bridge_EducatorEducatorCertificates.Where(x => x.Id == entity.Id);
             Context.Bridge_EducatorEducatorCertificates.RemoveRange(_certificates);
+            var _categories = Context.Bridge_EducatorCategories.Where(x => x.Id == entity.Id);
+            Context.Bridge_EducatorCategories.RemoveRange(_categories);
 
 
             if (certificateIds != null && certificateIds.Count > 0)
@@ -86,6 +104,21 @@ namespace NitelikliBilisim.Business.Repositories
                 Context.Bridge_EducatorEducatorCertificates.AddRange(newCertificates);
                 Context.SaveChanges();
             }
+            if (categoryIds != null && categoryIds.Count > 0)
+            {
+                var newcategories = new List<Bridge_EducatorCategory>();
+                foreach (var categoryId in categoryIds)
+                {
+                    newcategories.Add(new Bridge_EducatorCategory
+                    {
+                        Id = entity.Id,
+                        Id2 = categoryId
+                    });
+                };
+                Context.Bridge_EducatorCategories.AddRange(newcategories);
+                Context.SaveChanges();
+            }
+
 
             return base.Update(entity, isSaveLater);
         }
@@ -146,10 +179,24 @@ namespace NitelikliBilisim.Business.Repositories
         public GetEducatorDetailVm GetEducatorDetailUser(string educatorId)
         {
             var educator = _context.Educators.Include(x => x.User).First(x => x.Id == educatorId);
+
+            int educationCount = _context.Bridge_EducationEducators.Where(x => x.Id2 == educatorId).Count();
+
+            int studentCount = (from invoiceDetail in _context.InvoiceDetails
+                                join eGroup in _context.EducationGroups on invoiceDetail.GroupId equals eGroup.Id
+                                where eGroup.EducatorId == educatorId
+                                select invoiceDetail).Count();
+                               
+
             var certificates = (from bridge in _context.Bridge_EducatorEducatorCertificates
                                 join certificate in _context.EducatorCertificates on bridge.Id2 equals certificate.Id
                                 where bridge.Id == educatorId
                                 select certificate).ToList();
+            var educationCategories = (from bridge in _context.Bridge_EducatorCategories
+                                       join category in _context.EducationCategories on bridge.Id2 equals category.Id
+                                       where bridge.Id == educatorId
+                                       select category).ToList();
+
             var socialMedias = _context.EducatorSocialMedias.Where(x => x.EducatorId == educatorId);
             var facebook = socialMedias.FirstOrDefault(x => x.SocialMediaType == Core.Enums.EducatorSocialMediaType.Facebook);
             var linkedIn = socialMedias.FirstOrDefault(x => x.SocialMediaType == Core.Enums.EducatorSocialMediaType.LinkedIn);
@@ -165,13 +212,26 @@ namespace NitelikliBilisim.Business.Repositories
                 ShortDescription = educator.ShortDescription,
                 Biography = educator.Biography,
                 Certificates = certificates,
+                Categories = educationCategories,
                 FacebookUrl = facebook != null ? facebook.Link : "#",
                 TwitterUrl = twitter != null ? twitter.Link : "#",
                 LinkedInUrl = linkedIn != null ? linkedIn.Link : "#",
-                GooglePlusUrl = google != null ? google.Link : "#"
+                GooglePlusUrl = google != null ? google.Link : "#",
+                EducationCount = educationCount,
+                StudentCount = studentCount
             };
             return retVal;
         }
+
+        public List<EducationCategory> GetProfessions(string id)
+        {
+            var data = (from b in Context.Bridge_EducatorCategories
+                        join c in Context.EducationCategories on b.Id2 equals c.Id
+                        where b.Id == id
+                        select c).ToList();
+            return data;
+        }
+
         public List<_Educator> GetEducators()
         {
             var model = Context.Users

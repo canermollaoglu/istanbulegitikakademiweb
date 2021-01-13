@@ -641,16 +641,7 @@ $(document).ready(function () {
             .addClass('next');
     }
 
-    var jsTakeWeek = $('.for-you__week-item.active')
-        .find('.for-you__week-item-num')
-        .text();
-    $('.js-take-week').text(jsTakeWeek);
-    $('.for-you__week-item').click(function () {
-        var jsTakeWeekSelected = $(this)
-            .find('.for-you__week-item-num')
-            .text();
-        $('.js-take-week').text(jsTakeWeekSelected);
-    });
+    
     if ($('.for-you__slider').length > 0) {
         $(document).ready(function () {
             // $('.for-you__week-item').click(function() {
@@ -671,12 +662,14 @@ $(document).ready(function () {
                 $(this).addClass('selected');
                 $tabs.find('div.main-tab__item').removeClass('active');
                 $(this.hash).addClass('active');
-                $tabs.addClass('active');
+                // $tabs.addClass('active');
 
                 e.preventDefault();
             });
         });
     }
+
+    
     var swiper = new Swiper('.js-card-slider', {
         keyboard: true,
         loop: true,
@@ -920,10 +913,10 @@ $(document).ready(function () {
 
     $('.account-dashboard__courses .swiper-container').each(function () {
         if ($(this).find('.swiper-slide').length > 3) {
-            $(this).find('.swiper-pagination').addClass('showed');
+            //$(this).find('.swiper-pagination').addClass('showed');
         }
         if ($(this).find('.swiper-slide').length == 0) {
-            $(this).parent().find('.account-empty-content').addClass('showed');
+            //$(this).parent().find('.account-empty-content').addClass('showed');
         }
     });
     var dashboardWeekSlider = new Swiper('.js-dashboard-week-slider', {
@@ -1129,10 +1122,6 @@ $(document).ready(function () {
         // dropdownParent: $('.select-subject'),
         placeholder: 'Konum Seçiniz',
     });
-    $('.js-phonecode-select').select2({
-        // dropdownParent: $('.select-phonecode'),
-        placeholder: '540',
-    });
     $('.js-custom-select').select2({
         dropdownParent: $('.custom-select'),
     });
@@ -1148,6 +1137,7 @@ $(document).ready(function () {
         dropdownParent: $('.accordion'),});
     $('.js-level-select').select2({});
     $('.js-signup-select').select2({});
+    
     $('.js-education-place-select').select2({
         placeholder: 'Eğitim Yerini Seçiniz',
         dropdownParent: $('.accordion'),
@@ -1216,7 +1206,7 @@ $(document).ready(function () {
     }
 
     $('.inputPhoneNumber').each(function () {
-        $(this).inputmask('(999) 999-9999');
+        $(this).inputmask('(599) 999-9999');
     });
     $('.inputVergiNo').each(function () {
         $(this).inputmask('99999999999');

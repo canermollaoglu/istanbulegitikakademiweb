@@ -44,8 +44,9 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducatorAdd");
             var model = new AddGetVm
             {
-                Certificates = _unitOfWork.EducatorCertificate.Get(null, order => order.OrderBy(x => x.Name)),
-                BankNames = EnumHelpers.ToKeyValuePair<BankNames>()
+                Certificates = _unitOfWork.EducatorCertificate.Get(null, order => order.OrderBy(x => x.Name)).ToList(),
+                BankNames = EnumHelpers.ToKeyValuePair<BankNames>(),
+                EducationCategories = _unitOfWork.EducationCategory.Get(x=>x.BaseCategoryId == null).ToList()
             };
             return View(model);
         }
@@ -126,7 +127,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     Bank = data.Bank,
                     IBAN = data.IBAN
                 };
-                _unitOfWork.Educator.Insert(newEducator, data.CertificateIds);
+                _unitOfWork.Educator.Insert(newEducator, data.CertificateIds,data.EducatorCategoryIds);
 
                 if (data.SocialMedia != null)
                     _unitOfWork.EducatorSocialMedia.Insert(newEducator.Id, data.SocialMedia.Facebook, data.SocialMedia.Linkedin, data.SocialMedia.GooglePlus, data.SocialMedia.Twitter);
@@ -191,10 +192,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 ShortDescription = educator.ShortDescription,
                 Bank = educator.Bank,
                 IBAN = educator.IBAN,
-                Certificates = _unitOfWork.EducatorCertificate.Get(null, o => o.OrderBy(x => x.Name)),
+                Certificates = _unitOfWork.EducatorCertificate.Get(null, o => o.OrderBy(x => x.Name)).ToList(),
+                EducationCategories = _unitOfWork.EducationCategory.Get(x=>x.BaseCategoryId==null).ToList(),
                 RelatedCertificates = _unitOfWork.Educator.GetCertificates(educator.Id),
-                BankNames = EnumHelpers.ToKeyValuePair<BankNames>(),
-
+                RelatedCategories = _unitOfWork.Educator.GetProfessions(educator.Id),
+                BankNames = EnumHelpers.ToKeyValuePair<BankNames>()
             };
             return View(model);
         }
@@ -234,7 +236,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             educator.Bank = data.Bank;
             educator.IBAN = data.IBAN;
             //Test 
-            _unitOfWork.Educator.Update(educator, data.CertificateIds);
+            _unitOfWork.Educator.Update(educator, data.CertificateIds,data.CategoryIds);
 
             return Json(new ResponseModel
             {

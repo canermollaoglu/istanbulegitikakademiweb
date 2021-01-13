@@ -4,6 +4,7 @@ var fileManager = new UploadSupport.FileUploader();
 /* elements */
 var btnSave = $("#btn-save");
 var selectCertificates = $("#select-certificates");
+var selectEducationCategories = $("#select-education-categories");
 
 /* assignments */
 $(document).ready(document_onLoad);
@@ -16,6 +17,10 @@ function document_onLoad() {
         templateSelection: formatState,
         placeholder: "Sertifika seçiniz..."
     });
+    selectEducationCategories.select2({
+        placeholder: "Uzmanlık alanı seçiniz."
+    });
+
 
     fileManager.set({
         container: "file-upload-for-educator-photo",
@@ -28,6 +33,7 @@ function btnSave_onClick() {
     btnSave.off("click");
     var file = fileManager.getFile();
     var certificateIds = selectCertificates.val();
+    var categoryIds = selectEducationCategories.val();
     var data = {
         EducatorId: $("#_educator-id").val(),
         Biography: $("#input-biography").val(),
@@ -48,6 +54,7 @@ function btnSave_onClick() {
             Extension: file.extension
         },
         CertificateIds: certificateIds,
+        CategoryIds: categoryIds,
         Bank: $("#select-bank").val(),
         IBAN: $("#input-iban").val()
     }

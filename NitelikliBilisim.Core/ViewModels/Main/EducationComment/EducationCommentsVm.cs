@@ -11,6 +11,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.EducationComment
         public int TotalCount { get; set; }
         public int PageIndex { get; set; }
         public List<EducationCommentListVm> Comments { get; set; }
-
+        public int TotalPageCount { get; set; }
     }
 }

@@ -59,7 +59,7 @@ namespace NitelikliBilisim.App.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             List<InvoiceInfoAddressGetVm> addresses = _unitOfWork.Address.GetInvoiceAddressesByUserId(userId);
-            var cities = _unitOfWork.City.Get().OrderBy(x=>x.Order).ToList();
+            var cities = _unitOfWork.City.Get().OrderBy(x => x.Order).ToList();
             var defaultAddress = _unitOfWork.Address.GetDefaultAddress(userId);
             var invoiceInfos = new InvoiceInfoGetVm
             {
@@ -89,7 +89,7 @@ namespace NitelikliBilisim.App.Controllers
                         items = new List<CartItemVm>(),
                         total = 0m.ToString(CultureInfo.CreateSpecificCulture("tr-TR")),
                         totalNumeric = 0,
-                        oldTotalNumeric =0
+                        oldTotalNumeric = 0
                     }
                 });
 
@@ -97,7 +97,8 @@ namespace NitelikliBilisim.App.Controllers
 
             var sum = 0m;
             var oldPriceSum = 0m;
-            if (cartItems.Count > 0) {
+            if (cartItems.Count > 0)
+            {
                 foreach (var cartItem in cartItems)
                 {
                     sum += cartItem.PriceNumeric;
@@ -109,7 +110,7 @@ namespace NitelikliBilisim.App.Controllers
                 items = cartItems,
                 totalNumeric = sum,
                 oldTotalNumeric = oldPriceSum,
-                discountAmount = oldPriceSum-sum
+                discountAmount = oldPriceSum - sum
             };
 
             return Json(new ResponseModel
@@ -387,7 +388,7 @@ namespace NitelikliBilisim.App.Controllers
                     paymentResultModel.Status = PaymentResultStatus.Failure;
                     paymentResultModel.Message = result.Error.ErrorMessage;
                     ViewData["PaymentResult"] = paymentResultModel;
-                   return View("NormalPaymentResult");
+                    return View("NormalPaymentResult");
                 }
             }
 
@@ -692,6 +693,8 @@ namespace NitelikliBilisim.App.Controllers
             }
         }
         [Route("sepet/kurumsal-adres-ekle")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult AddCorporateAddress(AddCorporateAddressPostVm model)
         {
             if (!ModelState.IsValid)
@@ -713,6 +716,8 @@ namespace NitelikliBilisim.App.Controllers
 
         }
         [Route("sepet/bireysel-adres-ekle")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult AddIndividualAddress(AddIndividualAddressPostVm model)
         {
             if (!ModelState.IsValid)
@@ -724,6 +729,95 @@ namespace NitelikliBilisim.App.Controllers
                 model.CustomerId = userId;
                 model.IsDefaultAddress = true;
                 _unitOfWork.Address.AddIndividualAddress(model);
+                return RedirectToAction("InvoiceInformation", "Sale");
+            }
+            catch (Exception)
+            {
+                //Todo Log
+                throw;
+            }
+        }
+
+        [Route("get-address-info")]
+        
+        public IActionResult GetAddressInfo(int addressId)
+        {
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var address = _unitOfWork.Address.GetById(addressId);
+
+                if (address.CustomerId != userId)
+                    return Json(new ResponseModel
+                    {
+                        isSuccess = false
+                    });
+
+
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    data = address
+                });
+            }
+            catch (Exception ex)
+            {
+                //todo log
+                return Json(new ResponseModel
+                {
+                    isSuccess = false
+                });
+            }
+        }
+
+
+        [Route("sepet/kurumsal-adres-guncelle")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult UpdateCorporateAddress(UpdateCorporateAddressPostVm model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var corporateAddress = _unitOfWork.Address.GetById(model.Id);
+                corporateAddress.Title = model.UpdateCTitle;
+                corporateAddress.Content = model.UpdateCContent;
+                corporateAddress.TaxNumber = model.UpdateCTaxNumber;
+                corporateAddress.TaxOffice = model.UpdateCTaxOffice;
+                corporateAddress.StateId = model.UpdateCStateId;
+                corporateAddress.CityId = model.UpdateCCityId;
+                corporateAddress.PhoneNumber = model.UpdateCPhone;
+                corporateAddress.CompanyName = model.UpdateCCompanyName;
+                _unitOfWork.Address.Update(corporateAddress);
+                return RedirectToAction("InvoiceInformation", "Sale");
+            }
+            catch (Exception)
+            {
+                //Todo Log
+                throw;
+            }
+
+        }
+        [Route("sepet/bireysel-adres-guncelle")]
+        public IActionResult UpdateIndividualAddress(UpdateIndividualAddressPostVm model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var address = _unitOfWork.Address.GetById(model.Id);
+                address.Title = model.UpdateITitle;
+                address.Content = model.UpdateIContent;
+                address.CityId = model.UpdateICityId;
+                address.StateId = model.UpdateIStateId;
+                address.PhoneNumber = model.UpdateIPhone;
+                address.NameSurname = model.UpdateINameSurname;
+                _unitOfWork.Address.Update(address);
                 return RedirectToAction("InvoiceInformation", "Sale");
             }
             catch (Exception)

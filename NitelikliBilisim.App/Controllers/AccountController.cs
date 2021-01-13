@@ -178,6 +178,12 @@ namespace NitelikliBilisim.App.Controllers
                 await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, true);
             if (result.Succeeded)
             {
+                var user = await _userManager.FindByNameAsync(model.UserName);
+                var roles = await _userManager.GetRolesAsync(user);
+                if (roles.Contains("Admin"))
+                {
+                    return RedirectToAction("Index","Home",new { area="Admin"});
+                }
                 return Redirect(model.ReturnUrl ?? "/");
             }
             ModelState.AddModelError(string.Empty, "Böyle bir kullanıcı bulunmamaktadır!");

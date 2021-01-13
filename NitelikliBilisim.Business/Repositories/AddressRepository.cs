@@ -31,7 +31,8 @@ namespace NitelikliBilisim.Business.Repositories
                     Content = x.Content,
                     City = x.City.Name,
                     State = x.State.Name,
-                    IsDefault = x.IsDefaultAddress
+                    IsDefault = x.IsDefaultAddress,
+                    AddressType = x.AddressType
                 }).ToList();
         }
 
@@ -93,6 +94,18 @@ namespace NitelikliBilisim.Business.Repositories
         public Address GetFullAddressById(int id)
         {
           return _context.Addresses.Include(x=>x.City).Include(x=>x.State).FirstOrDefault(x => x.Id == id);
+        }
+
+        public void UpdateDefaultAddress(int defaultAddressId,string userId)
+        {
+            var otherAddresses = _context.Addresses.Where(x => x.CustomerId == userId);
+            foreach (var otherAddress in otherAddresses)
+            {
+                otherAddress.IsDefaultAddress = false;
+            }
+            var newDefaultAddress = otherAddresses.First(x => x.Id == defaultAddressId);
+            newDefaultAddress.IsDefaultAddress = true;
+            _context.SaveChanges();
         }
     }
 }

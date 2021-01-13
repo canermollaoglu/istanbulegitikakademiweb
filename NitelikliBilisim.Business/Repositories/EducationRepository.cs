@@ -11,6 +11,7 @@ using NitelikliBilisim.Core.ViewModels.areas.admin.education;
 using NitelikliBilisim.Core.ViewModels.Main;
 using NitelikliBilisim.Core.ViewModels.Main.Course;
 using NitelikliBilisim.Core.ViewModels.Main.EducationComment;
+using NitelikliBilisim.Core.ViewModels.Main.Home;
 using NitelikliBilisim.Core.ViewModels.search;
 using NitelikliBilisim.Data;
 using System;
@@ -76,6 +77,31 @@ namespace NitelikliBilisim.Business.Repositories
             }
             return false;
 
+        }
+
+        public List<EducationSearchTag> GetEducationSearchTags()
+        {
+            List<EducationSearchTag> searchTags = new();
+            var educations = Context.Educations.Where(x=>x.IsActive).Select(x => new { x.Id, x.Name }).ToList();
+            var bridge = (from b in Context.Bridge_EducationTags
+                          join t in Context.EducationTags on b.Id equals t.Id
+                          select new
+                          {
+                              b.Id2,
+                              t.Name
+                          }).ToList();
+
+            foreach (var education in educations)
+            {
+                var tags = bridge.Where(x => x.Id2 == education.Id).Select(x => x.Name).ToList();
+                tags.Add(education.Name);
+                searchTags.Add(new EducationSearchTag
+                {
+                    EducationName = education.Name,
+                    Tags = string.Join(" ", tags.ToArray())
+                });
+            }
+            return searchTags;
         }
 
         public PagedEntity<Education> GetPagedEntity(int page = 0, Expression<Func<Education, bool>> filter = null, int shownRecords = 15)
@@ -203,15 +229,15 @@ namespace NitelikliBilisim.Business.Repositories
 
         public int TotalEducationHours()
         {
-            var hoursParDay = Context.Educations.Sum(x =>x.HoursPerDay);
+            var hoursParDay = Context.Educations.Sum(x => x.HoursPerDay);
             var hours = Context.Educations.Sum(x => x.Days);
-            return hours*hoursParDay;
+            return hours * hoursParDay;
         }
 
-        public CoursesPagePagedListVm GetCoursesPageEducations(Guid? categoryId,int? hostCity, int page, OrderCriteria order)
+        public CoursesPagePagedListVm GetCoursesPageEducations(Guid? categoryId, int? hostCity, int page, OrderCriteria order, string searchKey)
         {
             var model = new CoursesPagePagedListVm();
-            var educations = Context.Educations.Include(x => x.Category);
+            var educations = Context.Educations.Include(x => x.Category).Where(x=>x.IsActive);
             var hostId = Guid.Parse(_configuration.GetSection("SiteGeneralOptions").GetSection("PriceLocationId").Value);
             var rawData = (from education in educations
                            join eImage in Context.EducationMedias on education.Id equals eImage.EducationId
@@ -220,7 +246,7 @@ namespace NitelikliBilisim.Business.Repositories
                            select new CoursesPageEducationsVm
                            {
                                Id = education.Id,
-                               Seo=education.SeoUrl,
+                               Seo = education.SeoUrl,
                                CSeo = education.Category.SeoUrl,
                                CreatedDate = education.CreatedDate,
                                Name = education.Name,
@@ -236,10 +262,29 @@ namespace NitelikliBilisim.Business.Repositories
                 rawData = rawData.Where(x => x.CategoryId == categoryId.Value);
             }
 
-            if (hostCity.HasValue)
+            if (hostCity.HasValue && hostCity.Value > 0)
             {
                 var city = (HostCity)hostCity;
-                var educationIds = Context.EducationGroups.Include(x => x.Host).Where(x => x.Host.City == city && x.StartDate>DateTime.Now.Date).Select(x => x.EducationId).ToList();
+                var educationIds = Context.EducationGroups.Include(x => x.Host).Where(x => x.Host.City == city && x.StartDate > DateTime.Now.Date).Select(x => x.EducationId).ToList();
+                rawData = rawData.Where(x => educationIds.Contains(x.Id));
+            }
+            if (!string.IsNullOrEmpty(searchKey))
+            {
+                var ids = rawData.Where(x => x.Name == searchKey || x.Name.Contains(searchKey)).Select(x=>x.Id).ToList();
+                searchKey = searchKey.FormatForTag();
+                var tags = Context.Bridge_EducationTags
+                                    .Join(Context.EducationTags, l => l.Id, r => r.Id, (x, y) => new
+                                    {
+                                        TagId = x.Id,
+                                        EducationId = x.Id2,
+                                        TagName = y.Name
+                                    })
+                                    .ToList();
+                var educationIds = tags
+                     .Where(x => x.TagName.Contains(searchKey))
+                     .Select(x => x.EducationId)
+                     .ToList();
+                educationIds.AddRange(ids);
                 rawData = rawData.Where(x => educationIds.Contains(x.Id));
             }
 
@@ -258,7 +303,7 @@ namespace NitelikliBilisim.Business.Repositories
             model.TotalCount = rawData.Count();
             model.TotalPageCount = (int)Math.Ceiling(rawData.Count() / (double)6);
             model.PageIndex = page;
-            rawData = rawData.Skip((page-1) * 6).Take(6);
+            rawData = rawData.Skip((page - 1) * 6).Take(6);
             var filteredEducations = rawData.ToList();
             foreach (var education in filteredEducations)
             {
@@ -965,10 +1010,10 @@ namespace NitelikliBilisim.Business.Repositories
         {
             var model = new HeaderEducationMenuVm();
             var allCategories = Context.EducationCategories;
-            var allEducations = Context.Educations.Where(x => x.IsActive).Include(x=>x.Category);
+            var allEducations = Context.Educations.Where(x => x.IsActive).Include(x => x.Category);
 
             var baseCategories = allCategories.Where(x => x.BaseCategoryId == null);
-            var subCategories = allCategories.Where(x => x.BaseCategoryId != null).Include(x=>x.Educations);
+            var subCategories = allCategories.Where(x => x.BaseCategoryId != null).Include(x => x.Educations);
             foreach (var baseCategory in baseCategories)
             {
                 var baseCategoryModel = new HeaderBaseCategory();
@@ -986,7 +1031,7 @@ namespace NitelikliBilisim.Business.Repositories
                     subCategoryModel.SeoUrl = subCategory.SeoUrl;
                     subCategoryModel.Id = subCategory.Id;
 
-                    foreach (var education in subCategory.Educations.Where(x=>x.IsActive))
+                    foreach (var education in subCategory.Educations.Where(x => x.IsActive))
                     {
                         var educationModel = new HeaderEducation();
                         educationModel.Id = education.Id;

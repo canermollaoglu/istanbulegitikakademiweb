@@ -63,6 +63,19 @@ namespace NitelikliBilisim.App.Controllers
             return View(model);
         }
 
+        [Route("arama-sonuclari")]
+        public IActionResult SearchResults(string s,HostCity h)
+        {
+            SearchResultsVm model = new SearchResultsVm();
+
+            model.Categories = _unitOfWork.EducationCategory.GetCoursesPageCategories();
+            model.OrderTypes = EnumHelpers.ToKeyValuePair<OrderCriteria>();
+            model.EducationHostCities = EnumHelpers.ToKeyValuePair<HostCity>();
+            model.TotalEducationCount = _unitOfWork.Education.TotalEducationCount();
+            model.SearchKey = s;
+            model.HostCity = (int)h;
+            return View(model);
+        }
 
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("{catSeoUrl}/{seoUrl}")]
@@ -211,10 +224,10 @@ namespace NitelikliBilisim.App.Controllers
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [HttpPost]
         [Route("get-courses")]
-        public IActionResult GetCourses(Guid? categoryId,int? hostCity, int page=1,OrderCriteria order = OrderCriteria.Latest)
+        public IActionResult GetCourses(Guid? categoryId,int? hostCity, string searchKey, int page=1,OrderCriteria order = OrderCriteria.Latest)
         {
             
-            var model = _unitOfWork.Education.GetCoursesPageEducations(categoryId,hostCity, page, order);
+            var model = _unitOfWork.Education.GetCoursesPageEducations(categoryId,hostCity, page, order,searchKey);
             
             foreach (var education in model.Educations)
             {

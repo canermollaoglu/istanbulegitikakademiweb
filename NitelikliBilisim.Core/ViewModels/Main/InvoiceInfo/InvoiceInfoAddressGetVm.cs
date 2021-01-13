@@ -1,4 +1,5 @@
 ﻿using NitelikliBilisim.Core.Entities.user_details;
+using NitelikliBilisim.Core.Enums.user_details;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +16,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.InvoiceInfo
         public string City { get; set; }
         public string State { get; set; }
         public bool IsDefault { get; set; }
+        public AddressTypes AddressType { get; set; }
     }
 }

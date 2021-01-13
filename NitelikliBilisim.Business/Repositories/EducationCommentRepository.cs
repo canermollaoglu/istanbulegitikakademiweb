@@ -39,19 +39,27 @@ namespace NitelikliBilisim.Business.Repositories
                            join user in _context.Users on comment.CommentatorId equals user.Id
                            join student in _context.Customers on user.Id equals student.Id
                            where !comment.IsEducatorComment
-                           && comment.ApprovalDate != null
-                           && categoryId.HasValue ? category.Id == categoryId : true
+                           && comment.ApprovalStatus == CommentApprovalStatus.Approved
                            select new EducationCommentListVm
                            {
                                CreatedDate = comment.CreatedDate,
                                Date = comment.CreatedDate.ToString("dd MMMM yyyy"),
+                               CategoryId = category.Id,
                                Category = category.Name,
                                Content = comment.Content,
                                Point = comment.Points,
                                UserName = $"{user.Name} {user.Surname}",
                                AvatarPath = user.AvatarPath,
-                               Job = EnumHelpers.GetDescription(student.Job)
+                               JobCode = student.Job
                            }).AsQueryable();
+
+
+            if (categoryId !=null)
+            {
+                rawdata = rawdata.Where(x => x.CategoryId == categoryId);
+            }
+
+
             switch (sType)
             {
                 case EducationCommentSortingTypes.Date:
@@ -68,6 +76,7 @@ namespace NitelikliBilisim.Business.Repositories
                     break;
             }
             retVal.TotalCount = rawdata.Count();
+            retVal.TotalPageCount = (int)Math.Ceiling(rawdata.Count() / (double)6);
             retVal.PageIndex = pageIndex;
             rawdata = rawdata.Skip((pageIndex - 1) * 6).Take(6);
             retVal.Comments = rawdata.ToList();

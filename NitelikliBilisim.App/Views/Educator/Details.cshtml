@@ -69,8 +69,8 @@
                                     </svg>
                                 </span>
                                 <div class="lesson-detail__info-cnt">
-                                    <span class="lesson-detail__info-txt">Eğitim Süresi</span>
-                                    <span class="lesson-detail__info-title">3 gün 12 saat</span>
+                                    <span class="lesson-detail__info-txt">@Model.EducationCount</span>
+                                    <span class="lesson-detail__info-title">Eğitim</span>
                                 </div>
                             </div>
                             <div class="lesson-detail__info">
@@ -80,8 +80,8 @@
                                     </svg>
                                 </span>
                                 <div class="lesson-detail__info-cnt">
-                                    <span class="lesson-detail__info-txt">Seviye</span>
-                                    <span class="lesson-detail__info-title">Yeni mezun</span>
+                                    <span class="lesson-detail__info-txt">@Model.StudentCount</span>
+                                    <span class="lesson-detail__info-title">Öğrenci</span>
                                 </div>
                             </div>
                         </div>
@@ -104,8 +104,8 @@
                             </svg>
                         </span>
                         <div class="lesson-detail__info-cnt">
-                            <span class="lesson-detail__info-txt">Eğitim Süresi</span>
-                            <span class="lesson-detail__info-title">3 gün 12 saat</span>
+                            <span class="lesson-detail__info-txt">@Model.EducationCount</span>
+                            <span class="lesson-detail__info-title">Eğitim</span>
                         </div>
                     </div>
                     <div class="lesson-detail__info">
@@ -115,8 +115,8 @@
                             </svg>
                         </span>
                         <div class="lesson-detail__info-cnt">
-                            <span class="lesson-detail__info-txt">Seviye</span>
-                            <span class="lesson-detail__info-title">Yeni mezun</span>
+                            <span class="lesson-detail__info-txt">@Model.StudentCount</span>
+                            <span class="lesson-detail__info-title">Öğrenci</span>
                         </div>
                     </div>
                 </div>
@@ -144,22 +144,18 @@
                             </span>
                         </div>
                         <div class="teacher-detail__info-boxes">
+                            @foreach (var category in Model.Categories)
+	{
                             <a href="egitim-listeleme.php" class="teacher-detail__info-box">
-                                <span class="icon-outer" style="background-color: #454fd2;">
+                                <span class="icon-outer" style="background-color: @category.IconColor;">
                                     <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-system-network"></use>
+                                        <use xlink:href="../../assets/img/icons.svg#@category.IconUrl"></use>
                                     </svg>
                                 </span>
-                                <span class="teacher-detail__info-box-txt">Sistem ve Ağ Yönetimi</span>
+                                <span class="teacher-detail__info-box-txt">@category.Name</span>
                             </a>
-                            <a href="egitim-listeme.php" class="teacher-detail__info-box">
-                                <span class="icon-outer" style="background-color: #222c38;">
-                                    <svg class="icon" style=" position: relative; left: -2px;">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-unity"></use>
-                                    </svg>
-                                </span>
-                                <span class="teacher-detail__info-box-txt">Web ve Mobil Programlama</span>
-                            </a>
+	}
+                            
                         </div>
                     </div>
                 </div>

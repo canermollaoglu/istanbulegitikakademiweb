@@ -1,4 +1,5 @@
-﻿using NitelikliBilisim.Core.Entities.user_details;
+﻿using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Entities.user_details;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,5 +23,8 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Educator
         public string TwitterUrl { get; set; }
         public string LinkedInUrl { get; set; }
         public string GooglePlusUrl { get; set; }
+        public int EducationCount { get; set; }
+        public int StudentCount { get; set; }
+        public List<EducationCategory> Categories { get; set; }
     }
 }

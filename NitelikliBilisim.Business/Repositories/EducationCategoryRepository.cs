@@ -2,6 +2,7 @@
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.ViewModels.Main.Course;
+using NitelikliBilisim.Core.ViewModels.Main.Home;
 using NitelikliBilisim.Data;
 using System;
 using System.Collections.Generic;
@@ -75,14 +76,15 @@ namespace NitelikliBilisim.Business.Repositories
             return base.Insert(entity, isSaveLater);
         }
 
-        public Dictionary<string, int> GetEducationCountForCategories()
+        public List<HomePageCategoryVm> GetEducationCountForCategories()
         {
-            var dictionary = new Dictionary<string, int>();
+            List<HomePageCategoryVm> model = new();
+            var dictionary = new Dictionary<Guid, int>();
             var baseCategories = _context.EducationCategories.Where(x => x.BaseCategoryId == null).ToList();
 
             foreach (var baseCategory in baseCategories)
             {
-                dictionary.Add(baseCategory.Name, 0);
+                dictionary.Add(baseCategory.Id, 0);
                 var subCategories = _context.EducationCategories.Where(x => x.BaseCategoryId == baseCategory.Id).Select(x => x.Id).ToList();
 
                 var categoryEducations = _context.EducationCategories.Where(x => subCategories.Contains(x.Id))
@@ -100,10 +102,24 @@ namespace NitelikliBilisim.Business.Repositories
                     }).ToList();
 
                 foreach (var item in categoryEducations)
-                    dictionary[baseCategory.Name] += item.Count;
+                    dictionary[baseCategory.Id] += item.Count;
             }
 
-            return dictionary;
+            foreach (var baseCategory in dictionary)
+            {
+                var c = baseCategories.First(x => x.Id == baseCategory.Key);
+                model.Add(new HomePageCategoryVm
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    IconColor = c.IconColor,
+                    IconUrl = c.IconUrl,
+                    EducationCount = baseCategory.Value,
+                    SeoUrl =c.SeoUrl
+                });
+            }
+
+            return model;
         }
 
         public IQueryable<EducationCategory> GetBaseCategoryListQueryable()

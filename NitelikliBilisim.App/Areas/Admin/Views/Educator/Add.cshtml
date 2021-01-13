@@ -89,7 +89,20 @@
                                 <select id="select-certificates" multiple="multiple" class="form-control">
                                     @foreach (var item in Model.Certificates)
                                     {
-                                        <option data-image="@StorageService.DownloadFile(System.IO.Path.GetFileName(item.CertificateImagePath), "educator-certificate-images").Result" value="@item.Id">@item.Name</option>
+                                        <option data-image="@(StorageService.BlobUrl+item.CertificateImagePath)" value="@item.Id">@item.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Eğitmenin Uzmanlık Alanları</label>
+                                <select id="select-education-categories" multiple="multiple" class="form-control">
+                                    @foreach (var item in Model.EducationCategories)
+                                    {
+                                        <option value="@item.Id">@item.Name</option>
                                     }
                                 </select>
                             </div>
