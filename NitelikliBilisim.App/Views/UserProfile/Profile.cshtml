@@ -60,9 +60,9 @@
                                         {
                                             var slideClass = "";
                                             if (i == Model.EducationWeek)
-                                                slideClass = "offset";
-                                            <div class="swiper-slide account-dashboard__week-slide js-main-tab-item @slideClass">
-                                                <a href="#week@(i)" class="account-dashboard__week-item">
+                                                slideClass = "offset active";
+                                            <div data-id="@i" class="swiper-slide account-dashboard__week-slide js-main-tab-item @slideClass">
+                                                <a  class="account-dashboard__week-item">
                                                     <span>Hafta</span>
                                                     <div>@i</div>
                                                 </a>
@@ -112,1611 +112,48 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div id="week1" class="account-dashboard__week-private-slider main-tab__item">
-                                    <div class="swiper-container js-week-private-slider">
-                                        <div class="swiper-wrapper">
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg6.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
+                                <div class="swiper-container js-week-private-slider">
+                                    <div class="swiper-wrapper">
+                                        <div class="swiper-slide">
+                                            <a href="egitim-detay.php" class="lesson-list__item">
+                                                <div class="lesson-list__item-img">
+                                                    <img src="" alt="">
+                                                </div>
+                                                <div class="lesson-list__item-cnt">
+                                                    <div class="lesson-list__item-left">
+                                                        <div class="lesson-list__item-title">
+                                                            
                                                         </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 800,00
-                                                            </div>
+                                                        <div class="lesson-list__item-txt">
+                                                            Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
+                                                            dahi devamlı
+                                                            erişilebilir
                                                         </div>
                                                     </div>
-                                                </a>
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg4.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
+                                                    <div class="lesson-list__item-right">
+                                                        <div class="lesson-list__item-date">
+                                                            <span class="icon-outer">
+                                                                <svg class="icon">
+                                                                    <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                                                                </svg>
+                                                            </span>
+                                                            3 gün ( 12 saat )
                                                         </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 200,00
-                                                            </div>
+                                                        <div class="lesson-list__item-price">
+                                                            <span>₺</span> 800,00
                                                         </div>
                                                     </div>
-                                                </a>
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg5.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 1200,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
+                                                </div>
+                                            </a>
                                         </div>
-                                        <!-- If we need pagination -->
-                                        <div class="swiper-pagination"></div>
-
-                                        <!-- If we need navigation buttons -->
-
                                     </div>
+                                    <!-- If we need pagination -->
+                                    <div class="swiper-pagination"></div>
+
+                                    <!-- If we need navigation buttons -->
+
                                 </div>
-                                <div id="week2" class="account-dashboard__week-private-slider main-tab__item">
-                                    <div class="swiper-container js-week-private-slider">
-                                        <div class="swiper-wrapper">
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg6.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 800,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg4.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 200,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg5.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 1200,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <!-- If we need pagination -->
-                                        <div class="swiper-pagination"></div>
-
-                                        <!-- If we need navigation buttons -->
-
-                                    </div>
-                                </div>
-                                <div id="week3" class="account-dashboard__week-private-slider main-tab__item">
-                                    <div class="swiper-container js-week-private-slider">
-                                        <div class="swiper-wrapper">
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg6.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 800,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg4.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 200,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg5.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 1200,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <!-- If we need pagination -->
-                                        <div class="swiper-pagination"></div>
-
-                                        <!-- If we need navigation buttons -->
-
-                                    </div>
-                                </div>
-                                <div id="week4" class="account-dashboard__week-private-slider main-tab__item">
-                                    <div class="swiper-container js-week-private-slider">
-                                        <div class="swiper-wrapper">
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg6.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 800,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg4.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 200,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg5.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 1200,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <!-- If we need pagination -->
-                                        <div class="swiper-pagination"></div>
-
-                                        <!-- If we need navigation buttons -->
-
-                                    </div>
-                                </div>
-                                <div id="week5" class="account-dashboard__week-private-slider main-tab__item">
-                                    <div class="swiper-container js-week-private-slider">
-                                        <div class="swiper-wrapper">
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg6.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 800,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg4.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 200,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg5.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 1200,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <!-- If we need pagination -->
-                                        <div class="swiper-pagination"></div>
-
-                                        <!-- If we need navigation buttons -->
-
-                                    </div>
-                                </div>
-                                <div id="week6" class="account-dashboard__week-private-slider main-tab__item active">
-                                    <div class="swiper-container js-week-private-slider">
-                                        <div class="swiper-wrapper">
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg6.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 800,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg4.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 200,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg5.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 1200,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <!-- If we need pagination -->
-                                        <div class="swiper-pagination"></div>
-
-                                        <!-- If we need navigation buttons -->
-
-                                    </div>
-                                </div>
-                                <div id="week7" class="account-dashboard__week-private-slider main-tab__item">
-                                    <div class="swiper-container js-week-private-slider">
-                                        <div class="swiper-wrapper">
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg6.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 800,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg4.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 200,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg5.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 1200,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <!-- If we need pagination -->
-                                        <div class="swiper-pagination"></div>
-
-                                        <!-- If we need navigation buttons -->
-
-                                    </div>
-                                </div>
-                                <div id="week8" class="account-dashboard__week-private-slider main-tab__item">
-                                    <div class="swiper-container js-week-private-slider">
-                                        <div class="swiper-wrapper">
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg6.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 800,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg4.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 200,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg5.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 1200,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <!-- If we need pagination -->
-                                        <div class="swiper-pagination"></div>
-
-                                        <!-- If we need navigation buttons -->
-
-                                    </div>
-                                </div>
-                                <div id="week9" class="account-dashboard__week-private-slider main-tab__item">
-                                    <div class="swiper-container js-week-private-slider">
-                                        <div class="swiper-wrapper">
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg6.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 800,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg4.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 200,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg5.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 1200,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <!-- If we need pagination -->
-                                        <div class="swiper-pagination"></div>
-
-                                        <!-- If we need navigation buttons -->
-
-                                    </div>
-                                </div>
-                                <div id="week10" class="account-dashboard__week-private-slider main-tab__item">
-                                    <div class="swiper-container js-week-private-slider">
-                                        <div class="swiper-wrapper">
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg6.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 800,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg4.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 200,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg5.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 1200,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <!-- If we need pagination -->
-                                        <div class="swiper-pagination"></div>
-
-                                        <!-- If we need navigation buttons -->
-
-                                    </div>
-                                </div>
-                                <div id="week11" class="account-dashboard__week-private-slider main-tab__item">
-                                    <div class="swiper-container js-week-private-slider">
-                                        <div class="swiper-wrapper">
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg6.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 800,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg4.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 200,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg5.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 1200,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <!-- If we need pagination -->
-                                        <div class="swiper-pagination"></div>
-
-                                        <!-- If we need navigation buttons -->
-
-                                    </div>
-                                </div>
-                                <div id="week12" class="account-dashboard__week-private-slider main-tab__item">
-                                    <div class="swiper-container js-week-private-slider">
-                                        <div class="swiper-wrapper">
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg6.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 800,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg4.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 200,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg5.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 1200,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <!-- If we need pagination -->
-                                        <div class="swiper-pagination"></div>
-
-                                        <!-- If we need navigation buttons -->
-
-                                    </div>
-                                </div>
-                                <div id="week13" class="account-dashboard__week-private-slider main-tab__item">
-                                    <div class="swiper-container js-week-private-slider">
-                                        <div class="swiper-wrapper">
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg6.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 800,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg4.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 200,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg5.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 1200,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <!-- If we need pagination -->
-                                        <div class="swiper-pagination"></div>
-
-                                        <!-- If we need navigation buttons -->
-
-                                    </div>
-                                </div>
-                                <div id="week14" class="account-dashboard__week-private-slider main-tab__item">
-                                    <div class="swiper-container js-week-private-slider">
-                                        <div class="swiper-wrapper">
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg6.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 800,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg4.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 200,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg5.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 1200,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <!-- If we need pagination -->
-                                        <div class="swiper-pagination"></div>
-
-                                        <!-- If we need navigation buttons -->
-
-                                    </div>
-                                </div>
-                                <div id="week15" class="account-dashboard__week-private-slider main-tab__item">
-                                    <div class="swiper-container js-week-private-slider">
-                                        <div class="swiper-wrapper">
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg6.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 800,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg4.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 200,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <a href="egitim-detay.php" class="lesson-list__item">
-                                                    <div class="lesson-list__item-img">
-                                                        <img src="../../assets/img/cardimg5.jpg" alt="">
-                                                    </div>
-                                                    <div class="lesson-list__item-cnt">
-                                                        <div class="lesson-list__item-left">
-                                                            <div class="lesson-list__item-title">
-                                                                Active Directory Sertifika Servisleri
-                                                            </div>
-                                                            <div class="lesson-list__item-txt">
-                                                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                                dahi devamlı
-                                                                erişilebilir
-                                                            </div>
-                                                        </div>
-                                                        <div class="lesson-list__item-right">
-                                                            <div class="lesson-list__item-date">
-                                                                <span class="icon-outer">
-                                                                    <svg class="icon">
-                                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                                    </svg>
-                                                                </span>
-                                                                3 gün ( 12 saat )
-                                                            </div>
-                                                            <div class="lesson-list__item-price">
-                                                                <span>₺</span> 1200,00
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <!-- If we need pagination -->
-                                        <div class="swiper-pagination"></div>
-
-                                        <!-- If we need navigation buttons -->
-
-                                    </div>
-                                </div>
+                                
                             </div>
                         </div>
                     }
@@ -2020,9 +457,157 @@
 
 @section postScripts{
     <script src="~/js/lib/file-uploader.js"></script>
-    <!--<script src="~/js/pages/userprofile-profile.js"></script>-->
 
     <script type="text/javascript">
+        var dashboardWeekSlider = new Swiper('.js-dashboard-week-slider', {
+            autoplay: false,
+            keyboard: false,
+            autoHeight: true,
+            loop: false,
+            simulateTouch: true,
+            slidesPerView: 'auto',
+            freeMode: true,
+            spaceBetween: 0,
+            initialSlide: 5,
+            speed: 600,
+            navigation: {
+                nextEl: '.account-dashboard__week .swiper-button-next',
+                prevEl: '.account-dashboard__week .swiper-button-prev',
+            },
+        });
+        if ($('.account-dashboard').length > 0) {
+            dashboardWeekSlider.on('touchStart', function () {
+                var dashboardWeekSliderContainer = $('.js-dashboard-week-slider').offset().left;
+                var dashboardWeekSlideContainer = $('.account-dashboard__week-slide.active').offset().left;
+                console.log('its weekslider', dashboardWeekSliderContainer, dashboardWeekSlideContainer);
+                if (dashboardWeekSliderContainer > dashboardWeekSlideContainer) {
+                    $('.js-dashboard-week-arrow').css('left', dashboardWeekSliderContainer);
+                }
+            });
+            $(document).ready(dashboardWeekFunc);
+            $(window).on('resize', dashboardWeekFunc);
+
+            function dashboardWeekFunc() {
+                var accDashL = $('.account--dashboard')
+                    .find('.container')
+                    .offset().left;
+                $('.js-fix-pos').css('width', accDashL + 50);
+                var dashboardWeekContent = $('.account-dashboard__week-content').offset().top;
+                var dashboardWeekSlideActive = $('.account-dashboard__week-slide.active').offset().left;
+                console.log(dashboardWeekSlideActive);
+                $('.js-dashboard-week-arrow').css('top', dashboardWeekContent);
+                $('.js-dashboard-week-arrow').css('left', dashboardWeekSlideActive);
+                $('.account-dashboard__week-slide').mouseenter(function () {
+                    var dashboardWeekSlideLeft = $(this).offset().left;
+                    $('.js-dashboard-week-arrow').css('left', dashboardWeekSlideLeft);
+                });
+                $('.account-dashboard__week-slide').mouseleave(function () {
+                    var dashboardWeekSlideActive = $('.account-dashboard__week-slide.active').offset().left;
+                    $('.js-dashboard-week-arrow').css('left', dashboardWeekSlideActive);
+                });
+                $('.account-dashboard__week-slide.active')
+                    .prevAll()
+                    .addClass('preved');
+                $('.account-dashboard__week-slide').click(function () {
+                    $('.account-dashboard__week-slide').removeClass('active');
+                    $(this).addClass('active');
+                    $(this)
+                        .prevAll()
+                        .addClass('preved');
+                    $(this)
+                        .nextAll()
+                        .removeClass('preved');
+                });
+            }
+        }
+        var weekPrivateSlider = new Swiper('.js-week-private-slider', {
+            autoplay: false,
+            keyboard: false,
+            autoHeight: true,
+            loop: true,
+            effect: 'fade',
+            simulateTouch: true,
+            slidesPerView: 1,
+            spaceBetween: 0,
+            speed: 600,
+            pagination: {
+                el: '.js-week-private-slider .swiper-pagination',
+                clickable: true,
+            },
+            navigation: {
+                nextEl: '.account-dashboard__week-content .swiper-button-next',
+                prevEl: '.account-dashboard__week-content .swiper-button-prev',
+            },
+            breakpoints: {
+                // when window width is >= 640px
+                768: {
+                    slidesPerView: 'auto',
+                },
+                576: {},
+            },
+        });
+        
+        $(".account-dashboard__week-slide").click(function () {
+            var activeWeek = $(".account-dashboard__week-slide.active")
+                .data("id");
+            weekPrivateSlider.removeAllSlides();
+            loadSuggestedEducations(activeWeek);
+        });
+
+        function loadSuggestedEducations(week) {
+            $.ajax({
+                url: `/haftaya-ozel-kurslar`,
+                method: "post",
+                data: {
+                    week: week,
+                },
+                success: (res) => {
+                    $.each(res.data, function (index, e) {
+                        console.log(e);
+                        weekPrivateSlider.appendSlide([
+                            `<div class="swiper-slide">
+                                            <a href="egitim-detay.php" class="lesson-list__item">
+                                                <div class="lesson-list__item-img">
+                                                    <img src="${e.medias[0].fileUrl}" alt="">
+                                                </div>
+                                                <div class="lesson-list__item-cnt">
+                                                    <div class="lesson-list__item-left">
+                                                        <div class="lesson-list__item-title">
+                                                            ${e.base.name}
+                                                        </div>
+                                                        <div class="lesson-list__item-txt">
+                                                            Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
+                                                            dahi devamlı
+                                                            erişilebilir
+                                                        </div>
+                                                    </div>
+                                                    <div class="lesson-list__item-right">
+                                                        <div class="lesson-list__item-date">
+                                                            <span class="icon-outer">
+                                                                <svg class="icon">
+                                                                    <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                                                                </svg>
+                                                            </span>
+                                                            3 gün ( 12 saat )
+                                                        </div>
+                                                        <div class="lesson-list__item-price">
+                                                             800,00 <span>TL</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>` ]);
+                    });
+                }
+            });
+        }
+
+
+       
+
+
+       
+
         $('.js-btn-fav').click(function () {
             var educationId = $(this).attr("data-eid");
             $.ajax({

@@ -737,7 +737,7 @@ $(document).ready(function () {
             },
         },
     });
-
+    
     var swiper = new Swiper('.js-swiper-home-comments', {
         centeredSlides: true,
         keyboard: true,
@@ -956,94 +956,8 @@ $(document).ready(function () {
             },
         },
     });
-    var WeekPrivateSlider = new Swiper('.js-week-private-slider', {
-        autoplay: false,
-        keyboard: false,
-        autoHeight: true,
-        loop: true,
-        effect: 'fade',
-        simulateTouch: true,
-        slidesPerView: 1,
-        spaceBetween: 0,
-        speed: 600,
-        pagination: {
-            el: '.js-week-private-slider .swiper-pagination',
-            clickable: true,
-        },
-        navigation: {
-            nextEl: '.account-dashboard__week-content .swiper-button-next',
-            prevEl: '.account-dashboard__week-content .swiper-button-prev',
-        },
-        breakpoints: {
-            // when window width is >= 640px
-            768: {
-                slidesPerView: 'auto',
-            },
-            576: {},
-        },
-    });
-
-    var dashboardWeekSlider = new Swiper('.js-dashboard-week-slider', {
-        autoplay: false,
-        keyboard: false,
-        autoHeight: true,
-        loop: false,
-        simulateTouch: true,
-        slidesPerView: 'auto',
-        freeMode: true,
-        spaceBetween: 0,
-        speed: 600,
-        navigation: {
-            nextEl: '.account-dashboard__week .swiper-button-next',
-            prevEl: '.account-dashboard__week .swiper-button-prev',
-        },
-    });
-    if ($('.account-dashboard').length > 0) {
-        dashboardWeekSlider.on('touchStart', function () {
-            console.log('changed swiper');
-            var dashboardWeekSliderContainer = $('.js-dashboard-week-slider').offset().left;
-            var dashboardWeekSlideContainer = $('.account-dashboard__week-slide.active').offset().left;
-            console.log('its weekslider', dashboardWeekSliderContainer, dashboardWeekSlideContainer);
-            if (dashboardWeekSliderContainer > dashboardWeekSlideContainer) {
-                $('.js-dashboard-week-arrow').css('left', dashboardWeekSliderContainer);
-            }
-        });
-        $(document).ready(dashboardWeekFunc);
-        $(window).on('resize', dashboardWeekFunc);
-
-        function dashboardWeekFunc() {
-            var accDashL = $('.account--dashboard')
-                .find('.container')
-                .offset().left;
-            $('.js-fix-pos').css('width', accDashL + 50);
-            var dashboardWeekContent = $('.account-dashboard__week-content').offset().top;
-            var dashboardWeekSlideActive = $('.account-dashboard__week-slide.active').offset().left;
-            console.log(dashboardWeekSlideActive);
-            $('.js-dashboard-week-arrow').css('top', dashboardWeekContent);
-            $('.js-dashboard-week-arrow').css('left', dashboardWeekSlideActive);
-            $('.account-dashboard__week-slide').mouseenter(function () {
-                var dashboardWeekSlideLeft = $(this).offset().left;
-                $('.js-dashboard-week-arrow').css('left', dashboardWeekSlideLeft);
-            });
-            $('.account-dashboard__week-slide').mouseleave(function () {
-                var dashboardWeekSlideActive = $('.account-dashboard__week-slide.active').offset().left;
-                $('.js-dashboard-week-arrow').css('left', dashboardWeekSlideActive);
-            });
-            $('.account-dashboard__week-slide.active')
-                .prevAll()
-                .addClass('preved');
-            $('.account-dashboard__week-slide').click(function () {
-                $('.account-dashboard__week-slide').removeClass('active');
-                $(this).addClass('active');
-                $(this)
-                    .prevAll()
-                    .addClass('preved');
-                $(this)
-                    .nextAll()
-                    .removeClass('preved');
-            });
-        }
-    }
+    
+   
 
     $('body').on('click', '.js-wizard-categori', function () {
         $(this).toggleClass('selected');
