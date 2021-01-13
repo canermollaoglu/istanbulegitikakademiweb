@@ -42,7 +42,9 @@
             <div class="account-side__top">
                 <div class="account-side__img">
                     <input type="image" class="account-side__img-img" src="@userAvatarPath" />
-                    <input type="file" id="accountSideImg" style="display: none;" />
+                    <form method="post" class="imageForm" data-ajax="false" enctype="multipart/form-data" action="/profil-resmi-degistir">
+                        <input type="file" class="accountSideImg" name="ProfileImage" style="display: none;" />
+                    </form>
                     <div class="account-side__img-edit">
                         <span class="icon-outer">
                             <svg class="icon">
