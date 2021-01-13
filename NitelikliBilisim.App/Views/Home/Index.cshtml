@@ -166,204 +166,36 @@
                         <!-- Additional required wrapper -->
                         <div class="swiper-wrapper">
                             <!-- Slides -->
-                            <div class="swiper-slide">
-                                <div class="popular-technology__item">
-                                    <div class="popular-technology__icon" style="background: #012b69;">
-                                        <span class="icon-outer">
-                                            <svg class="icon">
-                                                <use xlink:href="../../assets/img/icons.svg#icon-window-code"></use>
-                                            </svg>
-                                        </span>
-                                    </div>
-                                    <div class="popular-technology__txt">
-                                        Web ve Mobil Programlama
-                                    </div>
-                                    <div class="popular-technology__bottom">
-                                        <a href="/egitimler/web-ve-mobil-programlama">
-                                            <div>
-                                                @if (Model.EducationCountByCategory.ContainsKey("Web ve Mobil Programlama"))
-                                                {
-                                                    <text>@Model.EducationCountByCategory["Web ve Mobil Programlama"] Eğitim</text>
-                                                }
-                                                else
-                                                {
-                                                    <text>0 Eğitim</text>
-                                                }
-                                            </div>
+                            @foreach (var category in Model.EducationCountByCategory)
+                            {
+                                <div class="swiper-slide">
+                                    <div class="popular-technology__item">
+                                        <div class="popular-technology__icon" style="background:@category.IconColor;">
                                             <span class="icon-outer">
                                                 <svg class="icon">
-                                                    <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
+                                                    <use xlink:href="../../assets/img/icons.svg#@category.IconUrl"></use>
                                                 </svg>
                                             </span>
-                                        </a>
+                                        </div>
+                                        <div class="popular-technology__txt">
+                                            @category.Name
+                                        </div>
+                                        <div class="popular-technology__bottom">
+                                            <a asp-controller="Course" asp-action="List" asp-route-catSeoUrl="@category.SeoUrl">
+                                                <div>
+                                                        @category.EducationCount Eğitim
+                                                </div>
+                                                <span class="icon-outer">
+                                                    <svg class="icon">
+                                                        <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
+                                                    </svg>
+                                                </span>
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="popular-technology__item">
-                                    <div class="popular-technology__icon" style="background: #454fd2;">
-                                        <span class="icon-outer">
-                                            <svg class="icon">
-                                                <use xlink:href="../../assets/img/icons.svg#icon-system-network"></use>
-                                            </svg>
-                                        </span>
-                                    </div>
-                                    <div class="popular-technology__txt">
-                                        Sistem ve Ağ Yönetimi
-                                    </div>
-                                    <div class="popular-technology__bottom">
-                                        <a href="/egitimler/sistem-ve-ag-yonetimi">
-                                            <div>
-                                                @if (Model.EducationCountByCategory.ContainsKey("Sistem ve Ağ Yönetimi"))
-                                                {
-                                                    <text>@Model.EducationCountByCategory["Sistem ve Ağ Yönetimi"] Eğitim</text>
-                                                }
-                                                else
-                                                {
-                                                    <text>0 Eğitim</text>
-                                                }
-                                            </div>
-                                            <span class="icon-outer">
-                                                <svg class="icon">
-                                                    <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
-                                                </svg>
-                                            </span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="popular-technology__item">
-                                    <div class="popular-technology__icon" style="background: #0072cd;">
-                                        <span class="icon-outer">
-                                            <svg class="icon">
-                                                <use xlink:href="../../assets/img/icons.svg#icon-azure"></use>
-                                            </svg>
-                                        </span>
-                                    </div>
-                                    <div class="popular-technology__txt">
-                                        Siber Güvenlik
-                                    </div>
-                                    <div class="popular-technology__bottom">
-                                        <a href="/egitimler/siber-guvenlik">
-                                            <div>
-                                                @if (Model.EducationCountByCategory.ContainsKey("Siber Güvenlik"))
-                                                {
-                                                    <text>@Model.EducationCountByCategory["Siber Güvenlik"] Eğitim</text>
-                                                }
-                                                else
-                                                {
-                                                    <text>0 Eğitim</text>
-                                                }
-                                            </div>
-                                            <span class="icon-outer">
-                                                <svg class="icon">
-                                                    <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
-                                                </svg>
-                                            </span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="popular-technology__item">
-                                    <div class="popular-technology__icon" style="background: #0566dd;">
-                                        <span class="icon-outer">
-                                            <svg class="icon">
-                                                <use xlink:href="../../assets/img/icons.svg#icon-microsoft-azure"></use>
-                                            </svg>
-                                        </span>
-                                    </div>
-                                    <div class="popular-technology__txt">
-                                        Bulut Bilişim
-                                    </div>
-                                    <div class="popular-technology__bottom">
-                                        <a href="/egitimler/bulut-bilisim">
-                                            <div>
-                                                @if (Model.EducationCountByCategory.ContainsKey("Bulut Bilişim"))
-                                                {
-                                                    <text>@Model.EducationCountByCategory["Bulut Bilişim"] Eğitim</text>
-                                                }
-                                                else
-                                                {
-                                                    <text>0 Eğitim</text>
-                                                }
-                                            </div>
-                                            <span class="icon-outer">
-                                                <svg class="icon">
-                                                    <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
-                                                </svg>
-                                            </span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="popular-technology__item">
-                                    <div class="popular-technology__icon" style="background: #222c38;">
-                                        <span class="icon-outer">
-                                            <svg class="icon">
-                                                <use xlink:href="../../assets/img/icons.svg#icon-unity"></use>
-                                            </svg>
-                                        </span>
-                                    </div>
-                                    <div class="popular-technology__txt">
-                                        Oyun Programlama
-                                    </div>
-                                    <div class="popular-technology__bottom">
-                                        <a href="/egitimler/oyun-programlama">
-                                            <div>
-                                                @if (Model.EducationCountByCategory.ContainsKey("Oyun Programlama"))
-                                                {
-                                                    <text>@Model.EducationCountByCategory["Oyun Programlama"] Eğitim</text>
-                                                }
-                                                else
-                                                {
-                                                    <text>0 Eğitim</text>
-                                                }
-                                            </div>
-                                            <span class="icon-outer">
-                                                <svg class="icon">
-                                                    <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
-                                                </svg>
-                                            </span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="popular-technology__item">
-                                    <div class="popular-technology__icon" style="background: #00b5c3;">
-                                        <span class="icon-outer">
-                                            <svg class="icon">
-                                                <use xlink:href="../../assets/img/icons.svg#icon-dynamics"></use>
-                                            </svg>
-                                        </span>
-                                    </div>
-                                    <div class="popular-technology__txt">
-                                        Kurumsal Kaynak Planlama
-                                    </div>
-                                    <div class="popular-technology__bottom">
-                                        <a href="/egitimler/kurumsal-kaynak-planlama">
-                                            <div>
-                                                @if (Model.EducationCountByCategory.ContainsKey("Kurumsal Kaynak Planlama"))
-                                                {
-                                                    <text>@Model.EducationCountByCategory["Kurumsal Kaynak Planlama"] Eğitim</text>
-                                                }
-                                                else
-                                                {
-                                                    <text>0 Eğitim</text>
-                                                }
-                                            </div>
-                                            <span class="icon-outer">
-                                                <svg class="icon">
-                                                    <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
-                                                </svg>
-                                            </span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+                            }
+
                         </div>
                         <div class="swiper-pagination"></div>
 
