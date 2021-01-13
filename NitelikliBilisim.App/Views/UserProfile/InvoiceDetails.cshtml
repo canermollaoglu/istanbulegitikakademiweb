@@ -50,7 +50,7 @@
                                         <div class="checkout__product-right">
                                             <div class="checkout__product-title">@detail.Education</div>
                                             <div class="checkout__product-new">
-                                                <span>₺</span> @detail.PaidPrice
+                                                 @detail.PaidPrice <span>TL</span>
                                             </div>
                                         </div>
                                     </div>
@@ -61,13 +61,13 @@
                                 <div class="checkout__price-item">
                                     <div class="checkout__price-title">Ürünler Toplamı</div>
                                     <div class="checkout__price-new">
-                                        <span>₺</span> @Model.TotalPrice
+                                         @Model.TotalPrice <span>TL</span>
                                     </div>
                                 </div>
                                 <div class="checkout__price-item">
                                     <div class="checkout__price-title">Toplam İndirimler</div>
                                     <div class="checkout__price-new">
-                                        <span>₺</span> @Model.DiscountAmount
+                                         @Model.DiscountAmount <span>TL</span>
                                     </div>
                                 </div>
                                 <div class="checkout__price-item payment-method">
@@ -86,7 +86,7 @@
                                         }
                                         else
                                         {
-                                            <text>Kredi Kartı(@Model.InstallmentInfo Taksit)</text>
+                                            <text>Kredi Kartı (@Model.InstallmentInfo Taksit)</text>
                                         }
 
                                         <!-- Havale / EFT -->
@@ -95,7 +95,7 @@
                                 <div class="checkout__price-item totaly">
                                     <div class="checkout__price-title">Toplam Tutar</div>
                                     <div class="checkout__price-new">
-                                        <span>₺</span> @Model.PaidPrice
+                                         @Model.PaidPrice <span>TL</span>
                                     </div>
                                 </div>
                             </div>
