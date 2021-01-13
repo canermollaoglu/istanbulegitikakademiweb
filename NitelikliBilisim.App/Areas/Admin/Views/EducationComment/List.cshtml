@@ -148,8 +148,7 @@
                             displayExpr: "value",
                             valueExpr:"key"
                         }
-                    },
-                   
+                    }
                 ],
                 masterDetail: {
                     enabled: true,
@@ -165,7 +164,7 @@
                             `<button type="button" onClick="setStatus('${currentComment.id}',1010)" title="Onayla" class="btn btn-sm btn-outline-success pull-right"><i class="fa fa-check"></i></button>` +
                             `<button type="button" onClick="setStatus('${currentComment.id}',1020)" title="Reddet" style="margin-right:10px;" class="btn btn-sm btn-outline-danger pull-right"><i class="fa fa-times"></i></button>` +
                             `</div>` +
-                            `<div class="card-body"><p>${currentComment.content}</p><p><b>Puan: </b>${currentComment.point}</p></div></div></div>`;
+                            `<div class="card-body"><p>${currentComment.content}</p><b>Puan: </b>${currentComment.point}<b><br/>Karakter Sayısı:</b>${currentComment.content.length}<br><b>Önerilen Karakter Sayısı :</b>170</div></div></div>`;
                         currentDiv.append(content);
                         if (currentComment.approvalStatus == 1010) {
                             currentDiv.append(highlight);
