@@ -1,4 +1,4 @@
-﻿@model NitelikliBilisim.Core.ViewModels.Main.Course.CourseListGetVm
+﻿@model NitelikliBilisim.Core.ViewModels.Main.Course.SearchResultsVm
 @{
     ViewData["Title"] = "Arama Sonuçları";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -28,7 +28,7 @@
                 </div>
                 <div class="subheader__txt-cnt">
                     <div class="subheader__title">Arama Sonuçları</div>
-                    <div class="subheader__txt">x kelimesi arama sonuçları</div>
+                    <div class="subheader__txt">@Model.SearchKey kelimesi arama sonuçları</div>
                 </div>
             </div>
         </div>
@@ -40,10 +40,11 @@
 
 
 <section class="lesson-list">
-    <input type="hidden" value="@Model.CategoryId" id="current-category-id" />
+    <input type="hidden" id="current-category-id" />
     <input type="hidden" id="current-page" />
     <input type="hidden" id="current-order" />
-    <input type="hidden" id="current-host-city" />
+    <input type="hidden" value="@Model.HostCity" id="current-host-city" />
+    <input type="hidden" value="@Model.SearchKey" id="search-key" />
     <div class="container">
         <div class="lesson-list__wrp">
             <div class="lesson-list__content">
@@ -126,7 +127,7 @@
                         </span>
                     </div>
                     <div class="side-categories__cnt js-vertical-magic-line">
-                        <div class="side-categories__item js-vertical-magic-line-item @(Model.CategoryId == null?"active":"")">
+                        <div class="side-categories__item js-vertical-magic-line-item ">
                             <a asp-controller="Course" asp-action="List" asp-route-catSeoUrl="" class="side-category-item">
                                 <span class="side-categories__txt">Tüm Eğitimler</span>
                                 <span class="side-categories__count">@Model.TotalEducationCount</span>
@@ -134,7 +135,7 @@
                         </div>
                         @foreach (var category in Model.Categories)
                         {
-                            <div class="side-categories__item js-vertical-magic-line-item @(category.Id == Model.CategoryId?"active":"")">
+                            <div class="side-categories__item js-vertical-magic-line-item">
                                 <a asp-controller="Course" asp-action="List" asp-route-catSeoUrl="@category.SeoUrl" class="side-category-item">
                                     <span class="side-categories__txt">@category.Name</span>
                                     <span class="side-categories__count">@category.EducationCount</span>
@@ -267,12 +268,18 @@
         var currentPage = $("#current-page");
         var currentHostCity = $("#current-host-city");
         var currentOrder = $("#current-order");
+        var searchKey = $("#search-key");
         var lessonsContent = $(".lesson-list__items");
         var paginationContent = $(".pagination");
 
         $(function () {
-            getSearchResults();
+            if (currentHostCity.val()>0) {
+                $("#hostCitySelect").val(currentHostCity.val()).trigger('change');
+            } else {
+                getSearchResults();
+            }
         });
+
 
         $(".js-sort-select").change(function () {
             currentHostCity.val($("#hostCitySelect").val());
@@ -289,6 +296,7 @@
                     hostCity: currentHostCity.val(),
                     page: currentPage.val(),
                     order: currentOrder.val(),
+                    searchKey: searchKey.val()
                 },
                 success: (res) => {
                     if (res.data.educations.length == 0) {

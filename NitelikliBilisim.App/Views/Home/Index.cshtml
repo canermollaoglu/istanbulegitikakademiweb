@@ -24,7 +24,7 @@
                         Teorik Eğitimini Proje Yazarak Pekiştir, Sertifikanı Al, <br /> Aranan BT Uzmanı Ol !
                     </p>
 
-                    <form action="" class="is-hero__form">
+                    <form action="arama-sonuclari" class="is-hero__form">
                         <div id="firstSearch" class="dropdown js-dropdown">
                             <span class="icon-outer is-hero__dropdown-icon">
                                 <svg class="icon">
@@ -34,7 +34,7 @@
 
                             <div class="dropdown__title-wrap">
                                 <span class="dropdown__subtitle">Eğitim Arayın</span>
-                                <input type="search" class="dropdown__title js-title" autocomplete="off" value="" />
+                                <input name="s" type="search" class="dropdown__title js-title" autocomplete="off" value="" />
                             </div>
 
                             <div class="dropdown__content">
@@ -71,7 +71,7 @@
                         </div> -->
 
                         <div class="select-index-dropdown">
-                            <select class="js-index-location-select">
+                            <select name="h" class="js-index-location-select">
                                 <option value="" selected hidden disabled>Konum Seçin</option>
                                 @foreach (var city in Model.HostCities)
                                 {
@@ -80,14 +80,14 @@
                             </select>
                         </div>
 
-                        <a class="button">
+                        <button type="submit" class="button">
                             <span class="icon-outer button-icon">
                                 <svg class="icon">
                                     <use xlink:href="../../assets/img/icons.svg#icon-search"></use>
                                 </svg>
                             </span>
                             <span>Eğitim Bul</span>
-                        </a>
+                        </button>
                     </form>
 
                     <div class="is-hero__bottom">
