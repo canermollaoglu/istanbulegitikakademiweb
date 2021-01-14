@@ -19,10 +19,12 @@ using NitelikliBilisim.Core.ViewModels.Main.CorporateMembershipApplication;
 using NitelikliBilisim.Core.ViewModels.Main.EducationComment;
 using NitelikliBilisim.Core.ViewModels.Main.EducatorApplication;
 using NitelikliBilisim.Core.ViewModels.Main.Home;
+using NitelikliBilisim.Core.ViewModels.Main.Wizard;
 using NitelikliBilisim.Notificator.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -477,5 +479,84 @@ namespace NitelikliBilisim.App.Controllers
                 });
             }
         }
+
+        [Route("wizard-first")]
+        [HttpGet]
+        public IActionResult WizardGetCategoryDatas()
+        {
+            try
+            {
+                var list = _unitOfWork.Suggestions.GetWizardFirstStepData();
+                return Json(new ResponseData
+                {
+                    Success = true,
+                    Data = list
+                });
+            }
+            catch (Exception ex)
+            {
+                //Log ex
+                return Json(new ResponseData
+                {
+                    Success = false,
+                    Message = "Beklenmeyen bir hata ile karşılaşıldı. Lütfen daha sonra tekrar deneyiniz."
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("wizard-second")]
+        public IActionResult WizardGetSubCategories(List<Guid> relatedCategories)
+        {
+            try
+            {
+                var list = _unitOfWork.Suggestions.GetWizardSecondStepData(relatedCategories);
+
+                return Json(new ResponseData
+                {
+                    Success = true,
+                    Data = list
+                });
+            }
+            catch (Exception ex)
+            {
+                //Log ex
+                return Json(new ResponseData
+                {
+                    Success = false,
+                    Message = "Beklenmeyen bir hata ile karşılaşıldı. Lütfen daha sonra tekrar deneyiniz."
+                });
+            }
+
+        }
+        [HttpPost]
+        [Route("wizard-last")]
+        public IActionResult WizardSuggestedEducations(List<WizardLastStepPostVm> lastdata)
+        {
+            try
+            {
+                var list = _unitOfWork.Suggestions.GetWizardSuggestedEducations(lastdata);
+                foreach (var education in list)
+                {
+                    education.ImageUrl = _storageService.BlobUrl + education.ImageUrl;
+                }
+                return Json(new ResponseData
+                {
+                    Success = true,
+                    Data = list
+                });
+            }
+            catch (Exception ex)
+            {
+                //Log ex
+                return Json(new ResponseData
+                {
+                    Success = false,
+                    Message = "Beklenmeyen bir hata ile karşılaşıldı. Lütfen daha sonra tekrar deneyiniz."
+                });
+            }
+
+        }
+
     }
 }

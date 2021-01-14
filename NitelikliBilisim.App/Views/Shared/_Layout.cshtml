@@ -91,6 +91,7 @@
     <script src="~/vendor/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/vendor/modal-video/js/jquery-modal-video.min.js"></script>
     <script src="~/vendor/card/dist/card.js"></script>
+    <script src="~/assets/js/education-suggestion-wizard.js"></script>
     <script src="~/js/lib/cookie-agreement.js"></script>
     <script src="~/js/sup/cart.js"></script>
     <script src="~/js/lib/security-support.js"></script>
@@ -120,23 +121,23 @@
             __layoutHeaderCartCount.html(`${__cart.getItemCount()} Eğitim`);
             $.each(cartItems, function (index, value) {
                 var item = `<a class="mini-basket__item js-deleted-item" data-eid="${value.educationId}">
-                                                    <div class="mini-basket__item-img">
-                                                        <img src="${value.imageUrl}" alt="">
-                                                    </div>
-                                                    <div class="mini-basket__item-cnt">
-                                                        <div class="mini-basket__item-title">${value.educationName}</div>
-                                                        <div class="mini-basket__item-price">
-                                                            ${(value.newPrice).toFixed(2).toString().replace(".",",")} <span>TL</span>
+                                                        <div class="mini-basket__item-img">
+                                                            <img src="${value.imageUrl}" alt="">
                                                         </div>
-                                                    </div>
-                                                    <div class="mini-basket__item-crash js-delete-item">
-                                                        <span class="icon-outer">
-                                                            <svg class="icon">
-                                                                <use xlink:href="../../assets/img/icons.svg#icon-crash"></use>
-                                                            </svg>
-                                                        </span>
-                                                    </div>
-                                                </a>`;
+                                                        <div class="mini-basket__item-cnt">
+                                                            <div class="mini-basket__item-title">${value.educationName}</div>
+                                                            <div class="mini-basket__item-price">
+                                                                ${(value.newPrice).toFixed(2).toString().replace(".", ",")} <span>TL</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="mini-basket__item-crash js-delete-item">
+                                                            <span class="icon-outer">
+                                                                <svg class="icon">
+                                                                    <use xlink:href="../../assets/img/icons.svg#icon-crash"></use>
+                                                                </svg>
+                                                            </span>
+                                                        </div>
+                                                    </a>`;
                 __layoutHeaderCartContent.append(item);
             });
         };

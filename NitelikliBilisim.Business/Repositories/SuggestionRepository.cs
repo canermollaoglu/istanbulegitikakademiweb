@@ -10,6 +10,7 @@ using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Enums.educations;
 using NitelikliBilisim.Core.ESOptions.ESEntities;
 using NitelikliBilisim.Core.ViewModels;
+using NitelikliBilisim.Core.ViewModels.Main.Wizard;
 using NitelikliBilisim.Core.ViewModels.Suggestion;
 using NitelikliBilisim.Data;
 using System;
@@ -181,6 +182,73 @@ namespace NitelikliBilisim.Business.Repositories
                 thisWeekEducations = thisWeekEducations.OrderByDescending(x => x.Value).Take(4).ToDictionary(x=>x.Key,x=>x.Value);
             }
             return FillSuggestedEducationList(thisWeekEducations);
+        }
+
+        public List<WizardFirstStepData> GetWizardFirstStepData()
+        {
+            return _context.EducationCategories.Where(x => x.BaseCategoryId == null).Select(x =>
+              new WizardFirstStepData
+              {
+                  Id = x.Id,
+                  Name = x.Name,
+                  IconUrl = x.IconUrl
+              }).ToList();
+        }
+
+        public List<WizardSecondStepData> GetWizardSecondStepData(List<Guid> relatedCategories)
+        {
+            var retval = new List<WizardSecondStepData>();
+            var categories = _context.EducationCategories.Where(x => relatedCategories.Contains(x.Id) ).ToList();
+            var subCategories = _context.EducationCategories.Where(x =>x.BaseCategoryId!=null&& relatedCategories.Contains(x.BaseCategoryId.Value)).ToList();
+            foreach (var baseCategory in categories)
+            {
+                var data = new WizardSecondStepData
+                {
+                    Id = baseCategory.Id,
+                    Name = baseCategory.Name
+                };
+                data.SubCategories = subCategories.Where(x => x.BaseCategoryId == baseCategory.Id).Select(x => new WizardSecondStepSubData
+                {
+                    Id = x.Id,
+                    Name = x.Name
+                }).ToList();
+                retval.Add(data);
+            }
+            return retval;
+        }
+
+        public List<WizardSuggestedEducationVm> GetWizardSuggestedEducations(List<WizardLastStepPostVm> lastdata)
+        {
+            var hostId = Guid.Parse(_configuration.GetSection("SiteGeneralOptions").GetSection("PriceLocationId").Value);
+
+            var educations = _context.Educations.Where(x =>x.IsActive).ToList();
+            var suggestedEducations = new List<Education>();
+
+            foreach (var data in lastdata)
+            {
+                var eList = educations.Where(x => x.CategoryId == data.Id && (int)x.Level == data.Level);
+               suggestedEducations.AddRange(eList);
+            }
+
+            var retVal = (from education in suggestedEducations
+                          join category in _context.EducationCategories on education.CategoryId equals category.Id
+                          join eImage in _context.EducationMedias on education.Id equals eImage.EducationId
+                           where
+                           eImage.MediaType == EducationMediaType.PreviewPhoto && education.IsActive
+                           select new WizardSuggestedEducationVm
+                           {
+                               Id = education.Id,
+                               SeoUrl = education.SeoUrl,
+                               CatSeoUrl = category.SeoUrl,
+                               Name = education.Name,
+                               Day = education.Days,
+                               Hours = education.Days*education.HoursPerDay,
+                               ImageUrl = eImage.FileUrl,
+                               Description = education.Description,
+                               Price = _context.EducationGroups.OrderByDescending(x => x.CreatedDate).FirstOrDefault(y => y.HostId == hostId && y.EducationId == education.Id).NewPrice.GetValueOrDefault().ToString(CultureInfo.CreateSpecificCulture("tr-TR"))
+                           }).ToList();
+            
+            return retVal;
         }
 
 
