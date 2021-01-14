@@ -1,4 +1,5 @@
 
+
 $('.js-video-btn').modalVideo({
     channel: 'youtube',
     youtube: {
@@ -826,36 +827,7 @@ $(document).ready(function () {
         },
     });
 
-    var wizardSlider = new Swiper('.js-wizard-slider', {
-        autoplay: false,
-        keyboard: false,
-        autoHeight: true,
-        loop: false,
-        simulateTouch: false,
-        onlyExternal: true,
-        noSwiping: true,
-        allowTouchMove: false,
-        slidesPerView: 1,
-        spaceBetween: 0,
-        speed: 600,
-        navigation: {
-            nextEl: '.js-wizard-next',
-            prevEl: '',
-        },
-    });
-    wizardSlider.on('transitionEnd', function () {
-        console.log('*** mySwiper.realIndex', wizardSlider.realIndex);
-        if (wizardSlider.realIndex == 4) {
-            console.log('last-slide');
-            $('.wizard-loading')
-                .delay(3800)
-                .fadeOut('200');
-            window.setTimeout(function () {
-                $('.wizard-loaded').addClass('active');
-            }, 4000);
-        }
-    });
-
+    
     var swiper = new Swiper('.js-dash-course-slider', {
         keyboard: true,
         loop: false,
@@ -916,7 +888,7 @@ $(document).ready(function () {
             //$(this).find('.swiper-pagination').addClass('showed');
         }
         if ($(this).find('.swiper-slide').length == 0) {
-            //$(this).parent().find('.account-empty-content').addClass('showed');
+            $(this).parent().find('.account-empty-content').addClass('showed');
         }
     });
     var dashboardWeekSlider = new Swiper('.js-dashboard-week-slider', {
@@ -959,61 +931,7 @@ $(document).ready(function () {
     
    
 
-    $('body').on('click', '.js-wizard-categori', function () {
-        $(this).toggleClass('selected');
-        var n = $(this)
-            .parent()
-            .find('.js-wizard-categori.selected').length;
-        if (n > 3) { } else if (n >= 3) {
-            $(this)
-                .parent()
-                .find('.js-wizard-categori')
-                .addClass('notselect');
-        } else {
-            $(this)
-                .parent()
-                .find('.js-wizard-categori')
-                .removeClass('notselect');
-        }
-        if (n >= 1) {
-            $(this)
-                .parent()
-                .parent()
-                .next()
-                .find('.js-wizard-next')
-                .addClass('actived');
-        } else {
-            $(this)
-                .parent()
-                .parent()
-                .next()
-                .find('.js-wizard-next')
-                .removeClass('actived');
-        }
-    });
-
-    $('body').on('click', '.js-wizard-level', function () {
-        $('.js-wizard-level').removeClass('selected');
-        $(this).addClass('selected');
-        var n = $(this)
-            .parent()
-            .find('.js-wizard-level.selected').length;
-        if (n >= 1) {
-            $(this)
-                .parent()
-                .parent()
-                .next()
-                .find('.js-wizard-next')
-                .addClass('actived');
-        } else {
-            $(this)
-                .parent()
-                .parent()
-                .next()
-                .find('.js-wizard-next')
-                .removeClass('actived');
-        }
-    });
+   
 
     // select 2 options
 

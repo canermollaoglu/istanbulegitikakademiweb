@@ -132,7 +132,7 @@
                                 <div class="checkout__product-right">
                                     <div class="checkout__product-title">@education.EducationName</div>
                                     <div class="checkout__product-new">
-                                        <span>₺</span> @education.Price
+                                        @education.Price <span>TL</span>
                                     </div>
                                 </div>
                             </div>
@@ -157,16 +157,16 @@
                         <div class="checkout__price-item">
                             <div class="checkout__price-title">Ürünler Toplamı</div>
                             <div class="checkout__price-old">
-                                <span>₺</span> @(((NormalPaymentResultVm)ViewData["PaymentResult"]).SuccessDetails.TotalOldPrice)
+                                 @(((NormalPaymentResultVm)ViewData["PaymentResult"]).SuccessDetails.TotalOldPrice) <span>TL</span>
                             </div>
                             <div class="checkout__price-new">
-                                <span>₺</span> @(((NormalPaymentResultVm)ViewData["PaymentResult"]).SuccessDetails.TotalOldPrice)
+                                 @(((NormalPaymentResultVm)ViewData["PaymentResult"]).SuccessDetails.TotalOldPrice) <span>TL</span>
                             </div>
                         </div>
                         <div class="checkout__price-item">
                             <div class="checkout__price-title">Toplam İndirimler</div>
                             <div class="checkout__price-new">
-                                <span>₺</span> @(((NormalPaymentResultVm)ViewData["PaymentResult"]).SuccessDetails.TotalDiscount)
+                                 @(((NormalPaymentResultVm)ViewData["PaymentResult"]).SuccessDetails.TotalDiscount) <span>TL</span>
                             </div>
                         </div>
                         <div class="checkout__price-item payment-method">
@@ -186,7 +186,7 @@
                         <div class="checkout__price-item totaly">
                             <div class="checkout__price-title">Toplam Tutar</div>
                             <div class="checkout__price-new">
-                                <span>₺</span> @(((NormalPaymentResultVm)ViewData["PaymentResult"]).SuccessDetails.TotalNewPrice)
+                                 @(((NormalPaymentResultVm)ViewData["PaymentResult"]).SuccessDetails.TotalNewPrice) <span>TL</span>
                             </div>
                         </div>
                     </div>
