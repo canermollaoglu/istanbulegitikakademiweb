@@ -916,7 +916,7 @@ $(document).ready(function () {
             //$(this).find('.swiper-pagination').addClass('showed');
         }
         if ($(this).find('.swiper-slide').length == 0) {
-            //$(this).parent().find('.account-empty-content').addClass('showed');
+            $(this).parent().find('.account-empty-content').addClass('showed');
         }
     });
     var dashboardWeekSlider = new Swiper('.js-dashboard-week-slider', {

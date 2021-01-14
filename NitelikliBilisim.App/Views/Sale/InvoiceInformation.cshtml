@@ -73,7 +73,7 @@
                                     <div class="address-button js-select-address js-new-address-func" data-id="@address.Id">
                                         <span class="address-button-radio"></span>
                                     </div>
-                                    <div class="address-cnt js-select-address js-new-address-func">
+                                    <div class="address-cnt js-select-address js-new-address-func" data-id="@address.Id">
                                         <div class="address-title">
                                             @address.Title
                                         </div>
@@ -295,18 +295,21 @@
                     </div>
                     <div class="checkout__price-wrp js-discounts">
                         <div class="checkout__price-item">
-                            <div class="checkout__price-title">Toplam İndirimler</div>
-                            <div class="checkout__price-new" id="discountAmount">
-                                0,90<span>TL</span>
+                            <div class="checkout__price-title">Ürünler Toplamı</div>
+                            <div class="checkout__price-new" id="oldPrice">
+                                0.00 <span>TL</span>
                             </div>
                         </div>
                         <div class="checkout__price-item">
-                            <div class="checkout__price-title">Ürünler Toplamı</div>
-                            <div class="checkout__price-old" id="oldPrice">
-                                0,00<span>TL</span>
+                            <div class="checkout__price-title">Toplam İndirimler</div>
+                            <div class="checkout__price-new" id="discountAmount">
+                                0.00 <span>TL</span>
                             </div>
+                        </div>
+                        <div class="checkout__price-item totaly">
+                            <div class="checkout__price-title">Toplam Tutar</div>
                             <div class="checkout__price-new" id="newPrice">
-                                0,00<span>TL</span>
+                                0.00 <span>TL</span>
                             </div>
                         </div>
                     </div>
