@@ -311,11 +311,9 @@
                     page: currentPage.val(),
                 },
                 success: (res) => {
-                    console.log(res);
                     postContent.html("");
-                    console.log(res);
                     $.each(res.data.posts, function (index, e) {
-                        var education = `<a asp-controller="Blog" asp-action="Detail" asp-route-catSeoUrl="${e.catSeoUrl}" asp-route-seoUrl="${e.seoUrl}" class="blog-card">
+                        var education = `<a href="/blog/${e.categorySeoUrl}/${e.seoUrl}" class="blog-card">
                             <div class="blog-card__img">
                                 <img src="${e.featuredImageUrl}" alt="">
                             </div>
