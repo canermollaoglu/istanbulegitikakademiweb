@@ -177,13 +177,13 @@ function appendCategorySlides() {
             var categories = "";
             $.each(res.data, function (index, e) {
                 categories += ` 
-                            <div class="modal--wizard__categori-item js-wizard-categori siberguvenlik" data-id="${e.id}">
+                            <div class="modal--wizard__categori-item js-wizard-categori ${e.wizardClass}" data-id="${e.id}">
                                 <span class="icon-outer modal--wizard__categori-icon">
                                     <svg class="icon">
                                         <use xlink:href="../../assets/img/icons.svg#${e.iconUrl}"></use>
                                     </svg>
                                 </span>
-                                <div class="modal--wizard__categori-title">${e.name}</div>
+                                <div class="modal--wizard__categori-title" style="text-align:center;">${e.name}</div>
                                 <span class="modal--wizard__categori-check">
                                     <svg class="icon">
                                         <use xlink:href="../../assets/img/icons.svg#icon-check"></use>

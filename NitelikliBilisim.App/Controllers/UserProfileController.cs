@@ -93,6 +93,14 @@ namespace NitelikliBilisim.App.Controllers
             return View(model);
         }
 
+        [Route("hesap/sertifikalarim")]
+        public IActionResult MyCertificates()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            //var model = _userUnitOfWork.User.GetUserCertificates(userId);
+            return View();
+        }
+
         [Route("hesap/kurs-detay/{groupId}")]
         public IActionResult MyCourseDetail(Guid groupId)
         {

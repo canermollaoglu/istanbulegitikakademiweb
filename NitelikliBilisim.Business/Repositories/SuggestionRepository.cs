@@ -184,7 +184,8 @@ namespace NitelikliBilisim.Business.Repositories
               {
                   Id = x.Id,
                   Name = x.Name,
-                  IconUrl = x.IconUrl
+                  IconUrl = x.IconUrl,
+                  WizardClass= x.WizardClass
               }).ToList();
         }
 

@@ -75,10 +75,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 SeoUrl = data.SeoUrl,
                 IconUrl = data.IconUrl,
                 IconColor = data.IconColor,
+                WizardClass = data.WizardClass,
                 EducationDayCount = data.EducationDayCount,
                 BaseCategoryId = data.BaseCategoryId,
                 CategoryType = (CategoryType)data.CategoryType,
-                IsCurrent = true
+                IsCurrent = true,
             });
             return Json(new ResponseModel
             {
@@ -103,6 +104,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             category.Description = data.Description;
             category.Name = data.Name;
             category.SeoUrl = data.SeoUrl;
+            category.WizardClass = data.WizardClass;
             category.EducationDayCount = data.EducationDayCount;
             category.IconUrl = data.IconUrl;
             category.IconColor = data.IconColor;
