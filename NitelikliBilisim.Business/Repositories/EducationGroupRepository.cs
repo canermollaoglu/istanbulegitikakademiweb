@@ -427,13 +427,8 @@ namespace NitelikliBilisim.Business.Repositories
             foreach (var item in groups)
             {
                 var educator = educators.First(x => x.Id == item.EducatorId);
-                var folder = Path.GetDirectoryName(educator.User.AvatarPath);
-                var fileName = Path.GetFileName(educator.User.AvatarPath);
-                var url = string.Empty;
-                url = storage.BlobUrl + educator.User.AvatarPath;
-
+                var url = storage.BlobUrl + educator.User.AvatarPath;
                 var culture = CultureInfo.CreateSpecificCulture("tr-TR");
-
                 var discountRate = ((item.OldPrice - item.NewPrice) * 100) / (decimal)(item.OldPrice);
 
                 if (!hostIds.Contains(item.HostId))
@@ -453,7 +448,8 @@ namespace NitelikliBilisim.Business.Repositories
                             City = EnumHelpers.GetDescription(item.Host.City),
                             HostName = item.Host.HostName,
                             Latitude = item.Host.Latitude,
-                            Longitude = item.Host.Longitude
+                            Longitude = item.Host.Longitude,
+                            LocationUrl = item.Host.GoogleMapUrl
                         },
                         Educator = new EducatorVm
                         {
@@ -461,7 +457,8 @@ namespace NitelikliBilisim.Business.Repositories
                             Name = educator.User.Name,
                             Surname = educator.User.Surname,
                             Title = educator.Title,
-                            ProfilePhoto = url
+                            ProfilePhoto = url,
+                            Point = GetEducatorPoint(item.EducatorId)
                         },
                         OldPrice = item.OldPrice.GetValueOrDefault(),
                         OldPriceText = item.OldPrice.GetValueOrDefault().ToString(culture),
@@ -473,6 +470,17 @@ namespace NitelikliBilisim.Business.Repositories
             }
             return model;
         }
+
+        private double GetEducatorPoint(string educatorId)
+        {
+            var data = (from eComment in _context.EducationComments
+                        join education in _context.Educations on eComment.EducationId equals education.Id
+                        join eGroup in _context.EducationGroups on education.Id equals eGroup.EducationId
+                        where eGroup.EducatorId == educatorId
+                        select (int)eComment.Points).ToList();
+            return Math.Round(data.Average(),2);
+        }
+
         private string SerializeDays(List<int> days)
         {
             if (days == null || days.Count == 0)

@@ -111,7 +111,6 @@ namespace NitelikliBilisim.App.Controllers
                 Details = educationDetails,
                 Educators = educators,
                 AvaibleEducationCities = educationCities,
-                PopularEducations = _unitOfWork.Suggestions.GetGuestUserSuggestedEducations()
             };
             return View(model);
         }
