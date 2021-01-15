@@ -391,7 +391,7 @@ function loadSuggestedEducations() {
 
                     <footer class="modal__footer">
                         <div class="modal--wizard__btn">
-                            <a asp-controller="Course" asp-action="List" class="button button-icon-right button-fw button-big">
+                            <a href="/egitimler" class="button button-icon-right button-fw button-big">
                                 <span class="button-txt">
                                     Daha fazla kurs görüntüle
                                 </span>

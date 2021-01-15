@@ -16,5 +16,7 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Course
         public string CategoryShortDescription { get; set; }
         public Dictionary<int, string> OrderTypes { get; set; }
         public Dictionary<int, string> EducationHostCities { get; set; }
+        public string CategoryIconColor { get; set; }
+        public string CategoryIconUrl { get; set; }
     }
 }

@@ -93,7 +93,7 @@
 <section class="blog-list">
     <input type="hidden" id="current-page" />
     <input type="hidden" id="current-category" value="@Model.CurrentCategorySeoUrl" />
-    <div class="container">
+    <div class="container" >
         <div class="blog-list__title">
             <div class="flex-center mb-4">
                 @if (Model.CurrentCategory == null)
@@ -102,7 +102,22 @@
                 }
                 else
                 {
-                    <h2 class="title title-section"><span class="title--blue">@Model.CurrentCategory</span></h2>
+                    var keywords = Model.CurrentCategory.Split(" ");
+                    var left = "";
+                    var right = "";
+                    for (int i = 0; i < keywords.Count(); i++)
+                    {
+                        if (i<keywords.Count()/2)
+                        {
+                            left += keywords[i]+" ";
+                        }
+                        else
+                        {
+                            right += keywords[i]+" ";
+                        }
+                    }
+
+                    <h2 class="title title-section">@left<span class="title--blue">@right</span></h2>
 
                 }
 
@@ -306,6 +321,7 @@
             $.ajax({
                 url: `/get-blog-posts`,
                 method: "post",
+                async: false,
                 data: {
                     categoryId: currentCategory.val(),
                     page: currentPage.val(),
@@ -422,6 +438,9 @@
         function changePage(page) {
             currentPage.val(page);
             getPosts();
+            $('html, body').animate({
+                scrollTop: $(".blog-list__title").offset().top-10
+            }, 1000);
         }
         var onBlogSubsciptionSuccess = function (context) {
             $(".side-subscribe__txt").html(context.message);
