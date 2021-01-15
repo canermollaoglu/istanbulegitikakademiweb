@@ -383,7 +383,7 @@ function loadSuggestedEducations() {
                                 Sizin için önerilen kurslar hazırlanıyor.
                             </div>
                         </div>
-                        <div class="modal--wizard__prices wizard-loaded" style="min-height:250px">
+                        <div class="modal--wizard__prices wizard-loaded" style="min-height:250px;">
                             
                             
                         </div>
@@ -423,7 +423,6 @@ function loadSuggestedEducations() {
             $('.wizard-loaded').addClass('active');
         },
         success: (res) => {
-            console.log(res);
             var suggestedEducations = "";
             $.each(res.data, function (index, e) {
                 suggestedEducations+= `<a href="${e.catSeoUrl}/${e.seoUrl}" class="lesson-list__item">

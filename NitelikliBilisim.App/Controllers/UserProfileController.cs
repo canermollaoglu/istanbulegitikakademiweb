@@ -207,8 +207,7 @@ namespace NitelikliBilisim.App.Controllers
         {
             try
             {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var model = _unitOfWork.Suggestions.GetEducationsOfTheWeek(week, userId);
+                var model = _unitOfWork.Suggestions.GetEducationsOfTheWeek(week);
                 foreach (var education in model)
                 {
                     education.Medias[0].FileUrl = _storageService.BlobUrl + education.Medias[0].FileUrl;
