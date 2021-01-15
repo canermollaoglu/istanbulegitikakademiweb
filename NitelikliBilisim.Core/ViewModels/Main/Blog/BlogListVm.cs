@@ -10,8 +10,8 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Blog
     {
         public List<BlogCategoryNameIdVm> Categories { get; set; }
         public List<LastBlogPostVm> LastBlogPosts { get; set; }
-        public BlogsVm Blogs { get; set; }
         public int TotalBlogPostCount { get; set; }
+        public string CurrentCategorySeoUrl { get; set; }
         public string CurrentCategory { get; set; }
     }
 }

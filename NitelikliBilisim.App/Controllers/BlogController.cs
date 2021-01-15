@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Filters;
+using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels.Main.Blog;
@@ -77,20 +78,35 @@ namespace NitelikliBilisim.App.Controllers
 
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("blog/{c?}")]
-        public IActionResult List(string c, int? p)
+        public IActionResult List(string c)
         {
-            ViewData["CategoryFilter"] = !string.IsNullOrEmpty(c) ? c : ViewData["CategoryFilter"];
-            ViewData["Page"] = p.HasValue ? p : ViewData["Page"];
-
             BlogListVm model = new BlogListVm();
+            model.CurrentCategorySeoUrl = c;
             var categories = _unitOfWork.BlogCategory.GetListForBlogListPage();
             var currentC = categories.FirstOrDefault(x => x.SeoUrl == c);
             model.Categories = categories;
             model.CurrentCategory = currentC != null ? currentC.Name:null;
             model.LastBlogPosts = _unitOfWork.BlogPost.LastBlogPosts(5);
-            model.Blogs = _unitOfWork.BlogPost.GetPosts(c, p);
             model.TotalBlogPostCount = _unitOfWork.BlogPost.TotalBlogPostCount();
             return View(model);
+        }
+
+        [HttpPost]
+        [Route("get-blog-posts")]
+        public IActionResult GetBlogPosts(string categoryId, string searchKey, int page = 1)
+        {
+            var model = _unitOfWork.BlogPost.GetPosts(categoryId, page, searchKey);
+
+            foreach (var post in model.Posts)
+            {
+                post.FeaturedImageUrl = _storageService.BlobUrl + post.FeaturedImageUrl;
+            }
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = model
+            });
+
         }
 
     }
