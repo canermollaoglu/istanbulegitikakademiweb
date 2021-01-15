@@ -147,16 +147,9 @@ namespace NitelikliBilisim.Business.Repositories
             return retVal;
         }
 
-        public List<SuggestedEducationVm> GetEducationsOfTheWeek(int week,string userId)
+        public List<SuggestedEducationVm> GetEducationsOfTheWeek(int week)
         {
-            var studentInfo = _context.StudentEducationInfos.FirstOrDefault(x => x.CustomerId == userId);
-            if (studentInfo == null)
-                return null;
-            var educationDay = _context.EducationDays.Where(x => x.StudentEducationInfoId == studentInfo.Id && x.Date <= DateTime.Now).OrderByDescending(c => c.Date).FirstOrDefault();
-            //int nearestDay = educationDay != null ? educationDay.Day : 0;
-
-            int nearestDay = (int)(DateTime.Now.Date - studentInfo.StartedAt).TotalDays;
-
+            var nearestDay = week * 7;
             var educations = _context.Educations.Include(c => c.Category).Include(x => x.EducationSuggestionCriterions).Where(x => x.IsActive);
             var thisWeekEducations = new Dictionary<Guid,double>();
             foreach (var education in educations)
@@ -191,7 +184,8 @@ namespace NitelikliBilisim.Business.Repositories
               {
                   Id = x.Id,
                   Name = x.Name,
-                  IconUrl = x.IconUrl
+                  IconUrl = x.IconUrl,
+                  WizardClass= x.WizardClass
               }).ToList();
         }
 

@@ -11,5 +11,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Blog
         public List<BlogPostListVm> Posts { get; set; }
         public int TotalCount { get; set; }
         public int PageIndex { get; set; }
+        public int TotalPageCount { get; set; }
     }
 }

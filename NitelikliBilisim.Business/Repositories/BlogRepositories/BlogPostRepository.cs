@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MUsefulMethods;
 using Nest;
 using NitelikliBilisim.Core.Entities.blog;
 using NitelikliBilisim.Core.ESOptions.ESEntities;
@@ -57,7 +58,7 @@ namespace NitelikliBilisim.Business.Repositories.BlogRepositories
             return _context.BlogPosts.Any(x => x.SeoUrl == seoUrl);
         }
 
-        public BlogsVm GetPosts(string catSeoUrl, int? pageIndex)
+        public BlogsVm GetPosts(string catSeoUrl, int pageIndex,string searchKey)
         {
             var retVal = new BlogsVm();
             var data = _context.BlogPosts.Include(x=>x.Category).OrderByDescending(x=>x.CreatedDate).AsQueryable();
@@ -65,10 +66,29 @@ namespace NitelikliBilisim.Business.Repositories.BlogRepositories
             {
                 data = data.Where(x => x.Category.SeoUrl == catSeoUrl);
             }
-            var totalCount = data.Count();
-            pageIndex = pageIndex ?? 1;
+            if (!string.IsNullOrEmpty(searchKey))
+            {
+                var ids = data.Where(x => x.Title == searchKey || x.Title.Contains(searchKey)).Select(x => x.Id).ToList();
+                searchKey = searchKey.FormatForTag();
+                var tags = Context.Bridge_BlogPostTags
+                                    .Join(Context.BlogTags, l => l.Id, r => r.Id, (x, y) => new
+                                    {
+                                        TagId = x.Id,
+                                        BlogPostId = x.Id2,
+                                        TagName = y.Name
+                                    })
+                                    .ToList();
+                var blogPostIds = tags
+                     .Where(x => x.TagName.Contains(searchKey))
+                     .Select(x => x.BlogPostId)
+                     .ToList();
+                blogPostIds.AddRange(ids);
+                data = data.Where(x => blogPostIds.Contains(x.Id));
+            }
 
-            data = data.Skip((pageIndex.Value-1) * 8).Take(8);
+            var totalCount = data.Count();
+
+            data = data.Skip((pageIndex-1) * 8).Take(8);
 
             var list = data.Include(x => x.Category).Select(x => new BlogPostListVm
             {
@@ -89,7 +109,8 @@ namespace NitelikliBilisim.Business.Repositories.BlogRepositories
 
             retVal.Posts = list;
             retVal.TotalCount = totalCount;
-            retVal.PageIndex = pageIndex.Value;
+            retVal.TotalPageCount = (int)Math.Ceiling(totalCount/ (double)6);
+            retVal.PageIndex = pageIndex;
 
             return retVal;
         }

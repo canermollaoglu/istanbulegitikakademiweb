@@ -177,13 +177,13 @@ function appendCategorySlides() {
             var categories = "";
             $.each(res.data, function (index, e) {
                 categories += ` 
-                            <div class="modal--wizard__categori-item js-wizard-categori siberguvenlik" data-id="${e.id}">
+                            <div class="modal--wizard__categori-item js-wizard-categori ${e.wizardClass}" data-id="${e.id}">
                                 <span class="icon-outer modal--wizard__categori-icon">
                                     <svg class="icon">
                                         <use xlink:href="../../assets/img/icons.svg#${e.iconUrl}"></use>
                                     </svg>
                                 </span>
-                                <div class="modal--wizard__categori-title">${e.name}</div>
+                                <div class="modal--wizard__categori-title" style="text-align:center;">${e.name}</div>
                                 <span class="modal--wizard__categori-check">
                                     <svg class="icon">
                                         <use xlink:href="../../assets/img/icons.svg#icon-check"></use>
@@ -383,7 +383,7 @@ function loadSuggestedEducations() {
                                 Sizin için önerilen kurslar hazırlanıyor.
                             </div>
                         </div>
-                        <div class="modal--wizard__prices wizard-loaded" style="min-height:250px">
+                        <div class="modal--wizard__prices wizard-loaded" style="min-height:250px;">
                             
                             
                         </div>
@@ -391,7 +391,7 @@ function loadSuggestedEducations() {
 
                     <footer class="modal__footer">
                         <div class="modal--wizard__btn">
-                            <a asp-controller="Course" asp-action="List" class="button button-icon-right button-fw button-big">
+                            <a href="/egitimler" class="button button-icon-right button-fw button-big">
                                 <span class="button-txt">
                                     Daha fazla kurs görüntüle
                                 </span>
@@ -423,10 +423,9 @@ function loadSuggestedEducations() {
             $('.wizard-loaded').addClass('active');
         },
         success: (res) => {
-            console.log(res);
             var suggestedEducations = "";
             $.each(res.data, function (index, e) {
-                suggestedEducations+= `<a href="${e.catSeoUrl}/${e.seoUrl}" class="lesson-list__item">
+                suggestedEducations+= `<a href="/${e.catSeoUrl}/${e.seoUrl}" class="lesson-list__item">
                     <div class="lesson-list__item-img">
                                     <img src="${e.imageUrl}" alt="">
                                 </div>

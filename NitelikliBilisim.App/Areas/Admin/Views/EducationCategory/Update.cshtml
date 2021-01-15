@@ -81,16 +81,22 @@
             </div>
             <div class="col-md-6" @(Model.BaseCategory != null ? "style=display:none;" : "")>
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label>İkon Url   </label>
                             <input type="text" placeholder="Yalnızca ikon ismini giriniz." class="form-control" id="input-icon-url" value="@Model.Category.IconUrl">
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label>İkon Renk Kodu</label>
-                            <input type="text"  class="form-control" id="input-color-code" value="@Model.Category.IconColor">
+                            <input type="text" class="form-control" id="input-color-code" value="@Model.Category.IconColor">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Wizard Class</label>
+                            <input type="text" class="form-control" id="input-wizard-class" value="@Model.Category.WizardClass">
                         </div>
                     </div>
                 </div>

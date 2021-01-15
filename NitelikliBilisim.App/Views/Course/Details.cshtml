@@ -281,16 +281,18 @@
                                     <div class="js-data-change-adres">
                                         <div>Acıbadem, Acıbadem Cd. No:190, 34746 Üsküdar/İstanbul</div>
                                     </div>
-                                    <div class="lesson-detail__card-footer-inner">
-                                        <span class="lesson-detail__card-footer-left">
-                                            Yol Tarifi Al
-                                        </span>
-                                        <span class="icon-outer">
-                                            <svg class="icon">
-                                                <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
-                                            </svg>
-                                        </span>
-                                    </div>
+                                    <a href="#" target="_blank" class="js-data-change-location-url">
+                                        <div class="lesson-detail__card-footer-inner">
+                                            <span class="lesson-detail__card-footer-left">
+                                                Yol Tarifi Al
+                                            </span>
+                                            <span class="icon-outer">
+                                                <svg class="icon">
+                                                    <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                                                </svg>
+                                            </span>
+                                        </div>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -788,8 +790,34 @@
         function selectGroups_onChange() {
             var index = selectGroups.val();
             var group = groups.find(x => x.host.hostId == index);
+            var educatorStars = "";
+            for (var i = 1; i <= 5; i++) {
+                if (i <= group.educator.point) {
+                    educatorStars += `<span class="icon-outer icon-star active"> <svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span>`;
+                } else {
+                    educatorStars += `<span class="icon-outer icon-star"> <svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span>`;
+                }
 
-            var educator = `<a href="/egitmen-detayi/${group.educator.educatorId}" class="lesson-detail__tab-teachers--item"><div class="lesson-detail__tab-teachers--img"><img class="js-change-teacher-img" src="${group.educator.profilePhoto}" alt=""></div><div class="lesson-detail__tab-teachers--cnt"><div class="lesson-detail__tab-teachers--name js-change-teacher-name">${group.educator.name} ${group.educator.surname}</div><div class="lesson-detail__tab-teachers--txt">${group.educator.title}</div></div><div class="lesson-detail__tab-teachers--right"><div class="main-stars"><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span><span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span></div>3.0 PUAN</div></a>`;
+            }
+            
+            var educator = `<a href="/egitmen-detayi/${group.educator.educatorId}" class="lesson-detail__tab-teachers--item">
+                                <div class="lesson-detail__tab-teachers--img">
+                                    <img class="js-change-teacher-img" src="${group.educator.profilePhoto}" alt="">
+                                </div>
+                                <div class="lesson-detail__tab-teachers--cnt">
+                                    <div class="lesson-detail__tab-teachers--name js-change-teacher-name">
+                                        ${group.educator.name} ${group.educator.surname}
+                                    </div>
+                                    <div class="lesson-detail__tab-teachers--txt">
+                                        ${group.educator.title}
+                                    </div>
+                                </div>
+                                <div class="lesson-detail__tab-teachers--right">
+                                    <div class="main-stars">
+                                        ${educatorStars}
+                                    </div>${group.educator.point} PUAN</div></a>`;
+
+
             $('.js-data-change-merkez-adi').text(group.host.hostName);
             $('.js-data-change-il').text(group.host.city);
             $('.js-data-change-sure').text();
@@ -802,6 +830,8 @@
             $('.js-data-change-adres').text(group.host.address);
             $('.js-data-change-teachers a').remove();
             $('.js-data-change-teachers').append(educator);
+            $('a.js-data-change-location-url').prop("href", group.host.locationUrl);
+            
         }
         function selectCities_onChange() {
             loadGroups();

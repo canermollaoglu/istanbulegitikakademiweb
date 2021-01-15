@@ -91,7 +91,9 @@
 </div>
 
 <section class="blog-list">
-    <div class="container">
+    <input type="hidden" id="current-page" />
+    <input type="hidden" id="current-category" value="@Model.CurrentCategorySeoUrl" />
+    <div class="container" >
         <div class="blog-list__title">
             <div class="flex-center mb-4">
                 @if (Model.CurrentCategory == null)
@@ -100,7 +102,22 @@
                 }
                 else
                 {
-                    <h2 class="title title-section"><span class="title--blue">@Model.CurrentCategory</span></h2>
+                    var keywords = Model.CurrentCategory.Split(" ");
+                    var left = "";
+                    var right = "";
+                    for (int i = 0; i < keywords.Count(); i++)
+                    {
+                        if (i<keywords.Count()/2)
+                        {
+                            left += keywords[i]+" ";
+                        }
+                        else
+                        {
+                            right += keywords[i]+" ";
+                        }
+                    }
+
+                    <h2 class="title title-section">@left<span class="title--blue">@right</span></h2>
 
                 }
 
@@ -110,84 +127,11 @@
             <div class="blog-list__content">
 
                 <div class="blog-list__items">
-                    @foreach (var post in Model.Blogs.Posts)
-                    {
-                        var featuredImage = "";
-                        try
-                        {
-                            featuredImage = StorageService.BlobUrl+post.FeaturedImageUrl;
-                        }
-                        catch
-                        {
-                        }
-                        <a asp-controller="Blog" asp-action="Detail" asp-route-catSeoUrl="@post.CategorySeoUrl" asp-route-seoUrl="@post.SeoUrl" class="blog-card">
-                            <div class="blog-card__img">
-                                <img src="@featuredImage" alt="">
-                            </div>
-                            <div class="blog-card__content">
-                                <div class="blog-card__tag">@post.Category</div>
-                                <div class="blog-card__title">
-                                    @post.Title
-                                </div>
-                                <div class="blog-card__txt">
-                                    @post.Content
-                                </div>
-                            </div>
-                            <div class="blog-card__footer">
-                                <div class="blog-card__info">
-                                    <span class="icon-outer">
-                                        <svg class="icon">
-                                            <use xlink:href="../../assets/img/icons.svg#icon-date"></use>
-                                        </svg>
-                                    </span>
-                                    <span>@post.CreatedDate</span>
-                                </div>
-                                <div class="blog-card__info">
-                                    <span class="icon-outer">
-                                        <svg class="icon">
-                                            <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                        </svg>
-                                    </span>
-                                    <span>@post.ReadingTime dk.</span>
-                                </div>
-                                <div class="blog-card__info">
-                                    <span class="icon-outer">
-                                        <svg class="icon">
-                                            <use xlink:href="../../assets/img/icons.svg#icon-view"></use>
-                                        </svg>
-                                    </span>
-                                    <span>@post.ViewCount Görüntülenme</span>
-                                </div>
-                            </div>
-                        </a>
-                    }
+                   
 
                 </div>
                 <div class="pagination">
-                    @if (Model.Blogs.PageIndex > 1)
-                    {
-                        <a asp-controller="Blog" asp-action="List" asp-route-c="@ViewData["CategoryFilter"]" asp-route-p="@(Model.Blogs.PageIndex-1)" class="pagination__item prev">
-                            <span class="icon-outer">
-                                <svg class="icon">
-                                    <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
-                                </svg>
-                            </span>
-                        </a>
-                    }
-                    @for (int i = 1; i <= (int)Math.Ceiling(Model.Blogs.TotalCount / (double)8); i++)
-                    {
-                        <a asp-action="List" asp-route-c="@ViewData["CategoryFilter"]" asp-route-p="@(i)" class="pagination__item @(Model.Blogs.PageIndex==i?"active":"") ">@(i)</a>
-                    }
-                    @if (Model.Blogs.PageIndex < (int)Math.Ceiling(Model.Blogs.TotalCount / (double)8))
-                    {
-                        <a asp-controller="Blog" asp-action="List" asp-route-c="@ViewData["CategoryFilter"]" asp-route-p="@(Model.Blogs.PageIndex+1)" class="pagination__item next">
-                            <span class="icon-outer">
-                                <svg class="icon">
-                                    <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
-                                </svg>
-                            </span>
-                        </a>
-                    }
+                  
                 </div>
             </div>
             <div class="blog-list__side">
@@ -201,7 +145,7 @@
                         </span>
                     </div>
                     <div class="side-categories__cnt js-vertical-magic-line">
-                        <div class="side-categories__item js-vertical-magic-line-item @(ViewData["CategoryFilter"]==null?"active":"" )">
+                        <div class="side-categories__item js-vertical-magic-line-item @(string.IsNullOrEmpty(Model.CurrentCategorySeoUrl)?"active":"" )">
                             <a asp-action="List" asp-route-c="">
                                 <span class="side-categories__txt">Hepsi</span>
                                 <span class="side-categories__count">@Model.TotalBlogPostCount</span>
@@ -209,7 +153,7 @@
                         </div>
                         @foreach (var category in Model.Categories)
                         {
-                            <div class="side-categories__item js-vertical-magic-line-item @(ViewData["CategoryFilter"]!=null&&!string.IsNullOrEmpty(ViewData["CategoryFilter"].ToString())?ViewData["CategoryFilter"].ToString() == category.SeoUrl?"active":"":"")">
+                            <div class="side-categories__item js-vertical-magic-line-item @(!string.IsNullOrEmpty(Model.CurrentCategorySeoUrl)&&Model.CurrentCategorySeoUrl == category.SeoUrl?"active":"")">
                                 <a asp-action="List" asp-route-c="@category.SeoUrl">
                                     <span class="side-categories__txt">@category.Name</span>
                                     <span class="side-categories__count">@category.PostCount</span>
@@ -365,6 +309,99 @@
 
 @section postScripts{
     <script>
+        var currentPage = $("#current-page");
+        var currentCategory = $("#current-category");
+        var postContent = $(".blog-list__items");
+        var paginationContent = $(".pagination");
+        $(function () {
+            getPosts();
+        });
+
+        function getPosts() {
+            $.ajax({
+                url: `/get-blog-posts`,
+                method: "post",
+                async: false,
+                data: {
+                    categoryId: currentCategory.val(),
+                    page: currentPage.val(),
+                },
+                success: (res) => {
+                    postContent.html("");
+                    $.each(res.data.posts, function (index, e) {
+                        var education = `<a href="/blog/${e.categorySeoUrl}/${e.seoUrl}" class="blog-card">
+                            <div class="blog-card__img">
+                                <img src="${e.featuredImageUrl}" alt="">
+                            </div>
+                            <div class="blog-card__content">
+                                <div class="blog-card__tag">${e.category}</div>
+                                <div class="blog-card__title">
+                                     ${e.title}
+                                </div>
+                                <div class="blog-card__txt">
+                                    ${e.content}
+                                </div>
+                            </div>
+                            <div class="blog-card__footer">
+                                <div class="blog-card__info">
+                                    <span class="icon-outer">
+                                        <svg class="icon">
+                                            <use xlink:href="../../assets/img/icons.svg#icon-date"></use>
+                                        </svg>
+                                    </span>
+                                    <span>${e.createdDate}</span>
+                                </div>
+                                <div class="blog-card__info">
+                                    <span class="icon-outer">
+                                        <svg class="icon">
+                                            <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                                        </svg>
+                                    </span>
+                                    <span>${e.readingTime} dk.</span>
+                                </div>
+                                <div class="blog-card__info">
+                                    <span class="icon-outer">
+                                        <svg class="icon">
+                                            <use xlink:href="../../assets/img/icons.svg#icon-view"></use>
+                                        </svg>
+                                    </span>
+                                    <span>${e.viewCount} Görüntülenme</span>
+                                </div>
+                            </div>
+                        </a>`;
+                        postContent.append(education);
+                    });
+
+                    paginationContent.html("");
+                    var prev = `<a class="pagination__item prev" onclick=changePage('${res.data.pageIndex - 1}')>
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
+                                </svg>
+                            </span>
+                        </a>`;
+                    var next = `<a class="pagination__item next" onclick=changePage('${res.data.pageIndex + 1}')>
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
+                                </svg>
+                            </span>
+                        </a>`;
+                    if (res.data.pageIndex > 1) {
+                        paginationContent.append(prev);
+                    }
+                    for (var i = 1; i <= res.data.totalPageCount; i++) {
+
+                        var page = `<a onclick="changePage('${i}')" class="pagination__item ${i == res.data.pageIndex ? 'active' : ''}" >${i}</a>`;
+                        paginationContent.append(page);
+                    }
+                    if (res.data.pageIndex < res.data.totalPageCount) {
+                        paginationContent.append(next);
+                    }
+
+                }
+            });
+        }
 
         $("#blog-subscribe-form").validate({
             errorLabelContainer: $('#validateForm div.error'),
@@ -398,8 +435,13 @@
                     .removeClass('outer-error');
             },
         });
-
-
+        function changePage(page) {
+            currentPage.val(page);
+            getPosts();
+            $('html, body').animate({
+                scrollTop: $(".blog-list__title").offset().top-10
+            }, 1000);
+        }
         var onBlogSubsciptionSuccess = function (context) {
             $(".side-subscribe__txt").html(context.message);
             if (context.success) {

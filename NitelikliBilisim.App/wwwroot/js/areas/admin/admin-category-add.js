@@ -7,6 +7,7 @@ var inputSeoUrl = document.getElementById("input-seo-url");
 var inputEducationDayCount = document.getElementById("input-educationdaycount");
 var inputIconUrl = document.getElementById("input-icon-url");
 var inputIconColor = document.getElementById("input-color-code");
+var inputWizardClass = document.getElementById("input-wizard-class");
 var btnSave = $("#btn-save");
 
 /* assignments */
@@ -48,7 +49,8 @@ function btnSave_onClick() {
         CategoryType: categoryType,
         EducationDayCount: inputEducationDayCount.value,
         IconUrl: inputIconUrl.value,
-        IconColor: inputIconColor.value
+        IconColor: inputIconColor.value,
+        WizardClass: inputWizardClass.value
     }
 
     var tokenVerfier = new SecuritySupport.TokenVerifier(); 

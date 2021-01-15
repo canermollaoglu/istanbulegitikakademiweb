@@ -160,6 +160,11 @@ namespace NitelikliBilisim.Business.Repositories
             return model;
         }
 
+        public object GetUserCertificates(string userId)
+        {
+            throw new NotImplementedException();
+        }
+
         public InvoiceDetailsVm GetCustomerInvoiceDetails(Guid invoiceId)
         {
             InvoiceDetailsVm model = new();

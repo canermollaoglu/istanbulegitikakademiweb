@@ -93,6 +93,14 @@ namespace NitelikliBilisim.App.Controllers
             return View(model);
         }
 
+        [Route("hesap/sertifikalarim")]
+        public IActionResult MyCertificates()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            //var model = _userUnitOfWork.User.GetUserCertificates(userId);
+            return View();
+        }
+
         [Route("hesap/kurs-detay/{groupId}")]
         public IActionResult MyCourseDetail(Guid groupId)
         {
@@ -207,8 +215,7 @@ namespace NitelikliBilisim.App.Controllers
         {
             try
             {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var model = _unitOfWork.Suggestions.GetEducationsOfTheWeek(week, userId);
+                var model = _unitOfWork.Suggestions.GetEducationsOfTheWeek(week);
                 foreach (var education in model)
                 {
                     education.Medias[0].FileUrl = _storageService.BlobUrl + education.Medias[0].FileUrl;

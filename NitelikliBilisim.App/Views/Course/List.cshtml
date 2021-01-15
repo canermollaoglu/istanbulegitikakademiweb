@@ -19,10 +19,10 @@
                 </a>
             </div>
             <div class="subheader__cnt">
-                <div class="subheader__icon">
+                <div class="subheader__icon" style="background-color:@Model.CategoryIconColor">
                     <span class="icon-outer">
                         <svg class="icon">
-                            <use xlink:href="../../assets/img/icons.svg#icon-system-network"></use>
+                            <use xlink:href="../../assets/img/icons.svg#@Model.CategoryIconUrl"></use>
                         </svg>
                     </span>
                 </div>
@@ -275,12 +275,13 @@
             currentHostCity.val($("#hostCitySelect").val());
             currentOrder.val($("#orderType").val());
             getSearchResults();
-        })
+        });
 
         function getSearchResults() {
             $.ajax({
                 url: `/get-courses`,
                 method: "post",
+                async:false,
                 data: {
                     categoryId: currentCategoryId.val(),
                     hostCity: currentHostCity.val(),
@@ -377,6 +378,9 @@
         function changePage(page) {
             currentPage.val(page);
             getSearchResults();
+            $('html, body').animate({
+                scrollTop: $(".lesson-list").offset().top
+            }, 1000);
         }
     </script>
 }

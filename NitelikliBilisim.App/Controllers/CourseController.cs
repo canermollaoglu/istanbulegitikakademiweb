@@ -38,6 +38,8 @@ namespace NitelikliBilisim.App.Controllers
             {
                 model.CategoryName = "Tüm Teknoloji Eğitimleri";
                 model.CategoryShortDescription = "Tüm Teknoloji Eğitimleri";
+                model.CategoryIconColor = "#459af0";
+                model.CategoryIconUrl = "icon-search";
             }
             else
             {
@@ -47,11 +49,15 @@ namespace NitelikliBilisim.App.Controllers
                     model.CategoryId = category.Id;
                     model.CategoryName = category.Name;
                     model.CategoryShortDescription = category.Description;
+                    model.CategoryIconColor = category.IconColor;
+                    model.CategoryIconUrl = category.IconUrl;
                 }
                 else
                 {
-                    model.CategoryName = "Tüm Kategoriler";
-                    model.CategoryShortDescription = "Geleceğin web sitelerini kodlayın";
+                    model.CategoryName = "Tüm Teknoloji Eğitimleri";
+                    model.CategoryShortDescription = "Tüm Teknoloji Eğitimleri";
+                    model.CategoryIconColor = "#459af0";
+                    model.CategoryIconUrl = "icon-search";
                 }
             }
 
@@ -111,7 +117,6 @@ namespace NitelikliBilisim.App.Controllers
                 Details = educationDetails,
                 Educators = educators,
                 AvaibleEducationCities = educationCities,
-                PopularEducations = _unitOfWork.Suggestions.GetGuestUserSuggestedEducations()
             };
             return View(model);
         }
