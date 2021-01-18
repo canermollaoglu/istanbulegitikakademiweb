@@ -188,6 +188,13 @@ namespace NitelikliBilisim.App.Controllers
             model.TotalEducationCount = _unitOfWork.Education.TotalEducationCount();
             model.Educators = _unitOfWork.Educator.GetEducatorsAboutUsPage();
             model.FeaturedEducation = _unitOfWork.Education.GetFeaturedEducation();
+            var popularCategories = _unitOfWork.EducationCategory.GetPopularCategories();
+            foreach (var category in popularCategories)
+            {
+                category.IconUrl = _storageService.BlobUrl + category.IconUrl;
+                category.BackgroundImageUrl = _storageService.BlobUrl + category.BackgroundImageUrl;
+            };
+            model.PopularCategories = popularCategories;
             return View(model);
         }
 

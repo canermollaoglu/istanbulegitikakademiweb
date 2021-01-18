@@ -6,6 +6,7 @@
 
 @section styles{
     <link href="~/vendor\select2/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="~/css/lib/file-uploader.css" rel="stylesheet" />
     <style>
         .popular-technology__icon {
             width: 55px;
@@ -100,12 +101,12 @@
                         </div>
                     </div>
                 </div>
-                
+
             </div>
             <div class="col-md-6" @(Model.BaseCategory != null ? "style=display:none;" : "")>
                 <div class="form-group">
                     <label>Eğitim Gün Sayısı</label>
-                    <input type="text"  class="form-control" id="input-educationdaycount" value="@Model.Category.EducationDayCount">
+                    <input type="text" class="form-control" id="input-educationdaycount" value="@Model.Category.EducationDayCount">
                 </div>
             </div>
         </div>
@@ -117,6 +118,41 @@
                 </div>
             </div>
         </div>
+        <div class="row" id="div-description2" @(Model.BaseCategory == null ? "style=display:none;" : "")>
+            <div class="col-md-6" >
+                <div class="form-group">
+                    <label>Açıklama</label>
+                    <textarea id="input-description2" rows="5" class="form-control" >@Model.Category.Description2</textarea>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Arkaplan Görseli</label>
+                            <div class="file-upload-container" id="file-upload-container-for-banner">
+                                <img src="@Model.Category.BackgroundImageUrl" class="img-after-preview" id="img-after-preview-for-banner" />
+                                <p><i class="fa fa-file"></i> Resim yüklemek için tıklayınız...</p>
+                                <input type="file" />
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>İkon</label>
+                            <div class="file-upload-container" id="file-upload-container-for-preview">
+                                <img src="@Model.Category.IconUrl" class="img-after-preview" id="img-after-preview-for-preview" />
+                                <p><i class="fa fa-file"></i> Resim yüklemek için tıklayınız...</p>
+                                <input type="file" />
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </form>
 </div>
 
@@ -192,5 +228,6 @@
 <p><button id="btn-save" class="btn_1 medium">Kaydet</button></p>
 @section postScripts{
     <script src="~/vendor\select2/dist/js/select2.min.js"></script>
+    <script src="~/js/lib/file-uploader.js"></script>
     <script src="~/js/areas/admin/admin-category-update.js"></script>
 }
