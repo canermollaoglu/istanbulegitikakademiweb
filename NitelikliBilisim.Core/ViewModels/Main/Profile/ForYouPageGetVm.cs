@@ -24,6 +24,7 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public string CategoryName { get; set; }
         public string CategoryShortDescription { get; set; }
         public Guid? CategoryId { get; set; }
+        public FeaturedEducationVm FeaturedEducation { get; set; }
     }
 
     public class EducationMonth

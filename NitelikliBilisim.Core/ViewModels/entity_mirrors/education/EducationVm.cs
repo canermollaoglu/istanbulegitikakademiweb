@@ -57,7 +57,7 @@ namespace NitelikliBilisim.Core.ViewModels
         public byte HoursPerDay { get; set; }
         public byte Days { get; set; }
         public bool isActive { get; set; }
-
+        public bool IsFeaturedEducation { get; set; }
     }
     public class EducationMediaVm
     {

@@ -185,6 +185,15 @@
                         allowSearch: false,
                         cellTemplate: function (container, options) {
                             var current = options.data;
+                            console.log(current);
+                            if (current.isFeaturedEducation) {
+                                $(`<a title="Öne Çıkar" class="btn btn-outline-warning btn-sm" onClick="setFeaturedStatus('${current.id}')"><i class="fa fa-thumbs-down"></i><span style="display: block"></span></a>`)
+                                    .appendTo(container);
+                            } else {
+                                $(`<a title="Öne Çıkar" class="btn btn-outline-success btn-sm" onClick="setFeaturedStatus('${current.id}')"><i class="fa fa-thumbs-up"}"></i><span style="display: block"></span></a>`)
+                                    .appendTo(container);
+                            }
+                            
                             $(`<a title="Öneri Yönetimi" class="btn btn-warning btn-sm" href="/admin/egitim-oneri-kriteri-yonetimi?educationId=${current.id}"><i class=\"fa fa-lightbulb-o\"></i><span style="display: block"></span></a>`)
                                 .appendTo(container);
                             $(`<a title="Medya Yönetimi" class="btn btn-primary btn-sm" href="/admin/egitim-medya-yonetimi/${current.id}"><i class=\"fa fa-file-photo-o\"></i><span style="display: block"></span></a>`)
@@ -200,6 +209,30 @@
                         alignment: "center"
                     }
                 ]
+            });
+        }
+
+
+        function setFeaturedStatus(id) {
+            var resultAlert = new AlertSupport.ResultAlert();
+            $.ajax({
+                url: `/admin/egitim-one-cikar?educationId=${id}`,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        resultAlert.display({
+                            success: true,
+                            message: "Durum güncellendi.",
+                        });
+                        $("#education-grid").dxDataGrid("instance").refresh();
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors,
+                            message: "İşlem başarısız"
+                        });
+                    }
+                }
             });
         }
     </script>

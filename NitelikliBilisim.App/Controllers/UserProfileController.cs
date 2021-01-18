@@ -187,6 +187,7 @@ namespace NitelikliBilisim.App.Controllers
             model.EducationHostCities = EnumHelpers.ToKeyValuePair<HostCity>();
             model.TotalEducationCount = _unitOfWork.Education.TotalEducationCount();
             model.Educators = _unitOfWork.Educator.GetEducatorsAboutUsPage();
+            model.FeaturedEducation = _unitOfWork.Education.GetFeaturedEducation();
             return View(model);
         }
 

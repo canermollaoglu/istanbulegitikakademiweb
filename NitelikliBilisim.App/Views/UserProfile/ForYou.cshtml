@@ -172,18 +172,17 @@
                 </h2>
             </div>
             <div class="for-you-featured__right">
-                <a href="egitim-detay.php" class="lesson-list__item">
+                <a asp-controller="Course" asp-action="Details" asp-route-catSeoUrl="@Model.FeaturedEducation.CatSeoUrl" asp-route-seoUrl="@Model.FeaturedEducation.SeoUrl" class="lesson-list__item">
                     <div class="lesson-list__item-img">
-                        <img src="../../assets/img/cardimg1.jpg" alt="">
+                        <img src="@(StorageService.BlobUrl+Model.FeaturedEducation.ImageUrl)" alt="">
                     </div>
                     <div class="lesson-list__item-cnt">
                         <div class="lesson-list__item-left">
                             <div class="lesson-list__item-title">
-                                Active Directory Sertifika Servisleri
+                                @Model.FeaturedEducation.Name
                             </div>
                             <div class="lesson-list__item-txt">
-                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse dahi devamlı
-                                erişilebilir
+                                @Model.FeaturedEducation.Description
                             </div>
                         </div>
                         <div class="lesson-list__item-right">
@@ -193,7 +192,7 @@
                                         <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
                                     </svg>
                                 </span>
-                                3 gün ( 12 saat )
+                                @Model.FeaturedEducation.Days gün ( @Model.FeaturedEducation.Hours saat )
                             </div>
                             <div class="lesson-list__item-price">
                                 <button class="button button-fw">
