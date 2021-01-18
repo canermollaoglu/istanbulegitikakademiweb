@@ -93,6 +93,7 @@
 <section class="blog-list">
     <input type="hidden" id="current-page" />
     <input type="hidden" id="current-category" value="@Model.CurrentCategorySeoUrl" />
+    <input type="hidden" id="searchKey" value="@Model.SearchKey" />
     <div class="container" >
         <div class="blog-list__title">
             <div class="flex-center mb-4">
@@ -163,12 +164,12 @@
                     </div>
                 </div>
                 <div class="side-search">
-                    <span class="icon-outer">
-                        <svg class="icon">
-                            <use xlink:href="../../assets/img/icons.svg#icon-search"></use>
-                        </svg>
-                    </span>
-                    <input type="text" placeholder="Makale, içerik, konu arayın">
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-search"></use>
+                            </svg>
+                        </span>
+                        <input type="text"  id="input-search-blog-post" value="@Model.SearchKey" placeholder="Makale, içerik, konu arayın">
                 </div>
                 <div class="side-subscribe">
                     <div class="side-subscribe__top">
@@ -311,12 +312,21 @@
     <script>
         var currentPage = $("#current-page");
         var currentCategory = $("#current-category");
+        var searchKey = $("#searchKey");
         var postContent = $(".blog-list__items");
         var paginationContent = $(".pagination");
+        var searchKeyinput = $("#input-search-blog-post");
+
         $(function () {
             getPosts();
         });
 
+
+        $(searchKeyinput).on('keypress', function (e) {
+            if (e.which == 13) {
+                location.href = `/blog?sKey=${$(this).val()}`;
+            }
+        });
         function getPosts() {
             $.ajax({
                 url: `/get-blog-posts`,
@@ -325,6 +335,7 @@
                 data: {
                     categoryId: currentCategory.val(),
                     page: currentPage.val(),
+                    searchKey: searchKey.val()
                 },
                 success: (res) => {
                     postContent.html("");

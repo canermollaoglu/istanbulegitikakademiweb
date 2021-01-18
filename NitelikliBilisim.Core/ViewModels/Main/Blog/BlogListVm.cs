@@ -13,5 +13,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Blog
         public int TotalBlogPostCount { get; set; }
         public string CurrentCategorySeoUrl { get; set; }
         public string CurrentCategory { get; set; }
+        public string SearchKey { get; set; }
     }
 }

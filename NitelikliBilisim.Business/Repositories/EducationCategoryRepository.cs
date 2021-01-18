@@ -77,11 +77,11 @@ namespace NitelikliBilisim.Business.Repositories
             return base.Insert(entity, isSaveLater);
         }
 
-        public List<HomePageCategoryVm> GetEducationCountForCategories()
+        public List<HomePageCategoryVm> GetNBUYEducationCategories()
         {
             List<HomePageCategoryVm> model = new();
             var dictionary = new Dictionary<Guid, int>();
-            var baseCategories = _context.EducationCategories.Where(x => x.BaseCategoryId == null).ToList();
+            var baseCategories = _context.EducationCategories.Where(x => x.BaseCategoryId == null && x.CategoryType == CategoryType.NBUY).ToList();
 
             foreach (var baseCategory in baseCategories)
             {

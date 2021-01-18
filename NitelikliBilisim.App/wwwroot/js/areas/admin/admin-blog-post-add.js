@@ -55,6 +55,13 @@ function document_onLoad() {
             ['view', ['fullscreen', 'codeview', 'help']]
         ],
         fontNames: ['Proxima Nova'],
+        callbacks: {
+            onPaste: function (e) {
+                var bufferText = ((e.originalEvent || e).clipboardData || window.clipboardData).getData('Text');
+                e.preventDefault();
+                document.execCommand('insertText', false, bufferText);
+            }
+        },
         styleTags: [
             { title: 'Baslik', tag: 'h2', className: 'blog-detail__title', value: 'h2' },
             { title: 'Özet', tag: 'h1', className: 'blog-detail__blockquote', value: 'h1' },

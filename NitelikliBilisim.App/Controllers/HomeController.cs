@@ -59,7 +59,7 @@ namespace NitelikliBilisim.App.Controllers
         public IActionResult Index()
         {
             var model = new HomeIndexModel();
-            model.EducationCountByCategory = _unitOfWork.EducationCategory.GetEducationCountForCategories();
+            model.NBUYEducationCategories = _unitOfWork.EducationCategory.GetNBUYEducationCategories();
             model.EducationComments = _unitOfWork.EducationComment.GetHighlightComments(5);
             model.EducationSearchTags = _unitOfWork.Education.GetEducationSearchTags();
             model.HostCities = EnumHelpers.ToKeyValuePair<HostCity>();

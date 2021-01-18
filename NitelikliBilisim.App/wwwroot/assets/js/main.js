@@ -971,8 +971,7 @@ $(document).ready(function () {
     $('.js-signup-select').select2({});
     
     $('.js-education-place-select').select2({
-        placeholder: 'Eğitim Yerini Seçiniz',
-        dropdownParent: $('.accordion'),
+        placeholder: 'Eğitim Yerini Seçiniz'
     });
     $('.js-education-categori-select').select2({
         placeholder: 'Eğitim Kategorisi Seçiniz',

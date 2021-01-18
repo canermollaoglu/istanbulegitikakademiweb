@@ -117,7 +117,12 @@ namespace NitelikliBilisim.App.Controllers
                         Subject = "Nitelikli Bilişim Email Aktivasyonu",
                         Body = message
                     });
+                   
                 }
+                return Json(new ResponseModel
+                {
+                    isSuccess = true
+                });
             }
             else
             {
@@ -127,11 +132,6 @@ namespace NitelikliBilisim.App.Controllers
                     errors = new List<string> { "Kullanıcı oluşturulurken bir hata oluştu" }
                 });
             }
-
-            return Json(new ResponseModel
-            {
-                isSuccess = true
-            });
         }
 
 
