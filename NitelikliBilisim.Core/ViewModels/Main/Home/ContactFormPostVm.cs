@@ -15,8 +15,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Home
         [Required]
         public string Email { get; set; }
         [Required]
-        public string PhoneCode { get; set; }
-        [Required]
         public string Phone { get; set; }
         [Required]
         public ContactFormSubjects ContactFormSubject{ get; set; }

@@ -119,6 +119,7 @@
             var __layoutHeaderCartCount = $(".mini-basket__count");
             var __layoutHeaderCartContent = $(".mini-basket__cnt");
             __layoutHeaderCartCount.html(`${__cart.getItemCount()} Eğitim`);
+            __layoutHeaderCartContent.html("");
             $.each(cartItems, function (index, value) {
                 var item = `<a class="mini-basket__item js-deleted-item" data-eid="${value.educationId}">
                                                         <div class="mini-basket__item-img">

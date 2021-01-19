@@ -15,6 +15,12 @@
     {
         bannerUrl = StorageService.BlobUrl + banner.FileUrl;
     }
+    var previewImage = Model.Details.Medias.FirstOrDefault(x => x.MediaType == NitelikliBilisim.Core.Enums.EducationMediaType.PreviewPhoto);
+    var previewImageUrl = "";
+    if (previewImage!=null)
+    {
+        previewImageUrl = StorageService.BlobUrl + previewImage.FileUrl;
+    }
 }
 
 <div class="subheader subheader--detail">
@@ -926,7 +932,7 @@
             var group = groups.find(x => x.host.hostId == index);
             var hostId = group.host.hostId;
             var groupId = group.groupId;
-            var imageUrl = "@(bannerUrl)";
+            var imageUrl = "@(previewImageUrl)";
             var newPrice = group.newPrice;
             var educationName = "@(Model.Details.Base.Name)";
             cart.addToCart(educationId, hostId, groupId, imageUrl, newPrice, educationName);
