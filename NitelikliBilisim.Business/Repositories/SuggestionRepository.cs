@@ -68,16 +68,16 @@ namespace NitelikliBilisim.Business.Repositories
             var educationPoints = GetEducationSuggestionRate(userId);
             var selectedEducations = educationPoints.OrderByDescending(x => x.Point)
                          .Take(count)
-                         .ToDictionary(pair => pair.EducationId, pair => pair.Point);
+                         .ToDictionary(pair => pair.SeoUrl, pair => pair.Point);
 
             var lastEducations = _context.Educations.OrderByDescending(x => x.CreatedDate).Where(x => x.IsActive).Take(10).ToList();
             int i = 0;
             int educationCount = _context.Educations.Count(x => x.IsActive);
             while (educationCount > count && selectedEducations.Count() < count)
             {
-                if (!selectedEducations.ContainsKey(lastEducations[i].Id))
+                if (!selectedEducations.ContainsKey(lastEducations[i].SeoUrl))
                 {
-                    selectedEducations.Add(lastEducations[i].Id, 0);
+                    selectedEducations.Add(lastEducations[i].SeoUrl, 0);
                 }
                 i++;
             }
@@ -143,7 +143,7 @@ namespace NitelikliBilisim.Business.Repositories
             List<EducationPoint> retVal = new List<EducationPoint>();
             retVal.AddRange(criterionBased);
             retVal.AddRange(userActionBased);
-            retVal = retVal.GroupBy(x => x.EducationId).Select(y => new EducationPoint { EducationId = y.Key, Point = Math.Round(y.Sum(x => x.Point),2),Education=educations.First(x=>x.Id == y.Key) }).ToList();
+            retVal = retVal.GroupBy(x => x.SeoUrl).Select(y => new EducationPoint { SeoUrl = y.Key, Point = Math.Round(y.Sum(x => x.Point),2),Education=educations.First(x=>x.SeoUrl == y.Key) }).ToList();
             return retVal;
         }
 
@@ -151,7 +151,7 @@ namespace NitelikliBilisim.Business.Repositories
         {
             var nearestDay = week * 7;
             var educations = _context.Educations.Include(c => c.Category).Include(x => x.EducationSuggestionCriterions).Where(x => x.IsActive);
-            var thisWeekEducations = new Dictionary<Guid,double>();
+            var thisWeekEducations = new Dictionary<string,double>();
             foreach (var education in educations)
             {
                 if (education.EducationSuggestionCriterions!=null && education.EducationSuggestionCriterions.Count>0)
@@ -161,11 +161,11 @@ namespace NitelikliBilisim.Business.Repositories
                         if (criterion.CriterionType == CriterionType.EducationDay)
                         {
                             if (nearestDay <= criterion.MaxValue && nearestDay >= criterion.MinValue)
-                                thisWeekEducations.Add(education.Id, 3);//İçinde bulunulan hafta en öncelikli olduğu için sıra 3 
+                                thisWeekEducations.Add(education.SeoUrl, 3);//İçinde bulunulan hafta en öncelikli olduğu için sıra 3 
                             else if (criterion.MaxValue<=nearestDay-7 && criterion.MaxValue>=nearestDay-14)
-                                thisWeekEducations.Add(education.Id, 2);//önceki hafta için sıra 2 
+                                thisWeekEducations.Add(education.SeoUrl, 2);//önceki hafta için sıra 2 
                             else if (criterion.MinValue<=nearestDay+7 && criterion.MinValue>nearestDay)
-                                thisWeekEducations.Add(education.Id, 1);//sonraki hafta için sıra 1
+                                thisWeekEducations.Add(education.SeoUrl, 1);//sonraki hafta için sıra 1
                         }
                     }
                 }
@@ -455,7 +455,7 @@ namespace NitelikliBilisim.Business.Repositories
                     if (appropriateCriterion > 0)
                     {
                         educationAppropriateCriterionRate.Add(
-                                                new EducationPoint { EducationId = education.Id, Point = appropriateCriterion / 2 }
+                                                new EducationPoint { SeoUrl = education.SeoUrl, Point = appropriateCriterion / 2 }
                                                 );
                     }
                 }
@@ -486,9 +486,9 @@ namespace NitelikliBilisim.Business.Repositories
             return totalPoint;
         }
 
-        public List<SuggestedEducationVm> FillSuggestedEducationList(Dictionary<Guid, double> educationAndAppropriateCriterion)
+        public List<SuggestedEducationVm> FillSuggestedEducationList(Dictionary<string, double> educationAndAppropriateCriterion)
         {
-            var educationsList = _context.Educations.Where(x => educationAndAppropriateCriterion.Keys.Contains(x.Id) && x.IsActive)
+            var educationsList = _context.Educations.Where(x => educationAndAppropriateCriterion.Keys.Contains(x.SeoUrl) && x.IsActive)
                .Join(_context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Id, r => r.EducationId, (x, y) => new
                {
                    Education = x,
@@ -522,7 +522,7 @@ namespace NitelikliBilisim.Business.Repositories
                     SeoUrl = x.Education.SeoUrl
                 },
                 Medias = new List<EducationMediaVm> { new EducationMediaVm { EducationId = x.Education.Id, FileUrl = x.EducationPreviewMedia.FileUrl } },
-                AppropriateCriterionCount = educationAndAppropriateCriterion.FirstOrDefault(y => y.Key == x.Education.Id).Value
+                AppropriateCriterionCount = educationAndAppropriateCriterion.FirstOrDefault(y => y.Key == x.Education.SeoUrl).Value
             }
           ).OrderByDescending(x => x.AppropriateCriterionCount).ToList();
 
@@ -812,13 +812,13 @@ namespace NitelikliBilisim.Business.Repositories
                         string key = JsonConvert.DeserializeObject<string>(log.Parameters.First(x => x.ParameterName == "searchKey").ParameterValue);
                         int totalKeySearched = getAllSearching[key];
 
-                        Guid Id = JsonConvert.DeserializeObject<Guid>(log.Parameters.First(x => x.ParameterName == "courseId").ParameterValue);
+                        string seoUrl = JsonConvert.DeserializeObject<string>(log.Parameters.First(x => x.ParameterName == "seoUrl").ParameterValue);
                         if (model.Any(x => x.Key == key))
                         {
                             var eDetail = new EducationDetail();
                             eDetail.Point = CalculateSearchedKeyPoint(totalKeySearched, totalEducationSearchCount);
-                            eDetail.Id = Id;
-                            eDetail.Education = _context.Educations.FirstOrDefault(x => x.Id == Id);
+                            eDetail.SeoUrl = seoUrl;
+                            eDetail.Education = _context.Educations.FirstOrDefault(x => x.SeoUrl == seoUrl);
                             SearchedEducationList ed = model.First(x => x.Key == key);
                             ed.EducationDetails.Add(eDetail);
                         }
@@ -826,8 +826,8 @@ namespace NitelikliBilisim.Business.Repositories
                         {
                             var eDetail = new EducationDetail();
                             eDetail.Point = CalculateSearchedKeyPoint(totalKeySearched, totalEducationSearchCount);
-                            eDetail.Id = Id;
-                            eDetail.Education = _context.Educations.FirstOrDefault(x => x.Id == Id);
+                            eDetail.SeoUrl = seoUrl;
+                            eDetail.Education = _context.Educations.FirstOrDefault(x => x.SeoUrl == seoUrl);
                             var sE = new SearchedEducationList();
                             sE.Key = key;
                             sE.EducationDetails.Add(eDetail);
@@ -852,13 +852,13 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 foreach (var log in result.Documents)
                 {
-                    if (log.Parameters != null && log.Parameters.Any(x => x.ParameterName == "courseId") && !log.Parameters.Any(x => x.ParameterName == "searchKey"))
+                    if (log.Parameters != null && log.Parameters.Any(x => x.ParameterName == "seoUrl") && !log.Parameters.Any(x => x.ParameterName == "searchKey"))
                     {
-                        Guid Id = JsonConvert.DeserializeObject<Guid>(log.Parameters.First(x => x.ParameterName == "courseId").ParameterValue);
-                        if (model.Any(x => x.EducationId == Id))
+                        string seoUrl = JsonConvert.DeserializeObject<string>(log.Parameters.First(x => x.ParameterName == "seoUrl").ParameterValue);
+                        if (model.Any(x => x.SeoUrl == seoUrl))
                         {
-                            ViewingEducation current = model.First(x => x.EducationId == Id);
-                            current.Education = _context.Educations.FirstOrDefault(x => x.Id == Id);
+                            ViewingEducation current = model.First(x => x.SeoUrl == seoUrl);
+                            current.Education = _context.Educations.FirstOrDefault(x => x.SeoUrl == seoUrl);
                             current.ViewingCount++;
                             current.Point = CalculateViewedEducationPoint(current.ViewingCount, totalEducationViewCount);
                         }
@@ -866,8 +866,8 @@ namespace NitelikliBilisim.Business.Repositories
                         {
                             model.Add(new ViewingEducation
                             {
-                                EducationId = Id,
-                                Education =_context.Educations.FirstOrDefault(x=>x.Id == Id),
+                                SeoUrl = seoUrl,
+                                Education =_context.Educations.FirstOrDefault(x=>x.SeoUrl == seoUrl),
                                 ViewingCount = 1,
                                 Point = CalculateViewedEducationPoint(1, totalEducationViewCount)
                             });
@@ -896,7 +896,7 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 viewingEducationPoints.Add(new EducationPoint
                 {
-                    EducationId = education.EducationId,
+                    SeoUrl = education.SeoUrl,
                     Point = education.Point
                 });
             }
@@ -905,13 +905,13 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 foreach (var detail in key.EducationDetails)
                 {
-                    var education = searchedEducationPoints.FirstOrDefault(x => x.EducationId == detail.Id);
+                    var education = searchedEducationPoints.FirstOrDefault(x => x.SeoUrl == detail.SeoUrl);
 
                     if (education == null)
                     {
                         searchedEducationPoints.Add(new EducationPoint
                         {
-                            EducationId = detail.Id,
+                            SeoUrl = detail.SeoUrl,
                             Point = detail.Point
                         });
                     }
@@ -919,7 +919,7 @@ namespace NitelikliBilisim.Business.Repositories
                     {
                         if (detail.Point > education.Point)
                         {
-                            searchedEducationPoints.First(x => x.EducationId == detail.Id).Point = detail.Point;
+                            searchedEducationPoints.First(x => x.SeoUrl == detail.SeoUrl).Point = detail.Point;
                         }
                     }
                 }
@@ -927,7 +927,7 @@ namespace NitelikliBilisim.Business.Repositories
 
             retVal.AddRange(viewingEducationPoints);
             retVal.AddRange(searchedEducationPoints);
-            retVal = retVal.GroupBy(x => x.EducationId).Select(y => new EducationPoint { EducationId = y.Key,Education = educations.First(x=>x.Id ==y.Key), Point = (y.Sum(x => x.Point)) / 2 }).ToList();
+            retVal = retVal.GroupBy(x => x.SeoUrl).Select(y => new EducationPoint { SeoUrl = y.Key,Education = educations.First(x=>x.SeoUrl ==y.Key), Point = (y.Sum(x => x.Point)) / 2 }).ToList();
 
             return retVal;
         }
@@ -1022,22 +1022,22 @@ namespace NitelikliBilisim.Business.Repositories
             s.Query(
                 q =>
                 q.Term(t => t.UserId, userId) &&
-                q.Term(t => t.ControllerName, "browser") &&
+                q.Term(t => t.ControllerName, "course") &&
                 q.Term(t => t.ActionName, "getcourses")));
             var searchedTexts = _elasticClient.Search<TransactionLog>(s =>
             s.Size((int)searchedTextCount.Count)
             .Query(q =>
                 q.Term(t => t.UserId, userId) &&
-                q.Term(t => t.ControllerName, "browser") &&
+                q.Term(t => t.ControllerName, "course") &&
                 q.Term(t => t.ActionName, "getcourses")));
 
             if (searchedTexts.IsValid && searchedTexts.Documents != null && searchedTexts.Documents.Count > 0)
             {
                 foreach (var log in searchedTexts.Documents)
                 {
-                    if (log.Parameters != null && log.Parameters.Any(x => x.ParameterName == "searchText"))
+                    if (log.Parameters != null && log.Parameters.Any(x => x.ParameterName == "searchKey"))
                     {
-                        string sText = JsonConvert.DeserializeObject<string>(log.Parameters.First(x => x.ParameterName == "searchText").ParameterValue);
+                        string sText = JsonConvert.DeserializeObject<string>(log.Parameters.First(x => x.ParameterName == "searchKey").ParameterValue);
 
                         if (allSearchings.ContainsKey(sText))
                             allSearchings[sText]++;

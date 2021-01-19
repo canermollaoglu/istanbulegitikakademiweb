@@ -14,8 +14,9 @@ namespace NitelikliBilisim.App.Components
 
         public IViewComponentResult Invoke()
         {
-                var userId = UserClaimsPrincipal.FindFirstValue(ClaimTypes.NameIdentifier);
-                return View(_unitOfWork.Suggestions.GetUserSuggestedEducations(userId, 5));
+            var userId = UserClaimsPrincipal.FindFirstValue(ClaimTypes.NameIdentifier);
+            var data = _unitOfWork.Suggestions.GetUserSuggestedEducations(userId, 5);
+            return View(data);
         }
     }
 }

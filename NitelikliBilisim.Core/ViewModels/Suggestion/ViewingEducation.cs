@@ -7,7 +7,7 @@ namespace NitelikliBilisim.Core.ViewModels.Suggestion
 {
     public class ViewingEducation
     {
-        public Guid EducationId { get; set; }
+        public string SeoUrl{ get; set; }
         /// <summary>
         /// Sunum amaçlı
         /// </summary>
