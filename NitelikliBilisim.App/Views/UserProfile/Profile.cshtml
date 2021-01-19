@@ -561,6 +561,7 @@
                 },
                 success: (res) => {
                     $.each(res.data, function (index, e) {
+                        console.log(e);
                         weekPrivateSlider.appendSlide([
                             `<div class="swiper-slide">
                                             <a href="egitim-detay.php" class="lesson-list__item">
@@ -573,9 +574,7 @@
                                                             ${e.base.name}
                                                         </div>
                                                         <div class="lesson-list__item-txt">
-                                                            Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                            dahi devamlı
-                                                            erişilebilir
+                                                            ${e.base.description}
                                                         </div>
                                                     </div>
                                                     <div class="lesson-list__item-right">
@@ -585,10 +584,10 @@
                                                                     <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
                                                                 </svg>
                                                             </span>
-                                                            3 gün ( 12 saat )
+                                                            ${e.base.daysText} gün ( ${e.base.daysNumeric * e.base.hoursPerDayNumeric} saat )
                                                         </div>
                                                         <div class="lesson-list__item-price">
-                                                             800,00 <span>TL</span>
+                                                             ${e.base.price} <span>TL</span>
                                                         </div>
                                                     </div>
                                                 </div>
