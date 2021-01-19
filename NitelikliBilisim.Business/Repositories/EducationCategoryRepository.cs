@@ -3,6 +3,7 @@ using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.ViewModels.Main.Course;
 using NitelikliBilisim.Core.ViewModels.Main.Home;
+using NitelikliBilisim.Core.ViewModels.Main.Profile;
 using NitelikliBilisim.Data;
 using System;
 using System.Collections.Generic;
@@ -76,11 +77,11 @@ namespace NitelikliBilisim.Business.Repositories
             return base.Insert(entity, isSaveLater);
         }
 
-        public List<HomePageCategoryVm> GetEducationCountForCategories()
+        public List<HomePageCategoryVm> GetNBUYEducationCategories()
         {
             List<HomePageCategoryVm> model = new();
             var dictionary = new Dictionary<Guid, int>();
-            var baseCategories = _context.EducationCategories.Where(x => x.BaseCategoryId == null).ToList();
+            var baseCategories = _context.EducationCategories.Where(x => x.BaseCategoryId == null && x.CategoryType == CategoryType.NBUY).ToList();
 
             foreach (var baseCategory in baseCategories)
             {
@@ -138,6 +139,19 @@ namespace NitelikliBilisim.Business.Repositories
             return categories;
         }
 
+        public List<PopularCategoryVm> GetPopularCategories()
+        {
+            return _context.EducationCategories.Where(x => x.BaseCategoryId != null
+            && !string.IsNullOrEmpty(x.BackgroundImageUrl)
+            && !string.IsNullOrEmpty(x.IconUrl)).Select(x=> new PopularCategoryVm { 
+            Id = x.Id,
+            Name = x.Name,
+            Description = x.Description2,
+            IconUrl = x.IconUrl,
+            BackgroundImageUrl = x.BackgroundImageUrl,
+            SeoUrl = x.SeoUrl
+            }).ToList();
+        }
     }
 
     public class _EducationCountByCategory

@@ -71,10 +71,10 @@ namespace NitelikliBilisim.Business.Repositories.BlogRepositories
                 var ids = data.Where(x => x.Title == searchKey || x.Title.Contains(searchKey)).Select(x => x.Id).ToList();
                 searchKey = searchKey.FormatForTag();
                 var tags = Context.Bridge_BlogPostTags
-                                    .Join(Context.BlogTags, l => l.Id, r => r.Id, (x, y) => new
+                                    .Join(Context.BlogTags, l => l.Id2, r => r.Id, (x, y) => new
                                     {
-                                        TagId = x.Id,
-                                        BlogPostId = x.Id2,
+                                        TagId = x.Id2,
+                                        BlogPostId = x.Id,
                                         TagName = y.Name
                                     })
                                     .ToList();

@@ -24,7 +24,6 @@
             PANELİM
         </span>
     </div>
-    <div class="dunyanın-en-sacma-fixi js-fix-pos"></div>
     <div class="container">
         <div class="account__wrp">
             @await Component.InvokeAsync("MyAccountSidebar", AccountSideBarPageNames.MyPanel)
@@ -494,7 +493,6 @@
                 $('.js-fix-pos').css('width', accDashL + 50);
                 var dashboardWeekContent = $('.account-dashboard__week-content').offset().top;
                 var dashboardWeekSlideActive = $('.account-dashboard__week-slide.active').offset().left;
-                console.log(dashboardWeekSlideActive);
                 $('.js-dashboard-week-arrow').css('top', dashboardWeekContent);
                 $('.js-dashboard-week-arrow').css('left', dashboardWeekSlideActive);
                 $('.account-dashboard__week-slide').mouseenter(function () {

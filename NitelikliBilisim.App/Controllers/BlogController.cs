@@ -78,10 +78,11 @@ namespace NitelikliBilisim.App.Controllers
 
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("blog/{c?}")]
-        public IActionResult List(string c)
+        public IActionResult List(string c,string sKey)
         {
             BlogListVm model = new BlogListVm();
             model.CurrentCategorySeoUrl = c;
+            model.SearchKey = sKey;
             var categories = _unitOfWork.BlogCategory.GetListForBlogListPage();
             var currentC = categories.FirstOrDefault(x => x.SeoUrl == c);
             model.Categories = categories;

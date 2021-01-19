@@ -47,17 +47,23 @@ namespace NitelikliBilisim.App.Filters
             {
                 if (context.ActionArguments["seoUrl"]!=null && context.ActionArguments["catSeoUrl"]!=null)
                 {
-                    BlogViewLog bViewLog = new BlogViewLog
+                    var ipAddress = context.HttpContext.Connection.RemoteIpAddress.ToString();
+                    string catSeoUrl = context.ActionArguments["catSeoUrl"].ToString();
+                    string seoUrl = context.ActionArguments["seoUrl"].ToString();
+                   var anyIp = AnyIpAddress(ipAddress,catSeoUrl,seoUrl);
+                    if (!anyIp)
                     {
-                        SeoUrl = context.ActionArguments["seoUrl"],
-                        CatSeoUrl = context.ActionArguments["catSeoUrl"],
-                        SessionId = context.HttpContext.Session.GetString("userSessionId"),
-                        IpAddress = context.HttpContext.Connection.RemoteIpAddress.ToString(),
-                        UserId = context.HttpContext.User.Identity.IsAuthenticated ? context.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier) : null
-                    };
-                    CheckBlogViewLogIndex();
-                    var response = _elasticClient.IndexDocument(bViewLog);
-                    Console.WriteLine(response.IsValid);
+                        BlogViewLog bViewLog = new BlogViewLog
+                        {
+                            SeoUrl = context.ActionArguments["seoUrl"],
+                            CatSeoUrl = context.ActionArguments["catSeoUrl"],
+                            SessionId = context.HttpContext.Session.GetString("userSessionId"),
+                            IpAddress = context.HttpContext.Connection.RemoteIpAddress.ToString(),
+                            UserId = context.HttpContext.User.Identity.IsAuthenticated ? context.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier) : null
+                        };
+                        CheckBlogViewLogIndex();
+                        _elasticClient.IndexDocument(bViewLog);
+                    }
                 }
             }
 
@@ -91,6 +97,23 @@ namespace NitelikliBilisim.App.Filters
 
 
         #region Helper Methods
+
+        private bool AnyIpAddress(string ipAddress,string catSeoUrl, string seoUrl)
+        {
+            int count = 0;
+            var counts = _elasticClient.Count<BlogViewLog>(s =>
+            s.Query(
+                q =>
+                q.Term(t=>t.IpAddress,ipAddress) &&
+                q.Term(t => t.CatSeoUrl, catSeoUrl) &&
+                q.Term(t => t.SeoUrl, seoUrl)));
+            if (counts.IsValid)
+            {
+                count = (int)counts.Count;
+            }
+            return count > 0 ? true : false;
+        }
+
         /// <summary>
         /// ActionArguments içerisindeki parametreleri Liste halinde Log Parameter e map ederek döndürür.
         /// </summary>

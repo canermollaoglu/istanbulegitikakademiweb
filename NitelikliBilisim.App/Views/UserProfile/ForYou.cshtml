@@ -172,18 +172,17 @@
                 </h2>
             </div>
             <div class="for-you-featured__right">
-                <a href="egitim-detay.php" class="lesson-list__item">
+                <a asp-controller="Course" asp-action="Details" asp-route-catSeoUrl="@Model.FeaturedEducation.CatSeoUrl" asp-route-seoUrl="@Model.FeaturedEducation.SeoUrl" class="lesson-list__item">
                     <div class="lesson-list__item-img">
-                        <img src="../../assets/img/cardimg1.jpg" alt="">
+                        <img src="@(StorageService.BlobUrl+Model.FeaturedEducation.ImageUrl)" alt="">
                     </div>
                     <div class="lesson-list__item-cnt">
                         <div class="lesson-list__item-left">
                             <div class="lesson-list__item-title">
-                                Active Directory Sertifika Servisleri
+                                @Model.FeaturedEducation.Name
                             </div>
                             <div class="lesson-list__item-txt">
-                                Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse dahi devamlı
-                                erişilebilir
+                                @Model.FeaturedEducation.Description
                             </div>
                         </div>
                         <div class="lesson-list__item-right">
@@ -193,7 +192,7 @@
                                         <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
                                     </svg>
                                 </span>
-                                3 gün ( 12 saat )
+                                @Model.FeaturedEducation.Days gün ( @Model.FeaturedEducation.Hours saat )
                             </div>
                             <div class="lesson-list__item-price">
                                 <button class="button button-fw">
@@ -219,23 +218,19 @@
         </div>
         <div class="for-you-popular__wrp with-normal-tab">
             <div class="for-you-popular__left">
-                <div id="aspnet" class="for-you-popular__content main-tab__item active">
+                @foreach (var category in Model.PopularCategories)
+	{
+                <div id="@category.SeoUrl" class="for-you-popular__content main-tab__item active">
                     <div class="for-you-popular__img">
-                        <img src="../../assets/img/for-you-img.jpg" alt="">
+                        <img src="@category.BackgroundImageUrl" alt="">
                         <div class="for-you-popular__cnt">
                             <div class="for-you-popular__title">
-                                Asp.net ile
-                                mobil uygulama
-                                uzmanı olun
+                                @category.Name
                             </div>
                             <div class="for-you-popular__txt">
-                                Bulut bilişim teknolojisinin gelişmesi sayesinde, büyük verilerin internet üzerinde depolanabilirliği
-                                ve
-                                bu
-                                verilerin erişilebilirliği olanaklı hale gelmiştir. Bu imkanlar doğrultusunda Endüstri 4.0'ın yapı
-                                taşlarından olan büyük veri (big data) tanımı endüstride
+                                @category.Description
                             </div>
-                            <a href="#0" class="button button--simple button-white">
+                            <a asp-controller="Course" asp-action="List" asp-route-catSeoUrl="@category.SeoUrl" class="button button--simple button-white">
                                 <span class="button-txt">
                                     Eğitimleri İncele
                                 </span>
@@ -250,348 +245,26 @@
                         </div>
                     </div>
                 </div>
-                <div id="phyton" class="for-you-popular__content main-tab__item">
-                    <div class="for-you-popular__img">
-                        <img src="../../assets/img/for-you-img.jpg" alt="">
-                        <div class="for-you-popular__cnt">
-                            <div class="for-you-popular__title">
-                                phyton js ile
-                                mobil uygulama
-                                uzmanı olun
-                            </div>
-                            <div class="for-you-popular__txt">
-                                Bulut bilişim teknolojisinin gelişmesi sayesinde, büyük verilerin internet üzerinde depolanabilirliği
-                                ve
-                                bu
-                                verilerin erişilebilirliği olanaklı hale gelmiştir. Bu imkanlar doğrultusunda Endüstri 4.0'ın yapı
-                                taşlarından olan büyük veri (big data) tanımı endüstride
-                            </div>
-                            <a href="#0" class="button button--simple button-white">
-                                <span class="button-txt">
-                                    Eğitimleri İncele
-                                </span>
-                                <span class="button-icon">
-                                    <span class="icon-outer">
-                                        <svg class="icon">
-                                            <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
-                                        </svg>
-                                    </span>
-                                </span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div id="php" class="for-you-popular__content main-tab__item">
-                    <div class="for-you-popular__img">
-                        <img src="../../assets/img/for-you-img.jpg" alt="">
-                        <div class="for-you-popular__cnt">
-                            <div class="for-you-popular__title">
-                                php ile
-                                mobil uygulama
-                                uzmanı olun
-                            </div>
-                            <div class="for-you-popular__txt">
-                                Bulut bilişim teknolojisinin gelişmesi sayesinde, büyük verilerin internet üzerinde depolanabilirliği
-                                ve
-                                bu
-                                verilerin erişilebilirliği olanaklı hale gelmiştir. Bu imkanlar doğrultusunda Endüstri 4.0'ın yapı
-                                taşlarından olan büyük veri (big data) tanımı endüstride
-                            </div>
-                            <a href="#0" class="button button--simple button-white">
-                                <span class="button-txt">
-                                    Eğitimleri İncele
-                                </span>
-                                <span class="button-icon">
-                                    <span class="icon-outer">
-                                        <svg class="icon">
-                                            <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
-                                        </svg>
-                                    </span>
-                                </span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div id="angular" class="for-you-popular__content main-tab__item">
-                    <div class="for-you-popular__img">
-                        <img src="../../assets/img/for-you-img.jpg" alt="">
-                        <div class="for-you-popular__cnt">
-                            <div class="for-you-popular__title">
-                                angular ile
-                                mobil uygulama
-                                uzmanı olun
-                            </div>
-                            <div class="for-you-popular__txt">
-                                Bulut bilişim teknolojisinin gelişmesi sayesinde, büyük verilerin internet üzerinde depolanabilirliği
-                                ve
-                                bu
-                                verilerin erişilebilirliği olanaklı hale gelmiştir. Bu imkanlar doğrultusunda Endüstri 4.0'ın yapı
-                                taşlarından olan büyük veri (big data) tanımı endüstride
-                            </div>
-                            <a href="#0" class="button button--simple button-white">
-                                <span class="button-txt">
-                                    Eğitimleri İncele
-                                </span>
-                                <span class="button-icon">
-                                    <span class="icon-outer">
-                                        <svg class="icon">
-                                            <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
-                                        </svg>
-                                    </span>
-                                </span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div id="bootstrap" class="for-you-popular__content main-tab__item">
-                    <div class="for-you-popular__img">
-                        <img src="../../assets/img/for-you-img.jpg" alt="">
-                        <div class="for-you-popular__cnt">
-                            <div class="for-you-popular__title">
-                                bootstrap ile
-                                mobil uygulama
-                                uzmanı olun
-                            </div>
-                            <div class="for-you-popular__txt">
-                                Bulut bilişim teknolojisinin gelişmesi sayesinde, büyük verilerin internet üzerinde depolanabilirliği
-                                ve
-                                bu
-                                verilerin erişilebilirliği olanaklı hale gelmiştir. Bu imkanlar doğrultusunda Endüstri 4.0'ın yapı
-                                taşlarından olan büyük veri (big data) tanımı endüstride
-                            </div>
-                            <a href="#0" class="button button--simple button-white">
-                                <span class="button-txt">
-                                    Eğitimleri İncele
-                                </span>
-                                <span class="button-icon">
-                                    <span class="icon-outer">
-                                        <svg class="icon">
-                                            <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
-                                        </svg>
-                                    </span>
-                                </span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div id="django" class="for-you-popular__content main-tab__item">
-                    <div class="for-you-popular__img">
-                        <img src="../../assets/img/for-you-img.jpg" alt="">
-                        <div class="for-you-popular__cnt">
-                            <div class="for-you-popular__title">
-                                django ile
-                                mobil uygulama
-                                uzmanı olun
-                            </div>
-                            <div class="for-you-popular__txt">
-                                Bulut bilişim teknolojisinin gelişmesi sayesinde, büyük verilerin internet üzerinde depolanabilirliği
-                                ve
-                                bu
-                                verilerin erişilebilirliği olanaklı hale gelmiştir. Bu imkanlar doğrultusunda Endüstri 4.0'ın yapı
-                                taşlarından olan büyük veri (big data) tanımı endüstride
-                            </div>
-                            <a href="#0" class="button button--simple button-white">
-                                <span class="button-txt">
-                                    Eğitimleri İncele
-                                </span>
-                                <span class="button-icon">
-                                    <span class="icon-outer">
-                                        <svg class="icon">
-                                            <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
-                                        </svg>
-                                    </span>
-                                </span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div id="vue" class="for-you-popular__content main-tab__item">
-                    <div class="for-you-popular__img">
-                        <img src="../../assets/img/for-you-img.jpg" alt="">
-                        <div class="for-you-popular__cnt">
-                            <div class="for-you-popular__title">
-                                vue ile
-                                mobil uygulama
-                                uzmanı olun
-                            </div>
-                            <div class="for-you-popular__txt">
-                                Bulut bilişim teknolojisinin gelişmesi sayesinde, büyük verilerin internet üzerinde depolanabilirliği
-                                ve
-                                bu
-                                verilerin erişilebilirliği olanaklı hale gelmiştir. Bu imkanlar doğrultusunda Endüstri 4.0'ın yapı
-                                taşlarından olan büyük veri (big data) tanımı endüstride
-                            </div>
-                            <a href="#0" class="button button--simple button-white">
-                                <span class="button-txt">
-                                    Eğitimleri İncele
-                                </span>
-                                <span class="button-icon">
-                                    <span class="icon-outer">
-                                        <svg class="icon">
-                                            <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
-                                        </svg>
-                                    </span>
-                                </span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div id="wordpress" class="for-you-popular__content main-tab__item">
-                    <div class="for-you-popular__img">
-                        <img src="../../assets/img/for-you-img.jpg" alt="">
-                        <div class="for-you-popular__cnt">
-                            <div class="for-you-popular__title">
-                                wordpress ile
-                                mobil uygulama
-                                uzmanı olun
-                            </div>
-                            <div class="for-you-popular__txt">
-                                Bulut bilişim teknolojisinin gelişmesi sayesinde, büyük verilerin internet üzerinde depolanabilirliği
-                                ve
-                                bu
-                                verilerin erişilebilirliği olanaklı hale gelmiştir. Bu imkanlar doğrultusunda Endüstri 4.0'ın yapı
-                                taşlarından olan büyük veri (big data) tanımı endüstride
-                            </div>
-                            <a href="#0" class="button button--simple button-white">
-                                <span class="button-txt">
-                                    Eğitimleri İncele
-                                </span>
-                                <span class="button-icon">
-                                    <span class="icon-outer">
-                                        <svg class="icon">
-                                            <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
-                                        </svg>
-                                    </span>
-                                </span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div id="typescript" class="for-you-popular__content main-tab__item">
-                    <div class="for-you-popular__img">
-                        <img src="../../assets/img/for-you-img.jpg" alt="">
-                        <div class="for-you-popular__cnt">
-                            <div class="for-you-popular__title">
-                                typescript ile
-                                mobil uygulama
-                                uzmanı olun
-                            </div>
-                            <div class="for-you-popular__txt">
-                                Bulut bilişim teknolojisinin gelişmesi sayesinde, büyük verilerin internet üzerinde depolanabilirliği
-                                ve
-                                bu
-                                verilerin erişilebilirliği olanaklı hale gelmiştir. Bu imkanlar doğrultusunda Endüstri 4.0'ın yapı
-                                taşlarından olan büyük veri (big data) tanımı endüstride
-                            </div>
-                            <a href="#0" class="button button--simple button-white">
-                                <span class="button-txt">
-                                    Eğitimleri İncele
-                                </span>
-                                <span class="button-icon">
-                                    <span class="icon-outer">
-                                        <svg class="icon">
-                                            <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
-                                        </svg>
-                                    </span>
-                                </span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+	}
             </div>
             <div class="for-you-popular__right">
                 <div class="for-you-popular__list swiper-container js-foryou-scrolled-slider">
                     <div class="swiper-wrapper">
+                        @foreach (var category in Model.PopularCategories)
+	{
                         <div class="for-you-popular__item js-main-tab-item active swiper-slide">
-                            <a href="#aspnet">
+                            <a href="#@category.SeoUrl">
                                 <div class="for-you-popular__item-icon">
-                                    <img src="../../assets/img/asp-net.png" alt="">
+                                    <img src="@category.IconUrl" alt="">
                                 </div>
                                 <div class="for-you-popular__item-txt">
-                                    Asp.net Core Web Geliştirme
+                                    @category.Name
                                 </div>
                             </a>
                         </div>
-                        <div class="for-you-popular__item js-main-tab-item swiper-slide">
-                            <a href="#phyton">
-                                <div class="for-you-popular__item-icon">
-                                    <img src="../../assets/img/phyton.png" alt="">
-                                </div>
-                                <div class="for-you-popular__item-txt">
-                                    Phyton
-                                </div>
-                            </a>
-                        </div>
-                        <div class="for-you-popular__item js-main-tab-item swiper-slide">
-                            <a href="#php">
-                                <div class="for-you-popular__item-icon">
-                                    <img src="../../assets/img/php.png" alt="">
-                                </div>
-                                <div class="for-you-popular__item-txt">
-                                    Php
-                                </div>
-                            </a>
-                        </div>
-                        <div class="for-you-popular__item js-main-tab-item swiper-slide">
-                            <a href="#angular">
-                                <div class="for-you-popular__item-icon">
-                                    <img src="../../assets/img/angular.png" alt="">
-                                </div>
-                                <div class="for-you-popular__item-txt">
-                                    Angular
-                                </div>
-                            </a>
-                        </div>
-                        <div class="for-you-popular__item js-main-tab-item swiper-slide">
-                            <a href="#bootstrap">
-                                <div class="for-you-popular__item-icon">
-                                    <img src="../../assets/img/bootstrap.png" alt="">
-                                </div>
-                                <div class="for-you-popular__item-txt">
-                                    Bootstrap
-                                </div>
-                            </a>
-                        </div>
-                        <div class="for-you-popular__item js-main-tab-item swiper-slide">
-                            <a href="#django">
-                                <div class="for-you-popular__item-icon">
-                                    <img src="../../assets/img/django.png" alt="">
-                                </div>
-                                <div class="for-you-popular__item-txt">
-                                    Django
-                                </div>
-                            </a>
-                        </div>
-                        <div class="for-you-popular__item js-main-tab-item swiper-slide">
-                            <a href="#vue">
-                                <div class="for-you-popular__item-icon">
-                                    <img src="../../assets/img/vue.png" alt="">
-                                </div>
-                                <div class="for-you-popular__item-txt">
-                                    Vue Js
-                                </div>
-                            </a>
-                        </div>
-                        <div class="for-you-popular__item js-main-tab-item swiper-slide">
-                            <a href="#wordpress">
-                                <div class="for-you-popular__item-icon">
-                                    <img src="../../assets/img/wordpress.png" alt="">
-                                </div>
-                                <div class="for-you-popular__item-txt">
-                                    Wordpress
-                                </div>
-                            </a>
-                        </div>
-                        <div class="for-you-popular__item js-main-tab-item swiper-slide">
-                            <a href="#typescript">
-                                <div class="for-you-popular__item-icon">
-                                    <img src="../../assets/img/typescript.png" alt="">
-                                </div>
-                                <div class="for-you-popular__item-txt">
-                                    TypeScript
-                                </div>
-                            </a>
-                        </div>
+		 
+	}
+                       
                     </div>
                 </div>
             </div>

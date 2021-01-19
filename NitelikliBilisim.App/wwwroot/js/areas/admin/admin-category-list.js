@@ -145,7 +145,7 @@ function createGrid() {
                     .appendTo(container);
             },
             alignment: "center",
-            width: "auto"
+            width: 100
         }
         ],
         masterDetail: {

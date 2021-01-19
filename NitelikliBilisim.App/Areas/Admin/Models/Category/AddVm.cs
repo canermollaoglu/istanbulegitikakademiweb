@@ -21,9 +21,18 @@ namespace NitelikliBilisim.App.Areas.Admin.Models.Category
         public string SeoUrl { get; set; }
         public string IconUrl { get; set; }
         public string WizardClass { get; set; }
+        public string Description2 { get; set; }
         public string IconColor { get; set; }
         public Guid? BaseCategoryId { get; set; }
         public int? EducationDayCount { get; set; }
         public int CategoryType { get; set; }
+      
+        public _PostedFile IconImage { get; set; }
+        public _PostedFile BackgroundImage { get; set; }
+    }
+    public class _PostedFile
+    {
+        public string Base64Content { get; set; }
+        public string Extension { get; set; }
     }
 }

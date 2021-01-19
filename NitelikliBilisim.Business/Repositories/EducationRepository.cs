@@ -12,6 +12,7 @@ using NitelikliBilisim.Core.ViewModels.Main;
 using NitelikliBilisim.Core.ViewModels.Main.Course;
 using NitelikliBilisim.Core.ViewModels.Main.EducationComment;
 using NitelikliBilisim.Core.ViewModels.Main.Home;
+using NitelikliBilisim.Core.ViewModels.Main.Profile;
 using NitelikliBilisim.Core.ViewModels.search;
 using NitelikliBilisim.Data;
 using System;
@@ -53,7 +54,8 @@ namespace NitelikliBilisim.Business.Repositories
                        Level = (int)e.Level,
                        Days = e.Days,
                        HoursPerDay = e.HoursPerDay,
-                       isActive = e.IsActive
+                       isActive = e.IsActive,
+                       IsFeaturedEducation = e.IsFeaturedEducation
                    };
         }
 
@@ -225,6 +227,32 @@ namespace NitelikliBilisim.Business.Repositories
                 });
 
             return educationDtos;
+        }
+
+        public FeaturedEducationVm GetFeaturedEducation()
+        {
+            Random r = new Random();
+            var educationcount = Context.Educations.Where(x => x.IsActive && x.IsFeaturedEducation).Count();
+            var education = Context.Educations.Include(x=>x.Category).Where(x => x.IsActive && x.IsFeaturedEducation).ToList().ElementAt(r.Next(0, educationcount));
+            var media = Context.EducationMedias.Where(x => x.EducationId == education.Id && x.MediaType == EducationMediaType.PreviewPhoto).First();
+            return new FeaturedEducationVm
+            {
+                Id = education.Id,
+                Name = education.Name,
+                Description = education.Description,
+                SeoUrl = education.SeoUrl,
+                CatSeoUrl = education.Category.SeoUrl,
+                Days = education.Days,
+                Hours = education.Days * education.HoursPerDay,
+                ImageUrl = media.FileUrl
+            };
+        }
+
+        public void ToggleFeaturedEducation(Guid educationId)
+        {
+            var education = Context.Educations.First(x => x.Id == educationId);
+            education.IsFeaturedEducation = education.IsFeaturedEducation ? false : true;
+            Context.SaveChanges();
         }
 
         public int TotalEducationHours()
@@ -897,13 +925,13 @@ namespace NitelikliBilisim.Business.Repositories
         /// </summary>
         /// <param name="userId"></param>
         /// <returns>Dictionary<CategoryId,EducationId></returns>
-        public List<PurchasedEducationVm> GetPurchasedEducationsByUserId(string userId)
+        public List<Core.ViewModels.areas.admin.education.PurchasedEducationVm> GetPurchasedEducationsByUserId(string userId)
         {
             return (from ticket in Context.Tickets
                     join education in Context.Educations on ticket.EducationId equals education.Id
                     join category in Context.EducationCategories on education.CategoryId equals category.Id
                     where ticket.OwnerId == userId
-                    select new PurchasedEducationVm
+                    select new Core.ViewModels.areas.admin.education.PurchasedEducationVm
                     {
                         EducationId = education.Id,
                         CategoryId = category.Id
@@ -958,52 +986,48 @@ namespace NitelikliBilisim.Business.Repositories
 
         public List<EducationVm> GetPopularEducations(int count)
         {
-            //var comments = Context.EducationComments
-            //    .GroupBy(x => x.EducationId)
-            //    .Select(x => new
-            //    {
-            //        Id = x.Key,
-            //        Point = x.Sum(y => y.Points)
-            //    }).OrderByDescending(x=>x.Point).ToDictionary(x=>x.Id,x=>x.Point);
 
-
-
-            var educationsList = Context.Educations.Where(x => x.IsActive).OrderByDescending(x => x.CreatedDate).Take(count)
-                  .Join(Context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Id, r => r.EducationId, (x, y) => new
-                  {
-                      Education = x,
-                      EducationPreviewMedia = y
-                  })
-                  .Join(Context.EducationCategories, l => l.Education.CategoryId, r => r.Id, (x, y) => new
-                  {
-                      Education = x.Education,
-                      EducationPreviewMedia = x.EducationPreviewMedia,
-                      CategoryName = y.Name,
-                      CategorySeoUrl = y.SeoUrl
-                  }).ToList();
-            var hostId = Guid.Parse(_configuration.GetSection("SiteGeneralOptions").GetSection("PriceLocationId").Value);
-            var data = educationsList.Select(x => new EducationVm
-            {
-                Base = new EducationBaseVm
+            var points = Context.EducationComments.Include(x => x.Education)
+                .Where(x => x.Education.IsActive)
+                .GroupBy(x => x.EducationId)
+                .Select(x => new
                 {
-                    Id = x.Education.Id,
-                    Name = x.Education.Name,
-                    Description = x.Education.Description,
-                    CategoryName = x.CategoryName,
-                    CategorySeoUrl = x.CategorySeoUrl,
-                    Level = EnumHelpers.GetDescription(x.Education.Level),
-                    Price = Context.EducationGroups.OrderByDescending(x => x.CreatedDate).FirstOrDefault(y => y.HostId == hostId && y.EducationId == x.Education.Id).NewPrice.GetValueOrDefault().ToString(CultureInfo.CreateSpecificCulture("tr-TR")),
-                    HoursPerDayText = x.Education.HoursPerDay.ToString(),
-                    DaysText = x.Education.Days.ToString(),
-                    DaysNumeric = x.Education.Days,
-                    HoursPerDayNumeric = x.Education.HoursPerDay,
-                    SeoUrl = x.Education.SeoUrl
-                },
-                Medias = new List<EducationMediaVm> { new EducationMediaVm { EducationId = x.Education.Id, FileUrl = x.EducationPreviewMedia.FileUrl } },
-            }
-     ).ToList();
+                    Id = x.Key,
+                    Point = x.Average(y => y.Points)
+                }).OrderByDescending(x => x.Point).Take(count).ToDictionary(x => x.Id, x => x.Point);
 
-            return data;
+            List<EducationVm> retVal = new List<EducationVm>();
+            var hostId = Guid.Parse(_configuration.GetSection("SiteGeneralOptions").GetSection("PriceLocationId").Value);
+            var currentCulture = CultureInfo.CreateSpecificCulture("tr-TR");
+            foreach (var ePoint in points)
+            {
+                retVal.Add((from education in Context.Educations
+                            join category in Context.EducationCategories on education.CategoryId equals category.Id
+                            join educationMedia in Context.EducationMedias on education.Id equals educationMedia.EducationId
+                            where educationMedia.MediaType == EducationMediaType.PreviewPhoto && education.IsActive
+                            && education.Id == ePoint.Key
+                            select new EducationVm
+                            {
+                                Base = new EducationBaseVm
+                                {
+                                    Id = education.Id,
+                                    Name = education.Name,
+                                    Description = education.Description,
+                                    CategoryName = category.Name,
+                                    CategorySeoUrl = category.SeoUrl,
+                                    Level = EnumHelpers.GetDescription(education.Level),
+                                    Price = Context.EducationGroups.OrderByDescending(x => x.CreatedDate).FirstOrDefault(y => y.HostId == hostId && y.EducationId == education.Id).NewPrice.GetValueOrDefault().ToString(currentCulture),
+                                    HoursPerDayText = education.HoursPerDay.ToString(),
+                                    DaysText = education.Days.ToString(),
+                                    DaysNumeric = education.Days,
+                                    HoursPerDayNumeric = education.HoursPerDay,
+                                    SeoUrl = education.SeoUrl,
+                                    Point = ePoint.Value
+                                },
+                                Medias = new List<EducationMediaVm> { new EducationMediaVm { EducationId = education.Id, FileUrl = educationMedia.FileUrl } },
+                            }).First());
+            }
+            return retVal;
         }
 
         public HeaderEducationMenuVm GetHeaderEducationMenu()

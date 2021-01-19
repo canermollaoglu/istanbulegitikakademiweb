@@ -32,13 +32,13 @@ $('body').on('click', '.js-wizard-next', function () {
         appendCategorySlides();
     }
     if ($(this).data("step") == "2") {
-        appendSubCategorySlides(relatedCategories);
+        appendSubCategorySlides();
     }
     if ($(this).data("step") == "3") {
         appendLevelSlides();
     }
     if ($(this).data("step") == "4") {
-        loadSuggestedEducations();
+        createSuggestedEducationsSlide();
     }
 
     wizardSlider.slideNext(500);
@@ -312,7 +312,7 @@ function appendLevelSlides() {
                 <div class="modal--wizard__content">
                     <header class="modal__header">
                         <div class="modal--wizard__categories-title">
-                            ${e.name} konusunda ne kadar bilgi sahabisiniz ?
+                            ${e.name} konusunda ne kadar bilgi sahibisiniz ?
                         </div>
                     </header>
 
@@ -363,7 +363,7 @@ function appendLevelSlides() {
 
 };
 
-function loadSuggestedEducations() {
+function createSuggestedEducationsSlide() {
     var slideContent = `<div class="swiper-slide">
                 <div class="modal--wizard__content">
                     <header class="modal__header">
@@ -384,7 +384,6 @@ function loadSuggestedEducations() {
                             </div>
                         </div>
                         <div class="modal--wizard__prices wizard-loaded" style="min-height:250px;">
-                            
                             
                         </div>
                     </div>
@@ -409,6 +408,11 @@ function loadSuggestedEducations() {
             </div>`;
     wizardSlider.appendSlide([slideContent]);
 
+    loadSuggestedEducations();
+};
+
+
+function loadSuggestedEducations() {
     $.ajax({
         url: `/wizard-last`,
         method: "post",
@@ -425,7 +429,7 @@ function loadSuggestedEducations() {
         success: (res) => {
             var suggestedEducations = "";
             $.each(res.data, function (index, e) {
-                suggestedEducations+= `<a href="/${e.catSeoUrl}/${e.seoUrl}" class="lesson-list__item">
+                suggestedEducations += `<a href="/${e.catSeoUrl}/${e.seoUrl}" class="lesson-list__item">
                     <div class="lesson-list__item-img">
                                     <img src="${e.imageUrl}" alt="">
                                 </div>
@@ -459,5 +463,4 @@ function loadSuggestedEducations() {
     });
 
 
-    console.log(lastdata);
-};
+}
