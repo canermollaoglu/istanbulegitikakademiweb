@@ -365,7 +365,7 @@ function appendLevelSlides() {
 
 function createSuggestedEducationsSlide() {
     this.appendResultSlide()
-        .then(res => {loadSuggestedEducations(); });
+        .then(res => { loadWizardSuggestedEducations(); });
 };
 
 function appendResultSlide() {
@@ -417,7 +417,7 @@ function appendResultSlide() {
     
 }
 
-function loadSuggestedEducations() {
+function loadWizardSuggestedEducations() {
     return new Promise((resolve, reject) => {
         $.ajax({
             url: `/wizard-last`,
