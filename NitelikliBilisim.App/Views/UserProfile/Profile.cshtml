@@ -237,9 +237,9 @@
                     <div class="account-dashboard__courses">
                         <div class="account-dashboard__subtop">
                             <div class="account-dashboard__subtop-title">
-                                SERTİFİKALARIM <span class="colored-light-purple">(10)</span>
+                                SERTİFİKALARIM <span class="colored-light-purple">(@Model.Certificates.Count())</span>
                             </div>
-                            <a href="./egitim-listeleme.php" class="account-dashboard__subtop-right">
+                            <a asp-controller="UserProfile" asp-action="MyCertificates" class="account-dashboard__subtop-right">
                                 <span class="icon-outer icon-show-more">
                                     <svg class="icon">
                                         <use xlink:href="../../assets/img/icons.svg#icon-show-more"></use>
@@ -250,58 +250,23 @@
                         <div class="account-dashboard__certificate-slider">
                             <div class="swiper-container js-dash-certificate-slider mt-1">
                                 <div class="swiper-wrapper">
+                                    @foreach (var certificate in Model.Certificates)
+                                    {
                                     <div class="swiper-slide">
-                                        <a href="egitim-detay.php" class="certificate__item">
+                                        <a asp-controller="Course" asp-action="Details" asp-route-catSeoUrl="@certificate.CategorySeoUrl" asp-route-seoUrl="@certificate.EducationSeoUrl" class="certificate__item">
                                             <div class="lesson-list__item-img">
                                                 <img src="../../assets/img/certificate.jpg" alt="">
                                             </div>
                                             <div class="certificate__item-cnt">
-                                                <h6 class="card__subtitle">Siber Güvenlik</h6>
+                                                <h6 class="card__subtitle">@certificate.CategoryName</h6>
                                                 <div class="lesson-list__item-title">
-                                                    Active Directory Sertifika Servisleri
+                                                   @certificate.EducationName
                                                 </div>
                                             </div>
                                         </a>
                                     </div>
-                                    <div class="swiper-slide">
-                                        <a href="egitim-detay.php" class="certificate__item">
-                                            <div class="lesson-list__item-img">
-                                                <img src="../../assets/img/certificate.jpg" alt="">
-                                            </div>
-                                            <div class="certificate__item-cnt">
-                                                <h6 class="card__subtitle">Siber Güvenlik</h6>
-                                                <div class="lesson-list__item-title">
-                                                    Active Directory Sertifika Servisleri
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div class="swiper-slide">
-                                        <a href="egitim-detay.php" class="certificate__item">
-                                            <div class="lesson-list__item-img">
-                                                <img src="../../assets/img/certificate.jpg" alt="">
-                                            </div>
-                                            <div class="certificate__item-cnt">
-                                                <h6 class="card__subtitle">Siber Güvenlik</h6>
-                                                <div class="lesson-list__item-title">
-                                                    Active Directory Sertifika Servisleri
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div class="swiper-slide">
-                                        <a href="egitim-detay.php" class="certificate__item">
-                                            <div class="lesson-list__item-img">
-                                                <img src="../../assets/img/certificate.jpg" alt="">
-                                            </div>
-                                            <div class="certificate__item-cnt">
-                                                <h6 class="card__subtitle">Siber Güvenlik</h6>
-                                                <div class="lesson-list__item-title">
-                                                    Active Directory Sertifika Servisleri
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
+
+                                    }
                                 </div>
                                 <div class="swiper-pagination"></div>
                             </div>
@@ -429,7 +394,7 @@
                             <div class="account-dashboard__subtop-title">
                                 SİZE ÖNERECEĞİMİZ PROJE EĞİTİMLERİMİZ
                             </div>
-                            <a href="./egitim-listeleme.php" class="account-dashboard__subtop-right">
+                            <a asp-controller="Course" asp-action="List" class="account-dashboard__subtop-right">
                                 <span class="icon-outer icon-show-more">
                                     <svg class="icon">
                                         <use xlink:href="../../assets/img/icons.svg#icon-show-more"></use>
@@ -476,7 +441,6 @@
             dashboardWeekSlider.on('touchStart', function () {
                 var dashboardWeekSliderContainer = $('.js-dashboard-week-slider').offset().left;
                 var dashboardWeekSlideContainer = $('.account-dashboard__week-slide.active').offset().left;
-                console.log('its weekslider', dashboardWeekSliderContainer, dashboardWeekSlideContainer);
                 if (dashboardWeekSliderContainer > dashboardWeekSlideContainer) {
                     $('.js-dashboard-week-arrow').css('left', dashboardWeekSliderContainer);
                 }
@@ -559,7 +523,6 @@
                 },
                 success: (res) => {
                     $.each(res.data, function (index, e) {
-                        console.log(e);
                         weekPrivateSlider.appendSlide([
                             `<div class="swiper-slide">
                                             <a href="/${e.base.categorySeoUrl}/${e.base.seoUrl}" class="lesson-list__item">

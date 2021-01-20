@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Nest;
 using NitelikliBilisim.Business.Repositories;
 using NitelikliBilisim.Business.Repositories.BlogRepositories;
@@ -62,22 +63,27 @@ namespace NitelikliBilisim.Business.UoW
         private ContactFormRepository _contactFormRepository;
         private FeaturedCommentRepository _featuredCommentRepository;
         private BannerAdsRepository _bannerAdsRepository;
+        private CustomerCertificateRepository _customerCertificateRepository;
 
         private IElasticClient _elasticClient;
         private IConfiguration _configuration;
         private IEmailSender _emailSender;
-        public UnitOfWork(NbDataContext context, IElasticClient elasticClient,IConfiguration configuration,IEmailSender emailSender)
+        private IHostingEnvironment _hostingEnvironment;
+        public UnitOfWork(NbDataContext context, IElasticClient elasticClient,IConfiguration configuration,IEmailSender emailSender,IHostingEnvironment hostingEnvironment )
         {
             _elasticClient = elasticClient;
             _context = context;
             _configuration = configuration;
             _emailSender = emailSender;
+            _hostingEnvironment = hostingEnvironment;
         }
         public int Save()
         {
             _context.EnsureAutoHistory();
             return _context.SaveChanges();
         }
+
+        public CustomerCertificateRepository CustomerCertificate => _customerCertificateRepository ??= new CustomerCertificateRepository(_context);
         public FeaturedCommentRepository FeaturedComment => _featuredCommentRepository ??= new FeaturedCommentRepository(_context);
         public ContactFormRepository ContactForm => _contactFormRepository??= new ContactFormRepository(_context);
         public SubscriptionBlogRepository SubscriptionBlog => _subscriptionBlogRepository ??= new SubscriptionBlogRepository(_context);

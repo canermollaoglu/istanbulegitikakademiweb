@@ -2430,6 +2430,39 @@ namespace NitelikliBilisim.Data.Migrations
                     b.ToTable("Cities");
                 });
 
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.user_details.CustomerCertificate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedUser")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("CustomerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("CustomerCertificates");
+                });
+
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.user_details.EducationDay", b =>
                 {
                     b.Property<int>("Id")
@@ -3069,6 +3102,15 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Navigation("Educator");
 
                     b.Navigation("EducatorCertificate");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.user_details.CustomerCertificate", b =>
+                {
+                    b.HasOne("NitelikliBilisim.Core.Entities.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId");
+
+                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.user_details.EducationDay", b =>

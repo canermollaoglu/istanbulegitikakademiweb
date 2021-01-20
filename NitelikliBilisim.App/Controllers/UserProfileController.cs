@@ -8,6 +8,7 @@ using MUsefulMethods;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Managers;
+using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ComplexTypes;
@@ -15,7 +16,13 @@ using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels.Main.Profile;
+using Syncfusion.Pdf;
+using Syncfusion.Pdf.Barcode;
+using Syncfusion.Pdf.Graphics;
 using System;
+using System.Drawing;
+using System.IO;
+using System.IO.Compression;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -97,8 +104,8 @@ namespace NitelikliBilisim.App.Controllers
         public IActionResult MyCertificates()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            //var model = _userUnitOfWork.User.GetUserCertificates(userId);
-            return View();
+            var model = _userUnitOfWork.User.GetUserCertificates(userId);
+            return View(model);
         }
 
         [Route("hesap/kurs-detay/{groupId}")]
@@ -403,5 +410,108 @@ namespace NitelikliBilisim.App.Controllers
 
         }
 
+        [Route("download-student-certificate")]
+        public IActionResult DownloadStudentCertificate(Guid? certificateId) {
+            if (!certificateId.HasValue)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false
+                });
+            }
+            var zip = CreateCertificateZip(certificateId.Value);
+            return File(zip.Content,System.Net.Mime.MediaTypeNames.Application.Zip,$"{zip.FileName}.zip");
+        }
+
+
+        #region Helpers
+
+        public CertificateZipStreamVm CreateCertificateZip(Guid certificateId)
+        {
+            byte[] fileBytes = null;
+            var docStream = CreateCertificatePDF(certificateId);
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                using (ZipArchive zip = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+                {
+                    ZipArchiveEntry zipItem = zip.CreateEntry(docStream.FileName);
+                    using (MemoryStream originalFileMemoryStream = docStream.Stream)
+                    {
+                        using (Stream entryStream = zipItem.Open())
+                        {
+                            originalFileMemoryStream.Position = 0;
+                            originalFileMemoryStream.CopyTo(entryStream);
+                        }
+                    }
+                }
+                fileBytes = memoryStream.ToArray();
+            }
+            return new CertificateZipStreamVm
+            {
+                FileName = docStream.FileName,
+                Content = fileBytes
+            };
+        }
+
+        public CertificateStreamVm CreateCertificatePDF(Guid certificateId)
+        {
+            var certificate = _unitOfWork.CustomerCertificate.GetById(certificateId);
+            var student = _unitOfWork.Customer.GetCustomerDetail(certificate.CustomerId);
+            var group = _unitOfWork.EducationGroup.GetByIdWithEducation(certificate.GroupId);
+
+            PdfDocument doc = new PdfDocument();
+            doc.PageSettings.Margins.All = 0;
+            doc.PageSettings.Orientation = PdfPageOrientation.Landscape;
+            doc.PageSettings.Size = new Syncfusion.Drawing.SizeF(960, 720);
+            PdfPage page = doc.Pages.Add();
+            PdfGraphics graphics = page.Graphics;
+
+            /*Başlangıç*/
+            string webrootPath = _hostingEnvironment.WebRootPath;
+            string rootpath = _hostingEnvironment.ContentRootPath;
+
+            var bgImage = new FileStream(Path.Combine(webrootPath,"img/bireysel-egitim-sertifika-sablonu.jpg"), FileMode.Open, FileAccess.Read);
+            PdfBitmap background = new PdfBitmap(bgImage);
+            graphics.DrawImage(background, 0, 0, page.Graphics.ClientSize.Width, page.Graphics.ClientSize.Height);
+
+            //Yazı tipini belirle
+            PdfFont font = new PdfStandardFont(PdfFontFamily.TimesRoman, 18);
+
+            // Ad soyad yazdır
+
+            PdfLayoutFormat format = new PdfLayoutFormat();
+            format.Layout = PdfLayoutType.OnePage;
+
+            Syncfusion.Drawing.SizeF clipBounds = page.Graphics.ClientSize;
+
+            string htmlText = $"<font size='6'><b><i>Sayın {student.Name.ToUpper()} {student.Surname.ToUpper()}</i></b></font>";
+
+            PdfHTMLTextElement htmlTextElement = new PdfHTMLTextElement(htmlText, font, PdfBrushes.Black);
+
+            //htmlTextElement.TextAlign = TextAlign.Center;
+
+            htmlTextElement.Draw(page, new Syncfusion.Drawing.RectangleF(0, 210, clipBounds.Width, 150), format);
+            /*QR KOD Oluştur*/
+            PdfQRBarcode barcode = new PdfQRBarcode();
+
+            barcode.XDimension = 3;
+
+#if DEBUG
+            var siteUrl = $"https://localhost:44327/sertifika-dogrula/{certificate.Id}";
+#else
+            var siteUrl = $"https://wissenakademie.com/sertifika-dogrula/{certificate.Id}";
+#endif
+
+            barcode.Text = siteUrl;
+            barcode.Size = new Syncfusion.Drawing.SizeF(150, 150);
+            barcode.Draw(page, new Syncfusion.Drawing.PointF(760, 520));
+
+            MemoryStream stream = new MemoryStream();
+
+            doc.Save(stream);
+            doc.Close(true);
+            return new CertificateStreamVm { Stream = stream, FileName = $"{student.Name.ToUpper()}_{student.Surname.ToUpper()}_{MUsefulMethods.StringHelpers.FormatForTag(group.Education.Name)}_basari_sertifikasi.pdf" };
+        }
+        #endregion
     }
 }
