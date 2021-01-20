@@ -116,7 +116,7 @@
                                         <div class="swiper-slide">
                                             <a href="egitim-detay.php" class="lesson-list__item">
                                                 <div class="lesson-list__item-img">
-                                                    <img src="" alt="">
+                                                   
                                                 </div>
                                                 <div class="lesson-list__item-cnt">
                                                     <div class="lesson-list__item-left">
@@ -124,9 +124,7 @@
                                                             
                                                         </div>
                                                         <div class="lesson-list__item-txt">
-                                                            Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                            dahi devamlı
-                                                            erişilebilir
+                                                            
                                                         </div>
                                                     </div>
                                                     <div class="lesson-list__item-right">
@@ -136,10 +134,10 @@
                                                                     <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
                                                                 </svg>
                                                             </span>
-                                                            3 gün ( 12 saat )
+                                                           
                                                         </div>
                                                         <div class="lesson-list__item-price">
-                                                            <span>₺</span> 800,00
+                                                          
                                                         </div>
                                                     </div>
                                                 </div>
@@ -561,9 +559,10 @@
                 },
                 success: (res) => {
                     $.each(res.data, function (index, e) {
+                        console.log(e);
                         weekPrivateSlider.appendSlide([
                             `<div class="swiper-slide">
-                                            <a href="egitim-detay.php" class="lesson-list__item">
+                                            <a href="/${e.base.categorySeoUrl}/${e.base.seoUrl}" class="lesson-list__item">
                                                 <div class="lesson-list__item-img">
                                                     <img src="${e.medias[0].fileUrl}" alt="">
                                                 </div>
@@ -573,9 +572,7 @@
                                                             ${e.base.name}
                                                         </div>
                                                         <div class="lesson-list__item-txt">
-                                                            Bu eğitim; yereldeki sunucularda çalışan uygulamaların, sunucularda arıza meydana gelse
-                                                            dahi devamlı
-                                                            erişilebilir
+                                                            ${e.base.description}
                                                         </div>
                                                     </div>
                                                     <div class="lesson-list__item-right">
@@ -585,10 +582,10 @@
                                                                     <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
                                                                 </svg>
                                                             </span>
-                                                            3 gün ( 12 saat )
+                                                            ${e.base.daysText} gün ( ${e.base.daysNumeric * e.base.hoursPerDayNumeric} saat )
                                                         </div>
                                                         <div class="lesson-list__item-price">
-                                                             800,00 <span>TL</span>
+                                                             ${e.base.price} <span>TL</span>
                                                         </div>
                                                     </div>
                                                 </div>

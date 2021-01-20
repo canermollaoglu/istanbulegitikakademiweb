@@ -289,11 +289,7 @@
                     order: currentOrder.val(),
                 },
                 success: (res) => {
-                    if (res.data.educations.length == 0) {
-                        alert("Aradığınız kriterlere uygun eğitim bulunamadı.");
-                    }
                     lessonsContent.html("");
-                    console.log(res);
                     $.each(res.data.educations, function (index, e) {
                         var education = `<a href="/${e.cSeo}/${e.seo}" class="lesson-list__item">
                                         <div class="lesson-list__item-img">

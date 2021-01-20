@@ -8,7 +8,7 @@ namespace NitelikliBilisim.Core.ViewModels.Suggestion
     public class EducationPoint
     {
         public Education Education{ get; set; }
-        public Guid EducationId { get; set; }
+        public string SeoUrl { get; set; }
         public double Point { get; set; }
     }
 }

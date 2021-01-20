@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.Business.UoW;
-using System.Security.Claims;
 
 namespace NitelikliBilisim.App.Components
 {

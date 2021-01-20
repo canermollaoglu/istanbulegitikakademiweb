@@ -364,7 +364,13 @@ function appendLevelSlides() {
 };
 
 function createSuggestedEducationsSlide() {
-    var slideContent = `<div class="swiper-slide">
+    this.appendResultSlide()
+        .then(res => { loadWizardSuggestedEducations(); });
+};
+
+function appendResultSlide() {
+    return new Promise((resolve, reject) => {
+        wizardSlider.appendSlide([`<div class="swiper-slide">
                 <div class="modal--wizard__content">
                     <header class="modal__header">
                         <div class="modal--wizard__categories-title">
@@ -405,31 +411,31 @@ function createSuggestedEducationsSlide() {
                         </div>
                     </footer>
                 </div>
-            </div>`;
-    wizardSlider.appendSlide([slideContent]);
+            </div>`]);
+        resolve();
+    });
+    
+}
 
-    loadSuggestedEducations();
-};
-
-
-function loadSuggestedEducations() {
-    $.ajax({
-        url: `/wizard-last`,
-        method: "post",
-        data: {
-            lastdata: lastdata,
-        },
-        beforeSend: function () {
-        },
-        complete: function () {
-            $('.wizard-loading')
-                .fadeOut('200');
-            $('.wizard-loaded').addClass('active');
-        },
-        success: (res) => {
-            var suggestedEducations = "";
-            $.each(res.data, function (index, e) {
-                suggestedEducations += `<a href="/${e.catSeoUrl}/${e.seoUrl}" class="lesson-list__item">
+function loadWizardSuggestedEducations() {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: `/wizard-last`,
+            method: "post",
+            data: {
+                lastdata: lastdata,
+            },
+            beforeSend: function () {
+            },
+            complete: function () {
+                $('.wizard-loading')
+                    .fadeOut('200');
+                $('.wizard-loaded').addClass('active');
+            },
+            success: (res) => {
+                var suggestedEducations = "";
+                $.each(res.data, function (index, e) {
+                    suggestedEducations += `<a href="/${e.catSeoUrl}/${e.seoUrl}" class="lesson-list__item">
                     <div class="lesson-list__item-img">
                                     <img src="${e.imageUrl}" alt="">
                                 </div>
@@ -457,10 +463,14 @@ function loadSuggestedEducations() {
                                     </div>
                                 </div >
                             </a >`
-            });
-            $(".wizard-loaded").html(suggestedEducations);
-        }
+                });
+                $(".wizard-loaded").html(suggestedEducations);
+                resolve();
+            }
+        });
+        
     });
+   
 
 
 }

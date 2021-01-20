@@ -628,9 +628,10 @@
                     week: week,
                 },
                 success: (res) => {
+                    console.log(res);
                     $.each(res.data, function (index, e) {
                         swiper.appendSlide([
-                        `  <div class="swiper-slide">
+                            `<div class="swiper-slide">
                     <div class="card">
                         <figure>
                             <img src="${e.medias[0].fileUrl}" alt="">
@@ -640,7 +641,7 @@
                             <h6 class="card__subtitle">${e.base.categoryName}</h6>
                             <h5 class="card__title">${e.base.name}</h5>
                             <p>
-                                Bu eğitim; şirketiniz için yeterlde kullanılan ve ileri düzeyde hassas dalatar olarak tanımlanan
+                               ${e.base.description}
                             </p>
                         </div>
 
@@ -651,11 +652,11 @@
                                         <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
                                     </svg>
                                 </span>
-                                <span>3 gün ( 12 saat )</span>
+                                <span> ${e.base.daysText} gün ( ${e.base.daysNumeric * e.base.hoursPerDayNumeric} saat )</span>
                             </span>
 
                             <span class="card__money">
-                                <a href="#0" class="button button-fw">
+                                <a href="/${e.base.categorySeoUrl}/${e.base.seoUrl}" class="button button-fw">
                                     <div class="button-txt"> İncele </div>
                                 </a>
                             </span>
