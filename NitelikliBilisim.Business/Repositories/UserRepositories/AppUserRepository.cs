@@ -166,7 +166,8 @@ namespace NitelikliBilisim.Business.Repositories
                                join student in _context.Customers.Include(x => x.User) on certificate.CustomerId equals student.Id
                                join eGroup in _context.EducationGroups on certificate.GroupId equals eGroup.Id
                                join education in _context.Educations.Include(x=>x.Category).ThenInclude(x=>x.BaseCategory) on eGroup.EducationId equals education.Id
-                               select new MyCertificateVm
+                               where certificate.CustomerId == userId
+                                select new MyCertificateVm
                                {
                                    Id = certificate.Id,
                                    CertificateName = "Web Yazılım Uzmanlığı Sertifikası",
