@@ -147,10 +147,17 @@ namespace NitelikliBilisim.Business.Repositories
             return retVal;
         }
 
-        public List<SuggestedEducationVm> GetEducationsOfTheWeek(int week)
+        public List<SuggestedEducationVm> GetEducationsOfTheWeek(int week,string userId)
         {
+            var eInfo = _context.StudentEducationInfos.FirstOrDefault(x => x.CustomerId == userId);
+            var categoryId = Guid.Empty;
+            if (eInfo != null)
+            {
+                categoryId = eInfo.CategoryId;
+            }
             var nearestDay = week * 7;
-            var educations = _context.Educations.Include(c => c.Category).Include(x => x.EducationSuggestionCriterions).Where(x => x.IsActive);
+            var educations = _context.Educations.Include(c => c.Category).Include(x => x.EducationSuggestionCriterions).Where(x => x.IsActive && x.Category.BaseCategoryId == categoryId);
+            
             var thisWeekEducations = new Dictionary<string,double>();
             foreach (var education in educations)
             {
@@ -162,10 +169,10 @@ namespace NitelikliBilisim.Business.Repositories
                         {
                             if (nearestDay <= criterion.MaxValue && nearestDay >= criterion.MinValue)
                                 thisWeekEducations.Add(education.SeoUrl, 3);//İçinde bulunulan hafta en öncelikli olduğu için sıra 3 
-                            else if (criterion.MaxValue<=nearestDay-7 && criterion.MaxValue>=nearestDay-14)
-                                thisWeekEducations.Add(education.SeoUrl, 2);//önceki hafta için sıra 2 
-                            else if (criterion.MinValue<=nearestDay+7 && criterion.MinValue>nearestDay)
-                                thisWeekEducations.Add(education.SeoUrl, 1);//sonraki hafta için sıra 1
+                            else if (criterion.MaxValue<=nearestDay-7 && criterion.MinValue>nearestDay-14)
+                                thisWeekEducations.Add(education.SeoUrl, 1);//sonraki hafta için sıra 1 
+                            else if (criterion.MaxValue<=nearestDay+7 && criterion.MinValue>nearestDay)
+                                thisWeekEducations.Add(education.SeoUrl, 2);//onceki hafta için sıra 2
                         }
                     }
                 }

@@ -253,7 +253,7 @@
                                     @foreach (var certificate in Model.Certificates)
                                     {
                                     <div class="swiper-slide">
-                                        <a asp-controller="Course" asp-action="Details" asp-route-catSeoUrl="@certificate.CategorySeoUrl" asp-route-seoUrl="@certificate.EducationSeoUrl" class="certificate__item">
+                                        <a class="certificate__item">
                                             <div class="lesson-list__item-img">
                                                 <img src="../../assets/img/certificate.jpg" alt="">
                                             </div>
@@ -554,16 +554,11 @@
                                                 </div>
                                             </a>
                                         </div>` ]);
+                        weekPrivateSlider.activeIndex=1;
                     });
                 }
             });
         }
-
-
-       
-
-
-       
 
         $('.js-btn-fav').click(function () {
             var educationId = $(this).attr("data-eid");

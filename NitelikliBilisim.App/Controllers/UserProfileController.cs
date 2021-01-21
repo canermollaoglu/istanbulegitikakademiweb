@@ -104,7 +104,7 @@ namespace NitelikliBilisim.App.Controllers
         public IActionResult MyCertificates()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var model = _userUnitOfWork.User.GetUserCertificates(userId);
+            var model = _userUnitOfWork.User.GetUserAvailableCertificates(userId);
             return View(model);
         }
 
@@ -230,7 +230,8 @@ namespace NitelikliBilisim.App.Controllers
         {
             try
             {
-                var model = _unitOfWork.Suggestions.GetEducationsOfTheWeek(week);
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var model = _unitOfWork.Suggestions.GetEducationsOfTheWeek(week, userId);
                 foreach (var education in model)
                 {
                     education.Medias[0].FileUrl = _storageService.BlobUrl + education.Medias[0].FileUrl;

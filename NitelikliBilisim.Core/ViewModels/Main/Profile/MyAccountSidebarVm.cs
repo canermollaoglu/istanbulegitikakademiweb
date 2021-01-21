@@ -15,5 +15,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public string AvatarPath { get; set; }
         public string PageName { get; set; }
         public string NbuyCategory { get; set; }
+        public int CertificateCount { get; set; }
     }
 }

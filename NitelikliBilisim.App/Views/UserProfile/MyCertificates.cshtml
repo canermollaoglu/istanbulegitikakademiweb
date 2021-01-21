@@ -29,6 +29,9 @@
                         <div class="account-detail__title">
                             SERTİFİKALARIM
                         </div>
+                        <div>
+                            <p>Tamamladığınız eğitimlere ait sertifikaları bu alandan indirebilirsiniz.</p>
+                        </div>
                         <div class="account-courses certificate">
                             <div class="account-courses__top">
                                 <div class="account-courses__top-course">
@@ -45,32 +48,6 @@
                                 </div>
                             </div>
                             <div class="account-courses__wrp">
-                                @*<div class="account-courses__item">
-                                    <a href="#0" class="account-courses__item-cnt">
-                                        <div class="account-courses__item-title">
-                                            Web Yazılım Uzmanlığı Sertifikası
-                                        </div>
-                                    </a>
-                                    <div class="account-courses__item-item certificate-name">
-                                        ASP.Net Core Web API ile
-                                        JWT Authentication
-                                    </div>
-                                    <div class="account-courses__item-item dated">
-                                        10 Mart 2020
-                                    </div>
-                                    <div class="account-courses__item-item downloaded">
-                                        <a href="#0" class="button button-fw button-icon-right">
-                                            <span class="button-txt">PDF İndir</span>
-                                            <span class="button-icon">
-                                                <span class="icon-outer">
-                                                    <svg class="icon">
-                                                        <use xlink:href="../../assets/img/icons.svg#icon-long-arrow"></use>
-                                                    </svg>
-                                                </span>
-                                            </span>
-                                        </a>
-                                    </div>
-                                </div>*@
                                 @foreach (var certificate in Model)
                                 {
                                     <div class="account-courses__item">
@@ -78,27 +55,40 @@
                                             <div class="account-courses__item-img">
                                                 <img src="../../assets/img/certificate.jpg" alt="">
                                             </div>
-                                            <div class="account-courses__item-title" style="margin-right:30px;">
-                                                @certificate.CategoryName Sertifikası
-                                            </div>
                                         </a>
                                         <div class="account-courses__item-item certificate-name">
                                             @certificate.EducationName
                                         </div>
                                         <div class="account-courses__item-item dated">
-                                           @certificate.EducationDateText
+                                            @certificate.EducationDateText
                                         </div>
                                         <div class="account-courses__item-item downloaded">
-                                            <a href="/download-student-certificate?certificateId=@certificate.Id" id="download-button" data-id="@certificate.Id" class="button button-fw button-yellow button-icon-right">
-                                                <span class="button-txt">Hazırlanıyor</span>
-                                                <span class="button-icon">
-                                                    <span class="icon-outer">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                        </svg>
+                                            @if (certificate.IsAvailable)
+                                            {
+                                                <a href="/download-student-certificate?certificateId=@certificate.Id" class="button button-fw button-icon-right">
+                                                    <span class="button-txt">PDF İndir</span>
+                                                    <span class="button-icon">
+                                                        <span class="icon-outer">
+                                                            <svg class="icon">
+                                                                <use xlink:href="../../assets/img/icons.svg#icon-long-arrow"></use>
+                                                            </svg>
+                                                        </span>
                                                     </span>
-                                                </span>
-                                            </a>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <a class="button button-fw button-yellow button-icon-right">
+                                                    <span class="button-txt">Hazırlanıyor</span>
+                                                    <span class="button-icon">
+                                                        <span class="icon-outer">
+                                                            <svg class="icon">
+                                                                <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                                                            </svg>
+                                                        </span>
+                                                    </span>
+                                                </a>
+                                            }
                                         </div>
                                     </div>
                                 }
@@ -116,13 +106,3 @@
     <div class="tooltip__title">
     </div>
 </div>
-
-@section postScripts{ 
-<script>
-    var downloadButton = $("#download-button");
-
-    downloadButton.on("click", downloadButton_onClick);
-
-
-</script>
-} 

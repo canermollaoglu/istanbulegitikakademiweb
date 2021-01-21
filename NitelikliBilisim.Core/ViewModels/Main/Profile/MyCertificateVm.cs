@@ -16,5 +16,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public string EducationSeoUrl { get; set; }
         public string CategorySeoUrl { get; set; }
         public string CategoryName { get; set; }
+        public bool IsAvailable { get; set; }
     }
 }
