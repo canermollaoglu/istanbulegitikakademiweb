@@ -82,6 +82,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             {
                 Name = data.Name,
                 SeoUrl = data.SeoUrl,
+                VideoUrl = data.VideoUrl,
                 Description = data.Description,
                 Description2 = data.Description2,
                 Level = (EducationLevel)data.EducationLevel.GetValueOrDefault(),

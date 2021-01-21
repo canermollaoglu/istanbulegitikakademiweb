@@ -1,4 +1,7 @@
-﻿@using NitelikliBilisim.App.Utility
+﻿@model List<NitelikliBilisim.Core.ViewModels.Main.Profile.MyCertificateVm>
+@using NitelikliBilisim.Core.Services.Abstracts
+@inject IStorageService StorageService
+@using NitelikliBilisim.App.Utility
 @{
     ViewData["Title"] = "Sertifikalarım";
     Layout = "~/Views/Shared/_LayoutHesap.cshtml";
@@ -26,6 +29,9 @@
                         <div class="account-detail__title">
                             SERTİFİKALARIM
                         </div>
+                        <div>
+                            <p>Tamamladığınız eğitimlere ait sertifikaları bu alandan indirebilirsiniz.</p>
+                        </div>
                         <div class="account-courses certificate">
                             <div class="account-courses__top">
                                 <div class="account-courses__top-course">
@@ -42,61 +48,51 @@
                                 </div>
                             </div>
                             <div class="account-courses__wrp">
-                                <div class="account-courses__item">
-                                    <a href="#0" class="account-courses__item-cnt">
-                                        <div class="account-courses__item-title">
-                                            Web Yazılım Uzmanlığı Sertifikası
-                                        </div>
-                                    </a>
-                                    <div class="account-courses__item-item certificate-name">
-                                        ASP.Net Core Web API ile
-                                        JWT Authentication
-                                    </div>
-                                    <div class="account-courses__item-item dated">
-                                        10 Mart 2020
-                                    </div>
-                                    <div class="account-courses__item-item downloaded">
-                                        <a href="#0" class="button button-fw button-icon-right">
-                                            <span class="button-txt">PDF İndir</span>
-                                            <span class="button-icon">
-                                                <span class="icon-outer">
-                                                    <svg class="icon">
-                                                        <use xlink:href="../../assets/img/icons.svg#icon-long-arrow"></use>
-                                                    </svg>
-                                                </span>
-                                            </span>
+                                @foreach (var certificate in Model)
+                                {
+                                    <div class="account-courses__item">
+                                        <a href="#0" class="account-courses__item-cnt">
+                                            <div class="account-courses__item-img">
+                                                <img src="../../assets/img/certificate.jpg" alt="">
+                                            </div>
                                         </a>
-                                    </div>
-                                </div>
-                                <div class="account-courses__item">
-                                    <a href="#0" class="account-courses__item-cnt">
-                                        <div class="account-courses__item-img">
-                                            <img src="../../assets/img/certificate.jpg" alt="">
+                                        <div class="account-courses__item-item certificate-name">
+                                            @certificate.EducationName
                                         </div>
-                                        <div class="account-courses__item-title">
-                                            Web Yazılım Uzmanlığı Sertifikası
+                                        <div class="account-courses__item-item dated">
+                                            @certificate.EducationDateText
                                         </div>
-                                    </a>
-                                    <div class="account-courses__item-item certificate-name">
-                                        ASP.Net Core Web API ile
-                                        JWT Authentication
+                                        <div class="account-courses__item-item downloaded">
+                                            @if (certificate.IsAvailable)
+                                            {
+                                                <a href="/download-student-certificate?certificateId=@certificate.Id" class="button button-fw button-icon-right">
+                                                    <span class="button-txt">PDF İndir</span>
+                                                    <span class="button-icon">
+                                                        <span class="icon-outer">
+                                                            <svg class="icon">
+                                                                <use xlink:href="../../assets/img/icons.svg#icon-long-arrow"></use>
+                                                            </svg>
+                                                        </span>
+                                                    </span>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <a class="button button-fw button-yellow button-icon-right">
+                                                    <span class="button-txt">Hazırlanıyor</span>
+                                                    <span class="button-icon">
+                                                        <span class="icon-outer">
+                                                            <svg class="icon">
+                                                                <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                                                            </svg>
+                                                        </span>
+                                                    </span>
+                                                </a>
+                                            }
+                                        </div>
                                     </div>
-                                    <div class="account-courses__item-item dated">
-                                        10 Mart 2020
-                                    </div>
-                                    <div class="account-courses__item-item downloaded">
-                                        <a href="#0" class="button button-fw button-yellow button-icon-right">
-                                            <span class="button-txt">Hazırlanıyor</span>
-                                            <span class="button-icon">
-                                                <span class="icon-outer">
-                                                    <svg class="icon">
-                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                    </svg>
-                                                </span>
-                                            </span>
-                                        </a>
-                                    </div>
-                                </div>
+                                }
+
                             </div>
                         </div>
                     </div>

@@ -60,7 +60,6 @@ namespace NitelikliBilisim.App
             services.AddScoped<UnitOfWork>();
             services.AddScoped<ComingSoonActionFilter>();
             services.AddApplicationServices(this.Configuration);
-
             //services.AddControllers(options => { options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()); });
             services.AddSession(options =>
             {
@@ -72,7 +71,7 @@ namespace NitelikliBilisim.App
                     builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
             });
             services.AddMvc();
-            services.AddControllersWithViews().AddRazorRuntimeCompilation();
+            services.AddControllersWithViews().AddSessionStateTempDataProvider().AddRazorRuntimeCompilation();
             services.AddControllers();
         }
 

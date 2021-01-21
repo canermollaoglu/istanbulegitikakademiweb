@@ -16,7 +16,7 @@
                 </div>
                 <div class="checkout-steps__txt">1. SEPETİM</div>
             </a>
-            <a href="./checkout-2-fatura.php" class="checkout-steps__item active">
+            <a  class="checkout-steps__item active">
                 <div class="checkout-steps__icon">
                     <span class="icon-outer">
                         <svg class="icon">
@@ -26,7 +26,7 @@
                 </div>
                 <div class="checkout-steps__txt">2. FATURA BİLGİLERİ</div>
             </a>
-            <a href="#" class="checkout-steps__item">
+            <a  class="checkout-steps__item">
                 <div class="checkout-steps__icon">
                     <span class="icon-outer">
                         <svg class="icon">
@@ -36,7 +36,7 @@
                 </div>
                 <div class="checkout-steps__txt">3. ÖDEME</div>
             </a>
-            <a href="#" class="checkout-steps__item">
+            <a  class="checkout-steps__item">
                 <div class="checkout-steps__icon">
                     <span class="icon-outer">
                         <svg class="icon">
@@ -339,7 +339,7 @@
                         </span>
                     </div>
                 </form>
-                <a asp-controller="Sale" asp-action="Payment" class="button button-icon-right button-fw checkout__next-button">
+                <a id="next-btn" class="button button-icon-right button-fw checkout__next-button">
                     <span class="button-txt">
                         Ödeme Adımına Geç
                     </span>
@@ -552,8 +552,10 @@
         var inputDiscountAmount = $("#input-discount-amount");
         var inputPromotionDiscountAmount = $("#promotion-discount-amount");
         var dAddressId = @Model.DefaultAddressId;
+        var nextBtn = $("#next-btn");
         /* assignments */
         $(document).ready(document_onLoad);
+        nextBtn.on("click", nextBtn_onClick);
         /*ValidateForms*/
         $('#corporateAddressForm').validate({
             errorLabelContainer: $('#validateForm div.error'),
@@ -889,7 +891,15 @@
             return parseFloat(total, 10).toFixed(2).toString().replace(".", ",") + " <span>TL</span>";
         }
 
-
+        function nextBtn_onClick() {
+            if (localStorage.getItem("_cA") && localStorage.getItem("_cA")!=0) {
+                location.href = "/odeme";
+            } else {
+                $('html, body').animate({
+                    scrollTop: $(".container").offset().top - 10
+                }, 1000);
+            }
+        }
 
         //Update address
         function loadAddressInfo(id, type) {

@@ -161,6 +161,7 @@ namespace NitelikliBilisim.Data
         public DbSet<FeaturedComment> FeaturedComments{ get; set; }
         public DbSet<BannerAd> BannerAds { get; set; }
         public DbSet<Bridge_EducatorCategory> Bridge_EducatorCategories { get; set; }
+        public DbSet<CustomerCertificate> CustomerCertificates { get; set; }
 
 
     }

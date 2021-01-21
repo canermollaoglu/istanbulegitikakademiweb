@@ -22,5 +22,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public string NbuyCategory { get; set; }
         public string NbuyStartDateText { get; set; }
         public DateTime NbuyStartDate { get; set; }
+        public List<MyCertificateVm> Certificates { get; set; }
     }
 }

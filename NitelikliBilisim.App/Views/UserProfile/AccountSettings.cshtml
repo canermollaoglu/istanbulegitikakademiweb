@@ -42,6 +42,12 @@
                                 @TempData["Success"]
                             </div>
                         }
+                        @if (TempData["Error"] != null)
+                        {
+                            <div class="error-messages" style="display: block;">
+                                @TempData["Error"]
+                            </div>
+                        }
 
                         <div class="accordion accordion--loft">
                             <div class="accordion__item selected active">
@@ -88,25 +94,25 @@
                                                     </div>
                                                 </div>
                                                 @*<div class="input__outer no-icon">
-                                                    <div class="input__title">Profil Resmi</div>
-                                                    <div class="input__select-image">
-                                                        <div class="input__select-image-img">
-                                                            <input type="image" id="accountChangeImg" src="@avatarPath">
-                                                            <input type="file" id="accountSettingsImg" name="ProfileImage" style="display: none;" />
-                                                        </div>
-                                                        <div class="input__select-image-button">
-                                                            <a class="button button-fw js-change-img">
-                                                                <span class="button-txt">
-                                                                    Resmi Değiştir
-                                                                </span>
-                                                            </a>
-                                                        </div>
-                                                        <div class="input__select-image-txt">
-                                                            Maksimum boyut 1 MB.<br>
-                                                            JPG, GIF veya PNG
-                                                        </div>
-                                                    </div>
-                                                </div>*@
+                                    <div class="input__title">Profil Resmi</div>
+                                    <div class="input__select-image">
+                                        <div class="input__select-image-img">
+                                            <input type="image" id="accountChangeImg" src="@avatarPath">
+                                            <input type="file" id="accountSettingsImg" name="ProfileImage" style="display: none;" />
+                                        </div>
+                                        <div class="input__select-image-button">
+                                            <a class="button button-fw js-change-img">
+                                                <span class="button-txt">
+                                                    Resmi Değiştir
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div class="input__select-image-txt">
+                                            Maksimum boyut 1 MB.<br>
+                                            JPG, GIF veya PNG
+                                        </div>
+                                    </div>
+                                </div>*@
                                                 <div class="account-detail__setting-btn">
                                                     <button type="submit" class="button">
                                                         Değişiklikleri Kaydet
@@ -218,80 +224,80 @@
                                     </div>
                                 </div>
                             </div>
-                            @if (Model.GeneralInformation.IsNbuyStudent && Model.GeneralInformation.NbuyInformation!=null)
+                            @if (Model.GeneralInformation.IsNbuyStudent && Model.GeneralInformation.NbuyInformation != null)
                             {
-                            <div class="accordion__item">
-                                <div class="accordion__header">
-                                    <span class="icon-outer accordion__icon">
-                                    </span>
-                                    NBUY EĞİTİMLERİNİZ
-                                </div>
-                                <div class="accordion__content">
-                                    <div class="js-calc-accordion-height">
-                                        <div class="accordion__forms">
-                                            <form method="post" action="/nbuy-egitim-bilgileri-guncelle">
-                                                @Html.AntiForgeryToken()
-                                            <div class="input__column-2">
-                                                <div class="input__outer bordered-select input-mb-0">
-                                                    <div class="select-subject no-icon">
-                                                        <div class="input__title">Eğitim Merkezi</div>
-                                                        <select name="EducationCenter" class="js-egitim-merkezi-select">
-                                                            <option value="" hidden disabled>Eğitim Merkezini Seçiniz</option>
-                                                            @foreach (var educationCenter in Model.EducationCenters)
-                                                            {
-                                                                if ((int)Model.GeneralInformation.NbuyInformation.EducationCenter == educationCenter.Key)
-                                                                {
-                                                                    <option value="@educationCenter.Key" selected>@educationCenter.Value</option>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <option value="@educationCenter.Key">@educationCenter.Value</option>
-                                                                }
-                                                            }
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="input__outer no-icon datepicker--fw icon-datepicker input-mb-0">
-                                                    <div class="input__title">Eğitim Başlangıç Tarihi</div>
-                                                    <input type="text" name="StartAt" class="input input--bordered input--fw input--noshadow js-datepicker"
-                                                           value="@Model.GeneralInformation.NbuyInformation.StartAt.ToString("dd.MM.yyyy")" placeholder="Eğitim Başlangıç Tarihini Seçiniz">
-                                                    <span class="icon-outer">
-                                                        <svg class="icon">
-                                                            <use xlink:href="../../assets/img/icons.svg#icon-date"></use>
-                                                        </svg>
-                                                    </span>
-                                                </div>
-                                                <div class="input__outer bordered-select input-mb-0">
-                                                    <div class="select-subject no-icon">
-                                                        <div class="input__title">Eğitim Türü</div>
-                                                        <select name="EducationCategoryId" class="js-education-type-select">
-                                                            <option value="" hidden disabled>Eğitim Türünü Seçiniz</option>
-                                                            @foreach (var category in Model.EducationCategories)
-                                                            {
-                                                                if (Model.GeneralInformation.NbuyInformation.CategoryId == category.Key)
-                                                                {
-                                                                    <option value="@category.Key" selected>@category.Value</option>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <option value="@category.Key">@category.Value</option>
-                                                                }
+                                <div class="accordion__item">
+                                    <div class="accordion__header">
+                                        <span class="icon-outer accordion__icon">
+                                        </span>
+                                        NBUY EĞİTİMLERİNİZ
+                                    </div>
+                                    <div class="accordion__content">
+                                        <div class="js-calc-accordion-height">
+                                            <div class="accordion__forms">
+                                                <form method="post" action="/nbuy-egitim-bilgileri-guncelle">
+                                                    @Html.AntiForgeryToken()
+                                                    <div class="input__column-2">
+                                                        <div class="input__outer bordered-select input-mb-0">
+                                                            <div class="select-subject no-icon">
+                                                                <div class="input__title">Eğitim Merkezi</div>
+                                                                <select name="EducationCenter" class="js-egitim-merkezi-select">
+                                                                    <option value="" hidden disabled>Eğitim Merkezini Seçiniz</option>
+                                                                    @foreach (var educationCenter in Model.EducationCenters)
+                                                                    {
+                                                                        if ((int)Model.GeneralInformation.NbuyInformation.EducationCenter == educationCenter.Key)
+                                                                        {
+                                                                            <option value="@educationCenter.Key" selected>@educationCenter.Value</option>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <option value="@educationCenter.Key">@educationCenter.Value</option>
+                                                                        }
+                                                                    }
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="input__outer no-icon datepicker--fw icon-datepicker input-mb-0">
+                                                            <div class="input__title">Eğitim Başlangıç Tarihi</div>
+                                                            <input type="text" name="StartAt" class="input input--bordered input--fw input--noshadow js-datepicker"
+                                                                   value="@Model.GeneralInformation.NbuyInformation.StartAt.ToString("dd.MM.yyyy")" placeholder="Eğitim Başlangıç Tarihini Seçiniz">
+                                                            <span class="icon-outer">
+                                                                <svg class="icon">
+                                                                    <use xlink:href="../../assets/img/icons.svg#icon-date"></use>
+                                                                </svg>
+                                                            </span>
+                                                        </div>
+                                                        <div class="input__outer bordered-select input-mb-0">
+                                                            <div class="select-subject no-icon">
+                                                                <div class="input__title">Eğitim Türü</div>
+                                                                <select name="EducationCategoryId" class="js-education-type-select">
+                                                                    <option value="" hidden disabled>Eğitim Türünü Seçiniz</option>
+                                                                    @foreach (var category in Model.EducationCategories)
+                                                                    {
+                                                                        if (Model.GeneralInformation.NbuyInformation.CategoryId == category.Key)
+                                                                        {
+                                                                            <option value="@category.Key" selected>@category.Value</option>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <option value="@category.Key">@category.Value</option>
+                                                                        }
 
-                                                            }
-                                                        </select>
+                                                                    }
+                                                                </select>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                    <div class="account-detail__setting-btn">
+                                                        <button type="submit" class="button">
+                                                            Değişiklikleri Kaydet
+                                                        </button>
+                                                    </div>
+                                                </form>
                                             </div>
-                                            <div class="account-detail__setting-btn">
-                                                <button type="submit" class="button">
-                                                    Değişiklikleri Kaydet
-                                                </button>
-                                            </div>
-                                            </form>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
                             }
                             <div class="accordion__item">
                                 <div class="accordion__header">
@@ -380,52 +386,52 @@
                                             <div class="address-wrp">
                                                 <form method="post" action="/default-adres-guncelle">
                                                     @Html.AntiForgeryToken()
-                                                    <input type="hidden" name="defaultAddressId" id="input-default-address-id"/>
+                                                    <input type="hidden" name="defaultAddressId" id="input-default-address-id" />
                                                     @if (Model.Addresses.Count == 0)
                                                     {
                                                         @*<div class="address-item">
-                <div class="address-button js-select-address">
-                    <span class="address-button-radio"></span>
-                </div>
-                <div class="address-cnt js-select-address">
-                    <div class="address-title">
-                        Fatura Adresim
-                    </div>
-                    <div class="address-txt">
+                                            <div class="address-button js-select-address">
+                                                <span class="address-button-radio"></span>
+                                            </div>
+                                            <div class="address-cnt js-select-address">
+                                                <div class="address-title">
+                                                    Fatura Adresim
+                                                </div>
+                                                <div class="address-txt">
 
-                    </div>
-                </div>
-            </div>
-            <div class="address-input-wrp">
-                <div class="input__column-flex">
-                    <div class="input__outer bordered-select">
-                        <div class="select-subject no-icon">
-                            <div class="input__title">Şehir</div>
-                            <select class="js-adres-sehir-select">
-                                <option value="" hidden disabled>Şehir</option>
-                                @foreach (var city in Model.Cities)
-                                {
-                                    <option value="@city.Id">@city.Name</option>
-                                }
-                            </select>
-                        </div>
-                    </div>
-                    <div class="input__outer bordered-select input-mb-0">
-                        <div class="select-subject no-icon">
-                            <div class="input__title">İlçe</div>
-                            <select class="js-adres-ilce-select">
-                                <option value="" hidden disabled>İlçe</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="input__outer input--textarea no-icon">
-                    <div class="input__title">Açık Adresiniz</div>
-                    <textarea name="Content"
-                              class="input input--fw input--bordered input--noshadow h-150"
-                              placeholder="Adresinizin tamamını buraya yazınız"></textarea>
-                </div>
-            </div>*@
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="address-input-wrp">
+                                            <div class="input__column-flex">
+                                                <div class="input__outer bordered-select">
+                                                    <div class="select-subject no-icon">
+                                                        <div class="input__title">Şehir</div>
+                                                        <select class="js-adres-sehir-select">
+                                                            <option value="" hidden disabled>Şehir</option>
+                                                            @foreach (var city in Model.Cities)
+                                                            {
+                                                                <option value="@city.Id">@city.Name</option>
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="input__outer bordered-select input-mb-0">
+                                                    <div class="select-subject no-icon">
+                                                        <div class="input__title">İlçe</div>
+                                                        <select class="js-adres-ilce-select">
+                                                            <option value="" hidden disabled>İlçe</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="input__outer input--textarea no-icon">
+                                                <div class="input__title">Açık Adresiniz</div>
+                                                <textarea name="Content"
+                                                          class="input input--fw input--bordered input--noshadow h-150"
+                                                          placeholder="Adresinizin tamamını buraya yazınız"></textarea>
+                                            </div>
+                                        </div>*@
                                                     }
                                                     @foreach (var address in Model.Addresses)
                                                     {

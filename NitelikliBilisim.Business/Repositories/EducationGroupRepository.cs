@@ -388,6 +388,12 @@ namespace NitelikliBilisim.Business.Repositories
 
             return dates;
         }
+
+        public EducationGroup GetByIdWithEducation(Guid groupId)
+        {
+            return _context.EducationGroups.Include(x => x.Education).First(x => x.Id == groupId);
+        }
+
         /// <summary>
         /// İlgili eğitim için tarih ve kontenjan uygunluğunu kontrol ederek eğitim verilebileceği şehiler listesini döner.
         /// </summary>

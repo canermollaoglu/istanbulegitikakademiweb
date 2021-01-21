@@ -742,6 +742,7 @@ namespace NitelikliBilisim.Business.Repositories
                     IsCanComment = false,
                     Comments = comments,
                     Point = 0,
+                    VideoUrl = education.VideoUrl,
                     PointText = "0.0",
                     CommentCount = comments.Count(),
                     //PriceNumeric = education.NewPrice.GetValueOrDefault(0),

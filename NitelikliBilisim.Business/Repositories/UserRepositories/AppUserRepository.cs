@@ -52,6 +52,7 @@ namespace NitelikliBilisim.Business.Repositories
             model.NbuyCategory = nBuyInfo != null && nBuyInfo.Category != null ? nBuyInfo.Category.Name : "Girilmemiş";
             model.AvatarPath = student.User.AvatarPath;
             model.PageName = currentPageName;
+            model.CertificateCount = _context.CustomerCertificates.Where(x => x.CustomerId == userId).Count();
             return model;
         }
 
@@ -160,9 +161,52 @@ namespace NitelikliBilisim.Business.Repositories
             return model;
         }
 
-        public object GetUserCertificates(string userId)
+        
+        public List<MyCertificateVm> GetUserAvailableCertificates(string userId)
         {
-            throw new NotImplementedException();
+            var certificates = (from certificate in _context.CustomerCertificates
+                                join student in _context.Customers.Include(x => x.User) on certificate.CustomerId equals student.Id
+                                join eGroup in _context.EducationGroups on certificate.GroupId equals eGroup.Id
+                                join education in _context.Educations.Include(x => x.Category).ThenInclude(x => x.BaseCategory) on eGroup.EducationId equals education.Id
+                                join bridge in _context.Bridge_GroupStudents on new { Id = student.Id, Id2 = eGroup.Id } equals new { Id = bridge.Id2, Id2 = bridge.Id } into b
+                                from bridge in b.DefaultIfEmpty()
+                                where certificate.CustomerId == userId
+                                select new MyCertificateVm
+                                {
+                                    Id = certificate.Id,
+                                    CertificateName = "Web Yazılım Uzmanlığı Sertifikası",
+                                    EducationName = education.Name,
+                                    EducationDate = eGroup.StartDate,
+                                    EducationSeoUrl = education.SeoUrl,
+                                    CategorySeoUrl = education.Category.SeoUrl,
+                                    CategoryName = education.Category.BaseCategory.Name,
+                                    EducationDateText = eGroup.StartDate.ToString("dd MMMM yyyy"),
+                                    IsAvailable = bridge == null ? false : true
+                                }).ToList();
+            return certificates;
+        }
+        public List<MyCertificateVm> GetUserCertificates(string userId)
+        {
+            var newCertificates = (from bridge in _context.Bridge_GroupStudents
+                                  join eGroup in _context.EducationGroups on bridge.Id equals eGroup.Id
+                                  join student in _context.Customers on bridge.Id2 equals student.Id
+                                  join education in _context.Educations on eGroup.EducationId equals education.Id
+                                  join certf in _context.CustomerCertificates on new { Id = student.Id, Id2 = eGroup.Id } equals new {Id=certf.CustomerId , Id2=certf.GroupId} into certificate
+                                  from certf in certificate.DefaultIfEmpty()
+                                  where bridge.Id2 == userId
+                                   select new MyCertificateVm
+                                   {
+                                       Id = certf != null? certf.Id:Guid.Empty,
+                                       CertificateName = "Web Yazılım Uzmanlığı Sertifikası",
+                                       EducationName = education.Name,
+                                       EducationDate = eGroup.StartDate,
+                                       EducationSeoUrl = education.SeoUrl,
+                                       CategorySeoUrl = education.Category.SeoUrl,
+                                       CategoryName = education.Category.BaseCategory.Name,
+                                       EducationDateText = eGroup.StartDate.ToString("dd MMMM yyyy"),
+                                       IsAvailable = certf == null ? false : true
+                                   }).ToList();
+            return newCertificates;
         }
 
         public InvoiceDetailsVm GetCustomerInvoiceDetails(Guid invoiceId)
@@ -211,7 +255,7 @@ namespace NitelikliBilisim.Business.Repositories
             info.CategoryId = model.EducationCategoryId;
             info.EducationCenter = model.EducationCenter;
             info.StartedAt = model.StartAt;
-            
+
             return _context.SaveChanges() > 0 ? true : false;
         }
         public bool UpdateStudentInfo(UpdateStudentInfoVm model)
@@ -280,7 +324,7 @@ namespace NitelikliBilisim.Business.Repositories
             if (data.IsNbuyStudent)
             {
                 var nbuyInfo = _context.StudentEducationInfos.FirstOrDefault(x => x.CustomerId == userId);
-                if (nbuyInfo!=null)
+                if (nbuyInfo != null)
                 {
                     data.NbuyInformation = new NbuyInformationVm
                     {
@@ -295,17 +339,17 @@ namespace NitelikliBilisim.Business.Repositories
 
 
             model.GeneralInformation = data;
-            model.Addresses = _context.Addresses.Include(x => x.City).ThenInclude(x=>x.States).Include(x => x.State).Where(x => x.CustomerId == userId).ToList();
+            model.Addresses = _context.Addresses.Include(x => x.City).ThenInclude(x => x.States).Include(x => x.State).Where(x => x.CustomerId == userId).ToList();
             model.Universities = _context.Universities.ToList();
             model.Cities = _context.Cities.OrderBy(x => x.Order).ToList();
             model.Genders = EnumHelpers.ToKeyValuePair<Genders>();
             model.Jobs = EnumHelpers.ToKeyValuePair<Jobs>();
             model.EducationCenters = EnumHelpers.ToKeyValuePair<EducationCenter>();
-            model.EducationCategories = _context.EducationCategories.Where(x => x.BaseCategoryId == null).ToDictionary(x=>x.Id,x=>x.Name);
+            model.EducationCategories = _context.EducationCategories.Where(x => x.BaseCategoryId == null).ToDictionary(x => x.Id, x => x.Name);
             return model;
         }
 
-        
+
 
         public ForYouPageGetVm GetForYouPageData(string userId)
         {
@@ -451,10 +495,11 @@ namespace NitelikliBilisim.Business.Repositories
                 .Include(x => x.StudentEducationInfos).ThenInclude(x => x.EducationDays).First(x => x.Id == userId);
             var favoriteEducations = GetUserFavoriteEducationsByUserId(userId);
             var purchasedEducations = GetPurschasedEducationsByUserId(userId);
-
+            var certificates = GetUserAvailableCertificates(userId);
             model.FavoriteEducations = favoriteEducations;
             model.FavoriteEducationCount = favoriteEducations.Count;
             model.PurchasedEducations = purchasedEducations;
+            model.Certificates = certificates;
             model.PurchasedEducationCount = purchasedEducations.Count;
             model.IsNBUY = student.IsNbuyStudent;
             if (student.IsNbuyStudent)
@@ -615,7 +660,7 @@ namespace NitelikliBilisim.Business.Repositories
             //Tatil Günleri
             var offDays = _context.OffDays.Where(x => x.Year == DateTime.Now.Year || x.Year == DateTime.Now.Year - 1 || x.Year == DateTime.Now.Year + 1).ToList();
             //Kullanıcının aldığı Nbuy Eğitimi ve eğitimin süresi
-            var nbuyCategory = _context.EducationCategories.First(x=>x.Id == categoryId);
+            var nbuyCategory = _context.EducationCategories.First(x => x.Id == categoryId);
             var educationDayCount = nbuyCategory.EducationDayCount.HasValue ? nbuyCategory.EducationDayCount.Value : 0;
             //Kullanıcının eğitime başlangıç tarihi 
             var activeDate = startDate;

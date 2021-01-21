@@ -186,7 +186,7 @@ namespace NitelikliBilisim.App.Controllers
                 }
                 return Redirect(model.ReturnUrl ?? "/");
             }
-            ModelState.AddModelError(string.Empty, "Böyle bir kullanıcı bulunmamaktadır!");
+            ModelState.AddModelError(string.Empty, "Kullanıcı adı veya şifre hatalı!");
             return View(model);
         }
 

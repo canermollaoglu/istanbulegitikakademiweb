@@ -27,6 +27,8 @@ namespace NitelikliBilisim.Core.Entities
         public bool IsActive { get; set; }
         [MaxLength(128)]
         public string SeoUrl { get; set; }
+        [MaxLength(128)]
+        public string VideoUrl { get; set; }
         public bool IsFeaturedEducation { get; set; }
 
         public Guid CategoryId { get; set; }
