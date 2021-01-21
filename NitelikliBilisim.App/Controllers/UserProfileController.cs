@@ -415,11 +415,12 @@ namespace NitelikliBilisim.App.Controllers
         public IActionResult DownloadStudentCertificate(Guid? certificateId) {
             if (!certificateId.HasValue)
             {
-                return Json(new ResponseModel
-                {
-                    isSuccess = false
-                });
+                throw new Exception("certificateId yüklenemedi!");
             }
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("MTcwOTE0QDMxMzcyZTMzMmUzMFFSQWFBQ05aQnljWmc2VXdZb1FtZ2VQcmlMK3ZEWWZZQzFRaW9aUTZhYnM9");
+            if (!Syncfusion.Licensing.SyncfusionLicenseProvider.ValidateLicense(Syncfusion.Licensing.Platform.FileFormats, out var message))
+                throw new Exception("Syncfusion license is invalid: " + message);
+
             var zip = CreateCertificateZip(certificateId.Value);
             return File(zip.Content,System.Net.Mime.MediaTypeNames.Application.Zip,$"{zip.FileName}.zip");
         }
@@ -476,8 +477,8 @@ namespace NitelikliBilisim.App.Controllers
             graphics.DrawImage(background, 0, 0, page.Graphics.ClientSize.Width, page.Graphics.ClientSize.Height);
 
             //Yazı tipini belirle
-            PdfFont font = new PdfStandardFont(PdfFontFamily.TimesRoman, 18);
-
+            PdfFont font = new PdfStandardFont(PdfFontFamily.TimesRoman, 8,PdfFontStyle.Bold);
+            
             // Ad soyad yazdır
 
             PdfLayoutFormat format = new PdfLayoutFormat();
@@ -485,13 +486,10 @@ namespace NitelikliBilisim.App.Controllers
 
             Syncfusion.Drawing.SizeF clipBounds = page.Graphics.ClientSize;
 
-            string htmlText = $"<font size='6'><b><i>Sayın {student.Name.ToUpper()} {student.Surname.ToUpper()}</i></b></font>";
-
-            PdfHTMLTextElement htmlTextElement = new PdfHTMLTextElement(htmlText, font, PdfBrushes.Black);
-
-            //htmlTextElement.TextAlign = TextAlign.Center;
-
-            htmlTextElement.Draw(page, new Syncfusion.Drawing.RectangleF(0, 210, clipBounds.Width, 150), format);
+            string text = $"Sayın {student.Name.ToUpper()} {student.Surname.ToUpper()}";
+            PdfStringFormat nameSurnameFormat = new PdfStringFormat();
+            nameSurnameFormat.Alignment = PdfTextAlignment.Center;
+            graphics.DrawString(text,font,PdfBrushes.Black, new Syncfusion.Drawing.RectangleF(0, 210, clipBounds.Width, 150), nameSurnameFormat);
             /*QR KOD Oluştur*/
             PdfQRBarcode barcode = new PdfQRBarcode();
 
@@ -504,7 +502,7 @@ namespace NitelikliBilisim.App.Controllers
 #endif
 
             barcode.Text = siteUrl;
-            barcode.Size = new Syncfusion.Drawing.SizeF(150, 150);
+            barcode.Size = new Syncfusion.Drawing.SizeF(100,100);
             barcode.Draw(page, new Syncfusion.Drawing.PointF(760, 520));
 
             MemoryStream stream = new MemoryStream();
