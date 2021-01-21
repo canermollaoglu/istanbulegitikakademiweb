@@ -71,7 +71,7 @@ namespace NitelikliBilisim.App
                     builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
             });
             services.AddMvc();
-            services.AddControllersWithViews().AddRazorRuntimeCompilation();
+            services.AddControllersWithViews().AddSessionStateTempDataProvider().AddRazorRuntimeCompilation();
             services.AddControllers();
         }
 

@@ -23,6 +23,7 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -215,14 +216,13 @@ namespace NitelikliBilisim.App.Controllers
                 var dbPath = await _storageService.UploadFile(ProfileImage.OpenReadStream(), $"{fileName}-{ProfileImage.FileName}", "user-avatars");
                 user.AvatarPath = dbPath;
                 await _userManager.UpdateAsync(user);
-                return RedirectToAction("Profile", "UserProfile");
+                TempData["Success"] = "Profil resminiz başarıyla güncellendi!";
+                return RedirectToAction("AccountSettings", "UserProfile");
             }
             catch (Exception)
             {
                 throw;
             }
-
-
         }
 
         [Route("haftaya-ozel-kurslar")]
@@ -257,7 +257,9 @@ namespace NitelikliBilisim.App.Controllers
         {
             if (!ModelState.IsValid)
             {
-                TempData["Error"] = ModelStateUtil.GetErrors(ModelState);
+                var errors = ModelStateUtil.GetErrors(ModelState);
+                TempData["Error"] = errors.Aggregate((x, y) => x + "<br>" + y);
+                return RedirectToAction("AccountSettings", "UserProfile");
             }
             try
             {
@@ -284,14 +286,16 @@ namespace NitelikliBilisim.App.Controllers
         {
             if (!ModelState.IsValid)
             {
-                TempData["Error"] = ModelStateUtil.GetErrors(ModelState);
+                var errors = ModelStateUtil.GetErrors(ModelState);
+                TempData["Error"] = errors.Aggregate((x, y) => x + "<br>" + y);
+                return RedirectToAction("AccountSettings", "UserProfile");
             }
             try
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 model.UserId = userId;
                 _userUnitOfWork.User.UpdateStudentInfo(model);
-                TempData["Success"] = "Bilgileriniz başarıyla güncellendi!";
+                TempData["Success"] = "Kişisel bilgileriniz başarıyla güncellendi!";
                 return RedirectToAction("AccountSettings", "UserProfile");
             }
             catch (Exception ex)
@@ -311,7 +315,9 @@ namespace NitelikliBilisim.App.Controllers
         {
             if (!ModelState.IsValid)
             {
-                TempData["Error"] = ModelStateUtil.GetErrors(ModelState);
+                var errors = ModelStateUtil.GetErrors(ModelState);
+                TempData["Error"] = errors.Aggregate((x, y) => x + "<br>" + y);
+                return RedirectToAction("AccountSettings", "UserProfile");
             }
             try
             {
@@ -339,8 +345,7 @@ namespace NitelikliBilisim.App.Controllers
                     await _userManager.UpdateAsync(user);
                 }
 
-                //_userUnitOfWork.User.UpdateUserInfo(model);
-                TempData["Success"] = "Bilgileriniz başarıyla güncellendi!";
+                TempData["Success"] = "Kullanıcı bilgileriniz başarıyla güncellendi!";
                 return RedirectToAction("AccountSettings", "UserProfile");
             }
             catch (Exception ex)
@@ -364,19 +369,21 @@ namespace NitelikliBilisim.App.Controllers
             }
             if (!ModelState.IsValid)
             {
-                TempData["Error"] = ModelStateUtil.GetErrors(ModelState);
+                var errors = ModelStateUtil.GetErrors(ModelState);
+                TempData["Error"] = errors.Aggregate((x, y) => x + "<br>" + y);
                 return RedirectToAction("AccountSettings", "UserProfile");
             }
             try
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 _unitOfWork.Address.UpdateDefaultAddress(defaultAddressId.Value,userId);
-                
+                TempData["Success"] = "Varsayılan adres bilginiz başarıyla güncellendi.";
                 return RedirectToAction("AccountSettings", "UserProfile");
             }
             catch (Exception ex)
             {
                 TempData["Error"] = "İşleminiz gerçekleştirilemedi! Lütfen tekrar deneyiniz.";
+                return RedirectToAction("AccountSettings", "UserProfile");
                 //todo log
                 throw;
             }
@@ -390,7 +397,8 @@ namespace NitelikliBilisim.App.Controllers
         {
             if (!ModelState.IsValid)
             {
-                TempData["Error"] = ModelStateUtil.GetErrors(ModelState);
+                var errors = ModelStateUtil.GetErrors(ModelState);
+                TempData["Error"] = errors.Aggregate((x, y) => x + "<br>" + y);
                 return RedirectToAction("AccountSettings", "UserProfile");
             }
             try
@@ -415,7 +423,9 @@ namespace NitelikliBilisim.App.Controllers
         public IActionResult DownloadStudentCertificate(Guid? certificateId) {
             if (!certificateId.HasValue)
             {
-                throw new Exception("certificateId yüklenemedi!");
+
+                TempData["Error"] = "Lütfen sayfayı yenileyerek tekrar deneyiniz.";
+                return RedirectToAction("AccountSettings", "UserProfile");
             }
             Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("MTcwOTE0QDMxMzcyZTMzMmUzMFFSQWFBQ05aQnljWmc2VXdZb1FtZ2VQcmlMK3ZEWWZZQzFRaW9aUTZhYnM9");
             if (!Syncfusion.Licensing.SyncfusionLicenseProvider.ValidateLicense(Syncfusion.Licensing.Platform.FileFormats, out var message))
