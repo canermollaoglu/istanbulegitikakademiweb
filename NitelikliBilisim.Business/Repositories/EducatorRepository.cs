@@ -77,7 +77,7 @@ namespace NitelikliBilisim.Business.Repositories
                            StartDate = egroup.StartDate,
                            HostName = host.HostName,
                            EducationName = education.Name,
-                           EducatorSalary = salaries.Paid
+                           EducatorSalary = salaries!=null? salaries.Paid:0
                        };
             return data;
         }

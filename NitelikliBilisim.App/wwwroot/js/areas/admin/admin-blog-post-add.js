@@ -11,6 +11,9 @@ btnSave.on("click", btnSave_onClick);
 
 /* events */
 function document_onLoad() {
+    $('[data-toggle="popover"]').popover({
+        container: 'body'
+    });
     selectTags.select2({
         tags: true,
         placeholder: "Ara",
@@ -78,6 +81,9 @@ function document_onLoad() {
     });
 }
 
+$(".banner-btn").on("click", function () {
+    $('#summernote').summernote('editor.insertText', '[##' + $(this).data("code") + '##]');
+});
 $("#input-title").focusout(function () {
     var title = $("#input-title").val();
     $.ajax({
