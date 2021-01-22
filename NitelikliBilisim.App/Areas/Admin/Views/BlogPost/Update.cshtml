@@ -36,6 +36,12 @@
                     <textarea type="text" rows="3" class="form-control" id="input-summary-content">@Model.SummaryContent</textarea>
                 </div>
                 <div class="form-group">
+                    @foreach (var banner in Model.BannerAds)
+                    {
+                        <button type="button" data-trigger="hover" data-html="true" data-code="@banner.Code" class="btn btn-sm btn-primary banner-btn" data-toggle="popover" title="@(banner.Title1+" "+banner.Title2)" data-content="<img width='250' src='@banner.ImageUrl'>@banner.Content">@banner.Code</button>
+                    }
+                </div>
+                <div class="form-group">
                     <label>Yazı</label>
                     <div id="summernote"></div>
                 </div>
@@ -132,7 +138,8 @@
                 styleTags: [
                     { title: 'Baslik', tag: 'h2', className: 'blog-detail__title', value: 'h2' },
                     { title: 'Özet', tag: 'h1', className: 'blog-detail__blockquote', value: 'h1' },
-                    { title: 'Paragraf', tag: 'p', className: 'blog-detail__txt', value: 'p' }
+                    { title: 'Paragraf', tag: 'p', className: 'blog-detail__txt', value: 'p' },
+                    { title: 'Reklam', tag: 'div', className: '', value: 'div' }
                 ]
             });
 

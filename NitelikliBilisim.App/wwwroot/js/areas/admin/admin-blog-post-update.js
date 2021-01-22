@@ -11,6 +11,9 @@ btnSave.on("click", btnSave_onClick);
 
 /* events */
 function document_onLoad() {
+    $('[data-toggle="popover"]').popover({
+        container: 'body'
+    });
     selectTags.select2({
         tags: true,
         tokenSeparators: [',', ' '],
@@ -46,6 +49,9 @@ function document_onLoad() {
 }
 
 
+$(".banner-btn").on("click", function () {
+    $('#summernote').summernote('editor.insertText', '[##' + $(this).data("code") + '##]');
+});
 function btnSave_onClick() {
     var tags = [];
     var resultAlert = new AlertSupport.ResultAlert();

@@ -67,10 +67,9 @@ namespace NitelikliBilisim.App.Controllers
 
                 return View(model);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                throw ex;
             }
 
         }

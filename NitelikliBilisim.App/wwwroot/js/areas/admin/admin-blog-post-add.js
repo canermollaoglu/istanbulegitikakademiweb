@@ -11,6 +11,9 @@ btnSave.on("click", btnSave_onClick);
 
 /* events */
 function document_onLoad() {
+    $('[data-toggle="popover"]').popover({
+        container: 'body'
+    });
     selectTags.select2({
         tags: true,
         placeholder: "Ara",
@@ -65,7 +68,8 @@ function document_onLoad() {
         styleTags: [
             { title: 'Baslik', tag: 'h2', className: 'blog-detail__title', value: 'h2' },
             { title: 'Özet', tag: 'h1', className: 'blog-detail__blockquote', value: 'h1' },
-            { title: 'Paragraf', tag: 'p', className: 'blog-detail__txt', value: 'p' }
+            { title: 'Paragraf', tag: 'p', className: 'blog-detail__txt', value: 'p' },
+            { title: 'Reklam', tag: 'div', className: '', value: 'div' }
         ]
     });
 
@@ -78,6 +82,9 @@ function document_onLoad() {
     });
 }
 
+$(".banner-btn").on("click", function () {
+    $('#summernote').summernote('editor.insertText', '[##' + $(this).data("code") + '##]');
+});
 $("#input-title").focusout(function () {
     var title = $("#input-title").val();
     $.ajax({

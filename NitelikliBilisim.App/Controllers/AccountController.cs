@@ -215,8 +215,15 @@ namespace NitelikliBilisim.App.Controllers
                     Contacts = new string[] { model.Email },
                     Body = $"Merhaba {user.Name} {user.Surname},<br/> Şifrenizi yenilemek için <a href=\"{passwordResetLink}\" target=\"_blank\"><b>buraya</b></a> tıklayınız."
                 });
+                TempData["Message"] = "Şifre yenileme linki E-posta adresinize gönderilmiştir.";
+                return RedirectToAction("Login", "Account");
             }
-            return RedirectToAction("Index", "Home");
+            else
+            {
+                ModelState.AddModelError("", "Bu E-posta adresi ile bağlantılı bir kayıt bulunmamaktadır.");
+                return View(model);
+            }
+            
         }
 
         
@@ -245,6 +252,7 @@ namespace NitelikliBilisim.App.Controllers
                 var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
                 if (result.Succeeded)
                 {
+                    TempData["Message"] = "Yeni şifreniz ile giriş yapabilirsiniz.";
                     return RedirectToAction("Login","Account");
                 }
                 foreach (var error in result.Errors)

@@ -150,6 +150,9 @@
                     {
                         caption: "Kod",
                         dataField: "code",
+                        customizeText: function (cellInfo) {
+                            return "[##" + cellInfo.value + "##]";
+                        }
 
                     },
                     {

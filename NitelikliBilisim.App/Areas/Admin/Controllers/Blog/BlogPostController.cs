@@ -87,9 +87,15 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         public IActionResult Add()
         {
             ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminBlogPostAdd");
+            var bannerAds = _unitOfWork.BannerAds.Get().ToList();
+            foreach (var banner in bannerAds)
+            {
+                banner.ImageUrl = _storage.BlobUrl + banner.ImageUrl;
+            }
             var model = new BlogPostAddGetVM
             {
-                BlogCategories = _unitOfWork.BlogCategory.Get().ToList()
+                BlogCategories = _unitOfWork.BlogCategory.Get().ToList(),
+                BannerAds = bannerAds
             };
             return View(model);
         }
@@ -164,6 +170,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         {
             ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminBlogPostUpdate");
             var post = _unitOfWork.BlogPost.GetByIdWithCategory(postId);
+            var bannerAds = _unitOfWork.BannerAds.Get().ToList();
+            foreach (var banner in bannerAds)
+            {
+                banner.ImageUrl = _storage.BlobUrl + banner.ImageUrl;
+            }
             BlogPostUpdateGetVM model = new BlogPostUpdateGetVM
             {
                 Id = post.Id,
@@ -174,7 +185,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 Category = post.Category,
                 Tags = _unitOfWork.BlogPost.GetTagsByBlogPostId(postId),
                 SummaryContent = post.SummaryContent,
-                SeoUrl = post.SeoUrl
+                SeoUrl = post.SeoUrl,
+                BannerAds = bannerAds
             };
 
             return View(model);
