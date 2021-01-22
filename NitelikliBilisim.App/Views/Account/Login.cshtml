@@ -29,6 +29,10 @@
                     GİRİŞ <span class="colored-blue">YAP</span>
                 </div>
                 <form id="loginForm" class="login__content" action="giris-yap" method="post">
+                    @if (TempData["Message"]!=null)
+                    {
+                    <div>@TempData["Message"]</div>
+                    }
                     <div asp-validation-summary="All"></div>
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
