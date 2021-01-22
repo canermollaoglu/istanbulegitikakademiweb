@@ -50,17 +50,13 @@ namespace NitelikliBilisim.App
                 options.Password.RequireUppercase = false;
                 options.SignIn.RequireConfirmedEmail = true;
             })
+                .AddErrorDescriber<CustomIdentityDescriber>()
                 .AddEntityFrameworkStores<NbDataContext>()
-                //.AddUserStore<UserStore<ApplicationUser, ApplicationRole, NbDataContext>>()
-                //.AddRoleStore<RoleStore<ApplicationRole, NbDataContext>>()
-                //.AddUserManager<UserManager<ApplicationUser>>()
-                //.AddRoleManager<RoleManager<ApplicationRole>>()
                 .AddDefaultTokenProviders();
 
             services.AddScoped<UnitOfWork>();
             services.AddScoped<ComingSoonActionFilter>();
             services.AddApplicationServices(this.Configuration);
-            //services.AddControllers(options => { options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()); });
             services.AddSession(options =>
             {
                 options.Cookie.IsEssential = true;

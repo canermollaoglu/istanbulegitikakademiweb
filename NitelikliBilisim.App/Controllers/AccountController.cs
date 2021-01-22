@@ -252,6 +252,7 @@ namespace NitelikliBilisim.App.Controllers
                 var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
                 if (result.Succeeded)
                 {
+                    TempData["Message"] = "Yeni şifreniz ile giriş yapabilirsiniz.";
                     return RedirectToAction("Login","Account");
                 }
                 foreach (var error in result.Errors)
