@@ -49,6 +49,7 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.Education
 
         public void SendVmToUpdate(UpdatePostVm data)
         {
+           // var education = _unitOfWork.Education.GetById(data.EducationId);
             _unitOfWork.Education.Update(new Core.Entities.Education
             {
                 Id = data.EducationId,
@@ -61,7 +62,8 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.Education
                 Name = data.Name,
                 SeoUrl = data.SeoUrl,
                 VideoUrl = data.VideoUrl,
-                IsActive = data.IsActive
+                IsActive = data.IsActive,
+                IsFeaturedEducation = data.IsFeauredEducation
             }, data.Tags);
         }
 

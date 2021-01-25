@@ -70,7 +70,8 @@ function btnSave_onClick() {
         EducationLevel: selectLevels.options[selectLevels.selectedIndex].value,
         CategoryId: $("#_categories-id").val(),
         Tags: tags,
-        IsActive: !isActive
+        IsActive: !isActive,
+        IsFeauredEducation: $("#input-is-featured").is(':checked')
     };
     var tokenVerifier = new SecuritySupport.TokenVerifier();
     data = tokenVerifier.addToken("form-update-education", data);
