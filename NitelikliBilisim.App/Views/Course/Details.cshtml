@@ -105,8 +105,7 @@
                                 <div class="lesson-detail__info-cnt">
                                     <span class="lesson-detail__info-txt">Eğitim Tarihi</span>
                                     <span class="lesson-detail__info-title js-data-change-tarih">
-                                        10 Mayıs
-                                        2020
+                                      
                                     </span>
                                 </div>
                             </div>
@@ -168,8 +167,7 @@
                         <div class="lesson-detail__info-cnt">
                             <span class="lesson-detail__info-txt">Eğitim Tarihi</span>
                             <span class="lesson-detail__info-title js-data-change-tarih">
-                                10 Mayıs
-                                2020
+                                
                             </span>
                         </div>
                     </div>
@@ -285,7 +283,7 @@
                                         </svg>
                                     </span>
                                     <div class="js-data-change-adres">
-                                        <div>Acıbadem, Acıbadem Cd. No:190, 34746 Üsküdar/İstanbul</div>
+                                        <div></div>
                                     </div>
                                     <a href="#" target="_blank" class="js-data-change-location-url">
                                         <div class="lesson-detail__card-footer-inner">
@@ -615,11 +613,11 @@
                                 <div class="lesson-detail__card-priceright">
                                     <div class="lesson-detail__card-price">
                                         <span class="lesson-detail__card-oldprice">
-                                            <i class="js-data-change-eskifiyat">0,00</i><span> TL</span>
+                                            <div class="js-data-change-eskifiyat"></div>
 
                                         </span>
                                         <span class="lesson-detail__card-newprice">
-                                            <div class="js-data-change-fiyat">0,00 </div>
+                                            <div class="js-data-change-fiyat"> </div>
 
                                         </span>
                                     </div>
@@ -688,7 +686,7 @@
 <div class="lesson-detail__mobile-price">
     <div class="lesson-detail__card-price">
         <span class="lesson-detail__card-oldprice">
-            <i class="js-data-change-eskifiyat"> 0.00</i> TL
+            <div class="js-data-change-eskifiyat"> </div>
         </span>
         <span class="lesson-detail__card-newprice">
             <div class="js-data-change-fiyat">0,00</div>
@@ -831,7 +829,7 @@
             $('.js-data-change-tarih').text(group.startDateText);
             $('.js-data-change-saat').text();
             $('.lesson-detail__card-sale').text('%'+group.discountRate);
-            $('.js-data-change-eskifiyat').text(group.oldPriceText);
+            $('.js-data-change-eskifiyat').text(group.oldPriceText+ " TL");
             $('.js-data-change-fiyat').text(group.newPriceText+" TL");
             $('.js-data-change-adres').text(group.host.address);
             $('.js-data-change-teachers a').remove();

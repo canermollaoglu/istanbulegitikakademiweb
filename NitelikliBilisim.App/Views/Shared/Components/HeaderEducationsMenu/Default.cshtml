@@ -37,7 +37,7 @@
                         <p>
                             Şimdi kayıt olun, size özel eğitimleri kaçırmayın!
                         </p>
-                        <a href="" class="button button--light mt-2">
+                        <a asp-controller="Account" asp-action="Register" class="button button--light mt-2">
                             Üye Ol
                         </a>
                     </div>
@@ -58,7 +58,7 @@
                             @baseCategory.TotalEducationCount Eğitim
                         </div>
                         <div class="header__education-sub--top-right">
-                            <a href="#0">Tüm Eğitimler</a>
+                            <a asp-controller="Course" asp-action="List" asp-route-catSeoUrl="@baseCategory.SeoUrl">Tüm Eğitimler</a>
                         </div>
                     </div>
 
