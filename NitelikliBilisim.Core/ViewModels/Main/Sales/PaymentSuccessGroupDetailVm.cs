@@ -10,6 +10,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Sales
     {
         public string ImagePath { get; set; }
         public string EducationName { get; set; }
-        public decimal Price { get; set; }
+        public string Price { get; set; }
     }
 }
