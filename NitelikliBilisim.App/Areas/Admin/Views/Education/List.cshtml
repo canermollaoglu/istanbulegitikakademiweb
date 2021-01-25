@@ -37,33 +37,14 @@
         /* fields */
         var confirmModalBuilder = new AlertSupport.ConfirmModalBuilder();
         var resultAlert = new AlertSupport.ResultAlert();
-        var levels = [];
         /* assignments */
         $(document).ready(document_onLoad);
 
         /* events */
         function document_onLoad() {
-            loadLevels();
+            createGrid();
         }
 
-
-        function loadLevels() {
-            $.ajax({
-                url: "/admin/get-education-levels/",
-                method: "get",
-                success: (res) => {
-                    if (res.isSuccess) {
-                        levels = res.data;
-                        createGrid();
-                    } else {
-                        resultAlert.display({
-                            success: false,
-                            errors: errors
-                        });
-                    }
-                }
-            });
-        }
         /*DataGrid*/
         function createGrid() {
             $("#education-grid").dxDataGrid({
@@ -174,11 +155,16 @@
                         caption: "Seviye",
                         dataField: "level",
                         lookup: {
-                            dataSource: levels,
+                            dataSource: {
+                                store: DevExpress.data.AspNet.createStore({
+                                    key: "key",
+                                    loadUrl: "../../api/education/get-levels"
+                                })
+                            },
                             displayExpr: "value",
                             valueExpr: "key"
                         },
-                        width:120
+                        width: 120
                     },
                     {
                         caption: "İşlem",

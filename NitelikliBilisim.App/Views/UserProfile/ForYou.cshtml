@@ -361,7 +361,7 @@
                 @left <span class="title--blue">@right</span>
             </h2>
 
-            <a href="" class="all-link">
+            <a asp-controller="Course" asp-action="List" class="all-link">
                 <span>Tüm Eğitimler</span>
                 <span class="icon-outer">
                     <svg class="icon">
@@ -395,7 +395,7 @@
                     </div>
                     <div class="lesson-list__select select-level mobile-fw">
                         <select class="js-level-select" id="orderType">
-                            <option value="" selected hidden disabled>Seviye</option>
+                            <option value="" selected hidden disabled>Sırala</option>
                             @foreach (var type in Model.OrderTypes)
                             {
                                 <option value="@type.Key">@type.Value</option>
@@ -779,12 +779,10 @@
         function changePage(page) {
             currentPage.val(page);
             loadEducations();
+            $('html, body').animate({
+                scrollTop: $(".lesson-list").offset().top
+            }, 1000);
         }
-
-
-        //SLİDER
-        
-        
 
     </script>
 }

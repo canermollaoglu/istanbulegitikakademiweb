@@ -25,25 +25,9 @@
         var commentStatus = [];
         /* events */
         function document_onLoad() {
-            loadCommentStatus();
+            createGrid();
         }
-        function loadCommentStatus() {
-            $.ajax({
-                url: "/admin/get-comment-status",
-                method: "get",
-                success: (res) => {
-                    if (res.isSuccess) {
-                        commentStatus = res.data;
-                        createGrid();
-                    } else {
-                        resultAlert.display({
-                            success: false,
-                            errors: errors
-                        });
-                    }
-                }
-            });
-        }
+       
         /*DataGrid*/
         function createGrid() {
             $("#education-comments-grid").dxDataGrid({
@@ -144,10 +128,15 @@
                         caption: "Durum",
                         dataField: "approvalStatus",
                         lookup: {
-                            dataSource: commentStatus,
+                            dataSource: {
+                                store: DevExpress.data.AspNet.createStore({
+                                    key: "key",
+                                    loadUrl: "../../api/educationcomment/get-comment-status"
+                                })
+                            },
                             displayExpr: "value",
-                            valueExpr:"key"
-                        }
+                            valueExpr: "key"
+                        },
                     }
                 ],
                 masterDetail: {

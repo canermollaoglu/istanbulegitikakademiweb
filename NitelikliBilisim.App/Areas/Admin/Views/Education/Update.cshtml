@@ -102,6 +102,17 @@
                     <input type="text" class="form-control" placeholder="Youtube video Id" id="input-video-id" value="@Model.Education.VideoUrl" />
                 </div>
             </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    @{var isFeatured = Model.Education.IsFeaturedEducation ? "checked" : "";}
+                    <label>Öne Çıkar</label>
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input type="checkbox"  class="form-check-input" name="optcheck" id="input-is-featured" @isFeatured>Öne Çıkar
+                        </label>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="row">
             <div class="col-md-6">

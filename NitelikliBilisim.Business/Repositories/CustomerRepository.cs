@@ -34,7 +34,7 @@ namespace NitelikliBilisim.Business.Repositories
                             Surname = user.Surname,
                             Email = user.Email,
                             PhoneNumber = user.PhoneNumber,
-                            Job = EnumHelpers.GetDescription(student.Job),
+                            Job = student.Job,
                             IsNbuyStudent = student.IsNbuyStudent,
                             NbuyCategory = userEducationCategory.Name
                         }

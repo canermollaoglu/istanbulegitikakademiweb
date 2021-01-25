@@ -141,9 +141,33 @@ namespace NitelikliBilisim.Business.Repositories
         {
             var educations = _context.Educations.Where(x => x.IsActive).ToList();
             List<EducationPoint> retVal = new List<EducationPoint>();
-            retVal.AddRange(criterionBased);
-            retVal.AddRange(userActionBased);
-            retVal = retVal.GroupBy(x => x.SeoUrl).Select(y => new EducationPoint { SeoUrl = y.Key, Point = Math.Round(y.Sum(x => x.Point),2),Education=educations.First(x=>x.SeoUrl == y.Key) }).ToList();
+            List<EducationPoint> totalPoints = new List<EducationPoint>();
+
+            totalPoints.AddRange(criterionBased);
+            totalPoints.AddRange(userActionBased);
+
+            foreach (var info in totalPoints)
+            {
+                if (!educations.Any(x => x.SeoUrl == info.SeoUrl))
+                    continue;
+
+                if (retVal.Any(x => x.SeoUrl == info.SeoUrl))
+                {
+                    retVal.First(x => x.SeoUrl == info.SeoUrl).Point += info.Point;
+                }
+                else
+                {
+                    retVal.Add(new EducationPoint()
+                    {
+                        SeoUrl = info.SeoUrl,
+                        Point = info.Point
+                    });
+                }
+
+            }
+
+
+            //retVal = retVal.GroupBy(x => x.SeoUrl).Select(y => new EducationPoint { SeoUrl = y.Key, Point = Math.Round(y.Sum(x => x.Point),2),Education=educations.FirstOrDefault(x=>x.SeoUrl == y.Key) }).ToList();
             return retVal;
         }
 
@@ -726,62 +750,6 @@ namespace NitelikliBilisim.Business.Repositories
 
             model.ViewingEducations = GetViewingEducations(result);
             model.SearchedEducations = GetSearchedEducations(result, userId);
-            #region Clear
-            //if (result.IsValid && result.Documents != null && result.Documents.Count > 0)
-            //{
-            //    foreach (var log in result.Documents)
-            //    {//Aranılarak incelenmiş eğitimler
-            //        if (log.Parameters != null && log.Parameters.Any(x => x.ParameterName == "searchKey"))
-            //        {
-            //            string key = JsonConvert.DeserializeObject<string>(log.Parameters.First(x => x.ParameterName == "searchKey").ParameterValue);
-            //            int totalKeySearched = getAllSearching[key];
-
-            //            Guid Id = JsonConvert.DeserializeObject<Guid>(log.Parameters.First(x => x.ParameterName == "courseId").ParameterValue);
-            //            if (model.SearchedEducations.Any(x => x.Key == key))
-            //            {
-            //                var eDetail = new EducationDetail();
-            //                eDetail.Point = CalculateSearchedKeyPoint(totalKeySearched, model.TotalEducationSearchCount);
-            //                eDetail.Id = Id;
-            //                SearchedEducationList ed = model.SearchedEducations.First(x => x.Key == key);
-            //                ed.ViewedCount++;
-            //                ed.EducationDetails.Add(eDetail);
-            //            }
-            //            else
-            //            {
-            //                var eDetail = new EducationDetail();
-            //                eDetail.Point = CalculateSearchedKeyPoint(totalKeySearched, model.TotalEducationSearchCount);
-            //                eDetail.Id = Id;
-            //                var sE = new SearchedEducationList();
-            //                sE.Key = key;
-            //                sE.ViewedCount = 1;
-            //                sE.EducationDetails.Add(eDetail);
-            //                model.SearchedEducations.Add(sE);
-            //            }
-            //        }
-            //        //Direkt incelenmiş eğitimler
-            //        if (log.Parameters != null && log.Parameters.Any(x => x.ParameterName == "courseId") && !log.Parameters.Any(x => x.ParameterName == "searchKey"))
-            //        {
-            //            Guid Id = JsonConvert.DeserializeObject<Guid>(log.Parameters.First(x => x.ParameterName == "courseId").ParameterValue);
-            //            if (model.ViewingEducations.Any(x => x.EducationId == Id))
-            //            {
-            //                ViewingEducation current = model.ViewingEducations.First(x => x.EducationId == Id);
-            //                current.ViewingCount++;
-            //                current.Point = CalculateViewedEducationPoint(current.ViewingCount, totalEducationViewCount);
-            //            }
-            //            else
-            //            {
-            //                model.ViewingEducations.Add(new ViewingEducation
-            //                {
-            //                    EducationId = Id,
-            //                    ViewingCount = 1,
-            //                    Point = CalculateViewedEducationPoint(1, totalEducationViewCount)
-            //                });
-            //            }
-            //        }
-
-            //    }
-            //}
-            #endregion
             #endregion
 
             model.TotalEducationViewCount = totalEducationViewCount;
@@ -897,6 +865,8 @@ namespace NitelikliBilisim.Business.Repositories
             List<EducationPoint> retVal = new List<EducationPoint>();
             List<EducationPoint> viewingEducationPoints = new List<EducationPoint>();
             List<EducationPoint> searchedEducationPoints = new List<EducationPoint>();
+            List<EducationPoint> totalPoints = new List<EducationPoint>();
+
             var educations = _context.Educations.Where(x => x.IsActive).ToList();
             //İncelenmiş eğitimler ve puanları
             foreach (var education in viewingEducations)
@@ -932,9 +902,31 @@ namespace NitelikliBilisim.Business.Repositories
                 }
             }
 
-            retVal.AddRange(viewingEducationPoints);
-            retVal.AddRange(searchedEducationPoints);
-            retVal = retVal.GroupBy(x => x.SeoUrl).Select(y => new EducationPoint { SeoUrl = y.Key,Education = educations.First(x=>x.SeoUrl ==y.Key), Point = (y.Sum(x => x.Point)) / 2 }).ToList();
+
+            totalPoints.AddRange(viewingEducationPoints);
+            totalPoints.AddRange(searchedEducationPoints);
+
+            foreach (var info in totalPoints)
+            {
+                if (!educations.Any(x => x.SeoUrl == info.SeoUrl))
+                    continue;
+
+                if (retVal.Any(x => x.SeoUrl == info.SeoUrl))
+                {
+                    retVal.First(x => x.SeoUrl == info.SeoUrl).Point += info.Point / 2;
+                }
+                else
+                {
+                    retVal.Add(new EducationPoint()
+                    {
+                        SeoUrl = info.SeoUrl,
+                        Point = info.Point / 2
+                    });
+                }
+
+            }
+
+            //retVal = totalPoints.GroupBy(x => x.SeoUrl).Select(y => new EducationPoint { SeoUrl = y.Key,Education = educations.FirstOrDefault(x=>x.SeoUrl ==y.Key), Point = (y.Sum(x => x.Point)) / 2 }).ToList();
 
             return retVal;
         }

@@ -1,11 +1,13 @@
 ﻿using DevExtreme.AspNet.Data;
 using Microsoft.AspNetCore.Mvc;
+using MUsefulMethods;
 using Nest;
 using Newtonsoft.Json;
 using NitelikliBilisim.App.Extensions;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.Enums.user_details;
 using NitelikliBilisim.Core.ESOptions.ESEntities;
-using System;
+using NitelikliBilisim.Core.ViewModels.HelperVM;
 using System.Linq;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers.WebAPI
@@ -30,7 +32,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.WebAPI
         }
         [HttpGet]
         [Route("get-student-log-list")]
-        public IActionResult Logs(DataSourceLoadOptions loadOptions,string studentId)
+        public IActionResult Logs(DataSourceLoadOptions loadOptions, string studentId)
         {
             var count = _elasticClient.Count<TransactionLog>(s => s.Query
             (q => q.Term(t => t.UserId, studentId)));
@@ -98,6 +100,15 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.WebAPI
             var data = _unitOfWork.Customer.GetStudentUsedPromotions(studentId);
             return Ok(DataSourceLoader.Load(data, loadOptions));
 
+        }
+
+        [HttpGet]
+        [Route("get-jobs")]
+        public IActionResult GetJobs()
+        {
+            EnumItemVm[] retVal = EnumHelpers.ToKeyValuePair<Jobs>().Select(x =>
+           new EnumItemVm { Key = x.Key, Value = x.Value }).ToArray();
+            return Ok(retVal);
         }
     }
 }
