@@ -137,8 +137,18 @@ function createGrid() {
             },
             {
                 caption: "Meslek",
-                dataField: "job"
-
+                dataField: "job",
+                lookup: {
+                    dataSource: {
+                        store: DevExpress.data.AspNet.createStore({
+                            key: "key",
+                            loadUrl: "../../api/student/get-jobs"
+                        })
+                    },
+                    displayExpr: "value",
+                    valueExpr: "key"
+                },
+                width:120
             },
             {
                 caption: "NBUY",

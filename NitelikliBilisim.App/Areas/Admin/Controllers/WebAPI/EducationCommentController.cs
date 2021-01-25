@@ -1,7 +1,10 @@
 ﻿using DevExtreme.AspNet.Data;
 using Microsoft.AspNetCore.Mvc;
+using MUsefulMethods;
 using NitelikliBilisim.App.Extensions;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.Enums.user_details;
+using NitelikliBilisim.Core.ViewModels.HelperVM;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +27,15 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.WebAPI
             loadOptions.PrimaryKey = new[] { "Id" };
             var data = _unitOfWork.EducationComment.GetEducationCommentsQueryable();
             return Ok(DataSourceLoader.Load(data, loadOptions));
+        }
+
+        [HttpGet]
+        [Route("get-comment-status")]
+        public IActionResult GetCommentStatus()
+        {
+            EnumItemVm[] retVal = EnumHelpers.ToKeyValuePair<CommentApprovalStatus>().Select(x =>
+           new EnumItemVm { Key = x.Key, Value = x.Value }).ToArray();
+            return Ok(retVal);
         }
     }
 }

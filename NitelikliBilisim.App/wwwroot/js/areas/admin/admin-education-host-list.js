@@ -3,7 +3,6 @@ var confirmModalBuilder = new AlertSupport.ConfirmModalBuilder();
 
 /* assignments */
 $(document).ready(document_onLoad);
-var cities = [];
 /* events */
 function document_onLoad() {
     confirmModalBuilder.buildModal({
@@ -13,7 +12,7 @@ function document_onLoad() {
         confirmText: "Evet, eminim",
         onConfirmClick: confirm_onClick
     });
-    loadCities();
+    createGrid();
 }
 
 function btnConfirmationModalTrigger_onClick(e) {
@@ -43,23 +42,6 @@ function confirm_onClick() {
 }
 
 
-function loadCities() {
-    $.ajax({
-        url: "/admin/get-host-city-enums/",
-        method: "get",
-        success: (res) => {
-            if (res.isSuccess) {
-                cities = res.data;
-                createGrid();
-            } else {
-                resultAlert.display({
-                    success: false,
-                    errors: errors
-                });
-            }
-        }
-    });
-}
 
 /*DataGrid*/
 function createGrid() {
@@ -138,9 +120,15 @@ function createGrid() {
                 caption: "Şehir",
                 dataField: "city",
                 lookup: {
-                    dataSource: cities,
+                    dataSource: {
+                        store: DevExpress.data.AspNet.createStore({
+                            key: "key",
+                            loadUrl: "../../api/educationgroup/host-cities"
+                        })
+                    },
                     displayExpr: "value",
-                    valueExpr: "key"
+                    valueExpr: "key",
+                    width: 120
                 },
                 width: 100
             },
