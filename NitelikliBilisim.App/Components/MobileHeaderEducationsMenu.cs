@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using System;
 
@@ -16,7 +17,7 @@ namespace NitelikliBilisim.App.Components
         }
         public IViewComponentResult Invoke()
         {
-            var menu = _memoryCache.GetOrCreate("headereducationsmenu", entry =>
+            var menu = _memoryCache.GetOrCreate(CacheKeyUtility.HeaderMenu, entry =>
             {
                 entry.SlidingExpiration = TimeSpan.FromDays(2);
                 return _unitOfWork.Education.GetHeaderEducationMenu();

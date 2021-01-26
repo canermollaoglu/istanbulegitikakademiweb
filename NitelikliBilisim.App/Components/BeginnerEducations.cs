@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using System;
 
@@ -17,14 +18,11 @@ namespace NitelikliBilisim.App.Components
 
         public IViewComponentResult Invoke()
         {
-            var model = _memoryCache.GetOrCreate("beginnerleveleducations", entry =>
+            var model = _memoryCache.GetOrCreate(CacheKeyUtility.BeginnerEducations, entry =>
             {
-                entry.SlidingExpiration = TimeSpan.FromDays(2);
+                entry.SlidingExpiration = TimeSpan.FromDays(1);
                 return _unitOfWork.Education.GetBeginnerEducations(5);
             });
-
-
-            //_unitOfWork.Education.GetBeginnerEducations(5);
             return View(model);
 
         }

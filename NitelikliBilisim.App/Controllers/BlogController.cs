@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Models;
+using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels.Main.Blog;
@@ -14,10 +16,12 @@ namespace NitelikliBilisim.App.Controllers
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly IStorageService _storageService;
-        public BlogController(UnitOfWork unitOfWork,IStorageService storageService)
+        private readonly IMemoryCache _memoryCache;
+        public BlogController(UnitOfWork unitOfWork,IStorageService storageService,IMemoryCache memoryCache)
         {
             _storageService = storageService;
             _unitOfWork = unitOfWork;
+            _memoryCache = memoryCache;
         }
 
         public IActionResult Index()
@@ -82,11 +86,23 @@ namespace NitelikliBilisim.App.Controllers
             BlogListVm model = new BlogListVm();
             model.CurrentCategorySeoUrl = c;
             model.SearchKey = sKey;
-            var categories = _unitOfWork.BlogCategory.GetListForBlogListPage();
+            var categories = _memoryCache.GetOrCreate(CacheKeyUtility.BlogCategories, entry =>
+            {
+                entry.SlidingExpiration = TimeSpan.FromDays(1);
+                return _unitOfWork.BlogCategory.GetListForBlogListPage();
+            });
             var currentC = categories.FirstOrDefault(x => x.SeoUrl == c);
-            model.Categories = categories;
+            
             model.CurrentCategory = currentC != null ? currentC.Name:null;
-            model.LastBlogPosts = _unitOfWork.BlogPost.LastBlogPosts(5);
+
+
+            model.Categories = categories;
+
+            model.LastBlogPosts = _memoryCache.GetOrCreate(CacheKeyUtility.BlogLastPosts, entry =>
+            {
+                entry.SlidingExpiration = TimeSpan.FromDays(1);
+                return _unitOfWork.BlogPost.LastBlogPosts(5);
+            });
             model.TotalBlogPostCount = _unitOfWork.BlogPost.TotalBlogPostCount();
             return View(model);
         }
