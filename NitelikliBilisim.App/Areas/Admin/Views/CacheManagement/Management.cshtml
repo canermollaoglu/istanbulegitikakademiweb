@@ -1,0 +1,99 @@
+﻿@model Dictionary<string, bool>
+
+@{
+    ViewData["Title"] = "Cache Yönetimi";
+}
+
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-table"></i> Cache Yönetimi
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="offset-md-2 col-md-8">
+                <div class="card-header">
+                    <i class="fa fa-table"></i> Cache Listesi
+                    <button type="button" title="Tümünü Ekle" class="btn btn-sm btn-success pull-right btn-add-cache"><i class="fa fa-plus"></i></button>
+                    <button type="button" title="Tümünü Sil" class="btn btn-sm btn-warning pull-right btn-clear-cache"><i class="fa fa-trash"></i></button>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <td>Cache Key</td>
+                                <td>İşlem</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var cache in Model)
+                            {
+                                <tr>
+                                    <td class="@(cache.Value==true ? "text-success font-weight-bold" : "text-danger font-weight-bold")">
+                                        @cache.Key
+                                    </td> 
+                                    <td>
+                                        @if (cache.Value)
+                                        {
+                                            <button type="button" data-key="@cache.Key" class="btn btn-sm btn-warning btn-clear-cache">Temizle</button>
+                                        }
+                                        else
+                                        {
+                                            <button type="button" data-key="@cache.Key" class="btn btn-sm btn-success btn-add-cache">Ekle</button>
+                                        }
+
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section postScripts{
+    <script>
+        var btnClearCache = $(".btn-clear-cache");
+        var btnAddCache = $(".btn-add-cache");
+
+
+        btnClearCache.on("click", btnClearCache_onClick);
+        btnAddCache.on("click", btnAddCache_onClick);
+
+
+        function btnClearCache_onClick() {
+            var key = $(this).data("key");
+            $.ajax({
+                url: "/admin/cachemanagement/removecache",
+                method: "post",
+                data: {data:key},
+                success: (res) => {
+                    if (res.isSuccess) {
+                        location.href = location.href;
+                    }
+                }
+            });
+        }
+
+        function btnAddCache_onClick() {
+            var key = $(this).data("key");
+            $.ajax({
+                url: "/admin/cachemanagement/addcache",
+                method: "post",
+                data: { data: key },
+                success: (res) => {
+                    if (res.isSuccess) {
+                        location.href = location.href;
+                    }
+                }
+            });
+        }
+    </script>
+}
+

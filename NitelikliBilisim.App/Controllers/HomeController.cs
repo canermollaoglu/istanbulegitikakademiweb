@@ -10,6 +10,7 @@ using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Managers;
 using NitelikliBilisim.App.Models;
+using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
@@ -62,27 +63,23 @@ namespace NitelikliBilisim.App.Controllers
         public IActionResult Index()
         {
             var model = new HomeIndexModel();
-            model.NBUYEducationCategories = _memoryCache.GetOrCreate("nbuycategories", entry =>
+            model.NBUYEducationCategories = _memoryCache.GetOrCreate(CacheKeyUtility.HomeNbuyCategories, entry =>
             {
                 entry.SlidingExpiration = TimeSpan.FromDays(1);
                 return _unitOfWork.EducationCategory.GetNBUYEducationCategories();
             });
 
-            model.EducationComments = _memoryCache.GetOrCreate("comments", entry =>
+            model.EducationComments = _memoryCache.GetOrCreate(CacheKeyUtility.HomeUserComments, entry =>
             {
                 entry.SlidingExpiration = TimeSpan.FromDays(1);
                 return _unitOfWork.EducationComment.GetHighlightComments(5);
             });
 
-            model.EducationSearchTags = _memoryCache.GetOrCreate("tags", entry =>
+            model.EducationSearchTags = _memoryCache.GetOrCreate(CacheKeyUtility.HomeEducationTags, entry =>
             {
                 entry.SlidingExpiration = TimeSpan.FromDays(1);
                 return _unitOfWork.Education.GetEducationSearchTags();
             });
-
-            //model.NBUYEducationCategories = _unitOfWork.EducationCategory.GetNBUYEducationCategories();
-            //model.EducationComments = _unitOfWork.EducationComment.GetHighlightComments(5);
-            //model.EducationSearchTags = _unitOfWork.Education.GetEducationSearchTags();
             model.HostCities = EnumHelpers.ToKeyValuePair<HostCity>();
 
             return View(model);
@@ -95,17 +92,7 @@ namespace NitelikliBilisim.App.Controllers
             return View();
         }
 
-        [Route("cache-test")]
-        public IActionResult ErrorTest()
-        {
-            DateTime date = _memoryCache.GetOrCreate("date", entry =>
-            {
-                entry.SlidingExpiration = TimeSpan.FromMinutes(30);
-                return DateTime.Now;
-            });
-            return Json(date);
-
-        }
+        
         [Route("gizlilik-sozlesmesi")]
         public IActionResult NonDisclosureAgreement()
         {

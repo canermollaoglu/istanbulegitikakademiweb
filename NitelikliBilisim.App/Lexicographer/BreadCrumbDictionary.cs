@@ -206,6 +206,11 @@ namespace NitelikliBilisim.App.Lexicographer
             _dictionary.Add("AdminBlogBannerAdUpdate",
             new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Blog Reklam Banner Düzenle", url: null) });
 
+            /*Cache Management*/
+            _dictionary.Add("AdminCacheManagement",
+            new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Cache Yönetimi", url: null) });
+
+
         }
 
         public static BreadCrumbItem[] ReadPart(string part)
