@@ -8,6 +8,7 @@ using NitelikliBilisim.Core.ViewModels.HelperVM;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
@@ -60,7 +61,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         {
             try
             {
-                _unitOfWork.EducationComment.SetCommentStatus(commentId, (CommentApprovalStatus)status);
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                _unitOfWork.EducationComment.SetCommentStatus(commentId, (CommentApprovalStatus)status,userId);
                 return Json(new ResponseModel
                 {
                     isSuccess = true

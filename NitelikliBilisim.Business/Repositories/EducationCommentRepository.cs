@@ -114,9 +114,14 @@ namespace NitelikliBilisim.Business.Repositories
             _context.SaveChanges();
         }
 
-        public void SetCommentStatus(Guid commentId, CommentApprovalStatus status)
+        public void SetCommentStatus(Guid commentId, CommentApprovalStatus status,string userId)
         {
             var comment = _context.EducationComments.First(x => x.Id == commentId);
+            if (status == CommentApprovalStatus.Approved)
+            {
+                comment.ApproverId = userId;
+                comment.ApprovalDate = DateTime.Now;
+            }
             comment.ApprovalStatus = status;
             _context.SaveChanges();
         }

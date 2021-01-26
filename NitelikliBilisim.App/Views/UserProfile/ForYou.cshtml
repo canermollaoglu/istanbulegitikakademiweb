@@ -10,12 +10,22 @@
             <div class="subheader__cnt">
                 <div class="subheader__txt-cnt">
                     <div class="subheader__title">@Model.EducationCategory</div>
-                    <div class="subheader__txt">
-                        Şuanda eğitiminizin <strong>@(Model.EducationWeek). haftasındasınız,</strong> eğitiminizin tamamlanmasına <strong>
-                            @(Model.LeftWeeks)
-                            hafta
-                        </strong> kalmıştır.
-                    </div>
+                    @if (Model.LeftWeeks > 0)
+                    {
+                        <div class="subheader__txt">
+                            Şuanda eğitiminizin <strong>@(Model.EducationWeek). haftasındasınız,</strong> eğitiminizin tamamlanmasına <strong>
+                                @(Model.LeftWeeks)
+                                hafta
+                            </strong> kalmıştır.
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="subheader__txt">
+                            Eğitiminiz <strong>tamamlanmıştır.</strong>
+                        </div>
+                    }
+
                 </div>
                 <div class="for-you__course-buttons">
                     <div class="for-you__course-btn">
