@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using MUsefulMethods;
 using Nest;
@@ -41,8 +42,9 @@ namespace NitelikliBilisim.App.Controllers
         private readonly IStorageService _storageService;
         private readonly IEmailSender _emailSender;
         private readonly IConfiguration _configuration;
+        private readonly IMemoryCache _memoryCache;
         private ISession _session => _httpContextAccessor.HttpContext.Session;
-        public HomeController(IConfiguration configuration, IEmailSender emailSender, IWebHostEnvironment hostingEnvironment, UnitOfWork unitOfWork, RoleManager<ApplicationRole> roleManager, IElasticClient elasticClient, IHttpContextAccessor httpContextAccessor, IStorageService storageService)
+        public HomeController(IMemoryCache memoryCache, IConfiguration configuration, IEmailSender emailSender, IWebHostEnvironment hostingEnvironment, UnitOfWork unitOfWork, RoleManager<ApplicationRole> roleManager, IElasticClient elasticClient, IHttpContextAccessor httpContextAccessor, IStorageService storageService)
         {
             _configuration = configuration;
             _hostingEnvironment = hostingEnvironment;
@@ -53,15 +55,34 @@ namespace NitelikliBilisim.App.Controllers
             _storageService = storageService;
             _unitOfWork = unitOfWork;
             _emailSender = emailSender;
+            _memoryCache = memoryCache;
         }
 
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
         public IActionResult Index()
         {
             var model = new HomeIndexModel();
-            model.NBUYEducationCategories = _unitOfWork.EducationCategory.GetNBUYEducationCategories();
-            model.EducationComments = _unitOfWork.EducationComment.GetHighlightComments(5);
-            model.EducationSearchTags = _unitOfWork.Education.GetEducationSearchTags();
+            model.NBUYEducationCategories = _memoryCache.GetOrCreate("nbuycategories", entry =>
+            {
+                entry.SlidingExpiration = TimeSpan.FromDays(1);
+                return _unitOfWork.EducationCategory.GetNBUYEducationCategories();
+            });
+
+            model.EducationComments = _memoryCache.GetOrCreate("comments", entry =>
+            {
+                entry.SlidingExpiration = TimeSpan.FromDays(1);
+                return _unitOfWork.EducationComment.GetHighlightComments(5);
+            });
+
+            model.EducationSearchTags = _memoryCache.GetOrCreate("tags", entry =>
+            {
+                entry.SlidingExpiration = TimeSpan.FromDays(1);
+                return _unitOfWork.Education.GetEducationSearchTags();
+            });
+
+            //model.NBUYEducationCategories = _unitOfWork.EducationCategory.GetNBUYEducationCategories();
+            //model.EducationComments = _unitOfWork.EducationComment.GetHighlightComments(5);
+            //model.EducationSearchTags = _unitOfWork.Education.GetEducationSearchTags();
             model.HostCities = EnumHelpers.ToKeyValuePair<HostCity>();
 
             return View(model);
@@ -74,9 +95,16 @@ namespace NitelikliBilisim.App.Controllers
             return View();
         }
 
+        [Route("cache-test")]
         public IActionResult ErrorTest()
         {
-            throw new System.Exception("Test Exception!");
+            DateTime date = _memoryCache.GetOrCreate("date", entry =>
+            {
+                entry.SlidingExpiration = TimeSpan.FromMinutes(30);
+                return DateTime.Now;
+            });
+            return Json(date);
+
         }
         [Route("gizlilik-sozlesmesi")]
         public IActionResult NonDisclosureAgreement()
@@ -137,7 +165,7 @@ namespace NitelikliBilisim.App.Controllers
 
                 string htmlBody = "<b>Konu :</b>" + EnumHelpers.GetDescription(model.ContactFormSubject) + "<br/>";
                 htmlBody += "<b>Ad Soyad :</b>" + model.Name + "<br/>";
-                htmlBody += "<b>Telefon :</b>" +  model.Phone + "<br/>";
+                htmlBody += "<b>Telefon :</b>" + model.Phone + "<br/>";
                 htmlBody += "<b>E-Posta :</b>" + model.Email + "<br/>";
                 htmlBody += "<b>Mesaj :</b>" + model.Content + "<br/>";
                 string[] adminEmails = _configuration.GetSection("SiteGeneralOptions").GetSection("AdminEmails").Value.Split(";");
@@ -486,7 +514,13 @@ namespace NitelikliBilisim.App.Controllers
         {
             try
             {
-                var list = _unitOfWork.Suggestions.GetWizardFirstStepData();
+
+                var list = _memoryCache.GetOrCreate("wizardfirststep", entry =>
+                {
+                    entry.SlidingExpiration = TimeSpan.FromDays(1);
+                    return _unitOfWork.Suggestions.GetWizardFirstStepData();
+                });
+                
                 return Json(new ResponseData
                 {
                     Success = true,

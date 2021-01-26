@@ -69,6 +69,7 @@ namespace NitelikliBilisim.App
             services.AddMvc();
             services.AddControllersWithViews().AddSessionStateTempDataProvider().AddRazorRuntimeCompilation();
             services.AddControllers();
+            services.AddMemoryCache();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
