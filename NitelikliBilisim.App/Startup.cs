@@ -80,23 +80,15 @@ namespace NitelikliBilisim.App
             CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
             CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
-            app.Use(async (context, next) =>
-            {
-                await next();
-                if (context.Response.StatusCode == 404)
-                {
-                    context.Request.Path = "/404";
-                    await next();
-                }
-            });
-
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                // app.UseDeveloperExceptionPage();
+                //app.UseExceptionHandler("/error");
+                app.UseStatusCodePagesWithReExecute("/Error/{0}");
             }
             else
             {
-                app.UseExceptionHandler("/error");
+                app.UseStatusCodePagesWithReExecute("/Error/{0}");
                 app.UseHsts();
             }
 

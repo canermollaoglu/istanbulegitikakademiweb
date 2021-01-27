@@ -3,6 +3,8 @@
 @model NitelikliBilisim.Core.ViewModels.Main.Course.CourseDetailsVm
 @{
     ViewData["Title"] = $"{Model.Details.Base.Name} Kurs Detayları";
+    ViewData["MetaDescription"] = Model.Details.Base.Description;
+    ViewData["MetaKeywords"] = Model.Details.Tags;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -663,7 +665,7 @@
         <div class="flex-center mb-4">
             <h2 class="title title-section">Popüler <span class="title--blue">Proje Eğitimleri</span></h2>
 
-            <a href="" class="all-link">
+            <a asp-controller="Course" asp-action="List" class="all-link">
                 <span>Tüm Eğitimler</span>
                 <span class="icon-outer">
                     <svg class="icon">

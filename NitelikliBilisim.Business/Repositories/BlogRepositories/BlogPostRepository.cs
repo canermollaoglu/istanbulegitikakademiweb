@@ -169,12 +169,15 @@ namespace NitelikliBilisim.Business.Repositories.BlogRepositories
         public BlogPostGetDetailVm GetPostBySeoUrl(string seoUrl)
         {
             var post = _context.BlogPosts.First(x => x.SeoUrl == seoUrl);
+            var tags = _context.Bridge_BlogPostTags.Include(x => x.BlogTag).Where(x => x.Id == post.Id).Select(x => x.BlogTag.Name).ToList();
             var model = new BlogPostGetDetailVm()
             {
                 Id = post.Id,
                 Content = post.Content,
                 FeaturedImageUrl = post.FeaturedImageUrl,
-                Title = post.Title
+                Title = post.Title,
+                Summary = post.SummaryContent,
+                Tags = string.Join(',', tags)
             };
             return model;
         }

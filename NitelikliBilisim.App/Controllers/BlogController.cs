@@ -37,7 +37,7 @@ namespace NitelikliBilisim.App.Controllers
                 return Redirect("/");
             var checkBlogPost = _unitOfWork.BlogPost.CheckBlogBySeoUrl(seoUrl);
             if (!checkBlogPost)
-                return NotFound();
+                return RedirectToAction("PageNotFound", "Error");
 
             try
             {

@@ -33,6 +33,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         }
 
         [HttpGet]
+        [Route("/admin/blog/liste")]
         public IActionResult List()
         {
             ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminBlogPostList");
@@ -40,6 +41,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         }
 
         [HttpGet]
+        [Route("/admin/blog/onizle")]
         public IActionResult Preview(Guid postId)
         {
             ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminBlogPostView");
@@ -84,6 +86,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         }
 
         [HttpGet]
+        [Route("/admin/blog/yazi-ekle")]
         public IActionResult Add()
         {
             ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminBlogPostAdd");
@@ -166,6 +169,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
 
         [HttpGet]
+        [Route("/admin/blog/yazi-guncelle")]
         public IActionResult Update(Guid postId)
         {
             ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminBlogPostUpdate");

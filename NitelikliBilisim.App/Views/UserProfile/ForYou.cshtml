@@ -666,7 +666,7 @@
                             </span>
 
                             <span class="card__money">
-                                <a href="/${e.base.categorySeoUrl}/${e.base.seoUrl}" class="button button-fw">
+                                <a href="/egitimler/${e.base.categorySeoUrl}/${e.base.seoUrl}" class="button button-fw">
                                     <div class="button-txt"> İncele </div>
                                 </a>
                             </span>
@@ -707,7 +707,7 @@
                 success: (res) => {
                     lessonsContent.html("");
                     $.each(res.data.educations, function (index, e) {
-                        var education = `<a href="/${e.cSeo}/${e.seo}" class="lesson-list__item">
+                        var education = `<a href="/egitimler/${e.cSeo}/${e.seo}" class="lesson-list__item">
                                                 <div class="lesson-list__item-img">
                                                     <img src="${e.imagePath}" alt="">
                                                 </div>

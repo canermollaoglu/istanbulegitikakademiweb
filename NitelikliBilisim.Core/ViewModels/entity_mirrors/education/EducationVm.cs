@@ -22,6 +22,7 @@ namespace NitelikliBilisim.Core.ViewModels
         public int TotalDuration { get; set; }
         public string CurrentUserName { get; set; }
         public string CurrentUserJob { get; set; }
+        public string Tags { get; set; }
     }
     public class EducationBaseVm
     {

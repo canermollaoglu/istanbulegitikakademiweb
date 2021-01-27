@@ -12,5 +12,7 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Blog
         public string Content { get; set; }
         public string FeaturedImageUrl { get; set; }
         public string Title { get; set; }
+        public string Summary { get; set; }
+        public string Tags { get; set; }
     }
 }

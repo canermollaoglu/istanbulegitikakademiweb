@@ -761,7 +761,8 @@ namespace NitelikliBilisim.Business.Repositories
                     EducationId = education.Id,
                     FileUrl = x.FileUrl,
                     MediaType = x.MediaType
-                }).ToList()
+                }).ToList(),
+                Tags = string.Join(',',Context.Bridge_EducationTags.Include(x => x.Tag).Where(x => x.Id2 == education.Id).Select(x => x.Tag.Name).ToList())
             };
             if (comments.Count > 0)
             {

@@ -187,7 +187,7 @@ function createGrid() {
             caption: "Yönet",
             cellTemplate: function (container, options) {
                 var current = options.data;
-                $(`<a title="Düzenle" class="btn btn-primary btn-sm" href="/admin/blogcategory/update?categoryId=${current.id}">Güncelle</a>`)
+                $(`<a title="Düzenle" class="btn btn-primary btn-sm" href="/admin/blog/kategori-guncelle?categoryId=${current.id}">Güncelle</a>`)
                     .appendTo(container);
                 $(`<a title="Sil" href="#" class="btn btn-danger btn-sm btn-confirmation-modal-trigger" data-url="/admin/blogcategory/delete?categoryId=${current.id}" style="cursor:pointer;">Sil</a>`)
                     .appendTo(container);

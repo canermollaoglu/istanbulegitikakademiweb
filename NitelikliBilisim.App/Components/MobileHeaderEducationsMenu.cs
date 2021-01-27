@@ -19,7 +19,7 @@ namespace NitelikliBilisim.App.Components
         {
             var menu = _memoryCache.GetOrCreate(CacheKeyUtility.HeaderMenu, entry =>
             {
-                entry.SlidingExpiration = TimeSpan.FromDays(2);
+                entry.SlidingExpiration = TimeSpan.FromDays(1);
                 return _unitOfWork.Education.GetHeaderEducationMenu();
             });
             return View(menu);
