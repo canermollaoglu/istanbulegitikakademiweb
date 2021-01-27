@@ -20,7 +20,7 @@ namespace NitelikliBilisim.App.Components
         {
             var model = _memoryCache.GetOrCreate(CacheKeyUtility.PopularEducations, entry =>
             {
-                entry.SlidingExpiration = TimeSpan.FromDays(2);
+                entry.SlidingExpiration = TimeSpan.FromDays(1);
                 return _unitOfWork.Education.GetPopularEducations(5);
             });
             return View(model);
