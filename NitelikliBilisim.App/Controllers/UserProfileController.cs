@@ -26,6 +26,9 @@ using System.IO.Compression;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -211,9 +214,18 @@ namespace NitelikliBilisim.App.Controllers
         {
             try
             {
+                var dbPath = "";
                 var user = await _userManager.GetUserAsync(HttpContext.User);
                 var fileName = StringHelpers.FormatForTag($"{user.Name} {user.Surname}");
-                var dbPath = await _storageService.UploadFile(ProfileImage.OpenReadStream(), $"{fileName}-{ProfileImage.FileName}", "user-avatars");
+                using(var output = new MemoryStream())
+                using (SixLabors.ImageSharp.Image image = SixLabors.ImageSharp.Image.Load(ProfileImage.OpenReadStream()))
+                {
+                    image.Mutate(x => x.Resize(250, 250));
+                    image.SaveAsJpeg(output);
+                    output.Position = 0;
+                    dbPath = await _storageService.UploadFile(output, $"{fileName}-{ProfileImage.FileName}", "user-avatars");
+                }
+
                 user.AvatarPath = dbPath;
                 await _userManager.UpdateAsync(user);
                 TempData["Success"] = "Profil resminiz başarıyla güncellendi!";
