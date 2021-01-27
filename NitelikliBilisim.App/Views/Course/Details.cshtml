@@ -3,6 +3,8 @@
 @model NitelikliBilisim.Core.ViewModels.Main.Course.CourseDetailsVm
 @{
     ViewData["Title"] = $"{Model.Details.Base.Name} Kurs Detayları";
+    ViewData["MetaDescription"] = Model.Details.Base.Description;
+    ViewData["MetaKeywords"] = Model.Details.Tags;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
