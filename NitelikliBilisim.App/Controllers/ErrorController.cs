@@ -1,17 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using NitelikliBilisim.App.Controllers.Base;
 
 namespace NitelikliBilisim.App.Controllers
 {
-    public class ErrorController : Controller
+    public class ErrorController : BaseController
     {
-        [Route("error")]
-        public IActionResult Error()
+        
+        [Route("Error/{statusCode}")]
+        public IActionResult ErrorUI(int statusCode)
         {
-            return View("ErrorPage");
+            if (statusCode == 404)
+            {
+                return RedirectToAction(nameof(PageNotFound));
+            }
+            return View();
         }
-        [Route("404")]
-        public IActionResult PageNotFound()
-        {
+        [Route("sayfa-bulunamadi")]
+        public IActionResult PageNotFound() {
+
             return View();
         }
     }

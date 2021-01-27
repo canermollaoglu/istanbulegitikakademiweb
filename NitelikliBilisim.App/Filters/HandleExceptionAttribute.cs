@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Configuration;
 using Nest;
 using NitelikliBilisim.App.Utility;
+using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.ESOptions.ESEntities;
 using NitelikliBilisim.Notificator.Services;
 using System;
@@ -49,7 +51,6 @@ namespace NitelikliBilisim.App.Filters
             if (string.IsNullOrEmpty(eInfo.InnerException))
                 mailBody += $"<b>InnerException:</b>{eInfo.InnerException}<br>";
 
-
             //Mail Log
             _emailSender.SendAsync(new Core.ComplexTypes.EmailMessage
             {
@@ -57,11 +58,34 @@ namespace NitelikliBilisim.App.Filters
                 Subject = $"Nitelikli Bilişim {server} Hata {DateTime.Now:F}",
                 Contacts = adminEmails.Split(";")
             });
-
-
-            //EsInsert
+            /*ES INSERT*/
             CheckExceptionLogIndex();
             var response = _elasticClient.IndexDocument(eInfo);
+
+
+            /*--------*/
+            if (!IsAjaxRequest(context.HttpContext.Request))
+            {
+                context.ExceptionHandled = true;
+                context.HttpContext.Response.StatusCode = 500;
+                context.Result = new ViewResult()
+                {
+                    ViewName = "Error"
+                };
+            }
+            else
+            {
+                context.ExceptionHandled = true;
+                context.HttpContext.Response.StatusCode = 500;
+                context.Result = new JsonResult(
+                    new ResponseData
+                    {
+                        Success = false,
+                        Message = "Beklenmeyen bir hata oluştu! Biz bundan haberdarız ve çalışıyoruz."
+                    });
+            }
+            
+            /*---------*/
         }
 
 

@@ -91,7 +91,7 @@ namespace NitelikliBilisim.App.Controllers
                 return Redirect("/");
             var checkEducation = _unitOfWork.Education.CheckEducationBySeoUrl(seoUrl);
             if (!checkEducation)
-                return NotFound();
+                return RedirectToAction("PageNotFound", "Error");
 
             var educationDetails = _unitOfWork.Education.GetEducation(seoUrl: seoUrl);
             var educators = _unitOfWork.Bridge_EducationEducator.GetAssignedEducators(educationDetails.Base.Id);
