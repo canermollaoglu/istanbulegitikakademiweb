@@ -141,9 +141,9 @@ function createGrid() {
                 cellTemplate: function (container, options) {
                     var current = options.data;
                     console.log(current);
-                    $(`<a title="Önizle" class="btn btn-outline-primary btn-sm" href="/admin/blogpost/preview?postId=${current.id}"><i class="fa fa-eye"></i></a>`)
+                    $(`<a title="Önizle" class="btn btn-outline-primary btn-sm" href="/admin/blog/onizle?postId=${current.id}"><i class="fa fa-eye"></i></a>`)
                         .appendTo(container);
-                    $(`<a title="Düzenle" class="btn btn-outline-warning btn-sm" href="/admin/blogpost/update?postId=${current.id}"><i class="fa fa-edit"></i></a>`)
+                    $(`<a title="Düzenle" class="btn btn-outline-warning btn-sm" href="/admin/blog/yazi-guncelle?postId=${current.id}"><i class="fa fa-edit"></i></a>`)
                         .appendTo(container);
                     if (current.isHighLight) {
                         $(`<button type="button" title="Öne çıkarılanlardan kaldır."  class="btn btn-outline-warning btn-sm" onClick="toggleHighLight('${current.id}')" style="cursor:pointer;"><i class="fa fa-thumbs-o-down"></i></button>`)

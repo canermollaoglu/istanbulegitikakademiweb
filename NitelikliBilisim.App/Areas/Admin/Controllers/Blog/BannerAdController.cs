@@ -36,7 +36,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Blog
             return View();
         }
 
-
+        [Route("admin/blog/banner-ekle")]
         public IActionResult Add()
         {
             ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminBlogBannerAdAdd");
@@ -93,6 +93,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Blog
         }
 
         [HttpGet]
+        [Route("admin/blog/banner-guncelle")]
         public IActionResult Update(Guid bannerAdId)
         {
             ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminBlogBannerAdUpdate");

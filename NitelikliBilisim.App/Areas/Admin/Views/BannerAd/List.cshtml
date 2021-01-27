@@ -172,7 +172,7 @@
                         caption: "Yönet",
                         cellTemplate: function (container, options) {
                             var current = options.data;
-                            $(`<a title="Düzenle" class="btn btn-outline-warning btn-sm" href="/admin/bannerad/update?bannerAdId=${current.id}" style="cursor:pointer;"><i class="fa fa-edit"></i></a>`)
+                            $(`<a title="Düzenle" class="btn btn-outline-warning btn-sm" href="/admin/blog/banner-guncelle?bannerAdId=${current.id}" style="cursor:pointer;"><i class="fa fa-edit"></i></a>`)
                                 .appendTo(container);
                             $(`<a title="Sil" class="btn btn-outline-danger btn-sm btn-confirmation-modal-trigger" data-url="/admin/bannerad/delete?bannerAdId=${current.id}" style="cursor:pointer;"><i class="fa fa-trash"></i></a>`)
                                 .appendTo(container);

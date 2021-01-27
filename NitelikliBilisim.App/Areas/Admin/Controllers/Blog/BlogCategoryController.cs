@@ -17,7 +17,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Blog
         {
             _unitOfWork = unitOfWork;
         }
-
+        [Route("/admin/blog/kategori-listesi")]
         public IActionResult List()
         {
             ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminBlogCategoryList");
@@ -89,11 +89,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Blog
         }
 
         [HttpGet]
+        [Route("/admin/blog/kategori-guncelle")]
         public IActionResult Update(Guid? categoryId)
         {
             ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminBlogCategoryUpdate");
             if (categoryId == null)
-                return Redirect("/admin/blogcategory/list");
+                return Redirect("/admin/blog/kategori-listesi");
             var category = _unitOfWork.BlogCategory.GetById(categoryId.Value);
             return View(category);
         }

@@ -17,6 +17,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Blog
         {
             _unitOfWork = unitOfWork;
         }
+        [Route("/admin/blog/etiket-listesi")]
         public IActionResult List()
         {
             ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminBlogTagList");
