@@ -84,7 +84,7 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
-        [Route("{catSeoUrl}/{seoUrl}")]
+        [Route("egitimler/{catSeoUrl}/{seoUrl}")]
         public async Task<IActionResult> Details(string seoUrl, string searchKey)
         {
             if (string.IsNullOrEmpty(seoUrl))
