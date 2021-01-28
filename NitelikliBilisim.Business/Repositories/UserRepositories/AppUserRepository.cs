@@ -52,7 +52,7 @@ namespace NitelikliBilisim.Business.Repositories
             model.NbuyCategory = nBuyInfo != null && nBuyInfo.Category != null ? nBuyInfo.Category.Name : "Girilmemiş";
             model.AvatarPath = student.User.AvatarPath;
             model.PageName = currentPageName;
-            model.CertificateCount = _context.CustomerCertificates.Where(x => x.CustomerId == userId).Count();
+            model.CertificateCount = GetUserCertificates(userId).Count();
             return model;
         }
 
@@ -174,39 +174,44 @@ namespace NitelikliBilisim.Business.Repositories
                                 select new MyCertificateVm
                                 {
                                     Id = certificate.Id,
-                                    CertificateName = "Web Yazılım Uzmanlığı Sertifikası",
                                     EducationName = education.Name,
                                     EducationDate = eGroup.StartDate,
                                     EducationSeoUrl = education.SeoUrl,
                                     CategorySeoUrl = education.Category.SeoUrl,
                                     CategoryName = education.Category.BaseCategory.Name,
-                                    EducationDateText = eGroup.StartDate.ToString("dd MMMM yyyy"),
-                                    IsAvailable = bridge == null ? false : true
+                                    EducationDateText = eGroup.StartDate.ToString("dd MMMM yyyy")
                                 }).ToList();
             return certificates;
         }
         public List<MyCertificateVm> GetUserCertificates(string userId)
         {
-            var newCertificates = (from bridge in _context.Bridge_GroupStudents
+            var certificates = (from bridge in _context.Bridge_GroupStudents
                                   join eGroup in _context.EducationGroups on bridge.Id equals eGroup.Id
                                   join student in _context.Customers on bridge.Id2 equals student.Id
                                   join education in _context.Educations on eGroup.EducationId equals education.Id
-                                  join certf in _context.CustomerCertificates on new { Id = student.Id, Id2 = eGroup.Id } equals new {Id=certf.CustomerId , Id2=certf.GroupId} into certificate
-                                  from certf in certificate.DefaultIfEmpty()
-                                  where bridge.Id2 == userId
+                                  where bridge.Id2 == userId && eGroup.StartDate.AddDays(education.Days)<DateTime.Now
                                    select new MyCertificateVm
                                    {
-                                       Id = certf != null? certf.Id:Guid.Empty,
-                                       CertificateName = "Web Yazılım Uzmanlığı Sertifikası",
+                                       GroupId = eGroup.Id,
                                        EducationName = education.Name,
                                        EducationDate = eGroup.StartDate,
                                        EducationSeoUrl = education.SeoUrl,
                                        CategorySeoUrl = education.Category.SeoUrl,
                                        CategoryName = education.Category.BaseCategory.Name,
-                                       EducationDateText = eGroup.StartDate.ToString("dd MMMM yyyy"),
-                                       IsAvailable = certf == null ? false : true
+                                       EducationDateText = eGroup.StartDate.ToString("dd MMMM yyyy")
                                    }).ToList();
-            return newCertificates;
+            var availableCertificates = new List<MyCertificateVm>();
+
+            foreach (var certificate in certificates)
+            {
+                var attendance = _context.GroupAttendances.Where(x => x.GroupId == certificate.GroupId && x.CustomerId == userId).ToList();
+                if (attendance.Count ==0)
+                {
+                    availableCertificates.Add(certificate);
+                }
+            }
+
+            return availableCertificates;
         }
 
         public InvoiceDetailsVm GetCustomerInvoiceDetails(Guid invoiceId)
@@ -500,7 +505,7 @@ namespace NitelikliBilisim.Business.Repositories
                 .Include(x => x.StudentEducationInfos).ThenInclude(x => x.EducationDays).First(x => x.Id == userId);
             var favoriteEducations = GetUserFavoriteEducationsByUserId(userId);
             var purchasedEducations = GetPurschasedEducationsByUserId(userId);
-            var certificates = GetUserAvailableCertificates(userId);
+            var certificates = GetUserCertificates(userId);
             model.FavoriteEducations = favoriteEducations;
             model.FavoriteEducationCount = favoriteEducations.Count;
             model.PurchasedEducations = purchasedEducations;

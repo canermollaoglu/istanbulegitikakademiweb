@@ -12,6 +12,7 @@ using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Entities.user_details;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels.Main.Profile;
@@ -105,7 +106,7 @@ namespace NitelikliBilisim.App.Controllers
         public IActionResult MyCertificates()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var model = _userUnitOfWork.User.GetUserAvailableCertificates(userId);
+            var model = _userUnitOfWork.User.GetUserCertificates(userId);
             return View(model);
         }
 
@@ -360,11 +361,10 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [Route("download-student-certificate")]
-        public IActionResult DownloadStudentCertificate(Guid? certificateId)
+        public IActionResult DownloadStudentCertificate(Guid? groupId)
         {
-            if (!certificateId.HasValue)
+            if (!groupId.HasValue)
             {
-
                 TempData["Error"] = "Lütfen sayfayı yenileyerek tekrar deneyiniz.";
                 return RedirectToAction("AccountSettings", "UserProfile");
             }
@@ -372,17 +372,18 @@ namespace NitelikliBilisim.App.Controllers
             if (!Syncfusion.Licensing.SyncfusionLicenseProvider.ValidateLicense(Syncfusion.Licensing.Platform.FileFormats, out var message))
                 throw new Exception("Syncfusion license is invalid: " + message);
 
-            var zip = CreateCertificateZip(certificateId.Value);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var zip = CreateCertificateZip(userId, groupId.Value);
             return File(zip.Content, System.Net.Mime.MediaTypeNames.Application.Zip, $"{zip.FileName}.zip");
         }
 
 
         #region Helpers
 
-        public CertificateZipStreamVm CreateCertificateZip(Guid certificateId)
+        public CertificateZipStreamVm CreateCertificateZip(string studentId,Guid groupId)
         {
             byte[] fileBytes = null;
-            var docStream = CreateCertificatePDF(certificateId);
+            var docStream = CreateCertificatePDF(studentId, groupId);
             using (MemoryStream memoryStream = new MemoryStream())
             {
                 using (ZipArchive zip = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
@@ -406,9 +407,20 @@ namespace NitelikliBilisim.App.Controllers
             };
         }
 
-        public CertificateStreamVm CreateCertificatePDF(Guid certificateId)
+        public CertificateStreamVm CreateCertificatePDF(string studentId,Guid groupId)
         {
-            var certificate = _unitOfWork.CustomerCertificate.GetById(certificateId);
+            var certificate = _unitOfWork.CustomerCertificate.Get(x => x.CustomerId == studentId && x.GroupId == groupId).FirstOrDefault();
+            if (certificate ==null)
+            {
+               var certificateId= _unitOfWork.CustomerCertificate.Insert(new CustomerCertificate
+                {
+                    CustomerId = studentId,
+                    GroupId = groupId,
+                });
+                certificate = _unitOfWork.CustomerCertificate.GetById(certificateId);
+            }
+
+
             var student = _unitOfWork.Customer.GetCustomerDetail(certificate.CustomerId);
             var group = _unitOfWork.EducationGroup.GetByIdWithEducation(certificate.GroupId);
 

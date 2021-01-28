@@ -50,47 +50,42 @@
                             <div class="account-courses__wrp">
                                 @foreach (var certificate in Model)
                                 {
-                                    <div class="account-courses__item">
-                                        <a href="#0" class="account-courses__item-cnt">
-                                            <div class="account-courses__item-img">
-                                                <img src="../../assets/img/certificate.jpg" alt="">
+                                        <div class="account-courses__item">
+                                            <a href="#0" class="account-courses__item-cnt">
+                                                <div class="account-courses__item-img">
+                                                    <img src="../../assets/img/certificate.jpg" alt="">
+                                                </div>
+                                            </a>
+                                            <div class="account-courses__item-item certificate-name">
+                                                @certificate.EducationName
                                             </div>
-                                        </a>
-                                        <div class="account-courses__item-item certificate-name">
-                                            @certificate.EducationName
-                                        </div>
-                                        <div class="account-courses__item-item dated">
-                                            @certificate.EducationDateText
-                                        </div>
-                                        <div class="account-courses__item-item downloaded">
-                                            @if (certificate.IsAvailable)
-                                            {
-                                                <a href="/download-student-certificate?certificateId=@certificate.Id" class="button button-fw button-icon-right">
-                                                    <span class="button-txt">PDF İndir</span>
-                                                    <span class="button-icon">
-                                                        <span class="icon-outer">
-                                                            <svg class="icon">
-                                                                <use xlink:href="../../assets/img/icons.svg#icon-long-arrow"></use>
-                                                            </svg>
+                                            <div class="account-courses__item-item dated">
+                                                @certificate.EducationDateText
+                                            </div>
+                                            <div class="account-courses__item-item downloaded">
+                                               <a href="/download-student-certificate?groupId=@certificate.GroupId" class="button button-fw button-icon-right">
+                                                        <span class="button-txt">PDF İndir</span>
+                                                        <span class="button-icon">
+                                                            <span class="icon-outer">
+                                                                <svg class="icon">
+                                                                    <use xlink:href="../../assets/img/icons.svg#icon-long-arrow"></use>
+                                                                </svg>
+                                                            </span>
                                                         </span>
-                                                    </span>
-                                                </a>
-                                            }
-                                            else
-                                            {
-                                                <a class="button button-fw button-yellow button-icon-right">
-                                                    <span class="button-txt">Hazırlanıyor</span>
-                                                    <span class="button-icon">
-                                                        <span class="icon-outer">
-                                                            <svg class="icon">
-                                                                <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                            </svg>
+                                                    </a>
+                                                    @*<a class="button button-fw button-yellow button-icon-right">
+                                                        <span class="button-txt">Hazırlanıyor</span>
+                                                        <span class="button-icon">
+                                                            <span class="icon-outer">
+                                                                <svg class="icon">
+                                                                    <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                                                                </svg>
+                                                            </span>
                                                         </span>
-                                                    </span>
-                                                </a>
-                                            }
+                                                    </a>*@
+                                                
+                                            </div>
                                         </div>
-                                    </div>
                                 }
 
                             </div>
