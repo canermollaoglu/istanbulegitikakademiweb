@@ -134,34 +134,28 @@
                                 <div class="account-course-detail__teacher-cnt">
                                     <div class="account-course-detail__teacher-top">
                                         <div class="main-stars">
-                                            <span class="icon-outer icon-star active">
-                                                <svg class="icon">
-                                                    <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                </svg>
-                                            </span>
-                                            <span class="icon-outer icon-star active">
-                                                <svg class="icon">
-                                                    <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                </svg>
-                                            </span>
-                                            <span class="icon-outer icon-star active">
-                                                <svg class="icon">
-                                                    <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                </svg>
-                                            </span>
-                                            <span class="icon-outer icon-star">
-                                                <svg class="icon">
-                                                    <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                </svg>
-                                            </span>
-                                            <span class="icon-outer icon-star">
-                                                <svg class="icon">
-                                                    <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
-                                                </svg>
-                                            </span>
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                if (i<=Model.EducatorPoint)
+                                                {
+                                                    <span class="icon-outer icon-star active">
+                                                        <svg class="icon">
+                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                        </svg>
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="icon-outer icon-star">
+                                                        <svg class="icon">
+                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                        </svg>
+                                                    </span>
+                                                }
+                                            }
                                         </div>
-                                        4.0 Puan
-                                        <span>(75 Öğrenci)</span>
+                                        @Model.EducatorPoint Puan
+                                        <span>(@Model.EducatorStudentCount Öğrenci)</span>
                                     </div>
                                     <div class="account-course-detail__teacher-name">
                                         @Model.EducatorName

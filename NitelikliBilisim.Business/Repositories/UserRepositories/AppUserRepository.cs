@@ -439,8 +439,13 @@ namespace NitelikliBilisim.Business.Repositories
                              PriceText = eGroup.NewPrice.GetValueOrDefault().ToString(cultureInfo),
                              Days = education.Days.ToString(),
                              Hours = (education.Days * education.HoursPerDay).ToString(),
-                             Host = host.HostName
+                             Host = host.HostName,
+                             
                          }).FirstOrDefault();
+            model.EducatorPoint = GetEducatorPoint(model.EducatorId);
+            model.EducatorStudentCount = _context.Bridge_GroupStudents.Include(x => x.Group).Where(x => x.Group.EducatorId == model.EducatorId).Count();
+
+
             var bridgeEducatorCertificates = _context.Bridge_EducatorEducatorCertificates.Include(x => x.EducatorCertificate).Where(x => x.Id == model.EducatorId).ToList();
             var educatorCertificates = new List<EducatorCertificate>();
             foreach (var bridge in bridgeEducatorCertificates)
@@ -649,6 +654,21 @@ namespace NitelikliBilisim.Business.Repositories
 
 
         #region Helper Functions
+        /// <summary>
+        /// Eğitmen Puanını döner
+        /// </summary>
+        /// <param name="educatorId"></param>
+        /// <returns></returns>
+        private double GetEducatorPoint(string educatorId)
+        {
+            var data = (from eComment in _context.EducationComments
+                        join education in _context.Educations on eComment.EducationId equals education.Id
+                        join eGroup in _context.EducationGroups on education.Id equals eGroup.EducationId
+                        where eGroup.EducatorId == educatorId
+                        select (int)eComment.Points).ToList();
+            return Math.Round(data.Average(), 2);
+        }
+
         /// <summary>
         /// Girilen parametrelere göre NBUY eğitimi alan öğrencinin eğitim günlerini db ye ekler.
         /// </summary>

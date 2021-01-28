@@ -24,5 +24,7 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public List<EducatorCertificate> EducatorCertificates { get; set; }
         public string SeoUrl { get; set; }
         public string CategorySeoUrl { get; set; }
+        public double EducatorPoint { get; set; }
+        public int EducatorStudentCount { get; set; }
     }
 }
