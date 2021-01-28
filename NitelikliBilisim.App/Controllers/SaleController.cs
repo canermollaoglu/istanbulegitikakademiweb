@@ -1,9 +1,11 @@
 ﻿using Iyzipay.Model;
 using Iyzipay.Request;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
@@ -34,7 +36,7 @@ using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Controllers
 {
-    public class SaleController : Controller
+    public class SaleController : BaseController
     {
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly UnitOfWork _unitOfWork;
@@ -410,6 +412,7 @@ namespace NitelikliBilisim.App.Controllers
             return View();
         }
 
+        [AllowAnonymous]
         [HttpPost, Route("odeme-sonucu")]
         public IActionResult PaymentResult(CreateThreedsPaymentRequest data)
         {
