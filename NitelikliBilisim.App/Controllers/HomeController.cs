@@ -92,7 +92,7 @@ namespace NitelikliBilisim.App.Controllers
             return View();
         }
 
-        
+
         [Route("gizlilik-sozlesmesi")]
         public IActionResult NonDisclosureAgreement()
         {
@@ -366,7 +366,12 @@ namespace NitelikliBilisim.App.Controllers
             }
         }
 
-
+        [Route("sertifika-dogrula/{certificateCode}")]
+        public IActionResult VerifyCertificate(Guid certificateCode)
+        {
+            var model = _unitOfWork.CustomerCertificate.VerifyCertificate(certificateCode);
+            return View(model);
+        }
 
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [HttpPost]
@@ -507,7 +512,7 @@ namespace NitelikliBilisim.App.Controllers
                     entry.SlidingExpiration = TimeSpan.FromDays(1);
                     return _unitOfWork.Suggestions.GetWizardFirstStepData();
                 });
-                
+
                 return Json(new ResponseData
                 {
                     Success = true,

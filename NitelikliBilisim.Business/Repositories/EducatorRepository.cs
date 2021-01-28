@@ -182,11 +182,12 @@ namespace NitelikliBilisim.Business.Repositories
 
             int educationCount = _context.Bridge_EducationEducators.Where(x => x.Id2 == educatorId).Count();
 
-            int studentCount = (from invoiceDetail in _context.InvoiceDetails
-                                join eGroup in _context.EducationGroups on invoiceDetail.GroupId equals eGroup.Id
-                                where eGroup.EducatorId == educatorId
-                                select invoiceDetail).Count();
-                               
+            int studentCount = _context.Bridge_GroupStudents.Include(x => x.Group).Where(x => x.Group.EducatorId == educatorId).Count();
+            //(from invoiceDetail in _context.InvoiceDetails
+            //                join eGroup in _context.EducationGroups on invoiceDetail.GroupId equals eGroup.Id
+            //                where eGroup.EducatorId == educatorId
+            //                select invoiceDetail).Count();
+
 
             var certificates = (from bridge in _context.Bridge_EducatorEducatorCertificates
                                 join certificate in _context.EducatorCertificates on bridge.Id2 equals certificate.Id
