@@ -238,6 +238,11 @@ namespace NitelikliBilisim.App.Controllers
             return View();
         }
 
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("sifre-sifirla")]
