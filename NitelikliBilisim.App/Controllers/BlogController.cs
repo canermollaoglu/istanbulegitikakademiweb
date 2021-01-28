@@ -71,9 +71,10 @@ namespace NitelikliBilisim.App.Controllers
 
                 return View(model);
             }
-            catch (Exception ex)
+            catch 
             {
-                throw ex;
+                //todo log
+                return RedirectToAction("PageNotFound", "Error");
             }
 
         }

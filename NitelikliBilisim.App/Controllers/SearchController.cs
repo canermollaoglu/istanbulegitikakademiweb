@@ -38,7 +38,7 @@ namespace NitelikliBilisim.App.Controllers
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [HttpPost]
         [Route("search-for-courses")]
-        public async Task<IActionResult> SearchEducation(string searchText, int page = 0, OrderCriteria order = OrderCriteria.Latest, FiltersVm filter = null)
+        public IActionResult SearchEducation(string searchText, int page = 0, OrderCriteria order = OrderCriteria.Latest, FiltersVm filter = null)
         {
             var model = _unitOfWork.Education.GetInfiniteScrollSearchResults("", searchText, page, order, filter);
             foreach (var item in model)

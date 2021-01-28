@@ -68,14 +68,12 @@ namespace NitelikliBilisim.Business.UoW
         private IElasticClient _elasticClient;
         private IConfiguration _configuration;
         private IEmailSender _emailSender;
-        private IHostingEnvironment _hostingEnvironment;
-        public UnitOfWork(NbDataContext context, IElasticClient elasticClient,IConfiguration configuration,IEmailSender emailSender,IHostingEnvironment hostingEnvironment )
+        public UnitOfWork(NbDataContext context, IElasticClient elasticClient,IConfiguration configuration,IEmailSender emailSender)
         {
             _elasticClient = elasticClient;
             _context = context;
             _configuration = configuration;
             _emailSender = emailSender;
-            _hostingEnvironment = hostingEnvironment;
         }
         public int Save()
         {

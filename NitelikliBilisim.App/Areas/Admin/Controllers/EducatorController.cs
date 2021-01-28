@@ -402,13 +402,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/delete-educator")]
         public IActionResult Delete(Guid educatorId)
         {
-            if (educatorId == null)
-                return Json(new ResponseModel
-                {
-                    isSuccess = false,
-                    message = "Silinecek veri bulunamadı"
-                });
-
             _unitOfWork.Educator.Delete(educatorId.ToString());
 
             return Json(new ResponseModel

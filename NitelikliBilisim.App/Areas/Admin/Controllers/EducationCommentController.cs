@@ -68,9 +68,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     isSuccess = true
                 });
             }
-            catch (Exception ex)
+            catch
             {
-                throw ex;
+                return Json(new ResponseModel
+                {
+                    isSuccess = false
+                });
             }
         }
         [Route("admin/toggle-highlight-comment")]
@@ -84,9 +87,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     isSuccess = true
                 });
             }
-            catch (Exception ex)
+            catch
             {
-                throw ex;
+                return Json(new ResponseModel
+                {
+                    isSuccess = false
+                });
             }
         }
     }

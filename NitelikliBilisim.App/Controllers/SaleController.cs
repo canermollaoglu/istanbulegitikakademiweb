@@ -763,7 +763,7 @@ namespace NitelikliBilisim.App.Controllers
                     data = address
                 });
             }
-            catch (Exception ex)
+            catch
             {
                 //todo log
                 return Json(new ResponseModel

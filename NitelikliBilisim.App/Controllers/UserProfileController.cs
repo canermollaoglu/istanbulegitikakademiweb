@@ -8,27 +8,25 @@ using MUsefulMethods;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Managers;
-using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Entities.user_details;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels.Main.Profile;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 using Syncfusion.Pdf;
 using Syncfusion.Pdf.Barcode;
 using Syncfusion.Pdf.Graphics;
 using System;
-using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -108,7 +106,7 @@ namespace NitelikliBilisim.App.Controllers
         public IActionResult MyCertificates()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var model = _userUnitOfWork.User.GetUserAvailableCertificates(userId);
+            var model = _userUnitOfWork.User.GetUserCertificates(userId);
             return View(model);
         }
 
@@ -212,53 +210,37 @@ namespace NitelikliBilisim.App.Controllers
         [Route("profil-resmi-degistir")]
         public async Task<IActionResult> ChangeProfileImage(IFormFile ProfileImage)
         {
-            try
+            var dbPath = "";
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var fileName = StringHelpers.FormatForTag($"{user.Name} {user.Surname}");
+            using (var output = new MemoryStream())
+            using (SixLabors.ImageSharp.Image image = SixLabors.ImageSharp.Image.Load(ProfileImage.OpenReadStream()))
             {
-                var dbPath = "";
-                var user = await _userManager.GetUserAsync(HttpContext.User);
-                var fileName = StringHelpers.FormatForTag($"{user.Name} {user.Surname}");
-                using(var output = new MemoryStream())
-                using (SixLabors.ImageSharp.Image image = SixLabors.ImageSharp.Image.Load(ProfileImage.OpenReadStream()))
-                {
-                    image.Mutate(x => x.Resize(250, 250));
-                    image.SaveAsJpeg(output);
-                    output.Position = 0;
-                    dbPath = await _storageService.UploadFile(output, $"{fileName}-{ProfileImage.FileName}", "user-avatars");
-                }
-
-                user.AvatarPath = dbPath;
-                await _userManager.UpdateAsync(user);
-                TempData["Success"] = "Profil resminiz başarıyla güncellendi!";
-                return RedirectToAction("AccountSettings", "UserProfile");
+                image.Mutate(x => x.Resize(250, 250));
+                image.SaveAsJpeg(output);
+                output.Position = 0;
+                dbPath = await _storageService.UploadFile(output, $"{fileName}-{ProfileImage.FileName}", "user-avatars");
             }
-            catch (Exception)
-            {
-                throw;
-            }
+            user.AvatarPath = dbPath;
+            await _userManager.UpdateAsync(user);
+            TempData["Success"] = "Profil resminiz başarıyla güncellendi!";
+            return RedirectToAction("AccountSettings", "UserProfile");
         }
 
         [Route("haftaya-ozel-kurslar")]
         public IActionResult GetEducationsOfTheWeeks(int week)
         {
-            try
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var model = _unitOfWork.Suggestions.GetEducationsOfTheWeek(week, userId);
+            foreach (var education in model)
             {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var model = _unitOfWork.Suggestions.GetEducationsOfTheWeek(week, userId);
-                foreach (var education in model)
-                {
-                    education.Medias[0].FileUrl = _storageService.BlobUrl + education.Medias[0].FileUrl;
-                }
-                return Json(new ResponseData
-                {
-                    Success = true,
-                    Data = model
-                });
+                education.Medias[0].FileUrl = _storageService.BlobUrl + education.Medias[0].FileUrl;
             }
-            catch (Exception)
+            return Json(new ResponseData
             {
-
-                throw;
-            }
+                Success = true,
+                Data = model
+            });
 
         }
 
@@ -273,22 +255,11 @@ namespace NitelikliBilisim.App.Controllers
                 TempData["Error"] = errors.Aggregate((x, y) => x + "<br>" + y);
                 return RedirectToAction("AccountSettings", "UserProfile");
             }
-            try
-            {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                model.UserId = userId;
-                _userUnitOfWork.User.UpdateUserContactInfo(model);
-                TempData["Success"] = "Bilgileriniz başarıyla güncellendi!";
-                return RedirectToAction("AccountSettings", "UserProfile");
-            }
-            catch (Exception ex)
-            {
-                TempData["Error"] = "İşleminiz gerçekleştirilemedi! Lütfen tekrar deneyiniz.";
-                //todo log
-                throw;
-            }
-
-
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            model.UserId = userId;
+            _userUnitOfWork.User.UpdateUserContactInfo(model);
+            TempData["Success"] = "Bilgileriniz başarıyla güncellendi!";
+            return RedirectToAction("AccountSettings", "UserProfile");
         }
 
         [HttpPost]
@@ -302,22 +273,11 @@ namespace NitelikliBilisim.App.Controllers
                 TempData["Error"] = errors.Aggregate((x, y) => x + "<br>" + y);
                 return RedirectToAction("AccountSettings", "UserProfile");
             }
-            try
-            {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                model.UserId = userId;
-                _userUnitOfWork.User.UpdateStudentInfo(model);
-                TempData["Success"] = "Kişisel bilgileriniz başarıyla güncellendi!";
-                return RedirectToAction("AccountSettings", "UserProfile");
-            }
-            catch (Exception ex)
-            {
-                TempData["Error"] = "İşleminiz gerçekleştirilemedi! Lütfen tekrar deneyiniz.";
-                //todo log
-                throw;
-            }
-
-
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            model.UserId = userId;
+            _userUnitOfWork.User.UpdateStudentInfo(model);
+            TempData["Success"] = "Kişisel bilgileriniz başarıyla güncellendi!";
+            return RedirectToAction("AccountSettings", "UserProfile");
         }
 
         [HttpPost]
@@ -331,48 +291,38 @@ namespace NitelikliBilisim.App.Controllers
                 TempData["Error"] = errors.Aggregate((x, y) => x + "<br>" + y);
                 return RedirectToAction("AccountSettings", "UserProfile");
             }
-            try
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            if (model.OldPassword != null && model.NewPassword != null && model.ConfirmNewPassword != null)
             {
-                var user = await _userManager.GetUserAsync(HttpContext.User);
-                if (model.OldPassword != null && model.NewPassword != null && model.ConfirmNewPassword != null)
+                if (model.NewPassword == model.ConfirmNewPassword)
                 {
-                    if (model.NewPassword == model.ConfirmNewPassword)
+                    var retVal = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+                    if (retVal.Succeeded)
                     {
-                        var retVal = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
-                        if (retVal.Succeeded)
-                        {
 
-                        }
                     }
                 }
-
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                model.UserId = userId;
-                if (model.ProfileImage != null)
-                {
-
-                    var fileName = StringHelpers.FormatForTag($"{user.Name} {user.Surname}");
-                    var dbPath = await _storageService.UploadFile(model.ProfileImage.OpenReadStream(), $"{fileName}-{model.ProfileImage.FileName}", "user-avatars");
-                    user.AvatarPath = dbPath;
-                    await _userManager.UpdateAsync(user);
-                }
-
-                TempData["Success"] = "Kullanıcı bilgileriniz başarıyla güncellendi!";
-                return RedirectToAction("AccountSettings", "UserProfile");
             }
-            catch (Exception ex)
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            model.UserId = userId;
+            if (model.ProfileImage != null)
             {
-                TempData["Error"] = "İşleminiz gerçekleştirilemedi! Lütfen tekrar deneyiniz.";
-                //todo log
-                throw;
+
+                var fileName = StringHelpers.FormatForTag($"{user.Name} {user.Surname}");
+                var dbPath = await _storageService.UploadFile(model.ProfileImage.OpenReadStream(), $"{fileName}-{model.ProfileImage.FileName}", "user-avatars");
+                user.AvatarPath = dbPath;
+                await _userManager.UpdateAsync(user);
             }
 
+            TempData["Success"] = "Kullanıcı bilgileriniz başarıyla güncellendi!";
+            return RedirectToAction("AccountSettings", "UserProfile");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("default-adres-guncelle")]
-        public  IActionResult UpdateDefaultAddress(int? defaultAddressId)
+        public IActionResult UpdateDefaultAddress(int? defaultAddressId)
         {
             if (!defaultAddressId.HasValue)
             {
@@ -385,27 +335,16 @@ namespace NitelikliBilisim.App.Controllers
                 TempData["Error"] = errors.Aggregate((x, y) => x + "<br>" + y);
                 return RedirectToAction("AccountSettings", "UserProfile");
             }
-            try
-            {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                _unitOfWork.Address.UpdateDefaultAddress(defaultAddressId.Value,userId);
-                TempData["Success"] = "Varsayılan adres bilginiz başarıyla güncellendi.";
-                return RedirectToAction("AccountSettings", "UserProfile");
-            }
-            catch (Exception ex)
-            {
-                TempData["Error"] = "İşleminiz gerçekleştirilemedi! Lütfen tekrar deneyiniz.";
-                return RedirectToAction("AccountSettings", "UserProfile");
-                //todo log
-                throw;
-            }
-
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            _unitOfWork.Address.UpdateDefaultAddress(defaultAddressId.Value, userId);
+            TempData["Success"] = "Varsayılan adres bilginiz başarıyla güncellendi.";
+            return RedirectToAction("AccountSettings", "UserProfile");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("nbuy-egitim-bilgileri-guncelle")]
-        public  IActionResult UpdateNbuyEducationInfos(UpdateNBUYEducationInfoVm model)
+        public IActionResult UpdateNbuyEducationInfos(UpdateNBUYEducationInfoVm model)
         {
             if (!ModelState.IsValid)
             {
@@ -413,29 +352,19 @@ namespace NitelikliBilisim.App.Controllers
                 TempData["Error"] = errors.Aggregate((x, y) => x + "<br>" + y);
                 return RedirectToAction("AccountSettings", "UserProfile");
             }
-            try
-            {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                model.UserId = userId;
-                _userUnitOfWork.User.UpdateNbuyEducationInfo(model);
-                
-                TempData["Success"] = "Bilgileriniz başarıyla güncellendi!";
-                return RedirectToAction("AccountSettings", "UserProfile");
-            }
-            catch (Exception ex)
-            {
-                TempData["Error"] = "İşleminiz gerçekleştirilemedi! Lütfen tekrar deneyiniz.";
-                //todo log
-                throw;
-            }
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            model.UserId = userId;
+            _userUnitOfWork.User.UpdateNbuyEducationInfo(model);
 
+            TempData["Success"] = "Bilgileriniz başarıyla güncellendi!";
+            return RedirectToAction("AccountSettings", "UserProfile");
         }
 
         [Route("download-student-certificate")]
-        public IActionResult DownloadStudentCertificate(Guid? certificateId) {
-            if (!certificateId.HasValue)
+        public IActionResult DownloadStudentCertificate(Guid? groupId)
+        {
+            if (!groupId.HasValue)
             {
-
                 TempData["Error"] = "Lütfen sayfayı yenileyerek tekrar deneyiniz.";
                 return RedirectToAction("AccountSettings", "UserProfile");
             }
@@ -443,17 +372,18 @@ namespace NitelikliBilisim.App.Controllers
             if (!Syncfusion.Licensing.SyncfusionLicenseProvider.ValidateLicense(Syncfusion.Licensing.Platform.FileFormats, out var message))
                 throw new Exception("Syncfusion license is invalid: " + message);
 
-            var zip = CreateCertificateZip(certificateId.Value);
-            return File(zip.Content,System.Net.Mime.MediaTypeNames.Application.Zip,$"{zip.FileName}.zip");
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var zip = CreateCertificateZip(userId, groupId.Value);
+            return File(zip.Content, System.Net.Mime.MediaTypeNames.Application.Zip, $"{zip.FileName}.zip");
         }
 
 
         #region Helpers
 
-        public CertificateZipStreamVm CreateCertificateZip(Guid certificateId)
+        public CertificateZipStreamVm CreateCertificateZip(string studentId,Guid groupId)
         {
             byte[] fileBytes = null;
-            var docStream = CreateCertificatePDF(certificateId);
+            var docStream = CreateCertificatePDF(studentId, groupId);
             using (MemoryStream memoryStream = new MemoryStream())
             {
                 using (ZipArchive zip = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
@@ -477,9 +407,20 @@ namespace NitelikliBilisim.App.Controllers
             };
         }
 
-        public CertificateStreamVm CreateCertificatePDF(Guid certificateId)
+        public CertificateStreamVm CreateCertificatePDF(string studentId,Guid groupId)
         {
-            var certificate = _unitOfWork.CustomerCertificate.GetById(certificateId);
+            var certificate = _unitOfWork.CustomerCertificate.Get(x => x.CustomerId == studentId && x.GroupId == groupId).FirstOrDefault();
+            if (certificate ==null)
+            {
+               var certificateId= _unitOfWork.CustomerCertificate.Insert(new CustomerCertificate
+                {
+                    CustomerId = studentId,
+                    GroupId = groupId,
+                });
+                certificate = _unitOfWork.CustomerCertificate.GetById(certificateId);
+            }
+
+
             var student = _unitOfWork.Customer.GetCustomerDetail(certificate.CustomerId);
             var group = _unitOfWork.EducationGroup.GetByIdWithEducation(certificate.GroupId);
 
@@ -494,13 +435,13 @@ namespace NitelikliBilisim.App.Controllers
             string webrootPath = _hostingEnvironment.WebRootPath;
             string rootpath = _hostingEnvironment.ContentRootPath;
 
-            var bgImage = new FileStream(Path.Combine(webrootPath,"img/bireysel-egitim-sertifika-sablonu.jpg"), FileMode.Open, FileAccess.Read);
+            var bgImage = new FileStream(Path.Combine(webrootPath, "img/bireysel-egitim-sertifika-sablonu.jpg"), FileMode.Open, FileAccess.Read);
             PdfBitmap background = new PdfBitmap(bgImage);
             graphics.DrawImage(background, 0, 0, page.Graphics.ClientSize.Width, page.Graphics.ClientSize.Height);
 
             //Yazı tipini belirle
-            PdfFont font = new PdfStandardFont(PdfFontFamily.TimesRoman, 8,PdfFontStyle.Bold);
-            
+            PdfFont font = new PdfStandardFont(PdfFontFamily.TimesRoman, 8, PdfFontStyle.Bold);
+
             // Ad soyad yazdır
 
             PdfLayoutFormat format = new PdfLayoutFormat();
@@ -511,20 +452,15 @@ namespace NitelikliBilisim.App.Controllers
             string text = $"Sayın {student.Name.ToUpper()} {student.Surname.ToUpper()}";
             PdfStringFormat nameSurnameFormat = new PdfStringFormat();
             nameSurnameFormat.Alignment = PdfTextAlignment.Center;
-            graphics.DrawString(text,font,PdfBrushes.Black, new Syncfusion.Drawing.RectangleF(0, 210, clipBounds.Width, 150), nameSurnameFormat);
+            graphics.DrawString(text, font, PdfBrushes.Black, new Syncfusion.Drawing.RectangleF(0, 210, clipBounds.Width, 150), nameSurnameFormat);
             /*QR KOD Oluştur*/
             PdfQRBarcode barcode = new PdfQRBarcode();
 
             barcode.XDimension = 3;
-
-#if DEBUG
-            var siteUrl = $"https://localhost:44327/sertifika-dogrula/{certificate.Id}";
-#else
-            var siteUrl = $"https://wissenakademie.com/sertifika-dogrula/{certificate.Id}";
-#endif
+            var siteUrl = $"https://niteliklitest2.azurewebsites.net/sertifika-dogrula/{certificate.Id}";
 
             barcode.Text = siteUrl;
-            barcode.Size = new Syncfusion.Drawing.SizeF(100,100);
+            barcode.Size = new Syncfusion.Drawing.SizeF(100, 100);
             barcode.Draw(page, new Syncfusion.Drawing.PointF(760, 520));
 
             MemoryStream stream = new MemoryStream();

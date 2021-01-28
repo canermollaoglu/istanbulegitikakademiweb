@@ -55,14 +55,14 @@ namespace NitelikliBilisim.Business.Repositories
 
         public GroupLessonDayUpdateGetVm GetUpdateGetModel(Guid lessonDayId)
         {
-            var lessonDay = _context.GroupLessonDays.Include(x => x.Group).ThenInclude(x=>x.Host).First(x=>x.Id == lessonDayId);
+            var lessonDay = _context.GroupLessonDays.Include(x => x.Group).ThenInclude(x => x.Host).First(x => x.Id == lessonDayId);
 
             var educators = (from bridge in _context.Bridge_EducationEducators
                              join educator in _context.Users on bridge.Educator.Id equals educator.Id
                              where bridge.Education.Id == lessonDay.Group.EducationId
                              select educator).ToDictionary(x => x.Id, x => x.Name + " " + x.Surname);
 
-            var classRooms = _context.Classrooms.Where(x => x.HostId == lessonDay.Group.Host.Id).ToDictionary(x=>x.Id,x=>x.Name);
+            var classRooms = _context.Classrooms.Where(x => x.HostId == lessonDay.Group.Host.Id).ToDictionary(x => x.Id, x => x.Name);
 
             GroupLessonDayUpdateGetVm model = new GroupLessonDayUpdateGetVm
             {
@@ -177,7 +177,7 @@ namespace NitelikliBilisim.Business.Repositories
                 foreach (var educationDay in educationDays)
                 {
                     educationDay.ClassroomId = classroomId;
-                } 
+                }
                 _context.GroupLessonDays.UpdateRange(educationDays);
                 _context.SaveChanges();
             }
@@ -186,40 +186,30 @@ namespace NitelikliBilisim.Business.Repositories
 
                 throw ex;
             }
-            
+
         }
-        public void ChangeEducator(Guid groupId,DateTime? startDate, int updateType, string educatorId,decimal? educatorSalary)
+        public void ChangeEducator(Guid groupId, DateTime? startDate, int updateType, string educatorId, decimal? educatorSalary)
         {
-            try
+            List<GroupLessonDay> educationDays = null;
+            if (updateType == (int)TypeOfChangeOperation.AllDays)
             {
-                List<GroupLessonDay> educationDays = null;
-                if (updateType == (int)TypeOfChangeOperation.AllDays)
-                {
-                    educationDays = _context.GroupLessonDays.Where(x => x.GroupId == groupId).ToList();
-                }
-                else if (updateType == (int)TypeOfChangeOperation.WidthStartDate)
-                {
-                    educationDays = _context.GroupLessonDays.Where(x => x.GroupId == groupId && x.DateOfLesson.Date >= startDate.Value.Date).ToList();
-                }
-                foreach (var educationDay in educationDays)
-                {
-                    educationDay.EducatorSalary = educatorSalary??educationDay.EducatorSalary;
-                    educationDay.EducatorId = educatorId;
-                }
-                _context.GroupLessonDays.UpdateRange(educationDays);
-                var group = _context.EducationGroups.First(x => x.Id == groupId);
-                var lastEducatorId = educationDays.Last().EducatorId;
-                if (group.EducatorId != lastEducatorId)
-                    group.EducatorId = lastEducatorId;
-                _context.SaveChanges();
+                educationDays = _context.GroupLessonDays.Where(x => x.GroupId == groupId).ToList();
             }
-            catch (Exception ex)
+            else if (updateType == (int)TypeOfChangeOperation.WidthStartDate)
             {
-
-                throw ex;
+                educationDays = _context.GroupLessonDays.Where(x => x.GroupId == groupId && x.DateOfLesson.Date >= startDate.Value.Date).ToList();
             }
-
-
+            foreach (var educationDay in educationDays)
+            {
+                educationDay.EducatorSalary = educatorSalary ?? educationDay.EducatorSalary;
+                educationDay.EducatorId = educatorId;
+            }
+            _context.GroupLessonDays.UpdateRange(educationDays);
+            var group = _context.EducationGroups.First(x => x.Id == groupId);
+            var lastEducatorId = educationDays.Last().EducatorId;
+            if (group.EducatorId != lastEducatorId)
+                group.EducatorId = lastEducatorId;
+            _context.SaveChanges();
         }
         public List<int> MakeSureWeekDaysExists(Guid groupId, List<int> daysInt)
         {
@@ -340,7 +330,7 @@ namespace NitelikliBilisim.Business.Repositories
                     var dates = CreateGroupLessonDays(
                      group: _context.EducationGroups.Include(x => x.Education).FirstOrDefault(x => x.Id == groupId),
                      daysInt: groupWeekDays.Select(x => (int)x).ToList(),
-                     unwantedDays: new List<DateTime>()) ;
+                     unwantedDays: new List<DateTime>());
                     var groupLessonDays = new List<GroupLessonDay>();
                     foreach (var date in dates)
                         groupLessonDays.Add(new GroupLessonDay
@@ -360,13 +350,12 @@ namespace NitelikliBilisim.Business.Repositories
                     _context.SaveChanges();
                     transation.Commit();
                 }
-                catch (Exception ex)
+                catch
                 {
                     transation.Rollback();
-                    throw ex;
                 }
             }
-            
+
         }
         public List<DateTime> CreateNewDates(DateTime lastDate, int newDateCount, DayOfWeek[] eligibleDays, List<DateTime> unwantedDates)
         {
