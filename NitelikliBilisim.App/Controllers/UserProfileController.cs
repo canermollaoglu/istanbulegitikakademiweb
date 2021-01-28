@@ -281,11 +281,11 @@ namespace NitelikliBilisim.App.Controllers
                 TempData["Success"] = "Bilgileriniz başarıyla güncellendi!";
                 return RedirectToAction("AccountSettings", "UserProfile");
             }
-            catch (Exception ex)
+            catch
             {
                 TempData["Error"] = "İşleminiz gerçekleştirilemedi! Lütfen tekrar deneyiniz.";
+                return RedirectToAction("AccountSettings", "UserProfile");
                 //todo log
-                throw;
             }
 
 
@@ -310,11 +310,11 @@ namespace NitelikliBilisim.App.Controllers
                 TempData["Success"] = "Kişisel bilgileriniz başarıyla güncellendi!";
                 return RedirectToAction("AccountSettings", "UserProfile");
             }
-            catch (Exception ex)
+            catch
             {
-                TempData["Error"] = "İşleminiz gerçekleştirilemedi! Lütfen tekrar deneyiniz.";
                 //todo log
-                throw;
+                TempData["Error"] = "İşleminiz gerçekleştirilemedi! Lütfen tekrar deneyiniz.";
+                return RedirectToAction("AccountSettings", "UserProfile");
             }
 
 
@@ -360,11 +360,11 @@ namespace NitelikliBilisim.App.Controllers
                 TempData["Success"] = "Kullanıcı bilgileriniz başarıyla güncellendi!";
                 return RedirectToAction("AccountSettings", "UserProfile");
             }
-            catch (Exception ex)
+            catch
             {
+
                 TempData["Error"] = "İşleminiz gerçekleştirilemedi! Lütfen tekrar deneyiniz.";
-                //todo log
-                throw;
+                return RedirectToAction("AccountSettings", "UserProfile");
             }
 
         }
@@ -392,12 +392,11 @@ namespace NitelikliBilisim.App.Controllers
                 TempData["Success"] = "Varsayılan adres bilginiz başarıyla güncellendi.";
                 return RedirectToAction("AccountSettings", "UserProfile");
             }
-            catch (Exception ex)
+            catch
             {
                 TempData["Error"] = "İşleminiz gerçekleştirilemedi! Lütfen tekrar deneyiniz.";
                 return RedirectToAction("AccountSettings", "UserProfile");
                 //todo log
-                throw;
             }
 
         }
@@ -422,11 +421,11 @@ namespace NitelikliBilisim.App.Controllers
                 TempData["Success"] = "Bilgileriniz başarıyla güncellendi!";
                 return RedirectToAction("AccountSettings", "UserProfile");
             }
-            catch (Exception ex)
+            catch
             {
+                //todo log ex
                 TempData["Error"] = "İşleminiz gerçekleştirilemedi! Lütfen tekrar deneyiniz.";
-                //todo log
-                throw;
+                return RedirectToAction("AccountSettings", "UserProfile");
             }
 
         }

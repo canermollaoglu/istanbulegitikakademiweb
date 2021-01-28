@@ -169,7 +169,7 @@ namespace NitelikliBilisim.App.Controllers
                     Success = true
                 });
             }
-            catch (Exception ex)
+            catch
             {
                 //Log ex
                 return Json(new ResponseData
@@ -222,7 +222,7 @@ namespace NitelikliBilisim.App.Controllers
                     Success = true
                 });
             }
-            catch (Exception ex)
+            catch
             {
                 //Log ex
                 return Json(new ResponseData
@@ -301,7 +301,7 @@ namespace NitelikliBilisim.App.Controllers
                     Success = true
                 });
             }
-            catch (Exception ex)
+            catch
             {
                 //Log ex
                 return Json(new ResponseData
@@ -340,7 +340,7 @@ namespace NitelikliBilisim.App.Controllers
                     Success = true
                 });
             }
-            catch (Exception ex)
+            catch
             {
                 //Log ex
                 return Json(new ResponseData
@@ -440,7 +440,7 @@ namespace NitelikliBilisim.App.Controllers
                     Message = "E-bülten'e kaydınız başarıyla sağlanmıştır. Güncel içerikleri tarafınıza ulaştıracağız."
                 });
             }
-            catch (Exception ex)
+            catch
             {
                 //Log ex
                 return Json(new ResponseData
