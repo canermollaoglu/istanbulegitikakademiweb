@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using NitelikliBilisim.App.Controllers.Base;
 
 namespace NitelikliBilisim.App.Controllers
 {
-    public class ErrorController : BaseController
+    public class ErrorController : Controller
     {
         
         [Route("Error/{statusCode}")]

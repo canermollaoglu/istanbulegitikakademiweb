@@ -154,7 +154,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             });
         }
 
-
+        [HttpGet]
         [Route("admin/grup-olustur")]
         public IActionResult Add()
         {
@@ -238,7 +238,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             });
         }
 
-        [HttpPost, Route("admin/add-group")]
+        [HttpPost]
+        [Route("admin/add-group")]
         public async Task<IActionResult> Add(AddPostVm data)
         {
             if (!ModelState.IsValid || data.LessonDays == null || data.LessonDays.Count == 0)
