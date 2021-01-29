@@ -14,7 +14,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Applications
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly IStorageService _storage;
-        public EducatorApplicationController(UnitOfWork unitOfWork,IStorageService storage)
+        public EducatorApplicationController(UnitOfWork unitOfWork, IStorageService storage)
         {
             _unitOfWork = unitOfWork;
             _storage = storage;
@@ -28,18 +28,17 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Applications
         public IActionResult Cv(Guid eId)
         {
             ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducatorApplicationCv");
-            string fullPath = string.Empty;
-            var educatorApplication = _unitOfWork.EducatorApplication.GetById(eId);
-            try
-            {
-                fullPath = _storage.BlobUrl+educatorApplication.CvUrl;
-            }
-            catch
-            {
-            }
-            ViewData["CvUrl"] = fullPath;
+            ViewData["eId"] = eId;
             return View();
         }
+
+        public IActionResult GetCv(Guid eId) {
+            var educatorApplication = _unitOfWork.EducatorApplication.GetById(eId);
+            var file = _storage.DownloadFile(Path.GetFileName(educatorApplication.CvUrl), Path.GetDirectoryName(educatorApplication.CvUrl));
+            string mimeType = "application/pdf";
+            return File(file.Result, mimeType);
+        }
+
 
         /// <summary>
         /// Kayıt görüldü bilgisini true olarak günceller.
