@@ -26,5 +26,10 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public string CategorySeoUrl { get; set; }
         public double EducatorPoint { get; set; }
         public int EducatorStudentCount { get; set; }
+        public Guid GroupId { get; set; }
+        public string CategoryName { get; set; }
+        public DateTime EducationEndDate { get; set; }
+        public DateTime EducationDate { get; set; }
+        public bool IsCertificateAvailable { get; set; }
     }
 }

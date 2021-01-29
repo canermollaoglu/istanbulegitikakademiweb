@@ -9,12 +9,12 @@
     var educationImage = "";
     if (!string.IsNullOrEmpty(Model.EducationFeaturedImage))
     {
-        educationImage = StorageService.BlobUrl+Model.EducationFeaturedImage;
+        educationImage = StorageService.BlobUrl + Model.EducationFeaturedImage;
     }
     var educatorImage = "";
     if (!string.IsNullOrEmpty(Model.EducatorAvatarPath))
     {
-        educatorImage = StorageService.BlobUrl+Model.EducatorAvatarPath;
+        educatorImage = StorageService.BlobUrl + Model.EducatorAvatarPath;
     }
 }
 
@@ -103,29 +103,48 @@
                             </div>
                             <div class="account-course-detail__certificate">
                                 <div class="account-course-detail__certificate-img"
-                                     data-name="ASP.Net Core Web API ile JWT Authentication">
+                                     data-name="@Model.EducationName">
                                     <img src="../../assets/img/certificate.jpg" alt="">
                                 </div>
                                 <div class="account-course-detail__certificate-cnt">
                                     <div class="account-course-detail__certificate-txt">
-                                        ASP.Net Core Web API ile JWT Authentication
+                                        @Model.CategoryName
                                     </div>
                                     <div class="account-course-detail__certificate-title">
-                                        Başlangıçtan Uzmanlığı Phyton Eğitimi Bitirme Setifikası
+                                        @Model.EducationName Bitirme Setifikası
                                     </div>
                                 </div>
-                                <div class="account-course-detail__certificate-button">
-                                    <a href="#0" class="button button-fw button-yellow button-icon-right">
-                                        <span class="button-txt">Hazırlanıyor</span>
-                                        <span class="button-icon">
-                                            <span class="icon-outer">
-                                                <svg class="icon">
-                                                    <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
-                                                </svg>
+                                @if (Model.IsCertificateAvailable)
+                                {
+                                    <div class="account-course-detail__certificate-button">
+                                        <a href="/download-student-certificate?groupId=@Model.GroupId" class="button button-fw button-icon-right">
+                                            <span class="button-txt">PDF İndir</span>
+                                            <span class="button-icon">
+                                                <span class="icon-outer">
+                                                    <svg class="icon">
+                                                        <use xlink:href="../../assets/img/icons.svg#icon-long-arrow"></use>
+                                                    </svg>
+                                                </span>
                                             </span>
-                                        </span>
-                                    </a>
-                                </div>
+                                        </a>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="account-course-detail__certificate-button">
+                                        <a  class="button button-fw button-yellow button-icon-right">
+                                            <span class="button-txt">Hazırlanıyor</span>
+                                            <span class="button-icon">
+                                                <span class="icon-outer">
+                                                    <svg class="icon">
+                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                                                    </svg>
+                                                </span>
+                                            </span>
+                                        </a>
+                                    </div>
+                                }
+
                             </div>
                             <div class="account-course-detail__teacher">
                                 <div class="account-course-detail__teacher-img">
@@ -136,7 +155,7 @@
                                         <div class="main-stars">
                                             @for (int i = 1; i <= 5; i++)
                                             {
-                                                if (i<=Model.EducatorPoint)
+                                                if (i <= Model.EducatorPoint)
                                                 {
                                                     <span class="icon-outer icon-star active">
                                                         <svg class="icon">
@@ -169,7 +188,7 @@
                                             var certificateImage = "";
                                             if (!string.IsNullOrEmpty(Model.EducatorAvatarPath))
                                             {
-                                                certificateImage = StorageService.BlobUrl+certificate.CertificateImagePath;
+                                                certificateImage = StorageService.BlobUrl + certificate.CertificateImagePath;
                                             }
                                             <div class="account-course-detail__teacher-tag">
                                                 <img src="@certificateImage" alt="">

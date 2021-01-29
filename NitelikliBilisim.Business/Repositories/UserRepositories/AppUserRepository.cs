@@ -162,7 +162,7 @@ namespace NitelikliBilisim.Business.Repositories
             return model;
         }
 
-        
+
         public List<MyCertificateVm> GetUserAvailableCertificates(string userId)
         {
             var certificates = (from certificate in _context.CustomerCertificates
@@ -187,26 +187,26 @@ namespace NitelikliBilisim.Business.Repositories
         public List<MyCertificateVm> GetUserCertificates(string userId)
         {
             var certificates = (from bridge in _context.Bridge_GroupStudents
-                                  join eGroup in _context.EducationGroups on bridge.Id equals eGroup.Id
-                                  join student in _context.Customers on bridge.Id2 equals student.Id
-                                  join education in _context.Educations on eGroup.EducationId equals education.Id
-                                  where bridge.Id2 == userId && eGroup.StartDate.AddDays(education.Days)<DateTime.Now
-                                   select new MyCertificateVm
-                                   {
-                                       GroupId = eGroup.Id,
-                                       EducationName = education.Name,
-                                       EducationDate = eGroup.StartDate,
-                                       EducationSeoUrl = education.SeoUrl,
-                                       CategorySeoUrl = education.Category.SeoUrl,
-                                       CategoryName = education.Category.BaseCategory.Name,
-                                       EducationDateText = eGroup.StartDate.ToString("dd MMMM yyyy")
-                                   }).ToList();
+                                join eGroup in _context.EducationGroups on bridge.Id equals eGroup.Id
+                                join student in _context.Customers on bridge.Id2 equals student.Id
+                                join education in _context.Educations on eGroup.EducationId equals education.Id
+                                where bridge.Id2 == userId && eGroup.StartDate.AddDays(education.Days) < DateTime.Now
+                                select new MyCertificateVm
+                                {
+                                    GroupId = eGroup.Id,
+                                    EducationName = education.Name,
+                                    EducationDate = eGroup.StartDate,
+                                    EducationSeoUrl = education.SeoUrl,
+                                    CategorySeoUrl = education.Category.SeoUrl,
+                                    CategoryName = education.Category.BaseCategory.Name,
+                                    EducationDateText = eGroup.StartDate.ToString("dd MMMM yyyy")
+                                }).ToList();
             var availableCertificates = new List<MyCertificateVm>();
 
             foreach (var certificate in certificates)
             {
                 var attendance = _context.GroupAttendances.Where(x => x.GroupId == certificate.GroupId && x.CustomerId == userId).ToList();
-                if (attendance.Count ==0)
+                if (attendance.Count == 0)
                 {
                     availableCertificates.Add(certificate);
                 }
@@ -432,6 +432,10 @@ namespace NitelikliBilisim.Business.Repositories
                          && eGroup.Id == groupId
                          select new MyCourseDetailVm
                          {
+                             GroupId = eGroup.Id,
+                             EducationDate = eGroup.StartDate,
+                             EducationEndDate = eGroup.StartDate.AddDays(education.Days),
+                             CategoryName = category.Name,
                              EducationId = education.Id,
                              SeoUrl = education.SeoUrl,
                              CategorySeoUrl = category.SeoUrl,
@@ -445,12 +449,18 @@ namespace NitelikliBilisim.Business.Repositories
                              PriceText = eGroup.NewPrice.GetValueOrDefault().ToString(cultureInfo),
                              Days = education.Days.ToString(),
                              Hours = (education.Days * education.HoursPerDay).ToString(),
-                             Host = host.HostName,
-                             
+                             Host = host.HostName
                          }).FirstOrDefault();
             model.EducatorPoint = GetEducatorPoint(model.EducatorId);
             model.EducatorStudentCount = _context.Bridge_GroupStudents.Include(x => x.Group).Where(x => x.Group.EducatorId == model.EducatorId).Count();
 
+            #region test 
+            var attendance = _context.GroupAttendances.Where(x => x.GroupId == model.GroupId && x.CustomerId == userId).ToList();
+            if (attendance.Count == 0 && model.EducationEndDate<DateTime.Now)
+            {
+                model.IsCertificateAvailable = true;
+            }
+            #endregion
 
             var bridgeEducatorCertificates = _context.Bridge_EducatorEducatorCertificates.Include(x => x.EducatorCertificate).Where(x => x.Id == model.EducatorId).ToList();
             var educatorCertificates = new List<EducatorCertificate>();
