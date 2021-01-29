@@ -161,5 +161,9 @@ namespace NitelikliBilisim.Business.Repositories
             return data;
         }
 
+        public bool IsNbuyStudent(string id)
+        {
+            return _context.StudentEducationInfos.Any(x => x.CustomerId == id);
+        }
     }
 }

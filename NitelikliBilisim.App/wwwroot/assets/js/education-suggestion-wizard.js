@@ -435,7 +435,7 @@ function loadWizardSuggestedEducations() {
             success: (res) => {
                 var suggestedEducations = "";
                 $.each(res.data, function (index, e) {
-                    suggestedEducations += `<a href="/${e.catSeoUrl}/${e.seoUrl}" class="lesson-list__item">
+                    suggestedEducations += `<a href="egitimler/${e.catSeoUrl}/${e.seoUrl}" class="lesson-list__item">
                     <div class="lesson-list__item-img">
                                     <img src="${e.imageUrl}" alt="">
                                 </div>

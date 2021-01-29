@@ -28,6 +28,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             _storage = storage;
         }
 
+        [Route("admin/fatura-listesi")]
         public IActionResult List()
         {
             ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminInvoices");
