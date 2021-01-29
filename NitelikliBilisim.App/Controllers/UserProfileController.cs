@@ -18,6 +18,7 @@ using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels.Main.Profile;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
+using Syncfusion.Drawing;
 using Syncfusion.Pdf;
 using Syncfusion.Pdf.Barcode;
 using Syncfusion.Pdf.Graphics;
@@ -433,15 +434,16 @@ namespace NitelikliBilisim.App.Controllers
 
             /*Başlangıç*/
             string webrootPath = _hostingEnvironment.WebRootPath;
-            string rootpath = _hostingEnvironment.ContentRootPath;
 
             var bgImage = new FileStream(Path.Combine(webrootPath, "img/bireysel-egitim-sertifika-sablonu.jpg"), FileMode.Open, FileAccess.Read);
             PdfBitmap background = new PdfBitmap(bgImage);
             graphics.DrawImage(background, 0, 0, page.Graphics.ClientSize.Width, page.Graphics.ClientSize.Height);
 
             //Yazı tipini belirle
-            PdfFont font = new PdfStandardFont(PdfFontFamily.TimesRoman, 8, PdfFontStyle.Bold);
-
+            string path = Path.Combine(webrootPath, "assets/fonts/ProximaNova-Bold.ttf");
+            Stream fontStream = new FileStream(path, FileMode.Open, FileAccess.ReadWrite);
+            //Create a new PDF true type font.
+            PdfTrueTypeFont tFont = new PdfTrueTypeFont(fontStream, 12, PdfFontStyle.Regular);
             // Ad soyad yazdır
 
             PdfLayoutFormat format = new PdfLayoutFormat();
@@ -452,7 +454,7 @@ namespace NitelikliBilisim.App.Controllers
             string text = $"Sayın {student.Name.ToUpper()} {student.Surname.ToUpper()}";
             PdfStringFormat nameSurnameFormat = new PdfStringFormat();
             nameSurnameFormat.Alignment = PdfTextAlignment.Center;
-            graphics.DrawString(text, font, PdfBrushes.Black, new Syncfusion.Drawing.RectangleF(0, 210, clipBounds.Width, 150), nameSurnameFormat);
+            graphics.DrawString(text, tFont, PdfBrushes.Black, new Syncfusion.Drawing.RectangleF(0, 210, clipBounds.Width, 150), nameSurnameFormat);
             /*QR KOD Oluştur*/
             PdfQRBarcode barcode = new PdfQRBarcode();
 
