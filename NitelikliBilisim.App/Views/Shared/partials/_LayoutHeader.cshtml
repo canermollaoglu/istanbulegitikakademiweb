@@ -55,6 +55,7 @@
         </div>
     </div> 
     }
+
     <div id="miniBasket" class="mini-basket">
         <div class="mini-basket__top">
             <div class="title title--small">
@@ -123,43 +124,9 @@
 
                     <nav class="header__right-side">
                         <div class='header-overlay overlay js-close-modal'></div>
-
-
                         @if (User.Identity.IsAuthenticated)
                         {
-                            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                            var user = await UserManager.FindByIdAsync(userId);
-                            var profileImage = "";
-
-                            if (string.IsNullOrEmpty(user.AvatarPath))
-                            {
-                                profileImage = "../../img/nb_letter_logo_sm.png";
-
-                            }
-                            else
-                            {
-                                profileImage = StorageService.BlobUrl + user.AvatarPath;
-                            }
-
-                            <!-- giriş yapılmış -->
-                            <div class="header__profile-btn js-open-user-dropdown">
-                                <div class="header__profile-img">
-                                    <img src="@profileImage" alt="">
-                                    <div class="header__profile-caret"></div>
-                                </div>
-                                <div class="header__profile-cnt">
-                                    <div class="header__profile-txt">Hoşgeldiniz</div>
-                                    <div class="header__profile-name">@user.Name @user.Surname</div>
-                                </div>
-                            </div>
-                            <a asp-controller="UserProfile" asp-action="ForYou" class="button header__register-button">
-                                <span class="icon-outer button-icon">
-                                    <svg class="icon">
-                                        <use xlink:href="../../assets/img/icons.svg#icon-star-s"></use>
-                                    </svg>
-                                </span>
-                                <span>Sana Özel</span>
-                            </a>
+                            @await Component.InvokeAsync("HeaderLoggedInUserInfo")
                             <!-- giriş yapılmış -->
                         }
                         else

@@ -87,7 +87,6 @@ function initMap() {
 
 
 function btnSave_onClick() {
-    alert($("#input-map-url").val());
     btnSave.off("click");
     var data = {
         Id: $("#hostId").val(),

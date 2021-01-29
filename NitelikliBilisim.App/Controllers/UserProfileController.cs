@@ -306,14 +306,14 @@ namespace NitelikliBilisim.App.Controllers
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             model.UserId = userId;
-            if (model.ProfileImage != null)
-            {
+            //if (model.ProfileImage != null)
+            //{
 
-                var fileName = StringHelpers.FormatForTag($"{user.Name} {user.Surname}");
-                var dbPath = await _storageService.UploadFile(model.ProfileImage.OpenReadStream(), $"{fileName}-{model.ProfileImage.FileName}", "user-avatars");
-                user.AvatarPath = dbPath;
-                await _userManager.UpdateAsync(user);
-            }
+            //    var fileName = StringHelpers.FormatForTag($"{user.Name} {user.Surname}");
+            //    var dbPath = await _storageService.UploadFile(model.ProfileImage.OpenReadStream(), $"{fileName}-{model.ProfileImage.FileName}", "user-avatars");
+            //    user.AvatarPath = dbPath;
+            //    await _userManager.UpdateAsync(user);
+            //}
 
             TempData["Success"] = "Kullanıcı bilgileriniz başarıyla güncellendi!";
             return RedirectToAction("AccountSettings", "UserProfile");

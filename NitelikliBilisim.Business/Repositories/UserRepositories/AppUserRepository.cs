@@ -10,6 +10,7 @@ using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Enums.promotion;
 using NitelikliBilisim.Core.Enums.user_details;
 using NitelikliBilisim.Core.ViewModels;
+using NitelikliBilisim.Core.ViewModels.Main;
 using NitelikliBilisim.Core.ViewModels.Main.Profile;
 using NitelikliBilisim.Data;
 using System;
@@ -801,6 +802,20 @@ namespace NitelikliBilisim.Business.Repositories
             return retVal;
 
 
+        }
+
+        public HeaderLoggedInUserInfoVm GetHeaderLoggedInUserInfo(string userId)
+        {
+            var data = _context.Users.First(x => x.Id == userId);
+            var studentEducationInfo = _context.StudentEducationInfos.Any(x => x.CustomerId == userId);
+            var retVal = new HeaderLoggedInUserInfoVm
+            {
+                AvatarPath = data.AvatarPath,
+                Name = data.Name,
+                Surname = data.Surname,
+                IsNbuyStudent = studentEducationInfo
+            };
+            return retVal;
         }
         #endregion
         //public List<MyInvoicesVm> GetUserInvoices(string userId)
