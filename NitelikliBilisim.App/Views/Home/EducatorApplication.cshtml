@@ -57,7 +57,12 @@
                             <input type="text" asp-for="NameSurname" class="input input--fw" placeholder="Adınız Soyadınız" required>
                         </div>
                         <div class="input__column-2">
-                            <div class="input__outer input--phone">
+                            <div class="input__outer">
+                                <span class="icon-outer input__icon">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-phone"></use>
+                                    </svg>
+                                </span>
                                 <input asp-for="Phone" type="text" class="input input--fw inputPhoneNumber"
                                        placeholder="___-__-__">
                             </div>

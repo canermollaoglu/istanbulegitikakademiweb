@@ -112,18 +112,82 @@
                                 <div class="js-calc-accordion-height">
                                     <div class="address-input-radio">
                                         <label class="main-radio">
-                                            Kurumsal Fatura
-                                            <input type="radio" checked="checked" id="kurumsalRadio" class="newAddressRadio" name="radio">
+                                            Bireysel Fatura
+                                            <input type="radio" checked="checked" name="radio" id="bireyselRadio" class="newAddressRadio">
                                             <span class="main-radio__checkmark"></span>
                                         </label>
                                         <label class="main-radio">
-                                            Bireysel Fatura
-                                            <input type="radio" name="radio" id="bireyselRadio" class="newAddressRadio">
+                                            Kurumsal Fatura
+                                            <input type="radio"  id="kurumsalRadio" class="newAddressRadio" name="radio">
                                             <span class="main-radio__checkmark"></span>
                                         </label>
+
                                     </div>
-                                    <form id="corporateAddressForm" method="post" action="sepet/kurumsal-adres-ekle" novalidate class="address__form-change addressKurumsal"
+                                    <form id="individualAddressForm" method="post" action="/sepet/bireysel-adres-ekle" class="address__form-change addressBireysel" 
                                           style="display: block;">
+                                        @Html.AntiForgeryToken()
+                                        <div class="input__column-2">
+                                            <div class="input__outer no-icon">
+                                                <div class="input__title">Adınız Soyadınız</div>
+                                                <input name="NameSurname" type="text" class="input input--bordered input--fw input--noshadow"
+                                                       placeholder="Adınızı soyadınızı giriniz" required>
+                                            </div>
+                                            <div class="input__outer input--phone f-column">
+                                                <div class="input__title">Telefon Numaranız</div>
+                                                <div>
+                                                    <input type="text" name="PhoneNumber" id=""
+                                                           class="input input--bordered input--fw input--noshadow inputPhoneNumber"
+                                                           placeholder="___-__-__" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="input__column-2">
+                                            <div class="input__outer bordered-select">
+                                                <div class="select-subject no-icon">
+                                                    <div class="input__title">Şehir</div>
+                                                    <select class="js-sehir-select" name="CityId" required>
+                                                        @foreach (var city in Model.Cities)
+                                                        {
+                                                            <option value="@city.Id">@city.Name</option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="input__outer bordered-select">
+                                                <div class="select-subject no-icon">
+                                                    <div class="input__title">İlçe</div>
+                                                    <select class="js-ilce-select" name="StateId" required>
+                                                        <option value="" selected hidden disabled>İlçe Seçiniz</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="input__outer input--textarea no-icon">
+                                            <div class="input__title">Açık Adresiniz</div>
+                                            <textarea name="Content" class="input input--fw input--bordered input--noshadow h-150"
+                                                      placeholder="Adresinizin tamamını buraya yazınız" required></textarea>
+                                        </div>
+                                        <div class="input__outer no-icon">
+                                            <div class="input__title">Adres Adı</div>
+                                            <input name="Title" type="text" class="input input--bordered input--fw input--noshadow"
+                                                   placeholder="Adresinize isim verin" required>
+                                        </div>
+                                        <div class="form__button">
+                                            <div class="form__button-left">
+                                                <span>
+                                                    * Adres açıklaması yazınız.
+                                                </span>
+                                            </div>
+                                            <div class="form__button-right">
+                                                <button type="submit" class="button button-fw">
+                                                    <span class="button-txt">
+                                                        Adresi Kaydet
+                                                    </span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <form id="corporateAddressForm" method="post" action="sepet/kurumsal-adres-ekle" novalidate class="address__form-change addressKurumsal" >
                                         @Html.AntiForgeryToken()
                                         <div class="input__column-2">
                                             <div class="input__outer no-icon">
@@ -177,69 +241,6 @@
                                             <div class="input__title">Adres Adı</div>
                                             <input name="Title" type="text" class="input input--bordered input--fw input--noshadow"
                                                    placeholder="Adresinize isim verin">
-                                        </div>
-                                        <div class="form__button">
-                                            <div class="form__button-left">
-                                                <span>
-                                                    * Adres açıklaması yazınız.
-                                                </span>
-                                            </div>
-                                            <div class="form__button-right">
-                                                <button type="submit" class="button button-fw">
-                                                    <span class="button-txt">
-                                                        Adresi Kaydet
-                                                    </span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                    <form id="individualAddressForm" method="post" action="/sepet/bireysel-adres-ekle" class="address__form-change addressBireysel">
-                                        @Html.AntiForgeryToken()
-                                        <div class="input__column-2">
-                                            <div class="input__outer no-icon">
-                                                <div class="input__title">Adınız Soyadınız</div>
-                                                <input name="NameSurname" type="text" class="input input--bordered input--fw input--noshadow"
-                                                       placeholder="Adınızı soyadınızı giriniz" required>
-                                            </div>
-                                            <div class="input__outer input--phone f-column">
-                                                <div class="input__title">Telefon Numaranız</div>
-                                                <div>
-                                                    <input type="text" name="PhoneNumber" id=""
-                                                           class="input input--bordered input--fw input--noshadow inputPhoneNumber"
-                                                           placeholder="___-__-__" required>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="input__column-2">
-                                            <div class="input__outer bordered-select">
-                                                <div class="select-subject no-icon">
-                                                    <div class="input__title">Şehir</div>
-                                                    <select class="js-sehir-select" name="CityId" required>
-                                                        @foreach (var city in Model.Cities)
-                                                        {
-                                                            <option value="@city.Id">@city.Name</option>
-                                                        }
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="input__outer bordered-select">
-                                                <div class="select-subject no-icon">
-                                                    <div class="input__title">İlçe</div>
-                                                    <select class="js-ilce-select" name="StateId" required>
-                                                        <option value="" selected hidden disabled>İlçe Seçiniz</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="input__outer input--textarea no-icon">
-                                            <div class="input__title">Açık Adresiniz</div>
-                                            <textarea name="Content" class="input input--fw input--bordered input--noshadow h-150"
-                                                      placeholder="Adresinizin tamamını buraya yazınız" required></textarea>
-                                        </div>
-                                        <div class="input__outer no-icon">
-                                            <div class="input__title">Adres Adı</div>
-                                            <input name="Title" type="text" class="input input--bordered input--fw input--noshadow"
-                                                   placeholder="Adresinize isim verin" required>
                                         </div>
                                         <div class="form__button">
                                             <div class="form__button-left">
@@ -930,9 +931,7 @@
                             $("#update-c-state").val(address.stateId).trigger('change');
                             modalShow("corporateAdressEdit");
                         }
-                        console.log(res);
                     } else {
-                        console.log(res);
                     }
                 }
             });

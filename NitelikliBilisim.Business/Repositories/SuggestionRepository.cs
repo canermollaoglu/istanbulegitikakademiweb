@@ -210,7 +210,7 @@ namespace NitelikliBilisim.Business.Repositories
 
         public List<WizardFirstStepData> GetWizardFirstStepData()
         {
-            return _context.EducationCategories.Where(x => x.BaseCategoryId == null).Select(x =>
+            return _context.EducationCategories.Where(x => x.BaseCategoryId == null && x.CategoryType== CategoryType.NBUY).Select(x =>
               new WizardFirstStepData
               {
                   Id = x.Id,
