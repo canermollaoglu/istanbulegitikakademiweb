@@ -2,6 +2,7 @@
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.PaymentModels;
 using NitelikliBilisim.Data;
+using System;
 using System.Linq;
 
 namespace NitelikliBilisim.Business.Repositories
@@ -14,7 +15,7 @@ namespace NitelikliBilisim.Business.Repositories
             _context = context;
         }
 
-        public void Create(string conversationId, PaymentModelSuccess successModel,string promotionId,string userId)
+        public void Create(string conversationId, PaymentModelSuccess successModel,Guid? promotionId,string userId)
         {
             var data = JsonConvert.SerializeObject(new
             {

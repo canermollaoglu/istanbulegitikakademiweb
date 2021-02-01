@@ -187,12 +187,9 @@
         function document_onLoad() {
             localStorage.removeItem("promotionCode");
             getCartItems();
-            //getBasketBasedPromotion();
+            getBasketBasedPromotion();
         }
 
-        //function btnApplyPromotion_onClick() {
-        //    getPromotionInfo();
-        //}
         $('.js-cupon-btn').click(function () {
             var cuponInput = $(this).prev();
             if (cuponInput.val() == '') {
@@ -218,8 +215,6 @@
             }
         });
 
-
-
         /* functions */
         function getCartItems() {
             var items = _cart.getItems();
@@ -242,25 +237,32 @@
             });
         }
 
-        //function getBasketBasedPromotion() {
-        //    var items = _cart.getItems();
-        //    var data = {
-        //        Items: items
-        //    };
-        //    $.ajax({
-        //        url: "/get-basked-based-promotion",
-        //        method: "post",
-        //        data: data,
-        //        success: (res) => {
-        //            if (res.isSuccess) {
-        //                console.log(res);
-        //                inputPromotionDiscountAmount.val(res.data.discountAmount);
-        //                appendBasketBasedPromotion(res.data);
-        //                calculateTotalPrice();
-        //            }
-        //        }
-        //    });
-        //}
+        function getBasketBasedPromotion() {
+            var items = _cart.getItems();
+            var data = {
+                Items: items
+            };
+            $.ajax({
+                url: "/get-basket-based-promotion",
+                method: "post",
+                data: data,
+                success: (res) => {
+                    if (res.isSuccess) {
+                        $('.js-cupon-form .wizard-loading').fadeOut(500);
+                        $('.js-cupon-form')
+                            .removeClass('active')
+                            .addClass('result');
+                        inputPromotionCode.val('');
+                        var newItem = `<div class="checkout__price-item"><div class="checkout__price-title">${res.data.name} İndirimi</div><div class="checkout__price-new"> ${formatCurrency(res.data.discountAmount)}</div><div class="checkout__product-crash js-remove-sale"><span class="icon-outer"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-crash"></use></svg></span></div></div>`;
+                        $('.js-discounts').append(newItem);
+                        var result = `<span class="icon-font"><svg class="icon icon-check"><use xlink:href="../../assets/img/icons.svg#icon-check"></use></svg></span>İndirim Başarılı ile Uygulandı!`;
+                        $('.js-cupon-form__result').html(result);
+                        inputPromotionDiscountAmount.val(res.data.discountAmount);
+                        calculatePrices();
+                    }
+                }
+            });
+        }
 
         function getPromotionInfo() {
             var items = _cart.getItems();
@@ -332,58 +334,8 @@
                 );
             }
         }
-        //function appendPromotionCode(data) {
-        //    tablePromotionCode.html("");
-        //    if (data.length == 0) {
-        //        return;
-        //    }
-        //    var appended = "";
-        //    appended += `<thead>` +
-        //        `<tr><td>Kampanya</td><td>Kupon Kodu</td><td>İndirim tutarı</td></tr>` +
-        //        `</thead>` +
-        //        `<tbody>` +
-        //        `<tr>` +
-        //        `<td>` +
-        //        `"${data.name}" ` +
-        //        `</td>` +
-        //        `<td>` +
-        //        `${data.promotionCode}` +
-        //        `</td>` +
-        //        `<td>` +
-        //        `${data.discountAmount}` +
-        //        `</td>` +
-        //        `<td class="options" style="width:5%; text-align:center;">` +
-        //        `<a type="button" class="btn-delete-item" onClick="removePromotion()" ><i class="icon-trash"></i></a>` +
-        //        `</td>` +
-        //        `<tr>`;
-
-        //    appended += "</tbody>";
-        //    tablePromotionCode.append(appended);
-
-        //}
-        //function appendBasketBasedPromotion(data) {
-        //    tablePromotionCode.html("");
-        //    if (data.length == 0) {
-        //        return;
-        //    }
-        //    var appended = "";
-        //    appended += `<thead> +
-        //        `<tr><td>Kampanya</td><td>İndirim tutarı</td></tr>` +
-        //        `</thead>` +
-        //        `<tbody>` +
-        //        `<tr>` +
-        //        `<td>` +
-        //        `"${data.name}" ` +
-        //        `</td>` +
-        //        `<td>` +
-        //        `${data.discountAmount}` +
-        //        `</td>`+
-        //        `<tr>`;
-
-        //    appended += "</tbody>";
-        //    tablePromotionCode.append(appended);
-
-        //}
+       
+        
         function calculatePrices() {
             txtTotal.html(formatCurrency(parseFloat(inputEducationTotalPrice.val()) - parseFloat(inputPromotionDiscountAmount.val())));
             txtOldTotal.html(formatCurrency(parseFloat(inputEducationTotalOldPrice.val())));

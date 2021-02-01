@@ -3,6 +3,7 @@ using Iyzipay.Request;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using NitelikliBilisim.App.Controllers.Base;
@@ -44,8 +45,9 @@ namespace NitelikliBilisim.App.Controllers
         private readonly UserUnitOfWork _userUnitOfWork;
         private readonly IPaymentService _paymentService;
         private readonly IEmailSender _emailSender;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public SaleController(IWebHostEnvironment hostingEnvironment, UnitOfWork unitOfWork, IPaymentService paymentService, UserUnitOfWork userUnitOfWork, IEmailSender emailSender)
+        public SaleController(UserManager<ApplicationUser> userManager,IWebHostEnvironment hostingEnvironment, UnitOfWork unitOfWork, IPaymentService paymentService, UserUnitOfWork userUnitOfWork, IEmailSender emailSender)
         {
             _hostingEnvironment = hostingEnvironment;
             _unitOfWork = unitOfWork;
@@ -53,6 +55,7 @@ namespace NitelikliBilisim.App.Controllers
             _vmCreator = new SaleVmCreator(_unitOfWork);
             _userUnitOfWork = userUnitOfWork;
             _emailSender = emailSender;
+            _userManager = userManager;
         }
 
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
@@ -122,7 +125,7 @@ namespace NitelikliBilisim.App.Controllers
             });
         }
 
-        [HttpPost, IgnoreAntiforgeryToken, Route("get-basked-based-promotion")]
+        [HttpPost, IgnoreAntiforgeryToken, Route("get-basket-based-promotion")]
         public IActionResult GetBaskedBasedPromotion(GetCartItemsData data)
         {
             if (data == null || data.Items == null)
@@ -333,8 +336,10 @@ namespace NitelikliBilisim.App.Controllers
                 {
                     var model = manager.CreateCompletionModel(result.PaymentForNormal);
                     _unitOfWork.Sale.CompletePayment(model, result.Success.InvoiceId, result.Success.InvoiceDetailIds);
+                    Guid? promotionId = null;
                     if (promotion != null)
                     {
+                        promotionId = promotion.Id;
                         _unitOfWork.EducationPromotionItem.Insert(new EducationPromotionItem
                         {
                             UserId = userId,
@@ -343,7 +348,8 @@ namespace NitelikliBilisim.App.Controllers
                             CreatedDate = DateTime.Now
                         });
                     }
-                    var customerEmail = _userUnitOfWork.User.GetCustomerInfo(userId).PersonalAndAccountInfo.Email;
+                    var user = await _userManager.FindByIdAsync(userId);
+                    var customerEmail = user.Email;
                     if (customerEmail != null)
                     {
                         await _emailSender.SendAsync(new EmailMessage
@@ -355,7 +361,7 @@ namespace NitelikliBilisim.App.Controllers
                     }
                     paymentResultModel.Status = PaymentResultStatus.Success;
                     paymentResultModel.Message = "Ödemeniz başarılı bir şekilde gerçekleşmiştir.";
-                    paymentResultModel.SuccessDetails = _unitOfWork.InvoiceDetail.GetSuccessPaymentDetails(result.Success.InvoiceDetailIds, result.Success.PromotionId);
+                    paymentResultModel.SuccessDetails = _unitOfWork.InvoiceDetail.GetSuccessPaymentDetails(result.Success.InvoiceDetailIds, promotionId);
                 }
                 else
                 {
@@ -370,19 +376,9 @@ namespace NitelikliBilisim.App.Controllers
             {
                 if (result.Status == PaymentServiceMessages.ResponseSuccess)
                 {
-                    string promotionId = promotion != null ? promotion.Id.ToString() : string.Empty;
+                    Guid promotionId = promotion != null ? promotion.Id : Guid.Empty;
                     _unitOfWork.TempSaleData.Create(result.ConversationId, result.Success, promotionId, userId);
                     HttpContext.Session.SetString("html_content", result.HtmlContent);
-                    var customerEmail = _userUnitOfWork.User.GetCustomerInfo(userId).PersonalAndAccountInfo.Email;
-                    if (customerEmail != null)
-                    {
-                        await _emailSender.SendAsync(new EmailMessage
-                        {
-                            Subject = "Eğitim ödemeniz alınmıştır | Nitelikli Bilişim",
-                            Body = "Eğitim ödemeniz alınmıştır.",
-                            Contacts = new[] { customerEmail }
-                        });
-                    }
                     return Redirect("/secure3d");
                 }
                 else
@@ -414,7 +410,7 @@ namespace NitelikliBilisim.App.Controllers
 
         [AllowAnonymous]
         [HttpPost, Route("odeme-sonucu")]
-        public IActionResult PaymentResult(CreateThreedsPaymentRequest data)
+        public async Task<IActionResult> PaymentResult(CreateThreedsPaymentRequest data)
         {
             NormalPaymentResultVm retVal = new NormalPaymentResultVm();
             if (data != null)
@@ -430,7 +426,8 @@ namespace NitelikliBilisim.App.Controllers
                     var paymentModelSuccess = _unitOfWork.TempSaleData.Get(data.ConversationId);
                     retVal.Status = PaymentResultStatus.Success;
                     retVal.Message = "Ödemeniz başarılı bir şekilde gerçekleşmiştir.";
-                    retVal.SuccessDetails = _unitOfWork.InvoiceDetail.GetSuccessPaymentDetails(paymentModelSuccess.InvoiceDetailIds, paymentModelSuccess.PromotionId);
+                    Guid? promotionId = string.IsNullOrEmpty(paymentModelSuccess.PromotionId) && Guid.Parse(paymentModelSuccess.PromotionId)!=Guid.Empty ? null : Guid.Parse(paymentModelSuccess.PromotionId);
+                    retVal.SuccessDetails = _unitOfWork.InvoiceDetail.GetSuccessPaymentDetails(paymentModelSuccess.InvoiceDetailIds, promotionId);
                     if (!string.IsNullOrEmpty(paymentModelSuccess.PromotionId))
                     {
                         _unitOfWork.EducationPromotionItem.Insert(new EducationPromotionItem
@@ -439,6 +436,17 @@ namespace NitelikliBilisim.App.Controllers
                             EducationPromotionCodeId = Guid.Parse(paymentModelSuccess.PromotionId),
                             InvoiceId = paymentModelSuccess.InvoiceId,
                             CreatedDate = DateTime.Now
+                        });
+                    }
+                     var user = await _userManager.FindByIdAsync(paymentModelSuccess.UserId);
+                    var customerEmail = user.Email;
+                    if (customerEmail != null)
+                    {
+                        await _emailSender.SendAsync(new EmailMessage
+                        {
+                            Subject = "Eğitim ödemeniz alınmıştır | Nitelikli Bilişim",
+                            Body = "Eğitim ödemeniz alınmıştır.",
+                            Contacts = new[] { customerEmail }
                         });
                     }
                     _unitOfWork.TempSaleData.Remove(data.ConversationId);

@@ -767,7 +767,7 @@
             getCartItems();
             checkPromotionCode();
             $('.js-sehir-select').trigger("change");
-            //getBasketBasedPromotion();
+            
         }
 
         $('.js-cupon-btn').click(function () {
@@ -799,6 +799,8 @@
             var promotionCode = localStorage.getItem("promotionCode");
             if (promotionCode) {
                 getPromotionInfo(promotionCode);
+            } else {
+                getBasketBasedPromotion();
             }
         }
 
@@ -1013,6 +1015,32 @@
                         inputDiscountAmount.val(res.data.discountAmount);
                         calculatePrices();
                         $(".checkout__top-right").html(res.data.items.length + " Ürün");
+                    }
+                }
+            });
+        }
+        function getBasketBasedPromotion() {
+            var items = _cart.getItems();
+            var data = {
+                Items: items
+            };
+            $.ajax({
+                url: "/get-basket-based-promotion",
+                method: "post",
+                data: data,
+                success: (res) => {
+                    if (res.isSuccess) {
+                        $('.js-cupon-form .wizard-loading').fadeOut(500);
+                        $('.js-cupon-form')
+                            .removeClass('active')
+                            .addClass('result');
+                        inputPromotionCode.val('');
+                        var newItem = `<div class="checkout__price-item"><div class="checkout__price-title">${res.data.name} İndirimi</div><div class="checkout__price-new"> ${formatCurrency(res.data.discountAmount)}</div><div class="checkout__product-crash js-remove-sale"><span class="icon-outer"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-crash"></use></svg></span></div></div>`;
+                        $('.js-discounts').append(newItem);
+                        var result = `<span class="icon-font"><svg class="icon icon-check"><use xlink:href="../../assets/img/icons.svg#icon-check"></use></svg></span>İndirim Başarılı ile Uygulandı!`;
+                        $('.js-cupon-form__result').html(result);
+                        inputPromotionDiscountAmount.val(res.data.discountAmount);
+                        calculatePrices();
                     }
                 }
             });

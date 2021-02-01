@@ -175,7 +175,7 @@ namespace NitelikliBilisim.App.Controllers
             if (result.Succeeded)
             {
                 var user = await _userManager.FindByNameAsync(model.UserName);
-                var isNbuy = _unitOfWork.Customer.IsNbuyStudent(user.Id);
+                //var isNbuy = _unitOfWork.Customer.IsNbuyStudent(user.Id);
                 var roles = await _userManager.GetRolesAsync(user);
                 if (roles.Contains("Admin"))
                 {

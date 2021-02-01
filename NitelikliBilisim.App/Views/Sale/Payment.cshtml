@@ -209,81 +209,7 @@
                                             </div>
                                             <div class="checkout__purchase-wrp">
                                                 <p>Taksit seçeneklerini görebilmek için lütfen kart numaranızı giriniz.</p>
-                                                @*<label class="main-radio">
-                    <div class="checkout__purchase-item">
-                        <div>
-                            Peşin
-                        </div>
-                        <div>
-                            <span>₺</span> 1,799.00
-                        </div>
-                        <div>
-                            <span>₺</span> 1,799.00
-                        </div>
-                    </div>
-                    <input type="radio" checked="checked" name="purchase">
-                    <span class="main-radio__checkmark"></span>
-                </label>
-                <label class="main-radio">
-                    <div class="checkout__purchase-item">
-                        <div>
-                            2x
-                        </div>
-                        <div>
-                            <span>₺</span> 900.00
-                        </div>
-                        <div>
-                            <span>₺</span> 1,840.00
-                        </div>
-                    </div>
-                    <input type="radio" name="purchase">
-                    <span class="main-radio__checkmark"></span>
-                </label>
-                <label class="main-radio">
-                    <div class="checkout__purchase-item">
-                        <div>
-                            3x
-                        </div>
-                        <div>
-                            <span>₺</span> 600.00
-                        </div>
-                        <div>
-                            <span>₺</span> 1,925.00
-                        </div>
-                    </div>
-                    <input type="radio" name="purchase">
-                    <span class="main-radio__checkmark"></span>
-                </label>
-                <label class="main-radio">
-                    <div class="checkout__purchase-item">
-                        <div>
-                            4x
-                        </div>
-                        <div>
-                            <span>₺</span> 450.00
-                        </div>
-                        <div>
-                            <span>₺</span> 2,220.00
-                        </div>
-                    </div>
-                    <input type="radio" name="purchase">
-                    <span class="main-radio__checkmark"></span>
-                </label>
-                <label class="main-radio">
-                    <div class="checkout__purchase-item">
-                        <div>
-                            5x
-                        </div>
-                        <div>
-                            <span>₺</span> 360.00
-                        </div>
-                        <div>
-                            <span>₺</span> 2,225.00
-                        </div>
-                    </div>
-                    <input type="radio" name="purchase">
-                    <span class="main-radio__checkmark"></span>
-                </label>*@
+                                                
                                             </div>
                                         </div>
                                     </form>
@@ -1129,6 +1055,9 @@
             if (promotionCode) {
                 getPromotionInfo(promotionCode);
             }
+            else {
+                getBasketBasedPromotion();
+            }
         }
 
         function formatCurrency(total) {
@@ -1292,10 +1221,10 @@
                                                                 Peşin
                                                             </div>
                                                             <div>
-                                                                <span>₺</span> ${info.price}
+                                                                 ${info.price}&nbsp;<span>TL</span>
                                                             </div>
                                                             <div>
-                                                                <span>₺</span> ${info.totalPrice}
+                                                                 ${info.totalPrice}&nbsp;<span>TL</span>
                                                             </div>
                                                         </div>
                                                         <input type="radio" value="${info.installmentNumber}" checked="checked" name="purchase">
@@ -1308,10 +1237,10 @@
                                                                 ${info.installmentNumber} Taksit
                                                             </div>
                                                             <div>
-                                                                <span>₺</span> ${info.price}
+                                                                 ${info.price}&nbsp;<span>TL</span>
                                                             </div>
                                                             <div>
-                                                                <span>₺</span> ${info.totalPrice}
+                                                                 ${info.totalPrice}&nbsp;<span>TL</span>
                                                             </div>
                                                         </div>
                                                         <input type="radio" value="${info.installmentNumber}" name="purchase">
@@ -1370,9 +1299,35 @@
             var accordionContentCart = $('.accordion__item.selected-cart')
                 .find('.js-calc-accordion-height')
                 .height();
-            $('.accordion__item.selected-cart ')
+            $('.accordion__item.selected-cart')
                 .find('.accordion__content')
                 .css('height', accordionContentCart + 20);
+        }
+        function getBasketBasedPromotion() {
+            var items = _cart.getItems();
+            var data = {
+                Items: items
+            };
+            $.ajax({
+                url: "/get-basket-based-promotion",
+                method: "post",
+                data: data,
+                success: (res) => {
+                    if (res.isSuccess) {
+                        $('.js-cupon-form .wizard-loading').fadeOut(500);
+                        $('.js-cupon-form')
+                            .removeClass('active')
+                            .addClass('result');
+                        inputPromotionCode.val('');
+                        var newItem = `<div class="checkout__price-item"><div class="checkout__price-title">${res.data.name} İndirimi</div><div class="checkout__price-new"> ${formatCurrency(res.data.discountAmount)}</div><div class="checkout__product-crash js-remove-sale"><span class="icon-outer"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-crash"></use></svg></span></div></div>`;
+                        $('.js-discounts').append(newItem);
+                        var result = `<span class="icon-font"><svg class="icon icon-check"><use xlink:href="../../assets/img/icons.svg#icon-check"></use></svg></span>İndirim Başarılı ile Uygulandı!`;
+                        $('.js-cupon-form__result').html(result);
+                        inputPromotionDiscountAmount.val(res.data.discountAmount);
+                        calculatePrices();
+                    }
+                }
+            });
         }
         //Remove Promotion Code
         $('body').on('click', '.js-remove-sale', function () {
