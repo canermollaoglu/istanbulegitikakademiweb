@@ -1,10 +1,8 @@
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MUsefulMethods;
-using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Models.Account;
@@ -20,7 +18,6 @@ using NitelikliBilisim.Notificator.Services;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -28,8 +25,6 @@ using System.Web;
 
 namespace NitelikliBilisim.App.Controllers
 {
-    //[Authorize]
-
     public class AccountController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;

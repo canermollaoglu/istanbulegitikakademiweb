@@ -232,24 +232,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
         [Route("admin/egitim-one-cikar")]
         public IActionResult ToggleFeaturedEducation(Guid educationId) {
-            try
-            {
+           
                 _unitOfWork.Education.ToggleFeaturedEducation(educationId);
                 return Json(new ResponseModel
                 {
                     isSuccess = true
                 });
-            }
-            catch (Exception ex)
-            {
-                //todo log
-                return Json(new ResponseModel
-                {
-                    isSuccess = false
-                });
-            }
-
-
         }
 
         [Route("admin/get-education-levels/")]

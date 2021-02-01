@@ -679,21 +679,13 @@ namespace NitelikliBilisim.App.Controllers
         [Route("get-states/{cityId}")]
         public IActionResult GetStatesByCityId(int cityId)
         {
-            try
+            List<State> states = _unitOfWork.State.GetStateByCityId(cityId);
+            return Json(new ResponseData
             {
-                List<State> states = _unitOfWork.State.GetStateByCityId(cityId);
-                return Json(new ResponseData
-                {
-                    Success = true,
-                    Data = states
-                });
+                Success = true,
+                Data = states
+            });
 
-            }
-            catch (Exception)
-            {
-                //Todo Log
-                throw;
-            }
         }
         [Route("sepet/kurumsal-adres-ekle")]
         [HttpPost]
@@ -703,19 +695,12 @@ namespace NitelikliBilisim.App.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            try
-            {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                model.CustomerId = userId;
-                model.IsDefaultAddress = true;
-                _unitOfWork.Address.AddCorporateAddress(model);
-                return RedirectToAction("InvoiceInformation", "Sale");
-            }
-            catch (Exception)
-            {
-                //Todo Log
-                throw;
-            }
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            model.CustomerId = userId;
+            model.IsDefaultAddress = true;
+            _unitOfWork.Address.AddCorporateAddress(model);
+            return RedirectToAction("InvoiceInformation", "Sale");
+
 
         }
         [Route("sepet/bireysel-adres-ekle")]
@@ -726,51 +711,34 @@ namespace NitelikliBilisim.App.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            try
-            {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                model.CustomerId = userId;
-                model.IsDefaultAddress = true;
-                _unitOfWork.Address.AddIndividualAddress(model);
-                return RedirectToAction("InvoiceInformation", "Sale");
-            }
-            catch (Exception)
-            {
-                //Todo Log
-                throw;
-            }
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            model.CustomerId = userId;
+            model.IsDefaultAddress = true;
+            _unitOfWork.Address.AddIndividualAddress(model);
+            return RedirectToAction("InvoiceInformation", "Sale");
+
         }
 
         [Route("get-address-info")]
-        
+
         public IActionResult GetAddressInfo(int addressId)
         {
-            try
-            {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var address = _unitOfWork.Address.GetById(addressId);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var address = _unitOfWork.Address.GetById(addressId);
 
-                if (address.CustomerId != userId)
-                    return Json(new ResponseModel
-                    {
-                        isSuccess = false
-                    });
-
-
-                return Json(new ResponseModel
-                {
-                    isSuccess = true,
-                    data = address
-                });
-            }
-            catch
-            {
-                //todo log
+            if (address.CustomerId != userId)
                 return Json(new ResponseModel
                 {
                     isSuccess = false
                 });
-            }
+
+
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = address
+            });
+
         }
 
 
@@ -782,26 +750,18 @@ namespace NitelikliBilisim.App.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            try
-            {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var corporateAddress = _unitOfWork.Address.GetById(model.Id);
-                corporateAddress.Title = model.UpdateCTitle;
-                corporateAddress.Content = model.UpdateCContent;
-                corporateAddress.TaxNumber = model.UpdateCTaxNumber;
-                corporateAddress.TaxOffice = model.UpdateCTaxOffice;
-                corporateAddress.StateId = model.UpdateCStateId;
-                corporateAddress.CityId = model.UpdateCCityId;
-                corporateAddress.PhoneNumber = model.UpdateCPhone;
-                corporateAddress.CompanyName = model.UpdateCCompanyName;
-                _unitOfWork.Address.Update(corporateAddress);
-                return RedirectToAction("InvoiceInformation", "Sale");
-            }
-            catch (Exception)
-            {
-                //Todo Log
-                throw;
-            }
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var corporateAddress = _unitOfWork.Address.GetById(model.Id);
+            corporateAddress.Title = model.UpdateCTitle;
+            corporateAddress.Content = model.UpdateCContent;
+            corporateAddress.TaxNumber = model.UpdateCTaxNumber;
+            corporateAddress.TaxOffice = model.UpdateCTaxOffice;
+            corporateAddress.StateId = model.UpdateCStateId;
+            corporateAddress.CityId = model.UpdateCCityId;
+            corporateAddress.PhoneNumber = model.UpdateCPhone;
+            corporateAddress.CompanyName = model.UpdateCCompanyName;
+            _unitOfWork.Address.Update(corporateAddress);
+            return RedirectToAction("InvoiceInformation", "Sale");
 
         }
         [Route("sepet/bireysel-adres-guncelle")]
@@ -810,24 +770,17 @@ namespace NitelikliBilisim.App.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            try
-            {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var address = _unitOfWork.Address.GetById(model.Id);
-                address.Title = model.UpdateITitle;
-                address.Content = model.UpdateIContent;
-                address.CityId = model.UpdateICityId;
-                address.StateId = model.UpdateIStateId;
-                address.PhoneNumber = model.UpdateIPhone;
-                address.NameSurname = model.UpdateINameSurname;
-                _unitOfWork.Address.Update(address);
-                return RedirectToAction("InvoiceInformation", "Sale");
-            }
-            catch (Exception)
-            {
-                //Todo Log
-                throw;
-            }
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var address = _unitOfWork.Address.GetById(model.Id);
+            address.Title = model.UpdateITitle;
+            address.Content = model.UpdateIContent;
+            address.CityId = model.UpdateICityId;
+            address.StateId = model.UpdateIStateId;
+            address.PhoneNumber = model.UpdateIPhone;
+            address.NameSurname = model.UpdateINameSurname;
+            _unitOfWork.Address.Update(address);
+            return RedirectToAction("InvoiceInformation", "Sale");
+
         }
     }
 

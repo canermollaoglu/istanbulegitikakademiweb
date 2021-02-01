@@ -1,10 +1,8 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using MUsefulMethods;
 using Newtonsoft.Json;
 using NitelikliBilisim.Core.Entities;
-using NitelikliBilisim.Core.Entities.groups;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Enums.group;
 using NitelikliBilisim.Core.Services;
@@ -21,7 +19,6 @@ using NitelikliBilisim.Data;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 
 namespace NitelikliBilisim.Business.Repositories

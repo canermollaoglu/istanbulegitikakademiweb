@@ -73,7 +73,6 @@ namespace NitelikliBilisim.App.Controllers
             }
             catch 
             {
-                //todo log
                 return RedirectToAction("PageNotFound", "Error");
             }
 
