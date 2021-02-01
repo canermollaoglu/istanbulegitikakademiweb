@@ -196,6 +196,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             return View(model);
         }
         [HttpPost]
+        [Route("/admin/blog/yazi-guncelle")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Update(BlogPostUpdatePostVM data)
         {

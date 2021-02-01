@@ -147,7 +147,7 @@ function btnSave_onClick() {
                     message: "Kayıt işlemi başarılı! Listeye gitmek için {link}",
                     redirectElement: {
                         content: "tıklayınız",
-                        link: "/admin/blogpost/list"
+                        link: "/admin/blog/liste"
                     }
                 });
             } else {
