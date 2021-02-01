@@ -98,11 +98,17 @@ namespace NitelikliBilisim.App.Controllers
 
             model.Categories = categories;
 
-            model.LastBlogPosts = _memoryCache.GetOrCreate(CacheKeyUtility.BlogLastPosts, entry =>
+            var lastPost = _memoryCache.GetOrCreate(CacheKeyUtility.BlogLastPosts, entry =>
             {
                 entry.SlidingExpiration = TimeSpan.FromDays(1);
                 return _unitOfWork.BlogPost.LastBlogPosts(5);
             });
+            foreach (var post in lastPost)
+            {
+                post.ViewCount = _unitOfWork.BlogPost.GetBlogPostViewCount(post.SeoUrl, post.CategorySeoUrl);
+            }
+
+            model.LastBlogPosts = lastPost;
             model.TotalBlogPostCount = _unitOfWork.BlogPost.TotalBlogPostCount();
             return View(model);
         }
