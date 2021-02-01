@@ -283,11 +283,12 @@ namespace NitelikliBilisim.Business.Repositories
                                EducationHours = education.HoursPerDay * education.Days,
                                Description = education.Description,
                                CategoryId = education.Category.BaseCategoryId,
+                               CategoryId2 = education.CategoryId,
                                Level = education.Level
                            }).AsQueryable();
             if (categoryId.HasValue)
             {
-                rawData = rawData.Where(x => x.CategoryId == categoryId.Value);
+                rawData = rawData.Where(x => x.CategoryId == categoryId.Value || x.CategoryId2 == categoryId.Value);
             }
 
             if (hostCity.HasValue && hostCity.Value > 0)

@@ -42,7 +42,7 @@ namespace NitelikliBilisim.Business.Repositories
 
         public EducationCategory GetCategoryBySeoUrl(string catSeoUrl)
         {
-            var category = _context.EducationCategories.FirstOrDefault(x => x.SeoUrl == catSeoUrl);
+            var category = _context.EducationCategories.Include(x=>x.BaseCategory).FirstOrDefault(x => x.SeoUrl == catSeoUrl);
             return category;
         }
 
