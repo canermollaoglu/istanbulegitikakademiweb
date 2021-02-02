@@ -47,7 +47,7 @@ namespace NitelikliBilisim.App.Controllers
         private readonly IEmailSender _emailSender;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public SaleController(UserManager<ApplicationUser> userManager,IWebHostEnvironment hostingEnvironment, UnitOfWork unitOfWork, IPaymentService paymentService, UserUnitOfWork userUnitOfWork, IEmailSender emailSender)
+        public SaleController(UserManager<ApplicationUser> userManager, IWebHostEnvironment hostingEnvironment, UnitOfWork unitOfWork, IPaymentService paymentService, UserUnitOfWork userUnitOfWork, IEmailSender emailSender)
         {
             _hostingEnvironment = hostingEnvironment;
             _unitOfWork = unitOfWork;
@@ -253,32 +253,31 @@ namespace NitelikliBilisim.App.Controllers
         {
             #region Validation
             if (!HttpContext.User.Identity.IsAuthenticated || data.CartItemsJson == null)
-                return Json(new ResponseModel
-                {
-                    isSuccess = false,
-                    errors = new List<string> { "Sepette ürün bulunmamaktadır" }
-                });
+            {
+                TempData["ErrorMessage"] = "Sepette ürün bulunmamaktadır";
+                return RedirectToAction(nameof(Payment));
+            }
+
+
 
             data.CartItems = JsonConvert.DeserializeObject<List<_CartItem>>(data.CartItemsJson);
 
             if (data.CartItems == null || data.CartItems.Count == 0)
-                return Json(new ResponseModel
-                {
-                    isSuccess = false,
-                    errors = new List<string> { "Sepette ürün bulunmamaktadır" }
-                });
+            {
+                TempData["ErrorMessage"] = "Sepette ürün bulunmamaktadır";
+                return RedirectToAction(nameof(Payment));
+            }
             if (!data.IsDistantSalesAgreementConfirmed)
-                return Json(new ResponseModel
-                {
-                    isSuccess = false,
-                    errors = new List<string> { "Mesafeli Satış sözleşmesini onaylayınız" }
-                });
+            {
+                TempData["ErrorMessage"] = "Mesafeli Satış Sözleşmesini onaylayınız.";
+                return RedirectToAction(nameof(Payment));
+            }
             if (!ModelState.IsValid)
-                return Json(new ResponseModel
-                {
-                    isSuccess = false,
-                    errors = ModelStateUtil.GetErrors(ModelState)
-                });
+            {
+                TempData["ErrorMessage"] = ModelStateUtil.GetErrors(ModelState).Aggregate((x,y)=>x+"<br>"+y);
+                return RedirectToAction(nameof(Payment));
+            }
+            
             #endregion
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -426,9 +425,9 @@ namespace NitelikliBilisim.App.Controllers
                     var paymentModelSuccess = _unitOfWork.TempSaleData.Get(data.ConversationId);
                     retVal.Status = PaymentResultStatus.Success;
                     retVal.Message = "Ödemeniz başarılı bir şekilde gerçekleşmiştir.";
-                    Guid? promotionId = string.IsNullOrEmpty(paymentModelSuccess.PromotionId) && Guid.Parse(paymentModelSuccess.PromotionId)!=Guid.Empty ? null : Guid.Parse(paymentModelSuccess.PromotionId);
+                    Guid? promotionId = string.IsNullOrEmpty(paymentModelSuccess.PromotionId) && Guid.Parse(paymentModelSuccess.PromotionId) != Guid.Empty ? null : Guid.Parse(paymentModelSuccess.PromotionId);
                     retVal.SuccessDetails = _unitOfWork.InvoiceDetail.GetSuccessPaymentDetails(paymentModelSuccess.InvoiceDetailIds, promotionId);
-                    if (!string.IsNullOrEmpty(paymentModelSuccess.PromotionId))
+                    if (!string.IsNullOrEmpty(paymentModelSuccess.PromotionId) && Guid.Parse(paymentModelSuccess.PromotionId)!=Guid.Empty)
                     {
                         _unitOfWork.EducationPromotionItem.Insert(new EducationPromotionItem
                         {
@@ -438,7 +437,7 @@ namespace NitelikliBilisim.App.Controllers
                             CreatedDate = DateTime.Now
                         });
                     }
-                     var user = await _userManager.FindByIdAsync(paymentModelSuccess.UserId);
+                    var user = await _userManager.FindByIdAsync(paymentModelSuccess.UserId);
                     var customerEmail = user.Email;
                     if (customerEmail != null)
                     {
