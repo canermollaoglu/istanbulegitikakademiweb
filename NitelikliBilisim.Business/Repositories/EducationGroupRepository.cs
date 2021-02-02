@@ -432,7 +432,7 @@ namespace NitelikliBilisim.Business.Repositories
                 var educator = educators.First(x => x.Id == item.EducatorId);
                 var url = storage.BlobUrl + educator.User.AvatarPath;
                 var culture = CultureInfo.CreateSpecificCulture("tr-TR");
-                var discountRate = ((item.OldPrice - item.NewPrice) * 100) / (decimal)(item.OldPrice);
+                var discountRate = 100-(item.NewPrice*100/item.OldPrice);
 
                 if (!hostIds.Contains(item.HostId))
                 {

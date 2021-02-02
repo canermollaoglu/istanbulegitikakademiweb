@@ -375,8 +375,6 @@ $(function () {
         var searchVal = $(this).val();
         var filterItems = $('[data-filter-item]');
         var filterItemsHidden = $('.hidden[data-filter-item]');
-        console.log(filterItems.length);
-        console.log(filterItemsHidden.length);
 
         if (searchVal != '') {
             filterItems.addClass('hidden');
@@ -578,7 +576,6 @@ $(document).ready(function () {
         },
         on: {
             init: function () {
-                console.log('swiper initialized');
             },
         },
     });
@@ -1297,7 +1294,6 @@ if ($('.with-magic-line').length > 0) {
                 .find('a')
                 .attr('href');
             $(jsMainTab).addClass('active');
-            console.log(jsMainTab);
 
             return false; // prevents link action
         });
@@ -1926,7 +1922,6 @@ $('body').on('click', '.js-delete-item', function () {
             .closest('.js-deleted-item')
             .remove();
         if ($('.mini-basket__item').length <= 0) {
-            console.log('hiç ürün yok');
             $('.mini-basket__cnt').append(
                 "<div class='mini-basket__empty'><span class='icon-outer button-icon'><svg class='icon'><use xlink:href='../../assets/img/icons.svg#icon-basket-empty'></use></svg></span>Sepetiniz Boş.</div>",
             );
@@ -1935,7 +1930,7 @@ $('body').on('click', '.js-delete-item', function () {
     }, 400);
 });
 if ($('.mini-basket__item').length <= 0) {
-    console.log('hiç ürün yok');
+    
     $('.mini-basket__cnt').append(
         "<div class='mini-basket__empty'><span class='icon-outer button-icon'><svg class='icon'><use xlink:href='../../assets/img/icons.svg#icon-basket-empty'></use></svg></span>Sepetiniz Boş.</div>",
     );
