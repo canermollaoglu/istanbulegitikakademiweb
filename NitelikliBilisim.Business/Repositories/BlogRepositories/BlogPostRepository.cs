@@ -138,10 +138,7 @@ namespace NitelikliBilisim.Business.Repositories.BlogRepositories
                             SeoUrl = blog.SeoUrl,
                             CategorySeoUrl = blogCategory.SeoUrl
                         }).OrderByDescending(x=>x.Date).Take(t).ToList();
-            foreach (var post in data)
-            {
-                post.ViewCount = GetBlogPostViewCount(post.SeoUrl, post.CategorySeoUrl);
-            }
+            
             return data;
         }
 

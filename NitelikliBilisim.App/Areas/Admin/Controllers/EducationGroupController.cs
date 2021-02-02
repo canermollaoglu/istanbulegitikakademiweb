@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using MUsefulMethods;
 using Newtonsoft.Json;
@@ -253,7 +252,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             {
                 var group = new EducationGroup
                 {
-                    IsGroupOpenForAssignment = true,
+                    IsGroupOpenForAssignment = false,
                     GroupName = data.Name,
                     EducationId = data.EducationId.Value,
                     EducatorId = data.EducatorId,
@@ -266,7 +265,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 var emails = _unitOfWork.EmailHelper.GetAdminEmails();
                 await _emailSender.SendAsync(new Core.ComplexTypes.EmailMessage
                 {
-                    Body = "Grup açılmıştır",
+                    Body = "Grup açılmıştır. Fiyat bilgisi girildikten sonra aktif edilecektir.",
                     Contacts = emails.ToArray()
                 });
 
@@ -363,6 +362,10 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 group.GroupName = data.GroupName;
                 group.NewPrice = data.NewPrice;
                 group.OldPrice = data.OldPrice;
+                if (data.NewPrice>0 && data.OldPrice>0)
+                {
+                    group.IsGroupOpenForAssignment = true;
+                }
                 _unitOfWork.EducationGroup.Update(group);
                 return Json(new ResponseModel
                 {
@@ -391,6 +394,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             {
                 var group = _unitOfWork.EducationGroup.GetById(data.GroupId);
                 group.NewPrice = data.NewPrice.GetValueOrDefault();
+                group.IsGroupOpenForAssignment = true;
                 _unitOfWork.EducationGroup.Update(group);
                 return Json(new ResponseModel
                 {

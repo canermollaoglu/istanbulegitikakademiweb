@@ -23,13 +23,13 @@ namespace NitelikliBilisim.Business.Repositories
             return _context.InvoiceDetails.Include(x => x.OnlinePaymentDetailInfo).First(x => x.Id == invoiceDetailId);
         }
 
-        public PaymentSuccessDetailVm GetSuccessPaymentDetails(List<Guid> invoiceDetailIds, string promotionId)
+        public PaymentSuccessDetailVm GetSuccessPaymentDetails(List<Guid> invoiceDetailIds, Guid? promotionId)
         {
             PaymentSuccessDetailVm model = new();
             decimal promotionDiscountAmount = 0;
-            if (!string.IsNullOrEmpty(promotionId))
+            if (promotionId.HasValue)
             {
-              var promotion =  _context.EducationPromotionCodes.FirstOrDefault(x => x.PromotionCode == promotionId);
+              var promotion =  _context.EducationPromotionCodes.FirstOrDefault(x => x.Id == promotionId);
               promotionDiscountAmount = promotion!=null? promotion.DiscountAmount:0;
             }
             var cultureInfo = CultureInfo.CreateSpecificCulture("tr-TR");
@@ -41,7 +41,7 @@ namespace NitelikliBilisim.Business.Repositories
             model.Installment = invoice.PaymentCount==1?"Tek Çekim":$"{invoice.PaymentCount} Taksit";
             model.TotalOldPrice = totalOldPrice.ToString(cultureInfo);
             model.TotalDiscount = (promotionDiscountAmount+(totalOldPrice-totalNewPrice)).ToString(cultureInfo);
-            model.TotalNewPrice = details.Sum(x => x.PriceAtCurrentDate).ToString(cultureInfo);
+            model.TotalNewPrice = (details.Sum(x => x.PriceAtCurrentDate)-promotionDiscountAmount).ToString(cultureInfo);
 
             var iDetails = (from eGroup in _context.EducationGroups
                            join education in _context.Educations on eGroup.EducationId equals education.Id

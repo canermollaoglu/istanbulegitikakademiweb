@@ -12,7 +12,6 @@ using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels.Main.Course;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -24,7 +23,7 @@ namespace NitelikliBilisim.App.Controllers
         private readonly UnitOfWork _unitOfWork;
         private readonly IStorageService _storageService;
         private readonly UserManager<ApplicationUser> _userManager;
-        public CourseController(UserManager<ApplicationUser> userManager,UnitOfWork unitOfWork,IStorageService storageService)
+        public CourseController(UserManager<ApplicationUser> userManager, UnitOfWork unitOfWork, IStorageService storageService)
         {
             _unitOfWork = unitOfWork;
             _storageService = storageService;
@@ -49,8 +48,8 @@ namespace NitelikliBilisim.App.Controllers
                     model.CategoryId = category.Id;
                     model.CategoryName = category.Name;
                     model.CategoryShortDescription = category.Description;
-                    model.CategoryIconColor = category.IconColor;
-                    model.CategoryIconUrl = category.IconUrl;
+                    model.CategoryIconColor = category.BaseCategory != null ? category.BaseCategory.IconColor : category.IconColor;
+                    model.CategoryIconUrl = category.BaseCategory != null ? category.BaseCategory.IconUrl : category.IconUrl;
                 }
                 else
                 {
@@ -70,7 +69,7 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [Route("arama-sonuclari")]
-        public IActionResult SearchResults(string s,HostCity h)
+        public IActionResult SearchResults(string s, HostCity h)
         {
             SearchResultsVm model = new SearchResultsVm();
 
@@ -156,7 +155,7 @@ namespace NitelikliBilisim.App.Controllers
                     Success = false
                 });
             }
-            
+
         }
 
         [Route("togglewishlistitem")]
@@ -229,11 +228,11 @@ namespace NitelikliBilisim.App.Controllers
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [HttpPost]
         [Route("get-courses")]
-        public IActionResult GetCourses(Guid? categoryId,int? hostCity, string searchKey, int page=1,OrderCriteria order = OrderCriteria.Latest)
+        public IActionResult GetCourses(Guid? categoryId, int? hostCity, string searchKey, int page = 1, OrderCriteria order = OrderCriteria.Latest)
         {
-            
-            var model = _unitOfWork.Education.GetCoursesPageEducations(categoryId,hostCity, page, order,searchKey);
-            
+
+            var model = _unitOfWork.Education.GetCoursesPageEducations(categoryId, hostCity, page, order, searchKey);
+
             foreach (var education in model.Educations)
             {
                 education.ImagePath = _storageService.BlobUrl + education.ImagePath;
@@ -253,7 +252,7 @@ namespace NitelikliBilisim.App.Controllers
 
             foreach (var comment in model.Comments)
             {
-                comment.UserAvatarPath=  _storageService.BlobUrl+comment.UserAvatarPath;
+                comment.UserAvatarPath = _storageService.BlobUrl + comment.UserAvatarPath;
             }
             return Json(new ResponseModel
             {

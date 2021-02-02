@@ -100,7 +100,7 @@ function btnSave_onClick() {
                     message: "Güncelleme işlemi başarılı! Listeye gitmek için {link}",
                     redirectElement: {
                         content: "tıklayınız",
-                        link: "/admin/blogpost/list"
+                        link: "/admin/blog/liste"
                     }
                 });
             } else {

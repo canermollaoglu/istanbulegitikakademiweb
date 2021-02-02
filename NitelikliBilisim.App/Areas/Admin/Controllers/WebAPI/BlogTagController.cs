@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DevExtreme.AspNet.Data;
-using Microsoft.AspNetCore.Http;
+﻿using DevExtreme.AspNet.Data;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Extensions;
 using NitelikliBilisim.Business.UoW;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers.WebAPI
 {
-    
+
     public class BlogTagController : BaseApiController
     {
         private readonly UnitOfWork _unitOfWork;

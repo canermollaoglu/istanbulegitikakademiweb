@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using MUsefulMethods;
 using NitelikliBilisim.App.Extensions;
-using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.ViewModels.HelperVM;

@@ -8,5 +8,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Cart
     {
         public string Name { get; set; }
         public decimal DiscountAmount { get; set; }
+        public string PromotionCode { get; set; }
     }
 }

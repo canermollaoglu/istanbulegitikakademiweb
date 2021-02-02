@@ -2,10 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Extensions;
 using NitelikliBilisim.Business.UoW;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers.WebAPI
 {
