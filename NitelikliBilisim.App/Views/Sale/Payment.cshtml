@@ -66,6 +66,14 @@
                             </div>
                             <div class="accordion__content">
                                 <div class="js-calc-accordion-height">
+
+                                    @if (TempData["ErrorMessage"]!=null)
+                                    {
+                                    <div class="error-messages" style="display: block;">
+                                        @TempData["ErrorMessage"]
+                                    </div>
+                                    } 
+
                                     <div class="error-messages">
                                         <div class="error-messages__title">
                                             <span class="icon-outer">
@@ -209,7 +217,7 @@
                                             </div>
                                             <div class="checkout__purchase-wrp">
                                                 <p>Taksit seçeneklerini görebilmek için lütfen kart numaranızı giriniz.</p>
-                                                
+
                                             </div>
                                         </div>
                                     </form>
@@ -979,10 +987,6 @@
         var txtOldTotal = $("#oldPrice");
         var txtTotalDiscount = $("#discountAmount");
 
-
-
-        var btnBuy = $("#btn-buy");
-        btnBuy.on("click", btnBuy_onClick);
         $(document).ready(function () {
             aId.val(localStorage.getItem("_cA"));
             getCartItems();
@@ -1253,42 +1257,6 @@
             inputInstallment.val(1);
         }
 
-        function btnBuy_onClick() {
-            if (!$('#form-buy').isValid())
-                return;
-            btnBuy.off("click");
-            var tokenVerifier = new SecuritySupport.TokenVerifier();
-            var cart = new CartSupport.Cart();
-            var cartItemsSt = cart.getItems();
-            var data = tokenVerifier.addToken("form-buy", {
-                Use3d: chc3dSecure.prop("checked"),
-                CardInfo: {
-                    NameOnCard: inputOwner.val(),
-                    NumberOnCard: inputCardNumber.val(),
-                    MonthOnCard: selectMonths.val(),
-                    YearOnCard: selectYears.val(),
-                    CVC: inputCvc.val()
-                },
-                PaymentInfo: {
-                    Installments: inputInstallment.val()
-                },
-                CartItems: cartItemsSt,
-                PromotionCode: _promotionCode.val(),
-                AddressId: aId.val(),
-                CartItemsJson: cartItems.val(),
-                IsDistantSalesAgreementConfirmed:mss
-            });
-
-            $.ajax({
-                url: "/pay",
-                method: "post",
-                data: data,
-                success: (res) => {
-                    console.log(res);
-                },
-                complete: () => { btnBuy.on("click", btnBuy_onClick); }
-            });
-        }
         function resizeAccordionContent() {
             var accordionContent = $('.accordion__item.selected')
                 .find('.js-calc-accordion-height')
