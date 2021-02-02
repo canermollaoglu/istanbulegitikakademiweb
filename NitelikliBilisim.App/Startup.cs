@@ -83,8 +83,6 @@ namespace NitelikliBilisim.App
             if (env.IsDevelopment())
             {
                  app.UseDeveloperExceptionPage();
-                //app.UseExceptionHandler("/error");
-                //app.UseStatusCodePagesWithReExecute("/Error/{0}");
             }
             else
             {

@@ -9,11 +9,7 @@
     <partial name="partials/_BaseAssetsHeader" />
 
     @RenderSection("styles", required: false)
-    <style>
-        #btn-cookie-agree, #btn-cookie-privacy-policy {
-            cursor: pointer;
-        }
-    </style>
+    
 </head>
 <body class="o-x-hidden  tablet-no-overflow">
     <partial name="partials/_LayoutHeader" />
@@ -80,16 +76,16 @@
         </div>
     </div>
 
-    <!--<partial name="partials/_LayoutCookieConsent" />-->
+    <partial name="partials/_LayoutCookieConsent" />
     <div class='main-overlay overlay js-close-modal'></div>
     <script src="~/assets/js/jquery.min.js"></script>
     <script src="~/assets/js/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/vendor/select2/dist/js/select2.min.js"></script>
     <script src="~/assets/js/swiper.min.js"></script>
-    <!-- <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script> -->
+    <!--<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script> -->
     <script src="~/assets/js/jquery.inputmask.min.js"></script>
     <script src="~/assets/js/datepicker.min.js"></script>
-    <!-- <script src="https://unpkg.com/bootstrap-datepicker@1.9.0/dist/locales/bootstrap-datepicker.tr.min.js"></script> -->
+    <!--<script src="https://unpkg.com/bootstrap-datepicker@1.9.0/dist/locales/bootstrap-datepicker.tr.min.js"></script> -->
     <script src="~/vendor/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/vendor/modal-video/js/jquery-modal-video.min.js"></script>
     <script src="~/vendor/card/dist/card.js"></script>
@@ -101,15 +97,12 @@
     <script>
         var __cookieBar = $("#cookie-bar");
         var __envoy = new StorageSupport.Envoy();
-        //var __searcher = new AppWide.Searcher();
         var __btnCookieAgree = $("#btn-cookie-agree");
         var __cart = new CartSupport.Cart();
         __btnCookieAgree.on("click", () => {
             __envoy.createRegisterForm();
             $("#cookie-bar").hide();
         });
-
-        // __searcher.initialize();
 
         if (__envoy.isStorageExists("register")) {
             __cookieBar.hide();
@@ -124,23 +117,23 @@
             __layoutHeaderCartContent.html("");
             $.each(cartItems, function (index, value) {
                 var item = `<a class="mini-basket__item js-deleted-item" data-eid="${value.educationId}">
-                                                        <div class="mini-basket__item-img">
-                                                            <img src="${value.imageUrl}" alt="">
-                                                        </div>
-                                                        <div class="mini-basket__item-cnt">
-                                                            <div class="mini-basket__item-title">${value.educationName}</div>
-                                                            <div class="mini-basket__item-price">
-                                                                ${(value.newPrice).toFixed(2).toString().replace(".", ",")} <span>TL</span>
+                                                            <div class="mini-basket__item-img">
+                                                                <img src="${value.imageUrl}" alt="">
                                                             </div>
-                                                        </div>
-                                                        <div class="mini-basket__item-crash js-delete-item">
-                                                            <span class="icon-outer">
-                                                                <svg class="icon">
-                                                                    <use xlink:href="../../assets/img/icons.svg#icon-crash"></use>
-                                                                </svg>
-                                                            </span>
-                                                        </div>
-                                                    </a>`;
+                                                            <div class="mini-basket__item-cnt">
+                                                                <div class="mini-basket__item-title">${value.educationName}</div>
+                                                                <div class="mini-basket__item-price">
+                                                                    ${(value.newPrice).toFixed(2).toString().replace(".", ",")} <span>TL</span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="mini-basket__item-crash js-delete-item">
+                                                                <span class="icon-outer">
+                                                                    <svg class="icon">
+                                                                        <use xlink:href="../../assets/img/icons.svg#icon-crash"></use>
+                                                                    </svg>
+                                                                </span>
+                                                            </div>
+                                                        </a>`;
                 __layoutHeaderCartContent.append(item);
             });
         };
