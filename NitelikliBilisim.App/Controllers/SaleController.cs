@@ -247,8 +247,9 @@ namespace NitelikliBilisim.App.Controllers
             }
         }
 
-        [TypeFilter(typeof(UserLoggerFilterAttribute))]
-        [HttpPost, ValidateAntiForgeryToken, Route("pay")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("odeme-yap")]
         public async Task<IActionResult> Pay(PayData data)
         {
             #region Validation
@@ -272,6 +273,12 @@ namespace NitelikliBilisim.App.Controllers
                 TempData["ErrorMessage"] = "Mesafeli Satış Sözleşmesini onaylayınız.";
                 return RedirectToAction(nameof(Payment));
             }
+            if (!data.IsPreInformationConfirmed)
+            {
+                TempData["ErrorMessage"] = "Ön Bilgilendirme Formunu onaylayınız.";
+                return RedirectToAction(nameof(Payment));
+            }
+
             if (!ModelState.IsValid)
             {
                 TempData["ErrorMessage"] = ModelStateUtil.GetErrors(ModelState).Aggregate((x,y)=>x+"<br>"+y);
