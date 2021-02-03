@@ -306,10 +306,10 @@ namespace NitelikliBilisim.Business.Repositories
 
                     return entity.Id;
                 }
-                catch (Exception ex)
+                catch
                 {
                     transation.Rollback();
-                    throw ex;
+                    return Guid.Empty;
                 }
             }
         }

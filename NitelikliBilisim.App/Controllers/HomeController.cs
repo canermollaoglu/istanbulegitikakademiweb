@@ -468,66 +468,44 @@ namespace NitelikliBilisim.App.Controllers
                     Success = false
                 });
             }
-            try
-            {
-                var result = _unitOfWork.SubscriptionNewsletter.CheckSubscriber(email);
-                if (result)
-                    return Json(new ResponseData
-                    {
-                        Success = false,
-                        Message = "Zaten blog aboneliğiniz bulunmaktadır."
-                    });
 
-
-                _unitOfWork.SubscriptionNewsletter.Insert(new NewsletterSubscriber
-                {
-                    Email = email
-                });
-                return Json(new ResponseData
-                {
-                    Success = true,
-                    Message = "Abonelik talebiniz başarı ile alındı."
-                });
-            }
-            catch (Exception ex)
-            {
-                //Log ex
+            var result = _unitOfWork.SubscriptionNewsletter.CheckSubscriber(email);
+            if (result)
                 return Json(new ResponseData
                 {
                     Success = false,
-                    Message = "Beklenmeyen bir hata ile karşılaşıldı. Lütfen daha sonra tekrar deneyiniz."
+                    Message = "Zaten blog aboneliğiniz bulunmaktadır."
                 });
-            }
+
+
+            _unitOfWork.SubscriptionNewsletter.Insert(new NewsletterSubscriber
+            {
+                Email = email
+            });
+            return Json(new ResponseData
+            {
+                Success = true,
+                Message = "Abonelik talebiniz başarı ile alındı."
+            });
+
         }
 
         [Route("wizard-first")]
         [HttpGet]
         public IActionResult WizardGetCategoryDatas()
         {
-            try
+            var list = _memoryCache.GetOrCreate("wizardfirststep", entry =>
             {
+                entry.SlidingExpiration = TimeSpan.FromDays(1);
+                return _unitOfWork.Suggestions.GetWizardFirstStepData();
+            });
 
-                var list = _memoryCache.GetOrCreate("wizardfirststep", entry =>
-                {
-                    entry.SlidingExpiration = TimeSpan.FromDays(1);
-                    return _unitOfWork.Suggestions.GetWizardFirstStepData();
-                });
-
-                return Json(new ResponseData
-                {
-                    Success = true,
-                    Data = list
-                });
-            }
-            catch (Exception ex)
+            return Json(new ResponseData
             {
-                //Log ex
-                return Json(new ResponseData
-                {
-                    Success = false,
-                    Message = "Beklenmeyen bir hata ile karşılaşıldı. Lütfen daha sonra tekrar deneyiniz."
-                });
-            }
+                Success = true,
+                Data = list
+            });
+
         }
 
         [HttpPost]
@@ -544,7 +522,7 @@ namespace NitelikliBilisim.App.Controllers
                     Data = list
                 });
             }
-            catch (Exception ex)
+            catch
             {
                 //Log ex
                 return Json(new ResponseData
@@ -572,9 +550,8 @@ namespace NitelikliBilisim.App.Controllers
                     Data = list
                 });
             }
-            catch (Exception ex)
+            catch
             {
-                //Log ex
                 return Json(new ResponseData
                 {
                     Success = false,
