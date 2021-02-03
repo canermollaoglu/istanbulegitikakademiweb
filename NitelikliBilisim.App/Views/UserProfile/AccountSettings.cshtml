@@ -59,7 +59,7 @@
                                 <div class="accordion__content">
                                     <div class="js-calc-accordion-height">
                                         <div class="accordion__forms">
-                                            <form method="post" action="/kullanici-bilgileri-guncelle" enctype="multipart/form-data">
+                                            <form method="post" id="kullanici-bilgileri-guncelle" action="/kullanici-bilgileri-guncelle" enctype="multipart/form-data">
                                                 @Html.AntiForgeryToken()
                                                 <div class="input__column-2">
                                                     <div class="input__outer no-icon icon-password">
@@ -74,7 +74,7 @@
                                                     </div>
                                                     <div class="input__outer no-icon icon-password">
                                                         <div class="input__title">Yeni Şifre</div>
-                                                        <input type="password" name="NewPassword" class="input input--bordered input--fw input--noshadow js-password"
+                                                        <input type="password" name="NewPassword" id="new-password" class="input input--bordered input--fw input--noshadow js-password"
                                                                placeholder="Yeni Şifrenizi Giriniz">
                                                         <span class="icon-outer js-show-password">
                                                             <svg class="icon">
@@ -94,25 +94,25 @@
                                                     </div>
                                                 </div>
                                                 @*<div class="input__outer no-icon">
-                                    <div class="input__title">Profil Resmi</div>
-                                    <div class="input__select-image">
-                                        <div class="input__select-image-img">
-                                            <input type="image" id="accountChangeImg" src="@avatarPath">
-                                            <input type="file" id="accountSettingsImg" name="ProfileImage" style="display: none;" />
-                                        </div>
-                                        <div class="input__select-image-button">
-                                            <a class="button button-fw js-change-img">
-                                                <span class="button-txt">
-                                                    Resmi Değiştir
-                                                </span>
-                                            </a>
-                                        </div>
-                                        <div class="input__select-image-txt">
-                                            Maksimum boyut 1 MB.<br>
-                                            JPG, GIF veya PNG
-                                        </div>
-                                    </div>
-                                </div>*@
+                                                        <div class="input__title">Profil Resmi</div>
+                                                        <div class="input__select-image">
+                                                            <div class="input__select-image-img">
+                                                                <input type="image" id="accountChangeImg" src="@avatarPath">
+                                                                <input type="file" id="accountSettingsImg" name="ProfileImage" style="display: none;" />
+                                                            </div>
+                                                            <div class="input__select-image-button">
+                                                                <a class="button button-fw js-change-img">
+                                                                    <span class="button-txt">
+                                                                        Resmi Değiştir
+                                                                    </span>
+                                                                </a>
+                                                            </div>
+                                                            <div class="input__select-image-txt">
+                                                                Maksimum boyut 1 MB.<br>
+                                                                JPG, GIF veya PNG
+                                                            </div>
+                                                        </div>
+                                                    </div>*@
                                                 <div class="account-detail__setting-btn">
                                                     <button type="submit" class="button">
                                                         Değişiklikleri Kaydet
@@ -386,52 +386,52 @@
                                             <div class="address-wrp">
                                                 <form method="post" action="/default-adres-guncelle">
                                                     @Html.AntiForgeryToken()
-                                                    <input type="hidden" name="defaultAddressId" id="input-default-address-id" />
+                                                    <input type="hidden" name="defaultAddressId" value="@Model.DefaultAddressId" id="input-default-address-id" />
                                                     @if (Model.Addresses.Count == 0)
                                                     {
                                                         @*<div class="address-item">
-                                            <div class="address-button js-select-address">
-                                                <span class="address-button-radio"></span>
-                                            </div>
-                                            <div class="address-cnt js-select-address">
-                                                <div class="address-title">
-                                                    Fatura Adresim
-                                                </div>
-                                                <div class="address-txt">
+                                                                <div class="address-button js-select-address">
+                                                                    <span class="address-button-radio"></span>
+                                                                </div>
+                                                                <div class="address-cnt js-select-address">
+                                                                    <div class="address-title">
+                                                                        Fatura Adresim
+                                                                    </div>
+                                                                    <div class="address-txt">
 
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="address-input-wrp">
-                                            <div class="input__column-flex">
-                                                <div class="input__outer bordered-select">
-                                                    <div class="select-subject no-icon">
-                                                        <div class="input__title">Şehir</div>
-                                                        <select class="js-adres-sehir-select">
-                                                            <option value="" hidden disabled>Şehir</option>
-                                                            @foreach (var city in Model.Cities)
-                                                            {
-                                                                <option value="@city.Id">@city.Name</option>
-                                                            }
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="input__outer bordered-select input-mb-0">
-                                                    <div class="select-subject no-icon">
-                                                        <div class="input__title">İlçe</div>
-                                                        <select class="js-adres-ilce-select">
-                                                            <option value="" hidden disabled>İlçe</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="input__outer input--textarea no-icon">
-                                                <div class="input__title">Açık Adresiniz</div>
-                                                <textarea name="Content"
-                                                          class="input input--fw input--bordered input--noshadow h-150"
-                                                          placeholder="Adresinizin tamamını buraya yazınız"></textarea>
-                                            </div>
-                                        </div>*@
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="address-input-wrp">
+                                                                <div class="input__column-flex">
+                                                                    <div class="input__outer bordered-select">
+                                                                        <div class="select-subject no-icon">
+                                                                            <div class="input__title">Şehir</div>
+                                                                            <select class="js-adres-sehir-select">
+                                                                                <option value="" hidden disabled>Şehir</option>
+                                                                                @foreach (var city in Model.Cities)
+                                                                                {
+                                                                                    <option value="@city.Id">@city.Name</option>
+                                                                                }
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="input__outer bordered-select input-mb-0">
+                                                                        <div class="select-subject no-icon">
+                                                                            <div class="input__title">İlçe</div>
+                                                                            <select class="js-adres-ilce-select">
+                                                                                <option value="" hidden disabled>İlçe</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="input__outer input--textarea no-icon">
+                                                                    <div class="input__title">Açık Adresiniz</div>
+                                                                    <textarea name="Content"
+                                                                              class="input input--fw input--bordered input--noshadow h-150"
+                                                                              placeholder="Adresinizin tamamını buraya yazınız"></textarea>
+                                                                </div>
+                                                            </div>*@
                                                     }
                                                     @foreach (var address in Model.Addresses)
                                                     {
@@ -449,11 +449,20 @@
                                                             </div>
                                                         </div>
                                                     }
-                                                    <div class="account-detail__setting-btn">
-                                                        <button type="submit" class="button">
-                                                            Değişiklikleri Kaydet
-                                                        </button>
-                                                    </div>
+                                                    @if (Model.Addresses.Count > 0)
+                                                    {
+                                                        <div class="account-detail__setting-btn">
+                                                            <button type="submit" class="button">
+                                                                Değişiklikleri Kaydet
+                                                            </button>
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="account-detail__setting-btn" style="text-align:center;padding-left:5px;padding-top:10px;">
+                                                            <label>Kayıtlı adresiniz bulunmamaktadır. Ödeme işlemi sırasında adres ekleyebilirsiniz.</label> 
+                                                        </div>
+                                                    }
                                                 </form>
                                             </div>
                                         </div>
@@ -470,7 +479,43 @@
 
 @section postScripts{
     <script type="text/javascript">
-        
+
+        $('#kullanici-bilgileri-guncelle').validate({
+            errorLabelContainer: $('#kullanici-bilgileri-guncelle div.error'),
+            errorContainer: 'div.error-messages',
+            errorLabelContainer: $('ul', 'div.error-messages'),
+            wrapper: 'li',
+            rules: {
+                OldPassword: {
+                    required: true,
+                },
+                NewPassword: {
+                    required: true
+                },
+                ConfirmNewPassword: {
+                    required: true,
+                    equalTo: "#new-password"
+                }
+            },
+            messages: {
+                OldPassword: 'Bu alan zorunludur.',
+                NewPassword: 'Bu alan zorunludur.',
+                ConfirmNewPassword: {
+                    required: 'Bu alan zorunludur.',
+                    equalTo: 'Şifreler uyuşmuyor.'
+                }
+            },
+            highlight: function (element) {
+                $(element)
+                    .parent()
+                    .addClass('outer-error');
+            },
+            unhighlight: function (element) {
+                $(element)
+                    .parent()
+                    .removeClass('outer-error');
+            }
+        });
 
         $('body').on('click', '.js-select-address-account', function () {
             var aId = $(this).data("id");

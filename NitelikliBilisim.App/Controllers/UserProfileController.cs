@@ -38,7 +38,8 @@ namespace NitelikliBilisim.App.Controllers
         private readonly IStorageService _storageService;
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly FileUploadManager _fileManager;
-        public UserProfileController(UnitOfWork unitOfWork, UserUnitOfWork userUnitOfWork, UserManager<ApplicationUser> userManager, IStorageService storageService, IWebHostEnvironment hostingEnvironment)
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        public UserProfileController(SignInManager<ApplicationUser> signInManager ,UnitOfWork unitOfWork, UserUnitOfWork userUnitOfWork, UserManager<ApplicationUser> userManager, IStorageService storageService, IWebHostEnvironment hostingEnvironment)
         {
             _userUnitOfWork = userUnitOfWork;
             _userManager = userManager;
@@ -46,6 +47,7 @@ namespace NitelikliBilisim.App.Controllers
             _storageService = storageService;
             _hostingEnvironment = hostingEnvironment;
             _fileManager = new FileUploadManager(_hostingEnvironment, "jpg", "jpeg");
+            _signInManager = signInManager;
         }
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("hesap/panelim")]
@@ -298,13 +300,27 @@ namespace NitelikliBilisim.App.Controllers
                     var retVal = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
                     if (retVal.Succeeded)
                     {
-
+                        await _signInManager.SignOutAsync();
+                        TempData["Message"] = "Şifreniz güncellendi! Yeni şifreniz ile giriş yapabilirsiniz.";
+                        return RedirectToAction("Login","Account");
+                    }
+                    else
+                    {
+                        TempData["Error"] = "Eski şifrenizi yanlış girdiniz! Şifreniz güncellenemedi.";
+                        return RedirectToAction(nameof(AccountSettings));
                     }
                 }
+                TempData["Error"] = "Şifreleriniz uyuşmuyor!";
+                return RedirectToAction(nameof(AccountSettings));
+            }
+            else
+            {
+                TempData["Error"] = "Bilgileriniz güncellenemedi!";
+                return RedirectToAction(nameof(AccountSettings));
             }
 
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            model.UserId = userId;
+            //var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            //model.UserId = userId;
             //if (model.ProfileImage != null)
             //{
 
@@ -314,8 +330,7 @@ namespace NitelikliBilisim.App.Controllers
             //    await _userManager.UpdateAsync(user);
             //}
 
-            TempData["Success"] = "Kullanıcı bilgileriniz başarıyla güncellendi!";
-            return RedirectToAction("AccountSettings", "UserProfile");
+            
         }
 
         [HttpPost]

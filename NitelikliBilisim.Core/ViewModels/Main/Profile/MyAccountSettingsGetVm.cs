@@ -18,5 +18,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public Dictionary<int, string> Jobs { get; set; }
         public Dictionary<int, string> EducationCenters { get; set; }
         public Dictionary<Guid, string> EducationCategories { get; set; }
+        public int DefaultAddressId { get; set; }
     }
 }
