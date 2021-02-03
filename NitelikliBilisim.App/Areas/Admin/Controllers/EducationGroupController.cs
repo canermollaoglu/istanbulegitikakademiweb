@@ -262,6 +262,10 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 };
 
                 var groupId = _unitOfWork.EducationGroup.Insert(group, data.LessonDays, data.ClassRoomId, data.EducatorPrice);
+                if (groupId == Guid.Empty)
+                {
+                    throw new Exception("Grup eklenemedi!");
+                }
                 var emails = _unitOfWork.EmailHelper.GetAdminEmails();
                 await _emailSender.SendAsync(new Core.ComplexTypes.EmailMessage
                 {

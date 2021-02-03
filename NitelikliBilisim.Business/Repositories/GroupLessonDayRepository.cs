@@ -163,29 +163,23 @@ namespace NitelikliBilisim.Business.Repositories
 
         public void ChangeClassroom(Guid groupId, DateTime? startDate, int updateType, Guid classroomId)
         {
-            try
-            {
-                List<GroupLessonDay> educationDays = null;
-                if (updateType == (int)TypeOfChangeOperation.AllDays)
-                {
-                    educationDays = _context.GroupLessonDays.Where(x => x.GroupId == groupId).ToList();
-                }
-                else if (updateType == (int)TypeOfChangeOperation.WidthStartDate)
-                {
-                    educationDays = _context.GroupLessonDays.Where(x => x.GroupId == groupId && x.DateOfLesson.Date >= startDate.Value.Date).ToList();
-                }
-                foreach (var educationDay in educationDays)
-                {
-                    educationDay.ClassroomId = classroomId;
-                }
-                _context.GroupLessonDays.UpdateRange(educationDays);
-                _context.SaveChanges();
-            }
-            catch (Exception ex)
-            {
 
-                throw ex;
+            List<GroupLessonDay> educationDays = null;
+            if (updateType == (int)TypeOfChangeOperation.AllDays)
+            {
+                educationDays = _context.GroupLessonDays.Where(x => x.GroupId == groupId).ToList();
             }
+            else if (updateType == (int)TypeOfChangeOperation.WidthStartDate)
+            {
+                educationDays = _context.GroupLessonDays.Where(x => x.GroupId == groupId && x.DateOfLesson.Date >= startDate.Value.Date).ToList();
+            }
+            foreach (var educationDay in educationDays)
+            {
+                educationDay.ClassroomId = classroomId;
+            }
+            _context.GroupLessonDays.UpdateRange(educationDays);
+            _context.SaveChanges();
+
 
         }
         public void ChangeEducator(Guid groupId, DateTime? startDate, int updateType, string educatorId, decimal? educatorSalary)
