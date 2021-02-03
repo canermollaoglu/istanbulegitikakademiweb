@@ -343,9 +343,11 @@ namespace NitelikliBilisim.Business.Repositories
             }
 
 
-
+            var addresses = _context.Addresses.Include(x => x.City).ThenInclude(x => x.States).Include(x => x.State).Where(x => x.CustomerId == userId).ToList();
+            var defaultaddress = addresses.FirstOrDefault(x => x.IsDefaultAddress);
             model.GeneralInformation = data;
-            model.Addresses = _context.Addresses.Include(x => x.City).ThenInclude(x => x.States).Include(x => x.State).Where(x => x.CustomerId == userId).ToList();
+            model.Addresses = addresses;
+            model.DefaultAddressId = defaultaddress != null ? defaultaddress.Id : 0;
             model.Universities = _context.Universities.ToList();
             model.Cities = _context.Cities.OrderBy(x => x.Order).ToList();
             model.Genders = EnumHelpers.ToKeyValuePair<Genders>();

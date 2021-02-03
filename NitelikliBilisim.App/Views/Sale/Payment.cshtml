@@ -143,7 +143,7 @@
                                         </ul>
                                     </div>
                                     <div class='card-wrapper card-wrapper--form'></div>
-                                    <form class="card-form" id="form-buy2" method="post" action="/odeme-yap">
+                                    <form class="card-form" id="form-buy" method="post" action="/odeme-yap">
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" id="_is-distant-sales-agreement-confirmed" name="IsDistantSalesAgreementConfirmed" />
                                         <input type="hidden" id="_is-pre-information-confirmed" name="IsPreInformationConfirmed" />
@@ -450,7 +450,7 @@
                     <label class="main-checkbox reverse">
                         <a href="#0" class="js-modal-trigger" data-trigger="onBilgilendirmeFormu">Ön Bilgilendirme</a> formunu
                         okudum ve kabul ediyorum.
-                        <input type="checkbox" id="onBilgilendirme" name="onBilgilendirme" form="form-buy2" required>
+                        <input type="checkbox" id="onBilgilendirme" name="onBilgilendirme" form="form-buy" required>
                         <span class="main-checkbox__checkmark"></span>
                     </label>
                     <label class="main-checkbox reverse">
@@ -458,12 +458,12 @@
                             Mesafeli satış
                             sözleşmesi‘ni
                         </a> okudum ve kabul ediyorum.
-                        <input type="checkbox" id="MesafeliSatisSozlesmesi" name="MesafeliSatisSozlesmesi" form="form-buy2"
+                        <input type="checkbox" id="MesafeliSatisSozlesmesi" name="MesafeliSatisSozlesmesi" form="form-buy"
                                required>
                         <span class="main-checkbox__checkmark"></span>
                     </label>
                 </div>
-                <button type="submit" form="form-buy2" class="button button-icon-right button-fw checkout__next-button">
+                <button type="submit" form="form-buy" class="button button-icon-right button-fw checkout__next-button">
                     <span class="button-txt">
                         Siparişi Tamamla
                     </span>
@@ -998,9 +998,9 @@
             aId.val(localStorage.getItem("_cA"));
             getCartItems();
             checkPromotionCode();
-            $('#form-buy2').validate({
+            $('#form-buy').validate({
                 ignore: [],
-                errorLabelContainer: $('#form-buy2 div.error'),
+                errorLabelContainer: $('#form-buy div.error'),
                 errorContainer: 'div.error-messages',
                 errorLabelContainer: $('ul', 'div.error-messages'),
                 wrapper: 'li',
@@ -1044,7 +1044,7 @@
 
                 },
                 submitHandler: function () {
-                    ('#form-buy2').submit();
+                    $('#form-buy').submit();
                 },
                 highlight: function (element) {
                     $(element)
