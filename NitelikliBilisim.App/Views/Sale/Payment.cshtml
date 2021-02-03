@@ -1039,7 +1039,6 @@
                 "MesafeliSatisSozlesmesi": 'Bu alanı işaretleyiniz.'
             },
             submitHandler: function () {
-                $successMsg.show();
             },
             highlight: function (element) {
                 $(element)
@@ -1193,7 +1192,6 @@
                 data: data,
                 success: (res) => {
                     if (res.isSuccess) {
-                        console.log(res);
                         installmentInfoDiv.empty();
                         createInstallmentsDiv(res.data);
                         if (res.data.installmentOptions.force3Ds == "1") {
