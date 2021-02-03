@@ -27,7 +27,7 @@
                 </div>
                 <div class="checkout-steps__txt">2. FATURA BİLGİLERİ</div>
             </a>
-            <a  class="checkout-steps__item active">
+            <a class="checkout-steps__item active">
                 <div class="checkout-steps__icon">
                     <span class="icon-outer">
                         <svg class="icon">
@@ -37,7 +37,7 @@
                 </div>
                 <div class="checkout-steps__txt">3. ÖDEME</div>
             </a>
-            <a  class="checkout-steps__item">
+            <a class="checkout-steps__item">
                 <div class="checkout-steps__icon">
                     <span class="icon-outer">
                         <svg class="icon">
@@ -67,12 +67,12 @@
                             <div class="accordion__content">
                                 <div class="js-calc-accordion-height">
 
-                                    @if (TempData["ErrorMessage"]!=null)
+                                    @if (TempData["ErrorMessage"] != null)
                                     {
-                                    <div class="error-messages" style="display: block;">
-                                        @TempData["ErrorMessage"]
-                                    </div>
-                                    } 
+                                        <div class="error-messages" style="display: block;">
+                                            @TempData["ErrorMessage"]
+                                        </div>
+                                    }
 
                                     <div class="error-messages">
                                         <div class="error-messages__title">
@@ -130,7 +130,7 @@
                                                         <use xlink:href="assets/img/icons.svg#icon-info-circle"></use>
                                                     </svg>
                                                 </span>
-                                                <label for="onBilgilendirme" class="error">onBilgilendirme</label>
+                                                <label for="IsPreInformationConfirmed" class="error">IsPreInformationConfirmed</label>
                                             </li>
                                             <li>
                                                 <span class="icon-outer">
@@ -138,14 +138,15 @@
                                                         <use xlink:href="assets/img/icons.svg#icon-info-circle"></use>
                                                     </svg>
                                                 </span>
-                                                <label for="MesafeliSatisSozlesmesi" class="error">MesafeliSatisSozlesmesi</label>
+                                                <label for="IsDistantSalesAgreementConfirmed" class="error">IsDistantSalesAgreementConfirmed</label>
                                             </li>
                                         </ul>
                                     </div>
                                     <div class='card-wrapper card-wrapper--form'></div>
-                                    <form class="card-form" id="form-buy" novalidate method="post" asp-controller="Sale" asp-action="Pay">
+                                    <form class="card-form" id="form-buy2" method="post" action="/odeme-yap">
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" id="_is-distant-sales-agreement-confirmed" name="IsDistantSalesAgreementConfirmed" />
+                                        <input type="hidden" id="_is-pre-information-confirmed" name="IsPreInformationConfirmed" />
                                         <input type="hidden" value="0" id="input-education-total-price" />
                                         <input type="hidden" value="0" id="input-education-total-old-price" />
                                         <input type="hidden" value="0" id="input-discount-amount" />
@@ -220,6 +221,7 @@
 
                                             </div>
                                         </div>
+
                                     </form>
                                 </div>
                             </div>
@@ -380,7 +382,7 @@
                         </div>
                     </div>
                     <div class="checkout__basket-wrp">
-                       
+
                     </div>
                 </div>
                 <div class="checkout__content no-shadow">
@@ -393,18 +395,18 @@
                         <div class="checkout__price-item">
                             <div class="checkout__price-title">Ürünler Toplamı</div>
                             <div class="checkout__price-old">
-                                 0,00 <span>TL</span>
+                                0,00 <span>TL</span>
                             </div>
                             <div class="checkout__price-new">
                                 <div class="checkout__price-new" id="oldPrice">
-                                     0,00 <span>TL</span>
+                                    0,00 <span>TL</span>
                                 </div>
                             </div>
                         </div>
                         <div class="checkout__price-item">
                             <div class="checkout__price-title">Toplam İndirimler</div>
                             <div class="checkout__price-new" id="discountAmount">
-                                 0,00 <span>TL</span>
+                                0,00 <span>TL</span>
                             </div>
                         </div>
 
@@ -412,7 +414,7 @@
                     <div class="checkout__price-item totaly">
                         <div class="checkout__price-title">Toplam Tutar</div>
                         <div class="checkout__price-new" id="newPrice">
-                             0,00 <span>TL</span>
+                            0,00 <span>TL</span>
                         </div>
                     </div>
                 </div>
@@ -448,7 +450,7 @@
                     <label class="main-checkbox reverse">
                         <a href="#0" class="js-modal-trigger" data-trigger="onBilgilendirmeFormu">Ön Bilgilendirme</a> formunu
                         okudum ve kabul ediyorum.
-                        <input type="checkbox" id="onBilgilendirme" name="onBilgilendirme" form="form-buy" required>
+                        <input type="checkbox" id="onBilgilendirme" name="onBilgilendirme" form="form-buy2" required>
                         <span class="main-checkbox__checkmark"></span>
                     </label>
                     <label class="main-checkbox reverse">
@@ -456,12 +458,12 @@
                             Mesafeli satış
                             sözleşmesi‘ni
                         </a> okudum ve kabul ediyorum.
-                        <input type="checkbox" id="MesafeliSatisSozlesmesi" name="MesafeliSatisSozlesmesi" form="form-buy"
+                        <input type="checkbox" id="MesafeliSatisSozlesmesi" name="MesafeliSatisSozlesmesi" form="form-buy2"
                                required>
                         <span class="main-checkbox__checkmark"></span>
                     </label>
                 </div>
-                <button id="btn-buy" form="form-buy" class="button button-icon-right button-fw checkout__next-button">
+                <button type="submit" form="form-buy2" class="button button-icon-right button-fw checkout__next-button">
                     <span class="button-txt">
                         Siparişi Tamamla
                     </span>
@@ -964,11 +966,6 @@
         var _cart = new CartSupport.Cart();
         var cartItems = $("#_cart-items");
         var cardItemsBody = $(".checkout__basket-wrp");
-        var inputOwner = $('#input-owner');
-        var selectMonths = $("#select-months");
-        var selectYears = $("#select-years");
-        var inputCardNumber = $('#input-card-number');
-        var inputCvc = $("#input-cvc");
         var inputEducationTotalPrice = $("#input-education-total-price");
         var inputPromotionDiscountAmount = $("#promotion-discount-amount");
         var inputPromotionCode = $("#promotion-code");
@@ -980,6 +977,7 @@
         var inputInstallment = $("#_installmentCount");
         var aId = $("#_aId");
         var mss = $("#_is-distant-sales-agreement-confirmed");
+        var obf = $("#_is-pre-information-confirmed");
         var onBilgilendirme = $("#onBilgilendirme");
         var inputEducationTotalOldPrice = $("#input-education-total-old-price");
         var inputDiscountAmount = $("#input-discount-amount");
@@ -987,71 +985,86 @@
         var txtOldTotal = $("#oldPrice");
         var txtTotalDiscount = $("#discountAmount");
 
+
+       
+        jQuery.validator.addMethod("mssValidator", function (value, element) {
+            return value == "true";
+        });
+        jQuery.validator.addMethod("obfValidator", function (value, element) {
+            return value == "true";
+        });
+       
         $(document).ready(function () {
             aId.val(localStorage.getItem("_cA"));
             getCartItems();
             checkPromotionCode();
+            $('#form-buy2').validate({
+                ignore: [],
+                errorLabelContainer: $('#form-buy2 div.error'),
+                errorContainer: 'div.error-messages',
+                errorLabelContainer: $('ul', 'div.error-messages'),
+                wrapper: 'li',
+                rules: {
+                    "CardInfo.NumberOnCard": {
+                        required: true,
+                    },
+                    "CardInfo.NameOnCard": {
+                        required: true,
+                    },
+                    "CardInfo.MonthOnCard": {
+                        required: true,
+                    },
+                    "CardInfo.YearOnCard": {
+                        required: true,
+                    },
+                    "CardInfo.CVC": {
+                        required: true,
+                    },
+                    "purchase": {
+                        required: true,
+                    },
+                    "IsDistantSalesAgreementConfirmed": {
+                        mssValidator: true
+                    },
+                    "IsPreInformationConfirmed": {
+                        obfValidator: true
+                    }
+
+
+                },
+                messages: {
+                    "CardInfo.NumberOnCard": 'Kart numarasını girmediniz.',
+                    "CardInfo.NameOnCard": 'Adınız ve soyadınızı girmediniz.',
+                    "CardInfo.MonthOnCard": 'Kart ayını girmediniz.',
+                    "CardInfo.YearOnCard": 'Kart yılını girmediniz.',
+                    "CardInfo.CVC": 'CCV kodunu girmediniz.',
+                    "purchase": 'Lütfen bir taksit seçimi yapın.',
+                    "IsDistantSalesAgreementConfirmed": "Mesafeli Satış Sözleşmesini onaylayınız.",
+                    "IsPreInformationConfirmed":"Ön Bilgilendirme Formunu onaylayınız."
+
+                },
+                submitHandler: function () {
+                    ('#form-buy2').submit();
+                },
+                highlight: function (element) {
+                    $(element)
+                        .parent()
+                        .addClass('outer-error');
+                },
+                unhighlight: function (element) {
+                    $(element)
+                        .parent()
+                        .removeClass('outer-error');
+                },
+            });
         });
 
         $("#onBilgilendirme").change(function () {
-                mss.val(this.checked);
+            obf.val(this.checked);
         });
-
-        $('#form-buy').validate({
-            errorLabelContainer: $('#form-buy div.error'),
-            errorContainer: 'div.error-messages',
-            errorLabelContainer: $('ul', 'div.error-messages'),
-            wrapper: 'li',
-            rules: {
-                "CardInfo.NumberOnCard": {
-                    required: true,
-                },
-                "CardInfo.NameOnCard": {
-                    required: true,
-                },
-                "CardInfo.MonthOnCard": {
-                    required: true,
-                },
-                "CardInfo.YearOnCard": {
-                    required: true,
-                },
-                "CardInfo.CVC": {
-                    required: true,
-                },
-                "purchase": {
-                    required: true,
-                },
-                "IsDistantSalesAgreementConfirmed": {
-                    required: true,
-                },
-                "MesafeliSatisSozlesmesi": {
-                    required: true
-                },
-            },
-            messages: {
-                "CardInfo.NumberOnCard": 'Kart numarasını girmediniz.',
-                "CardInfo.NameOnCard": 'Adınız ve soyadınızı girmediniz.',
-                "CardInfo.MonthOnCard": 'Kart ayını girmediniz.',
-                "CardInfo.YearOnCard": 'Kart yılını girmediniz.',
-                "CardInfo.CVC": 'CCV kodunu girmediniz.',
-                "purchase": 'Lütfen bir taksit seçimi yapın.',
-                "IsDistantSalesAgreementConfirmed": 'Ön Bilgilendirme formunu onaylayınız.',
-                "MesafeliSatisSozlesmesi": 'Bu alanı işaretleyiniz.'
-            },
-            submitHandler: function () {
-            },
-            highlight: function (element) {
-                $(element)
-                    .parent()
-                    .addClass('outer-error');
-            },
-            unhighlight: function (element) {
-                $(element)
-                    .parent()
-                    .removeClass('outer-error');
-            },
+        $("#MesafeliSatisSozlesmesi").change(function () {
+            mss.val(this.checked);
         });
-
 
         function checkPromotionCode() {
             var promotionCode = localStorage.getItem("promotionCode");
@@ -1140,27 +1153,27 @@
             for (var i = 0; i < data.length; i++) {
                 var item = data[i];
                 appended += ` <div class="checkout__basket-item">
-                                                <div class="checkout__basket-img">
-                                                    <img src="${item.previewPhoto}" alt="">
-                                                </div>
-                                                <div class="checkout__basket-right">
-                                                    <div class="checkout__basket-title">
-                                                       ${item.educationName}
+                                                    <div class="checkout__basket-img">
+                                                        <img src="${item.previewPhoto}" alt="">
                                                     </div>
-                                                    <div class="checkout__basket-crash">
-                                                        <span class="icon-outer">
-                                                            <svg class="icon">
-                                                                <use xlink:href="../../assets/img/icons.svg#icon-crash"></use>
-                                                            </svg>
-                                                        </span>
-                                                    </div>
-                                                    <div class="checkout__basket-price">
-                                                        <div class="checkout__price-new">
-                                                            ${item.priceText} <span>TL</span>
+                                                    <div class="checkout__basket-right">
+                                                        <div class="checkout__basket-title">
+                                                           ${item.educationName}
+                                                        </div>
+                                                        <div class="checkout__basket-crash">
+                                                            <span class="icon-outer">
+                                                                <svg class="icon">
+                                                                    <use xlink:href="../../assets/img/icons.svg#icon-crash"></use>
+                                                                </svg>
+                                                            </span>
+                                                        </div>
+                                                        <div class="checkout__basket-price">
+                                                            <div class="checkout__price-new">
+                                                                ${item.priceText} <span>TL</span>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </div>`;
+                                                </div>`;
 
             }
 
@@ -1218,36 +1231,36 @@
                 $.each(data.installmentOptions.installmentPrices, function (index, info) {
                     if (info.installmentNumber == 1) {
                         content += `<label class="main-radio">
-                                                        <div class="checkout__purchase-item">
-                                                            <div>
-                                                                Peşin
+                                                            <div class="checkout__purchase-item">
+                                                                <div>
+                                                                    Peşin
+                                                                </div>
+                                                                <div>
+                                                                     ${info.price}&nbsp;<span>TL</span>
+                                                                </div>
+                                                                <div>
+                                                                     ${info.totalPrice}&nbsp;<span>TL</span>
+                                                                </div>
                                                             </div>
-                                                            <div>
-                                                                 ${info.price}&nbsp;<span>TL</span>
-                                                            </div>
-                                                            <div>
-                                                                 ${info.totalPrice}&nbsp;<span>TL</span>
-                                                            </div>
-                                                        </div>
-                                                        <input type="radio" value="${info.installmentNumber}" checked="checked" name="purchase">
-                                                        <span class="main-radio__checkmark"></span>
-                                                    </label>`;
+                                                            <input type="radio" value="${info.installmentNumber}" checked="checked" name="purchase">
+                                                            <span class="main-radio__checkmark"></span>
+                                                        </label>`;
                     } else {
                         content += `<label class="main-radio">
-                                                        <div class="checkout__purchase-item">
-                                                            <div>
-                                                                ${info.installmentNumber} Taksit
+                                                            <div class="checkout__purchase-item">
+                                                                <div>
+                                                                    ${info.installmentNumber} Taksit
+                                                                </div>
+                                                                <div>
+                                                                     ${info.price}&nbsp;<span>TL</span>
+                                                                </div>
+                                                                <div>
+                                                                     ${info.totalPrice}&nbsp;<span>TL</span>
+                                                                </div>
                                                             </div>
-                                                            <div>
-                                                                 ${info.price}&nbsp;<span>TL</span>
-                                                            </div>
-                                                            <div>
-                                                                 ${info.totalPrice}&nbsp;<span>TL</span>
-                                                            </div>
-                                                        </div>
-                                                        <input type="radio" value="${info.installmentNumber}" name="purchase">
-                                                        <span class="main-radio__checkmark"></span>
-                                                    </label>`;
+                                                            <input type="radio" value="${info.installmentNumber}" name="purchase">
+                                                            <span class="main-radio__checkmark"></span>
+                                                        </label>`;
                     }
                 });
             installmentInfoDiv.append(content);
