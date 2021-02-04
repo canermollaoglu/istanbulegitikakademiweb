@@ -10,6 +10,7 @@ using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Enums.educations;
 using NitelikliBilisim.Core.ESOptions.ESEntities;
 using NitelikliBilisim.Core.ViewModels;
+using NitelikliBilisim.Core.ViewModels.Main.Profile;
 using NitelikliBilisim.Core.ViewModels.Main.Wizard;
 using NitelikliBilisim.Core.ViewModels.Suggestion;
 using NitelikliBilisim.Data;
@@ -171,7 +172,7 @@ namespace NitelikliBilisim.Business.Repositories
             return retVal;
         }
 
-        public List<SuggestedEducationVm> GetEducationsOfTheWeek(int week,string userId)
+        public List<EducationOfTheWeekVm> GetEducationsOfTheWeek(int week,string userId)
         {
             var eInfo = _context.StudentEducationInfos.FirstOrDefault(x => x.CustomerId == userId);
             var categoryId = Guid.Empty;
@@ -205,8 +206,38 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 thisWeekEducations = thisWeekEducations.OrderByDescending(x => x.Value).Take(4).ToDictionary(x=>x.Key,x=>x.Value);
             }
-            return FillSuggestedEducationList(thisWeekEducations);
+
+           
+            var retVal = (from education in _context.Educations
+                         join category in _context.EducationCategories on education.CategoryId equals category.Id
+                         join eImage in _context.EducationMedias on new { Id = education.Id, MediaType = EducationMediaType.List } equals new { Id = eImage.EducationId, MediaType = eImage.MediaType }
+                         where thisWeekEducations.Keys.Contains(education.SeoUrl)
+                          select new EducationOfTheWeekVm
+                         {
+                             Id = education.Id,
+                             Name = education.Name,
+                             Description = education.Description,
+                             CategorySeoUrl = category.SeoUrl,
+                             Day = education.Days,
+                             Hour = education.Days * education.HoursPerDay,
+                             SeoUrl = education.SeoUrl,
+                             Image = eImage.FileUrl
+                         }).ToList();
+
+            var hostId = Guid.Parse(_configuration.GetSection("SiteGeneralOptions").GetSection("PriceLocationId").Value);
+            foreach (var education in retVal)
+            {
+                education.Price = _context.EducationGroups.OrderByDescending(x => x.CreatedDate).FirstOrDefault(y => y.HostId == hostId && y.EducationId == education.Id).NewPrice.GetValueOrDefault().ToString(CultureInfo.CreateSpecificCulture("tr-TR"));
+                education.AppropriateCriterionCount = thisWeekEducations.FirstOrDefault(y => y.Key == education.SeoUrl).Value;
+            }
+            return retVal.OrderByDescending(x=>x.AppropriateCriterionCount).ToList();
         }
+
+        
+
+
+
+
 
         public List<WizardFirstStepData> GetWizardFirstStepData()
         {

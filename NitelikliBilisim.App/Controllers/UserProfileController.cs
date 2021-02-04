@@ -235,7 +235,7 @@ namespace NitelikliBilisim.App.Controllers
             var model = _unitOfWork.Suggestions.GetEducationsOfTheWeek(week, userId);
             foreach (var education in model)
             {
-                education.Medias[0].FileUrl = _storageService.BlobUrl + education.Medias[0].FileUrl;
+                education.Image= _storageService.BlobUrl + education.Image;
             }
             return Json(new ResponseData
             {

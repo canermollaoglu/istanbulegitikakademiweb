@@ -525,17 +525,17 @@
                     $.each(res.data, function (index, e) {
                         weekPrivateSlider.appendSlide([
                             `<div class="swiper-slide">
-                                            <a href="/egitimler/${e.base.categorySeoUrl}/${e.base.seoUrl}" class="lesson-list__item">
+                                            <a href="/egitimler/${e.categorySeoUrl}/${e.seoUrl}" class="lesson-list__item">
                                                 <div class="lesson-list__item-img">
-                                                    <img src="${e.medias[0].fileUrl}" alt="">
+                                                    <img src="${e.image}" alt="">
                                                 </div>
                                                 <div class="lesson-list__item-cnt">
                                                     <div class="lesson-list__item-left">
                                                         <div class="lesson-list__item-title">
-                                                            ${e.base.name}
+                                                            ${e.name}
                                                         </div>
                                                         <div class="lesson-list__item-txt">
-                                                            ${e.base.description}
+                                                            ${e.description}
                                                         </div>
                                                     </div>
                                                     <div class="lesson-list__item-right">
@@ -545,10 +545,10 @@
                                                                     <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
                                                                 </svg>
                                                             </span>
-                                                            ${e.base.daysText} gün ( ${e.base.daysNumeric * e.base.hoursPerDayNumeric} saat )
+                                                            ${e.day} gün ( ${e.hour} saat )
                                                         </div>
                                                         <div class="lesson-list__item-price">
-                                                             ${e.base.price} <span>TL</span>
+                                                             ${e.price} <span>TL</span>
                                                         </div>
                                                     </div>
                                                 </div>
