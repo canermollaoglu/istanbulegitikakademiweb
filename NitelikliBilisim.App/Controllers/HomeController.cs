@@ -99,6 +99,11 @@ namespace NitelikliBilisim.App.Controllers
             return View();
         }
 
+        [Route("kullanim-kosullari")]
+        public IActionResult TermsOfUse()
+        {
+            return View();
+        }
 
         //public IActionResult Privacy()
         //{

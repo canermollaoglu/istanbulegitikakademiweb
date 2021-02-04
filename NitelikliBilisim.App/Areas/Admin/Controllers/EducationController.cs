@@ -58,24 +58,22 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 });
             }
 
-            //var bannerPath = _fileUploadManager.Upload($"/uploads/media-items/", data.BannerFile.Base64Content, data.BannerFile.Extension, "banner", data.Name);
-            var bannerStream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.BannerFile.Base64Content));
-            var bannerFileName = $"{StringHelpers.FormatForTag(data.Name)}-banner";
-            var bannerPath = await _storage.UploadFile(bannerStream, $"{bannerFileName}.{data.BannerFile.Extension.ToLower()}", "media-items");
-            var banner = new EducationMedia
+            var detailImageStream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.BannerFile.Base64Content));
+            var detailImageName = $"{StringHelpers.FormatForTag(data.Name)}-detail";
+            var detailPath = await _storage.UploadFile(detailImageStream, $"{detailImageName}.{data.BannerFile.Extension.ToLower()}", "media-items");
+            var detailImage = new EducationMedia
             {
-                FileUrl = bannerPath,
-                MediaType = EducationMediaType.Banner
+                FileUrl = detailPath,
+                MediaType = EducationMediaType.Detail
             };
 
-            //var previewPath = _fileManager.Upload($"/uploads/media-items/", data.PreviewFile.Base64Content, data.PreviewFile.Extension, "preview", data.Name);
-            var previewStream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.PreviewFile.Base64Content));
-            var previewFileName = $"{StringHelpers.FormatForTag(data.Name)}-preview";
-            var previewPath = await _storage.UploadFile(previewStream, $"{previewFileName}.{data.PreviewFile.Extension.ToLower()}", "media-items");
-            var preview = new EducationMedia
+            var cardImageStream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.PreviewFile.Base64Content));
+            var cardImageFileName = $"{StringHelpers.FormatForTag(data.Name)}-card";
+            var cardImagePath = await _storage.UploadFile(cardImageStream, $"{cardImageFileName}.{data.PreviewFile.Extension.ToLower()}", "media-items");
+            var cardImage = new EducationMedia
             {
-                FileUrl = previewPath,
-                MediaType = data.PreviewFile.Extension == "mp4" ? EducationMediaType.PreviewVideo : EducationMediaType.PreviewPhoto
+                FileUrl = cardImagePath,
+                MediaType = EducationMediaType.Card
             };
 
             var education = new Education
@@ -91,7 +89,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 CategoryId = data.CategoryId
             };
 
-            _unitOfWork.Education.Insert(education, data.Tags, new List<EducationMedia> { banner, preview });
+            _unitOfWork.Education.Insert(education, data.Tags, new List<EducationMedia> { detailImage, cardImage });
 
             _unitOfWork.Education.CheckEducationState(education.Id);
 
@@ -135,7 +133,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [HttpPost, Route("admin/egitim-guncelle")]
         public IActionResult Update(UpdatePostVm data)
         {
-            if (!ModelState.IsValid || data.Tags.Length== 0)
+            if (!ModelState.IsValid || data.Tags.Length == 0)
                 return Json(new ResponseModel
                 {
                     isSuccess = false,
@@ -227,17 +225,18 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     errors = new List<string> { "Hata" + ex.Message }
                 }); ;
             }
-            
+
         }
 
         [Route("admin/egitim-one-cikar")]
-        public IActionResult ToggleFeaturedEducation(Guid educationId) {
-           
-                _unitOfWork.Education.ToggleFeaturedEducation(educationId);
-                return Json(new ResponseModel
-                {
-                    isSuccess = true
-                });
+        public IActionResult ToggleFeaturedEducation(Guid educationId)
+        {
+
+            _unitOfWork.Education.ToggleFeaturedEducation(educationId);
+            return Json(new ResponseModel
+            {
+                isSuccess = true
+            });
         }
 
         [Route("admin/get-education-levels/")]

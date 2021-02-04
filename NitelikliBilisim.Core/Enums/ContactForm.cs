@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 
 namespace NitelikliBilisim.Core.Enums
 {
@@ -14,7 +9,15 @@ namespace NitelikliBilisim.Core.Enums
     }
     public enum ContactFormSubjects
     {
-        [Description("Destek")]
-        Support =1010
+        [Description("Üyelik Bilgileri")]
+        MembershipInfo =1010,
+        [Description("Eğitim Detayları")]
+        EducationDetails = 1020,
+        [Description("Eğitmen Detayları")]
+        EducatorDetails = 1030,
+        [Description("Ödeme İşlemleri")]
+        PaymentInfo = 1040,
+        [Description("Diğer İşlemler")]
+        Other = 1050
     }
 }

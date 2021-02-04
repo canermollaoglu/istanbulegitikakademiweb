@@ -11,5 +11,7 @@ namespace NitelikliBilisim.Core.ViewModels.Cart
         public string PriceText { get; set; }
         public decimal OldPriceNumeric { get; set; }
         public object OldPriceText { get; set; }
+        public string CategorySeoUrl { get; set; }
+        public string SeoUrl { get; set; }
     }
 }

@@ -303,9 +303,10 @@
             cardItemsBody.html("");
             var appended = "";
             for (var i = 0; i < data.length; i++) {
+                console.log(data);
                 var item = data[i];
                 appended += `<div class="checkout__product-item">
-                                                        <a href="/egitim-detay/${item.educationId}" class="checkout__product-left">
+                                                        <a href="/egitimler/${item.categorySeoUrl}/${item.seoUrl}" class="checkout__product-left">
                                                             <div class="checkout__product-img">
                                                                 <img src="${item.previewPhoto}" alt="">
                                                             </div>

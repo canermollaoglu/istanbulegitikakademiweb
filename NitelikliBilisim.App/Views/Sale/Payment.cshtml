@@ -1153,13 +1153,13 @@
             for (var i = 0; i < data.length; i++) {
                 var item = data[i];
                 appended += ` <div class="checkout__basket-item">
-                                                    <div class="checkout__basket-img">
+                                                    <a target="_blank" href="/egitimler/${item.categorySeoUrl}/${item.seoUrl}" class="checkout__basket-img">
                                                         <img src="${item.previewPhoto}" alt="">
-                                                    </div>
+                                                    </a>
                                                     <div class="checkout__basket-right">
-                                                        <div class="checkout__basket-title">
+                                                        <a target="_blank" href="/egitimler/${item.categorySeoUrl}/${item.seoUrl}" class="checkout__basket-title">
                                                            ${item.educationName}
-                                                        </div>
+                                                        </a>
                                                         <div class="checkout__basket-crash">
                                                             <span class="icon-outer">
                                                                 <svg class="icon">

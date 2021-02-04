@@ -647,17 +647,19 @@ namespace NitelikliBilisim.Business.Repositories
         public List<CartItemVm> GetGroupCartItems(List<_CartItem> items)
         {
             var cultureInfo = CultureInfo.CreateSpecificCulture("tr-TR");
-            var groups = _context.EducationGroups.Include(x => x.Education).Where(x => items.Select(x => x.GroupId).Contains(x.Id)).OrderBy(x => x.Education.Name);
+            var groups = _context.EducationGroups.Include(x => x.Education).ThenInclude(x=>x.Category).ThenInclude(x=>x.BaseCategory).Where(x => items.Select(x => x.GroupId).Contains(x.Id)).OrderBy(x => x.Education.Name);
             //var educations = _unitOfWork.Education.Get(x => items.Select(x => x.EducationId).Contains(x.Id), x => x.OrderBy(o => o.Name));
             var model = new List<CartItemVm>();
             foreach (var group in groups)
             {
-                var imagePath = _context.EducationMedias.First(x => x.EducationId == group.EducationId && x.MediaType == EducationMediaType.PreviewPhoto).FileUrl;
+                var imagePath = _context.EducationMedias.First(x => x.EducationId == group.EducationId && x.MediaType == EducationMediaType.Square).FileUrl;
                 var imageUrl = _storageService.BlobUrl + imagePath;
                 model.Add(new CartItemVm
                 {
                     EducationId = group.EducationId,
                     EducationName = group.Education.Name,
+                    CategorySeoUrl = group.Education.Category.SeoUrl,
+                    SeoUrl = group.Education.SeoUrl,
                     PreviewPhoto = imageUrl,
                     PriceNumeric = group.NewPrice.GetValueOrDefault(),
                     PriceText = group.NewPrice.GetValueOrDefault().ToString(cultureInfo),
