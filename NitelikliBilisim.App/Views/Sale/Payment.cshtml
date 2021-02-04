@@ -1043,8 +1043,8 @@
                     "IsPreInformationConfirmed":"Ön Bilgilendirme Formunu onaylayınız."
 
                 },
-                submitHandler: function () {
-                    $('#form-buy').submit();
+                submitHandler: function (form) {
+                    form.submit();
                 },
                 highlight: function (element) {
                     $(element)

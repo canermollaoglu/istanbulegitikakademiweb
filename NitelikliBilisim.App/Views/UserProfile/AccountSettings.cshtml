@@ -162,7 +162,7 @@
                                                     </div>
                                                     <div class="input__outer no-icon datepicker--fw icon-datepicker">
                                                         <div class="input__title">Doğum Tarihiniz</div>
-                                                        <input type="text" name="BirthDate" class="input input--bordered input--fw input--noshadow js-datepicker"
+                                                        <input type="text" autocomplete="off" name="BirthDate" class="input input--bordered input--fw input--noshadow js-datepicker"
                                                                value="@(Model.GeneralInformation.DateOfBirth.HasValue?Model.GeneralInformation.DateOfBirth.Value.ToString("dd/MM/yyyy"):"")" placeholder="Doğum Tarihiniz">
                                                         <span class="icon-outer">
                                                             <svg class="icon">

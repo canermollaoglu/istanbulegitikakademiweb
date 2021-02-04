@@ -20,11 +20,9 @@ var wizardSlider = new Swiper('.js-wizard-slider', {
     },
 });
 
-wizardSlider.on('transitionEnd', function () {
-    //if (wizardSlider.realIndex == 4) {
-    //    console.log('last-slide');
-    //}
-});
+//wizardSlider.on('transitionEnd', function () {
+    
+//});
 
 //Next Click
 $('body').on('click', '.js-wizard-next', function () {
