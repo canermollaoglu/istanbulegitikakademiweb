@@ -92,7 +92,7 @@ namespace NitelikliBilisim.Business.Repositories
         public List<SuggestedEducationVm> GetGuestUserSuggestedEducations()
         {
             var educationsList = _context.Educations.Where(x => x.IsActive).OrderByDescending(x => x.CreatedDate).Take(5)
-                 .Join(_context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Id, r => r.EducationId, (x, y) => new
+                 .Join(_context.EducationMedias.Where(x => x.MediaType == EducationMediaType.Card), l => l.Id, r => r.EducationId, (x, y) => new
                  {
                      Education = x,
                      EducationPreviewMedia = y
@@ -259,7 +259,7 @@ namespace NitelikliBilisim.Business.Repositories
                           join category in _context.EducationCategories on education.CategoryId equals category.Id
                           join eImage in _context.EducationMedias on education.Id equals eImage.EducationId
                            where
-                           eImage.MediaType == EducationMediaType.PreviewPhoto && education.IsActive
+                           eImage.MediaType == EducationMediaType.List && education.IsActive
                            select new WizardSuggestedEducationVm
                            {
                                Id = education.Id,
@@ -520,7 +520,7 @@ namespace NitelikliBilisim.Business.Repositories
         public List<SuggestedEducationVm> FillSuggestedEducationList(Dictionary<string, double> educationAndAppropriateCriterion)
         {
             var educationsList = _context.Educations.Where(x => educationAndAppropriateCriterion.Keys.Contains(x.SeoUrl) && x.IsActive)
-               .Join(_context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Id, r => r.EducationId, (x, y) => new
+               .Join(_context.EducationMedias.Where(x => x.MediaType == EducationMediaType.Card), l => l.Id, r => r.EducationId, (x, y) => new
                {
                    Education = x,
                    EducationPreviewMedia = y

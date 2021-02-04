@@ -234,7 +234,7 @@ namespace NitelikliBilisim.Business.Repositories
             Random r = new Random();
             var educationcount = Context.Educations.Where(x => x.IsActive && x.IsFeaturedEducation).Count();
             var education = Context.Educations.Include(x=>x.Category).Where(x => x.IsActive && x.IsFeaturedEducation).ToList().ElementAt(r.Next(0, educationcount));
-            var media = Context.EducationMedias.Where(x => x.EducationId == education.Id && x.MediaType == EducationMediaType.PreviewPhoto).First();
+            var media = Context.EducationMedias.Where(x => x.EducationId == education.Id && x.MediaType == EducationMediaType.List).First();
             return new FeaturedEducationVm
             {
                 Id = education.Id,
@@ -270,7 +270,7 @@ namespace NitelikliBilisim.Business.Repositories
             var rawData = (from education in educations
                            join eImage in Context.EducationMedias on education.Id equals eImage.EducationId
                            where
-                           eImage.MediaType == EducationMediaType.PreviewPhoto && education.IsActive
+                           eImage.MediaType == EducationMediaType.List && education.IsActive
                            select new CoursesPageEducationsVm
                            {
                                Id = education.Id,
@@ -438,10 +438,10 @@ namespace NitelikliBilisim.Business.Repositories
 
         public bool CheckEducationState(Guid educationId)
         {
-            var hasBanner = Context.EducationMedias.Count(x => x.EducationId == educationId && x.MediaType == EducationMediaType.Banner) > 0;
+            var hasBanner = Context.EducationMedias.Count(x => x.EducationId == educationId && x.MediaType == EducationMediaType.Card) > 0;
             var hasPreview = Context.EducationMedias.Count(x => x.EducationId == educationId &&
-                (x.MediaType == EducationMediaType.PreviewPhoto ||
-                x.MediaType == EducationMediaType.PreviewVideo)) > 0;
+                (x.MediaType == EducationMediaType.List ||
+                x.MediaType == EducationMediaType.Detail)) > 0;
 
             var partCount = Context.EducationParts.Count(x => x.EducationId == educationId);
 
@@ -588,7 +588,7 @@ namespace NitelikliBilisim.Business.Repositories
             }
 
             var educationsList = educations
-                .Join(Context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Id, r => r.EducationId, (x, y) => new
+                .Join(Context.EducationMedias.Where(x => x.MediaType == EducationMediaType.List), l => l.Id, r => r.EducationId, (x, y) => new
                 {
                     Education = x,
                     EducationPreviewMedia = y
@@ -669,7 +669,7 @@ namespace NitelikliBilisim.Business.Repositories
             var query = string.IsNullOrEmpty(category) ? educations : preList.AsQueryable();
 
             var educationsList = query
-                .Join(Context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Id, r => r.EducationId, (x, y) => new
+                .Join(Context.EducationMedias.Where(x => x.MediaType == EducationMediaType.List), l => l.Id, r => r.EducationId, (x, y) => new
                 {
                     Education = x,
                     EducationPreviewMedia = y
@@ -950,7 +950,7 @@ namespace NitelikliBilisim.Business.Repositories
         public List<EducationVm> GetBeginnerEducations(int count)
         {
             var educationsList = Context.Educations.Where(x => x.IsActive && x.Level == EducationLevel.Beginner).OrderByDescending(x => x.CreatedDate).Take(count)
-                 .Join(Context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Id, r => r.EducationId, (x, y) => new
+                 .Join(Context.EducationMedias.Where(x => x.MediaType == EducationMediaType.Card), l => l.Id, r => r.EducationId, (x, y) => new
                  {
                      Education = x,
                      EducationPreviewMedia = y
@@ -1007,7 +1007,7 @@ namespace NitelikliBilisim.Business.Repositories
                 retVal.Add((from education in Context.Educations
                             join category in Context.EducationCategories on education.CategoryId equals category.Id
                             join educationMedia in Context.EducationMedias on education.Id equals educationMedia.EducationId
-                            where educationMedia.MediaType == EducationMediaType.PreviewPhoto && education.IsActive
+                            where educationMedia.MediaType == EducationMediaType.Card && education.IsActive
                             && education.Id == ePoint.Key
                             select new EducationVm
                             {

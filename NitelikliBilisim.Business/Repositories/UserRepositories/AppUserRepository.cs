@@ -69,7 +69,7 @@ namespace NitelikliBilisim.Business.Repositories
             List<Guid> wishListEducationIds = wishListItems.Select(x => x.Id2).ToList();
             List<EducationVm> _wishList = new List<EducationVm>();
             var educationsList = _context.Educations.Where(x => wishListEducationIds.Contains(x.Id) && x.IsActive)
-               .Join(_context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Id, r => r.EducationId, (x, y) => new
+               .Join(_context.EducationMedias.Where(x => x.MediaType == EducationMediaType.Card), l => l.Id, r => r.EducationId, (x, y) => new
                {
                    Education = x,
                    EducationPreviewMedia = y
@@ -236,7 +236,7 @@ namespace NitelikliBilisim.Business.Repositories
                            join education in _context.Educations on invoiceDetail.EducationId equals education.Id
                            join category in _context.EducationCategories on education.CategoryId equals category.Id
                            join educationImage in _context.EducationMedias on education.Id equals educationImage.EducationId
-                           where educationImage.MediaType == EducationMediaType.PreviewPhoto && invoiceDetail.InvoiceId == invoiceId
+                           where educationImage.MediaType == EducationMediaType.Card && invoiceDetail.InvoiceId == invoiceId
                            select new InvoiceDetailListVm
                            {
                                Id = invoiceDetail.Id,
@@ -404,7 +404,7 @@ namespace NitelikliBilisim.Business.Repositories
                          join education in _context.Educations on comment.EducationId equals education.Id
                          join category in _context.EducationCategories on education.CategoryId equals category.Id
                          join eImage in _context.EducationMedias on education.Id equals eImage.EducationId
-                         where eImage.MediaType == EducationMediaType.PreviewPhoto && comment.CommentatorId == userId
+                         where eImage.MediaType == EducationMediaType.Square && comment.CommentatorId == userId
                          select new MyCommentVm
                          {
                              Id = comment.Id,
@@ -430,7 +430,7 @@ namespace NitelikliBilisim.Business.Repositories
                          join host in _context.EducationHosts on eGroup.HostId equals host.Id
                          join educatorUser in _context.Users on educator.Id equals educatorUser.Id
                          join eImage in _context.EducationMedias on education.Id equals eImage.EducationId
-                         where eImage.MediaType == EducationMediaType.PreviewPhoto
+                         where eImage.MediaType == EducationMediaType.Card
                          && eGroup.Id == groupId
                          select new MyCourseDetailVm
                          {
@@ -491,7 +491,7 @@ namespace NitelikliBilisim.Business.Repositories
             var educationList = (from eGroup in _context.EducationGroups
                                  join education in _context.Educations on eGroup.EducationId equals education.Id
                                  join eImage in _context.EducationMedias on education.Id equals eImage.EducationId
-                                 where eImage.MediaType == EducationMediaType.PreviewPhoto
+                                 where eImage.MediaType == EducationMediaType.Square
                                   && ids.Contains(eGroup.Id)
                                  select new MyCourseVm
                                  {
@@ -563,7 +563,7 @@ namespace NitelikliBilisim.Business.Repositories
                                  join educatorUser in _context.Users on educator.Id equals educatorUser.Id
                                  join host in _context.EducationHosts on eGroup.HostId equals host.Id
                                  join category in _context.EducationCategories on education.CategoryId equals category.Id
-                                 where eImage.MediaType == EducationMediaType.PreviewPhoto
+                                 where eImage.MediaType == EducationMediaType.Card
                                  && ids.Contains(eGroup.Id)
                                  select new PurchasedEducationVm
                                  {
@@ -609,7 +609,7 @@ namespace NitelikliBilisim.Business.Repositories
             var educationsList = (from education in _context.Educations
                                   join featuredImage in _context.EducationMedias on education.Id equals featuredImage.EducationId
                                   join category in _context.EducationCategories on education.CategoryId equals category.Id
-                                  where featuredImage.MediaType == EducationMediaType.PreviewPhoto
+                                  where featuredImage.MediaType == EducationMediaType.Card
                                   && wishListEducationIds.Contains(education.Id)
                                   select new FavoriteEducationVm
                                   {

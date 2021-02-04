@@ -852,14 +852,14 @@
             var appended = "";
             for (var i = 0; i < data.length; i++) {
                 var item = data[i];
-                appended += ` <div class="checkout__basket-item">
-                                    <div class="checkout__basket-img">
+                appended += ` <div  class="checkout__basket-item">
+                                    <a target="_blank" href="/egitimler/${item.categorySeoUrl}/${item.seoUrl}" class="checkout__basket-img">
                                         <img src="${item.previewPhoto}" alt="">
-                                    </div>
+                                    </a>
                                     <div class="checkout__basket-right">
-                                        <div class="checkout__basket-title">
+                                        <a target="_blank" href="/egitimler/${item.categorySeoUrl}/${item.seoUrl}" class="checkout__basket-title">
                                            ${item.educationName}
-                                        </div>
+                                        </a>
                                         <div class="checkout__basket-crash" data-id="${item.educationId}">
                                             <span class="icon-outer">
                                                 <svg class="icon">

@@ -11,17 +11,17 @@
 
 @{
     var hours = Model.Details.Base.DaysNumeric * Model.Details.Base.HoursPerDayNumeric;
-    var banner = Model.Details.Medias.FirstOrDefault(x => x.MediaType == NitelikliBilisim.Core.Enums.EducationMediaType.Banner);
-    var bannerUrl = "";
-    if (banner != null)
+    var detail = Model.Details.Medias.FirstOrDefault(x => x.MediaType == NitelikliBilisim.Core.Enums.EducationMediaType.Detail);
+    var detailUrl = "";
+    if (detail != null)
     {
-        bannerUrl = StorageService.BlobUrl + banner.FileUrl;
+        detailUrl = StorageService.BlobUrl + detail.FileUrl;
     }
-    var previewImage = Model.Details.Medias.FirstOrDefault(x => x.MediaType == NitelikliBilisim.Core.Enums.EducationMediaType.PreviewPhoto);
-    var previewImageUrl = "";
-    if (previewImage!=null)
+    var squareImage = Model.Details.Medias.FirstOrDefault(x => x.MediaType == NitelikliBilisim.Core.Enums.EducationMediaType.Square);
+    var squrareImageUrl = "";
+    if (squareImage != null)
     {
-        previewImageUrl = StorageService.BlobUrl + previewImage.FileUrl;
+        squrareImageUrl = StorageService.BlobUrl + squareImage.FileUrl;
     }
 }
 
@@ -532,7 +532,7 @@
             <div class="lesson-detail__side js-top-sized">
                 <div class="lesson-detail__card">
                     <div class="lesson-detail__card-top js-video-btn" data-video-id="@Model.Details.Base.VideoUrl">
-                        <img src="@bannerUrl" alt="">
+                        <img src="@detailUrl" alt="">
                         <div class="card-play">
                             <span class="icon-outer">
                                 <svg class="icon">
@@ -932,7 +932,7 @@
             var group = groups.find(x => x.host.hostId == index);
             var hostId = group.host.hostId;
             var groupId = group.groupId;
-            var imageUrl = "@(previewImageUrl)";
+            var imageUrl = "@(squrareImageUrl)";
             var newPrice = group.newPrice;
             var educationName = "@(Model.Details.Base.Name)";
             cart.addToCart(educationId, hostId, groupId, imageUrl, newPrice, educationName);
