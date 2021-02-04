@@ -86,11 +86,11 @@ namespace NitelikliBilisim.App.Controllers
         }
 
 
-        [Route("yakinda")]
-        public IActionResult ComingSoon()
-        {
-            return View();
-        }
+        //[Route("yakinda")]
+        //public IActionResult ComingSoon()
+        //{
+        //    return View();
+        //}
 
 
         [Route("gizlilik-sozlesmesi")]
@@ -100,14 +100,14 @@ namespace NitelikliBilisim.App.Controllers
         }
 
 
-        public IActionResult Privacy()
-        {
-            string sessionId = _session.GetString("userSessionId");
-            string userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            ViewData["edl"] = _unitOfWork.Suggestions.GetEducationDetailLogs(userId);
-            ViewData["TotalRecommendationPoints"] = _unitOfWork.Suggestions.GetEducationSuggestionRate(userId);
-            return View();
-        }
+        //public IActionResult Privacy()
+        //{
+        //    string sessionId = _session.GetString("userSessionId");
+        //    string userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //    ViewData["edl"] = _unitOfWork.Suggestions.GetEducationDetailLogs(userId);
+        //    ViewData["TotalRecommendationPoints"] = _unitOfWork.Suggestions.GetEducationSuggestionRate(userId);
+        //    return View();
+        //}
 
         [Route("hakkimizda")]
         public IActionResult AboutUs()
