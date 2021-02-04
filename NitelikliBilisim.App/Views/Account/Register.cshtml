@@ -428,6 +428,7 @@
                     required: true,
                 },
                 ConfirmPassword: {
+                    required:true,
                     equalTo: "#input-password"
                 },
                 AcceptedTerms: {
@@ -438,7 +439,10 @@
                 Name: 'Bu alan zorunludur.',
                 Surname: 'Bu alan zorunludur.',
                 Password: 'Bu alan zorunludur.',
-                ConfirmPassword: 'Şifreler uyuşmuyor.',
+                ConfirmPassword: {
+                    required: 'Bu alan zorunludur.',
+                    equalTo: 'Şifreler uyuşmuyor.'
+                },
                 Phone: 'Bu alan zorunludur.',
                 Email: {
                     required: 'Bu alan zorunludur.',
