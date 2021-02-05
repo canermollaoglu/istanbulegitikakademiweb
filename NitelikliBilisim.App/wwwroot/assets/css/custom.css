@@ -1,0 +1,11 @@
+﻿.empty-result {
+    align-items:center;
+    flex-direction:column;
+
+}
+.empty-result > span.icon-outer>svg{
+    font-size:72px;
+}
+.empty-result > span.icon-outer {
+    color: #459af0;
+}
