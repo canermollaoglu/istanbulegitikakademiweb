@@ -638,19 +638,20 @@
                     week: week,
                 },
                 success: (res) => {
+                    console.log(res);
                     $.each(res.data, function (index, e) {
                         swiper.appendSlide([
                             `<div class="swiper-slide">
                     <div class="card">
                         <figure>
-                            <img src="${e.medias[0].fileUrl}" alt="">
+                            <img src="${e.cardImage}" alt="">
                         </figure>
 
                         <div class="card__content">
-                            <h6 class="card__subtitle">${e.base.categoryName}</h6>
-                            <h5 class="card__title">${e.base.name}</h5>
+                            <h6 class="card__subtitle">${e.categoryName}</h6>
+                            <h5 class="card__title">${e.name}</h5>
                             <p>
-                               ${e.base.description}
+                               ${e.description}
                             </p>
                         </div>
 
@@ -661,11 +662,11 @@
                                         <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
                                     </svg>
                                 </span>
-                                <span> ${e.base.daysText} gün ( ${e.base.daysNumeric * e.base.hoursPerDayNumeric} saat )</span>
+                                <span> ${e.day} gün ( ${e.hour} saat )</span>
                             </span>
 
                             <span class="card__money">
-                                <a href="/egitimler/${e.base.categorySeoUrl}/${e.base.seoUrl}" class="button button-fw">
+                                <a href="/egitimler/${e.categorySeoUrl}/${e.seoUrl}" class="button button-fw">
                                     <div class="button-txt"> İncele </div>
                                 </a>
                             </span>

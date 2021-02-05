@@ -65,7 +65,6 @@ namespace NitelikliBilisim.App.Controllers
             if (!User.Identity.IsAuthenticated)
             {
                 TempData["Message"] = "Devam edebilmek için lütfen giriş yapınız.";
-                //return Redirect("/giris-yap?returnUrl=/fatura-bilgileri");
                 return RedirectToAction("Login", "Account", new { returnUrl = "/fatura-bilgileri" });
             }
 
@@ -260,9 +259,6 @@ namespace NitelikliBilisim.App.Controllers
                 TempData["ErrorMessage"] = "Sepette ürün bulunmamaktadır";
                 return RedirectToAction(nameof(Payment));
             }
-
-
-
             data.CartItems = JsonConvert.DeserializeObject<List<_CartItem>>(data.CartItemsJson);
 
             if (data.CartItems == null || data.CartItems.Count == 0)

@@ -236,6 +236,7 @@ namespace NitelikliBilisim.App.Controllers
             foreach (var education in model)
             {
                 education.Image= _storageService.BlobUrl + education.Image;
+                education.CardImage = _storageService.BlobUrl + education.CardImage;
             }
             return Json(new ResponseData
             {

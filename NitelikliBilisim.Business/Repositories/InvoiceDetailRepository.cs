@@ -46,7 +46,7 @@ namespace NitelikliBilisim.Business.Repositories
             var iDetails = (from eGroup in _context.EducationGroups
                            join education in _context.Educations on eGroup.EducationId equals education.Id
                            join eImage in _context.EducationMedias on education.Id equals eImage.EducationId
-                           where details.Any(x => eGroup.Id == x.GroupId) && eImage.MediaType == Core.Enums.EducationMediaType.List
+                           where details.Any(x => eGroup.Id == x.GroupId) && eImage.MediaType == Core.Enums.EducationMediaType.Square
                            select new PaymentSuccessGroupDetailVm
                            {
                                ImagePath = eImage.FileUrl,
