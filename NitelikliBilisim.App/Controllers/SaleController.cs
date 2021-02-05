@@ -62,6 +62,13 @@ namespace NitelikliBilisim.App.Controllers
         [Route("fatura-bilgileri")]
         public IActionResult InvoiceInformation()
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                TempData["Message"] = "Devam edebilmek için lütfen giriş yapınız.";
+                //return Redirect("/giris-yap?returnUrl=/fatura-bilgileri");
+                return RedirectToAction("Login", "Account", new { returnUrl = "/fatura-bilgileri" });
+            }
+
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             List<InvoiceInfoAddressGetVm> addresses = _unitOfWork.Address.GetInvoiceAddressesByUserId(userId);
             var cities = _unitOfWork.City.Get().OrderBy(x => x.Order).ToList();
@@ -74,7 +81,6 @@ namespace NitelikliBilisim.App.Controllers
             };
             return View(invoiceInfos);
         }
-
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("sepet")]
         public IActionResult Cart()
@@ -192,14 +198,10 @@ namespace NitelikliBilisim.App.Controllers
                 });
             }
         }
-
-        [TypeFilter(typeof(UserLoggerFilterAttribute))]
+        [Authorize]
         [Route("odeme")]
         public IActionResult Payment()
         {
-            if (!User.Identity.IsAuthenticated)
-                return Redirect("/giris-yap?returnUrl=/odeme");
-
             return View();
         }
         [HttpPost, Route("getinstallmentinfo")]
@@ -246,7 +248,7 @@ namespace NitelikliBilisim.App.Controllers
                 });
             }
         }
-
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("odeme-yap")]
