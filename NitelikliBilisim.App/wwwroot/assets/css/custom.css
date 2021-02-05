@@ -9,3 +9,11 @@
 .empty-result > span.icon-outer {
     color: #459af0;
 }
+
+.blog-card__footer {
+    padding:20px 30px 14px 20px;
+}
+
+#contact-form > div.input__outer.input--textarea.texted > textarea {
+    white-space:normal;
+}
