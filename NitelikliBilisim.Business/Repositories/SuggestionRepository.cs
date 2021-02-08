@@ -211,17 +211,20 @@ namespace NitelikliBilisim.Business.Repositories
             var retVal = (from education in _context.Educations
                          join category in _context.EducationCategories on education.CategoryId equals category.Id
                          join eImage in _context.EducationMedias on new { Id = education.Id, MediaType = EducationMediaType.List } equals new { Id = eImage.EducationId, MediaType = eImage.MediaType }
-                         where thisWeekEducations.Keys.Contains(education.SeoUrl)
+                         join cardImage in _context.EducationMedias on new {Id=education.Id,MediaType = EducationMediaType.Card} equals new {Id=cardImage.EducationId,MediaType = cardImage.MediaType}
+                          where thisWeekEducations.Keys.Contains(education.SeoUrl)
                           select new EducationOfTheWeekVm
                          {
                              Id = education.Id,
                              Name = education.Name,
+                             CategoryName = category.Name,
                              Description = education.Description,
                              CategorySeoUrl = category.SeoUrl,
                              Day = education.Days,
                              Hour = education.Days * education.HoursPerDay,
                              SeoUrl = education.SeoUrl,
-                             Image = eImage.FileUrl
+                             Image = eImage.FileUrl,
+                             CardImage = cardImage.FileUrl
                          }).ToList();
 
             var hostId = Guid.Parse(_configuration.GetSection("SiteGeneralOptions").GetSection("PriceLocationId").Value);

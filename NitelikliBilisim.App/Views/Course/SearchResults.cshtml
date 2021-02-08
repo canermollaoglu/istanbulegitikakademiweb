@@ -300,6 +300,19 @@
                 },
                 success: (res) => {
                     lessonsContent.html("");
+
+                    if (res.data.educations.length == 0) {
+                        lessonsContent.append(`<div  class="lesson-list__item empty-result">
+                                <span class="icon-outer">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-empty-content"></use>
+                                    </svg>
+                                </span>
+                                <span>
+                                    Aradığınız kriterlere uygun eğitim bulunmamaktadır.
+                                </span>
+                                </div>`);
+                    }
                     $.each(res.data.educations, function (index, e) {
                         var education = `<a href="/egitimler/${e.cSeo}/${e.seo}?searchKey=@Model.SearchKey" class="lesson-list__item">
                                             <div class="lesson-list__item-img">

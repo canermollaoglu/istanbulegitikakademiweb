@@ -1,0 +1,41 @@
+﻿.empty-result {
+    align-items:center;
+    flex-direction:column;
+
+}
+.empty-result > span.icon-outer>svg{
+    font-size:72px;
+}
+.empty-result > span.icon-outer {
+    color: #459af0;
+}
+
+.blog-card__footer {
+    padding:20px 30px 14px 20px;
+}
+
+#contact-form > div.input__outer.input--textarea.texted > textarea {
+    white-space:normal;
+}
+
+.card__text {
+    text-rendering: optimizeLegibility !important;
+    -webkit-font-smoothing: antialiased !important;
+    color: rgba(54,60,82,0.8);
+    font-size: 16px;
+    line-height: 24px;
+    margin-bottom: 0;
+    font-weight: 400;
+    display: -webkit-box;
+    align-items: center;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+}
+
+.lesson-list__item-txt {
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    display: -webkit-box;
+    overflow: hidden;
+}

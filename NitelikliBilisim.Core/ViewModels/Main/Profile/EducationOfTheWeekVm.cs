@@ -18,5 +18,7 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public string Image { get; set; }
         public double AppropriateCriterionCount { get; set; }
         public string Price { get; set; }
+        public string CardImage { get; set; }
+        public string CategoryName { get; set; }
     }
 }

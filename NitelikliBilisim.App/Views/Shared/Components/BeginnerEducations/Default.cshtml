@@ -9,7 +9,7 @@
     var filePath = "";
     try
     {
-        filePath = StorageService.BlobUrl+education.Medias[0].FileUrl;
+        filePath = StorageService.BlobUrl + education.Medias[0].FileUrl;
     }
     catch
     {
@@ -23,16 +23,10 @@
             <div class="card__content">
                 <h6 class="card__subtitle">@education.Base.CategoryName</h6>
                 <h5 class="card__title" style="min-height:55px;">@education.Base.Name</h5>
-                @if (education.Base.Description.Length > 90)
-                {
-                    <p style="min-height:68px;">
-                        @education.Base.Description.Substring(0, 90)
-                    </p>
-                }
-                else
-                {
-                    <p style="min-height:68px;">@education.Base.Description</p>
-                }
+                <div class="card__text">
+                    @education.Base.Description
+                </div>
+
             </div>
 
             <div class="card__footer">
@@ -46,7 +40,7 @@
                 </span>
 
                 <span class="card__money">
-                     @education.Base.Price <span>TL</span>
+                    @education.Base.Price <span>TL</span>
                 </span>
             </div>
         </a>
