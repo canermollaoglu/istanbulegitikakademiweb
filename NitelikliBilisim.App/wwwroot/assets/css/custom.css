@@ -39,3 +39,7 @@
     display: -webkit-box;
     overflow: hidden;
 }
+
+.account-side__menu{
+    top:0px;
+}
