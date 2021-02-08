@@ -48,6 +48,7 @@ namespace NitelikliBilisim.Business.Repositories
                    select new EducationListVm
                    {
                        Id = e.Id,
+                       CreatedDate = e.CreatedDate,
                        Name = e.Name,
                        Description = e.Description,
                        CategoryName = c.Name,

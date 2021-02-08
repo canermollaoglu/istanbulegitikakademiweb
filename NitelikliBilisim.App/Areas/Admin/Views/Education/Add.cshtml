@@ -14,13 +14,13 @@
     <div class="header_box version_2">
         <h2><i class="fa fa-file"></i>Eğitim Ekleme</h2>
     </div>
-    <form id="form-add-education">
+    <form id="form-add-education" autocomplete="off">
         @Html.AntiForgeryToken()
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Eğitim İsmi</label>
-                    <input type="text" class="form-control" placeholder="Eğitim ismini giriniz..." id="input-name">
+                    <input type="text"  class="form-control" placeholder="Eğitim ismini giriniz..." id="input-name">
                 </div>
             </div>
             <div class="col-md-6">

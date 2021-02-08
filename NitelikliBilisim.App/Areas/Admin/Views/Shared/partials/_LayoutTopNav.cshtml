@@ -50,8 +50,12 @@
                     <span class="nav-link-text">Eğitimler</span>
                 </a>
                 <ul class="sidenav-second-level collapse" id="collapseEducations">
+
                     <li>
                         <a asp-controller="Education" asp-action="List">Listele</a>
+                    </li>
+                    <li>
+                        <a asp-controller="Education" asp-action="Add">Ekle</a>
                     </li>
                     <li>
                         <a asp-controller="EducationCategory" asp-action="List">Kategoriler</a>
@@ -94,6 +98,9 @@
                 <ul class="sidenav-second-level collapse" id="collapseEducators">
                     <li>
                         <a asp-controller="Educator" asp-action="List">Listele</a>
+                    </li>
+                    <li>
+                        <a asp-controller="Educator" asp-action="Add">Ekle</a>
                     </li>
                     <li>
                         <a asp-controller="EducatorCertificate" asp-action="List">Eğitmen Sertifikaları</a>

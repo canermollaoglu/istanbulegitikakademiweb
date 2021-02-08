@@ -60,6 +60,7 @@ namespace NitelikliBilisim.Core.ViewModels
         public byte Days { get; set; }
         public bool isActive { get; set; }
         public bool IsFeaturedEducation { get; set; }
+        public DateTime CreatedDate { get; set; }
     }
     public class EducationMediaVm
     {
