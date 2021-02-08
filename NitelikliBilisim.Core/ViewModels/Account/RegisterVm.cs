@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace NitelikliBilisim.App.Models.Account
+namespace NitelikliBilisim.Core.ViewModels.Account
 {
     public class RegisterGetVm
     {

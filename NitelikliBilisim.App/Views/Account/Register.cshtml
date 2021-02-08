@@ -1,4 +1,4 @@
-﻿@model NitelikliBilisim.App.Models.Account.RegisterGetVm
+﻿@model NitelikliBilisim.Core.ViewModels.Account.RegisterGetVm
 
 @{
     ViewBag.Title = "Kaydol";
@@ -172,6 +172,9 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="register__error-messages">
+
+                            </div>
                             <button type="button" class="button button-fw js-button-step-finish login__finish-button">
                                 Kaydol
                             </button>
@@ -185,7 +188,7 @@
         </div>
     </section>
 
-    
+
     <div class="modal" id="gizlilikSozlesmesi">
         <div class="modal__header">
             <div class="modal__title">GİZLİLİK SÖZLEŞMESİ</div>
@@ -283,7 +286,7 @@
             </div>
         </div>
         <div class="modal__content">
-            
+
             <span class="modal__sub-title"> 1. AMAÇ :</span>
             <p>
                 Taraflar, ihtiyaç duyulması halinde kullanılmak üzere taraflarca yapılacak tüm görüşmeler sırasında birbirlerine yapacakları açıklamalarda kendilerine ait bir takım Gizli Bilgileri birbirleri ile paylaşabileceklerdir.
@@ -361,7 +364,7 @@
     <!-- <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script> -->
     <script src="~/assets/js/jquery.inputmask.min.js"></script>
     <script src="~/assets/js/datepicker.min.js"></script>
-    <!-- <script src="https://unpkg.com/bootstrap-datepicker@1.9.0/dist/locales/bootstrap-datepicker.tr.min.js"></script> -->
+    <script src="~/assets/js/datepicker.tr-TR.js"></script>
     <script src="~/vendor/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/vendor/modal-video/js/jquery-modal-video.min.js"></script>
     <script src="~/vendor/card/dist/card.js"></script>
@@ -428,7 +431,7 @@
                     required: true,
                 },
                 ConfirmPassword: {
-                    required:true,
+                    required: true,
                     equalTo: "#input-password"
                 },
                 AcceptedTerms: {
@@ -470,7 +473,6 @@
             chkTermsAndConditions.checked = false;
             if (__envoy.isStorageExists("register")) {
                 var stored = __envoy.getRegisterForm();
-                setStoredData(stored);
             }
 
         }
@@ -496,10 +498,12 @@
                 method: "post",
                 data: data,
                 success: (res) => {
+                    console.log(res);
                     if (res.isSuccess) {
                         location.href = "/giris-yap";
                     } else {
-
+                        $(".register__error-messages").html(res.message);
+                        $(".register__error-messages").show(500);
                     }
                 }
             });

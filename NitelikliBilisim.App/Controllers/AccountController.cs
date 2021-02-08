@@ -2,10 +2,11 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using MUsefulMethods;
+using Newtonsoft.Json;
 using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Models;
-using NitelikliBilisim.App.Models.Account;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ComplexTypes;
@@ -30,17 +31,21 @@ namespace NitelikliBilisim.App.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UnitOfWork _unitOfWork;
+        private readonly UserUnitOfWork _userUnitOfWork;
         private readonly IEmailSender _emailSender;
+        private readonly IConfiguration _configuration;
 
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, UnitOfWork unitOfWork,IEmailSender emailSender)
+        public AccountController(IConfiguration configuration, UserUnitOfWork userUnitOfWork, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, UnitOfWork unitOfWork, IEmailSender emailSender)
         {
             this._userManager = userManager;
             this._signInManager = signInManager;
             _unitOfWork = unitOfWork;
             _emailSender = emailSender;
+            _configuration = configuration;
+            _userUnitOfWork = userUnitOfWork;
         }
-        
+
         [Route("kayit-ol")]
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
         public IActionResult Register()
@@ -65,56 +70,22 @@ namespace NitelikliBilisim.App.Controllers
                     errors = ModelStateUtil.GetErrors(ModelState)
                 });
 
-            var user = new ApplicationUser()
-            {
-                Name = model.Name,
-                UserName = model.Email,
-                Surname = model.Surname,
-                Email = model.Email,
-                PhoneNumber = model.Phone
-            };
 
-            var result = await _userManager.CreateAsync(user, model.Password);
-            if (result == IdentityResult.Success)
+            var retVal = await _userUnitOfWork.User.RegisterUser(model);
+            if (retVal.Success)
             {
-                result = await _userManager.AddToRoleAsync(user,
-                    _userManager.Users.Count() == 1
-                        ? IdentityRoleList.Admin.ToString()
-                        : IdentityRoleList.User.ToString());
-                var customer = new Customer
+                var user = (ApplicationUser)retVal.Data;
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var htmlToken = HttpUtility.UrlEncode(token);
+                var confirmationLink = $"{ Request.Scheme}://{Request.Host}{Request.PathBase}/email-aktivasyonu?token={htmlToken}&email={user.Email}";
+                var message = $"Email adresinizi onaylamak için <a href=\"{confirmationLink}\">tıklayınız.</a>";
+                await _emailSender.SendAsync(new EmailMessage
                 {
-                    Id = user.Id,
-                    CustomerType = CustomerType.Individual,
-                    IsNbuyStudent = model.IsNbuyStudent
-                };
-                _unitOfWork.Customer.Insert(customer);
-                if (model.IsNbuyStudent)
-                {
-                    var studentEducationInformation = new StudentEducationInfo
-                    {
-                        CustomerId = user.Id,
-                        StartedAt = Convert.ToDateTime(model.StartedAt),
-                        EducationCenter = (EducationCenter)model.EducationCenter.Value,
-                        CategoryId = model.EducationCategory.Value
-                    };
-                    var studentEducationInfoId = _unitOfWork.StudentEducationInfo.Insert(studentEducationInformation);
-                    if (model.EducationCategory.HasValue && !string.IsNullOrEmpty(model.StartedAt))
-                        CreateEducationDays(studentEducationInfoId, model.EducationCategory.Value,Convert.ToDateTime(model.StartedAt));
-                }
-                if (result.Succeeded)
-                {
-                    var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    var htmlToken = HttpUtility.UrlEncode(token);
-                    var confirmationLink =$"{ Request.Scheme}://{Request.Host}{Request.PathBase}/email-aktivasyonu?token={htmlToken}&email={user.Email}";
-                    var message = $"Email adresinizi onaylamak için <a href=\"{confirmationLink}\">tıklayınız.</a>";
-                    await _emailSender.SendAsync(new EmailMessage
-                    {
-                        Contacts = new string[] { user.Email },
-                        Subject = "Nitelikli Bilişim Email Aktivasyonu",
-                        Body = message
-                    });
-                   
-                }
+                    Contacts = new string[] { user.Email },
+                    Subject = "Nitelikli Bilişim Email Aktivasyonu",
+                    Body = message
+                });
+                TempData["Message"] = "Hesabınız başarılı bir şekilde oluşturuldu. E-Posta onayı sonrası giriş yapabilirsiniz.";
                 return Json(new ResponseModel
                 {
                     isSuccess = true
@@ -122,10 +93,38 @@ namespace NitelikliBilisim.App.Controllers
             }
             else
             {
+                string[] adminEmails = _configuration.GetSection("SiteGeneralOptions").GetSection("AdminEmails").Value.Split(";");
+                string mailBody = $"Kullanıcı Adı :{model.Email}<br>Telefon:{model.Phone}<br>Ad:{model.Name}<br>Soyad:{model.Surname}";
+                mailBody += $"<br>Hata : {JsonConvert.SerializeObject(retVal.Data)} + {retVal.Message}";
+                await _emailSender.SendAsync(new EmailMessage
+                {
+                    Body = mailBody,
+                    Subject = "Nitelikli Bilişim Kullanıcı Kayıt Hatası!",
+                    Contacts = adminEmails
+                });
+                IEnumerable<IdentityError> identityErrors = null;
+                if (retVal.Data != null)
+                {
+                    identityErrors = ((IEnumerable<IdentityError>)retVal.Data);
+                }
+
+                var message = "";
+                if (identityErrors != null)
+                {
+                    if (identityErrors.Any(x=>x.Code.Contains("DuplicateEmail")))
+                    {
+                        message = "Bu e-posta sistemde kayıtlı! Eğer şifrenizi hatırlamıyorsanız <a href=\"/sifremi-unuttum\">buraya</a> tıklayarak yeni şifre oluşturabilirsiniz.";
+                    }
+                    else
+                    {
+                        message = identityErrors.Select(x => x.Description).Aggregate((x, y) => x + " " + y);
+                    }
+                }
+
                 return Json(new ResponseModel
                 {
                     isSuccess = false,
-                    errors = new List<string> { "Kullanıcı oluşturulurken bir hata oluştu" }
+                    message = message
                 });
             }
         }
@@ -149,7 +148,7 @@ namespace NitelikliBilisim.App.Controllers
             }
             return View();
         }
-        
+
 
 
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
@@ -179,7 +178,7 @@ namespace NitelikliBilisim.App.Controllers
                 var roles = await _userManager.GetRolesAsync(user);
                 if (roles.Contains("Admin"))
                 {
-                    return RedirectToAction("Index","Home",new { area="Admin"});
+                    return RedirectToAction("Index", "Home", new { area = "Admin" });
                 }
                 return Redirect(model.ReturnUrl ?? "/");
             }
@@ -202,7 +201,7 @@ namespace NitelikliBilisim.App.Controllers
                 return View(model);
 
             var user = await _userManager.FindByEmailAsync(model.Email);
-            if (user!=null)
+            if (user != null)
             {
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
                 var passwordResetLink = Url.Action("ResetPassword", "Account", new { email = model.Email, token = token }, Request.Scheme);
@@ -220,15 +219,15 @@ namespace NitelikliBilisim.App.Controllers
                 ModelState.AddModelError("", "Bu E-posta adresi ile bağlantılı bir kayıt bulunmamaktadır.");
                 return View(model);
             }
-            
+
         }
 
-        
+
         [HttpGet]
         [Route("sifre-sifirla")]
-        public IActionResult ResetPassword(string token,string email)
+        public IActionResult ResetPassword(string token, string email)
         {
-            if (string.IsNullOrEmpty(token)||string.IsNullOrEmpty(email))
+            if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(email))
             {
                 ModelState.AddModelError("", "Geçersiz istek.");
             }
@@ -249,13 +248,13 @@ namespace NitelikliBilisim.App.Controllers
                 return View(model);
 
             var user = await _userManager.FindByEmailAsync(model.Email);
-            if (user!=null)
+            if (user != null)
             {
                 var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
                 if (result.Succeeded)
                 {
                     TempData["Message"] = "Yeni şifreniz ile giriş yapabilirsiniz.";
-                    return RedirectToAction("Login","Account");
+                    return RedirectToAction("Login", "Account");
                 }
                 foreach (var error in result.Errors)
                 {

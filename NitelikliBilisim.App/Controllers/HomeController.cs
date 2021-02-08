@@ -435,7 +435,7 @@ namespace NitelikliBilisim.App.Controllers
                     return Json(new ResponseData
                     {
                         Success = false,
-                        Message = "Zaten blog aboneliğiniz bulunmaktadır."
+                        Message = "Bu e-posta adresi ile aktif blog aboneliğiniz bulunmaktadır."
                     });
 
 

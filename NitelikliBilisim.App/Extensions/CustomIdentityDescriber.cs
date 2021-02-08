@@ -69,7 +69,7 @@ namespace NitelikliBilisim.App.Extensions
             return new IdentityError()
             {
                 Code = "DuplicateUserName",
-                Description = $"{userName} kullanıcı adı ile daha önce kayıt yapılmıştır."
+                Description = ""
             };
         }
         public override IdentityError InvalidUserName(string userName)
