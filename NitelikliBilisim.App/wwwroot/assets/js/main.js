@@ -1710,17 +1710,13 @@ $('.js-change-img').click(function () {
 });
 
 $('.js-datepicker').datepicker({
-    format: 'dd.mm.yyyy',
-    days: ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'],
-    daysShort: ['Paz', 'Pzt', 'Sal', 'Çrş', 'Prş', 'Cum', 'Cts'],
     autoHide: true,
+    language: "tr-TR",
     container: '.datepicker-containered',
 });
 $('.js-panel-datepicker').datepicker({
-    format: 'dd.mm.yyyy',
-    days: ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'],
-    daysShort: ['Paz', 'Pzt', 'Sal', 'Çrş', 'Prş', 'Cum', 'Cts'],
     autoHide: true,
+    language: "tr-TR",
     trigger: '.js-panel-datepicker-trigger',
     container: '.container',
 });
