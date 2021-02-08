@@ -205,10 +205,6 @@
                 $('.js-cupon-form').addClass('active');
                 setTimeout(function () {
                     getPromotionInfo();
-                    //var newItem =
-                    //    '<div class="checkout__price-item"><div class="checkout__price-title">******** Kodu İndirimi</div><div class="checkout__price-new"><span>₺</span> -64.90</div><div class="checkout__product-crash js-remove-sale"><span class="icon-outer"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-crash"></use></svg></span></div></div>';
-
-                    //$('.js-discounts').append(newItem);
                 }, 1000);
 
                 return false;
@@ -303,7 +299,6 @@
             cardItemsBody.html("");
             var appended = "";
             for (var i = 0; i < data.length; i++) {
-                console.log(data);
                 var item = data[i];
                 appended += `<div class="checkout__product-item">
                                                         <a href="/egitimler/${item.categorySeoUrl}/${item.seoUrl}" class="checkout__product-left">

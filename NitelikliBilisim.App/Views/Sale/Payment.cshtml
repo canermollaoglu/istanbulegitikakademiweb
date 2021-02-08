@@ -1066,6 +1066,28 @@
             mss.val(this.checked);
         });
 
+        $('.js-cupon-btn').click(function () {
+            var cuponInput = $(this).prev();
+            if (cuponInput.val() == '') {
+                $(this)
+                    .parent()
+                    .parent()
+                    .append("<div class='cupon-error'>Lütfen Bu alanı doldurunuz.</div>");
+            } else {
+                $(this)
+                    .parent()
+                    .parent()
+                    .remove('.cupon-error');
+                $('.js-cupon-form').addClass('active');
+                setTimeout(function () {
+                    getPromotionInfo();
+                }, 1000);
+
+                return false;
+            }
+        });
+
+
         function checkPromotionCode() {
             var promotionCode = localStorage.getItem("promotionCode");
             if (promotionCode) {

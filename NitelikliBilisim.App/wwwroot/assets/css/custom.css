@@ -39,3 +39,38 @@
     display: -webkit-box;
     overflow: hidden;
 }
+
+.account-side__menu{
+    top:0px;
+}
+
+.blog-card__footer {
+    margin-top:auto;
+}
+
+@media screen and (min-width: 800px) {
+    .blog-card__title{
+        min-height:56px;
+    }
+
+}
+
+
+.register__error-messages {
+    -webkit-tap-highlight-color: transparent;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #212529;
+    text-align: left;
+    font-weight: 600;
+    font-style: normal;
+    pointer-events: all;
+    box-sizing: border-box;
+    text-rendering: optimizeLegibility !important;
+    -webkit-font-smoothing: antialiased !important;
+    background: #fdf6f5;
+    border-radius: 4px;
+    padding: 25px;
+    margin-bottom: 30px;
+    display: none;
+}

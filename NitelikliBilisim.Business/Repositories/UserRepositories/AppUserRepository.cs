@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using MUsefulMethods;
 using Newtonsoft.Json;
+using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Entities.helper;
 using NitelikliBilisim.Core.Entities.user_details;
@@ -10,6 +11,7 @@ using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Enums.promotion;
 using NitelikliBilisim.Core.Enums.user_details;
 using NitelikliBilisim.Core.ViewModels;
+using NitelikliBilisim.Core.ViewModels.Account;
 using NitelikliBilisim.Core.ViewModels.Main;
 using NitelikliBilisim.Core.ViewModels.Main.Profile;
 using NitelikliBilisim.Data;
@@ -17,6 +19,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Web;
 
 namespace NitelikliBilisim.Business.Repositories
 {
@@ -57,6 +61,73 @@ namespace NitelikliBilisim.Business.Repositories
             return model;
         }
 
+        public async Task<ResponseData> RegisterUser(RegisterPostVm model)
+        {
+            using (var transaction = await _context.Database.BeginTransactionAsync())
+            {
+                var user = new ApplicationUser()
+                {
+                    Name = model.Name,
+                    UserName = model.Email,
+                    Surname = model.Surname,
+                    Email = model.Email,
+                    PhoneNumber = model.Phone
+                };
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (result == IdentityResult.Success)
+                {
+                    try
+                    {
+                        result = await _userManager.AddToRoleAsync(user,
+                            _userManager.Users.Count() == 1
+                                ? IdentityRoleList.Admin.ToString()
+                                : IdentityRoleList.User.ToString());
+                        var customer = new Customer
+                        {
+                            Id = user.Id,
+                            CustomerType = CustomerType.Individual,
+                            IsNbuyStudent = model.IsNbuyStudent
+                        };
+                        _context.Customers.Add(customer);
+                        if (model.IsNbuyStudent)
+                        {
+                            var studentEducationInformation = new StudentEducationInfo
+                            {
+                                CustomerId = user.Id,
+                                StartedAt = Convert.ToDateTime(model.StartedAt),
+                                EducationCenter = (EducationCenter)model.EducationCenter.Value,
+                                CategoryId = model.EducationCategory.Value
+                            };
+                            var studentEducationInfo = _context.StudentEducationInfos.Add(studentEducationInformation);
+                            if (model.EducationCategory.HasValue && !string.IsNullOrEmpty(model.StartedAt))
+                                CreateEducationDays(studentEducationInfo.Entity.Id, model.EducationCategory.Value, Convert.ToDateTime(model.StartedAt));
+                        }
+                        transaction.Commit();
+                        return new ResponseData
+                        {
+                            Success = true,
+                            Data = user
+                        };
+
+                    }
+                    catch (Exception e)
+                    {
+                        transaction.Rollback();
+                        return new ResponseData
+                        {
+                            Success = false,
+                            Message = e.Message
+                        };
+                    }
+                }
+                return new ResponseData
+                {
+                    Success = false,
+                    Data = result.Errors
+                };
+            }
+
+        }
 
         public UserInfoVm GetCustomerInfo(string userId)
         {
@@ -458,7 +529,7 @@ namespace NitelikliBilisim.Business.Repositories
 
             #region test 
             var attendance = _context.GroupAttendances.Where(x => x.GroupId == model.GroupId && x.CustomerId == userId).ToList();
-            if (attendance.Count == 0 && model.EducationEndDate<DateTime.Now)
+            if (attendance.Count == 0 && model.EducationEndDate < DateTime.Now)
             {
                 model.IsCertificateAvailable = true;
             }
