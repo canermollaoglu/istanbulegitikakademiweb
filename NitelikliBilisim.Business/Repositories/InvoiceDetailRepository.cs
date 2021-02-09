@@ -45,13 +45,16 @@ namespace NitelikliBilisim.Business.Repositories
 
             var iDetails = (from eGroup in _context.EducationGroups
                            join education in _context.Educations on eGroup.EducationId equals education.Id
+                           join category in _context.EducationCategories on education.CategoryId equals category.Id
                            join eImage in _context.EducationMedias on education.Id equals eImage.EducationId
                            where details.Any(x => eGroup.Id == x.GroupId) && eImage.MediaType == Core.Enums.EducationMediaType.Square
                            select new PaymentSuccessGroupDetailVm
                            {
                                ImagePath = eImage.FileUrl,
                                EducationName = education.Name,
-                               Price = eGroup.OldPrice.GetValueOrDefault().ToString(cultureInfo)
+                               Price = eGroup.OldPrice.GetValueOrDefault().ToString(cultureInfo),
+                               SeoUrl = education.SeoUrl,
+                               CategorySeoUrl = category.SeoUrl
                            }).ToList();
 
             model.InvoiceDetails = iDetails;

@@ -11,5 +11,7 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Sales
         public string ImagePath { get; set; }
         public string EducationName { get; set; }
         public string Price { get; set; }
+        public string SeoUrl { get; set; }
+        public string CategorySeoUrl { get; set; }
     }
 }

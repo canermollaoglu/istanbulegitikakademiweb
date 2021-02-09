@@ -35,11 +35,11 @@ namespace NitelikliBilisim.App.Controllers
         private readonly UnitOfWork _unitOfWork;
         private readonly UserUnitOfWork _userUnitOfWork;
         private readonly IEmailSender _emailSender;
-        private readonly IHostingEnvironment _env;
+        private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
 
 
-        public AccountController(IHostingEnvironment env,IConfiguration configuration, UserUnitOfWork userUnitOfWork, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, UnitOfWork unitOfWork, IEmailSender emailSender)
+        public AccountController(IWebHostEnvironment env,IConfiguration configuration, UserUnitOfWork userUnitOfWork, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, UnitOfWork unitOfWork, IEmailSender emailSender)
         {
             this._userManager = userManager;
             this._signInManager = signInManager;
