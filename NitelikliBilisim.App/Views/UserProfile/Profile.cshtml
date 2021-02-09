@@ -437,6 +437,13 @@
                 prevEl: '.account-dashboard__week .swiper-button-prev',
             },
         });
+
+        $(function () {
+            var activeWeek = $(".account-dashboard__week-slide.active")
+                .data("id");
+            dashboardWeekSlider.slideTo(activeWeek - 1, 200, false);
+        });
+
         if ($('.account-dashboard').length > 0) {
             dashboardWeekSlider.on('touchStart', function () {
                 var dashboardWeekSliderContainer = $('.js-dashboard-week-slider').offset().left;
@@ -449,6 +456,8 @@
             $(window).on('resize', dashboardWeekFunc);
 
             function dashboardWeekFunc() {
+                var activeWeek = $(".account-dashboard__week-slide.active")
+                    .data("id");
                 var accDashL = $('.account--dashboard')
                     .find('.container')
                     .offset().left;
