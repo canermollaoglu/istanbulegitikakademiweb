@@ -1,5 +1,3 @@
-
-
 $('.js-video-btn').modalVideo({
     channel: 'youtube',
     youtube: {
@@ -542,43 +540,7 @@ $(document).ready(function () {
             },
         },
     });
-    var foryouSlider = new Swiper('.js-for-you-slider', {
-        slidesPerView: 4,
-        spaceBetween: 25,
-        // slidesPerGroup: 4,
-        // loopFillGroupWithBlank: true,
-        grabCursor: false,
-        loop: false,
-        speed: 700,
-        initialSlide: 2,
-        centeredSlides: true,
-        navigation: {
-            nextEl: '.js-for-you-slider .swiper-button-next',
-            prevEl: '.js-for-you-slider .swiper-button-prev',
-        },
-        breakpoints: {
-            // when window width is >= 640px
-            1366: {
-                slidesPerView: 4,
-            },
-            1024: {
-                slidesPerView: 3,
-            },
-            768: {
-                slidesPerView: 2.5,
-            },
-            576: {
-                slidesPerView: 1.2,
-            },
-            320: {
-                slidesPerView: 1.2,
-            },
-        },
-        on: {
-            init: function () {
-            },
-        },
-    });
+   
     var forYouScrollSlider = new Swiper('.js-foryou-scrolled-slider', {
         autoplay: false,
         keyboard: false,

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -19,6 +20,7 @@ using NitelikliBilisim.Notificator.Services;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -33,10 +35,11 @@ namespace NitelikliBilisim.App.Controllers
         private readonly UnitOfWork _unitOfWork;
         private readonly UserUnitOfWork _userUnitOfWork;
         private readonly IEmailSender _emailSender;
+        private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
 
 
-        public AccountController(IConfiguration configuration, UserUnitOfWork userUnitOfWork, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, UnitOfWork unitOfWork, IEmailSender emailSender)
+        public AccountController(IWebHostEnvironment env,IConfiguration configuration, UserUnitOfWork userUnitOfWork, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, UnitOfWork unitOfWork, IEmailSender emailSender)
         {
             this._userManager = userManager;
             this._signInManager = signInManager;
@@ -44,6 +47,7 @@ namespace NitelikliBilisim.App.Controllers
             _emailSender = emailSender;
             _configuration = configuration;
             _userUnitOfWork = userUnitOfWork;
+            _env = env;
         }
 
         [Route("kayit-ol")]
@@ -77,13 +81,22 @@ namespace NitelikliBilisim.App.Controllers
                 var user = (ApplicationUser)retVal.Data;
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 var htmlToken = HttpUtility.UrlEncode(token);
+
+                var builder = string.Empty;
+                var templatePath = Path.Combine(_env.WebRootPath, "mail-templates", "mail-template.html");
+                using (StreamReader r = System.IO.File.OpenText(templatePath))
+                {
+                    builder = r.ReadToEnd();
+                }
                 var confirmationLink = $"{ Request.Scheme}://{Request.Host}{Request.PathBase}/email-aktivasyonu?token={htmlToken}&email={user.Email}";
-                var message = $"Email adresinizi onaylamak için <a href=\"{confirmationLink}\">tıklayınız.</a>";
+                builder = builder.Replace("[##subject##]", "E-Posta Aktivasyonu!");
+                builder = builder.Replace("[##content##]", $"E-posta adresinizi onaylamak için <a href=\"{confirmationLink}\">tıklayınız.</a>");
+                builder = builder.Replace("[##content2##]", "");
                 await _emailSender.SendAsync(new EmailMessage
                 {
                     Contacts = new string[] { user.Email },
                     Subject = "Nitelikli Bilişim Email Aktivasyonu",
-                    Body = message
+                    Body = builder
                 });
                 TempData["Message"] = "Hesabınız başarılı bir şekilde oluşturuldu. E-Posta onayı sonrası giriş yapabilirsiniz.";
                 return Json(new ResponseModel
@@ -205,11 +218,22 @@ namespace NitelikliBilisim.App.Controllers
             {
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
                 var passwordResetLink = Url.Action("ResetPassword", "Account", new { email = model.Email, token = token }, Request.Scheme);
+                var builder = string.Empty;
+                var templatePath = Path.Combine(_env.WebRootPath, "mail-templates", "mail-template.html");
+                using (StreamReader r = System.IO.File.OpenText(templatePath))
+                {
+                    builder = r.ReadToEnd();
+                }
+               
+                builder = builder.Replace("[##subject##]", "Şifre Sıfırlama!");
+                builder = builder.Replace("[##content##]", $"Merhaba {user.Name} {user.Surname},<br/> Şifrenizi yenilemek için <a href=\"{passwordResetLink}\" target=\"_blank\"><b>buraya</b></a> tıklayınız.");
+                builder = builder.Replace("[##content2##]", "");
+                
                 await _emailSender.SendAsync(new Core.ComplexTypes.EmailMessage
                 {
                     Subject = "Nitelikli Bilişim Şifre Yenileme",
                     Contacts = new string[] { model.Email },
-                    Body = $"Merhaba {user.Name} {user.Surname},<br/> Şifrenizi yenilemek için <a href=\"{passwordResetLink}\" target=\"_blank\"><b>buraya</b></a> tıklayınız."
+                    Body = builder
                 });
                 TempData["Message"] = "Şifre yenileme linki E-posta adresinize gönderilmiştir.";
                 return RedirectToAction("Login", "Account");
