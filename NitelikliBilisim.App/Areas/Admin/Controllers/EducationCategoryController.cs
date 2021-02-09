@@ -101,7 +101,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             }
             else
             {
-                if (data.IconImage!=null && data.BackgroundImage!=null)
+                if (data.IconImage.Base64Content!=null && data.BackgroundImage.Base64Content!=null)
                 {
                     var iconImageStream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.IconImage.Base64Content));
                     var iconFileName = $"{StringHelpers.FormatForTag(data.Name)}-iconImage";
