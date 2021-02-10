@@ -97,3 +97,12 @@
     color: #110c2c;
     font-size: 20px;
 }
+
+.account-comment__top-title a {
+    color: #1f1941 !important;
+}
+.account-comment__top-txt a {
+    color: #888595 !important;
+}
+
+

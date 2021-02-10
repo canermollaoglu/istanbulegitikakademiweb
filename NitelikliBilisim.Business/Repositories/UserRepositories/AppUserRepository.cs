@@ -57,7 +57,7 @@ namespace NitelikliBilisim.Business.Repositories
             model.NbuyCategory = nBuyInfo != null && nBuyInfo.Category != null ? nBuyInfo.Category.Name : "Girilmemiş";
             model.AvatarPath = student.User.AvatarPath;
             model.PageName = currentPageName;
-            model.CertificateCount = GetUserCertificates(userId).Count();
+            model.CertificateCount = GetUserCertificateCount(userId);
             return model;
         }
 
@@ -255,6 +255,8 @@ namespace NitelikliBilisim.Business.Repositories
                                 }).ToList();
             return certificates;
         }
+
+        
         public List<MyCertificateVm> GetUserCertificates(string userId)
         {
             var certificates = (from bridge in _context.Bridge_GroupStudents
@@ -479,6 +481,8 @@ namespace NitelikliBilisim.Business.Repositories
                          select new MyCommentVm
                          {
                              Id = comment.Id,
+                             SeoUrl = education.SeoUrl,
+                             CategorySeoUrl  = category.SeoUrl,
                              EducationId = education.Id,
                              Content = comment.Content,
                              Point = comment.Points,
@@ -589,6 +593,7 @@ namespace NitelikliBilisim.Business.Repositories
                 .Include(x => x.StudentEducationInfos).ThenInclude(x => x.EducationDays).First(x => x.Id == userId);
             var favoriteEducations = GetUserFavoriteEducationsByUserId(userId);
             var purchasedEducations = GetPurschasedEducationsByUserId(userId);
+
             var certificates = GetUserCertificates(userId);
             model.FavoriteEducations = favoriteEducations;
             model.FavoriteEducationCount = favoriteEducations.Count;
@@ -611,6 +616,15 @@ namespace NitelikliBilisim.Business.Repositories
 
         }
 
+
+        #region Counts
+        
+        public int GetUserCertificateCount(string userId)
+        {
+            return _context.Bridge_GroupStudents.Include(x => x.Group).ThenInclude(x => x.Education).Where(x => x.Id2 == userId && x.Group.StartDate.AddDays(x.Group.Education.Days) < DateTime.Now).Count();
+
+        }
+        #endregion
         private int GetEducationWeek(string userId)
         {
             var retVal = 1;
@@ -638,6 +652,7 @@ namespace NitelikliBilisim.Business.Repositories
                                  && ids.Contains(eGroup.Id)
                                  select new PurchasedEducationVm
                                  {
+                                     CreatedDate= eGroup.StartDate,
                                      EducationId = education.Id,
                                      SeoUrl = education.SeoUrl,
                                      GroupId = eGroup.Id,
@@ -648,7 +663,7 @@ namespace NitelikliBilisim.Business.Repositories
                                      FeaturedImageUrl = eImage.FileUrl,
                                      EducatorImageUrl = educatorUser.AvatarPath,
                                  }
-                ).ToList();
+                ).OrderByDescending(x=>x.CreatedDate).ToList();
             foreach (var data in educationList)
             {
                 data.CompletionRate = GetEducationCompletionRate(data.GroupId);
@@ -673,18 +688,17 @@ namespace NitelikliBilisim.Business.Repositories
 
         public List<FavoriteEducationVm> GetUserFavoriteEducationsByUserId(string userId)
         {
-            var wishListItems = _context.Wishlist.Where(x => x.Id == userId).ToList();
-            List<Guid> wishListEducationIds = wishListItems.Select(x => x.Id2).ToList();
             var hostId = Guid.Parse(_configuration.GetSection("SiteGeneralOptions").GetSection("PriceLocationId").Value);
             var currentCulture = CultureInfo.CreateSpecificCulture("tr-TR");
-            var educationsList = (from education in _context.Educations
+            var educationsList = (from wishListItem in _context.Wishlist
+                                  join education in _context.Educations on wishListItem.Id2 equals education.Id
                                   join featuredImage in _context.EducationMedias on education.Id equals featuredImage.EducationId
                                   join category in _context.EducationCategories on education.CategoryId equals category.Id
-                                  where featuredImage.MediaType == EducationMediaType.Card
-                                  && wishListEducationIds.Contains(education.Id)
+                                  where featuredImage.MediaType == EducationMediaType.Card && wishListItem.Id == userId && education.IsActive
                                   select new FavoriteEducationVm
                                   {
                                       Id = education.Id,
+                                      CreatedDate = wishListItem.CreatedDate,
                                       SeoUrl = education.SeoUrl,
                                       Name = education.Name,
                                       CategoryName = category.Name,
@@ -693,7 +707,7 @@ namespace NitelikliBilisim.Business.Repositories
                                       HoursText = (education.HoursPerDay * education.Days).ToString(),
                                       DaysText = education.Days.ToString(),
                                       FeaturedImageUrl = featuredImage.FileUrl
-                                  }).ToList();
+                                  }).OrderByDescending(x=>x.CreatedDate).ToList();
             return educationsList;
         }
 
@@ -824,7 +838,6 @@ namespace NitelikliBilisim.Business.Repositories
         }
         #endregion
 
-        #region Test
         public List<MyInvoicesVm> GetUserInvoices(string userId)
         {
             List<MyInvoicesVm> retVal = new List<MyInvoicesVm>();
@@ -900,7 +913,7 @@ namespace NitelikliBilisim.Business.Repositories
             };
             return retVal;
         }
-        #endregion
+       
         //public List<MyInvoicesVm> GetUserInvoices(string userId)
         //{
         //    var invoices = _context.OnlinePaymentDetailsInfos
