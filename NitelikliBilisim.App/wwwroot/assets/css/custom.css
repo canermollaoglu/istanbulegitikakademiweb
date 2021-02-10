@@ -74,3 +74,26 @@
     margin-bottom: 30px;
     display: none;
 }
+
+.card__money span {
+    color: #110c2c;
+    font-size:20px;
+}
+.lesson-list__item-price span {
+    color: #110c2c;
+    font-size: 22px;
+}
+
+.mini-basket__item-price span {
+    color: #110c2c;
+    font-size:18px;
+}
+.checkout__product-new span {
+    color: #110c2c;
+    font-size: 18px;
+}
+
+.checkout__price-new span {
+    color: #110c2c;
+    font-size: 20px;
+}
