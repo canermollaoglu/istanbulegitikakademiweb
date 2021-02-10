@@ -17,5 +17,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public string SeoUrl { get; set; }
         public string CategorySeoUrl { get; set; }
         public string Price { get; set; }
+        public DateTime CreatedDate { get; set; }
     }
 }

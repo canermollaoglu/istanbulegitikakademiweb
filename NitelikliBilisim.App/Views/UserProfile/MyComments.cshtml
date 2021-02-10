@@ -39,18 +39,19 @@
                             
                             <div class="account-comment">
                                 <div class="account-comment__top">
-                                    <div class="account-comment__img">
-                                        <img src="@educationImage" alt="">
-                                    </div>
-                                    <div class="account-comment__top-cnt">
-                                        <div class="account-comment__top-title">
-                                            @comment.EducationName
+                                    
+                                        <div class="account-comment__img">
+                                            <img src="@educationImage" alt="">
                                         </div>
-                                        <div class="account-comment__top-txt">
-                                            @comment.CategoryName
+                                        <div class="account-comment__top-cnt">
+                                            <div class="account-comment__top-title">
+                                                <a asp-controller="Course" asp-action="Details" asp-route-seoUrl="@comment.SeoUrl" asp-route-catSeoUrl="@comment.CategorySeoUrl"> @comment.EducationName</a> 
+                                            </div>
+                                            <div class="account-comment__top-txt">
+                                                <a asp-controller="Course" asp-action="List" asp-route-catSeoUrl="@comment.CategorySeoUrl">@comment.CategoryName</a> 
+                                            </div>
                                         </div>
-                                    </div>
-
+                                    
                                     <div class="account-comment__like ml-auto">
                                         <div class="account-comment__like-users">
                                             <div class="account-comment__like-user">
