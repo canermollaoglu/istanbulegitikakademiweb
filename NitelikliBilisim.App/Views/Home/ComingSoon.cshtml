@@ -40,12 +40,6 @@
                         <h1>Yakında hizmetinizde!</h1>
                         <h2>niteliklibilisim.com.tr, her alanda almış olduğunuz Bilişim Teknolojileri Eğitimleri'ni destekleyen Proje Eğitimleri'ni, sektörün önde gelen uzman eğiticilerinden alabileceğiniz bir <b>uygulamalı eğitim </b> platformudur.</h2>
                     </div>
-                    <div id="countdown_wp">
-                        <div class="container_count"><div id="days">00</div>gün</div>
-                        <div class="container_count"><div id="hours">00</div>saat</div>
-                        <div class="container_count"><div id="minutes">00</div>dakika</div>
-                        <div class="container_count last"><div id="seconds">00</div>saniye</div>
-                    </div>
                 </div>
                 @*<div class="row">
                         <div class="col-md-6 col-md-offset-3">
@@ -95,33 +89,7 @@
             animation: 'fade'
         });
     </script>
-    <script>
-        var countDownDate = new Date("Feb 15, 2020 12:00:00").getTime();
-        var text_days = document.getElementById("days");
-        var text_hours = document.getElementById("hours");
-        var text_minutes = document.getElementById("minutes");
-        var text_seconds = document.getElementById("seconds");
-
-        var x = setInterval(function () {
-
-            var now = new Date().getTime();
-            var distance = countDownDate - now;
-            console.log(distance);
-            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            text_days.innerText = days;
-            text_hours.innerText = hours;
-            text_minutes.innerText = minutes;
-            text_seconds.innerText = seconds;
-
-            if (distance < 0) {
-                clearInterval(x);
-            }
-        }, 1000);
-    </script>
+  
     <script src="~/coming-soon/validate.js"></script>
 </body>
 </html>
