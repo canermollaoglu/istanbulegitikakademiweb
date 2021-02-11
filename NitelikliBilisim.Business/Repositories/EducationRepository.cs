@@ -1037,11 +1037,9 @@ namespace NitelikliBilisim.Business.Repositories
         public HeaderEducationMenuVm GetHeaderEducationMenu()
         {
             var model = new HeaderEducationMenuVm();
-            var allCategories = Context.EducationCategories;
-            var allEducations = Context.Educations.Where(x => x.IsActive).Include(x => x.Category);
-
-            var baseCategories = allCategories.Where(x => x.BaseCategoryId == null);
-            var subCategories = allCategories.Where(x => x.BaseCategoryId != null).Include(x => x.Educations);
+            var baseCategories = Context.EducationCategories.Where(x => x.BaseCategoryId == null).ToList();
+            var subCategories = Context.EducationCategories.Where(x => x.BaseCategoryId != null).Include(x => x.Educations).ToList();
+            var allEducations = Context.Educations.Where(x => x.IsActive).Include(x => x.Category).ToList();
             foreach (var baseCategory in baseCategories)
             {
                 var baseCategoryModel = new HeaderBaseCategory();
