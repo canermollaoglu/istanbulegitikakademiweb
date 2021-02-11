@@ -492,6 +492,12 @@ namespace NitelikliBilisim.Business.Repositories
                              CategoryName = category.Name,
                              ApprovalStatus = comment.ApprovalStatus,
                          }).ToList();
+
+            foreach (var comment in model)
+            {
+                comment.EducatorPictureUrls = _context.Bridge_EducationEducators.Include(x => x.Educator).ThenInclude(x => x.User).Where(x => x.Id == comment.EducationId).Select(x=>x.Educator.User.AvatarPath).ToList();
+            }
+
             return model;
         }
 

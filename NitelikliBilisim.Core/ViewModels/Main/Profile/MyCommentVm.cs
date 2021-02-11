@@ -21,5 +21,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public bool IsFavoriteEducation { get; set; }
         public string SeoUrl { get; set; }
         public string CategorySeoUrl { get; set; }
+        public List<string> EducatorPictureUrls { get; set; }
     }
 }
