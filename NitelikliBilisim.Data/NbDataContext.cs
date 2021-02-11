@@ -26,7 +26,7 @@ namespace NitelikliBilisim.Data
             : base(options)
         {
             _httpContextAccessor = httpContextAccessor;
-            this.Database.Migrate();
+            //this.Database.Migrate();
         }
 
         public override int SaveChanges()
