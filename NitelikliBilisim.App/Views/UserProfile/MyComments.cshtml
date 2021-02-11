@@ -54,15 +54,12 @@
                                     
                                     <div class="account-comment__like ml-auto">
                                         <div class="account-comment__like-users">
-                                            <div class="account-comment__like-user">
-                                                <img src="../../assets/img/teacher-1.jpg" alt="">
-                                            </div>
-                                            <div class="account-comment__like-user">
-                                                <img src="../../assets/img/teacher-1.jpg" alt="">
-                                            </div>
-                                            <div class="account-comment__like-user">
-                                                <img src="../../assets/img/teacher-1.jpg" alt="">
-                                            </div>
+                                            @foreach (var pictureUrl in comment.EducatorPictureUrls)
+                                            {
+                                                <div class="account-comment__like-user">
+                                                    <img src="@(StorageService.BlobUrl+pictureUrl)" alt="">
+                                                </div>
+                                            }
                                         </div>
                                     </div>
                                 </div>

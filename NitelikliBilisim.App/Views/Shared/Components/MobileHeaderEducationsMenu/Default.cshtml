@@ -26,7 +26,7 @@
                                 <div class="mobile-menu-subin__dropdown">
                                     @foreach (var education in subCategory.Educations)
                                     {
-                                    <a asp-controller="Course" asp-action="Details" asp-route-catSeoUrl="@subCategory.SeoUrl" asp-route-seoUrl="@education.SeoUrl">@education.Name</a>
+                                        <a asp-controller="Course" asp-action="Details" asp-route-catSeoUrl="@subCategory.SeoUrl" asp-route-seoUrl="@education.SeoUrl">@education.Name</a>
                                     }
                                 </div>
                             }
@@ -34,21 +34,6 @@
                     </div>
                 }
 
-            </div>
-        </div>
-        <div class="mobile-menu__item mobile-menu-dropdown js-mobile-menu-dropdown">
-            <span class="mobile-menu__txt">
-                Kurumsal
-            </span>
-            <div class="mobile-menu__dropdown">
-                <a asp-controller="Home" asp-action="AboutUs">Hakkımızda</a>
-                <a asp-controller="Home" asp-action="CorporateMembershipApplication">Kurumsal Eğitim Talebi</a>
-                <a asp-controller="Home" asp-action="EducatorApplication">Eğitmen Başvurusu</a>
-                <a asp-controller="Home" asp-action="FrequentlyAskedQuestions">Sıkça Sorulan Sorular</a>
-                <a asp-controller="Home" asp-action="UserComments">Kullanıcı Yorumları</a>
-                <a asp-controller="Course" asp-action="List">Eğitim Listesi</a>
-                <a asp-controller="Home" asp-action="Contact">İletişim</a>
-                <a asp-controller="Home" asp-action="NonDisclosureAgreement">Gizlilik Sözleşmesi</a>
             </div>
         </div>
         <div class="mobile-menu__item js-modal-trigger" data-trigger="egitimSihirbazi">
@@ -61,6 +46,17 @@
                 Blog
             </span>
         </a>
+        <div class="mobile-menu__item mobile-menu-dropdown js-mobile-menu-dropdown">
+            <span class="mobile-menu__txt">
+                Kurumsal
+            </span>
+            <div class="mobile-menu__dropdown">
+                <a asp-controller="Home" asp-action="AboutUs">Hakkımızda</a>
+                <a asp-controller="Home" asp-action="CorporateMembershipApplication">Kurumsal Eğitim Talebi</a>
+                <a asp-controller="Home" asp-action="EducatorApplication">Eğitmen Başvurusu</a>
+                <a asp-controller="Home" asp-action="Contact">İletişim</a>
+            </div>
+        </div>
     </div>
     <div class="mobile-menu__footer">
         <a href="#">Kullanım Koşulları</a>
