@@ -1,0 +1,151 @@
+﻿@model NitelikliBilisim.Core.ViewModels.Main.Profile.MyAccountSidebarVm
+@using NitelikliBilisim.Core.Services.Abstracts
+@using NitelikliBilisim.App.Utility
+@inject IStorageService StorageService
+@{
+    var userAvatarPath = "";
+    if (!string.IsNullOrEmpty(Model.AvatarPath))
+    {
+        userAvatarPath = StorageService.BlobUrl+Model.AvatarPath;
+    }
+    else
+    {
+        userAvatarPath = "../../img/nb_letter_logo_sm.png";
+    }
+}
+
+<div class="account-side">
+    <div class="account-side__menu js-calc-line-height">
+        <div class="account-side__top">
+            <div class="account-side__img">
+                <input type="image" class="account-side__img-img" src="@userAvatarPath" />
+                <form method="post" class="imageForm" data-ajax="false" enctype="multipart/form-data" action="/profil-resmi-degistir">
+                    <input type="file" accept="image/png, image/jpeg, image/jpg" class="accountSideImg" name="ProfileImage" style="display: none;" />
+                </form>
+                <div class="account-side__img-edit">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-pencil"></use>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+            <div class="account-side__name">
+                @Model.Name @Model.Surname
+                @if (Model.IsNBUY)
+                {
+                    <span class="account-side__nbuy">NBUY</span>
+                }
+            </div>
+
+            <div class="account-side__branch">
+                @if (Model.IsNBUY)
+                {
+                    @Model.NbuyCategory
+                }
+            </div>
+            <div class="account-side__university">
+                <span class="icon-outer">
+                    <svg class="icon">
+                        <use xlink:href="../../assets/img/icons.svg#icon-map-pin-f"></use>
+                    </svg>
+                </span>
+                @Model.University
+            </div>
+        </div>
+        <ul class="account-side__list js-vertical-magic-line">
+            <li class="account-side__item js-vertical-magic-line-item @(Model.PageName == AccountSideBarPageNames.MyPanel?"active":"")">
+                <a asp-controller="UserProfile" asp-action="Profile">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-home"></use>
+                        </svg>
+                    </span>
+                    Panelim
+                </a>
+            </li>
+            <li class="account-side__item js-vertical-magic-line-item @(Model.PageName == AccountSideBarPageNames.MyCourses?"active":"")">
+                <a asp-controller="UserProfile" asp-action="MyCourses">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-code-c"></use>
+                        </svg>
+                    </span>
+                    Kurslarım
+                </a>
+            </li>
+            <li class="account-side__item js-vertical-magic-line-item @(Model.PageName == AccountSideBarPageNames.MyCertificates?"active":"")">
+                <a asp-controller="UserProfile" asp-action="MyCertificates">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-doc-medal"></use>
+                        </svg>
+                    </span>
+                    Sertifikalarım (@Model.CertificateCount)
+                </a>
+            </li>
+            <li class="account-side__item js-vertical-magic-line-item  @(Model.PageName == AccountSideBarPageNames.MyComments?"active":"")">
+                <a asp-controller="UserProfile" asp-action="MyComments">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-speak-balloon"></use>
+                        </svg>
+                    </span>
+                    Yorumlarım
+                </a>
+            </li>
+            <li class="account-side__item js-vertical-magic-line-item  @(Model.PageName == AccountSideBarPageNames.MyCouponCodes?"active":"")">
+                <a asp-controller="UserProfile" asp-action="MyCoupons">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-coupon"></use>
+                        </svg>
+                    </span>
+                    Kuponlarım / İndirimlerim
+                </a>
+            </li>
+            <li class="account-side__item js-vertical-magic-line-item  @(Model.PageName == AccountSideBarPageNames.MyFavoriteCourses?"active":"")">
+                <a asp-controller="UserProfile" asp-action="MyFavoriteCourses">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-heart"></use>
+                        </svg>
+                    </span>
+                    Favori Kurslarım
+                </a>
+            </li>
+            <li class="account-side__item js-vertical-magic-line-item  @(Model.PageName == AccountSideBarPageNames.MyInvoices?"active":"")">
+                <a asp-controller="UserProfile" asp-action="MyInvoiceList">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-bill"></use>
+                        </svg>
+                    </span>
+                    Faturalarım
+                </a>
+            </li>
+            <li class="account-side__item js-vertical-magic-line-item  @(Model.PageName == AccountSideBarPageNames.Settings?"active":"")">
+                <a asp-controller="UserProfile" asp-action="AccountSettings">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-settings"></use>
+                        </svg>
+                    </span>
+                    Ayarlar
+                </a>
+            </li>
+        </ul>
+        <div class="account-side__footer">
+            <div class="account-side__item">
+                <a asp-controller="Account" asp-action="Logout">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-logout"></use>
+                        </svg>
+                    </span>
+                    Çıkış Yap
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

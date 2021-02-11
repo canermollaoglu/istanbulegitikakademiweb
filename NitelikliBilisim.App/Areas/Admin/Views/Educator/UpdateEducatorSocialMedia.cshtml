@@ -1,0 +1,59 @@
+﻿@model NitelikliBilisim.Core.ViewModels.areas.admin.educator.UpdateGetEducatorSocialMediaVm
+@{
+    ViewData["Title"] = "Eğitmenin Sosyal Medya Profillerini Güncelle";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@section styles{
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<form id="form-update-educator-social-media">
+    @Html.AntiForgeryToken()
+    <div class="box_general padding_bottom">
+        <div class="header_box version_2">
+            <h2><i class="fa fa-share-alt"></i>Sosyal Medya Profilleri</h2>
+            <input type="hidden" value="@Model.Id" id="_educator-id" />
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Facebook</label>
+                    <input type="text" class="form-control" placeholder="Link" id="input-facebook" value="@Model.Facebook">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Linkedin</label>
+                    <input type="text" class="form-control" placeholder="Link" id="input-linkedin" value="@Model.Linkedin">
+                </div>
+            </div>
+        </div>
+        <!-- /row-->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Google Plus</label>
+                    <input type="text" class="form-control" placeholder="Link" id="input-google-plus" value="@Model.GooglePlus">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Twitter</label>
+                    <input type="text" class="form-control" placeholder="Link" id="input-twitter" value="@Model.Twitter">
+                </div>
+            </div>
+        </div>
+        <div id="file-upload-for-educator-photo">
+            <img id="img-after-preview-for-educator-photo" />
+            <input style="display:none" type="file" />
+        </div>
+        <!-- /row-->
+    </div>
+    <!-- /box_general-->
+</form>
+<p><button id="btn-save" class="btn btn-outline-success pull-right">Kaydet</button></p>
+
+@section postScripts{
+    <script src="~/js/areas/admin/admin-educator-social-media-update.js"></script>
+}

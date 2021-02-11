@@ -1,0 +1,30 @@
+﻿
+@{
+    ViewData["Title"] = "Eğitmen Sertifika Listesi";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    <style>
+        #tag-grid {
+            margin-top: -15px !important;
+        }
+    </style>
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-table"></i> Eğitmen Sertifikaları
+        <a href="@Url.Action("Add", "EducatorCertificate")" class="btn btn-sm btn-outline-primary pull-right"> Ekle</a>
+    </div>
+    <div class="card-body">
+        <div id="certificate-grid"></div>
+    </div>
+    <div class="card-footer small text-muted">Veri tarihi: @DateTime.Now</div>
+</div>
+
+@section postScripts{
+    <script src="~/js/areas/admin/admin-educator-certificate-list.js"></script>
+}

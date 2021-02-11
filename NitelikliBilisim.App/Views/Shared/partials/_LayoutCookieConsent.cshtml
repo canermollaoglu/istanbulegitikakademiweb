@@ -1,3 +1,25 @@
-﻿<div id="cookie-bar" class="fixed bottom">
-    <p>Kullanıcı deneyimini iyileştirmek için çerez kullanıyoruz.<a id="btn-cookie-agree" role="button" class="cb-enable">Kabul Ediyorum</a><a id="btn-cookie-privacy-policy" role="button" class="cb-policy">Gizlilik Politikası</a></p>
+﻿<div id="cookie-bar">
+    <p>
+        Sizlere daha iyi hizmet sunabilmek için bu platformda çerez kullanmaktayız. Çerezlere ilişkin detaylı bilgi almak için  <a id="btn-cookie-privacy-policy" class="js-modal-trigger" role="button" data-trigger="cookie-policy-modal">Çerez Politikası</a>’nı inceleyebilirsiniz.
+        <a id="btn-cookie-agree" role="button" class="cp-close">X</a>
+    </p>
 </div>
+
+<!-- Modal terms -->
+<div class="modal" id="cookie-policy-modal">
+       
+            <div class="modal__header">
+                <div class="modal__title">niteliklibilisim.com.tr Çerez Politikası</div>
+                <div class="modal__close js-close-modal">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-close"></use>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+            <div class="modal__content">
+                <partial name="partials/_CerezPolitikasi" />
+            </div>
+</div>
+<!-- /.modal -->

@@ -1,0 +1,228 @@
+﻿@model NitelikliBilisim.Core.ViewModels.Main.Educator.GetEducatorDetailVm
+@using NitelikliBilisim.Core.Services.Abstracts
+@inject IStorageService StorageService
+@{
+    ViewData["Title"] = "Eğitmen Hakkında";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    var avatarPath = "";
+    try
+    {
+        avatarPath = StorageService.BlobUrl+Model.AvatarPath;
+    }
+    catch
+    {
+    }
+}
+
+<div class="subheader subheader--detail">
+    <div class="subheader__wrp">
+        <div class="container">
+            <div class="subheader--detail__inner js-calc-height">
+                <div class="breadcrumb">
+                    <a asp-controller="Home" asp-action="Index" class="breadcrumb__item">
+                        Anasayfa
+                    </a>
+                    <a href="#0" class="breadcrumb__item">
+                        Eğitmenler
+                    </a>
+                    <a href="#0" class="breadcrumb__item active">
+                        @Model.Name
+                    </a>
+                </div>
+                <div class="subheader__cnt">
+                    <div class="subheader__txt-cnt">
+                        <div class="subheader__title">@Model.Name</div>
+                        <div class="subheader__txt">@Model.Title</div>
+                        <div class="subheader--detail__infos tablet-no-column">
+                            @foreach (var certificate in Model.Certificates)
+                            {
+                                var certificateImage = "";
+                                try
+                                {
+                                    certificateImage = StorageService.BlobUrl+certificate.CertificateImagePath;
+                                }
+                                catch
+                                {
+                                }
+                                <div class="subheader--detail__tag">
+                                    <img src="@certificateImage" alt="">
+                                    @certificate.Name
+                                </div>
+                            }
+                        </div>
+                        <div class="subheader--detail__text js-read-more">
+                            <p>
+                                @Model.ShortDescription
+                            </p>
+                        </div>
+                        <div class="teacher-detail__about-button js-read-more-btn">
+                            <span class="teacher-detail__about-buttonicon"></span>
+                            Devamını Oku
+                        </div>
+                        <div class="lesson-detail__infos teacher v-tablet-big-flex">
+                            <div class="lesson-detail__info">
+                                <span class="icon-outer icon-info">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-c-doc-play"></use>
+                                    </svg>
+                                </span>
+                                <div class="lesson-detail__info-cnt">
+                                    <span class="lesson-detail__info-txt">@Model.EducationCount</span>
+                                    <span class="lesson-detail__info-title">Eğitim</span>
+                                </div>
+                            </div>
+                            <div class="lesson-detail__info">
+                                <span class="icon-outer icon-info">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-c-graduated"></use>
+                                    </svg>
+                                </span>
+                                <div class="lesson-detail__info-cnt">
+                                    <span class="lesson-detail__info-txt">@Model.StudentCount</span>
+                                    <span class="lesson-detail__info-title">Öğrenci</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="teacher-detail">
+    <div class="container">
+        <div class="teacher-detail__wrp">
+            <div class="teacher-detail__content">
+                <div class="lesson-detail__infos infos--row h-tablet-big">
+                    <div class="lesson-detail__info">
+                        <span class="icon-outer icon-info">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-c-doc-play"></use>
+                            </svg>
+                        </span>
+                        <div class="lesson-detail__info-cnt">
+                            <span class="lesson-detail__info-txt">@Model.EducationCount</span>
+                            <span class="lesson-detail__info-title">Eğitim</span>
+                        </div>
+                    </div>
+                    <div class="lesson-detail__info">
+                        <span class="icon-outer icon-info">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-c-graduated"></use>
+                            </svg>
+                        </span>
+                        <div class="lesson-detail__info-cnt">
+                            <span class="lesson-detail__info-txt">@Model.StudentCount</span>
+                            <span class="lesson-detail__info-title">Öğrenci</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="teacher-detail__tab-content">
+                    <div class="teacher-detail__tab-item">
+                        <div class="lesson-detail__tab-title">
+                            <span> EĞİTMEN <span class="colored">ÖZGEÇMİŞİ</span></span>
+                        </div>
+                        <div class="teacher-detail__about js-read-more">
+                            <p>
+                                @Model.ShortDescription
+                                <br><br>
+                                @Model.Biography
+                            </p>
+                        </div>
+                        <div class="teacher-detail__about-button js-read-more-btn">
+                            <span class="teacher-detail__about-buttonicon"></span>
+                            Devamını Oku
+                        </div>
+                    </div>
+                    <div class="teacher-detail__tab-item">
+                        <div class="lesson-detail__tab-title">
+                            <span>
+                                UZMANLIK <span class="colored">ALANLARI</span>
+                            </span>
+                        </div>
+                        <div class="teacher-detail__info-boxes">
+                            @foreach (var category in Model.Categories)
+	{
+                            <a asp-controller="Course" asp-action="List" asp-route-catSeoUrl="@category.SeoUrl" class="teacher-detail__info-box">
+                                <span class="icon-outer" style="background-color: @category.IconColor;">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#@category.IconUrl"></use>
+                                    </svg>
+                                </span>
+                                <span class="teacher-detail__info-box-txt">@category.Name</span>
+                            </a>
+	}
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="teacher-detail__side js-top-sized-teacher">
+                <div class="lesson-detail__card">
+                    <div class="teacher-detail__card-top js-calc-img-sized">
+                        <img src="@avatarPath" alt="">
+                    </div>
+                    <div class="teacher-detail__card-cnt">
+                        <div class="teacher-detail__card-social">
+                            <a href="@Model.FacebookUrl" target="_blank" class="teacher-detail__card-social-item">
+                                <span class="icon-outer">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-facebook"></use>
+                                    </svg>
+                                </span>
+                            </a>
+                            <a href="@Model.LinkedInUrl" target="_blank" class="teacher-detail__card-social-item">
+                                <span class="icon-outer">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-linkedin"></use>
+                                    </svg>
+                                </span>
+                            </a>
+                            <a href="@Model.TwitterUrl" target="_blank" class="teacher-detail__card-social-item">
+                                <span class="icon-outer">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-m-logo"></use>
+                                    </svg>
+                                </span>
+                            </a>
+                            <a href="@Model.GooglePlusUrl" target="_blank" class="teacher-detail__card-social-item">
+                                <span class="icon-outer">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-youtube"></use>
+                                    </svg>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<section class="section with-border is-popular-projects detail-section-bg pt-75 o-hidden">
+    <div class="container">
+        <div class="flex-center mb-4">
+            <h2 class="title title-section">Popüler <span class="title--blue">Proje Eğitimleri</span></h2>
+
+            <a href="" class="all-link">
+                <span>Tüm Eğitimler</span>
+                <span class="icon-outer">
+                    <svg class="icon">
+                        <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                    </svg>
+                </span>
+            </a>
+        </div>
+
+        <div class="swiper-container js-card-slider mt-1">
+            <div class="swiper-wrapper">
+                @await Component.InvokeAsync("PopularEducations")
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+
+    </div>
+</section>

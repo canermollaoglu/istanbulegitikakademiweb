@@ -1,0 +1,55 @@
+﻿
+@{
+    ViewData["Title"] = "Blog Etiket Listesi";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    <style>
+        .dx-datagrid .dx-link {
+            color: lemonchiffon !important;
+            text-decoration: none !important;
+        }
+    </style>
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-table"></i> Blog Etiketleri
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card-header">
+                    <i class="fa fa-table"></i> Etiket Ekle
+                </div>
+                <div class="card-body">
+                    <form id="form-add-blog-tag">
+                        @Html.AntiForgeryToken()
+                        <div class="form-group">
+                            <label>İsim</label>
+                            <input type="text" required autocomplete="off" class="form-control" id="input-name">
+                        </div>
+                        <button id="btn-save" type="button" class="btn btn-success btn-sm pull-right">Kaydet</button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card-header">
+                    <i class="fa fa-table"></i> Etiket Listesi
+                </div>
+                <div class="card-body">
+                    <div id="blog-tag-grid"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="card-footer small text-muted">Veri tarihi: @DateTime.Now</div>
+</div>
+
+@section postScripts{
+    <script src="~/js/areas/admin/admin-blog-tag-list.js"></script>
+}

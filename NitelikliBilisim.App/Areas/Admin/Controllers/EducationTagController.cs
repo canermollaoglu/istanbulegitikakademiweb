@@ -1,19 +1,20 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using MUsefulMethods;
+using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.Debugging;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_tags;
-using NitelikliBilisim.Support.Text;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    //[Authorize]
-    [Area("Admin")]
-    public class EducationTagController : Controller
+    public class EducationTagController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
         public EducationTagController(UnitOfWork unitOfWork)
@@ -23,6 +24,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/etiket-ekle")]
         public IActionResult Add()
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationTagAdd");
             var data = _unitOfWork.EducationTag.Get(null, q => q.OrderBy(o => o.Name));
             var model = new AddGetVm
             {
@@ -34,6 +36,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/etiket-guncelle/{tagId}")]
         public IActionResult Update(Guid? tagId)
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationTagUpdate");
             if (tagId == null)
                 return Redirect("/admin/etiketler");
 
@@ -61,7 +64,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             }
             _unitOfWork.EducationTag.Insert(new EducationTag
             {
-                Name = data.Name.FormatForTag(),
+                Name = StringHelpers.FormatForTag(data.Name),
                 Description = data.Description
             });
             return Json(new ResponseModel
@@ -96,12 +99,28 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/etiketler")]
         public IActionResult List()
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationTagList");
             var performer = new Performer();
             var model = _unitOfWork.EducationTag.Get(null, order => order.OrderBy(o => o.Name));
             performer.Watch("List");
 
             return View(model);
         }
+
+        [Route("admin/get-tag-list")]
+        public JsonResult GetList()
+        {
+            var performer = new Performer();
+            var model = _unitOfWork.EducationTag.Get(null, order => order.OrderBy(o => o.Name));
+            performer.Watch("List");
+
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = model
+            });
+        }
+
 
         [Route("admin/etiket-sil")]
         public IActionResult Delete(Guid? tagId)
@@ -128,6 +147,29 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 isSuccess = true,
                 message = "Silme işlemi başarılı"
             });
+        }
+
+
+        [HttpGet]
+        public IActionResult SearchTag(string q)
+        {
+            try
+            {
+                var tags = _unitOfWork.EducationTag.Get(x => x.Name.StartsWith(q)).ToList();
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    data = tags
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Hata " + ex.Message }
+                });
+            }
         }
     }
 }

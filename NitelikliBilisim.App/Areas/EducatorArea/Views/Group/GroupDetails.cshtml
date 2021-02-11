@@ -1,0 +1,57 @@
+﻿@model NitelikliBilisim.Core.ViewModels.areas.educator_area.group.GroupDetailsVm
+@using System.Globalization
+@{
+    ViewData["Title"] = "Grup Detayları";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    var groupId = Model.Group.GroupId;
+}
+<main>
+    <div class="container margin_60_35">
+
+    </div>
+    <div class="container margin_60_35">
+        <div class="row">
+            <div class="col-lg-12">
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="offset-lg-1 col-lg-10">
+                <h1>@Model.Group.GroupName (@Model.Group.EducationName)</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <h3>Yoklamalar</h3>
+                <ul>
+                    @foreach (var item in Model.Days)
+                    {
+                        <li>
+                            <a href="/egitmen/yoklama-girisi/@groupId/@item.Date.ToString("dd.MM.yyyy", CultureInfo.CreateSpecificCulture("tr-TR"))/@item.HasAttendanceRecord">
+                                @if (item.HasAttendanceRecord)
+                                {
+                                    @item.DateText <i class="text-success icon-ok-circled"></i>
+                                }
+                                else
+                                {
+                                    @item.DateText <i class="text-danger icon-cancel-circled"></i>
+                                }
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="col-lg-6">
+                <h3>Öğrenci Listesi</h3>
+                <ul>
+                    @foreach (var item in Model.GroupStudents)
+                    {
+                        <li>@item.FullName</li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</main>

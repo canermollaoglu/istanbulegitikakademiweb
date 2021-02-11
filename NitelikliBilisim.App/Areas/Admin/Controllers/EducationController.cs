@@ -1,42 +1,52 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using MUsefulMethods;
 using NitelikliBilisim.App.Areas.Admin.Models.Education;
 using NitelikliBilisim.App.Areas.Admin.VmCreator.Education;
+using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Managers;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
+using NitelikliBilisim.Core.Services.Abstracts;
+using NitelikliBilisim.Core.ViewModels.HelperVM;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    //[Authorize]
-    [Area("Admin")]
-    public class EducationController : Controller
+    public class EducationController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly EducationVmCreator _vmCreator;
         private readonly IWebHostEnvironment _hostingEnvironment;
-        private readonly FileUploadManager _fileUploadManager;
-        public EducationController(UnitOfWork unitOfWork, IWebHostEnvironment hostingEnvironment)
+        private readonly FileUploadManager _fileManager;
+        private readonly IStorageService _storage;
+        public EducationController(UnitOfWork unitOfWork, IWebHostEnvironment hostingEnvironment, IStorageService storage)
         {
             _unitOfWork = unitOfWork;
             _vmCreator = new EducationVmCreator(_unitOfWork);
             _hostingEnvironment = hostingEnvironment;
-            _fileUploadManager = new FileUploadManager(hostingEnvironment, "mp4", "jpg", "jpeg", "png");
+            _fileManager = new FileUploadManager(hostingEnvironment, "mp4", "jpg", "jpeg", "png");
+            _storage = storage;
         }
         [Route("admin/egitim-ekle")]
         public IActionResult Add()
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationAdd");
             var model = _vmCreator.CreateAddGetVm();
             return View(model);
         }
 
         [HttpPost, Route("admin/egitim-ekle")]
-        public IActionResult Add(AddPostVm data)
+        public async Task<IActionResult> Add(AddPostVm data)
         {
             if (!ModelState.IsValid)
             {
@@ -48,33 +58,38 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 });
             }
 
-            var bannerPath = _fileUploadManager.Upload($"/uploads/media-items/", data.BannerFile.Base64Content, data.BannerFile.Extension, "banner", data.Name);
-            var banner = new EducationMedia
+            var detailImageStream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.BannerFile.Base64Content));
+            var detailImageName = $"{StringHelpers.FormatForTag(data.Name)}-detail";
+            var detailPath = await _storage.UploadFile(detailImageStream, $"{detailImageName}.{data.BannerFile.Extension.ToLower()}", "media-items");
+            var detailImage = new EducationMedia
             {
-                FileUrl = bannerPath,
-                MediaType = EducationMediaType.Banner
+                FileUrl = detailPath,
+                MediaType = EducationMediaType.Detail
             };
 
-            var previewPath = _fileUploadManager.Upload($"/uploads/media-items/", data.PreviewFile.Base64Content, data.PreviewFile.Extension, "preview", data.Name);
-            var preview = new EducationMedia
+            var cardImageStream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.PreviewFile.Base64Content));
+            var cardImageFileName = $"{StringHelpers.FormatForTag(data.Name)}-card";
+            var cardImagePath = await _storage.UploadFile(cardImageStream, $"{cardImageFileName}.{data.PreviewFile.Extension.ToLower()}", "media-items");
+            var cardImage = new EducationMedia
             {
-                FileUrl = previewPath,
-                MediaType = data.PreviewFile.Extension == "mp4" ? EducationMediaType.PreviewVideo : EducationMediaType.PreviewPhoto
+                FileUrl = cardImagePath,
+                MediaType = EducationMediaType.Card
             };
 
             var education = new Education
             {
                 Name = data.Name,
+                SeoUrl = data.SeoUrl,
+                VideoUrl = data.VideoUrl,
                 Description = data.Description,
                 Description2 = data.Description2,
                 Level = (EducationLevel)data.EducationLevel.GetValueOrDefault(),
-                NewPrice = data.Price.GetValueOrDefault(),
                 Days = data.Days.GetValueOrDefault(),
                 HoursPerDay = data.HoursPerDay.GetValueOrDefault(),
                 CategoryId = data.CategoryId
             };
 
-            _unitOfWork.Education.Insert(education, data.TagIds, new List<EducationMedia> { banner, preview });
+            _unitOfWork.Education.Insert(education, data.Tags, new List<EducationMedia> { detailImage, cardImage });
 
             _unitOfWork.Education.CheckEducationState(education.Id);
 
@@ -88,13 +103,27 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/egitimler")]
         public IActionResult List(int page = 0)
         {
-            var model = _vmCreator.CreateListGetVm(page);
-            return View(model);
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationList");
+            return View();
         }
+
+        [Route("admin/get-education-list")]
+        public IActionResult GetList(int page = 0)
+        {
+            var model = _vmCreator.CreateListGetVm(page);
+
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = model
+            });
+        }
+
 
         [Route("admin/egitim-guncelle/{educationId}")]
         public IActionResult Update(Guid? educationId)
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationUpdate");
             if (!educationId.HasValue)
                 return Redirect("/admin/egitimler");
 
@@ -104,7 +133,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [HttpPost, Route("admin/egitim-guncelle")]
         public IActionResult Update(UpdatePostVm data)
         {
-            if (!ModelState.IsValid || data.TagIds.Count == 0)
+            if (!ModelState.IsValid || data.Tags.Length == 0)
                 return Json(new ResponseModel
                 {
                     isSuccess = false,
@@ -122,6 +151,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/egitmen-ata/{educationId}")]
         public IActionResult ManageAssignEducators(Guid? educationId)
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationManageAssignEducators");
             if (educationId == null)
                 return Redirect("/admin/egitimler");
             var model = _vmCreator.CreateManageAssignEducatorsVm(educationId.Value);
@@ -152,6 +182,85 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 isSuccess = true,
                 data = _unitOfWork.Bridge_EducationEducator.GetAssignedEducators(educationId.Value)
             });
+        }
+        [Route("admin/delete-egitmen-ata")]
+        public IActionResult DeleteEducator(Guid? educationId, Guid educatorId)
+        {
+            if (educationId == null)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Eğitmen atama silerken bir hata oluştu" }
+                });
+
+            _unitOfWork.Bridge_EducationEducator.Delete(educationId.Value, educatorId);
+            return Json(new ResponseModel
+            {
+                isSuccess = true
+            });
+        }
+
+        [Route("admin/education-list-fill-select")]
+        public IActionResult EducationListFillSelect()
+        {
+            try
+            {
+                List<SelectListItem> educationList = _unitOfWork.Education.Get().Select(e => new SelectListItem
+                {
+                    Text = e.Name,
+                    Value = e.Id.ToString()
+                }).ToList();
+
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    data = educationList
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Hata" + ex.Message }
+                }); ;
+            }
+
+        }
+
+        [Route("admin/egitim-one-cikar")]
+        public IActionResult ToggleFeaturedEducation(Guid educationId)
+        {
+
+            _unitOfWork.Education.ToggleFeaturedEducation(educationId);
+            return Json(new ResponseModel
+            {
+                isSuccess = true
+            });
+        }
+
+        [Route("admin/get-education-levels/")]
+        public IActionResult GetEducationLevelEnums()
+        {
+            try
+            {
+                EnumItemVm[] retVal = EnumHelpers.ToKeyValuePair<EducationLevel>().Select(x =>
+            new EnumItemVm { Key = x.Key, Value = x.Value }).ToArray();
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    data = retVal
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { ex.Message }
+                });
+            }
+
         }
     }
 }

@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html lang="tr" class="h-100-percent">
+
+<head>
+    <title>Hata - Nitelikli Bilişim</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <partial name="partials/_BaseAssetsHeader" />
+</head>
+
+<body class="h-100-percent">
+    <partial name="partials/_header-simple" />
+    <section class="default-centered">
+        <div class="container">
+            <div class="default-centered__wrp">
+                <div class="forget-password__top">
+                    <div class="forget-password__title">
+                        <span>HATA !</span>
+                    </div>
+                    <div class="forget-password__txt">
+                        Aradığınız sayfa kaldırılmış, adı değiştirilmiş veya geçici olarak kullanılamıyor olabilir.
+                    </div>
+
+                    <a asp-controller="Home" asp-action="Index" class="button " style="margin-top:40px;">
+                        <span class="button-txt">
+                            Anasayfa'ya Git
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <partial name="partials/_footer-copyright" />
+</body>
+</html>
+
+
+

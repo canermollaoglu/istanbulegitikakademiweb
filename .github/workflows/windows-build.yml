@@ -1,0 +1,32 @@
+name: WindowsCI
+
+on:
+  push:
+    branches:
+    - dev
+    - test-ready
+    - master
+    
+  pull_request:
+    branches:
+    - master
+    - test-ready
+
+jobs:
+
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.100
+    - name: Restore with dotnet
+      run: dotnet restore
+    - name: Build with dotnet
+      run: dotnet build --configuration Release
+    - name: Test with dotnet
+      run: dotnet test --configuration Release

@@ -7,6 +7,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Course
     {
         public EducationVm Details { get; set; }
         public List<EducatorVm> Educators { get; set; }
-        public GroupVm Group { get; set; }
+        public Dictionary<int, string> AvaibleEducationCities { get; set; }
     }
 }

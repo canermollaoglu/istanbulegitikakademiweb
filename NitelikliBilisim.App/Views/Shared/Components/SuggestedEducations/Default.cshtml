@@ -1,0 +1,45 @@
+﻿@using NitelikliBilisim.Core.ViewModels
+@using NitelikliBilisim.Core.Services.Abstracts
+@inject IStorageService StorageService
+@model List<SuggestedEducationVm>
+
+@foreach (var education in Model)
+{
+    var filePath = "";
+    try
+    {
+        filePath = StorageService.BlobUrl+education.Medias[0].FileUrl;
+    }
+    catch
+    {
+    }
+    <div class="swiper-slide">
+        <a asp-controller="Course" asp-action="Details" asp-route-catSeoUrl="@education.Base.CategorySeoUrl" asp-route-seoUrl="@education.Base.SeoUrl" class="card card--course">
+            <figure>
+                <img src="@filePath" alt="">
+            </figure>
+
+            <div class="card__main">
+                <div class="card__content">
+                    <h6 class="card__subtitle">@education.Base.CategoryName</h6>
+                    <h5 class="card__title">@education.Base.Name</h5>
+                </div>
+
+                <div class="card__footer">
+                    <span class="card__time">
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                            </svg>
+                        </span>
+                        <span>3 gün ( 12 saat )</span>
+                    </span>
+
+                    <span class="card__money">
+                         @education.Base.Price <span>TL</span>
+                    </span>
+                </div>
+            </div>
+        </a>
+    </div>
+}

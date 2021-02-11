@@ -10,7 +10,7 @@ namespace NitelikliBilisim.Core.ViewModels.Account
         public string Password { get; set; }
         //[Required, EmailAddress]
         //public string Email { get; set; }
-        public bool RememberMe { get; set; } = true;
+        public bool RememberMe { get; set; }
         public string ReturnUrl { get; set; }
     }
 }

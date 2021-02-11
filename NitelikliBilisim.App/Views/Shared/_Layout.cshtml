@@ -1,55 +1,168 @@
 ﻿<!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Nitelikli Bilişim - @ViewData["Title"]</title>
-    <meta name="yandex-verification" content="9e671d0a91314836" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="@ViewData["MetaDescription"]" />
+    <meta name="keywords" content="@ViewData["MetaKeywords"]"/>
+    <title>@ViewData["Title"] - Uygulama olmadan, teorik bilgi ne işe yarar ki!</title>
     <partial name="partials/_BaseAssetsHeader" />
 
     @RenderSection("styles", required: false)
-    <style>
-        #btn-cookie-agree, #btn-cookie-privacy-policy {
-            cursor: pointer;
-        }
-    </style>
+    
 </head>
-<body>
+<body class="tablet-no-overflow">
     <partial name="partials/_LayoutHeader" />
 
     @RenderBody()
 
     <partial name="partials/_LayoutFooter" />
+    <partial name="partials/_modal-wizard" />
 
-    <partial name="partials/_BaseAssetsBody" />
+    <div class="modal modal--message success" id="modalSuccessNewsletterSubscribe">
+        <div class="modal__close js-close-modal">
+            <span class="icon-outer">
+                <svg class="icon">
+                    <use xlink:href="../../assets/img/icons.svg#icon-close"></use>
+                </svg>
+            </span>
+        </div>
+        <div class="modal__content">
+            <div class="side-subscribe__success">
+                <div class="side-subscribe__top">
+                    <div class="side-subscribe__icon">
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-success"></use>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+                <div class="side-subscribe__content">
+                    <div class="side-subscribe__title">Teşekkürler!</div>
+                    <div class="side-subscribe__txt">
+                        Abonelik talebiniz başarı ile iletildi.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal modal--message wrong" id="modalWrongNewsletterSubscribe">
+        <div class="modal__close js-close-modal">
+            <span class="icon-outer">
+                <svg class="icon">
+                    <use xlink:href="../../assets/img/icons.svg#icon-close"></use>
+                </svg>
+            </span>
+        </div>
+        <div class="modal__content">
+            <div class="side-subscribe__success">
+                <div class="side-subscribe__top">
+                    <div class="side-subscribe__icon">
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-wrong"></use>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+                <div class="side-subscribe__content">
+                    <div class="side-subscribe__title ">Başarısız!</div>
+                    <div class="side-subscribe__txt">
+                        Abonelik talebiniz alınamadı!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <partial name="partials/_LayoutCookieConsent" />
-
-    <script src="~/js/layout/layout-search.js"></script>
+    <div class='main-overlay overlay js-close-modal'></div>
+    <script src="~/assets/js/jquery.min.js"></script>
+    <script src="~/assets/js/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/vendor/select2/dist/js/select2.min.js"></script>
+    <script src="~/assets/js/swiper.min.js"></script>
+    <!--<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script> -->
+    <script src="~/assets/js/jquery.inputmask.min.js"></script>
+    <script src="~/assets/js/datepicker.min.js"></script>
+    <!--<script src="https://unpkg.com/bootstrap-datepicker@1.9.0/dist/locales/bootstrap-datepicker.tr.min.js"></script> -->
+    <script src="~/vendor/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/vendor/modal-video/js/jquery-modal-video.min.js"></script>
+    <script src="~/vendor/card/dist/card.js"></script>
+    <script src="~/assets/js/education-suggestion-wizard.js"></script>
     <script src="~/js/lib/cookie-agreement.js"></script>
     <script src="~/js/sup/cart.js"></script>
+    <script src="~/js/lib/security-support.js"></script>
+
     <script>
         var __cookieBar = $("#cookie-bar");
         var __envoy = new StorageSupport.Envoy();
-        var __searcher = new AppWide.Searcher();
         var __btnCookieAgree = $("#btn-cookie-agree");
         var __cart = new CartSupport.Cart();
-
         __btnCookieAgree.on("click", () => {
             __envoy.createRegisterForm();
             $("#cookie-bar").hide();
         });
 
-        __searcher.initialize();
-
         if (__envoy.isStorageExists("register")) {
             __cookieBar.hide();
         }
+        miniBasketReload();
 
-        var __layoutHeaderCart = $("#layout-header-cart");
-        __layoutHeaderCart.html(`<i class="icon-cart"></i> (${__cart.getItemCount()})`);
+        function miniBasketReload() {
+            var cartItems = __cart.getItems();
+            var __layoutHeaderCartCount = $(".mini-basket__count");
+            var __layoutHeaderCartContent = $(".mini-basket__cnt");
+            __layoutHeaderCartCount.html(`${__cart.getItemCount()} Eğitim`);
+            __layoutHeaderCartContent.html("");
+            $.each(cartItems, function (index, value) {
+                var item = `<a class="mini-basket__item js-deleted-item" data-eid="${value.educationId}">
+                                                            <div class="mini-basket__item-img">
+                                                                <img src="${value.imageUrl}" alt="">
+                                                            </div>
+                                                            <div class="mini-basket__item-cnt">
+                                                                <div class="mini-basket__item-title">${value.educationName}</div>
+                                                                <div class="mini-basket__item-price">
+                                                                    ${(value.newPrice).toFixed(2).toString().replace(".", ",")} <span>TL</span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="mini-basket__item-crash js-delete-item">
+                                                                <span class="icon-outer">
+                                                                    <svg class="icon">
+                                                                        <use xlink:href="../../assets/img/icons.svg#icon-crash"></use>
+                                                                    </svg>
+                                                                </span>
+                                                            </div>
+                                                        </a>`;
+                __layoutHeaderCartContent.append(item);
+            });
+        };
 
+        var onNewsletterSubsciptionSuccess = function (context) {
+            $(".side-subscribe__txt").html(context.message);
+            if (context.success) {
+                showModal('modalSuccessNewsletterSubscribe');
+            } else {
+                showModal('modalWrongNewsletterSubscribe');
+            }
+            $('#newsletter-subscribe-form')[0].reset();
+        };
+        var onNewsletterSubsciptionFailed = function () {
+            showModal('modalWrongNewsletterSubscribe');
+        }
+        function showModal(id) {
+            $('html, body').addClass('no-scroll');
+            $('.main-overlay').addClass('active');
+            $('.modal[id="' + id + '"]').addClass('modal--active');
+            $('.js-open-mobile-menu').removeClass('active');
+            $('.js-open-mobile-menu')
+                .closest('.header-mobile')
+                .removeClass('active');
+            $('html,body').removeClass('scroll-lock');
+        }
     </script>
+
+    <script src="~/assets/js/main.js"></script>
     @RenderSection("postScripts", required: false)
 </body>
 </html>

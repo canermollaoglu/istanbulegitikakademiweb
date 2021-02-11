@@ -1,5 +1,5 @@
 ﻿/* elements */
-var selectCategories = $("#select-categories");
+var selectTags = $("#select-tags");
 var selectLevels = document.getElementById("select-levels");
 var btnSave = $("#btn-save");
 
@@ -9,14 +9,43 @@ btnSave.on("click", btnSave_onClick);
 
 /* events*/
 function document_onLoad() {
-    selectCategories.select2();
+    selectTags.select2({
+        tags: true,
+        placeholder: "Ara",
+        tokenSeparators: [',', ' '],
+        minimumInputLength: 3,
+        ajax: {
+            url: '/admin/educationtag/searchtag',
+            dataType: 'json',
+            type: "GET",
+            delay: 250,
+            data: function (params) {
+                return {
+                    q: params.term
+                };
+            },
+            processResults: function (data) {
+                var res = data.data.map(function (item) {
+                    return { id: item.id, text: item.name };
+                });
+                return {
+                    results: res
+                };
+            }
+        }
+    });
     $(selectLevels).select2();
+
 }
 function btnSave_onClick() {
     btnSave.off("click");
+    var tags = [];
     var resultAlert = new AlertSupport.ResultAlert();
-    var categoryIds = selectCategories.val();
-    if (categoryIds.length == 0) {
+    var data = selectTags.select2('data');
+    data.forEach(function (item) {
+        tags.push(item.text);
+    });
+    if (tags.length == 0) {
         resultAlert.display({
             success: false,
             errors: ["Eğitim en az bir kategoriye ait olmalıdır"],
@@ -28,17 +57,21 @@ function btnSave_onClick() {
 
     var isActive = document.getElementById("input-is-active").checked;
 
+
     var data = {
         EducationId: $("#_education-id").val(),
         Name: $("#input-name").val(),
+        SeoUrl: $("#input-seo-url").val(),
+        VideoUrl: $("#input-video-id").val(),
         Description: $("#input-description").val(),
         Description2: $("#input-description2").val(),
-        Price: $("#input-price").val(),
         Days: $("#input-days").val(),
         HoursPerDay: $("#input-hours-per-day").val(),
         EducationLevel: selectLevels.options[selectLevels.selectedIndex].value,
-        CategoryIds: categoryIds,
-        IsActive: !isActive
+        CategoryId: $("#_categories-id").val(),
+        Tags: tags,
+        IsActive: !isActive,
+        IsFeauredEducation: $("#input-is-featured").is(':checked')
     };
     var tokenVerifier = new SecuritySupport.TokenVerifier();
     data = tokenVerifier.addToken("form-update-education", data);
@@ -72,5 +105,20 @@ function btnSave_onClick() {
         }
     });
 }
-
+$("#input-name").focusout(function () {
+    var title = $("#input-name").val();
+    $.ajax({
+        url: "/admin/create-seo-url",
+        method: "get",
+        data: { title: title },
+        success: (res) => {
+            if (res.isSuccess) {
+                $("#input-seo-url").val(res.data);
+            }
+        },
+        error: (error) => {
+            alert(error.message);
+        }
+    });
+});
 /* functions */

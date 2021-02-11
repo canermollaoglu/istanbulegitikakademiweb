@@ -1,0 +1,115 @@
+﻿
+@{
+    ViewData["Title"] = "Gelir Raporu";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-list"></i> <strong>Gelir/Gider Raporu</strong>
+    </div>
+    <div class="card-body">
+        <div class="row" style="margin-bottom:1%;">
+            <div class="offset-md-3 col-md-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Ay</label>
+                            <input type="month" value="" class="form-control" id="input-month" />
+                        </div>
+                    </div>
+                    @*<div class="col-md-6">
+                            <div class="form-group">
+                                <label>Bitiş Tarihi</label>
+                                <input type="date" value="" class="form-control" id="input-end-date" />
+                            </div>
+                        </div>*@
+                </div>
+                <div class="row">
+                    <div class="offset-md-4 col-md-4">
+                        <button id="btn-fetch" class="btn_1 form-control">Getir</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            @*<tr>
+                                    <td colspan="4">
+                                        <div class="btn-group">
+                                            <button id="btn-download" class="btn btn-outline-primary"><i class="fa fa-download"></i></button>
+                                            <button id="btn-download" class="btn btn-outline-secondary"><i class="fa fa-download"></i></button>
+                                            <button id="btn-download" class="btn btn-outline-info"><i class="fa fa-download"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>*@
+                            <tr>
+                                <th>Ödenme Tarihi</th>
+                                <th>Toplam Ödeme</th>
+                                <th>Taksit Sırası</th>
+                                <th>Miktar</th>
+                                <th>Müşteri</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-report">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section postScripts{
+    <script>
+        /* elements */
+        var btnFetch = $("#btn-fetch");
+        var inputMonth = $("#input-month");
+        var tbodyReport = $("#tbody-report");
+
+        /* assignments */
+        btnFetch.on("click", btnFetch_onClick);
+
+        /* events */
+        function btnFetch_onClick() {
+            var date = inputMonth.val();
+            if (!date)
+                return;
+            var parts = date.split("-");
+            var year = parseInt(parts[0]);
+            var month = parseInt(parts[1]);
+
+            $.ajax({
+                url: `/fetch-income-report/${year}/${month}`,
+                method: "get",
+                success: (res) => {
+                    console.log(res);
+                    createTable(res.data);
+                }
+            });
+        }
+
+        /* functions */
+        function createTable(data) {
+            tbodyReport.html("");
+            var payouts = data.payouts;
+            var appended = "";
+            for (var i = 0; i < payouts.length; i++) {
+                var item = payouts[i];
+                var style = item.isNegative ? "text-danger" : "text-success";
+                appended += "<tr>" +
+                    `<td>${item.payoutDateText}</td>` +
+                    `<td>${item.totalText}</td>` +
+                    `<td>${item.orderOfPayment}</td>` +
+                    `<td class="${style}">${item.payoutText}</td>` +
+                    `<td>${item.payer}</td>` +
+                    "</tr>";
+            }
+            appended += `<tr><td colspan="5">${data.sumOfPositive + data.sumOfNegative}</td></tr>`;
+            tbodyReport.append(appended);
+        }
+    </script>
+}

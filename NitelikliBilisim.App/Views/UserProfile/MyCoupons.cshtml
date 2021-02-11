@@ -1,0 +1,134 @@
+﻿@model List<NitelikliBilisim.Core.ViewModels.Main.Profile.MyCouponVm>
+@using NitelikliBilisim.App.Utility
+@{
+    ViewData["Title"] = "İndirim Kuponlarım";
+    Layout = "~/Views/Shared/_LayoutHesap.cshtml";
+}
+<section class="account account--dashboard">
+    <div class="account-mobile__top">
+        <a asp-controller="UserProfile" asp-action="MyMenu" class="account-mobile__prev">
+            <span class="icon-outer">
+                <svg class="icon">
+                    <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                </svg>
+            </span>
+        </a>
+        <span class="account-mobile__txt">
+            KUPONLARIM/İNDİRİMLERİM
+        </span>
+    </div>
+    <div class="container">
+        <div class="account__wrp">
+            @await Component.InvokeAsync("MyAccountSidebar", AccountSideBarPageNames.MyCouponCodes)
+            <div class="account-content">
+                <div class="account-detail">
+                    <div class="account-detail__wrp">
+                        <div class="account-detail__title">
+                            KUPONLARIM / İNDİRİMLERİM
+                        </div>
+                        <div class="account-courses coupon">
+                            <div class="account-courses__top">
+                                <div class="account-courses__top-item coupon-no">
+                                    KUPON NO
+                                </div>
+                                <div class="account-courses__top-item coupon-name">
+                                    KUPON ADI
+                                </div>
+                                <div class="account-courses__top-item coupon-status">
+                                    DURUM
+                                </div>
+                                <div class="account-courses__top-item coupon-date">
+                                    KULLANIM SÜRESİ
+                                </div>
+                                <div class="account-courses__top-item coupon-detail">
+                                    DETAY
+                                </div>
+                            </div>
+                            <div class="account-courses__wrp">
+                                @foreach (var coupon in Model)
+                                {
+
+                                    <div class="account-courses__item">
+                                        <div class="account-courses__item-item coupon-no">@coupon.Code</div>
+                                        <div class="account-courses__item-item coupon-name">@coupon.PromotionName</div>
+                                        <div class="account-courses__item-item coupon-status">
+                                            @if (coupon.Status == NitelikliBilisim.Core.Enums.promotion.PromotionStatus.Active)
+                                            {
+                                                <div class="coupon-active">
+                                                    <span class="icon-outer">
+                                                        <svg class="icon">
+                                                            <use xlink:href="../../assets/img/icons.svg#icon-check-circle-c"></use>
+                                                        </svg>
+                                                    </span>
+                                                    Aktif
+                                                </div>
+                                            }
+                                            else if (coupon.Status == NitelikliBilisim.Core.Enums.promotion.PromotionStatus.Used)
+                                            {
+                                                <div class="coupon-active disabled">
+                                                    <span class="icon-outer">
+                                                        <svg class="icon">
+                                                            <use xlink:href="../../assets/img/icons.svg#icon-disabled"></use>
+                                                        </svg>
+                                                    </span>
+                                                    Kullanıldı
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="coupon-active disabled">
+                                                    <span class="icon-outer">
+                                                        <svg class="icon">
+                                                            <use xlink:href="../../assets/img/icons.svg#icon-disabled"></use>
+                                                        </svg>
+                                                    </span>
+                                                    Süre Doldu
+                                                </div>
+                                            }
+
+                                        </div>
+                                        <div class="account-courses__item-item coupon-date">
+                                            <div>
+                                                <span class="icon-outer time-icon">
+                                                    <svg class="icon">
+                                                        <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                                                    </svg>
+                                                </span>
+                                                @coupon.RemainingTime GÜN
+                                            </div>
+                                            <div>Kalan Süre</div>
+                                        </div>
+                                        <div class="account-courses__item-item coupon-detail">
+                                            <a href="#0" class="button button-fw tooltip-hover">
+                                                <span class="button-txt">Bilgi Al</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                }
+                               
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+<div class="js-tooltip tooltip tooltip-top account-courses__coupon-tooltip">
+    <div class="tooltip__title">
+        <ul>
+            <li>
+                • Başka kampanyalar ile birleştirilemez.
+            </li>
+            <li>
+                • İndirim kodu tek seferlik kullanım için geçerlidir,
+            </li>
+            <li>
+                • Kampanyadan yararlanmak için kupon kodunuzu, sepet sayfasında yer alan "İndirim kodu" alanına girmeniz
+                gerekmektedir.
+            </li>
+        </ul>
+    </div>
+</div>
+

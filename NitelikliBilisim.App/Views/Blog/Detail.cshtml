@@ -1,0 +1,110 @@
+﻿@model NitelikliBilisim.Core.ViewModels.Main.Blog.BlogPostGetDetailVm
+@using NitelikliBilisim.Core.Services.Abstracts
+@inject IStorageService StorageService
+@{
+    ViewData["Title"] = Model.Title;
+    ViewData["MetaDescription"] = Model.Summary;
+    ViewData["MetaKeywords"] = Model.Tags;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{ 
+    var filePath = "";
+    try
+    {
+        filePath = StorageService.BlobUrl+Model.FeaturedImageUrl;
+    }
+    catch
+    {
+    }
+}
+<div class="subheader">
+    <div class="subheader__wrp">
+        <div class="container">
+            <div class="subheader__w80">
+                <div class="subheader__top-flex">
+                    <div class="breadcrumb">
+                        <a asp-controller="Home" asp-action="Index" class="breadcrumb__item">
+                            Anasayfa
+                        </a>
+                        <a href="#0" class="breadcrumb__item">
+                            Blog
+                        </a>
+                    </div>
+                    <div class="subheader__top-icon js-share">
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-share"></use>
+                            </svg>
+                        </span>
+                    </div>
+                    <div class="subheader-share-items js-share-opened">
+                        <a target="_blank" href="http://www.facebook.com/share.php?u=@(Context.Request.Host)@(Context.Request.Path)">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-facebook"></use>
+                                </svg>
+                            </span>
+                        </a>
+                        <a target="_blank" href="http://twitter.com/intent/tweet?text=Nitelikli%20Bilisim%20@(Model.Title)%20Egitimi&url=@(Context.Request.Host)@(Context.Request.Path)">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-twitter"></use>
+                                </svg>
+                            </span>
+                        </a>
+                        <a target="_blank" href="https://www.linkedin.com/sharing/share-offsite/?url=@(Context.Request.Host)@(Context.Request.Path)">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-linkedin"></use>
+                                </svg>
+                            </span>
+                        </a>
+                    </div>
+                </div>
+                <div class="blog-detail__main-img">
+                    <img src="@filePath" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="blog-detail">
+    <div class="container">
+        <div class="blog-detail__w80">
+            @Html.Raw(Model.Content)
+        </div>
+    </div>
+</section>
+<section class="section with-border is-popular-projects detail-section-bg o-hidden pt-75">
+    <div class="container">
+        <div class="justify-content-center d-flex mb-4">
+            <h2 class="title title-section fw">BU YAZILARI DA <span class="title--blue">OKUYABİLİRSİNİZ</span></h2>
+        </div>
+
+        <div class="swiper-container js-card-slider mt-1">
+            <div class="swiper-wrapper">
+                @await Component.InvokeAsync("RecommendedBlogPosts",Model.Id)
+            </div>
+            <div class="swiper-pagination"></div>
+
+            <div class="swiper-button-prev swiper-button-circle reverse">
+                <span class="icon-outer">
+                    <svg class="icon">
+                        <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                    </svg>
+                </span>
+            </div>
+            <div class="swiper-button-next swiper-button-circle reverse">
+                <span class="icon-outer">
+                    <svg class="icon">
+                        <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                    </svg>
+                </span>
+            </div>
+        </div>
+
+    </div>
+</section>
+

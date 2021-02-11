@@ -9,12 +9,15 @@ namespace NitelikliBilisim.App.Areas.Admin.Models.Education
     public class UpdateGetVm : AddGetVm
     {
         public Core.Entities.Education Education { get; set; }
-        public List<EducationTag> RelatedCategories { get; set; }
+        public List<EducationTag> RelatedTags { get; set; }
     }
 
     public class UpdatePostVm : EducationCrudVm
     {
         public Guid EducationId { get; set; }
         public bool IsActive { get; set; }
+        public bool IsFeauredEducation { get; set; }
+        public _PostedFileUpdate BannerFile { get; set; }
+        public _PostedFileUpdate PreviewFile { get; set; }
     }
 }

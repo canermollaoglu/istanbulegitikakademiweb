@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Öğrenci Listesi";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@section styles{
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-table"></i> Öğrenci Listesi
+    </div>
+    <div class="card-body">
+        <div id="customer-grid"></div>
+    </div>
+    <div class="card-footer small text-muted">Veri tarihi: @DateTime.Now</div>
+</div>
+
+@section postScripts{
+    <script src="~/js/areas/admin/admin-student-list.js"></script>
+}

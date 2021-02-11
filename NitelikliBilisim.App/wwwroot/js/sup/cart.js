@@ -1,22 +1,21 @@
 ﻿var CartSupport;
 (function (CartSupport) {
 
-/* class */
+    /* class */
     var Cart = (function () {
         function Cart() {
 
         }
-
         Cart.prototype.ensureStorageCreated = function () {
             if (!localStorage.getItem("cart"))
                 localStorage.setItem("cart", JSON.stringify([]));
         }
 
-        Cart.prototype.addToCart = function (educationId) {
+        Cart.prototype.addToCart = function (educationId, hostId,groupId,imageUrl,newPrice,educationName) {
             this.ensureStorageCreated();
             var deserialized = JSON.parse(localStorage.getItem("cart"));
-            if (deserialized.indexOf(educationId) === -1) {
-                deserialized.push(educationId);
+            if (deserialized.filter(x => x.educationId == educationId).length === 0) {
+                deserialized.push({ educationId: educationId, hostId: hostId,groupId:groupId,imageUrl:imageUrl,newPrice:newPrice,educationName:educationName });
                 localStorage.setItem("cart", JSON.stringify(deserialized));
             }
         }
@@ -24,11 +23,8 @@
         Cart.prototype.removeFromCart = function (educationId) {
             this.ensureStorageCreated();
             var deserialized = JSON.parse(localStorage.getItem("cart"));
-            var index = deserialized.indexOf(educationId);
-            if (index > -1) {
-                deserialized.splice(index, 1);
-                localStorage.setItem("cart", JSON.stringify(deserialized));
-            }
+            deserialized = deserialized.filter(x => x.educationId != educationId);
+            localStorage.setItem("cart", JSON.stringify(deserialized));
         }
 
         Cart.prototype.getItems = function () {
@@ -40,6 +36,11 @@
             this.ensureStorageCreated();
             var items = JSON.parse(localStorage.getItem("cart"));
             return items.length;
+        }
+
+        Cart.prototype.clearCart = function () {
+            localStorage.setItem("cart", JSON.stringify([]));
+            localStorage.setItem("promotionCode", "");
         }
 
         return Cart;

@@ -3,25 +3,39 @@ var fileManager = new UploadSupport.FileUploader();
 
 /* elements */
 var btnSave = $("#btn-save");
-
+var selectCertificates = $("#select-certificates");
+var selectEducationCategories = $("#select-education-categories");
 /* assignments */
 $(document).ready(document_onLoad);
 btnSave.on("click", btnSave_onClick);
 
 /* events */
 function document_onLoad() {
+    selectCertificates.select2({
+        templateResult: formatState,
+        templateSelection: formatState,
+        placeholder: "Sertifika seçiniz..."
+    });
+    selectEducationCategories.select2({
+        placeholder:"Uzmanlık alanlarını seçiniz..."
+    });
+
     fileManager.set({
         container: "file-upload-for-educator-photo",
         preview: "img-after-preview-for-educator-photo",
-        validExtensions: ["jpg", "jpeg"],
+        validExtensions: ["jpg", "jpeg","png"],
         style: { content: "Resim Yükle" }
     });
 }
 function btnSave_onClick() {
     btnSave.off("click");
     var file = fileManager.getFile();
+    var certificateIds = selectCertificates.val();
+    var categoryIds = selectEducationCategories.val();
     var data = {
         Name: $("#input-name").val(),
+        Biography: $("#input-biography").val(),
+        ShortDescription: $("#input-short-description").val(),
         Surname: $("#input-surname").val(),
         Phone: $("#input-phone").val(),
         Email: $("#input-email").val(),
@@ -35,7 +49,11 @@ function btnSave_onClick() {
         ProfilePhoto: {
             Base64Content: file.base64content,
             Extension: file.extension
-        }
+        },
+        CertificateIds: certificateIds,
+        EducatorCategoryIds: categoryIds,
+        Bank: $("#select-bank").val(),
+        IBAN: $("#input-iban").val()
     }
     var tokenVerifier = new SecuritySupport.TokenVerifier();
     data = tokenVerifier.addToken("form-add-educator", data);
@@ -64,3 +82,17 @@ function btnSave_onClick() {
         }
     });
 }
+
+
+function formatState(opt) {
+    if (!opt.id) {
+        return opt.text;
+    }
+    var optimage = $(opt.element).attr('data-image');
+    if (!optimage) {
+        return opt.text;
+    } else {
+        var $opt = $('<span><img src="' + optimage + '"height="30px"/>' + opt.text + '</span>');
+    }
+    return $opt;
+};

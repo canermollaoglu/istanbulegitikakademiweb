@@ -1,10 +1,15 @@
-﻿.file-upload-container {
-    min-height: 75px;
-    max-height: 256px;
-    max-width: 256px;
+﻿
+.file-upload-container {
+    background-image: url('../../img/nb_letter_logo_sm.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    min-height: 230px;
+    max-height: 230px;
+    max-width: 230px;
+    min-width: 230px;
     display: block;
     margin: 0;
-    padding: 0.5%;
+    padding: 0.1%;
     cursor: pointer;
     color: rgba(50,50,50,1);
     border: 1px dashed black;
@@ -25,7 +30,79 @@
     }
 
 .img-after-preview {
-    display: none;
-    height: 100%;
+    background-size: cover;
+    min-height: 230px;
+    max-height: 230px;
+    max-width: 230px;
+    min-width: 230px;
+    margin: 0;
+    padding: 1.1%;
+    padding-left: inherit;
+    padding-top: initial;
+    cursor: pointer;
+}
+p {
+    margin-bottom: 10px !important;
+}
+
+.profile-avatar-upload-container {
+    background-image: url('../../img/nb_letter_logo_sm.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    min-height: 150px;
+    max-height: 150px;
+    max-width: 150px;
+    min-width: 150px;
+    display: block;
+    margin: 0;
+    padding: 0.1%;
+    cursor: pointer;
+    color: rgba(50,50,50,1);
+}
+.profile-img-after-preview {
+    background-size: cover;
+    min-height: 155px;
+    max-height: 155px;
+    max-width: 155px;
+    min-width: 155px;
+    margin: 0;
+    padding: 1.1%;
+    padding-left: inherit;
+    padding-top: initial;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.file-upload-container-blog-post-image {
+    background-image: url('../../img/nb_letter_logo_sm.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    min-height: 250px;
+    max-height: 250px;
+    max-width: 424px;
+    min-width: 224px;
+    display: block;
+    margin: 0;
+    padding: 0.1%;
+    cursor: pointer;
+    color: rgba(50,50,50,1);
+    border: 1px dashed black;
+    font-size: 75%;
+    font-style: italic;
+}
+
+.img-after-preview-with-blog-post-image {
+    background-size: cover;
+    min-height: 250px;
+    max-height: 250px;
     width: 100%;
+    margin: 0;
+    padding: 1.1%;
+    padding-left: inherit;
+    padding-top: initial;
+    cursor: pointer;
+}
+
+.file-upload-container-with-blog-post-image input[type="file"] {
+    display: none;
 }

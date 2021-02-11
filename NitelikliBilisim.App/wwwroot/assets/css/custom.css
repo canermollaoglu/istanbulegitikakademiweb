@@ -1,0 +1,92 @@
+﻿.empty-result {
+    align-items:center;
+    flex-direction:column;
+
+}
+.empty-result > span.icon-outer>svg{
+    font-size:72px;
+}
+.empty-result > span.icon-outer {
+    color: #459af0;
+}
+.blog-card__footer {
+    padding:20px 30px 14px 20px;
+}
+#contact-form > div.input__outer.input--textarea.texted > textarea {
+    white-space:normal;
+}
+.card__text {
+    text-rendering: optimizeLegibility !important;
+    -webkit-font-smoothing: antialiased !important;
+    color: rgba(54,60,82,0.8);
+    font-size: 16px;
+    line-height: 24px;
+    margin-bottom: 0;
+    font-weight: 400;
+    display: -webkit-box;
+    align-items: center;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+}
+.lesson-list__item-txt {
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    display: -webkit-box;
+    overflow: hidden;
+}
+.account-side__menu{
+    top:0px;
+}
+.blog-card__footer {
+    margin-top:auto;
+}
+@media screen and (min-width: 800px) {
+    .blog-card__title{
+        min-height:56px;
+    }
+
+}
+.register__error-messages {
+    color:red;
+    display: none;
+}
+.card__money span {
+    color: #110c2c;
+    font-size:20px;
+}
+.lesson-list__item-price span {
+    color: #110c2c;
+    font-size: 22px;
+}
+.mini-basket__item-price span {
+    color: #110c2c;
+    font-size:18px;
+}
+.checkout__product-new span {
+    color: #110c2c;
+    font-size: 18px;
+}
+.checkout__price-new span {
+    color: #110c2c;
+    font-size: 20px;
+}
+.account-comment__top-title a {
+    color: #1f1941 !important;
+}
+.account-comment__top-txt a {
+    color: #888595 !important;
+}
+.card__favorite{
+    opacity:0.6;
+}
+.js-data-change-il{
+    margin-left:0px !important;
+}
+.lesson-detail__card-top{
+    cursor:default;
+}
+
+.login__error-messages {
+    color:red;
+}

@@ -1,0 +1,26 @@
+﻿@model NitelikliBilisim.Core.ViewModels.Main.HeaderLoggedInUserInfoVm 
+@{ 
+    string avatarPath = string.IsNullOrEmpty(Model.AvatarPath) ? "/img/nb_letter_logo_sm.png" : Model.AvatarPath;
+}
+<!-- giriş yapılmış -->
+<div class="header__profile-btn js-open-user-dropdown">
+    <div class="header__profile-img">
+        <img src="@avatarPath" alt="">
+        <div class="header__profile-caret"></div>
+    </div>
+    <div class="header__profile-cnt">
+        <div class="header__profile-txt">Hoşgeldiniz</div>
+        <div class="header__profile-name">@Model.Name @Model.Surname</div>
+    </div>
+</div>
+@if (Model.IsNbuyStudent)
+{
+<a asp-controller="UserProfile" asp-action="ForYou" class="button header__register-button">
+    <span class="icon-outer button-icon">
+        <svg class="icon">
+            <use xlink:href="../../assets/img/icons.svg#icon-star-s"></use>
+        </svg>
+    </span>
+    <span>Sana Özel</span>
+</a>
+}

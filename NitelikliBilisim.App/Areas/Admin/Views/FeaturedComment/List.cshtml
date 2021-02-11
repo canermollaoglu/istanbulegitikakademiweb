@@ -1,0 +1,190 @@
+﻿
+@{
+    ViewData["Title"] = "Öne Çıkarılan Yorumlar";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-table"></i> Öne Çıkarılan Yorumlar
+        <a asp-controller="FeaturedComment" asp-action="Add" class="btn btn-outline-primary btn-sm pull-right">Ekle</a>
+    </div>
+    <div class="card-body">
+        <div id="featured-comments-grid"></div>
+    </div>
+    <div class="card-footer small text-muted">Veri tarihi: @DateTime.Now</div>
+</div>
+
+@section postScripts{
+
+    <script>
+        /* fields */
+        var confirmModalBuilder = new AlertSupport.ConfirmModalBuilder();
+        /* assignments */
+        $(document).ready(document_onLoad);
+        /* events */
+        function document_onLoad() {
+            confirmModalBuilder.buildModal({
+                title: "Emin misiniz?",
+                bodyText: "Seçmiş olduğunuz kayıt kalıcı olarak silinecektir.",
+                cancelText: "Hayır, iptal et",
+                confirmText: "Evet, eminim",
+                onConfirmClick: confirm_onClick
+            });
+            createGrid();
+        }
+       
+        /*DataGrid*/
+        function createGrid() {
+            $("#featured-comments-grid").dxDataGrid({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    key: "id",
+                    loadUrl: "../../api/featuredcomment/get-featured-comments"
+                }),
+                remoteOperations: {
+                    paging: true,
+                    filtering: true,
+                    sorting: true,
+                    grouping: true,
+                    summary: true,
+                    groupPaging: true
+                },
+                showBorders: true,
+                showColumnLines: true,
+                showRowLines: true,
+                wordWrapEnabled: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                searchPanel: {
+                    visible: true,
+                    width: 240
+                },
+                paging: {
+                    pageSize: 10
+                },
+                groupPanel: {
+                    visible: true
+                },
+                grouping: {
+                    autoExpandAll: true
+                },
+                headerFilter: {
+                    visible: true
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10, 20],
+                    showInfo: true
+                },
+                onExporting: function (e) {
+                    var workbook = new ExcelJS.Workbook();
+                    var worksheet = workbook.addWorksheet('Eğitim Yorumlari');
+                    DevExpress.excelExporter.exportDataGrid({
+                        worksheet: worksheet,
+                        component: e.component,
+                        customizeCell: function (options) {
+                            var excelCell = options;
+                            excelCell.font = { name: 'Arial', size: 12 };
+                            excelCell.alignment = { horizontal: 'left' };
+                        }
+                    }).then(function () {
+                        workbook.xlsx.writeBuffer().then(function (buffer) {
+                            saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'Egitim Yorumlari' + parseInt(Math.random() * 1000000000) + '.xlsx');
+                        });
+                    });
+                    e.cancel = true;
+                },
+                export: {
+                    enabled: true
+                },
+                columns: [
+                    {
+                        caption: "Tarih",
+                        dataField: "createdDate",
+                        dataType: 'date',
+                        format: 'dd/MM/yyyy',
+                        width: 110,
+                        sortOrder: "desc"
+                    },
+                    {
+                        caption: "Ad",
+                        dataField: "name",
+                        width: 260
+
+                    },
+                    {
+                        caption: "Soyad",
+                        dataField: "surname"
+
+                    }, {
+                        caption: "Meslek",
+                        dataField: "title"
+                    },
+                    {
+                        caption: "İşlem",
+                        allowSearch: false,
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            $(`<a title="Güncelle" class="btn btn-outline-warning btn-sm" href="/admin/one-cikarilan-yorum/guncelle?id=${current.id}"><i class="fa fa-edit"></i></a>`)
+                                .appendTo(container);
+                            $(`<button title="Sil" class="btn btn-outline-danger btn-sm" onClick="btnConfirmationModalTrigger_onClick(this)" data-url="/admin/one-cikarilan-yorumlar/sil?featuredCommentId=${current.id}" style="cursor:pointer;"><i class="fa fa-trash"></i></button>`)
+                                .appendTo(container);
+                        },
+                        alignment: "center",
+                        width: 150
+                    }
+                ],
+                masterDetail: {
+                    enabled: true,
+                    template: function (container, options) {
+                        var currentComment = options.data;
+                        console.log(currentComment);
+                        var currentDiv = $("<div class='row'>")
+                            .appendTo(container);
+                        var content = `<div class="col-md-12">` +
+                            `<div class="card border-info mb-3">`+
+                            `<div class="card-header font-weight-bold">Yorum</div>` +
+                            `<div class="card-body"><p>${currentComment.content}</p></div></div></div>`;
+                        currentDiv.append(content);
+                        
+                    }
+                }
+            });
+        }
+
+
+
+        function btnConfirmationModalTrigger_onClick(e) {
+            var url = e.getAttribute("data-url");
+            confirmModalBuilder.setUrl(url);
+            confirmModalBuilder.display();
+        }
+        function confirm_onClick() {
+            var url = this.getAttribute("data-url");
+            console.log(url);
+            $.ajax({
+                url: url,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        location.href = location.href;
+                    } else {
+                        var resultAlert = new AlertSupport.ResultAlert();
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors,
+                            message: "Hataları düzeltiniz"
+                        });
+                    }
+                }
+            });
+        }
+
+    </script>
+}
+

@@ -4,8 +4,7 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 @section styles{
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
+    <link href="~/vendor\select2/dist/css/select2.min.css" rel="stylesheet" />
     <link href="~/css/lib/file-uploader.css" rel="stylesheet" />
 }
 @section alerts{
@@ -15,13 +14,24 @@
     <div class="header_box version_2">
         <h2><i class="fa fa-file"></i>Eğitim Ekleme</h2>
     </div>
-    <form id="form-add-education">
+    <form id="form-add-education" autocomplete="off">
         @Html.AntiForgeryToken()
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Eğitim İsmi</label>
-                    <input type="text" class="form-control" placeholder="Eğitim ismini giriniz..." id="input-name">
+                    <input type="text"  class="form-control" placeholder="Eğitim ismini giriniz..." id="input-name">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Seviyeyi Seçiniz</label>
+                    <select id="select-levels" class="form-control">
+                        @foreach (var item in Model.Levels)
+                        {
+                            <option value="@item.Key">@item.Value</option>
+                        }
+                    </select>
                 </div>
             </div>
         </div>
@@ -41,11 +51,13 @@
                 <div class="form-group">
                     <label>Etiketlerini Seçiniz</label>
                     <select id="select-tags" multiple="multiple" class="form-control">
-                        @foreach (var item in Model.Tags)
-                        {
-                            <option value="@item.Id">@item.Name</option>
-                        }
                     </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Seo Url   <i title="- dışında özel karakter girmeyiniz.Tamamen küçük harf olacak şekilde Türkçe karakter kullanmadan oluşturunuz." class="fa fa-question-circle"></i></label>
+                    <input type="text" placeholder="dot-net-core-mvc-egitimi" class="form-control" id="input-seo-url" value="">
                 </div>
             </div>
         </div>
@@ -67,39 +79,28 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Eğitim Süresi (Gün)</label>
-                    <input type="text" class="form-control" placeholder="Eğitimin kaç gün süreceğini giriniz..." id="input-days">
+                    <input type="number" class="form-control" placeholder="Eğitimin kaç gün süreceğini giriniz..." id="input-days">
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Günde Kaç Saat</label>
-                    <input type="text" class="form-control" placeholder="Derslerin günlük kaç saat işleneceğinizi giriniz..." id="input-hours-per-day">
+                    <input type="number" class="form-control" placeholder="Derslerin günlük kaç saat işleneceğinizi giriniz..." id="input-hours-per-day">
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>Fiyatı</label>
-                    <input type="text" class="form-control" placeholder="Fiyatı..." id="input-price">
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>Seviyeyi Seçiniz</label>
-                    <select id="select-levels" class="form-control">
-                        @foreach (var item in Model.Levels)
-                        {
-                            <option value="@item.Key">@item.Value</option>
-                        }
-                    </select>
+                    <label>Eğitim Video Url</label>
+                    <input type="text" class="form-control" placeholder="Youtube video Id" id="input-video-id" />
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>Banner (jpeg)</label>
+                    <label>Eğitim Detay Görseli</label>
                     <div class="file-upload-container" id="file-upload-container-for-banner">
                         <img class="img-after-preview" id="img-after-preview-for-banner" />
                         <p><i class="fa fa-file"></i> Resim yüklemek için tıklayınız...</p>
@@ -109,7 +110,7 @@
             </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>Ön İzleme (jpeg ya da mp4)</label>
+                    <label>Kart Görseli</label>
                     <div class="file-upload-container" id="file-upload-container-for-preview">
                         <img class="img-after-preview" id="img-after-preview-for-preview" />
                         <p><i class="fa fa-file"></i> Resim yüklemek için tıklayınız...</p>
@@ -123,9 +124,7 @@
 
 <p><button id="btn-save" class="btn_1 medium">Kaydet</button></p>
 @section postScripts{
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
-    <script src="~/js/sup/alert-sup.js"></script>
-    <script src="~/js/lib/security-support.js"></script>
+    <script src="~/vendor\select2/dist/js/select2.min.js"></script>
     <script src="~/js/lib/file-uploader.js"></script>
     <script src="~/js/areas/admin/admin-education-add.js"></script>
 }

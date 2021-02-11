@@ -1,0 +1,8 @@
+﻿@{
+    ViewData["Title"] = "Cv Görüntüle";
+}
+<div class="row">
+    <div class="col-md-12 text-center">
+        <embed type="application/pdf" width="900" height="600" src="@Url.Action("GetCv","EducatorApplication",new {eId=ViewData["eId"] })" />
+    </div>
+</div>

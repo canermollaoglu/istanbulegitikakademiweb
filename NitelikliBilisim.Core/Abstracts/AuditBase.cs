@@ -10,6 +10,6 @@ namespace NitelikliBilisim.Core.Abstracts
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
         [StringLength(128)]
         public string UpdatedUser { get; set; }
-        public DateTime? UpdatedDate { get; set; } = DateTime.UtcNow;
+        public DateTime? UpdatedDate { get; set; }
     }
 }

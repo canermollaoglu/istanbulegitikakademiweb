@@ -1,0 +1,262 @@
+﻿
+@{
+    ViewData["Title"] = "Yorum Yönetimi";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-table"></i> Faturalar
+    </div>
+    <div class="card-body">
+        <div id="invoice-grid"></div>
+    </div>
+    <div class="card-footer small text-muted">Veri tarihi: @DateTime.Now</div>
+</div>
+
+
+<div class="modal fade" id="upload-pdf-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Fatura Yükle</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="form-upload-invoice">
+                    <div class="form-group">
+                        <label>Pdf Seçiniz</label>
+                            <input type="file" id="invoice-file" accept="application/pdf" />
+                    </div>
+                    <input type="hidden" name="InvoiceId" id="input-invoice-id" />
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                <button type="button" class="btn btn-primary" id="btn-add">Yükle</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section postScripts{
+
+    <script>
+        var btnAdd = $("#btn-add");
+        var invoiceId = $("#input-invoice-id");
+        var resultAlert = new AlertSupport.ResultAlert();
+
+
+        /* assignments */
+        $(document).ready(document_onLoad);
+        btnAdd.on("click", btnAdd_onClick);
+        /* events */
+        function document_onLoad() {
+            createGrid();
+        }
+        /*DataGrid*/
+        function createGrid() {
+            $("#invoice-grid").dxDataGrid({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    key: "id",
+                    loadUrl: "../../api/invoice/get-invoice-list"
+                }),
+                remoteOperations: {
+                    paging: true,
+                    filtering: true,
+                    sorting: true,
+                    grouping: true,
+                    summary: true,
+                    groupPaging: true
+                },
+                showBorders: true,
+                showColumnLines: true,
+                showRowLines: true,
+                wordWrapEnabled: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                searchPanel: {
+                    visible: true,
+                    width: 240
+                },
+                paging: {
+                    pageSize: 10
+                },
+                groupPanel: {
+                    visible: true
+                },
+                grouping: {
+                    autoExpandAll: true
+                },
+                headerFilter: {
+                    visible: true
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10, 20],
+                    showInfo: true
+                },
+                onExporting: function (e) {
+                    var workbook = new ExcelJS.Workbook();
+                    var worksheet = workbook.addWorksheet('Eğitim Yorumlari');
+                    DevExpress.excelExporter.exportDataGrid({
+                        worksheet: worksheet,
+                        component: e.component,
+                        customizeCell: function (options) {
+                            var excelCell = options;
+                            excelCell.font = { name: 'Arial', size: 12 };
+                            excelCell.alignment = { horizontal: 'left' };
+                        }
+                    }).then(function () {
+                        workbook.xlsx.writeBuffer().then(function (buffer) {
+                            saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'Egitim Yorumlari' + parseInt(Math.random() * 1000000000) + '.xlsx');
+                        });
+                    });
+                    e.cancel = true;
+                },
+                export: {
+                    enabled: true
+                },
+                columns: [
+                    {
+                        caption: "Tarih",
+                        dataField: "date",
+                        dataType: 'date',
+                        format: 'dd/MM/yyyy',
+                        width: 110,
+                        sortOrder: "desc"
+                    },
+                    {
+                        caption: "Ad",
+                        dataField: "customerName",
+                        width: 120
+
+                    }, {
+                        caption: "Soyad",
+                        dataField: "customerSurname",
+                        width: 120
+                    },
+
+                    {
+                        caption: "Fatura Tutarı",
+                        dataField: "paidPrice",
+                        customizeText: function (paidPrice) {
+                            return paidPrice.value + " ₺";
+                        },
+                        width: 230
+                    },
+                    {
+                        caption: "İyzico Ödeme Numarası",
+                        dataField: "paymentId"
+                    },
+                    {
+                        caption: "İşlemler",
+                        allowSearch: false,
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            if (current.invoicePdfUrl) {
+                                var div = $('<div class="btn-group" style="display: inline-flex; width:"auto"></div>');
+                                $(`<a class="btn btn-outline-success btn-sm" onClick="downloadPdf('${current.id}')">Faturayı İndir</a>`)
+                                    .appendTo(div);
+                                div.appendTo(container);
+                            } else {
+                                var div = $('<div class="btn-group" style="display: inline-flex; width:"auto"></div>');
+                                $(`<a class="btn btn-outline-warning btn-sm" onClick="uploadInvoicePdfModalShow('${current.id}')">Fatura Yükle</a>`)
+                                    .appendTo(div);
+                                div.appendTo(container);
+                            }
+
+
+                        },
+                        alignment: "center"
+
+                    }
+
+                ]
+            });
+        }
+        function highlightComment(id) {
+            var resultAlert = new AlertSupport.ResultAlert();
+            $.ajax({
+                url: `/admin/toggle-highlight-comment?commentId=${id}`,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        resultAlert.display({
+                            success: true,
+                            message: "Durum güncellendi.",
+                        });
+                        $("#education-comments-grid").dxDataGrid("instance").refresh();
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors,
+                            message: "İşlem başarısız"
+                        });
+                    }
+                }
+            });
+        }
+        function uploadInvoicePdfModalShow(id) {
+            invoiceId.val(id);
+            $("#upload-pdf-modal").modal("show");
+        }
+
+        function btnAdd_onClick() {
+            btnAdd.off("click");
+            var data = new FormData();
+            data.append("InvoiceId", invoiceId.val());
+            data.append("PostedFile", $("#invoice-file")[0].files[0]);
+            var tokenVerifier = new SecuritySupport.TokenVerifier();
+            data = tokenVerifier.addToken("form-upload-invoice", data);
+            $.ajax({
+                url: "/admin/invoice/upload-invoice-pdf",
+                method: "post",
+                data: data,
+                contentType: false,
+                processData: false,
+                success: (res) => {
+                    if (res.isSuccess) {
+                        $("#invoice-grid").dxDataGrid("instance").refresh();
+                        $("#form-upload-invoice")[0].reset();
+                        $("#upload-pdf-modal").modal("hide");
+                        resultAlert.display({
+                            success: true,
+                            message: "Kayıt işlemi başarılı"
+                        });
+
+                        btnAdd.on("click", btnAdd_onClick);
+                    } else {
+                        $("#form-upload-invoice")[0].reset();
+                        $("#upload-pdf-modal").modal("hide");
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors
+                        });
+                        btnAdd.on("click", btnAdd_onClick);
+                    }
+                }
+            });
+        }
+
+        function downloadPdf(id) {
+            var url = "/admin/invoice/view?invoiceId=" + id;
+            $.get(url, function (data) {
+                if (data.isSuccess) {
+                    location.href = data.data;
+                    
+                }
+            });
+        }
+
+    </script>
+}
+

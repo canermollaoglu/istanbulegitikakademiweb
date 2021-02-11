@@ -1,0 +1,720 @@
+@import '../utilities/variables';
+
+.account-courses {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  &__coupon-tooltip {
+    padding: 20px 30px;
+    width: 300px;
+    text-align: left;
+    transform: translateY(30px) translateX(-10px);
+
+    @include bp(tablet-small) {
+      transform: translateY(30px) translateX(0);
+      left: 35px !important;
+      width: calc(100% - 70px) !important;
+      transition: 0s;
+      transition: opacity .3s;
+      transition-delay: .1s;
+    }
+
+    &::before {
+      bottom: auto;
+      top: -24px;
+      border-bottom-color: $colorLightPurple;
+      border-top-color: transparent;
+    }
+
+    .tooltip__title {
+      font-weight: 400;
+    }
+
+    ul {
+      margin: 0;
+      padding: 0;
+
+      li {
+        margin: 0;
+        padding: 0;
+        margin-bottom: 10px;
+        list-style: none;
+      }
+    }
+  }
+
+  &.course {
+    .account-courses {
+      &__item {
+        position: relative;
+
+        &-cnt {
+          @include bp(tablet-small) {
+            flex-direction: column;
+            align-items: flex-start;
+          }
+        }
+
+        &-img {
+          @include bp(tablet-small) {
+            width: 100%;
+            height: 70px;
+            margin-bottom: 15px;
+            margin-right: 0;
+          }
+        }
+
+        &-item {
+          white-space: nowrap;
+
+          &:nth-child(2) {
+            @include bp(tablet-small) {
+              position: absolute;
+              top: 15px;
+              right: 15px;
+            }
+          }
+
+          &:nth-child(5) {
+            @include bp(tablet-small) {
+              width: 100%;
+              margin-left: 0;
+            }
+          }
+
+          &:last-child {
+            @include bp(desktop) {
+              margin-left: 15px;
+            }
+
+            @include bp(tablet-small) {
+              margin-left: 0;
+            }
+
+            .button-txt {
+              @include bp(desktop) {
+                margin-left: 0;
+              }
+
+              @include bp(tablet-small) {
+                margin-left: auto;
+              }
+            }
+
+            .button-icon {
+              @include bp(desktop) {
+                display: none;
+              }
+
+              @include bp(tablet-small) {
+                display: block;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &.certificate {
+    .account-courses {
+      &__top {
+        &-course {
+          width: 30%;
+        }
+
+        &-item {
+          justify-content: flex-start;
+
+          &.certificate-name {
+            width: 250px;
+          }
+
+          &.dated,
+          &.downloaded {
+            width: 150px;
+          }
+
+          &.downloaded {
+            width: 170px;
+          }
+        }
+      }
+
+      &__item {
+        @include bp(tablet-small) {
+          position: relative;
+          border-bottom: none;
+
+          &:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: -20px;
+            width: calc(100% + 40px);
+            background: $c-softBorder;
+            height: 1px;
+          }
+        }
+
+        &:last-child {
+          @include bp(tablet-small) {
+            &:after {
+              display: none;
+            }
+          }
+        }
+
+        &-cnt {
+          width: 30%;
+          padding-left: 15px;
+
+          @include bp(tablet-small) {
+            width: 100%;
+            border-bottom: 1px solid $c-softBorder;
+            padding-bottom: 15px;
+            padding-left: 0;
+          }
+        }
+
+        &-item {
+          justify-content: flex-start;
+
+          &.certificate-name {
+            width: 250px;
+
+            @include bp(tablet-small) {
+              order: 2;
+              width: 100%;
+              margin-top: 10px;
+              display: flex;
+              flex-direction: column;
+              align-items: flex-start;
+              justify-content: space-between;
+              color: $colorNavyBlue;
+              font-weight: 400;
+              text-align: right;
+              font-size: 14px;
+
+              &:before {
+                content: 'KURS ADI';
+                display: block;
+                color: $c-simpleText;
+                font-weight: 600;
+                text-align: left;
+                flex-shrink: 0;
+              }
+            }
+          }
+
+          &.dated {
+            @include bp(tablet-small) {
+              order: 3;
+              margin-top: 10px;
+              margin-bottom: 0;
+              width: 100% !important;
+              display: flex;
+              flex-direction: column;
+              align-items: flex-start;
+              justify-content: space-between;
+              color: $colorNavyBlue;
+              font-weight: 400;
+              font-size: 14px;
+
+              &:before {
+                content: 'EĞİTİM TARİHİ';
+                display: block;
+                color: $c-simpleText;
+                font-weight: 600;
+              }
+            }
+          }
+
+          &.dated,
+          &.downloaded {
+            width: 150px;
+            margin-left: 10px;
+
+            @include bp(tablet-small) {
+              margin-left: 0;
+            }
+          }
+
+          &.downloaded {
+            width: 170px;
+
+            @include bp(tablet-small) {
+              width: 100%;
+              margin-top: 10px;
+              margin-bottom: 0;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &.coupon {
+    .account-courses {
+      &__top {
+
+        &-item {
+          &.coupon-no {
+            justify-content: flex-start;
+            padding-left: 15px;
+          }
+
+          &.coupon-detail {
+            width: 100px;
+            flex-shrink: 0;
+          }
+        }
+      }
+
+      &__item {
+        &-item {
+          &.coupon-no {
+            justify-content: flex-start;
+            padding-left: 15px;
+
+            @include bp(tablet-small) {
+              order: 1;
+              padding-left: 0;
+              width: 100%;
+              display: flex;
+              align-items: flex-start;
+              flex-direction: column;
+              justify-content: space-between;
+              color: $colorNavyBlue;
+              font-weight: 400;
+              text-align: right;
+              font-size: 16px;
+              margin-bottom: 10px;
+
+              &:before {
+                content: 'KUPON NO';
+                display: block;
+                color: $c-simpleText;
+                font-weight: 600;
+                text-align: left;
+                flex-shrink: 0;
+              }
+            }
+          }
+
+          &.coupon-no,
+          &.coupon-name {
+            color: $colorNavyBlue;
+            font-weight: 700;
+          }
+
+          &.coupon-name {
+            @include bp(tablet-small) {
+              order: 2;
+              width: 100%;
+              display: flex;
+              align-items: flex-start;
+              flex-direction: column;
+              justify-content: space-between;
+              color: $colorNavyBlue;
+              font-weight: 700;
+              text-align: right;
+              font-size: 16px;
+              margin-bottom: 10px;
+
+              &:before {
+                content: 'KUPON ADI';
+                display: block;
+                color: $c-simpleText;
+                font-weight: 600;
+                text-align: left;
+                flex-shrink: 0;
+              }
+            }
+          }
+
+          &.coupon-detail {
+            width: 100px;
+            flex-shrink: 0;
+
+            @include bp(tablet-small) {
+              order: 5;
+              width: 100%;
+              margin-left: 0;
+            }
+          }
+
+          &.coupon-status {
+            @include bp(tablet-small) {
+              order: 4;
+              width: 100%;
+            }
+          }
+
+          &.coupon-date {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            @include bp(tablet-small) {
+              order: 3;
+              width: 100%;
+              flex-direction: row;
+              align-items: flex-start;
+              flex-direction: column;
+              justify-content: space-between;
+              color: $colorNavyBlue;
+              font-weight: 400;
+              text-align: right;
+              font-size: 16px;
+              margin: 0;
+
+              &:before {
+                content: 'KULLANIM SÜRESİ';
+                display: block;
+                color: $c-simpleText;
+                font-weight: 600;
+                text-align: left;
+                flex-shrink: 0;
+              }
+            }
+
+            &>div {
+              &:first-child {
+                color: $colorLightPurple;
+
+                span {
+                  margin-right: 5px;
+                  position: relative;
+                  top: -1px;
+                }
+              }
+
+              &:last-child {
+                color: rgba($colorNavyBlue, .6);
+                font-weight: 500;
+                font-size: 14px;
+
+                @include bp(tablet-small) {
+                  display: none;
+                }
+              }
+            }
+          }
+
+        }
+      }
+    }
+  }
+
+  &.favorite {
+
+    .account-courses__item {
+      @include bp(tablet-small) {
+        justify-content: space-between;
+        position: relative;
+      }
+
+      &-cnt {
+        @include bp(tablet-small) {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+
+      &-img {
+        @include bp(tablet-small) {
+          width: 100%;
+          margin-right: 0;
+          margin-bottom: 15px;
+          height: 70px;
+        }
+      }
+
+      &>div {
+        &:nth-child(1) {
+          @include bp(tablet-small) {
+            order: 1;
+          }
+        }
+
+        &:nth-child(2) {
+          @include bp(tablet-small) {
+            order: 2;
+
+            @include bp(tablet-small) {
+              position: absolute;
+              top: 15px;
+              right: 15px;
+            }
+          }
+        }
+
+        &:nth-child(3) {
+          @include bp(tablet-small) {
+            order: 3;
+          }
+        }
+
+        &:nth-child(4) {
+          @include bp(tablet-small) {
+            order: 4;
+            width: 100%;
+            margin-bottom: 0;
+          }
+        }
+      }
+    }
+  }
+
+  &__top {
+    width: 100%;
+    border-radius: 4px;
+    background: #f0f4fa;
+    color: $c-simpleText;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    padding: 15px 0;
+    margin-bottom: 25px;
+
+    @include bp(tablet-small) {
+      display: none;
+    }
+
+    &-course {
+      width: 35%;
+      flex-shrink: 0;
+      padding-left: 15px;
+      margin-right: auto;
+    }
+
+    &-item {
+      width: 200px;
+      display: flex;
+      justify-content: center;
+
+      &.fav {
+        width: 40px;
+        flex-shrink: 0;
+      }
+    }
+  }
+
+  &__wrp {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid $c-softBorder;
+
+    @include bp(tablet-small) {
+      flex-flow: wrap;
+    }
+
+    &:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    &-cnt {
+      display: flex;
+      width: 35%;
+      flex-shrink: 0;
+      align-items: center;
+      margin-right: auto;
+
+      @include bp(tablet-small) {
+        width: 100%;
+        order: 1
+      }
+
+      &:hover {
+        .account-courses__item-title {
+          color: $colorBlue;
+        }
+      }
+    }
+
+    &-img {
+      width: 45px;
+      height: 45px;
+      border-radius: 4px;
+      overflow: hidden;
+      flex-shrink: 0;
+      margin-right: 15px;
+
+      @include bp(tablet-small) {
+        width: 50px;
+        height: 50px;
+      }
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    &-title {
+      color: $colorNavyBlue;
+      font-weight: 700;
+      transition: 0.3s;
+
+      @include bp(desktop) {
+        font-size: 15px;
+        padding-left: 5px;
+        padding-right: 5px;
+      }
+
+      @include bp(tablet-small) {
+        width: calc(100% - 50px - 20px);
+        font-size: 16px;
+        padding-left: 0px;
+        padding-right: 0px;
+      }
+    }
+
+    &-item {
+      width: 200px;
+      display: flex;
+      justify-content: center;
+      color: rgba($colorNavyBlue, 0.8);
+      font-weight: 600;
+      font-size: 15px;
+
+      @include bp(tablet-big) {
+        font-size: 14px;
+      }
+
+      @include bp(tablet-small) {
+        font-size: 15px;
+      }
+
+      .button {
+        @include bp(tablet-big) {
+          padding-left: 14px;
+          padding-right: 14px;
+        }
+      }
+
+      .button-txt {
+        font-size: 15px;
+
+        @include bp(tablet-big) {
+          font-size: 14px;
+        }
+      }
+
+      .button-icon {
+        font-size: 14px;
+
+        @include bp(tablet-big) {
+          font-size: 13px;
+        }
+      }
+
+      span.time-icon {
+        color: $colorBlue;
+        position: relative;
+        top: -1px;
+        margin-right: 10px;
+      }
+
+      &.fav {
+        width: 40px;
+        flex-shrink: 0;
+
+        span {
+          background: #fdf4f4;
+          color: #d64541;
+          width: 35px;
+          height: 35px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+
+          @include bp(tablet-small) {
+            width: 40px;
+            height: 40px;
+          }
+        }
+      }
+
+      &:nth-child(2) {
+        @include bp(tablet-small) {
+          order: 4;
+        }
+      }
+
+      &:nth-child(3) {
+        @include bp(tablet-small) {
+          order: 2;
+          width: 50%;
+          margin-bottom: 10px;
+          margin-top: 10px;
+          justify-content: flex-start;
+        }
+      }
+
+      &:nth-child(4) {
+        @include bp(tablet-small) {
+          order: 3;
+          width: 50%;
+          margin-bottom: 10px;
+          margin-top: 10px;
+          justify-content: flex-end;
+        }
+      }
+
+      &:nth-child(5) {
+        @include bp(tablet-small) {
+          order: 5;
+          margin-left: 15px;
+          width: calc(100% - 40px - 15px);
+        }
+      }
+    }
+  }
+}
+
+.coupon-active {
+  background: #e5f9ed;
+  color: #00c853;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(100% - 50px);
+  border-radius: 4px;
+  padding: 15px 10px;
+  font-weight: 700;
+
+  @include bp(tablet-small) {
+    width: 100%;
+  }
+
+  &.disabled {
+    color: rgba($colorNavyBlue, .7);
+    background: #f0f4fa;
+
+    span {
+      color: #b2c1d7;
+    }
+  }
+
+  span {
+    margin-right: 10px;
+    position: relative;
+    top: -1px;
+  }
+}

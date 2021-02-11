@@ -1,368 +1,1352 @@
 ﻿
 @{
     ViewData["Title"] = "Ödeme";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_LayoutCheckout.cshtml";
 }
 
-@section styles{
-    <link href="~/assets/css/grey.css" rel="stylesheet">
-    <link href="~/assets/css/sale/payment.css" rel="stylesheet" />
-}
+<div class="checkout-steps">
+    <div class="container">
+        <div class="checkout-steps__wrp">
+            <a asp-controller="Sale" asp-action="Cart" class="checkout-steps__item">
+                <div class="checkout-steps__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="assets/img/icons.svg#icon-basket"></use>
+                        </svg>
+                    </span>
+                </div>
+                <div class="checkout-steps__txt">1. SEPETİM</div>
+            </a>
+            <a asp-controller="Sale" asp-action="InvoiceInformation" class="checkout-steps__item">
+                <div class="checkout-steps__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="assets/img/icons.svg#icon-invoice"></use>
+                        </svg>
+                    </span>
+                </div>
+                <div class="checkout-steps__txt">2. FATURA BİLGİLERİ</div>
+            </a>
+            <a class="checkout-steps__item active">
+                <div class="checkout-steps__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="assets/img/icons.svg#icon-credit-card-f"></use>
+                        </svg>
+                    </span>
+                </div>
+                <div class="checkout-steps__txt">3. ÖDEME</div>
+            </a>
+            <a class="checkout-steps__item">
+                <div class="checkout-steps__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="assets/img/icons.svg#icon-doc-f"></use>
+                        </svg>
+                    </span>
+                </div>
+                <div class="checkout-steps__txt">4. ÖZET</div>
+            </a>
+        </div>
+    </div>
+</div>
+<section class="section section--checkout">
+    <div class="container">
+        <div class="checkout__wrp">
+            <div class="checkout__left">
+                <div class="checkout__content">
+                    <div class="accordion accordion--big">
+                        <div class="accordion__item selected-cart active">
+                            <div class="accordion__header">
+                                <span class="icon-outer accordion__icon">
+                                </span>
+                                <div class="checkout__title">
+                                    KREDİ KARTI <span class="colored-blue">İLE ÖDEME</span>
+                                </div>
+                            </div>
+                            <div class="accordion__content">
+                                <div class="js-calc-accordion-height">
 
-<main>
-    <section id="hero_in" class="cart_section">
-        <div class="wrapper">
-            <div class="container">
-                <div class="bs-wizard clearfix">
-                    <div class="bs-wizard-step">
-                        <div class="text-center bs-wizard-stepnum">Sepetiniz</div>
-                        <div class="progress">
-                            <div class="progress-bar"></div>
-                        </div>
-                        <a href="/sepet" class="bs-wizard-dot"></a>
-                    </div>
+                                    @if (TempData["ErrorMessage"] != null)
+                                    {
+                                        <div class="error-messages" style="display: block;">
+                                            @TempData["ErrorMessage"]
+                                        </div>
+                                    }
 
-                    <div class="bs-wizard-step active">
-                        <div class="text-center bs-wizard-stepnum">Ödeme</div>
-                        <div class="progress">
-                            <div class="progress-bar"></div>
-                        </div>
-                        <a href="#0" class="bs-wizard-dot"></a>
-                    </div>
+                                    <div class="error-messages">
+                                        <div class="error-messages__title">
+                                            <span class="icon-outer">
+                                                <svg class="icon">
+                                                    <use xlink:href="assets/img/icons.svg#icon-warning"></use>
+                                                </svg>
+                                            </span>
+                                            İşlem<span>&nbsp;Başarısız Oldu</span>
+                                        </div>
+                                        <ul>
+                                            <li>
+                                                <span class="icon-outer">
+                                                    <svg class="icon">
+                                                        <use xlink:href="assets/img/icons.svg#icon-info-circle"></use>
+                                                    </svg>
+                                                </span>
+                                                <label for="CardInfo.NumberOnCard" class="error">cardnumber</label>
+                                            </li>
+                                            <li>
+                                                <span class="icon-outer">
+                                                    <svg class="icon">
+                                                        <use xlink:href="assets/img/icons.svg#icon-info-circle"></use>
+                                                    </svg>
+                                                </span>
+                                                <label for="CardInfo.NameOnCard" class="error">cardname</label>
+                                            </li>
+                                            <li>
+                                                <span class="icon-outer">
+                                                    <svg class="icon">
+                                                        <use xlink:href="assets/img/icons.svg#icon-info-circle"></use>
+                                                    </svg>
+                                                </span>
+                                                <label for="CardInfo.MonthOnCard" class="error">cardmonth</label>
+                                            </li>
+                                            <li>
+                                                <span class="icon-outer">
+                                                    <svg class="icon">
+                                                        <use xlink:href="assets/img/icons.svg#icon-info-circle"></use>
+                                                    </svg>
+                                                </span>
+                                                <label for="CardInfo.YearOnCard" class="error">cardyear</label>
+                                            </li>
+                                            <li>
+                                                <span class="icon-outer">
+                                                    <svg class="icon">
+                                                        <use xlink:href="assets/img/icons.svg#icon-info-circle"></use>
+                                                    </svg>
+                                                </span>
+                                                <label for="cardCvc" class="error">cardcvc</label>
+                                            </li>
+                                            <li>
+                                                <span class="icon-outer">
+                                                    <svg class="icon">
+                                                        <use xlink:href="assets/img/icons.svg#icon-info-circle"></use>
+                                                    </svg>
+                                                </span>
+                                                <label for="IsPreInformationConfirmed" class="error">IsPreInformationConfirmed</label>
+                                            </li>
+                                            <li>
+                                                <span class="icon-outer">
+                                                    <svg class="icon">
+                                                        <use xlink:href="assets/img/icons.svg#icon-info-circle"></use>
+                                                    </svg>
+                                                </span>
+                                                <label for="IsDistantSalesAgreementConfirmed" class="error">IsDistantSalesAgreementConfirmed</label>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class='card-wrapper card-wrapper--form'></div>
+                                    <form class="card-form" id="form-buy" method="post" action="/odeme-yap">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" id="_is-distant-sales-agreement-confirmed" name="IsDistantSalesAgreementConfirmed" />
+                                        <input type="hidden" id="_is-pre-information-confirmed" name="IsPreInformationConfirmed" />
+                                        <input type="hidden" value="0" id="input-education-total-price" />
+                                        <input type="hidden" value="0" id="input-education-total-old-price" />
+                                        <input type="hidden" value="0" id="input-discount-amount" />
+                                        <input type="hidden" value="0" id="promotion-discount-amount" />
+                                        <input type="hidden" value="" id="_promotion-code" name="PromotionCode" />
+                                        <input type="hidden" value="" id="_installmentCount" name="PaymentInfo.Installments" />
+                                        <input type="hidden" value="0" id="_aId" name="AddressId" />
+                                        <input type="hidden" value="" id="_cart-items" name="CartItemsJson" />
+                                        <div class="input__outer no-icon">
+                                            <div class="input__title">Kart Numarası</div>
+                                            <input type="text" id="input-card-number"
+                                                   class="input input--bordered input--fw input--noshadow card__number" name="CardInfo.NumberOnCard"
+                                                   placeholder="_ _ _ _  _ _ _ _  _ _ _ _  _ _ _ _">
+                                        </div>
+                                        <div class="input__outer no-icon">
+                                            <div class="input__title">Adınız Soyadınız</div>
+                                            <input type="text" id="input-owner"
+                                                   class="input input--bordered input--fw input--noshadow card__name" name="CardInfo.NameOnCard"
+                                                   placeholder="Kart Sahibinin Adı Soyadı" />
+                                        </div>
+                                        <div class="input__column-2 input__column-card">
+                                            <div class="input__outer no-icon">
+                                                <div style="margin-right:20px;">
+                                                    <div class="input__title">Ay</div>
+                                                    <input type="text" id="select-months"
+                                                           class="input input--bordered input--fw input--noshadow card__expiry" name="CardInfo.MonthOnCard"
+                                                           placeholder="01" />
+                                                </div>
+                                                <div>
+                                                    <div class="input__title">Yıl</div>
+                                                    <input type="text" id="select-years"
+                                                           class="input input--bordered input--fw input--noshadow card__expiry" name="CardInfo.YearOnCard"
+                                                           placeholder="2026" />
+                                                </div>
+                                            </div>
+                                            <div class="input__outer no-icon">
+                                                <div class="input__title">
+                                                    CCV <span class="ccv-info tooltip-hover"
+                                                              tooltip-text="Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis, odit!.">?</span>
+                                                </div>
+                                                <input type="text" id="input-cvc"
+                                                       class="input input--bordered input--fw input--noshadow card__cvc" name="CardInfo.CVC"
+                                                       placeholder="_ _ _" />
+                                            </div>
+                                        </div>
+                                        <div class="input__outer">
+                                            <label class="main-checkbox">
+                                                <a href="#0">3d secure</a> ile ödeme yapacağım.
+                                                <input type="checkbox" id="chc3dSecure" name="Use3d" value="true">
+                                                <span class="main-checkbox__checkmark"></span>
+                                            </label>
+                                        </div>
+                                        <div class="checkout__subtop v-tablet">
+                                            <div class="checkout__subtop-title">
+                                                Taksit Sayısı
+                                            </div>
+                                        </div>
+                                        <div class="checkout__purchase">
+                                            <div class="checkout__purchase-top">
+                                                <div>
+                                                    Taksit Seçeneği
+                                                </div>
+                                                <div>
+                                                    Aylık Ödeme
+                                                </div>
+                                                <div>
+                                                    Toplam Tutar
+                                                </div>
+                                            </div>
+                                            <div class="checkout__purchase-wrp">
+                                                <p>Taksit seçeneklerini görebilmek için lütfen kart numaranızı giriniz.</p>
 
-                    <div class="bs-wizard-step disabled">
-                        <div class="text-center bs-wizard-stepnum">Tamamla!</div>
-                        <div class="progress">
-                            <div class="progress-bar"></div>
+                                            </div>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
                         </div>
-                        <a href="#0" class="bs-wizard-dot"></a>
+                        @*<span class="checkout__fw-hr"></span>
+                            <div class="accordion__item selected-havale">
+                                <div class="accordion__header">
+                                    <span class="icon-outer accordion__icon">
+                                    </span>
+                                    <div class="checkout__title">
+                                        HAVALE İLE <span class="colored-blue">ÖDEME</span>
+                                    </div>
+                                </div>
+                                <div class="accordion__content">
+                                    <div class="js-calc-accordion-height">
+                                        <div class="checkout__transfer-wrp">
+                                            <div class="checkout__transfer-item">
+                                                <label class="main-radio">
+                                                    <div class="checkout__transfer-top">
+                                                        <input type="radio" name="havale">
+                                                        <span class="main-radio__checkmark"></span>
+                                                        <img src="./assets/img/garantibbva.png" alt="">
+                                                    </div>
+                                                </label>
+                                                <div class="checkout__transfer-cnt">
+                                                    <div class="checkout__transfer-cnt-item">
+                                                        <div class="checkout__transfer-title">Firma Bilgileri</div>
+                                                        <div class="checkout__transfer-txt">Wissen Academie Eğitim Kurumları</div>
+                                                    </div>
+                                                    <div class="checkout__transfer-cnt-outer">
+                                                        <div class="checkout__transfer-cnt-item mr-40">
+                                                            <div class="checkout__transfer-title">IBAN</div>
+                                                            <div id="garantiIban" class="checkout__transfer-txt">1234 5678 2345 23523</div>
+                                                        </div>
+                                                        <div class="checkout__transfer-cnt-item">
+                                                            <div class="checkout__transfer-title">Şube</div>
+                                                            <div class="checkout__transfer-txt">Keçiören / Ankara</div>
+                                                        </div>
+                                                        <a id="garantiIban" name="copyElement" class="checkout__transfer-copy-button tooltip-click"
+                                                           tooltip-text="Iban Kopyalandı.">
+                                                            <span class="icon-outer">
+                                                                <svg class="icon">
+                                                                    <use xlink:href="assets/img/icons.svg#icon-copyboard"></use>
+                                                                </svg>
+                                                            </span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="checkout__transfer-item">
+                                                <label class="main-radio">
+                                                    <div class="checkout__transfer-top">
+                                                        <input type="radio" name="havale">
+                                                        <span class="main-radio__checkmark"></span>
+                                                        <img src="./assets/img/isbankasi.png" alt="">
+                                                    </div>
+                                                </label>
+                                                <div class="checkout__transfer-cnt">
+                                                    <div class="checkout__transfer-cnt-item">
+                                                        <div class="checkout__transfer-title">Firma Bilgileri</div>
+                                                        <div class="checkout__transfer-txt">Wissen Academie Eğitim Kurumları</div>
+                                                    </div>
+                                                    <div class="checkout__transfer-cnt-outer">
+                                                        <div class="checkout__transfer-cnt-item mr-40">
+                                                            <div class="checkout__transfer-title">IBAN</div>
+                                                            <div id="isbankasiIban" class="checkout__transfer-txt">1234 5678 2345 23523</div>
+                                                        </div>
+                                                        <div class="checkout__transfer-cnt-item">
+                                                            <div class="checkout__transfer-title">Şube</div>
+                                                            <div class="checkout__transfer-txt">Keçiören / Ankara</div>
+                                                        </div>
+                                                        <a id="isbankasiIban" name="copyElement"
+                                                           class="checkout__transfer-copy-button tooltip-click" tooltip-text="Iban Kopyalandı.">
+                                                            <span class="icon-outer">
+                                                                <svg class="icon">
+                                                                    <use xlink:href="assets/img/icons.svg#icon-copyboard"></use>
+                                                                </svg>
+                                                            </span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>*@
                     </div>
                 </div>
-                <!-- End bs-wizard -->
-            </div>
-        </div>
-    </section>
-    <!--/hero_in-->
-    @{
-        var isLoggedIn = User.Identity.IsAuthenticated;
-    }
-    <div class="bg_color_1">
-        <div class="container margin_60_35">
-            <div class="row">
-                <div class="col-lg-8">
-                    <div class="box_cart">
-                        @*<div class="message">
-                                <p>Exisitng Customer? <a href="#0">Click here to login</a></p>
-                            </div>*@
-                        @*<div class="form_title">
-                                <h3><strong>1</strong>Your Details</h3>
-                                <p>
-                                    Mussum ipsum cacilds, vidis litro abertis.
-                                </p>
-                            </div>*@
-                        @*<div class="step">
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <span class="input">
-                                            <input class="input_field" type="text">
-                                            <label class="input_label">
-                                                <span class="input__label-content">First name</span>
-                                            </label>
-                                        </span>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <span class="input">
-                                            <input class="input_field" type="text">
-                                            <label class="input_label">
-                                                <span class="input__label-content">Last name</span>
-                                            </label>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <span class="input">
-                                            <input class="input_field" type="email">
-                                            <label class="input_label">
-                                                <span class="input__label-content">Email</span>
-                                            </label>
-                                        </span>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <span class="input">
-                                            <input class="input_field" type="email">
-                                            <label class="input_label">
-                                                <span class="input__label-content">Confirm email</span>
-                                            </label>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <span class="input">
-                                            <input class="input_field" type="text">
-                                            <label class="input_label">
-                                                <span class="input__label-content">Telephone</span>
-                                            </label>
-                                        </span>
-                                    </div>
+                <div class="checkout__content">
+                    <div class="accordion accordion--big">
+                        <div class="accordion__item">
+                            <div class="accordion__header">
+                                <span class="icon-outer accordion__icon">
+                                </span>
+                                <div class="checkout__title">
+                                    SÖZLEŞME VE <span class="colored-blue">FORMLAR</span>
                                 </div>
                             </div>
-                            <hr>*@
-                        <!--End step -->
-
-                        <div class="form_title">
-                            <h3><strong>1</strong>Ödeme Bilgileri</h3>
-                        </div>
-                        <div class="step">
-                            <span class="input">
-                                <input class="input_field" type="text">
-                                <label class="input_label">
-                                    <span class="input__label-content">Kartın Üzerindeki Ad Soyad</span>
-                                </label>
-                            </span>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <span class="input">
-                                        <input class="input_field" type="text">
-                                        <label class="input_label">
-                                            <span class="input__label-content">Kart Numarası</span>
-                                        </label>
-                                    </span>
-                                </div>
-                                <div class="col-md-6 col-sm-6">
-                                    <img src="~/assets/img/payments.png" alt="Kartlar" class="cards">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6 add_top_30">
-                                    <label>Son Kullanma Tarihi</label>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <span class="input">
-                                                <input required class="input_field" type="number" maxlength="2" min="1" max="12">
-                                                <label class="input_label">
-                                                    <span class="input__label-content">Ay</span>
-                                                </label>
-                                            </span>
+                            <div class="accordion__content">
+                                <div class="js-calc-accordion-height">
+                                    <div class="checkout__contract-wrp">
+                                        <div class="checkout__contract-item js-modal-trigger" data-trigger="caymaHakki">
+                                            <div class="checkout__contract-title">CAYMA HAKKI</div>
+                                            <div class="checkout__contract-button" data-trigger="caymaHakki">
+                                                <span class="icon-outer">
+                                                    <svg class="icon">
+                                                        <use xlink:href="assets/img/icons.svg#icon-arrow"></use>
+                                                    </svg>
+                                                </span>
+                                            </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <span class="input">
-                                                <input required class="input_field" maxlength="4" type="number" min="@DateTime.Now.Year" max="@(DateTime.Now.Year + 20)">
-                                                <label class="input_label">
-                                                    <span class="input__label-content">Yıl</span>
-                                                </label>
-                                            </span>
+                                        <div class="checkout__contract-item js-modal-trigger" data-trigger="onBilgilendirmeFormu">
+                                            <div class="checkout__contract-title">ÖN BİLGİLENDİRME FORMU</div>
+                                            <div class="checkout__contract-button" data-trigger="onBilgilendirmeFormu">
+                                                <span class="icon-outer">
+                                                    <svg class="icon">
+                                                        <use xlink:href="assets/img/icons.svg#icon-arrow"></use>
+                                                    </svg>
+                                                </span>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 add_top_30">
-                                    <div class="form-group">
-                                        <label>Güvenlik Kodu (CCV)</label>
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <span class="input">
-                                                    <input class="input_field" maxlength="3" type="text">
-                                                    <label class="input_label">
-                                                        <span class="input__label-content">CCV</span>
-                                                    </label>
+                                        <div class="checkout__contract-item js-modal-trigger" data-trigger="mesafeliSatisSozlesmesi">
+                                            <div class="checkout__contract-title">MESAFELİ SATIŞ SÖZLEŞMESİ</div>
+                                            <div class="checkout__contract-button" data-trigger="mesafeliSatisSozlesmesi">
+                                                <span class="icon-outer">
+                                                    <svg class="icon">
+                                                        <use xlink:href="assets/img/icons.svg#icon-arrow"></use>
+                                                    </svg>
                                                 </span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <!--End row -->
-                            @*<h5>Or checkout with Paypal</h5> O da olur bir gün...
-                                <p>
-                                    Lorem ipsum dolor sit amet, vim id accusata sensibus, id ridens quaeque qui. Ne qui vocent ornatus molestie, reque fierent dissentiunt mel ea.
-                                </p>
-                                <p>
-                                    <img src="img/paypal_bt.png" alt="Image">
-                                </p>*@
                         </div>
-                        <hr>
-                        <!--End step -->
-
-                        <div class="form_title">
-                            <h3><strong>2</strong>Fatura Bilgileri</h3>
-                        </div>
-                        <div class="step">
-                            <div class="row">
-                                <div class="col-md-6 col-sm-6">
-                                    <div class="form-group select">
-                                        <div class="styled-select">
-                                            <select class="required">
-                                                <option value="0" selected="">İl</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 col-sm-6">
-                                    <div class="form-group select">
-                                        <div class="styled-select">
-                                            <select class="required">
-                                                <option value="0" selected="">İlçe</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <span class="input">
-                                        <input class="input_field" type="text">
-                                        <label class="input_label">
-                                            <span class="input__label-content">Adres</span>
-                                        </label>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <span class="input">
-                                        <input class="input_field" type="text">
-                                        <label class="input_label">
-                                            <span class="input__label-content">Telefon</span>
-                                        </label>
-                                    </span>
-                                </div>
-                            </div>
-                            <!--End row -->
-                        </div>
-                        <hr>
-                        <!--End step -->
-
-                        <div class="form_title">
-                            <h3><strong>3</strong>Sözleşme ve Formlar</h3>
-                        </div>
-                        <div class="step">
-                            <div class="row">
-                                <div class="col-md-12 col-sm-12">
-                                    <h6>Cayma Hakkı</h6>
-                                    <div class="policy-box">
-                                        <p>
-                                            @* TODO: Burası partial yapılabilir. *@
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent nunc ligula, cursus non erat non, vehicula blandit odio. Aliquam mi dui, efficitur non commodo ut, placerat ac odio. Praesent rutrum lacus velit. Duis vehicula a odio at mattis. Vivamus tincidunt sem nisi, et elementum nibh ullamcorper non. Maecenas dapibus diam orci, in mollis tellus maximus a. Aliquam mollis, est eget molestie semper, turpis nulla faucibus mauris, sit amet efficitur nisi ante a eros. Duis laoreet in nibh ut sollicitudin. Sed ut bibendum erat. Ut rhoncus arcu non turpis finibus congue. Aliquam sed commodo neque, tempus gravida tellus.
-
-                                            Vivamus rhoncus ex rhoncus, gravida quam eu, congue tellus. Fusce sed risus facilisis, varius nulla nec, ullamcorper libero. Integer a sapien odio. Suspendisse dignissim elementum interdum. Pellentesque egestas ligula leo, vel faucibus felis lacinia vel. Vestibulum luctus non ex in euismod. Cras mattis nibh et tellus mattis placerat. Donec id vestibulum est, id cursus nisi. Proin nec egestas felis, et luctus libero. Nunc eget sem dignissim, viverra lorem quis, aliquet turpis. Aliquam erat volutpat. Nullam sit amet auctor quam, ac vestibulum libero. Nunc luctus sagittis dapibus. In malesuada commodo quam, ut ultrices augue faucibus non.
-
-                                            Nunc dignissim blandit hendrerit. Mauris eu placerat est. Sed porttitor nunc quis purus viverra eleifend. Vivamus malesuada, leo in maximus dictum, lacus libero mollis mi, vitae fermentum erat urna et elit. Phasellus dapibus ullamcorper placerat. Sed tempus lacus eu elit aliquam porta. Pellentesque auctor, tellus eget eleifend scelerisque, ex justo vulputate neque, quis elementum turpis dolor et neque. Curabitur at rutrum nibh.
-
-                                            Aliquam dignissim tellus ut justo fermentum, eget euismod ligula condimentum. Mauris hendrerit lorem rhoncus tempor dictum. Nam ut metus vel mi congue tincidunt. Nunc molestie odio turpis, non interdum enim luctus et. Maecenas a ante vitae quam pretium molestie ac venenatis urna. Donec ornare sem neque, id volutpat sem euismod vel. Donec eu risus ex. Morbi pulvinar enim dui, a pellentesque magna congue sit amet. Phasellus non molestie libero, eget vestibulum dui. Pellentesque faucibus euismod lorem sit amet vehicula. Fusce dignissim volutpat dolor, a rutrum ipsum efficitur vel. Aliquam posuere sapien mauris, sed convallis risus imperdiet id. Morbi semper ut nisi non malesuada. Vestibulum maximus imperdiet varius. Maecenas ultricies, sem eget sagittis fringilla, nunc nisi molestie mi, nec placerat ipsum ex ut orci. Etiam eget ante libero.
-
-                                            Quisque luctus varius tellus nec porttitor. Fusce sodales facilisis lacus sed laoreet. Donec vel varius felis, id rutrum nunc. Proin pulvinar quis metus at dapibus. Quisque non tellus eu elit iaculis mattis vitae sed justo. Quisque dignissim tortor non quam tincidunt sodales. Aenean et magna auctor, faucibus purus sed, porttitor quam. Etiam vehicula, purus et blandit vestibulum, erat velit varius lectus, id vehicula odio massa id nulla. Suspendisse consequat sapien eu est suscipit luctus. Ut fringilla ultrices sollicitudin. Integer viverra augue lacus, id mattis sapien congue ornare.
-
-                                            Duis in nibh pharetra turpis rutrum tempor nec ac erat. Suspendisse auctor tempus mollis. Ut bibendum commodo mauris eget suscipit. Quisque blandit metus in ex euismod vehicula. Curabitur ornare commodo risus at rhoncus. Quisque finibus vel dolor eget interdum. Duis facilisis justo tincidunt suscipit tincidunt. Cras consequat placerat lectus a facilisis. Aliquam at tellus facilisis justo lobortis euismod vel in dui. Sed ornare nulla non arcu consectetur, eget venenatis risus efficitur. Aenean suscipit bibendum arcu, a luctus elit aliquam a.
-
-                                            In aliquet interdum libero, non tempor felis consequat sed. Integer risus purus, pharetra sit amet felis et, convallis dapibus ante. Cras convallis blandit mauris, et dignissim elit. Etiam non lobortis tellus. Nullam gravida lorem quis mauris vestibulum, eu fringilla quam tempor. Sed dapibus nibh in risus feugiat elementum. Nulla scelerisque ante vitae tincidunt placerat.
-
-                                            In quis augue lorem. Duis vel dui sit amet dui dapibus laoreet. Maecenas vitae gravida mauris. Proin lacinia, massa nec lacinia rutrum, sem massa egestas dolor, eget condimentum metus libero ac leo. Nullam at erat eget ligula egestas porttitor. Sed quis ligula eget arcu cursus fermentum. Quisque sapien magna, fringilla nec congue id, consectetur sit amet elit. Curabitur velit tortor, posuere ac ligula ut, tincidunt sagittis diam. Nam nec molestie lacus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nam nec vulputate mi. Phasellus malesuada facilisis ullamcorper. Nullam mattis, metus non fringilla ullamcorper, augue risus egestas metus, ut ultricies nunc dolor a sapien.
-
-                                            Sed lobortis purus eu nulla porttitor, ac cursus diam aliquam. Nullam aliquet arcu est, vel porta diam aliquam et. Nulla condimentum nulla id fringilla dictum. In hac habitasse platea dictumst. Nulla facilisi. Fusce vel efficitur neque. Maecenas ullamcorper aliquet pulvinar.
-
-                                            Aliquam efficitur ut velit a fermentum. Donec vitae fringilla neque. Fusce mattis lorem est, ac feugiat mauris tristique nec. Aenean tincidunt mattis nunc, at sagittis augue cursus nec. Quisque venenatis diam non faucibus mattis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Fusce vitae bibendum lacus. Donec dapibus elit non lectus ultricies tincidunt. Aenean suscipit nibh nibh, sed lobortis metus mattis vel.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12 col-sm-12">
-                                    <h6><a href="#" data-toggle="modal" data-target="#obf-modal">Ön Bilgilendirme Formu <i class="icon-link-ext"></i></a></h6>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12 col-sm-12">
-                                    <h6><a href="#" data-toggle="modal" data-target="#mss-modal">Mesafeli Satış Sözleşmesi <i class="icon-link-ext"></i></a></h6>
-                                </div>
-                            </div>
-                        </div>
-                        <hr>
-                        <!--End step -->
                     </div>
                 </div>
-                <!-- /col -->
-
-                <aside class="col-lg-4" id="sidebar">
-                    <div class="box_detail">
-                        <div>
-                            <h5>Sipariş Özeti</h5>
-                            <p>MVC ile Proje Geliştirme (300 saat)</p>
+                <a asp-controller="Sale" asp-action="InvoiceInformation" class="button button--simple button-left checkout__button-prev">
+                    <span class="button-icon">
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="assets/img/icons.svg#icon-arrow"></use>
+                            </svg>
+                        </span>
+                    </span>
+                    <span class="button-txt">
+                        Önceki Adım
+                    </span>
+                </a>
+            </div>
+            <div class="checkout__side">
+                <div class="checkout__content no-shadow">
+                    <div class="checkout__top">
+                        <div class="checkout__title">
+                            SEPETTEKİ <span class="colored-blue">ÜRÜNLERİM</span>
                         </div>
-                        <div id="total_cart">
-                            Toplam Tutar <span class="float-right">1200.00₺</span>
-                        </div>
-                        <div class="add_bottom_30">
-                            <label>
-                                <input type="checkbox" class="icheck" style="        position: absolute;
-        opacity: 0;
-">
-                                <span><a href="#" data-toggle="modal" data-target="#obf-modal">Ön Bilgilendirme Formu</a>'nu okudum ve kabul ediyorum.</span>
-                            </label>
-                            <label>
-                                <input type="checkbox" class="icheck" style="position: absolute; opacity: 0;">
-                                <span><a href="#" data-toggle="modal" data-target="#mss-modal">Mesafeli Satış Sözleşmesi</a>'ni okudum ve kabul ediyorum.</span>
-                            </label>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <a href="courses-grid-sidebar.html" class="btn_1 full-width outline"><i class="icon-right"></i> Alışverişe devam et</a>
-                            </div>
-                            <div class="col-md-12">
-                                <a href="cart-3.html" class="btn_1 full-width">Satın Al</a>
-                            </div>
+                        <div class="checkout__top-right">
                         </div>
                     </div>
-                </aside>
-            </div>
-            <!-- /row -->
-        </div>
-        <!-- /container -->
-    </div>
-    <!-- /bg_color_1 -->
-</main>
+                    <div class="checkout__basket-wrp">
 
-<!-- Modal obf -->
-<div class="modal fade" id="obf-modal" tabindex="-1" role="dialog" aria-labelledby="obfLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="obfLabel">Ön Bilgilendirme Formu</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            </div>
-            <div class="modal-body">
-                <p>Lorem ipsum dolor sit amet, in porro albucius qui, in <strong>nec quod novum accumsan</strong>, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus.</p>
-                <p>Lorem ipsum dolor sit amet, in porro albucius qui, in nec quod novum accumsan, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus. Lorem ipsum dolor sit amet, <strong>in porro albucius qui</strong>, in nec quod novum accumsan, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus.</p>
-                <p>Lorem ipsum dolor sit amet, in porro albucius qui, in nec quod novum accumsan, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn_1" data-dismiss="modal">Kapat</button>
+                    </div>
+                </div>
+                <div class="checkout__content no-shadow">
+                    <div class="checkout__top">
+                        <div class="checkout__title">
+                            SİPARİŞ <span class="colored-blue">ÖZETİ</span>
+                        </div>
+                    </div>
+                    <div class="checkout__price-wrp js-discounts">
+                        <div class="checkout__price-item">
+                            <div class="checkout__price-title">Ürünler Toplamı</div>
+                            <div class="checkout__price-old">
+                                0,00 <span>TL</span>
+                            </div>
+                            <div class="checkout__price-new">
+                                <div class="checkout__price-new" id="oldPrice">
+                                    0,00 <span>TL</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="checkout__price-item">
+                            <div class="checkout__price-title">Toplam İndirimler</div>
+                            <div class="checkout__price-new" id="discountAmount">
+                                0,00 <span>TL</span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="checkout__price-item totaly">
+                        <div class="checkout__price-title">Toplam Tutar</div>
+                        <div class="checkout__price-new" id="newPrice">
+                            0,00 <span>TL</span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- geçersiz kod mesajını vermek için; main.js'de 1484'üncü satırda ki if'e, else if ile müdahale edebilirsiniz. -->
+                <form class="checkout__sale-code js-cupon-form">
+                    <div class="wizard-loading">
+                        <div class="loader">
+                            <svg class="circular" viewBox="25 25 50 50">
+                                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="js-cupon-form__result">
+                        <span class="icon-font">
+                            <svg class="icon icon-check">
+                                <use xlink:href="assets/img/icons.svg#icon-check"></use>
+                            </svg>
+                        </span>
+                        İndirim Başarılı ile Uygulandı!
+                    </div>
+                    <div>
+                        <input class="input js-cupon-input" id="promotion-code" type="text" placeholder="İndirim kodum var">
+                        <span class="icon-outer checkout__sale-code--icon js-cupon-btn">
+                            <svg class="icon">
+                                <use xlink:href="assets/img/icons.svg#icon-plus"></use>
+                            </svg>
+                        </span>
+                    </div>
+                </form>
+                <div class="checkout__side-checkboxes">
+                    <label class="main-checkbox reverse">
+                        <a href="#0" class="js-modal-trigger" data-trigger="onBilgilendirmeFormu">Ön Bilgilendirme</a> formunu
+                        okudum ve kabul ediyorum.
+                        <input type="checkbox" id="onBilgilendirme" name="onBilgilendirme" form="form-buy" required>
+                        <span class="main-checkbox__checkmark"></span>
+                    </label>
+                    <label class="main-checkbox reverse">
+                        <a href="#0" class="js-modal-trigger" data-trigger="mesafeliSatisSozlesmesi">
+                            Mesafeli satış
+                            sözleşmesi‘ni
+                        </a> okudum ve kabul ediyorum.
+                        <input type="checkbox" id="MesafeliSatisSozlesmesi" name="MesafeliSatisSozlesmesi" form="form-buy"
+                               required>
+                        <span class="main-checkbox__checkmark"></span>
+                    </label>
+                </div>
+                <button type="submit" form="form-buy" class="button button-icon-right button-fw checkout__next-button">
+                    <span class="button-txt">
+                        Siparişi Tamamla
+                    </span>
+                    <span class="button-icon">
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="assets/img/icons.svg#icon-arrow"></use>
+                            </svg>
+                        </span>
+                    </span>
+                </button>
             </div>
         </div>
-        <!-- /.modal-content -->
     </div>
-    <!-- /.modal-dialog -->
+</section>
+
+<!-- bu tooltip sadece bu sayfa için geçerli -->
+<div class="js-tooltip-click tooltip checkout__transfer-tooltip">
+    <div class="tooltip__title">
+    </div>
 </div>
-<!-- /.modal -->
-<!-- Modal terms -->
-<div class="modal fade" id="mss-modal" tabindex="-1" role="dialog" aria-labelledby="mssLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="mssLabel">Mesafeli Satış Sözleşmesi</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            </div>
-            <div class="modal-body">
-                <p>Lorem ipsum dolor sit amet, in porro albucius qui, in <strong>nec quod novum accumsan</strong>, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus.</p>
-                <p>Lorem ipsum dolor sit amet, in porro albucius qui, in nec quod novum accumsan, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus. Lorem ipsum dolor sit amet, <strong>in porro albucius qui</strong>, in nec quod novum accumsan, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus.</p>
-                <p>Lorem ipsum dolor sit amet, in porro albucius qui, in nec quod novum accumsan, mei ludus tamquam dolores id. No sit debitis meliore postulant, per ex prompta alterum sanctus, pro ne quod dicunt sensibus.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn_1" data-dismiss="modal">Kapat</button>
-            </div>
+<div class="js-tooltip tooltip tooltip-top ccv-info-tooltip">
+    <div class="tooltip__title">
+    </div>
+</div>
+<!-- bu tooltip sadece bu sayfa için geçerli -->
+
+<div class="modal" id="caymaHakki">
+    <div class="modal__header">
+        <div class="modal__title">CAYMA HAKKI</div>
+        <div class="modal__close js-close-modal">
+            <span class="icon-outer">
+                <svg class="icon">
+                    <use xlink:href="assets/img/icons.svg#icon-close"></use>
+                </svg>
+            </span>
         </div>
-        <!-- /.modal-content -->
     </div>
-    <!-- /.modal-dialog -->
+    <div class="modal__content">
+        <span class="modal__sub-title"> 1. Amaç :</span>
+        <p>
+            Taraflar, ihtiyaç duyulması halinde kullanılmak üzere taraflarca yapılacak tüm görüşmeler sırasında birbirlerine
+            yapacakları açıklamalarda kendilerine ait bir takım Gizli Bilgileri birbirleri ile paylaşabileceklerdir.
+            İşbu Sözleşme, Tarafların görüşmeleri süresince yapacakları çalışmalarda birbirlerine açacakları gizlilik
+            dereceli
+            bilgilerin mübadele usulünün belirlenmesi ve bir tarafça diğer tarafa açılan Gizli Bilgilerin korunmasına
+            yönelik
+            olarak hak ve yükümlülüklerin belirlenmesi amacıyla düzenlenmiştir. İşbu Sözleşme, Tarafları, herhangi bir
+            doküman
+            ve/veya bilgiyi birbirlerine açma/verme yükümlüğüne sokmaz.
+            2. Gizli Bilginin Tanımı ve Kapsamı :
+            İşbu sözleşmenin 1. maddesinde belirtilen amaç doğrultusunda Taraflar arasında mübadele edilebilecek “Gizli
+            Bilgi”, bunların sahibi olan Taraf’ın, ticari sır mahiyetinde ve/veya mülkiyeti altındaki bilgilerinin tamamı
+            anlamına gelir; bunlara herhangi bir sınırlama olmaksızın, tasarım bilgileri, teknik bilgiler, ticari sırlar,
+            fikir ve buluşlar, projeler, çizimler, modeller, yazılım programları, algoritmalar, yazılım modülleri, program
+            kaynak kodları, teknik özellikler, ürün plan ve teknolojileri, yazılım kullanıcı kitapçıkları, pazarlama
+            bilgileri, müşteri listeleri, tahmin ve değerlendirmeler, finansal raporlar, kontrat hükümleri, kayıtlar ve söz
+            konusu Taraf’ın işiyle ilgili tüm bilgi ve malzemeler, …………….’in kendisine, hissedarlarına, iştiraklerine,
+            ruhsat
+            vermiş olduğu diğer kişilere, müşterilerine ve danışmanlarına ilişkin her türlü ürün, mal ve hizmet, bunları
+            elde
+            etmede kullanılan yöntem, ticari sır, her türlü formül, know-how, patent, buluş, dizayn, müşteri listeleri,
+            bütçe,
+            iş geliştirme, pazarlama ve fiyatlama plan ve stratejileri ve benzeri her
+            türlü bilgiyi kapsar.Sözlü, görsel, örnekler veya modeller ile açıklanan (yazılı olmayan) ve gizlilik derecesi
+            olan bilgiler
+            ve/veya bilgiyi açan Tarafça diğer Tarafa verilebilecek projelerin, çizimlerin, cihazların veya komponentlerinin
+            incelenmesi, test edilmesi ve benzeri yöntemlerin kullanılması sureti ile edinilebilecek gizlilik dereceli
+            bilgiler de bundan böyle “Gizli Bilgi” olarak anılacaktır ve bu Sözleşme kapsamında işlem görecektir.
+            Sözlü olarak açılan bilgi, bu bilgiyi açan Tarafça bilgiyi açtığı zaman, sözlü olarak verilen bu bilginin Gizli
+            Bilgi olduğunu açıkça belirttiği ve bilgiyi açtıktan sonraki 10 (on) gün içinde diğer Taraf’a yazılı olarak
+            bildirdiği takdirde, sözlü şekilde diğer tarafa verilen bilgi Gizli Bilgi olarak işlem görecektir. Bilgiler;
+            Gizli
+            Bilgi gibi korunup, kullanılacaktır.
+            2/7
+            3. Gizli Bilginin Kullanım Koşulları :
+            Gizli bilgiyi alan taraf, bu Sözleşme süresince ve Sözleşme’nin aşağıdaki 8. maddeye uygun olarak feshedilmesi
+            veya geçerlilik süresinin bitmesi halinde, fesih veya sona erme tarihinden itibaren süresiz olarak şekilde Gizli
+            Bilgi’nin koruma ve kullanımına yönelik olarak aşağıdaki maddelere uymayı kabul, beyan ve taahhüt eder:
+            a) Gizli Bilgiyi sadece diğer Tarafça verilme amacına uygun olarak kullanmak,
+            b) Gizli Bilgiyi konuyla ilgili olmaları şartıyla “bilmesi gereken” prensibine göre kendi personeline bu
+            Sözleşme
+            şartlarına uymalarını sağlamak sureti ile vermek,
+            c) Gizli bilgiyi açan tarafın Gizli Bilgisine en az kendisine ait olan ve aynı derecede önemli Gizli Bilgiyi
+            korumak için sarf ettiği itinayı göstermek,
+            d) Gizli Bilgiyi, Gizli Bilgiyi açan Tarafın yazılı onayı olmadan hissedarları, bağlı şirketleri ve yan
+            kuruluşları dahil olmak üzere üçüncü şahıslara açıklamamak,
+            e) İşbu Sözleşme’nin amaçlarının yerine getirilmesi için gerekli olan haller dışında, Gizli Bilgiyi tamamen veya
+            kısmen herhangi bir şekilde kopyalamamak veya çoğaltmamak; eğer bu Sözleşme'nin amacı dahilince tamamen veya
+            kısmen kopyalanmış veya çoğaltılmışsa, kopyalanmış veya çoğaltılmış nüshaların üzerinde orijinal metnin üzerinde
+            bulunanlara eşdeğer kısıtlayıcı bir ibare koymak,
+            f) İşbu Sözleşme amacına uygun olarak gerekmesi halinde, Gizli Bilginin aktarıldığı kuruluş, alt yüklenici ya da
+            diğer üçüncü tarafların da Gizli Bilginin saklanması ve açıklanması ile ilgili olarak aynı sınırlamalara bağlı
+            olmasını sağlamak.
+            4. Gizli Bilgi Kapsamında Olmayan Bilgi :
+            Gizli Bilgiyi alan Tarafın aşağıda belirtilen niteliklere sahip herhangi bir Gizli Bilgiye ilişkin olarak 4.
+            madde
+            altında belirtilen hiçbir sorumluluğu veya yükümlülüğü olmayacaktır:
+            a) Gizli Bilgi alındığı tarihte, Gizli Bilgiyi alan Tarafça biliniyorsa ve bu durum delil(ler) ile
+            kanıtlanabiliyorsa,
+            b) Gizli Bilgiyi alan Tarafın bu Gizli Bilgilerden haberdar olmayan personelince bağımsız olarak geliştirilmişse
+            ve bu durum delil(ler) ile kanıtlanabiliyorsa,
+            c) Kamu tarafından o sırada biliniyorsa veya Gizli Bilgiyi alan Tarafın hiçbir kusuru olmaksızın kamuya daha
+            sonra
+            bildirilmişse,
+            d) Benzer kısıtlamalar olmaksızın ve işbu Sözleşmeyi ihlal etmeksizin, üçüncü bir şahıstan, üçüncü şahsın Gizli
+            Bilgisini ifşa etmeme yükümlülüğü altında olmadığına ilişkin gerekli tüm araştırma ve incelemelerin yerine
+            getirilmesini müteakip, kanuni bir şekilde alınmışlarsa ve bu durum delil(ler) ile kanıtlanabiliyorsa,
+            e) Gizli Bilgiyi alan Tarafın Hükümetine kanunlar çerçevesi içinde ifşa edilmesi gerekli ise, Gizli Bilgiyi açan
+            Tarafı önceden yazılı olarak bilgilendirmek suretiyle,
+            f) Yayınlanmaları veya kullanılmaları bilgiyi açan Tarafın yazılı izni ile onaylanmışsa.
+            3/7
+            5. Gizli Bilginin Mülkiyeti:
+            Taraflardan her biri gizli bilgilerinin ve bu bilgilerdeki haklarının kendi mülkiyetinde olduğunu ve bu
+            bilgilerin
+            ifşa eden tarafa herhangi bir hak ya da mülkiyet hakkı vermeyeceğini kabul eder. Bu sözleşmede kapsamındaki
+            hiçbir
+            madde Taraflara, diğer tarafın yazılım/bilgi/eser/ürün mahiyetindeki Gizli Bilgisi üzerinde fikri ve sınaî
+            haklar
+            mevzuatı veya diğer mevzuat uyarınca korunan özel bir kullanma hakkı/lisansı verdiği şeklinde yorumlanamaz.
+            Taraflar bu tür kullanma haklarını ancak bu sözleşmeden bağımsız başka sözleşmelerle elde edebilir.
+            6. Sorumsuzluk Hali:
+            Bu Sözleşme kapsamında bir tarafça diğer tarafa açılan Gizli Bilgilerde bulunan herhangi bir hata ya da eksiklik
+            nedeniyle, kullanan Tarafın cihaz, araç, gereçlerinde, personelinde ve/veya üçüncü şahıslarda doğrudan, dolaylı,
+            özel, arızi veya neticesi kullanım zararı, kâr kaybı veya diğer her türlü kayıplardan bilgiyi açan Taraf sorumlu
+            tutulmayacaktır.
+            7. Sözleşmenin İhlali:
+            7.1 Taraflar, bu Sözleşme kapsamında ve özellikle bu Sözleşmeye göre elde edilen Gizli Bilginin korunmasına
+            ilişkin yükümlülüklerinden herhangi birini ihlal etmesi durumunda ihlal eden Taraf, meydana gelebilecek, Mahkeme
+            tarafından hükmedilen zarar ve ziyanı karşılamakla yükümlü olacaktır. Ayrıca;
+            a) Gizli Bilgilerin ifşa edildiğinin veya kullanıldığının ortaya çıkması halinde olan Taraf daha başka açıklama
+            yapılmasını veya kullanımı önlemek için gayret sarf edecektir.
+            b) Alan Taraf, gizli bilgi veren Tarafa o sıradaki mevcut şartları derhal bildirecek ve gizli bilgi veren
+            Tarafça
+            talep edilen tüm düzeltici önlemleri uygulamaya koyacaktır.
+            7.2 Taraflardan birinin işbu Sözleşmenin herhangi bir şekilde ihlalinden doğan bir hak veya yetkisini
+            kullanmaması
+            veya ertelemesi, işbu Sözleşmedeki herhangi bir hakkından vazgeçtiği anlamına gelmez veya bu hakkın daha sonra
+            kullanılmasına ya da müteakip ihlal hallerinde diğer hak ve yetkilerini kullanmasına engel teşkil etmez.
+            8. Sözleşmenin Süresi
+            İşbu Sözleşme, Tarafların yazılı mutabakatı ile uzatılmadığı takdirde, imza tarihinden itibaren bir (1) yıl süre
+            ile yürürlükte kalacaktır ve süresi sonunda başka bir ihbara gerek olmaksızın geçersiz olacaktır. Ancak,
+            Taraflardan her biri diğer Tarafa 30 (otuz) takvim günü önceden yazılı ihbarda bulunarak bu Sözleşmeyi sona erme
+            tarihinden önce feshedebilir. Sözleşmenin herhangi bir sebeple sona ermesi halinde tarafların gizliliğe ilişkin
+            yükümlülükleri süresiz olarak devam edecektir. Bu Sözleşme burada belirtildiği üzere feshedildiği veya sona
+            erdiği
+            takdirde, bilgiyi açan Tarafa ait olan ve diğer Tarafın elinde bulunan tüm bilgiler ve belgelerin kopyaları,
+            bilgiyi açan Tarafın talebi
+            halinde iade edilecek veya imha edilecektir.
+            4/7
+
+            9. Uyuşmazlıkların Halli :
+            Bu Sözleşmenin yorum ve icrasından doğabilecek bütün anlaşmazlıklarda Türkiye Cumhuriyeti kanunları uygulanacak
+            olup, anlaşmazlıklara bakmaya İstanbul Çağlayan Mahkemeleri ve İcra Daireleri münhasıran yetkili olacaktır.
+            10. Masraflar :
+            Taraflar, işbu Sözleşme kapsamında gerçekleştireceği çalışmalar için yapması gerekebilecek harcamaları diğer
+            Taraftan talep etmemeyi kabul eder.
+            11. Sözleşmenin Bütünü ve Tadilat :
+            Yukarıdaki maddeler Taraflar arasındaki Sözleşmenin tümünü teşkil etmekte olup, bu Sözleşmenin konusuna ilişkin
+            olarak daha önce sözlü veya yazılı olarak yapılmış olan her türlü anlaşmanın, taahhüdün, mutabakatın yerine
+            geçer.
+            Bu Sözleşmede değişiklik ancak Tarafların yazılı mutabakatı ile yapılabilir.
+            12. Maddelerin Ayrılabilirliği:
+            İşbu Sözleşme hükümlerinden biri veya birkaçının, herhangi bir kanun veya düzenleme altında
+            geçersiz, yasadışı ve uygulanamaz ilan edilmesi halinde, geride kalan hükümlerin geçerliliği,
+            yasallığı ve uygulanabilirliği bundan hiçbir şekilde etkilenmeyecek veya zarar görmeyecektir.
+            13. Devir Yasağı:
+            İşbu Sözleşme ve/veya buna bağlı hak ve yükümlülüklerden hiçbiri, diğer Tarafın önceden alınmış
+            yazılı izni olmadan, başkaca bir üçüncü kişiye devir ve temlik edilemez.
+            14. İş İlişkisi:
+            İşbu Sözleşme, burada açıklanan hükümler haricinde, Taraflara herhangi bir hak ve yükümlülük
+            getirmez, ayrıca; Taraflar açısından ortaklık veya resmi mahiyette başka bir işin kurulmasını
+            amaçladığı, gelecekte başka bir sözleşme yapılacağı şeklinde yorumlanamaz.
+            15. Tebligat adresleri:
+            İşbu Sözleşmeye uygun olarak verilmesi gerekli veya verilmesine izin verilen her türlü bildirim,
+            talep, istek ve diğer bildirimler yazılı şekilde Türkçe olarak hazırlanır, iadeli taahhütlü posta ya da
+            noter vasıtası ile karşı Tarafa teslim edilir. Bildirimler, Sözleşme’nin ilk sayfasında belirtilen
+            Taraflara ait adreslere yapılır. Bu adreslerdeki değişiklikler diğer taraf yazılı olarak bildirilir. Söz
+            konusu adresler, Tarafların kanuni ikametgâhları olup, bu adreslere yapılacak tebligatlar
+            muhatabına ulaşmış kabul edilir.
+        </p>
+    </div>
 </div>
-<!-- /.modal -->
+<div class="modal" id="onBilgilendirmeFormu">
+    <div class="modal__header">
+        <div class="modal__title">ÖN BİLGİLENDİRME FORMU</div>
+        <div class="modal__close js-close-modal">
+            <span class="icon-outer">
+                <svg class="icon">
+                    <use xlink:href="assets/img/icons.svg#icon-close"></use>
+                </svg>
+            </span>
+        </div>
+    </div>
+    <div class="modal__content">
+        <span class="modal__sub-title"> 1. Amaç :</span>
+        <p>
+            Taraflar, ihtiyaç duyulması halinde kullanılmak üzere taraflarca yapılacak tüm görüşmeler sırasında birbirlerine
+            yapacakları açıklamalarda kendilerine ait bir takım Gizli Bilgileri birbirleri ile paylaşabileceklerdir.
+            İşbu Sözleşme, Tarafların görüşmeleri süresince yapacakları çalışmalarda birbirlerine açacakları gizlilik
+            dereceli
+            bilgilerin mübadele usulünün belirlenmesi ve bir tarafça diğer tarafa açılan Gizli Bilgilerin korunmasına
+            yönelik
+            olarak hak ve yükümlülüklerin belirlenmesi amacıyla düzenlenmiştir. İşbu Sözleşme, Tarafları, herhangi bir
+            doküman
+            ve/veya bilgiyi birbirlerine açma/verme yükümlüğüne sokmaz.
+            2. Gizli Bilginin Tanımı ve Kapsamı :
+            İşbu sözleşmenin 1. maddesinde belirtilen amaç doğrultusunda Taraflar arasında mübadele edilebilecek “Gizli
+            Bilgi”, bunların sahibi olan Taraf’ın, ticari sır mahiyetinde ve/veya mülkiyeti altındaki bilgilerinin tamamı
+            anlamına gelir; bunlara herhangi bir sınırlama olmaksızın, tasarım bilgileri, teknik bilgiler, ticari sırlar,
+            fikir ve buluşlar, projeler, çizimler, modeller, yazılım programları, algoritmalar, yazılım modülleri, program
+            kaynak kodları, teknik özellikler, ürün plan ve teknolojileri, yazılım kullanıcı kitapçıkları, pazarlama
+            bilgileri, müşteri listeleri, tahmin ve değerlendirmeler, finansal raporlar, kontrat hükümleri, kayıtlar ve söz
+            konusu Taraf’ın işiyle ilgili tüm bilgi ve malzemeler, …………….’in kendisine, hissedarlarına, iştiraklerine,
+            ruhsat
+            vermiş olduğu diğer kişilere, müşterilerine ve danışmanlarına ilişkin her türlü ürün, mal ve hizmet, bunları
+            elde
+            etmede kullanılan yöntem, ticari sır, her türlü formül, know-how, patent, buluş, dizayn, müşteri listeleri,
+            bütçe,
+            iş geliştirme, pazarlama ve fiyatlama plan ve stratejileri ve benzeri her
+            türlü bilgiyi kapsar.Sözlü, görsel, örnekler veya modeller ile açıklanan (yazılı olmayan) ve gizlilik derecesi
+            olan bilgiler
+            ve/veya bilgiyi açan Tarafça diğer Tarafa verilebilecek projelerin, çizimlerin, cihazların veya komponentlerinin
+            incelenmesi, test edilmesi ve benzeri yöntemlerin kullanılması sureti ile edinilebilecek gizlilik dereceli
+            bilgiler de bundan böyle “Gizli Bilgi” olarak anılacaktır ve bu Sözleşme kapsamında işlem görecektir.
+            Sözlü olarak açılan bilgi, bu bilgiyi açan Tarafça bilgiyi açtığı zaman, sözlü olarak verilen bu bilginin Gizli
+            Bilgi olduğunu açıkça belirttiği ve bilgiyi açtıktan sonraki 10 (on) gün içinde diğer Taraf’a yazılı olarak
+            bildirdiği takdirde, sözlü şekilde diğer tarafa verilen bilgi Gizli Bilgi olarak işlem görecektir. Bilgiler;
+            Gizli
+            Bilgi gibi korunup, kullanılacaktır.
+            2/7
+            3. Gizli Bilginin Kullanım Koşulları :
+            Gizli bilgiyi alan taraf, bu Sözleşme süresince ve Sözleşme’nin aşağıdaki 8. maddeye uygun olarak feshedilmesi
+            veya geçerlilik süresinin bitmesi halinde, fesih veya sona erme tarihinden itibaren süresiz olarak şekilde Gizli
+            Bilgi’nin koruma ve kullanımına yönelik olarak aşağıdaki maddelere uymayı kabul, beyan ve taahhüt eder:
+            a) Gizli Bilgiyi sadece diğer Tarafça verilme amacına uygun olarak kullanmak,
+            b) Gizli Bilgiyi konuyla ilgili olmaları şartıyla “bilmesi gereken” prensibine göre kendi personeline bu
+            Sözleşme
+            şartlarına uymalarını sağlamak sureti ile vermek,
+            c) Gizli bilgiyi açan tarafın Gizli Bilgisine en az kendisine ait olan ve aynı derecede önemli Gizli Bilgiyi
+            korumak için sarf ettiği itinayı göstermek,
+            d) Gizli Bilgiyi, Gizli Bilgiyi açan Tarafın yazılı onayı olmadan hissedarları, bağlı şirketleri ve yan
+            kuruluşları dahil olmak üzere üçüncü şahıslara açıklamamak,
+            e) İşbu Sözleşme’nin amaçlarının yerine getirilmesi için gerekli olan haller dışında, Gizli Bilgiyi tamamen veya
+            kısmen herhangi bir şekilde kopyalamamak veya çoğaltmamak; eğer bu Sözleşme'nin amacı dahilince tamamen veya
+            kısmen kopyalanmış veya çoğaltılmışsa, kopyalanmış veya çoğaltılmış nüshaların üzerinde orijinal metnin üzerinde
+            bulunanlara eşdeğer kısıtlayıcı bir ibare koymak,
+            f) İşbu Sözleşme amacına uygun olarak gerekmesi halinde, Gizli Bilginin aktarıldığı kuruluş, alt yüklenici ya da
+            diğer üçüncü tarafların da Gizli Bilginin saklanması ve açıklanması ile ilgili olarak aynı sınırlamalara bağlı
+            olmasını sağlamak.
+            4. Gizli Bilgi Kapsamında Olmayan Bilgi :
+            Gizli Bilgiyi alan Tarafın aşağıda belirtilen niteliklere sahip herhangi bir Gizli Bilgiye ilişkin olarak 4.
+            madde
+            altında belirtilen hiçbir sorumluluğu veya yükümlülüğü olmayacaktır:
+            a) Gizli Bilgi alındığı tarihte, Gizli Bilgiyi alan Tarafça biliniyorsa ve bu durum delil(ler) ile
+            kanıtlanabiliyorsa,
+            b) Gizli Bilgiyi alan Tarafın bu Gizli Bilgilerden haberdar olmayan personelince bağımsız olarak geliştirilmişse
+            ve bu durum delil(ler) ile kanıtlanabiliyorsa,
+            c) Kamu tarafından o sırada biliniyorsa veya Gizli Bilgiyi alan Tarafın hiçbir kusuru olmaksızın kamuya daha
+            sonra
+            bildirilmişse,
+            d) Benzer kısıtlamalar olmaksızın ve işbu Sözleşmeyi ihlal etmeksizin, üçüncü bir şahıstan, üçüncü şahsın Gizli
+            Bilgisini ifşa etmeme yükümlülüğü altında olmadığına ilişkin gerekli tüm araştırma ve incelemelerin yerine
+            getirilmesini müteakip, kanuni bir şekilde alınmışlarsa ve bu durum delil(ler) ile kanıtlanabiliyorsa,
+            e) Gizli Bilgiyi alan Tarafın Hükümetine kanunlar çerçevesi içinde ifşa edilmesi gerekli ise, Gizli Bilgiyi açan
+            Tarafı önceden yazılı olarak bilgilendirmek suretiyle,
+            f) Yayınlanmaları veya kullanılmaları bilgiyi açan Tarafın yazılı izni ile onaylanmışsa.
+            3/7
+            5. Gizli Bilginin Mülkiyeti:
+            Taraflardan her biri gizli bilgilerinin ve bu bilgilerdeki haklarının kendi mülkiyetinde olduğunu ve bu
+            bilgilerin
+            ifşa eden tarafa herhangi bir hak ya da mülkiyet hakkı vermeyeceğini kabul eder. Bu sözleşmede kapsamındaki
+            hiçbir
+            madde Taraflara, diğer tarafın yazılım/bilgi/eser/ürün mahiyetindeki Gizli Bilgisi üzerinde fikri ve sınaî
+            haklar
+            mevzuatı veya diğer mevzuat uyarınca korunan özel bir kullanma hakkı/lisansı verdiği şeklinde yorumlanamaz.
+            Taraflar bu tür kullanma haklarını ancak bu sözleşmeden bağımsız başka sözleşmelerle elde edebilir.
+            6. Sorumsuzluk Hali:
+            Bu Sözleşme kapsamında bir tarafça diğer tarafa açılan Gizli Bilgilerde bulunan herhangi bir hata ya da eksiklik
+            nedeniyle, kullanan Tarafın cihaz, araç, gereçlerinde, personelinde ve/veya üçüncü şahıslarda doğrudan, dolaylı,
+            özel, arızi veya neticesi kullanım zararı, kâr kaybı veya diğer her türlü kayıplardan bilgiyi açan Taraf sorumlu
+            tutulmayacaktır.
+            7. Sözleşmenin İhlali:
+            7.1 Taraflar, bu Sözleşme kapsamında ve özellikle bu Sözleşmeye göre elde edilen Gizli Bilginin korunmasına
+            ilişkin yükümlülüklerinden herhangi birini ihlal etmesi durumunda ihlal eden Taraf, meydana gelebilecek, Mahkeme
+            tarafından hükmedilen zarar ve ziyanı karşılamakla yükümlü olacaktır. Ayrıca;
+            a) Gizli Bilgilerin ifşa edildiğinin veya kullanıldığının ortaya çıkması halinde olan Taraf daha başka açıklama
+            yapılmasını veya kullanımı önlemek için gayret sarf edecektir.
+            b) Alan Taraf, gizli bilgi veren Tarafa o sıradaki mevcut şartları derhal bildirecek ve gizli bilgi veren
+            Tarafça
+            talep edilen tüm düzeltici önlemleri uygulamaya koyacaktır.
+            7.2 Taraflardan birinin işbu Sözleşmenin herhangi bir şekilde ihlalinden doğan bir hak veya yetkisini
+            kullanmaması
+            veya ertelemesi, işbu Sözleşmedeki herhangi bir hakkından vazgeçtiği anlamına gelmez veya bu hakkın daha sonra
+            kullanılmasına ya da müteakip ihlal hallerinde diğer hak ve yetkilerini kullanmasına engel teşkil etmez.
+            8. Sözleşmenin Süresi
+            İşbu Sözleşme, Tarafların yazılı mutabakatı ile uzatılmadığı takdirde, imza tarihinden itibaren bir (1) yıl süre
+            ile yürürlükte kalacaktır ve süresi sonunda başka bir ihbara gerek olmaksızın geçersiz olacaktır. Ancak,
+            Taraflardan her biri diğer Tarafa 30 (otuz) takvim günü önceden yazılı ihbarda bulunarak bu Sözleşmeyi sona erme
+            tarihinden önce feshedebilir. Sözleşmenin herhangi bir sebeple sona ermesi halinde tarafların gizliliğe ilişkin
+            yükümlülükleri süresiz olarak devam edecektir. Bu Sözleşme burada belirtildiği üzere feshedildiği veya sona
+            erdiği
+            takdirde, bilgiyi açan Tarafa ait olan ve diğer Tarafın elinde bulunan tüm bilgiler ve belgelerin kopyaları,
+            bilgiyi açan Tarafın talebi
+            halinde iade edilecek veya imha edilecektir.
+            4/7
+
+            9. Uyuşmazlıkların Halli :
+            Bu Sözleşmenin yorum ve icrasından doğabilecek bütün anlaşmazlıklarda Türkiye Cumhuriyeti kanunları uygulanacak
+            olup, anlaşmazlıklara bakmaya İstanbul Çağlayan Mahkemeleri ve İcra Daireleri münhasıran yetkili olacaktır.
+            10. Masraflar :
+            Taraflar, işbu Sözleşme kapsamında gerçekleştireceği çalışmalar için yapması gerekebilecek harcamaları diğer
+            Taraftan talep etmemeyi kabul eder.
+            11. Sözleşmenin Bütünü ve Tadilat :
+            Yukarıdaki maddeler Taraflar arasındaki Sözleşmenin tümünü teşkil etmekte olup, bu Sözleşmenin konusuna ilişkin
+            olarak daha önce sözlü veya yazılı olarak yapılmış olan her türlü anlaşmanın, taahhüdün, mutabakatın yerine
+            geçer.
+            Bu Sözleşmede değişiklik ancak Tarafların yazılı mutabakatı ile yapılabilir.
+            12. Maddelerin Ayrılabilirliği:
+            İşbu Sözleşme hükümlerinden biri veya birkaçının, herhangi bir kanun veya düzenleme altında
+            geçersiz, yasadışı ve uygulanamaz ilan edilmesi halinde, geride kalan hükümlerin geçerliliği,
+            yasallığı ve uygulanabilirliği bundan hiçbir şekilde etkilenmeyecek veya zarar görmeyecektir.
+            13. Devir Yasağı:
+            İşbu Sözleşme ve/veya buna bağlı hak ve yükümlülüklerden hiçbiri, diğer Tarafın önceden alınmış
+            yazılı izni olmadan, başkaca bir üçüncü kişiye devir ve temlik edilemez.
+            14. İş İlişkisi:
+            İşbu Sözleşme, burada açıklanan hükümler haricinde, Taraflara herhangi bir hak ve yükümlülük
+            getirmez, ayrıca; Taraflar açısından ortaklık veya resmi mahiyette başka bir işin kurulmasını
+            amaçladığı, gelecekte başka bir sözleşme yapılacağı şeklinde yorumlanamaz.
+            15. Tebligat adresleri:
+            İşbu Sözleşmeye uygun olarak verilmesi gerekli veya verilmesine izin verilen her türlü bildirim,
+            talep, istek ve diğer bildirimler yazılı şekilde Türkçe olarak hazırlanır, iadeli taahhütlü posta ya da
+            noter vasıtası ile karşı Tarafa teslim edilir. Bildirimler, Sözleşme’nin ilk sayfasında belirtilen
+            Taraflara ait adreslere yapılır. Bu adreslerdeki değişiklikler diğer taraf yazılı olarak bildirilir. Söz
+            konusu adresler, Tarafların kanuni ikametgâhları olup, bu adreslere yapılacak tebligatlar
+            muhatabına ulaşmış kabul edilir.
+        </p>
+    </div>
+</div>
+<div class="modal" id="mesafeliSatisSozlesmesi">
+    <div class="modal__header">
+        <div class="modal__title">MESAFELİ SATIŞ SÖZLEŞMESİ</div>
+        <div class="modal__close js-close-modal">
+            <span class="icon-outer">
+                <svg class="icon">
+                    <use xlink:href="assets/img/icons.svg#icon-close"></use>
+                </svg>
+            </span>
+        </div>
+    </div>
+    <div class="modal__content">
+        <span class="modal__sub-title"> 1. Amaç :</span>
+        <p>
+            Taraflar, ihtiyaç duyulması halinde kullanılmak üzere taraflarca yapılacak tüm görüşmeler sırasında birbirlerine
+            yapacakları açıklamalarda kendilerine ait bir takım Gizli Bilgileri birbirleri ile paylaşabileceklerdir.
+            İşbu Sözleşme, Tarafların görüşmeleri süresince yapacakları çalışmalarda birbirlerine açacakları gizlilik
+            dereceli
+            bilgilerin mübadele usulünün belirlenmesi ve bir tarafça diğer tarafa açılan Gizli Bilgilerin korunmasına
+            yönelik
+            olarak hak ve yükümlülüklerin belirlenmesi amacıyla düzenlenmiştir. İşbu Sözleşme, Tarafları, herhangi bir
+            doküman
+            ve/veya bilgiyi birbirlerine açma/verme yükümlüğüne sokmaz.
+            2. Gizli Bilginin Tanımı ve Kapsamı :
+            İşbu sözleşmenin 1. maddesinde belirtilen amaç doğrultusunda Taraflar arasında mübadele edilebilecek “Gizli
+            Bilgi”, bunların sahibi olan Taraf’ın, ticari sır mahiyetinde ve/veya mülkiyeti altındaki bilgilerinin tamamı
+            anlamına gelir; bunlara herhangi bir sınırlama olmaksızın, tasarım bilgileri, teknik bilgiler, ticari sırlar,
+            fikir ve buluşlar, projeler, çizimler, modeller, yazılım programları, algoritmalar, yazılım modülleri, program
+            kaynak kodları, teknik özellikler, ürün plan ve teknolojileri, yazılım kullanıcı kitapçıkları, pazarlama
+            bilgileri, müşteri listeleri, tahmin ve değerlendirmeler, finansal raporlar, kontrat hükümleri, kayıtlar ve söz
+            konusu Taraf’ın işiyle ilgili tüm bilgi ve malzemeler, …………….’in kendisine, hissedarlarına, iştiraklerine,
+            ruhsat
+            vermiş olduğu diğer kişilere, müşterilerine ve danışmanlarına ilişkin her türlü ürün, mal ve hizmet, bunları
+            elde
+            etmede kullanılan yöntem, ticari sır, her türlü formül, know-how, patent, buluş, dizayn, müşteri listeleri,
+            bütçe,
+            iş geliştirme, pazarlama ve fiyatlama plan ve stratejileri ve benzeri her
+            türlü bilgiyi kapsar.Sözlü, görsel, örnekler veya modeller ile açıklanan (yazılı olmayan) ve gizlilik derecesi
+            olan bilgiler
+            ve/veya bilgiyi açan Tarafça diğer Tarafa verilebilecek projelerin, çizimlerin, cihazların veya komponentlerinin
+            incelenmesi, test edilmesi ve benzeri yöntemlerin kullanılması sureti ile edinilebilecek gizlilik dereceli
+            bilgiler de bundan böyle “Gizli Bilgi” olarak anılacaktır ve bu Sözleşme kapsamında işlem görecektir.
+            Sözlü olarak açılan bilgi, bu bilgiyi açan Tarafça bilgiyi açtığı zaman, sözlü olarak verilen bu bilginin Gizli
+            Bilgi olduğunu açıkça belirttiği ve bilgiyi açtıktan sonraki 10 (on) gün içinde diğer Taraf’a yazılı olarak
+            bildirdiği takdirde, sözlü şekilde diğer tarafa verilen bilgi Gizli Bilgi olarak işlem görecektir. Bilgiler;
+            Gizli
+            Bilgi gibi korunup, kullanılacaktır.
+            2/7
+            3. Gizli Bilginin Kullanım Koşulları :
+            Gizli bilgiyi alan taraf, bu Sözleşme süresince ve Sözleşme’nin aşağıdaki 8. maddeye uygun olarak feshedilmesi
+            veya geçerlilik süresinin bitmesi halinde, fesih veya sona erme tarihinden itibaren süresiz olarak şekilde Gizli
+            Bilgi’nin koruma ve kullanımına yönelik olarak aşağıdaki maddelere uymayı kabul, beyan ve taahhüt eder:
+            a) Gizli Bilgiyi sadece diğer Tarafça verilme amacına uygun olarak kullanmak,
+            b) Gizli Bilgiyi konuyla ilgili olmaları şartıyla “bilmesi gereken” prensibine göre kendi personeline bu
+            Sözleşme
+            şartlarına uymalarını sağlamak sureti ile vermek,
+            c) Gizli bilgiyi açan tarafın Gizli Bilgisine en az kendisine ait olan ve aynı derecede önemli Gizli Bilgiyi
+            korumak için sarf ettiği itinayı göstermek,
+            d) Gizli Bilgiyi, Gizli Bilgiyi açan Tarafın yazılı onayı olmadan hissedarları, bağlı şirketleri ve yan
+            kuruluşları dahil olmak üzere üçüncü şahıslara açıklamamak,
+            e) İşbu Sözleşme’nin amaçlarının yerine getirilmesi için gerekli olan haller dışında, Gizli Bilgiyi tamamen veya
+            kısmen herhangi bir şekilde kopyalamamak veya çoğaltmamak; eğer bu Sözleşme'nin amacı dahilince tamamen veya
+            kısmen kopyalanmış veya çoğaltılmışsa, kopyalanmış veya çoğaltılmış nüshaların üzerinde orijinal metnin üzerinde
+            bulunanlara eşdeğer kısıtlayıcı bir ibare koymak,
+            f) İşbu Sözleşme amacına uygun olarak gerekmesi halinde, Gizli Bilginin aktarıldığı kuruluş, alt yüklenici ya da
+            diğer üçüncü tarafların da Gizli Bilginin saklanması ve açıklanması ile ilgili olarak aynı sınırlamalara bağlı
+            olmasını sağlamak.
+            4. Gizli Bilgi Kapsamında Olmayan Bilgi :
+            Gizli Bilgiyi alan Tarafın aşağıda belirtilen niteliklere sahip herhangi bir Gizli Bilgiye ilişkin olarak 4.
+            madde
+            altında belirtilen hiçbir sorumluluğu veya yükümlülüğü olmayacaktır:
+            a) Gizli Bilgi alındığı tarihte, Gizli Bilgiyi alan Tarafça biliniyorsa ve bu durum delil(ler) ile
+            kanıtlanabiliyorsa,
+            b) Gizli Bilgiyi alan Tarafın bu Gizli Bilgilerden haberdar olmayan personelince bağımsız olarak geliştirilmişse
+            ve bu durum delil(ler) ile kanıtlanabiliyorsa,
+            c) Kamu tarafından o sırada biliniyorsa veya Gizli Bilgiyi alan Tarafın hiçbir kusuru olmaksızın kamuya daha
+            sonra
+            bildirilmişse,
+            d) Benzer kısıtlamalar olmaksızın ve işbu Sözleşmeyi ihlal etmeksizin, üçüncü bir şahıstan, üçüncü şahsın Gizli
+            Bilgisini ifşa etmeme yükümlülüğü altında olmadığına ilişkin gerekli tüm araştırma ve incelemelerin yerine
+            getirilmesini müteakip, kanuni bir şekilde alınmışlarsa ve bu durum delil(ler) ile kanıtlanabiliyorsa,
+            e) Gizli Bilgiyi alan Tarafın Hükümetine kanunlar çerçevesi içinde ifşa edilmesi gerekli ise, Gizli Bilgiyi açan
+            Tarafı önceden yazılı olarak bilgilendirmek suretiyle,
+            f) Yayınlanmaları veya kullanılmaları bilgiyi açan Tarafın yazılı izni ile onaylanmışsa.
+            3/7
+            5. Gizli Bilginin Mülkiyeti:
+            Taraflardan her biri gizli bilgilerinin ve bu bilgilerdeki haklarının kendi mülkiyetinde olduğunu ve bu
+            bilgilerin
+            ifşa eden tarafa herhangi bir hak ya da mülkiyet hakkı vermeyeceğini kabul eder. Bu sözleşmede kapsamındaki
+            hiçbir
+            madde Taraflara, diğer tarafın yazılım/bilgi/eser/ürün mahiyetindeki Gizli Bilgisi üzerinde fikri ve sınaî
+            haklar
+            mevzuatı veya diğer mevzuat uyarınca korunan özel bir kullanma hakkı/lisansı verdiği şeklinde yorumlanamaz.
+            Taraflar bu tür kullanma haklarını ancak bu sözleşmeden bağımsız başka sözleşmelerle elde edebilir.
+            6. Sorumsuzluk Hali:
+            Bu Sözleşme kapsamında bir tarafça diğer tarafa açılan Gizli Bilgilerde bulunan herhangi bir hata ya da eksiklik
+            nedeniyle, kullanan Tarafın cihaz, araç, gereçlerinde, personelinde ve/veya üçüncü şahıslarda doğrudan, dolaylı,
+            özel, arızi veya neticesi kullanım zararı, kâr kaybı veya diğer her türlü kayıplardan bilgiyi açan Taraf sorumlu
+            tutulmayacaktır.
+            7. Sözleşmenin İhlali:
+            7.1 Taraflar, bu Sözleşme kapsamında ve özellikle bu Sözleşmeye göre elde edilen Gizli Bilginin korunmasına
+            ilişkin yükümlülüklerinden herhangi birini ihlal etmesi durumunda ihlal eden Taraf, meydana gelebilecek, Mahkeme
+            tarafından hükmedilen zarar ve ziyanı karşılamakla yükümlü olacaktır. Ayrıca;
+            a) Gizli Bilgilerin ifşa edildiğinin veya kullanıldığının ortaya çıkması halinde olan Taraf daha başka açıklama
+            yapılmasını veya kullanımı önlemek için gayret sarf edecektir.
+            b) Alan Taraf, gizli bilgi veren Tarafa o sıradaki mevcut şartları derhal bildirecek ve gizli bilgi veren
+            Tarafça
+            talep edilen tüm düzeltici önlemleri uygulamaya koyacaktır.
+            7.2 Taraflardan birinin işbu Sözleşmenin herhangi bir şekilde ihlalinden doğan bir hak veya yetkisini
+            kullanmaması
+            veya ertelemesi, işbu Sözleşmedeki herhangi bir hakkından vazgeçtiği anlamına gelmez veya bu hakkın daha sonra
+            kullanılmasına ya da müteakip ihlal hallerinde diğer hak ve yetkilerini kullanmasına engel teşkil etmez.
+            8. Sözleşmenin Süresi
+            İşbu Sözleşme, Tarafların yazılı mutabakatı ile uzatılmadığı takdirde, imza tarihinden itibaren bir (1) yıl süre
+            ile yürürlükte kalacaktır ve süresi sonunda başka bir ihbara gerek olmaksızın geçersiz olacaktır. Ancak,
+            Taraflardan her biri diğer Tarafa 30 (otuz) takvim günü önceden yazılı ihbarda bulunarak bu Sözleşmeyi sona erme
+            tarihinden önce feshedebilir. Sözleşmenin herhangi bir sebeple sona ermesi halinde tarafların gizliliğe ilişkin
+            yükümlülükleri süresiz olarak devam edecektir. Bu Sözleşme burada belirtildiği üzere feshedildiği veya sona
+            erdiği
+            takdirde, bilgiyi açan Tarafa ait olan ve diğer Tarafın elinde bulunan tüm bilgiler ve belgelerin kopyaları,
+            bilgiyi açan Tarafın talebi
+            halinde iade edilecek veya imha edilecektir.
+            4/7
+
+            9. Uyuşmazlıkların Halli :
+            Bu Sözleşmenin yorum ve icrasından doğabilecek bütün anlaşmazlıklarda Türkiye Cumhuriyeti kanunları uygulanacak
+            olup, anlaşmazlıklara bakmaya İstanbul Çağlayan Mahkemeleri ve İcra Daireleri münhasıran yetkili olacaktır.
+            10. Masraflar :
+            Taraflar, işbu Sözleşme kapsamında gerçekleştireceği çalışmalar için yapması gerekebilecek harcamaları diğer
+            Taraftan talep etmemeyi kabul eder.
+            11. Sözleşmenin Bütünü ve Tadilat :
+            Yukarıdaki maddeler Taraflar arasındaki Sözleşmenin tümünü teşkil etmekte olup, bu Sözleşmenin konusuna ilişkin
+            olarak daha önce sözlü veya yazılı olarak yapılmış olan her türlü anlaşmanın, taahhüdün, mutabakatın yerine
+            geçer.
+            Bu Sözleşmede değişiklik ancak Tarafların yazılı mutabakatı ile yapılabilir.
+            12. Maddelerin Ayrılabilirliği:
+            İşbu Sözleşme hükümlerinden biri veya birkaçının, herhangi bir kanun veya düzenleme altında
+            geçersiz, yasadışı ve uygulanamaz ilan edilmesi halinde, geride kalan hükümlerin geçerliliği,
+            yasallığı ve uygulanabilirliği bundan hiçbir şekilde etkilenmeyecek veya zarar görmeyecektir.
+            13. Devir Yasağı:
+            İşbu Sözleşme ve/veya buna bağlı hak ve yükümlülüklerden hiçbiri, diğer Tarafın önceden alınmış
+            yazılı izni olmadan, başkaca bir üçüncü kişiye devir ve temlik edilemez.
+            14. İş İlişkisi:
+            İşbu Sözleşme, burada açıklanan hükümler haricinde, Taraflara herhangi bir hak ve yükümlülük
+            getirmez, ayrıca; Taraflar açısından ortaklık veya resmi mahiyette başka bir işin kurulmasını
+            amaçladığı, gelecekte başka bir sözleşme yapılacağı şeklinde yorumlanamaz.
+            15. Tebligat adresleri:
+            İşbu Sözleşmeye uygun olarak verilmesi gerekli veya verilmesine izin verilen her türlü bildirim,
+            talep, istek ve diğer bildirimler yazılı şekilde Türkçe olarak hazırlanır, iadeli taahhütlü posta ya da
+            noter vasıtası ile karşı Tarafa teslim edilir. Bildirimler, Sözleşme’nin ilk sayfasında belirtilen
+            Taraflara ait adreslere yapılır. Bu adreslerdeki değişiklikler diğer taraf yazılı olarak bildirilir. Söz
+            konusu adresler, Tarafların kanuni ikametgâhları olup, bu adreslere yapılacak tebligatlar
+            muhatabına ulaşmış kabul edilir.
+        </p>
+    </div>
+</div>
+
+@section postScripts{
+
+    <script type="text/javascript">
+        var _cart = new CartSupport.Cart();
+        var cartItems = $("#_cart-items");
+        var cardItemsBody = $(".checkout__basket-wrp");
+        var inputEducationTotalPrice = $("#input-education-total-price");
+        var inputPromotionDiscountAmount = $("#promotion-discount-amount");
+        var inputPromotionCode = $("#promotion-code");
+        var tablePromotionCode = $("#table-promotion-code");
+        var chc3dSecure = $("#chc3dSecure");
+        var txtTotal = $(".checkout__price-new");
+        var _promotionCode = $("#_promotion-code");
+        var installmentInfoDiv = $(".checkout__purchase-wrp");
+        var inputInstallment = $("#_installmentCount");
+        var aId = $("#_aId");
+        var mss = $("#_is-distant-sales-agreement-confirmed");
+        var obf = $("#_is-pre-information-confirmed");
+        var onBilgilendirme = $("#onBilgilendirme");
+        var inputEducationTotalOldPrice = $("#input-education-total-old-price");
+        var inputDiscountAmount = $("#input-discount-amount");
+        var txtTotal = $("#newPrice");
+        var txtOldTotal = $("#oldPrice");
+        var txtTotalDiscount = $("#discountAmount");
+
+
+       
+        jQuery.validator.addMethod("mssValidator", function (value, element) {
+            return value == "true";
+        });
+        jQuery.validator.addMethod("obfValidator", function (value, element) {
+            return value == "true";
+        });
+       
+        $(document).ready(function () {
+            aId.val(localStorage.getItem("_cA"));
+            getCartItems();
+            checkPromotionCode();
+            $('#form-buy').validate({
+                ignore: [],
+                errorLabelContainer: $('#form-buy div.error'),
+                errorContainer: 'div.error-messages',
+                errorLabelContainer: $('ul', 'div.error-messages'),
+                wrapper: 'li',
+                rules: {
+                    "CardInfo.NumberOnCard": {
+                        required: true,
+                    },
+                    "CardInfo.NameOnCard": {
+                        required: true,
+                    },
+                    "CardInfo.MonthOnCard": {
+                        required: true,
+                    },
+                    "CardInfo.YearOnCard": {
+                        required: true,
+                    },
+                    "CardInfo.CVC": {
+                        required: true,
+                    },
+                    "purchase": {
+                        required: true,
+                    },
+                    "IsDistantSalesAgreementConfirmed": {
+                        mssValidator: true
+                    },
+                    "IsPreInformationConfirmed": {
+                        obfValidator: true
+                    }
+
+
+                },
+                messages: {
+                    "CardInfo.NumberOnCard": 'Kart numarasını girmediniz.',
+                    "CardInfo.NameOnCard": 'Adınız ve soyadınızı girmediniz.',
+                    "CardInfo.MonthOnCard": 'Kart ayını girmediniz.',
+                    "CardInfo.YearOnCard": 'Kart yılını girmediniz.',
+                    "CardInfo.CVC": 'CCV kodunu girmediniz.',
+                    "purchase": 'Lütfen bir taksit seçimi yapın.',
+                    "IsDistantSalesAgreementConfirmed": "Mesafeli Satış Sözleşmesini onaylayınız.",
+                    "IsPreInformationConfirmed":"Ön Bilgilendirme Formunu onaylayınız."
+
+                },
+                submitHandler: function (form) {
+                    form.submit();
+                },
+                highlight: function (element) {
+                    $(element)
+                        .parent()
+                        .addClass('outer-error');
+                },
+                unhighlight: function (element) {
+                    $(element)
+                        .parent()
+                        .removeClass('outer-error');
+                },
+            });
+        });
+
+        $("#onBilgilendirme").change(function () {
+            obf.val(this.checked);
+        });
+        $("#MesafeliSatisSozlesmesi").change(function () {
+            mss.val(this.checked);
+        });
+
+        $('.js-cupon-btn').click(function () {
+            var cuponInput = $(this).prev();
+            if (cuponInput.val() == '') {
+                $(this)
+                    .parent()
+                    .parent()
+                    .append("<div class='cupon-error'>Lütfen Bu alanı doldurunuz.</div>");
+            } else {
+                $(this)
+                    .parent()
+                    .parent()
+                    .remove('.cupon-error');
+                $('.js-cupon-form').addClass('active');
+                setTimeout(function () {
+                    getPromotionInfo();
+                }, 1000);
+
+                return false;
+            }
+        });
+
+
+        function checkPromotionCode() {
+            var promotionCode = localStorage.getItem("promotionCode");
+            if (promotionCode) {
+                getPromotionInfo(promotionCode);
+            }
+            else {
+                getBasketBasedPromotion();
+            }
+        }
+
+        function formatCurrency(total) {
+            return parseFloat(total, 10).toFixed(2).toString().replace(".", ",") + " <span>TL</span>";
+        }
+        function calculatePrices() {
+            txtTotal.html(formatCurrency(parseFloat(inputEducationTotalPrice.val()) - parseFloat(inputPromotionDiscountAmount.val())));
+            txtOldTotal.html(formatCurrency(parseFloat(inputEducationTotalOldPrice.val())));
+            txtTotalDiscount.html(formatCurrency(parseFloat(inputDiscountAmount.val()) + parseFloat(inputPromotionDiscountAmount.val())));
+        }
+        function getPromotionInfo(promotionCode) {
+            var datapromotionCode;
+            if (promotionCode) {
+                datapromotionCode = promotionCode;
+            } else {
+                datapromotionCode = inputPromotionCode.val();
+            }
+            var items = _cart.getItems();
+            var data = {
+                Items: items,
+                PromotionCode: datapromotionCode
+            };
+            $.ajax({
+                url: "/get-promotion",
+                method: "post",
+                data: data,
+                success: (res) => {
+                    if (res.isSuccess) {
+                        localStorage.setItem("promotionCode", res.data.promotionCode);
+                        $('.js-cupon-form .wizard-loading').fadeOut(500);
+                        $('.js-cupon-form')
+                            .removeClass('active')
+                            .addClass('result');
+                        inputPromotionCode.val('');
+                        var newItem = `<div class="checkout__price-item"><div class="checkout__price-title">${res.data.name} Kodu İndirimi</div><div class="checkout__price-new"> ${formatCurrency(res.data.discountAmount)}</div><div class="checkout__product-crash js-remove-sale"><span class="icon-outer"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-crash"></use></svg></span></div></div>`;
+                        $('.js-discounts').append(newItem);
+                        var result = `<span class="icon-font"><svg class="icon icon-check"><use xlink:href="../../assets/img/icons.svg#icon-check"></use></svg></span>İndirim Başarılı ile Uygulandı!`;
+                        $('.js-cupon-form__result').html(result);
+                        inputPromotionDiscountAmount.val(res.data.discountAmount);
+                        calculatePrices();
+                        _promotionCode.val(res.data.promotionCode);
+                    } else {
+                        $('.js-cupon-form')
+                            .removeClass('active')
+                            .addClass('result');
+                        var result = `<span class="icon-outer"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-warning"></use></svg></span>Gerçesiz İndirim Kodu!`;
+                        $('.js-cupon-form__result').html(result);
+                    }
+                }
+            });
+        }
+        function getCartItems() {
+            var items = _cart.getItems();
+            cartItems.val(JSON.stringify(items));
+            var data = {
+                Items: items
+            };
+            $.ajax({
+                url: "/get-cart-items",
+                method: "post",
+                data: data,
+                success: (res) => {
+                    if (res.isSuccess) {
+                        appendCartItems(res.data.items);
+                        inputEducationTotalPrice.val(res.data.totalNumeric);
+                        inputEducationTotalOldPrice.val(res.data.oldTotalNumeric);
+                        inputDiscountAmount.val(res.data.discountAmount);
+                        calculatePrices();
+                        $(".checkout__top-right").html(res.data.items.length + " Ürün");
+                    }
+                }
+            });
+        }
+        function appendCartItems(data) {
+            cardItemsBody.html("");
+            var appended = "";
+            for (var i = 0; i < data.length; i++) {
+                var item = data[i];
+                appended += ` <div class="checkout__basket-item">
+                                                    <a target="_blank" href="/egitimler/${item.categorySeoUrl}/${item.seoUrl}" class="checkout__basket-img">
+                                                        <img src="${item.previewPhoto}" alt="">
+                                                    </a>
+                                                    <div class="checkout__basket-right">
+                                                        <a target="_blank" href="/egitimler/${item.categorySeoUrl}/${item.seoUrl}" class="checkout__basket-title">
+                                                           ${item.educationName}
+                                                        </a>
+                                                        <div class="checkout__basket-crash">
+                                                            <span class="icon-outer">
+                                                                <svg class="icon">
+                                                                    <use xlink:href="../../assets/img/icons.svg#icon-crash"></use>
+                                                                </svg>
+                                                            </span>
+                                                        </div>
+                                                        <div class="checkout__basket-price">
+                                                            <div class="checkout__price-new">
+                                                                ${item.priceText} <span>TL</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>`;
+
+            }
+
+            cardItemsBody.html(appended);
+
+            if (data.length <= 0) {
+                $('.checkout__product-wrp, .js-siparis-ozeti').html(
+                    "<div class='mini-basket__empty'><span class='icon-outer button-icon'><svg class='icon'><use xlink:href='assets/img/icons.svg#icon-basket-empty'></use></svg></span>Sepetiniz Boş.</div>",
+                );
+            }
+        }
+        $('#input-card-number').focusout(function () {
+            var inputVal = this.value;
+            if (inputVal.length > 7) {
+                loadInstallmentsInfo(inputVal);
+            }
+        });
+        function loadInstallmentsInfo(inputVal) {
+            var cart = new CartSupport.Cart();
+            var data = {
+                CardNumber: inputVal,
+                CartItems: cart.getItems(),
+                PromotionCode: _promotionCode.val()
+            };
+
+            $.ajax({
+                url: "/getinstallmentinfo",
+                method: "post",
+                data: data,
+                success: (res) => {
+                    if (res.isSuccess) {
+                        installmentInfoDiv.empty();
+                        createInstallmentsDiv(res.data);
+                        if (res.data.installmentOptions.force3Ds == "1") {
+                            chc3dSecure.prop("checked", true);
+                            chc3dSecure.prop('disabled', true);
+                        } else {
+                            chc3dSecure.prop("checked", false);
+                            chc3dSecure.prop('disabled', false);
+                        }
+                        $("input[name='purchase']").on('change', function () {
+                            installmentNumber_onChange();
+                        });
+                    }
+                }
+            });
+        }
+        function installmentNumber_onChange() {
+            var retVal = $("input[name='purchase']:checked").val();
+            inputInstallment.val(retVal);
+        }
+        function createInstallmentsDiv(data) {
+            var content = '';
+            if (data.length != 0)
+                $.each(data.installmentOptions.installmentPrices, function (index, info) {
+                    if (info.installmentNumber == 1) {
+                        content += `<label class="main-radio">
+                                                            <div class="checkout__purchase-item">
+                                                                <div>
+                                                                    Peşin
+                                                                </div>
+                                                                <div>
+                                                                     ${info.price}&nbsp;<span>TL</span>
+                                                                </div>
+                                                                <div>
+                                                                     ${info.totalPrice}&nbsp;<span>TL</span>
+                                                                </div>
+                                                            </div>
+                                                            <input type="radio" value="${info.installmentNumber}" checked="checked" name="purchase">
+                                                            <span class="main-radio__checkmark"></span>
+                                                        </label>`;
+                    } else {
+                        content += `<label class="main-radio">
+                                                            <div class="checkout__purchase-item">
+                                                                <div>
+                                                                    ${info.installmentNumber} Taksit
+                                                                </div>
+                                                                <div>
+                                                                     ${info.price}&nbsp;<span>TL</span>
+                                                                </div>
+                                                                <div>
+                                                                     ${info.totalPrice}&nbsp;<span>TL</span>
+                                                                </div>
+                                                            </div>
+                                                            <input type="radio" value="${info.installmentNumber}" name="purchase">
+                                                            <span class="main-radio__checkmark"></span>
+                                                        </label>`;
+                    }
+                });
+            installmentInfoDiv.append(content);
+            resizeAccordionContent();
+            inputInstallment.val(1);
+        }
+
+        function resizeAccordionContent() {
+            var accordionContent = $('.accordion__item.selected')
+                .find('.js-calc-accordion-height')
+                .height();
+            $('.accordion__item.selected ')
+                .find('.accordion__content')
+                .css('height', accordionContent + 20);
+            var accordionContentCart = $('.accordion__item.selected-cart')
+                .find('.js-calc-accordion-height')
+                .height();
+            $('.accordion__item.selected-cart')
+                .find('.accordion__content')
+                .css('height', accordionContentCart + 20);
+        }
+        function getBasketBasedPromotion() {
+            var items = _cart.getItems();
+            var data = {
+                Items: items
+            };
+            $.ajax({
+                url: "/get-basket-based-promotion",
+                method: "post",
+                data: data,
+                success: (res) => {
+                    if (res.isSuccess) {
+                        $('.js-cupon-form .wizard-loading').fadeOut(500);
+                        $('.js-cupon-form')
+                            .removeClass('active')
+                            .addClass('result');
+                        inputPromotionCode.val('');
+                        var newItem = `<div class="checkout__price-item"><div class="checkout__price-title">${res.data.name} İndirimi</div><div class="checkout__price-new"> ${formatCurrency(res.data.discountAmount)}</div><div class="checkout__product-crash js-remove-sale"><span class="icon-outer"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-crash"></use></svg></span></div></div>`;
+                        $('.js-discounts').append(newItem);
+                        var result = `<span class="icon-font"><svg class="icon icon-check"><use xlink:href="../../assets/img/icons.svg#icon-check"></use></svg></span>İndirim Başarılı ile Uygulandı!`;
+                        $('.js-cupon-form__result').html(result);
+                        inputPromotionDiscountAmount.val(res.data.discountAmount);
+                        calculatePrices();
+                    }
+                }
+            });
+        }
+        //Remove Promotion Code
+        $('body').on('click', '.js-remove-sale', function () {
+            $(this)
+                .parent()
+                .fadeOut(300, function () {
+                    $(this).remove();
+                });
+            // $(this).parent().find().fadeOut(100, function () {
+            // 	$(this).remove();
+            // });
+            localStorage.setItem("promotionCode", "");
+            inputPromotionDiscountAmount.val(0);
+            calculatePrices();
+            $('.js-cupon-form')
+                .find('.wizard-loading')
+                .show();
+            $('.js-cupon-form').removeClass('result');
+        });
+    </script>
+} 

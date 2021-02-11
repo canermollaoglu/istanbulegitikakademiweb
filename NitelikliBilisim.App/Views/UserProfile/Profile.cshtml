@@ -1,0 +1,586 @@
+﻿@model NitelikliBilisim.Core.ViewModels.Main.Profile.MyPanelVm
+@using NitelikliBilisim.Core.Services.Abstracts
+@using NitelikliBilisim.App.Utility
+@inject IStorageService StorageService
+@{
+    ViewData["Title"] = "Profil";
+    Layout = "~/Views/Shared/_LayoutHesap.cshtml";
+}
+
+@section styles{
+    <link href="~/css/lib/file-uploader.css" rel="stylesheet" />
+}
+
+<section class="account account--dashboard">
+    <div class="account-mobile__top">
+        <a asp-controller="UserProfile" asp-action="MyMenu" class="account-mobile__prev">
+            <span class="icon-outer">
+                <svg class="icon">
+                    <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                </svg>
+            </span>
+        </a>
+        <span class="account-mobile__txt">
+            PANELİM
+        </span>
+    </div>
+    <div class="container">
+        <div class="account__wrp">
+            @await Component.InvokeAsync("MyAccountSidebar", AccountSideBarPageNames.MyPanel)
+            <div class="account-content">
+                <div class="account-dashboard">
+                    @if (Model.IsNBUY)
+                    {
+                        <div class="account-dashboard__subtop custom-subtop">
+                            <div class="account-dashboard__subtop-title">
+                                @Model.NbuyCategory
+                            </div>
+                            <div class="account-dashboard__subtop-right js-datepicker-outer mobile-mt-25">
+                                <div class="js-tooltip tooltip tooltip-top account-dashboard__started-tooltip">
+                                    <div class="tooltip__title">
+                                    </div>
+                                </div>
+                                <div class="account-dashboard__started ">
+                                    BAŞLANGIÇ :&nbsp;<div class="js-panel-datepicker" style="width: 100px;">@Model.NbuyStartDateText</div>
+                                    @*<span class="icon-outer js-panel-datepicker-trigger tooltip-hover"
+                                          tooltip-text="Eğitim tarihini değiştir">
+                                        <svg class="icon">
+                                            <use xlink:href="../../assets/img/icons.svg#icon-settings"></use>
+                                        </svg>
+                                    </span>*@
+                                </div>
+                            </div>
+                        </div>
+                        <div class="with-normal-tab">
+                            <div class="account-dashboard__week">
+                                <div class="swiper-container js-dashboard-week-slider">
+                                    <div class="swiper-wrapper">
+                                        @for (int i = 1; i <= Model.TotalEducationWeek; i++)
+                                        {
+                                            var slideClass = "";
+                                            if (i == Model.EducationWeek)
+                                                slideClass = "offset active";
+                                            <div data-id="@i" class="swiper-slide account-dashboard__week-slide js-main-tab-item @slideClass">
+                                                <a  class="account-dashboard__week-item">
+                                                    <span>Hafta</span>
+                                                    <div>@i</div>
+                                                </a>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="swiper-button-prev">
+                                    <span class="icon-outer">
+                                        <svg class="icon">
+                                            <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
+                                        </svg>
+                                    </span>
+                                </div>
+                                <div class="swiper-button-next">
+                                    <span class="icon-outer">
+                                        <svg class="icon">
+                                            <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
+                                        </svg>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="account-dashboard__week-arrow-outer">
+                                <span class="account-dashboard__week-arrow js-dashboard-week-arrow"></span>
+                            </div>
+                            <div class="account-dashboard__week-content">
+                                <div class="account-dashboard__subtop">
+                                    <div class="account-dashboard__subtop-title">
+                                        BU HAFTAYA ÖZEL KURSLAR
+                                    </div>
+                                    <div class="account-dashboard__subtop-right">
+                                        <div class="account-dashboard__week-content-arrows">
+                                            <div class="swiper-button-prev">
+                                                <span class="icon-outer">
+                                                    <svg class="icon">
+                                                        <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
+                                                    </svg>
+                                                </span>
+                                            </div>
+                                            <div class="swiper-button-next">
+                                                <span class="icon-outer">
+                                                    <svg class="icon">
+                                                        <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
+                                                    </svg>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="swiper-container js-week-private-slider">
+                                    <div class="swiper-wrapper">
+                                        <div class="swiper-slide">
+                                            <a href="egitim-detay.php" class="lesson-list__item">
+                                                <div class="lesson-list__item-img">
+                                                   
+                                                </div>
+                                                <div class="lesson-list__item-cnt">
+                                                    <div class="lesson-list__item-left">
+                                                        <div class="lesson-list__item-title">
+                                                            
+                                                        </div>
+                                                        <div class="lesson-list__item-txt">
+                                                            
+                                                        </div>
+                                                    </div>
+                                                    <div class="lesson-list__item-right">
+                                                        <div class="lesson-list__item-date">
+                                                            <span class="icon-outer">
+                                                                <svg class="icon">
+                                                                    <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                                                                </svg>
+                                                            </span>
+                                                           
+                                                        </div>
+                                                        <div class="lesson-list__item-price">
+                                                          
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <!-- If we need pagination -->
+                                    <div class="swiper-pagination"></div>
+
+                                    <!-- If we need navigation buttons -->
+
+                                </div>
+                                
+                            </div>
+                        </div>
+                    }
+
+                    <div class="account-dashboard__courses">
+                        <div class="account-dashboard__subtop">
+                            <div class="account-dashboard__subtop-title">
+                                KURSLARIM <span class="colored-light-purple">(@Model.PurchasedEducationCount)</span>
+                            </div>
+                            <a asp-controller="UserProfile" asp-action="MyCourses" class="account-dashboard__subtop-right">
+                                <span class="icon-outer icon-show-more">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-show-more"></use>
+                                    </svg>
+                                </span>
+                            </a>
+                        </div>
+                        <div class="account-dashboard__courses-slider">
+                            <div class="swiper-container js-dash-course-slider mt-1">
+                                <div class="swiper-wrapper">
+                                    @foreach (var education in Model.PurchasedEducations)
+                                    {
+                                        var bannerUrl = "";
+                                        if (!string.IsNullOrEmpty(education.FeaturedImageUrl))
+                                        {
+                                            bannerUrl = StorageService.BlobUrl + education.FeaturedImageUrl;
+                                        }
+                                        var educatorImage = "";
+                                        if (!string.IsNullOrEmpty(education.EducatorImageUrl))
+                                        {
+                                            educatorImage = StorageService.BlobUrl + education.EducatorImageUrl;
+                                        }
+                                        <div class="swiper-slide">
+                                            <a asp-controller="Course" asp-action="Details" asp-route-catSeoUrl="@education.CategorySeoUrl" asp-route-seoUrl="@education.SeoUrl" as class="card card--course">
+                                                <figure>
+                                                    <img src="@bannerUrl" alt="">
+                                                </figure>
+
+                                                <div class="card__main">
+                                                    <div class="card__content">
+                                                        <h6 class="card__subtitle">@education.CategoryName</h6>
+                                                        <h5 class="card__title">@education.Name</h5>
+                                                        <div class="card__progress">
+                                                            <div class="card__progress--inner fulled">
+                                                                <div class="card__progress--line" style="width:@(education.CompletionRate+"%");"></div>
+                                                            </div>
+                                                            <div class="card__progress--percent">% @education.CompletionRate</div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="card__footer">
+                                                        <span class="card__time">
+                                                            <span class="icon-outer">
+                                                                <svg class="icon">
+                                                                    <use xlink:href="../../assets/img/icons.svg#icon-map-pin-f"></use>
+                                                                </svg>
+                                                            </span>
+                                                            <span>@education.City</span>
+                                                        </span>
+
+                                                        <span class="card__teacher">
+                                                            <img src="@educatorImage" alt="">
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="swiper-pagination"></div>
+                            </div>
+                            <div class="account-empty-content">
+                                <span class="icon-outer">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-empty-content"></use>
+                                    </svg>
+                                </span>
+                                <span>
+                                    Hiç Kursun yok.
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="account-dashboard__courses">
+                        <div class="account-dashboard__subtop">
+                            <div class="account-dashboard__subtop-title">
+                                SERTİFİKALARIM <span class="colored-light-purple">(@Model.Certificates.Count())</span>
+                            </div>
+                            <a asp-controller="UserProfile" asp-action="MyCertificates" class="account-dashboard__subtop-right">
+                                <span class="icon-outer icon-show-more">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-show-more"></use>
+                                    </svg>
+                                </span>
+                            </a>
+                        </div>
+                        <div class="account-dashboard__certificate-slider">
+                            <div class="swiper-container js-dash-certificate-slider mt-1">
+                                <div class="swiper-wrapper">
+                                    @foreach (var certificate in Model.Certificates)
+                                    {
+                                    <div class="swiper-slide">
+                                        <a class="certificate__item">
+                                            <div class="lesson-list__item-img">
+                                                <img src="../../assets/img/certificate.jpg" alt="">
+                                            </div>
+                                            <div class="certificate__item-cnt">
+                                                <h6 class="card__subtitle">@certificate.CategoryName</h6>
+                                                <div class="lesson-list__item-title">
+                                                   @certificate.EducationName
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+
+                                    }
+                                </div>
+                                <div class="swiper-pagination"></div>
+                            </div>
+                            <div class="account-empty-content">
+                                <span class="icon-outer">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-empty-content"></use>
+                                    </svg>
+                                </span>
+                                <span>
+                                    Sertifikan yok.
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="account-dashboard__courses">
+                        <div class="account-dashboard__subtop">
+                            <div class="account-dashboard__subtop-title">
+                                FAVORİ KURSLARIM <span class="colored-light-purple">(@Model.FavoriteEducationCount)</span>
+                            </div>
+                            <a asp-controller="UserProfile" asp-action="MyFavoriteCourses" class="account-dashboard__subtop-right">
+                                <span class="icon-outer icon-show-more">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-show-more"></use>
+                                    </svg>
+                                </span>
+                            </a>
+                        </div>
+                        <div class="account-dashboard__courses-slider">
+                            <div class="swiper-container js-dash-course-slider mt-1">
+                                <div class="swiper-wrapper">
+                                    @foreach (var course in Model.FavoriteEducations)
+                                    {
+                                        var bannerUrl = "";
+                                        if (!string.IsNullOrEmpty(course.FeaturedImageUrl))
+                                        {
+                                            bannerUrl = StorageService.BlobUrl + course.FeaturedImageUrl;
+
+                                        }
+
+                                        <div class="swiper-slide" id="fav-e-@(course.Id)">
+                                            <a asp-controller="Course" asp-action="Details" asp-route-catSeoUrl="@course.CategorySeoUrl" asp-route-seoUrl="@course.SeoUrl" class="card card--course">
+                                                <div class="card__favorite js-btn-fav" data-eid="@(course.Id)">
+                                                    <span class="icon-outer fill">
+                                                        <svg class="icon">
+                                                            <use xlink:href="../../assets/img/icons.svg#icon-heart"></use>
+                                                        </svg>
+                                                    </span>
+                                                    <span class="icon-outer filled">
+                                                        <svg class="icon">
+                                                            <use xlink:href="../../assets/img/icons.svg#icon-heart-filled"></use>
+                                                        </svg>
+                                                    </span>
+                                                </div>
+                                                <figure>
+                                                    <img src="@bannerUrl" alt="">
+                                                </figure>
+
+                                                <div class="card__main">
+                                                    <div class="card__content">
+                                                        <h6 class="card__subtitle">@course.CategoryName</h6>
+                                                        <h5 class="card__title">@course.Name</h5>
+                                                    </div>
+
+                                                    <div class="card__footer">
+                                                        <span class="card__time">
+                                                            <span class="icon-outer">
+                                                                <svg class="icon">
+                                                                    <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                                                                </svg>
+                                                            </span>
+                                                            <span>@course.DaysText gün ( @course.HoursText saat )</span>
+                                                        </span>
+
+                                                        <span class="card__money">
+                                                             @course.Price <span>TL</span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="swiper-pagination"></div>
+                            </div>
+
+                            <div class="account-empty-content">
+                                <span class="icon-outer">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-empty-content"></use>
+                                    </svg>
+                                </span>
+                                <span>
+                                    Favori kursun yok.
+                                </span>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="custom-banner blue mt-5">
+                        <div class="custom-banner__icon f-s-mobile">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-user-dart"></use>
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="custom-banner__cnt">
+                            <div class="custom-banner__title">Size en uygun proje eğitimlerini birlikte bulalım!</div>
+                            <a href="#0" class="js-modal-trigger" data-trigger="egitimSihirbazi">
+                                Eğitim Sihirbazını Deneyin
+                                <span class="icon-outer">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                                    </svg>
+                                </span>
+                            </a>
+                        </div>
+                        <div class="custom-banner__img">
+                            <img src="../../assets/img/dusunenadam.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="account-dashboard__courses">
+                        <div class="account-dashboard__subtop">
+                            <div class="account-dashboard__subtop-title">
+                                SİZE ÖNERECEĞİMİZ PROJE EĞİTİMLERİMİZ
+                            </div>
+                            <a asp-controller="Course" asp-action="List" class="account-dashboard__subtop-right">
+                                <span class="icon-outer icon-show-more">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-show-more"></use>
+                                    </svg>
+                                </span>
+                            </a>
+                        </div>
+                        <div class="account-dashboard__courses-slider">
+                            <div class="swiper-container js-dash-course-slider mt-1">
+                                <div class="swiper-wrapper">
+                                    @await Component.InvokeAsync("SuggestedEducations")
+                                </div>
+                                <div class="swiper-pagination"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section postScripts{
+    <script src="~/js/lib/file-uploader.js"></script>
+
+    <script type="text/javascript">
+        var dashboardWeekSlider = new Swiper('.js-dashboard-week-slider', {
+            autoplay: false,
+            keyboard: false,
+            autoHeight: true,
+            loop: false,
+            simulateTouch: true,
+            slidesPerView: 'auto',
+            freeMode: true,
+            spaceBetween: 0,
+            initialSlide: 5,
+            speed: 600,
+            navigation: {
+                nextEl: '.account-dashboard__week .swiper-button-next',
+                prevEl: '.account-dashboard__week .swiper-button-prev',
+            },
+        });
+
+        $(function () {
+            var activeWeek = $(".account-dashboard__week-slide.active")
+                .data("id");
+            dashboardWeekSlider.slideTo(activeWeek - 1, 200, false);
+        });
+
+        if ($('.account-dashboard').length > 0) {
+            dashboardWeekSlider.on('touchStart', function () {
+                var dashboardWeekSliderContainer = $('.js-dashboard-week-slider').offset().left;
+                var dashboardWeekSlideContainer = $('.account-dashboard__week-slide.active').offset().left;
+                if (dashboardWeekSliderContainer > dashboardWeekSlideContainer) {
+                    $('.js-dashboard-week-arrow').css('left', dashboardWeekSliderContainer);
+                }
+            });
+            $(document).ready(dashboardWeekFunc);
+            $(window).on('resize', dashboardWeekFunc);
+
+            function dashboardWeekFunc() {
+                var activeWeek = $(".account-dashboard__week-slide.active")
+                    .data("id");
+                var accDashL = $('.account--dashboard')
+                    .find('.container')
+                    .offset().left;
+                $('.js-fix-pos').css('width', accDashL + 50);
+                var dashboardWeekContent = $('.account-dashboard__week-content').offset().top;
+                var dashboardWeekSlideActive = $('.account-dashboard__week-slide.active').offset().left;
+                $('.js-dashboard-week-arrow').css('top', dashboardWeekContent);
+                $('.js-dashboard-week-arrow').css('left', dashboardWeekSlideActive);
+                $('.account-dashboard__week-slide').mouseenter(function () {
+                    var dashboardWeekSlideLeft = $(this).offset().left;
+                    $('.js-dashboard-week-arrow').css('left', dashboardWeekSlideLeft);
+                });
+                $('.account-dashboard__week-slide').mouseleave(function () {
+                    var dashboardWeekSlideActive = $('.account-dashboard__week-slide.active').offset().left;
+                    $('.js-dashboard-week-arrow').css('left', dashboardWeekSlideActive);
+                });
+                $('.account-dashboard__week-slide.active')
+                    .prevAll()
+                    .addClass('preved');
+                $('.account-dashboard__week-slide').click(function () {
+                    $('.account-dashboard__week-slide').removeClass('active');
+                    $(this).addClass('active');
+                    $(this)
+                        .prevAll()
+                        .addClass('preved');
+                    $(this)
+                        .nextAll()
+                        .removeClass('preved');
+                });
+            }
+        }
+        var weekPrivateSlider = new Swiper('.js-week-private-slider', {
+            autoplay: false,
+            keyboard: false,
+            autoHeight: true,
+            loop: true,
+            effect: 'fade',
+            simulateTouch: true,
+            slidesPerView: 1,
+            spaceBetween: 0,
+            speed: 600,
+            pagination: {
+                el: '.js-week-private-slider .swiper-pagination',
+                clickable: true,
+            },
+            navigation: {
+                nextEl: '.account-dashboard__week-content .swiper-button-next',
+                prevEl: '.account-dashboard__week-content .swiper-button-prev',
+            },
+            breakpoints: {
+                // when window width is >= 640px
+                768: {
+                    slidesPerView: 'auto',
+                },
+                576: {},
+            },
+        });
+        
+        $(".account-dashboard__week-slide").click(function () {
+            var activeWeek = $(".account-dashboard__week-slide.active")
+                .data("id");
+            weekPrivateSlider.removeAllSlides();
+            loadSuggestedEducations(activeWeek);
+        });
+
+        function loadSuggestedEducations(week) {
+            $.ajax({
+                url: `/haftaya-ozel-kurslar`,
+                method: "post",
+                data: {
+                    week: week,
+                },
+                success: (res) => {
+                    $.each(res.data, function (index, e) {
+                        weekPrivateSlider.appendSlide([
+                            `<div class="swiper-slide">
+                                            <a href="/egitimler/${e.categorySeoUrl}/${e.seoUrl}" class="lesson-list__item">
+                                                <div class="lesson-list__item-img">
+                                                    <img src="${e.image}" alt="">
+                                                </div>
+                                                <div class="lesson-list__item-cnt">
+                                                    <div class="lesson-list__item-left">
+                                                        <div class="lesson-list__item-title">
+                                                            ${e.name}
+                                                        </div>
+                                                        <div class="lesson-list__item-txt">
+                                                            ${e.description}
+                                                        </div>
+                                                    </div>
+                                                    <div class="lesson-list__item-right">
+                                                        <div class="lesson-list__item-date">
+                                                            <span class="icon-outer">
+                                                                <svg class="icon">
+                                                                    <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                                                                </svg>
+                                                            </span>
+                                                            ${e.day} gün ( ${e.hour} saat )
+                                                        </div>
+                                                        <div class="lesson-list__item-price">
+                                                             ${e.price} <span>TL</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>` ]);
+                        weekPrivateSlider.activeIndex=1;
+                    });
+                }
+            });
+        }
+
+        $('.js-btn-fav').click(function () {
+            var educationId = $(this).attr("data-eid");
+            $.ajax({
+                url: "/togglewishlistitem",
+                method: "post",
+                data: { educationId },
+                success: (res) => {
+                    if (res.isSuccess) {
+                        location.href = location.href;
+                    }
+                }
+            });
+        });
+    </script>
+}

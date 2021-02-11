@@ -1,0 +1,273 @@
+﻿@model NitelikliBilisim.Core.ViewModels.Main.CorporateMembershipApplication.CorporateMembershipApplicationAddVm
+@{
+    ViewData["Title"] = "Kurumsal Üyelik Talebi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="subheader">
+    <div class="subheader__wrp">
+        <div class="container">
+            <div class="breadcrumb">
+                <a asp-controller="Home" asp-action="Index" class="breadcrumb__item">
+                    Anasayfa
+                </a>
+                <a href="#0" class="breadcrumb__item active">
+                    Kurumsal Üyelik Talebi
+                </a>
+            </div>
+            <div class="subheader__cnt">
+                <div class="subheader__txt-cnt">
+                    <div class="subheader__title">Kurumsal Üyelik Talebi</div>
+                    <div class="subheader__txt">Talep Oluşturun</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="subheader__img">
+        <img src="~/assets/img/subheader-img.jpg" alt="">
+    </div>
+</div>
+<section class="contact">
+    <div class="corporate__wrp">
+        <div class="container">
+            <div class="corporate__w80">
+                <div class="contact__left">
+                    <div class="title title-section mb-4">
+                        TALEP
+                        <span class="title--blue">FORMU</span>
+                    </div>
+                    <div class="contact__txt">
+                        Kurs başlangıcından sertifika almaya kadar her adımda yanınızdayız.
+                    </div>
+                </div>
+                <div class="contact__right">
+                    <form class="contact__form" id="contact-form"
+                          asp-controller="Home" asp-action="CorporateMembershipApplication"
+                          data-ajax-success="onAjaxSuccess"
+                          data-ajax-failure="onAjaxFailed"
+                          data-ajax="true" data-ajax-method="POST">
+                        @Html.AntiForgeryToken()
+                        <div class="input__column-2">
+                            <div class="input__outer">
+                                <span class="icon-outer input__icon">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-bag"></use>
+                                    </svg>
+                                </span>
+                                <input asp-for="CompanyName" id="input-company-name" type="text" class="input input--fw" placeholder="Şirket Adı" required>
+                            </div>
+                            <div class="input__outer">
+                                <span class="icon-outer input__icon">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-user"></use>
+                                    </svg>
+                                </span>
+                                <input type="text" asp-for="NameSurname" id="input-user-name" class="input input--fw" placeholder="Adınız Soyadınız" required>
+                            </div>
+                        </div>
+                        <div class="input__column-2">
+                            <div class="input__outer ">
+                                <span class="icon-outer input__icon">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-phone"></use>
+                                    </svg>
+                                </span>
+                                <input asp-for="Phone" type="text" id="input-phone-number" class="input input--fw inputPhoneNumber"
+                                       placeholder="___-__-__">
+                            </div>
+                            <div class="input__outer">
+                                <span class="icon-outer input__icon">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-global"></use>
+                                    </svg>
+                                </span>
+                                <input asp-for="CompanySector" type="text" id="input-company-sector" class="input input--fw" placeholder="Firma Sektörü" required>
+                            </div>
+                        </div>
+                        <div class="input__column-2">
+                            <div class="input__outer">
+                                <span class="icon-outer input__icon">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-chair"></use>
+                                    </svg>
+                                </span>
+                                <input asp-for="Department" type="text" id="input-department" class="input input--fw" placeholder="Departman" required>
+                            </div>
+                            <div class="input__outer">
+                                <span class="icon-outer input__icon">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-users"></use>
+                                    </svg>
+                                </span>
+                                <input asp-for="NumberOfEmployees" type="number" id="input-employee-count" class="input input--fw" placeholder="Çalışan Sayısı"
+                                       required>
+                            </div>
+                        </div>
+                        <div class="input__outer">
+                            <span class="icon-outer input__icon">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-map-pin"></use>
+                                </svg>
+                            </span>
+                            <input asp-for="Address" type="text" id="input-address" class="input input--fw" placeholder="Kurum Adresi" required>
+                        </div>
+                        <div class="input__outer input--textarea">
+                            <span class="icon-outer input__icon">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-speak-balloon"></use>
+                                </svg>
+                            </span>
+                            <textarea asp-for="RequestNote" id="input-request-note" class="input input--fw" placeholder="Talep Notu"></textarea>
+                        </div>
+                        <div class="form__button">
+                            <button type="submit" id="btn-send" class="button">
+                                <span class="button-txt">
+                                    Gönder
+                                </span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+<div class="modal modal--message success" id="modalSuccessMessage">
+    <div class="modal__close js-close-modal">
+        <span class="icon-outer">
+            <svg class="icon">
+                <use xlink:href="../../assets/img/icons.svg#icon-close"></use>
+            </svg>
+        </span>
+    </div>
+    <div class="modal__content">
+        <div class="side-subscribe__success">
+            <div class="side-subscribe__top">
+                <div class="side-subscribe__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-success"></use>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+            <div class="side-subscribe__content">
+                <div class="side-subscribe__title">Teşekkürler!</div>
+                <div class="side-subscribe__txt" >
+                    Talebiniz başarılı bir şekilde iletilmiştir.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal modal--message wrong" id="modalWrongMessage">
+    <div class="modal__close js-close-modal">
+        <span class="icon-outer">
+            <svg class="icon">
+                <use xlink:href="../../assets/img/icons.svg#icon-close"></use>
+            </svg>
+        </span>
+    </div>
+    <div class="modal__content">
+        <div class="side-subscribe__success">
+            <div class="side-subscribe__top">
+                <div class="side-subscribe__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-wrong"></use>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+            <div class="side-subscribe__content">
+                <div class="side-subscribe__title ">Başarısız!</div>
+                <div class="side-subscribe__txt">
+                    Talebiniz iletilememiştir.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section postScripts{
+    <script>
+        var onAjaxSuccess = function (context) {
+            if (context.success) {
+                showModal('modalSuccessMessage');
+            } else {
+                showModal('modalWrongMessage');
+            }
+            $('.contact__form')[0].reset();
+        };
+        var onAjaxFailed = function () {
+            showModal('modalWrongMessage');
+        }
+        function showModal(id) {
+            $('html, body').addClass('no-scroll');
+            $('.main-overlay').addClass('active');
+            $('.modal[id="' + id + '"]').addClass('modal--active');
+            $('.js-open-mobile-menu').removeClass('active');
+            $('.js-open-mobile-menu')
+                .closest('.header-mobile')
+                .removeClass('active');
+            $('html,body').removeClass('scroll-lock');
+        }
+        $('#contact-form').validate({
+            errorLabelContainer: $('#contact-form div.error'),
+            errorContainer: 'div.error-messages',
+            errorLabelContainer: $('ul', 'div.error-messages'),
+            wrapper: 'li',
+            rules: {
+                CompanyName: {
+                    required: true,
+                },
+                NameSurname: {
+                    required: true
+                },
+                Phone: {
+                    required: true,
+                },
+                CompanySector: {
+                    required: true,
+                },
+                Department: {
+                    required: true,
+                },
+                NumberOfEmployees: {
+                    required: true,
+                },
+                Address: {
+                    required: true,
+                },
+                RequestNote: {
+                    required: true,
+                }
+            },
+            messages: {
+                CompanyName: 'Bu alan zorunludur.',
+                NameSurname: 'Bu alan zorunludur.',
+                Phone: 'Bu alan zorunludur.',
+                CompanySector: 'Bu alan zorunludur.',
+                Department: 'Bu alan zorunludur.',
+                NumberOfEmployees: 'Bu alan zorunludur.',
+                Address: 'Bu alan zorunludur.',
+                RequestNote: 'Bu alan zorunludur.'
+            },
+            highlight: function (element) {
+                $(element)
+                    .parent()
+                    .addClass('outer-error');
+            },
+            unhighlight: function (element) {
+                $(element)
+                    .parent()
+                    .removeClass('outer-error');
+            },
+        });
+
+    </script>
+
+}

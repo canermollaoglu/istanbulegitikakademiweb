@@ -9,7 +9,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Models.Education
 {
     public class AddGetVm
     {
-        public List<EducationTag> Tags { get; set; }
         public List<EducationCategory> Categories { get; set; }
         public Dictionary<int, string> Levels { get; set; }
     }
@@ -22,8 +21,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Models.Education
         public string Description { get; set; }
         [Required(ErrorMessage = "Açıklama (2) alanı boş geçilemez"), MaxLength(500, ErrorMessage = "Açıklama (2) alanı 500 karakterden fazla olamaz")]
         public string Description2 { get; set; }
-        [Required(ErrorMessage = "Fiyat alanı boş geçilemez")]
-        public decimal? Price { get; set; }
+
         [Required(ErrorMessage = "Eğitimin kaç gün süreceği bilgisi boş geçilemez"), Range(1, 255, ErrorMessage = "Eğitim günü 1 günden daha az olamaz")]
         public byte? Days { get; set; }
         [Required(ErrorMessage = "Eğitim günde kaç saat işleneceği bilgisi boş geçilemez"), Range(1, 24, ErrorMessage = "Günlük işlenecek ders saati 1 saatten az olamaz")]
@@ -32,7 +30,10 @@ namespace NitelikliBilisim.App.Areas.Admin.Models.Education
         public int? EducationLevel { get; set; }
         [Required(ErrorMessage = "Eğitim en az 1 kategoriye ait olmalıdır")]
         public Guid CategoryId { get; set; }
-        public List<Guid> TagIds { get; set; }
+        [Required(ErrorMessage ="Eğitim için bir Seo Url girmelisiniz.")]
+        public string SeoUrl { get; set; }
+        public string VideoUrl { get; set; }
+        public string[] Tags { get; set; }
     }
     public class AddPostVm : EducationCrudVm
     {
@@ -45,6 +46,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Models.Education
         [Required(ErrorMessage = "Dosya içeriği boş olamaz")]
         public string Base64Content { get; set; }
         [Required(ErrorMessage = "Dosya uzantısı boş olamaz")]
+        public string Extension { get; set; }
+    }
+    public class _PostedFileUpdate
+    {
+        public string Base64Content { get; set; }
         public string Extension { get; set; }
     }
 }

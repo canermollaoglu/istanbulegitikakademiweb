@@ -1,6 +1,7 @@
 ﻿using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.ViewModels.Cart;
+using NitelikliBilisim.Core.ViewModels.Sales;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -17,18 +18,9 @@ namespace NitelikliBilisim.App.VmCreator
         }
 
         // gereksiz request sayısı
-        public List<CartItem> GetCartItems(List<Guid> itemIds)
+        public List<CartItemVm> GetCartItems(List<_CartItem> items)
         {
-            var educations = _unitOfWork.Education.Get(x => itemIds.Contains(x.Id), x => x.OrderBy(o => o.Name));
-            var model = educations.Select(x => new CartItem
-            {
-                EducationId = x.Id,
-                EducationName = x.Name,
-                PreviewPhoto = _unitOfWork.EducationMedia.Get(y => y.EducationId == x.Id && y.MediaType == EducationMediaType.PreviewPhoto).First().FileUrl,
-                PriceNumeric = x.NewPrice.GetValueOrDefault(0),
-                PriceText = x.NewPrice.GetValueOrDefault(0).ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"))
-            }).ToList();
-
+            List<CartItemVm> model = _unitOfWork.EducationGroup.GetGroupCartItems(items);
             return model;
         }
     }

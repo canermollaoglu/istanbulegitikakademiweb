@@ -1,46 +1,62 @@
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using MUsefulMethods;
+using Newtonsoft.Json;
+using NitelikliBilisim.App.Filters;
+using NitelikliBilisim.App.Models;
+using NitelikliBilisim.App.Utility;
+using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.ComplexTypes;
+using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Entities.helper;
+using NitelikliBilisim.Core.Entities.user_details;
+using NitelikliBilisim.Core.Enums;
+using NitelikliBilisim.Core.ViewModels.Account;
+using NitelikliBilisim.Notificator.Services;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using NitelikliBilisim.App.Controllers.Base;
-using NitelikliBilisim.App.Models;
-using NitelikliBilisim.App.Models.Account;
-using NitelikliBilisim.App.Utility;
-using NitelikliBilisim.Business.UoW;
-using NitelikliBilisim.Core.Entities;
-using NitelikliBilisim.Core.Enums;
-using NitelikliBilisim.Core.Services;
-using NitelikliBilisim.Core.ViewModels.Account;
-using NitelikliBilisim.Support.Enums;
+using System.Web;
 
 namespace NitelikliBilisim.App.Controllers
 {
-    //[Authorize]
-    public class AccountController : BaseController
+    public class AccountController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UnitOfWork _unitOfWork;
+        private readonly UserUnitOfWork _userUnitOfWork;
+        private readonly IEmailSender _emailSender;
+        private readonly IWebHostEnvironment _env;
+        private readonly IConfiguration _configuration;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, UnitOfWork unitOfWork)
+
+        public AccountController(IWebHostEnvironment env,IConfiguration configuration, UserUnitOfWork userUnitOfWork, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, UnitOfWork unitOfWork, IEmailSender emailSender)
         {
             this._userManager = userManager;
             this._signInManager = signInManager;
             _unitOfWork = unitOfWork;
+            _emailSender = emailSender;
+            _configuration = configuration;
+            _userUnitOfWork = userUnitOfWork;
+            _env = env;
         }
 
         [Route("kayit-ol")]
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         public IActionResult Register()
         {
             var model = new RegisterGetVm
             {
-                EducationCenters  = EnumSupport.ToKeyValuePair<EducationCenter>(),
+                EducationCenters = EnumHelpers.ToKeyValuePair<EducationCenter>(),
                 EducationCategories = _unitOfWork.EducationCategory.Get(x => x.BaseCategoryId == null, x => x.OrderBy(o => o.Name))
             };
 
@@ -48,6 +64,7 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [HttpPost, Route("kayit-ol")]
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         public async Task<IActionResult> Register(RegisterPostVm model)
         {
             if (!model.AcceptedTerms || !ModelState.IsValid)
@@ -57,60 +74,97 @@ namespace NitelikliBilisim.App.Controllers
                     errors = ModelStateUtil.GetErrors(ModelState)
                 });
 
-            var user = new ApplicationUser()
-            {
-                Name = model.Name,
-                UserName = model.UserName,
-                Surname = model.Surname,
-                Email = model.Email,
-                PhoneNumber = model.Phone
-            };
 
-            var result = await _userManager.CreateAsync(user, model.Password);
-            if (result == IdentityResult.Success)
+            var retVal = await _userUnitOfWork.User.RegisterUser(model);
+            if (retVal.Success)
             {
-                result = await _userManager.AddToRoleAsync(user,
-                    _userManager.Users.Count() == 1
-                        ? IdentityRoleList.Admin.ToString()
-                        : IdentityRoleList.User.ToString());
-                var customer = new Customer
+                var user = (ApplicationUser)retVal.Data;
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var htmlToken = HttpUtility.UrlEncode(token);
+
+                var builder = string.Empty;
+                var templatePath = Path.Combine(_env.WebRootPath, "mail-templates", "mail-template.html");
+                using (StreamReader r = System.IO.File.OpenText(templatePath))
                 {
-                    Id = user.Id,
-                    CustomerType = CustomerType.Individual,
-                    IsNbuyStudent = model.IsNbuyStudent
-                };
-                _unitOfWork.Customer.Insert(customer);
-                if (model.IsNbuyStudent)
-                {
-                    var studentEducationInformation = new StudentEducationInfo
-                    {
-                        CustomerId = user.Id,
-                        StartedAt = model.StartedAt.GetValueOrDefault(),
-                        EducationCenter = (EducationCenter)model.EducationCenter,
-                        CategoryId = model.EducationCategory
-                    };
-                    _unitOfWork.StudentEducationInfo.Insert(studentEducationInformation);
+                    builder = r.ReadToEnd();
                 }
-                if (result.Succeeded)
+                var confirmationLink = $"{ Request.Scheme}://{Request.Host}{Request.PathBase}/email-aktivasyonu?token={htmlToken}&email={user.Email}";
+                builder = builder.Replace("[##subject##]", "E-Posta Aktivasyonu!");
+                builder = builder.Replace("[##content##]", $"E-posta adresinizi onaylamak için <a href=\"{confirmationLink}\">tıklayınız.</a>");
+                builder = builder.Replace("[##content2##]", "");
+                await _emailSender.SendAsync(new EmailMessage
                 {
-                    //TODO mail gönder
-                }
+                    Contacts = new string[] { user.Email },
+                    Subject = "Nitelikli Bilişim Email Aktivasyonu",
+                    Body = builder
+                });
+                TempData["Message"] = "Hesabınız başarılı bir şekilde oluşturuldu. E-Posta onayı sonrası giriş yapabilirsiniz.";
+                return Json(new ResponseModel
+                {
+                    isSuccess = true
+                });
             }
             else
             {
+                string[] adminEmails = _configuration.GetSection("SiteGeneralOptions").GetSection("AdminEmails").Value.Split(";");
+                string mailBody = $"Kullanıcı Adı :{model.Email}<br>Telefon:{model.Phone}<br>Ad:{model.Name}<br>Soyad:{model.Surname}";
+                mailBody += $"<br>Hata : {JsonConvert.SerializeObject(retVal.Data)} + {retVal.Message}";
+                await _emailSender.SendAsync(new EmailMessage
+                {
+                    Body = mailBody,
+                    Subject = "Nitelikli Bilişim Kullanıcı Kayıt Hatası!",
+                    Contacts = adminEmails
+                });
+                IEnumerable<IdentityError> identityErrors = null;
+                if (retVal.Data != null)
+                {
+                    identityErrors = ((IEnumerable<IdentityError>)retVal.Data);
+                }
+
+                var message = "";
+                if (identityErrors != null)
+                {
+                    if (identityErrors.Any(x=>x.Code.Contains("DuplicateEmail")))
+                    {
+                        message = "Bu e-posta sistemde kayıtlı! Eğer şifrenizi hatırlamıyorsanız <a href=\"/sifremi-unuttum\">buraya</a> tıklayarak yeni şifre oluşturabilirsiniz.";
+                    }
+                    else
+                    {
+                        message = identityErrors.Select(x => x.Description).Aggregate((x, y) => x + " " + y);
+                    }
+                }
+
                 return Json(new ResponseModel
                 {
                     isSuccess = false,
-                    errors = new List<string> { "Kullanıcı oluşturulurken bir hata oluştu" }
+                    message = message
                 });
             }
-
-            return Json(new ResponseModel
-            {
-                isSuccess = true
-            });
         }
 
+
+        [HttpGet]
+        [Route("email-aktivasyonu")]
+        public async Task<IActionResult> ConfirmEmail(string token, string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+                ViewData["Message"] = "Eski veya geçersiz bir başvuruda bulundunuz!";
+            var result = await _userManager.ConfirmEmailAsync(user, token);
+            if (result.Succeeded)
+            {
+                ViewData["Message"] = "Email adresiniz onaylanmıştır. Giriş yapabilirsiniz.";
+            }
+            else
+            {
+                ViewData["Message"] = "Eski veya geçersiz bir başvuruda bulundunuz!";
+            }
+            return View();
+        }
+
+
+
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("giris-yap")]
         public async Task<IActionResult> Login(string returnUrl = null)
         {
@@ -120,7 +174,7 @@ namespace NitelikliBilisim.App.Controllers
             ViewBag.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             return View(new LoginViewModel() { ReturnUrl = returnUrl });
         }
-
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [HttpPost, Route("giris-yap")]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
@@ -128,16 +182,114 @@ namespace NitelikliBilisim.App.Controllers
             {
                 return View(model);
             }
-
             var result =
                 await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, true);
             if (result.Succeeded)
             {
+                var user = await _userManager.FindByNameAsync(model.UserName);
+                //var isNbuy = _unitOfWork.Customer.IsNbuyStudent(user.Id);
+                var roles = await _userManager.GetRolesAsync(user);
+                if (roles.Contains("Admin"))
+                {
+                    return RedirectToAction("Index", "Home", new { area = "Admin" });
+                }
                 return Redirect(model.ReturnUrl ?? "/");
             }
+            ModelState.AddModelError(string.Empty, "Kullanıcı adı veya şifre hatalı!");
+            return View(model);
+        }
 
-            ModelState.AddModelError(string.Empty, "Böyle bir kullanıcı bulunmamaktadır!");
+        [Route("sifremi-unuttum")]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
 
+        [Route("sifremi-unuttum")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user != null)
+            {
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var passwordResetLink = Url.Action("ResetPassword", "Account", new { email = model.Email, token = token }, Request.Scheme);
+                var builder = string.Empty;
+                var templatePath = Path.Combine(_env.WebRootPath, "mail-templates", "mail-template.html");
+                using (StreamReader r = System.IO.File.OpenText(templatePath))
+                {
+                    builder = r.ReadToEnd();
+                }
+               
+                builder = builder.Replace("[##subject##]", "Şifre Sıfırlama!");
+                builder = builder.Replace("[##content##]", $"Merhaba {user.Name} {user.Surname},<br/> Şifrenizi yenilemek için <a href=\"{passwordResetLink}\" target=\"_blank\"><b>buraya</b></a> tıklayınız.");
+                builder = builder.Replace("[##content2##]", "");
+                
+                await _emailSender.SendAsync(new Core.ComplexTypes.EmailMessage
+                {
+                    Subject = "Nitelikli Bilişim Şifre Yenileme",
+                    Contacts = new string[] { model.Email },
+                    Body = builder
+                });
+                TempData["Message"] = "Şifre yenileme linki E-posta adresinize gönderilmiştir.";
+                return RedirectToAction("Login", "Account");
+            }
+            else
+            {
+                ModelState.AddModelError("", "Bu E-posta adresi ile bağlantılı bir kayıt bulunmamaktadır.");
+                return View(model);
+            }
+
+        }
+
+
+        [HttpGet]
+        [Route("sifre-sifirla")]
+        public IActionResult ResetPassword(string token, string email)
+        {
+            if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(email))
+            {
+                ModelState.AddModelError("", "Geçersiz istek.");
+            }
+            return View();
+        }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("sifre-sifirla")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user != null)
+            {
+                var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
+                if (result.Succeeded)
+                {
+                    TempData["Message"] = "Yeni şifreniz ile giriş yapabilirsiniz.";
+                    return RedirectToAction("Login", "Account");
+                }
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+                return View(model);
+            }
+            else
+            {
+                ModelState.AddModelError("", "Kullanıcı bulunamıyor. Yönetici ile irtibata geçebilirsiniz.");
+            }
             return View(model);
         }
 
@@ -192,17 +344,17 @@ namespace NitelikliBilisim.App.Controllers
                     if (info.Principal.HasClaim(c => c.Type == ClaimTypes.GivenName))
                     {
                         model.UserName =
-                            StringHelper.UrlFormatConverter(info.Principal.FindFirstValue(ClaimTypes.GivenName));
+                            StringHelpers.CharacterConverter(info.Principal.FindFirstValue(ClaimTypes.GivenName));
                     }
                     if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Name))
                     {
                         model.Name =
-                            StringHelper.UrlFormatConverter(info.Principal.FindFirstValue(ClaimTypes.Name));
+                            StringHelpers.CharacterConverter(info.Principal.FindFirstValue(ClaimTypes.Name));
                     }
                     if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Surname))
                     {
                         model.Surname =
-                            StringHelper.UrlFormatConverter(info.Principal.FindFirstValue(ClaimTypes.Surname));
+                            StringHelpers.CharacterConverter(info.Principal.FindFirstValue(ClaimTypes.Surname));
                     }
                     if (info.Principal.HasClaim(c => c.Type == "photo"))
                     {
@@ -263,11 +415,79 @@ namespace NitelikliBilisim.App.Controllers
             }
             return View(nameof(ExternalLogin), model);
         }
-        [Authorize, Route("cikis-yap")]
+        [Route("cikis-yap")]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
+
+        #region Helper Functions
+        /// <summary>
+        /// Girilen parametrelere göre NBUY eğitimi alan öğrencinin eğitim günlerini db ye ekler.
+        /// </summary>
+        /// <param name="studentEducationInfoId">Öğrencinin aldığı NBUY eğitiminin tutulduğu tablo.</param>
+        /// <param name="categoryId">NBUY eğitimi alan öğrencinin aldığı eğitim kategorisi.</param>
+        /// <param name="startDate">NBUY eğitim başlangıç tarihi.</param>
+        private void CreateEducationDays(Guid studentEducationInfoId, Guid categoryId, DateTime startDate)
+        {
+            //Tatil Günleri
+            var offDays = _unitOfWork.OffDay.Get(x => x.Year == DateTime.Now.Year || x.Year == DateTime.Now.Year - 1 || x.Year == DateTime.Now.Year + 1).ToList();
+            //Kullanıcının aldığı Nbuy Eğitimi ve eğitimin süresi
+            var nbuyCategory = _unitOfWork.EducationCategory.GetById(categoryId);
+            var educationDayCount = nbuyCategory.EducationDayCount.HasValue ? nbuyCategory.EducationDayCount.Value : 0;
+            //Kullanıcının eğitime başlangıç tarihi 
+            var activeDate = startDate;
+            for (int i = 0; i < educationDayCount; i++)
+            {
+                activeDate = activeDate.AddDays(1);
+                if (checkWeekdays(activeDate) && checkNotHoliday(activeDate, offDays))
+                {
+                    _unitOfWork.EducationDay.Insert(new EducationDay
+                    {
+                        Date = activeDate,
+                        Day = i + 1,
+                        StudentEducationInfoId = studentEducationInfoId
+                    }, true);
+                }
+                else
+                {
+                    i--;
+                }
+            }
+            _unitOfWork.EducationDay.Save();
+        }
+
+        /// <summary>
+        /// Parametre olarak gönderilen tarihin hafta içi olması durumunu kontrol eder.
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns>Hafta içi ise true döner.</returns>
+        private bool checkWeekdays(DateTime date)
+        {
+            if (!(date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday))
+                return true;
+            else
+                return false;
+        }
+        /// <summary>
+        /// Parametre olarak gönderilen aktif günün tatil olup olmaması durumunu kontrol eder.
+        /// </summary>
+        /// <param name="date">Geçerli gün</param>
+        /// <param name="offDays">Tatil günleri listesi</param>
+        /// <returns>Tatil değil ise true döner.</returns>
+        private bool checkNotHoliday(DateTime date, List<OffDay> offDays)
+        {
+            foreach (var offDay in offDays)
+            {
+                if (offDay.Date.Date == date.Date)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        #endregion
+
     }
 }

@@ -1,0 +1,212 @@
+﻿
+@{
+    ViewData["Title"] = "Yorum Yönetimi";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-table"></i> Eğitim Yorum Listesi
+    </div>
+    <div class="card-body">
+        <div id="education-comments-grid"></div>
+    </div>
+    <div class="card-footer small text-muted">Veri tarihi: @DateTime.Now</div>
+</div>
+
+@section postScripts{
+
+    <script>
+        /* assignments */
+        $(document).ready(document_onLoad);
+        var commentStatus = [];
+        /* events */
+        function document_onLoad() {
+            createGrid();
+        }
+       
+        /*DataGrid*/
+        function createGrid() {
+            $("#education-comments-grid").dxDataGrid({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    key: "id",
+                    loadUrl: "../../api/educationcomment/get-education-comments"
+                }),
+                remoteOperations: {
+                    paging: true,
+                    filtering: true,
+                    sorting: true,
+                    grouping: true,
+                    summary: true,
+                    groupPaging: true
+                },
+                showBorders: true,
+                showColumnLines: true,
+                showRowLines: true,
+                wordWrapEnabled: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                searchPanel: {
+                    visible: true,
+                    width: 240
+                },
+                paging: {
+                    pageSize: 10
+                },
+                groupPanel: {
+                    visible: true
+                },
+                grouping: {
+                    autoExpandAll: true
+                },
+                headerFilter: {
+                    visible: true
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10, 20],
+                    showInfo: true
+                },
+                onExporting: function (e) {
+                    var workbook = new ExcelJS.Workbook();
+                    var worksheet = workbook.addWorksheet('Eğitim Yorumlari');
+                    DevExpress.excelExporter.exportDataGrid({
+                        worksheet: worksheet,
+                        component: e.component,
+                        customizeCell: function (options) {
+                            var excelCell = options;
+                            excelCell.font = { name: 'Arial', size: 12 };
+                            excelCell.alignment = { horizontal: 'left' };
+                        }
+                    }).then(function () {
+                        workbook.xlsx.writeBuffer().then(function (buffer) {
+                            saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'Egitim Yorumlari' + parseInt(Math.random() * 1000000000) + '.xlsx');
+                        });
+                    });
+                    e.cancel = true;
+                },
+                export: {
+                    enabled: true
+                },
+                columns: [
+                    {
+                        caption: "Tarih",
+                        dataField: "createdDate",
+                        dataType: 'date',
+                        format: 'dd/MM/yyyy',
+                        width: 110,
+                        sortOrder: "desc"
+                    },
+                    {
+                        caption: "Eğitim",
+                        dataField: "educationName",
+                        width: 260
+
+                    },
+                    {
+                        caption: "Ad",
+                        dataField: "commenterName",
+                        width: 120
+
+                    }, {
+                        caption: "Soyad",
+                        dataField: "commenterSurname",
+                        width:120
+                    },
+
+                    {
+                        caption: "Email",
+                        dataField: "commenterEmail",
+                        width:230
+                    },
+                    {
+                        caption: "Durum",
+                        dataField: "approvalStatus",
+                        lookup: {
+                            dataSource: {
+                                store: DevExpress.data.AspNet.createStore({
+                                    key: "key",
+                                    loadUrl: "../../api/educationcomment/get-comment-status"
+                                })
+                            },
+                            displayExpr: "value",
+                            valueExpr: "key"
+                        },
+                    }
+                ],
+                masterDetail: {
+                    enabled: true,
+                    template: function (container, options) {
+                        var currentComment = options.data;
+                        console.log(currentComment);
+                        var currentDiv = $("<div class='row'>")
+                            .appendTo(container);
+                        var highlight = `<div class="col-md-12"><button type="button" onClick="highlightComment('${currentComment.id}')" class="btn btn-sm btn-outline-primary pull-right">${currentComment.isHighlight?"Öne Çıkarılanlardan Sil":"Öne Çıkar"}</button></div>`;
+                        var content = `<div class="col-md-12">` +
+                            `<div class="card border-info mb-3">`+
+                            `<div class="card-header font-weight-bold">Yorum` +
+                            `<button type="button" onClick="setStatus('${currentComment.id}',1010)" title="Onayla" class="btn btn-sm btn-outline-success pull-right"><i class="fa fa-check"></i></button>` +
+                            `<button type="button" onClick="setStatus('${currentComment.id}',1020)" title="Reddet" style="margin-right:10px;" class="btn btn-sm btn-outline-danger pull-right"><i class="fa fa-times"></i></button>` +
+                            `</div>` +
+                            `<div class="card-body"><p>${currentComment.content}</p><b>Puan: </b>${currentComment.point}<b><br/>Karakter Sayısı:</b>${currentComment.content.length}<br><b>Önerilen Karakter Sayısı :</b>170</div></div></div>`;
+                        currentDiv.append(content);
+                        if (currentComment.approvalStatus == 1010) {
+                            currentDiv.append(highlight);
+                        }
+                    }
+                }
+            });
+        }
+        function highlightComment(id) {
+            var resultAlert = new AlertSupport.ResultAlert();
+            $.ajax({
+                url: `/admin/toggle-highlight-comment?commentId=${id}`,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        resultAlert.display({
+                            success: true,
+                            message: "Durum güncellendi.",
+                        });
+                        $("#education-comments-grid").dxDataGrid("instance").refresh();
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors,
+                            message: "İşlem başarısız"
+                        });
+                    }
+                }
+            });
+        }
+        function setStatus(id,status) {
+            var resultAlert = new AlertSupport.ResultAlert();
+            $.ajax({
+                url: `/admin/set-comment-status?commentId=${id}&status=${status}`,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        resultAlert.display({
+                            success: true,
+                            message: "Durum güncellendi.",
+                        });
+                        $("#education-comments-grid").dxDataGrid("instance").refresh();
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors,
+                            message: "İşlem başarısız"
+                        });
+                    }
+                }
+            });
+        }
+
+    </script>
+}
+

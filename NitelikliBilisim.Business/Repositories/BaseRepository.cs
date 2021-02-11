@@ -39,7 +39,7 @@ namespace NitelikliBilisim.Business.Repositories
             return isSaveLater ? 0 : Save();
         }
 
-        public int Delete(TKey id, bool isSaveLater = false)
+        public virtual int Delete(TKey id, bool isSaveLater = false)
         {
             var entity = Table.Find(id);
             Table.Remove(entity);

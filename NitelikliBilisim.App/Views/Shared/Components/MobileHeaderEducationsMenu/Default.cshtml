@@ -1,0 +1,65 @@
+﻿@model NitelikliBilisim.Core.ViewModels.Main.HeaderEducationMenuVm
+<div class="mobile-menu">
+    <div class="mobile-menu__list">
+        <div class="mobile-menu__item mobile-menu-dropdown active js-mobile-menu-dropdown">
+            <span class="mobile-menu__txt">
+                Eğitimler
+            </span>
+            <div class="mobile-menu__dropdown">
+                @foreach (var baseCategory in Model.BaseCategories)
+                {
+                    <div class="mobile-menu-dropdown ">
+                        <div class="js-mobile-menu-subdropdown">
+                            <span style="color: @(baseCategory.IconColor);">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#@(baseCategory.IconUrl)"></use>
+                                </svg>
+                            </span>
+                            <span>@baseCategory.Name</span>
+                        </div>
+                        <div class="mobile-menu__subdropdown">
+                            @foreach (var subCategory in baseCategory.SubCategories)
+                            {
+                                <a href="#0" class="mobile-menu-subin js-mobile-subin">
+                                    <div>@subCategory.Name</div>
+                                </a>
+                                <div class="mobile-menu-subin__dropdown">
+                                    @foreach (var education in subCategory.Educations)
+                                    {
+                                        <a asp-controller="Course" asp-action="Details" asp-route-catSeoUrl="@subCategory.SeoUrl" asp-route-seoUrl="@education.SeoUrl">@education.Name</a>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+        <div class="mobile-menu__item js-modal-trigger" data-trigger="egitimSihirbazi">
+            <span class="mobile-menu__txt">
+                Eğitim Sihirbazı
+            </span>
+        </div>
+        <a asp-controller="Blog" asp-action="List" class="mobile-menu__item">
+            <span class="mobile-menu__txt">
+                Blog
+            </span>
+        </a>
+        <div class="mobile-menu__item mobile-menu-dropdown js-mobile-menu-dropdown">
+            <span class="mobile-menu__txt">
+                Kurumsal
+            </span>
+            <div class="mobile-menu__dropdown">
+                <a asp-controller="Home" asp-action="AboutUs">Hakkımızda</a>
+                <a asp-controller="Home" asp-action="CorporateMembershipApplication">Kurumsal Eğitim Talebi</a>
+                <a asp-controller="Home" asp-action="EducatorApplication">Eğitmen Başvurusu</a>
+                <a asp-controller="Home" asp-action="Contact">İletişim</a>
+            </div>
+        </div>
+    </div>
+    <div class="mobile-menu__footer">
+        <a href="#">Kullanım Koşulları</a>
+        <a href="#">Gizlilik Koşulları</a>
+    </div>
+</div>

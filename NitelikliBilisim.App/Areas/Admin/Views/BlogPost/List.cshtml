@@ -1,0 +1,28 @@
+﻿
+@{
+    ViewData["Title"] = "Yazılar";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-table"></i> Yazılar
+        <a href="@Url.Action("Add","BlogPost")" class="btn pull-right btn-outline-primary btn-sm">Yeni ekle</a>
+    </div>
+    <div class="card-body">
+        
+        <div id="blog-post-grid"></div>
+    </div>
+
+</div>
+<div class="card-footer small text-muted">Veri tarihi: @DateTime.Now</div>
+</div>
+
+@section postScripts{
+    <script src="~/js/areas/admin/admin-blog-post-list.js"></script>
+}

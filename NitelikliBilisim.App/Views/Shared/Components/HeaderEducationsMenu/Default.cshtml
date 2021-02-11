@@ -1,0 +1,82 @@
+﻿@model NitelikliBilisim.Core.ViewModels.Main.HeaderEducationMenuVm
+<aside id="educationContent" class="education__content">
+    <nav>
+        @foreach (var item in Model.BaseCategories)
+        {
+            <a href="#@item.Id" class="js-educationMenu">
+                <span style="background-color:@(item.IconColor);" class="icon-outer header__item-icon">
+                    <svg class="icon">
+                        <use xlink:href="../../assets/img/icons.svg#@item.IconUrl"></use>
+                    </svg>
+                </span>
+                <span>@item.Name</span>
+            </a>
+        }
+    </nav>
+    <div class="header__education--outer js-open-education-outer">
+        <div class="header__education--banners js-open-banners">
+            <div class="banner">
+                <div class="banner__content">
+                    <p>
+                        Proje eğitimlerinde %30 indirim fırsatı!
+                    </p>
+                    <a asp-controller="Course" asp-action="List">
+                        <span>Şimdi İncele</span>
+                        <img src="~/assets/img/arrowRightLong.png" alt="" />
+                    </a>
+                </div>
+                <figure class="banner__image">
+                    <img src="~/assets/img/banner1.png" alt="" height="150" />
+                </figure>
+            </div>
+
+            @if (!User.Identity.IsAuthenticated)
+            {
+                <div class="banner" style="background-color: #78bbd0">
+                    <div class="banner__content">
+                        <p>
+                            Şimdi kayıt olun, size özel eğitimleri kaçırmayın!
+                        </p>
+                        <a asp-controller="Account" asp-action="Register" class="button button--light mt-2">
+                            Üye Ol
+                        </a>
+                    </div>
+                    <figure class="banner__image">
+                        <img src="~/assets/img/banner2.png" alt="" />
+                    </figure>
+                </div>
+            }
+
+        </div>
+        <div class="header__education--submenu js-open-submenu">
+            @foreach (var baseCategory in Model.BaseCategories)
+            {
+                <div class="header__education--subin" id="@baseCategory.Id">
+
+                    <div class="header__education-sub--top">
+                        <div class="header__education-sub--top-left">
+                            @baseCategory.TotalEducationCount Eğitim
+                        </div>
+                        <div class="header__education-sub--top-right">
+                            <a asp-controller="Course" asp-action="List" asp-route-catSeoUrl="@baseCategory.SeoUrl">Tüm Eğitimler</a>
+                        </div>
+                    </div>
+
+                    <ul class="header__education-sub--cnt">
+                        @foreach (var subCategory in baseCategory.SubCategories)
+                        {
+                            <div class="header__education-sub--cnt-wrp">
+                                <span>@subCategory.Name</span>
+                                @foreach (var education in subCategory.Educations)
+                                {
+                                    <li><a asp-controller="Course" asp-action="Details" asp-route-catSeoUrl="@subCategory.SeoUrl" asp-route-seoUrl="@education.SeoUrl">@education.Name</a></li>
+                                }
+
+                            </div>
+                        }
+                    </ul>
+                </div>
+            }
+        </div>
+    </div>
+</aside>

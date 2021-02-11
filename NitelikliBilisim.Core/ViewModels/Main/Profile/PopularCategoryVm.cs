@@ -1,0 +1,18 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace NitelikliBilisim.Core.ViewModels.Main.Profile
+{
+    public class PopularCategoryVm
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string IconUrl { get; set; }
+        public string BackgroundImageUrl { get; set; }
+        public string SeoUrl { get; set; }
+    }
+}

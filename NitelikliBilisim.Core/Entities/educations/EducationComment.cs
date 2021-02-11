@@ -1,4 +1,5 @@
 ﻿using NitelikliBilisim.Core.Abstracts;
+using NitelikliBilisim.Core.Enums.user_details;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -23,7 +24,8 @@ namespace NitelikliBilisim.Core.Entities
         public string ApproverId { get; set; }
         [Column(TypeName = "datetime2(3)")]
         public DateTime? ApprovalDate { get; set; }
-
+        public bool IsHighLight { get; set; }
+        public CommentApprovalStatus ApprovalStatus { get; set; }
         public Guid? BaseCommentId { get; set; }
         [ForeignKey("BaseCommentId")]
         public virtual EducationComment BaseComment { get; set; }

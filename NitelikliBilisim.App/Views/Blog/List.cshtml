@@ -1,0 +1,477 @@
+﻿@model NitelikliBilisim.Core.ViewModels.Main.Blog.BlogListVm
+@using NitelikliBilisim.Core.Services.Abstracts
+@inject IStorageService StorageService
+@{
+    ViewData["Title"] = "Blog";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="subheader">
+    <div class="subheader__wrp subheader__slider-gradient">
+        <div class="container">
+            <div class="subheader__slider--cnt">
+                <div class="subheader__title">Blog</div>
+                <div class="subheader__slider">
+                    <div class="swiper-container js-blog-slider">
+                        <div class="swiper-wrapper">
+                            @foreach (var post in Model.LastBlogPosts)
+                            {
+                                var featuredImage = "";
+                                try
+                                {
+                                    featuredImage = StorageService.BlobUrl+post.FeaturedImageUrl;
+                                }
+                                catch
+                                {
+                                }
+
+                                <div class="swiper-slide">
+                                    <a asp-controller="Blog" asp-action="Detail" asp-route-catSeoUrl="@post.CategorySeoUrl" asp-route-seoUrl="@post.SeoUrl" class="blog-slider-card">
+                                        <img src="@featuredImage" alt="">
+                                        <div class="blog-slider-card__cnt">
+                                            <div class="blog-slider-card__tag">
+                                                @post.Category
+                                            </div>
+                                            <div class="blog-slider-card__title">
+                                                @post.Title
+                                            </div>
+                                            <div class="blog-slider-card__infos">
+                                                <div class="blog-slider-card__info">
+                                                    <span class="icon-outer">
+                                                        <svg class="icon">
+                                                            <use xlink:href="../../assets/img/icons.svg#icon-date"></use>
+                                                        </svg>
+                                                    </span>
+                                                    <span>@post.CreatedDate</span>
+                                                </div>
+                                                <div class="blog-slider-card__info">
+                                                    <span class="icon-outer">
+                                                        <svg class="icon">
+                                                            <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                                                        </svg>
+                                                    </span>
+                                                    <span>@post.ReadingTime dk. Okuma Süresi</span>
+                                                </div>
+                                                <div class="blog-slider-card__info">
+                                                    <span class="icon-outer">
+                                                        <svg class="icon">
+                                                            <use xlink:href="../../assets/img/icons.svg#icon-view"></use>
+                                                        </svg>
+                                                    </span>
+                                                    <span>@post.ViewCount Görüntülenme</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            }
+
+
+                        </div>
+
+                        <div class="swiper-button-prev swiper-button-circle">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="swiper-button-next swiper-button-circle">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="blog-list">
+    <input type="hidden" id="current-page" />
+    <input type="hidden" id="current-category" value="@Model.CurrentCategorySeoUrl" />
+    <input type="hidden" id="searchKey" value="@Model.SearchKey" />
+    <div class="container" >
+        <div class="blog-list__title">
+            <div class="flex-center mb-4">
+                @if (Model.CurrentCategory == null)
+                {
+                    <h2 class="title title-section">GÜNCEL <span class="title--blue">YAZILAR</span></h2>
+                }
+                else
+                {
+                    var keywords = Model.CurrentCategory.Split(" ");
+                    var left = "";
+                    var right = "";
+                    for (int i = 0; i < keywords.Count(); i++)
+                    {
+                        if (i<keywords.Count()/2)
+                        {
+                            left += keywords[i]+" ";
+                        }
+                        else
+                        {
+                            right += keywords[i]+" ";
+                        }
+                    }
+
+                    <h2 class="title title-section">@left<span class="title--blue">@right</span></h2>
+
+                }
+
+            </div>
+        </div>
+        <div class="blog-list__wrp">
+            <div class="blog-list__content">
+
+                <div class="blog-list__items">
+                   
+
+                </div>
+                <div class="pagination">
+                  
+                </div>
+            </div>
+            <div class="blog-list__side">
+                <div class="side-categories">
+                    <div class="side-categories__title js-mobile-side-categori">
+                        BLOG <span> &nbsp;KATEGORİLERİ</span>
+                        <span class="icon-outer input__icon side-categories__mobile-icon">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
+                            </svg>
+                        </span>
+                    </div>
+                    <div class="side-categories__cnt js-vertical-magic-line">
+                        <div class="side-categories__item js-vertical-magic-line-item @(string.IsNullOrEmpty(Model.CurrentCategorySeoUrl)?"active":"" )">
+                            <a asp-action="List" asp-route-c="">
+                                <span class="side-categories__txt">Hepsi</span>
+                                <span class="side-categories__count">@Model.TotalBlogPostCount</span>
+                            </a>
+                        </div>
+                        @foreach (var category in Model.Categories)
+                        {
+                            <div class="side-categories__item js-vertical-magic-line-item @(!string.IsNullOrEmpty(Model.CurrentCategorySeoUrl)&&Model.CurrentCategorySeoUrl == category.SeoUrl?"active":"")">
+                                <a asp-action="List" asp-route-c="@category.SeoUrl">
+                                    <span class="side-categories__txt">@category.Name</span>
+                                    <span class="side-categories__count">@category.PostCount</span>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="side-search">
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-search"></use>
+                            </svg>
+                        </span>
+                        <input type="text"  id="input-search-blog-post" value="@Model.SearchKey" placeholder="Makale, içerik, konu arayın">
+                </div>
+                <div class="side-subscribe">
+                    <div class="side-subscribe__top">
+                        <div class="side-subscribe__icon">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-mailist"></use>
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="side-subscribe__title">Bloğumuza Abone Ol</div>
+                        <div class="side-subscribe__txt">Bloğumuzdaki birçok faydalı bilgiden haberdar ol.</div>
+                    </div>
+                    <div class="side-subscribe__content">
+                        <form class="side-subscribe__form"
+                              method="post" id="blog-subscribe-form"
+                              asp-action="SubscribeToBlog" asp-controller="Home"
+                              data-ajax-success="onBlogSubsciptionSuccess"
+                              data-ajax-failure="onBlogSubsciptionFailed"
+                              data-ajax="true" data-ajax-method="POST">
+                            <div class="input__outer">
+                                <span class="icon-outer input__icon">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-user"></use>
+                                    </svg>
+                                </span>
+                                <input name="name" type="text" class="input input--bordered input--fw input--noshadow"
+                                       placeholder="Adınız Soyadınız" required>
+                            </div>
+                            <div class="input__outer">
+                                <span class="icon-outer input__icon">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-mail"></use>
+                                    </svg>
+                                </span>
+                                <input name="email" type="email" class="input input--bordered input--fw input--noshadow"
+                                       placeholder="Email Adresiniz" required>
+                            </div>
+                            <button type="submit" class="button button-icon-right button-fw button-big">
+                                <span class="button-txt">Kaydol</span>
+                                <span class="icon-outer button-icon">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                                    </svg>
+                                </span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <div class="side-banner">
+                    <div class="side-banner__cnt">
+                        <div class="side-banner__icon">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-user-dart"></use>
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="side-banner__title">
+                            Size en uygun <br>proje eğitimlerini
+                            Birlikte bulalım!
+                        </div>
+                    </div>
+                    <a class="side-banner__footer js-modal-trigger" data-trigger="egitimSihirbazi">
+                        Şimdi Başlayın
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                            </svg>
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal modal--message success" id="SubscribeToBlogSuccessMessage">
+    <div class="modal__close js-close-modal">
+        <span class="icon-outer">
+            <svg class="icon">
+                <use xlink:href="../../assets/img/icons.svg#icon-close"></use>
+            </svg>
+        </span>
+    </div>
+    <div class="modal__content">
+        <div class="side-subscribe__success">
+            <div class="side-subscribe__top">
+                <div class="side-subscribe__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-success"></use>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+            <div class="side-subscribe__content">
+                <div class="side-subscribe__title">Teşekkürler!</div>
+                <div class="side-subscribe__txt">
+                    E-bülten'e kaydınız başarıyla sağlanmıştır. Güncel içerikleri
+                    tarafınıza
+                    ulaştıracağız.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal modal--message wrong" id="SubscribeToBlogWrongMessage">
+    <div class="modal__close js-close-modal">
+        <span class="icon-outer">
+            <svg class="icon">
+                <use xlink:href="../../assets/img/icons.svg#icon-close"></use>
+            </svg>
+        </span>
+    </div>
+    <div class="modal__content">
+        <div class="side-subscribe__success">
+            <div class="side-subscribe__top">
+                <div class="side-subscribe__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-wrong"></use>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+            <div class="side-subscribe__content">
+                <div class="side-subscribe__title">Gönderim Başarısız!</div>
+                <div class="side-subscribe__txt">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section postScripts{
+    <script>
+        var currentPage = $("#current-page");
+        var currentCategory = $("#current-category");
+        var searchKey = $("#searchKey");
+        var postContent = $(".blog-list__items");
+        var paginationContent = $(".pagination");
+        var searchKeyinput = $("#input-search-blog-post");
+
+        $(function () {
+            getPosts();
+        });
+
+
+        $(searchKeyinput).on('keypress', function (e) {
+            if (e.which == 13) {
+                location.href = `/blog?sKey=${$(this).val()}`;
+            }
+        });
+        function getPosts() {
+            $.ajax({
+                url: `/get-blog-posts`,
+                method: "post",
+                async: false,
+                data: {
+                    categoryId: currentCategory.val(),
+                    page: currentPage.val(),
+                    searchKey: searchKey.val()
+                },
+                success: (res) => {
+                    postContent.html("");
+                    $.each(res.data.posts, function (index, e) {
+                        var education = `<a href="/blog/${e.categorySeoUrl}/${e.seoUrl}" class="blog-card">
+                            <div class="blog-card__img">
+                                <img src="${e.featuredImageUrl}" alt="">
+                            </div>
+                            <div class="blog-card__content">
+                                <div class="blog-card__tag">${e.category}</div>
+                                <div class="blog-card__title">
+                                     ${e.title}
+                                </div>
+                                <div class="blog-card__txt">
+                                    ${e.content}
+                                </div>
+                            </div>
+                            <div class="blog-card__footer">
+                                <div class="blog-card__info">
+                                    <span class="icon-outer">
+                                        <svg class="icon">
+                                            <use xlink:href="../../assets/img/icons.svg#icon-date"></use>
+                                        </svg>
+                                    </span>
+                                    <span>${e.createdDate}</span>
+                                </div>
+                                <div class="blog-card__info">
+                                    <span class="icon-outer">
+                                        <svg class="icon">
+                                            <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                                        </svg>
+                                    </span>
+                                    <span>${e.readingTime} dk.</span>
+                                </div>
+                                <div class="blog-card__info">
+                                    <span class="icon-outer">
+                                        <svg class="icon">
+                                            <use xlink:href="../../assets/img/icons.svg#icon-view"></use>
+                                        </svg>
+                                    </span>
+                                    <span>${e.viewCount} Görüntülenme</span>
+                                </div>
+                            </div>
+                        </a>`;
+                        postContent.append(education);
+                    });
+
+                    paginationContent.html("");
+                    var prev = `<a class="pagination__item prev" onclick=changePage('${res.data.pageIndex - 1}')>
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
+                                </svg>
+                            </span>
+                        </a>`;
+                    var next = `<a class="pagination__item next" onclick=changePage('${res.data.pageIndex + 1}')>
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
+                                </svg>
+                            </span>
+                        </a>`;
+                    if (res.data.pageIndex > 1) {
+                        paginationContent.append(prev);
+                    }
+                    for (var i = 1; i <= res.data.totalPageCount; i++) {
+
+                        var page = `<a onclick="changePage('${i}')" class="pagination__item ${i == res.data.pageIndex ? 'active' : ''}" >${i}</a>`;
+                        paginationContent.append(page);
+                    }
+                    if (res.data.pageIndex < res.data.totalPageCount) {
+                        paginationContent.append(next);
+                    }
+
+                }
+            });
+        }
+
+        $("#blog-subscribe-form").validate({
+            errorLabelContainer: $('#validateForm div.error'),
+            errorContainer: 'div.error-messages',
+            errorLabelContainer: $('ul', 'div.error-messages'),
+            wrapper: 'li',
+            rules: {
+                name: {
+                    required: true,
+                },
+                email: {
+                    required: true,
+                    email: true,
+                }
+            },
+            messages: {
+                name: 'Bu alan zorunludur.',
+                email: {
+                    required: 'Bu alan zorunludur.',
+                    email: 'Lütfen geçerli bir e-posta adresi giriniz.',
+                }
+            },
+            highlight: function (element) {
+                $(element)
+                    .parent()
+                    .addClass('outer-error');
+            },
+            unhighlight: function (element) {
+                $(element)
+                    .parent()
+                    .removeClass('outer-error');
+            },
+        });
+        function changePage(page) {
+            currentPage.val(page);
+            getPosts();
+            $('html, body').animate({
+                scrollTop: $(".blog-list__title").offset().top-10
+            }, 1000);
+        }
+        var onBlogSubsciptionSuccess = function (context) {
+            $(".side-subscribe__txt").html(context.message);
+            if (context.success) {
+                showModal('SubscribeToBlogSuccessMessage');
+            } else {
+                showModal('SubscribeToBlogWrongMessage');
+            }
+            $('#blog-subscribe-form')[0].reset();
+        };
+        var onBlogSubsciptionFailed = function () {
+            showModal('SubscribeToBlogWrongMessage');
+        }
+        function showModal(id) {
+            $('html, body').addClass('no-scroll');
+            $('.main-overlay').addClass('active');
+            $('.modal[id="' + id + '"]').addClass('modal--active');
+            $('.js-open-mobile-menu').removeClass('active');
+            $('.js-open-mobile-menu')
+                .closest('.header-mobile')
+                .removeClass('active');
+            $('html,body').removeClass('scroll-lock');
+        }
+    </script>
+
+} 

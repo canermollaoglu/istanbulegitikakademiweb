@@ -1,0 +1,240 @@
+/* variables */
+
+@mixin bp($point) {
+  @if $point==desktop-l {
+    @media (max-width: 1920px) {
+      @content;
+    }
+  }
+
+  @else if $point==r-desktop-l {
+    @media (min-width: 1920px) {
+      @content;
+    }
+  }
+
+  @else if $point==desktop-m {
+    @media (max-width: 1500px) {
+      @content;
+    }
+  }
+
+  @else if $point==r-desktop-m {
+    @media (min-width: 1500px) {
+      @content;
+    }
+  }
+
+  @else if $point==laptop {
+    @media (max-width: 1367px) {
+      @content;
+    }
+  }
+
+  @else if $point==desktop {
+    @media (max-width: 1200px) {
+      @content;
+    }
+  }
+
+  @else if $point==nav {
+    @media (max-width: 900px) {
+      @content;
+    }
+  }
+
+  @else if $point==r-nav {
+    @media (min-width: 900px) {
+      @content;
+    }
+  }
+
+  @else if $point==tablet-big {
+    @media (max-width: 1024px) {
+      @content;
+    }
+  }
+
+  @else if $point==tablet {
+    @media (max-width: 992px) {
+      @content;
+    }
+  }
+
+  @else if $point==tablet-small {
+    @media (max-width: 768px) {
+      @content;
+    }
+  }
+
+  @else if $point==mobile {
+    @media (max-width: 576px) {
+      @content;
+    }
+  }
+
+  @else if $point==r-desktop {
+    @media (min-width: 1200px) {
+      @content;
+    }
+  }
+
+  @else if $point==r-tablet-big {
+    @media (min-width: 1024px) {
+      @content;
+    }
+  }
+
+  @else if $point==r-tablet {
+    @media (min-width: 992px) {
+      @content;
+    }
+  }
+
+  @else if $point==ipad-vertical {
+    @media (min-width: 768px) and (max-width: 768px) {
+      @content;
+    }
+  }
+
+  @else if $point==r-tablet-small {
+    @media (min-width: 768px) {
+      @content;
+    }
+  }
+
+  @else if $point==r-mobile {
+    @media (min-width: 576px) {
+      @content;
+    }
+  }
+
+  @else if $point==mobile-small {
+    @media (max-width: 480px) {
+      @content;
+    }
+  }
+
+  @else if $point==mobile-x-small {
+    @media (max-width: 350px) {
+      @content;
+    }
+  }
+}
+
+:root {
+  --webmobilprogramlama: #012b69;
+  --sistemagyonetim: #454fd2;
+  --siberguvenlik: #0072cd;
+  --bulutbilisim: #0566dd;
+  --oyunprogramlama: #222c38;
+  --kurumsalkaynakplanlama: #00b5c3;
+}
+
+/* Colors */
+$colorBlue: #459af0;
+$colorNavyBlue: #1f1941;
+$colorTurqoise: #60d9db;
+$colorGrey: #e9f1fb;
+$colorGreyDark: #404347;
+$colorLightPurple: #4d579f;
+
+$c-extraDark: #110c2c;
+$c-dark: #242439;
+$c-softDark: rgba(#242439, .7);
+$c-softBlue: #f4f9fe;
+
+$c-simpleText: #5a5f81;
+$c-simpleText-2: #748eb5;
+
+$c-softBorder : #dce3f1;
+
+/* Helpers */
+$transition: all 300ms;
+$boxShadow: 5px 0 40px rgba(0, 0, 0, 0.1);
+$boxShadowHover: 0 4px 15px rgba(19, 29, 51, 0.2);
+
+
+.colored-blue {
+  color: $colorBlue;
+}
+
+.colored-light-purple {
+  color: $colorLightPurple;
+}
+
+.v-tablet-s {
+  display: none !important;
+
+  @include bp(tablet-small) {
+    display: block !important;
+  }
+
+  &-flex {
+    display: none !important;
+
+    @include bp(tablet-small) {
+      display: flex !important;
+    }
+  }
+}
+
+.v-tablet {
+  display: none !important;
+
+  @include bp(tablet) {
+    display: block !important;
+  }
+
+  &-flex {
+    display: none !important;
+
+    @include bp(tablet) {
+      display: flex !important;
+    }
+  }
+}
+
+.v-tablet-big {
+  display: none !important;
+
+  @include bp(tablet-big) {
+    display: block !important;
+  }
+
+  &-flex {
+    display: none !important;
+
+    @include bp(tablet-big) {
+      display: flex !important;
+    }
+  }
+}
+
+.v-desktop {
+  display: block !important;
+
+  @include bp(tablet-small) {
+    display: none !important;
+  }
+
+  &-flex {
+    display: flex !important;
+
+    @include bp(tablet-small) {
+      display: none !important;
+    }
+  }
+}
+
+.h-tablet-big {
+  @include bp(tablet-big) {
+    display: none !important;
+  }
+}
+
+.h-tablet {
+  @include bp(tablet) {
+    display: none !important;
+  }
+}

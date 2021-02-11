@@ -60,10 +60,17 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 var folder = Path.GetDirectoryName(item.ProfilePhoto);
                 var fileName = Path.GetFileName(item.ProfilePhoto);
-                item.ProfilePhoto = storage.DownloadFile(fileName, folder).Result;
+                item.ProfilePhoto = storage.BlobUrl+item.ProfilePhoto;
             }
 
             return model;
+        }
+
+        public void Delete(Guid educationId, Guid educatorId)
+        {
+           var educationEducator = _context.Bridge_EducationEducators.First(x => x.Id == educationId && x.Id2 == educatorId.ToString());
+            _context.Bridge_EducationEducators.Remove(educationEducator);
+            _context.SaveChanges();
         }
     }
 }

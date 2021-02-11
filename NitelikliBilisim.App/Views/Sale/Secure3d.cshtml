@@ -1,0 +1,22 @@
+﻿<!DOCTYPE html>
+<html lang="tr" class="h-100-percent">
+
+<head>
+    <title>Güvenli Ödeme Bilgileri - Nitelikli Bilişim</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <partial name="partials/_BaseAssetsHeader" />
+</head>
+<body class="h-100-percent">
+    <partial name="partials/_header-simple" />
+    <section class="default-centered d-c-h-auto">
+        <div class="container">
+            <div class="default-centered__wrp">
+                @Html.Raw(Model.HtmlContent)
+            </div>
+        </div>
+    </section>
+    <partial name="partials/_footer-copyright" />
+</body>
+
+</html>

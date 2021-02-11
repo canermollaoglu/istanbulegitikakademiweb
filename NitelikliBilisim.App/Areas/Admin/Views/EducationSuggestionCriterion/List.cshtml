@@ -1,0 +1,29 @@
+﻿
+@{
+    ViewData["Title"] = "Eğitim Öneri Kriterleri Listesi";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+<style>
+    .dx-datagrid-nowrap, .dx-datagrid-nowrap .dx-header-row > td > .dx-datagrid-text-content{
+        white-space :normal !important;
+    }
+</style>
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-table"></i> Eğitim Öneri Kriterleri
+    </div>
+    <div class="card-body">
+        <div id="education-suggestion-criterion-grid"></div>
+    </div>
+    <div class="card-footer small text-muted">Veri tarihi: @DateTime.Now</div>
+</div>
+
+@section postScripts{
+    <script src="~/js/areas/admin/admin-education-suggestion-criterion-list.js"></script>
+}

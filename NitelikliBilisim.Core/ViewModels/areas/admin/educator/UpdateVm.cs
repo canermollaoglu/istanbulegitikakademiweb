@@ -1,4 +1,7 @@
-﻿using System;
+﻿using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Entities.user_details;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace NitelikliBilisim.Core.ViewModels.areas.admin.educator
@@ -12,6 +15,12 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.educator
         public string Email { get; set; }
         public string Title { get; set; }
         public string Biography { get; set; }
+        public string ShortDescription { get; set; }
+        public string FilePath { get; set; }
+        public List<EducatorCertificate> RelatedCertificates { get; set; }
+        public int Bank { get; set; }
+        public string IBAN { get; set; }
+        public List<EducationCategory> RelatedCategories { get; set; }
     }
 
     public class UpdatePostVm : AddPostVm
@@ -31,5 +40,35 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.educator
         public string Email { get; set; }
         public string Title { get; set; }
         public Guid EducatorId { get; set; }
+        public _SocialMedia SocialMedia { get; set; }
+        public _PostedFileUpdate ProfilePhoto { get; set; }
+        [Required(ErrorMessage = "Biyografi alanı boş geçilemez")]
+        public string Biography { get; set; }
+        [Required(ErrorMessage = "Kısa Açıklama alanı boş geçilemez"), MaxLength(400, ErrorMessage = "Kısa Açıklama alanı en fazla 400 karakter içerebilir.")]
+        public string ShortDescription { get; set; }
+        public List<int> CertificateIds { get; set; }
+        public List<Guid> CategoryIds { get; set; }
+        public int Bank { get; set; }
+        public string IBAN { get; set; }
+
+    }
+    public class _PostedFileUpdate
+    {
+        public string Base64Content { get; set; }
+        public string Extension { get; set; }
+    }
+
+    public class UpdateGetEducatorSocialMediaVm : AddGetVm
+    {
+        public Guid Id { get; set; }
+        public string Facebook { get; set; }
+        public string Linkedin { get; set; }
+        public string GooglePlus { get; set; }
+        public string Twitter { get; set; }
+    }
+
+    public class UpdatePostEducatorSocialMediaVm : _SocialMedia
+    {
+        public string EducatorId { get; set; }
     }
 }

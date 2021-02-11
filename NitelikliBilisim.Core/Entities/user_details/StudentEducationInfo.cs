@@ -1,6 +1,8 @@
 ﻿using NitelikliBilisim.Core.Abstracts;
+using NitelikliBilisim.Core.Entities.user_details;
 using NitelikliBilisim.Core.Enums;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NitelikliBilisim.Core.Entities
@@ -15,10 +17,12 @@ namespace NitelikliBilisim.Core.Entities
 
         public EducationCenter EducationCenter { get; set; }
         public DateTime StartedAt { get; set; }
-        public Guid? CategoryId { get; set; }
+        public Guid CategoryId { get; set; }
 
         [ForeignKey("Customer")]
         public string CustomerId { get; set; }
         public virtual Customer Customer { get; set; }
+        public virtual List<EducationDay> EducationDays { get; set; }
+        public virtual EducationCategory Category { get; set; }
     }
 }

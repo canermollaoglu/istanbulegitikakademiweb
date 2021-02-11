@@ -4,316 +4,394 @@
     Layout = "/Views/Shared/_Layout.cshtml";
 }
 
-<main>
-    <section class="hero_single version_2">
-        <div class="wrapper">
-            <div class="container">
-                <div class="row containerRow col-sm-12">
-                    <h3><span style="font-weight: 100 !important">HANGİ KONUDA</span> <b style="color:#fc4912">PROJE EKSİĞİN VAR?</b></h3>
-                    <p>Uygulama olmadan, teorik bilgi ne işe yarar ki!</p><br />
-                     <div class="main_title_Search">
-                          <span><em></em></span>
-                     </div>
-                    <p>Aldığın teorik eğitimi proje yazarak pekiştir, sertifikanı al, aranan BT uzmanı ol.</p>
-                    <form>
-                        <div id="custom-search-input">
-                            <div class="input-group rounded">
-                                <input type="text" style="margin: 0 -35px !important; padding-right:130px; border: 2px solid #2d2f33;" class="search-query" placeholder="Örnek: Windows Form Uygulamaları..." id="input-index-search">
-                                <input type="submit" style="        border-radius: 33px !important
-" class="btn_search rounded" value="Eğitim Bul" id="btn-index-search">
+
+<main class="o-x-hidden">
+    <section class="section is-hero">
+        <div class="is-hero__img">
+            <img class="v-desktop" src="~/assets/img/banner-atf.png" alt="">
+            <img class="v-tablet-s" src="~/assets/img/banner-atf_mobile.png" alt="">
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="is-hero__heading">
+                        Hangi konuda <br /> <span class="is-hero__heading--colored">
+                            proje eksiğin
+                            var?
+                        </span>
+                    </h2>
+                    <p class="is-hero__desc">
+                        Teorik Eğitimini Proje Yazarak Pekiştir, Sertifikanı Al, <br /> Aranan BT Uzmanı Ol !
+                    </p>
+
+                    <form action="arama-sonuclari" class="is-hero__form">
+                        <div id="firstSearch" class="dropdown js-dropdown">
+                            <span class="icon-outer is-hero__dropdown-icon">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-mouse-window"></use>
+                                </svg>
+                            </span>
+
+                            <div class="dropdown__title-wrap">
+                                <span class="dropdown__subtitle">Eğitim Arayın</span>
+                                <input name="s" type="search" class="dropdown__title js-title" autocomplete="off" value="" />
+                            </div>
+
+                            <div class="dropdown__content">
+                                <nav>
+                                    @foreach (var item in Model.EducationSearchTags)
+                                    {
+                                        <a data-filter-item data-filter-name="@item.Tags">@item.EducationName</a>
+                                    }
+                                </nav>
                             </div>
                         </div>
+
+                        <!-- <div id="secondarySearch" class="dropdown js-dropdown">
+                          <span class="icon-outer is-hero__dropdown-icon">
+                            <svg class="icon">
+                              <use xlink:href="../../assets/img/icons.svg#icon-map-pin"></use>
+                            </svg>
+                          </span>
+
+                          <div class="dropdown__title-wrap">
+                            <span class="dropdown__subtitle js-subtitle">Konum Seçin</span>
+                            <div class="dropdown__title js-title"></div>
+                          </div>
+
+                          <div class="dropdown__content">
+                            <nav>
+                              <a>Ankara</a>
+                              <a>İstanbul</a>
+                              <a>İzmir</a>
+                              <a>Bursa</a>
+                              <a>Antalya</a>
+                            </nav>
+                          </div>
+                        </div> -->
+
+                        <div class="select-index-dropdown">
+                            <select name="h" class="js-index-location-select">
+                                <option value="" selected hidden disabled>Konum Seçin</option>
+                                @foreach (var city in Model.HostCities)
+                                {
+                                    <option value="@city.Key">@city.Value</option>
+                                }
+                            </select>
+                        </div>
+
+                        <button type="submit" class="button">
+                            <span class="icon-outer button-icon">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-search"></use>
+                                </svg>
+                            </span>
+                            <span>Eğitim Bul</span>
+                        </button>
                     </form>
+
+                    <div class="is-hero__bottom">
+                        <h3 class="is-hero__subheading">
+                            Bilişim Kariyerine <br /> <span class="is-hero__subheading--colored">Nitelik Kazandır</span>
+                        </h3>
+                        <span class="is-hero__arrow">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-big-arrow"></use>
+                            </svg>
+                        </span>
+
+                        <div class="is-hero__details">
+
+                            <div>
+                                <figure>
+                                    <img src="~/assets/img/icons/icon-statistic-up.svg" />
+                                </figure>
+
+                                <span>
+                                    Sektör Liderlerinden <br />
+                                    <span class="colored">Proje Eğitimi Al</span>
+                                </span>
+                            </div>
+
+                            <div>
+                                <figure>
+                                    <img src="~/assets/img/icons/icon-ranking-up.svg" />
+                                </figure>
+
+                                <span>
+                                    Uygulama <br />
+                                    <span class="colored">Tecrübesi Kazan</span>
+                                </span>
+                            </div>
+
+                            <div>
+                                <figure>
+                                    <img src="~/assets/img/icons/icon-certificate.svg" />
+                                </figure>
+
+                                <span>
+                                    Üniversite <br />
+                                    <span class="colored">Sertifikanı Al</span>
+                                </span>
+                            </div>
+
+                            <div>
+                                <figure>
+                                    <img src="~/assets/img/icons/icon-speaker-human.svg" />
+                                </figure>
+
+                                <span>
+                                    Aranan BT <br />
+                                    <span class="colored">Uzmanı Ol</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
-    <!-- /hero_single -->
 
-    <div class="features clearfix">
+    <section class="section is-popular-technology">
+        <img src="~/assets/img/half-shape.svg" class="popular-technology--shape left-top" alt="">
+        <img src="~/assets/img/dots-shape.svg" class="popular-technology--shape right-bottom" alt="">
         <div class="container">
-            <ul>
-                <li>
-                    <i class="pe-7s-study"></i>
-                    <h4>+100 Proje Eğitimi</h4><span>Teoride kalma, uygulama yap</span>
-                </li>
-                <li>
-                    <i class="pe-7s-cup"></i>
-                    <h4>Uzman Eğiticiler</h4><span>Sektör liderleri ile proje yaz</span>
-                </li>
-                <li>
-                    <i class="pe-7s-target"></i>
-                    <h4>İstihdam</h4><span>Uygulama becerini yükselt, hedefine ulaş</span>
-                </li>
-            </ul>
-        </div>
-    </div>
-    <!-- /features -->
-
-    <div class="container-fluid margin_120_0">
-        <div class="main_title_2">
-            <span><em></em></span>
-            <h2>Nitelikli Bilişim Popüler Eğitimler</h2>
-            <p>NBUY eğitimi alan öğrenciler tarafından en çok <br />tercih edilen proje eğitimleri</p>
-        </div>
-        <div id="reccomended" class="owl-carousel owl-theme">
-            @foreach (var item in Model.SuggestedEducations)
-            {
-                <div class="item">
-                    <div class="box_grid">
-                        <figure>
-                            <a href="#0" class="wish_bt"></a>
-                            <a href="/kurs-detayi/@item.Base.Id">
-                                <div class="preview"><span>Detaylar</span></div>
-                                <img src="@item.Medias[0].FileUrl" class="img-fluid" />
-                            </a>
-                            <div class="price">@item.Base.PriceText</div>
-
-                        </figure>
-                        <div class="wrapper">
-                            <small>@item.Base.CategoryName</small>
-                            <h3>@item.Base.Name</h3>
-                            <p>@item.Base.Description</p>
-                            <div class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i><i class="icon_star"></i> <small>(145)</small></div>
-                        </div>
-                        <ul>
-                            <li><i class="icon_clock_alt"></i> 1h 30min</li>
-                            <li><i class="icon_like"></i> 890</li>
-                            <li><a role="button" data-education-id="@item.Base.Id" class="btn-buy" style="cursor:pointer;">Kayıt Ol</a></li>
-                        </ul>
-                    </div>
-                </div>
-            }
-        </div>
-        <!-- /carousel -->
-        <div class="container">
-            <p class="btn_home_align"><a href="/tum-egitimler" class="btn_1 rounded">Tüm proje eğitimleri</a></p>
-        </div>
-        <!-- /container -->
-        <hr>
-    </div>
-    <!-- /container -->
-
-    <div class="container margin_30_95">
-        <div class="main_title_2">
-            <span><em></em></span>
-            <h2>Proje Eğitim Kategorileri</h2>
-            <p>Size en uygun proje eğitimi için bir kategori seçin</p>
-        </div>
-        <div class="row">
-            <div class="col-lg-4 col-md-6 wow" data-wow-offset="150">
-                <a href="/tum-egitimler/web-ve-mobil-programlama" class="grid_item">
-                    <figure class="block-reveal">
-                        <div class="block-horizzontal"></div>
-                        @*<img src="img/categories/course_1.jpg" class="img-fluid" alt="">*@
-                        <img src="~/assets/img/course_1.jpg" class="img-fluid" />
-                        <div class="info">
-                            <small><i class="ti-layers"></i>15 Eğitim</small>
-                            <h3>Web ve Mobil Programlama</h3>
-                        </div>
-                    </figure>
-                </a>
-            </div>
-            <!-- /grid_item -->
-            <div class="col-lg-4 col-md-6 wow" data-wow-offset="150">
-                <a href="/tum-egitimler/sistem-ve-ag-yonetimi" class="grid_item">
-                    <figure class="block-reveal">
-                        <div class="block-horizzontal"></div>
-                        @*<img src="img/categories/course_1.jpg" class="img-fluid" alt="">*@
-                        <img src="~/assets/img/course_1.jpg" class="img-fluid" />
-                        <div class="info">
-                            <small><i class="ti-layers"></i>23 Eğitim</small>
-                            <h3>Sistem ve Ağ Yönetimi</h3>
-                        </div>
-                    </figure>
-                </a>
-            </div>
-            <!-- /grid_item -->
-            <div class="col-lg-4 col-md-6 wow" data-wow-offset="150">
-                <a href="/tum-egitimler/siber-guvenlik" class="grid_item">
-                    <figure class="block-reveal">
-                        <div class="block-horizzontal"></div>
-                        @*<img src="img/categories/course_1.jpg" class="img-fluid" alt="">*@
-                        <img src="~/assets/img/course_1.jpg" class="img-fluid" />
-                        <div class="info">
-                            <small><i class="ti-layers"></i>23 Eğitim</small>
-                            <h3>Siber Güvenlik</h3>
-                        </div>
-                    </figure>
-                </a>
-            </div>
-            <!-- /grid_item -->
-            <div class="col-lg-4 col-md-6 wow" data-wow-offset="150">
-                <a href="/tum-egitimler/bulut-bilisim" class="grid_item">
-                    <figure class="block-reveal">
-                        <div class="block-horizzontal"></div>
-                        @*<img src="img/categories/course_1.jpg" class="img-fluid" alt="">*@
-                        <img src="~/assets/img/course_1.jpg" class="img-fluid" />
-                        <div class="info">
-                            <small><i class="ti-layers"></i>23 Eğitim</small>
-                            <h3>Bulut Bilişim</h3>
-                        </div>
-                    </figure>
-                </a>
-            </div>
-            <!-- /grid_item -->
-            <div class="col-lg-4 col-md-6 wow" data-wow-offset="150">
-                <a href="/tum-egitimler/oyun-programlama" class="grid_item">
-                    <figure class="block-reveal">
-                        <div class="block-horizzontal"></div>
-                        @*<img src="img/categories/course_1.jpg" class="img-fluid" alt="">*@
-                        <img src="~/assets/img/course_1.jpg" class="img-fluid" />
-                        <div class="info">
-                            <small><i class="ti-layers"></i>23 Eğitim</small>
-                            <h3>Oyun Programlama</h3>
-                        </div>
-                    </figure>
-                </a>
-            </div>
-            <!-- /grid_item -->
-            <div class="col-lg-4 col-md-6 wow" data-wow-offset="150">
-                <a href="/tum-egitimler/kurumsal-kaynak-planlama" class="grid_item">
-                    <figure class="block-reveal">
-                        <div class="block-horizzontal"></div>
-                        @*<img src="img/categories/course_1.jpg" class="img-fluid" alt="">*@
-                        <img src="~/assets/img/course_1.jpg" class="img-fluid" />
-                        <div class="info">
-                            <small><i class="ti-layers"></i>23 Eğitim</small>
-                            <h3>Kurumsal Kaynak Planlama</h3>
-                        </div>
-                    </figure>
-                </a>
-            </div>
-            <!-- /grid_item -->
-        </div>
-        <!-- /row -->
-    </div>
-
-    <!-- /container -->
-
-    <div class="bg_color_1">
-        <!--<div class="container margin_120_95">
-            <div class="main_title_2">
-                <span><em></em></span>
-                <h2>News and Events</h2>
-                <p>Cum doctus civibus efficiantur in imperdiet deterruisset.</p>
-            </div>
             <div class="row">
-                <div class="col-lg-6">
-                    <a class="box_news" href="#0">
-                        <figure>
-                            <img src="http://via.placeholder.com/500x333/ccc/fff/news_home_1.jpg" alt="">
-                            <figcaption><strong>28</strong>Dec</figcaption>
-                        </figure>
-                        <ul>
-                            <li>Mark Twain</li>
-                            <li>20.11.2017</li>
-                        </ul>
-                        <h4>Pri oportere scribentur eu</h4>
-                        <p>Cu eum alia elit, usu in eius appareat, deleniti sapientem honestatis eos ex. In ius esse ullum vidisse....</p>
-                    </a>
-                </div>
-                 /box_news
-                <div class="col-lg-6">
-                    <a class="box_news" href="#0">
-                        <figure>
-                            <img src="http://via.placeholder.com/500x333/ccc/fff/news_home_2.jpg" alt="">
-                            <figcaption><strong>28</strong>Dec</figcaption>
-                        </figure>
-                        <ul>
-                            <li>Jhon Doe</li>
-                            <li>20.11.2017</li>
-                        </ul>
-                        <h4>Duo eius postea suscipit ad</h4>
-                        <p>Cu eum alia elit, usu in eius appareat, deleniti sapientem honestatis eos ex. In ius esse ullum vidisse....</p>
-                    </a>
-                </div>
-                 /box_news
-                <div class="col-lg-6">
-                    <a class="box_news" href="#0">
-                        <figure>
-                            <img src="http://via.placeholder.com/500x333/ccc/fff/news_home_3.jpg" alt="">
-                            <figcaption><strong>28</strong>Dec</figcaption>
-                        </figure>
-                        <ul>
-                            <li>Luca Robinson</li>
-                            <li>20.11.2017</li>
-                        </ul>
-                        <h4>Elitr mandamus cu has</h4>
-                        <p>Cu eum alia elit, usu in eius appareat, deleniti sapientem honestatis eos ex. In ius esse ullum vidisse....</p>
-                    </a>
-                </div>
-                 /box_news
-                <div class="col-lg-6">
-                    <a class="box_news" href="#0">
-                        <figure>
-                            <img src="http://via.placeholder.com/500x333/ccc/fff/news_home_4.jpg" alt="">
-                            <figcaption><strong>28</strong>Dec</figcaption>
-                        </figure>
-                        <ul>
-                            <li>Paula Rodrigez</li>
-                            <li>20.11.2017</li>
-                        </ul>
-                        <h4>Id est adhuc ignota delenit</h4>
-                        <p>Cu eum alia elit, usu in eius appareat, deleniti sapientem honestatis eos ex. In ius esse ullum vidisse....</p>
-                    </a>
-                </div>
-                 /box_news
-            </div>
-             /row
-            <p class="btn_home_align"><a href="blog.html" class="btn_1 rounded">View all news</a></p>
-        </div>-->
-        <!-- /container -->
-    </div>
-    <!-- /bg_color_1 -->
+                <div class="col-12">
+                    <h2 class="title title-section text-center">
+                        Popüler <span class="title--blue">Teknoloji Kategorileri</span>
+                    </h2>
 
-    <div class="call_section">
-        <div class="container clearfix">
-            <div class="col-lg-5 col-md-6 float-right wow" data-wow-offset="250">
-                <div class="block-reveal">
-                    <div class="block-vertical"></div>
-                    <div class="box_1">
-                        <h3>Tüm proje eğitimlerinde %30 indirim fırsatını kaçırma</h3>
-                        <p>Proje eğitimlerini 3 arkadaşınıza önererek, %30 indirim hakkı kazanabilirsiniz. </p>
-                        <a href="#0" class="btn_1 rounded">Detay</a>
+                    <div class="swiper-container popular-technology">
+                        <!-- Additional required wrapper -->
+                        <div class="swiper-wrapper">
+                            <!-- Slides -->
+                            @foreach (var category in Model.NBUYEducationCategories)
+                            {
+                                <div class="swiper-slide">
+                                    <div class="popular-technology__item">
+                                        <div class="popular-technology__icon" style="background:@category.IconColor;">
+                                            <span class="icon-outer">
+                                                <svg class="icon">
+                                                    <use xlink:href="../../assets/img/icons.svg#@category.IconUrl"></use>
+                                                </svg>
+                                            </span>
+                                        </div>
+                                        <div class="popular-technology__txt">
+                                            @category.Name
+                                        </div>
+                                        <div class="popular-technology__bottom">
+                                            <a asp-controller="Course" asp-action="List" asp-route-catSeoUrl="@category.SeoUrl">
+                                                <div>
+                                                        @category.EducationCount Eğitim
+                                                </div>
+                                                <span class="icon-outer">
+                                                    <svg class="icon">
+                                                        <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
+                                                    </svg>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                        </div>
+                        <div class="swiper-pagination"></div>
+
+                        <div class="swiper-button-prev swiper-button-circle reverse">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="swiper-button-next swiper-button-circle reverse">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                                </svg>
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!--/call_section-->
+    </section>
+
+    <section class="section is-popular-projects with-border">
+        <div class="container">
+            <div class="flex-center mb-4">
+                <h2 class="title title-section">Popüler <span class="title--blue">Proje Eğitimleri</span></h2>
+
+                <a asp-controller="Course" asp-action="List" class="all-link">
+                    <span>Tüm Eğitimler</span>
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                        </svg>
+                    </span>
+                </a>
+            </div>
+
+            <div class="swiper-container js-card-slider mt-1">
+                <div class="swiper-wrapper">
+                    @await Component.InvokeAsync("PopularEducations")
+                </div>
+                <div class="swiper-pagination"></div>
+
+                <div class="swiper-button-prev swiper-button-circle reverse">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                        </svg>
+                    </span>
+                </div>
+                <div class="swiper-button-next swiper-button-circle reverse">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section is-banner-wrap">
+        <div class="container">
+            <div class="is-banner">
+                <div class="is-banner__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-user-dart"></use>
+                        </svg>
+                    </span>
+                </div>
+
+                <div>
+                    <h6 class="is-banner__title">
+                        Size en uygun proje eğitimlerini <br> <span class="is-banner__title--colored">Birlikte bulalım!</span>
+                    </h6>
+                    <a href="#0" class="js-modal-trigger" data-trigger="egitimSihirbazi">
+                        Şimdi Başlayın
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                            </svg>
+                        </span>
+                    </a>
+                </div>
+                <div class="is-banner__img">
+                    <img src="~/assets/img/dusunenadam.jpg" alt="">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section is-popular-projects">
+        <div class="container">
+            <div class="flex-center mb-4">
+                <h2 class="title title-section">Yeni Başlayanlar İçin <span class="title--blue">Proje Eğitimleri</span></h2>
+
+                <a asp-controller="Course" asp-action="List" class="all-link">
+                    <span>Tüm Eğitimler</span>
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                        </svg>
+                    </span>
+                </a>
+            </div>
+            <div class="swiper-container js-card-slider mt-1">
+                <div class="swiper-wrapper">
+                    @await Component.InvokeAsync("BeginnerEducations")
+
+                </div>
+                <div class="swiper-pagination"></div>
+
+                <div class="swiper-button-prev swiper-button-circle reverse">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                        </svg>
+                    </span>
+                </div>
+                <div class="swiper-button-next swiper-button-circle reverse">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section is-comments">
+        <div class="container">
+            <div class="col-12">
+                <div class="flex-center mb-1">
+                    <h2 class="title title-section">Kursiyer <span class="title--blue">Yorumları</span></h2>
+
+                    @*<a asp-controller="Home" asp-action="UserComments" class="all-link">
+                        <span>Tüm Yorumlar</span>
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                            </svg>
+                        </span>
+                    </a>*@
+                </div>
+            </div>
+            <div class="swiper-container js-swiper-home-comments">
+                <div class="swiper-wrapper">
+                    @foreach (var comment in Model.EducationComments)
+                    {
+                        <div class="swiper-slide">
+                            <div class="is-comments-item">
+                                <figure>
+                                    <img src="@comment.CommenterAvatarPath" alt="" height="80" />
+                                </figure>
+
+                                <div class="main-stars">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        <span class="icon-outer icon-star @(i<=comment.Point?"active":"")">
+                                            <svg class="icon">
+                                                <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                            </svg>
+                                        </span>
+                                    }
+                                </div>
+
+                                <p class="is-comments__desc" style="min-height:80px;">
+                                    @comment.Content
+                                </p>
+                                <span class="is-comments__name">@comment.CommenterName</span>
+                                <span class="is-comments__job">@comment.CommenterJob</span>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="swiper-pagination"></div>
+
+                <div class="swiper-button-prev swiper-button-circle reverse">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                        </svg>
+                    </span>
+                </div>
+                <div class="swiper-button-next swiper-button-circle reverse">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+    </section>
 </main>
-
-@section postScripts{
-    <script src="~/js/sup/cart.js"></script>
-    <script>
-        var btnIndexSearch = $("#btn-index-search");
-        var inputIndexSearch = $("#input-index-search");
-
-        $(document).ready(() => {
-            var btnBuys = document.getElementsByClassName("btn-buy");
-            for (var i = 0; i < btnBuys.length; i++) {
-                btnBuys[i].onclick = btnBuy_onClick;
-            }
-        });
-
-        btnIndexSearch.on("click", (e) => {
-            e.preventDefault();
-            var tagFormatter = new AppWide.TagFormatter();
-            var searchText = tagFormatter.formatForTag(inputIndexSearch.val());
-
-            if (!searchText || searchText === "")
-                return;
-
-            location.href = `/arama-sonuclari/${searchText}`;
-        });
-
-        function btnBuy_onClick() {
-            var educationId = this.getAttribute("data-education-id");
-            var cart = new CartSupport.Cart();
-            cart.addToCart(educationId);
-
-            location.href = "/sepet";
-        }
-    </script>
-}

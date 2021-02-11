@@ -1,21 +1,14 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.DependencyInjection;
-using NitelikliBilisim.Business.Repositories;
-using NitelikliBilisim.Core.Entities;
-using NitelikliBilisim.Core.Repositories;
-using System;
-using System.Globalization;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using AspNet.Security.OAuth.GitHub;
-using Microsoft.AspNetCore.Authentication;
 //using Microsoft.AspNetCore.Authentication.Facebook;
 //using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Services;
 using NitelikliBilisim.Core.Services.Abstracts;
+using NitelikliBilisim.Core.Services.Payments;
+using NitelikliBilisim.Notificator.Services;
+using System;
 
 namespace NitelikliBilisim.App.Extensions
 {
@@ -25,10 +18,23 @@ namespace NitelikliBilisim.App.Extensions
             IConfiguration configuration)
         {
             #region Dependency Injections
+            services.AddScoped<UnitOfWork>();
+            services.AddScoped<UserUnitOfWork>();
             services.AddSingleton<IMessageService, EmailService>();
-            services.AddScoped<IStorageService, StorageService>();
+            services.AddSingleton<IStorageService, StorageService>();
+            services.AddScoped<IPaymentService, PaymentService>();
+            services.AddSingleton<IEmailSender, EmailSender>();
+            services.AddElasticsearch(configuration);
             #endregion
 
+            #region signalR
+
+            services.AddSignalR().AddAzureSignalR(config =>
+            {
+                config.ConnectionString = configuration["SignalROptions:ConnectionString"];
+            });
+
+            #endregion
             #region IdentityConfig
 
             services.Configure<IdentityOptions>(options =>
@@ -47,7 +53,7 @@ namespace NitelikliBilisim.App.Extensions
                 options.Lockout.AllowedForNewUsers = false;
 
                 // User settings.
-                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._+";
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
                 options.User.RequireUniqueEmail = true;
 
 
@@ -127,7 +133,7 @@ namespace NitelikliBilisim.App.Extensions
             //    });
 
             #endregion
-
+            
             return services;
         }
     }

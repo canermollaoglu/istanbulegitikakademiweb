@@ -26,6 +26,8 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_groups
         public Guid? HostId { get; set; }
         [Required]
         public byte? Quota { get; set; }
+        public Guid? ClassRoomId { get; set; }
+        public decimal EducatorPrice { get; set; } = 0;
         public List<int> LessonDays { get; set; }
     }
 

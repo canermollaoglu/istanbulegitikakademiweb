@@ -1,0 +1,402 @@
+﻿@model NitelikliBilisim.Core.ViewModels.Main.Course.SearchResultsVm
+@{
+    ViewData["Title"] = "Arama Sonuçları";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="subheader">
+    <div class="subheader__wrp">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="./index.php" class="breadcrumb__item">
+                    Anasayfa
+                </a>
+                <a href="#0" class="breadcrumb__item">
+                    Eğitimler
+                </a>
+                <a href="#0" class="breadcrumb__item active">
+                    Arama Sonuçları
+                </a>
+            </div>
+            <div class="subheader__cnt">
+                <div class="subheader__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-search"></use>
+                        </svg>
+                    </span>
+                </div>
+                <div class="subheader__txt-cnt">
+                    <div class="subheader__title">Arama Sonuçları</div>
+                    <div class="subheader__txt">@Model.SearchKey kelimesi arama sonuçları</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="subheader__img">
+        <img src="../../assets/img/subheader-img.jpg" alt="">
+    </div>
+</div>
+
+
+<section class="lesson-list">
+    <input type="hidden" id="current-category-id" />
+    <input type="hidden" id="current-page" />
+    <input type="hidden" id="current-order" />
+    <input type="hidden" value="@Model.HostCity" id="current-host-city" />
+    <input type="hidden" value="@Model.SearchKey" id="search-key" />
+    <div class="container">
+        <div class="lesson-list__wrp">
+            <div class="lesson-list__content">
+                <div class="lesson-list__selects mobile-fw-wrap">
+                    <div class="lesson-list__select select-location">
+                        <select class="js-sort-select" id="hostCitySelect">
+                            <option value="" selected hidden disabled>Konum</option>
+                            <option value="">Tümü</option>
+
+                            @foreach (var hostCity in Model.EducationHostCities)
+                            {
+                                <option value="@hostCity.Key">@hostCity.Value</option>
+                            }
+                        </select>
+                        <div class="lesson-list__select--mobile js-open-location-mobile">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-map-pin-f"></use>
+                                </svg>
+                            </span>
+                            <div class="js-select-mobile-change">
+                                Konum
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lesson-list__select with-checkbox mobile-fw">
+                        <select class="js-filter-select" multiple="">
+                            <option value="1">Microsoft</option>
+                            <option value="2">Python</option>
+                            <option value="3">Java</option>
+                            <option value="4">Android</option>
+                            <option value="5">Javascript</option>
+                        </select>
+                        <div class="lesson-list__select--mobile js-open-filter-mobile">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-filter"></use>
+                                </svg>
+                            </span>
+                            <div class="js-select-mobile-change">
+                                Filtrele
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lesson-list__select ml-auto select-sort">
+                        <select class="js-sort-select" id="orderType">
+                            <option value="" selected hidden disabled>Sırala</option>
+                            @foreach (var type in Model.OrderTypes)
+                            {
+                                <option value="@type.Key">@type.Value</option>
+                            }
+                        </select>
+                        <div class="lesson-list__select--mobile js-open-sort-mobile">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-sort-gray"></use>
+                                </svg>
+                            </span>
+                            <div class="js-select-mobile-change">
+                                Sırala
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lesson-list__items">
+
+                </div>
+                <div class="pagination">
+                </div>
+            </div>
+            <div class="lesson-list__side">
+                <div class="side-categories">
+                    <div class="side-categories__title js-mobile-side-categori">
+                        EĞİTİM <span> &nbsp;KATEGORİLERİ</span>
+                        <span class="icon-outer input__icon side-categories__mobile-icon">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
+                            </svg>
+                        </span>
+                    </div>
+                    <div class="side-categories__cnt js-vertical-magic-line">
+                        <div class="side-categories__item js-vertical-magic-line-item active">
+                            <a asp-controller="Course" asp-action="List" asp-route-catSeoUrl="" class="side-category-item">
+                                <span class="side-categories__txt">Tüm Eğitimler</span>
+                                <span class="side-categories__count">@Model.TotalEducationCount</span>
+                            </a>
+                        </div>
+                        @foreach (var category in Model.Categories)
+                        {
+                            <div class="side-categories__item js-vertical-magic-line-item">
+                                <a asp-controller="Course" asp-action="List" asp-route-catSeoUrl="@category.SeoUrl" class="side-category-item">
+                                    <span class="side-categories__txt">@category.Name</span>
+                                    <span class="side-categories__count">@category.EducationCount</span>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="side-banner">
+                    <div class="side-banner__cnt">
+                        <div class="side-banner__icon">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-user-dart"></use>
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="side-banner__title">
+                            Size en uygun <br>proje eğitimlerini
+                            Birlikte bulalım!
+                        </div>
+                    </div>
+                    <a class="side-banner__footer js-modal-trigger" data-trigger="egitimSihirbazi" ">
+                        Şimdi Başlayın
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                            </svg>
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section with-border is-popular-projects listing-first-section o-hidden">
+    <div class="container">
+        <div class="flex-center mb-4">
+            <h2 class="title title-section">POPÜLER <span class="title--blue">EĞİTİMLER</span></h2>
+        </div>
+
+        <div class="swiper-container js-card-slider mt-1">
+            <div class="swiper-wrapper">
+                @await Component.InvokeAsync("PopularEducations")
+            </div>
+            <div class="swiper-pagination"></div>
+
+            <div class="swiper-button-prev swiper-button-circle reverse">
+                <span class="icon-outer">
+                    <svg class="icon">
+                        <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                    </svg>
+                </span>
+            </div>
+            <div class="swiper-button-next swiper-button-circle reverse">
+                <span class="icon-outer">
+                    <svg class="icon">
+                        <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                    </svg>
+                </span>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+<div class="sort-mobile js-sort-mobile">
+    <div class="sort-mobile__top">
+        <span class="icon-outer">
+            <svg class="icon">
+                <use xlink:href="../../assets/img/icons.svg#icon-sort-gray"></use>
+            </svg>
+        </span>
+        <div class="sort-mobile__top-title">
+            Sırala
+        </div>
+    </div>
+    <div class="sort-mobile__list">
+        @foreach (var type in Model.OrderTypes)
+        {
+            <div class="sort-mobile__item" data-id="@type.Key">@type.Value</div>
+        }
+    </div>
+</div>
+<div class="sort-mobile js-filter-mobile">
+    <div class="sort-mobile__top">
+        <span class="icon-outer">
+            <svg class="icon">
+                <use xlink:href="../../assets/img/icons.svg#icon-filter"></use>
+            </svg>
+        </span>
+        <div class="sort-mobile__top-title">
+            Filtrele
+        </div>
+    </div>
+    <div class="sort-mobile__list">
+        <div class="sort-mobile__item">Oyun Programlama</div>
+        <div class="sort-mobile__item">Microsoft</div>
+        <div class="sort-mobile__item">Python</div>
+        <div class="sort-mobile__item">Java</div>
+        <div class="sort-mobile__item">Android</div>
+        <div class="sort-mobile__item">Javascript</div>
+    </div>
+</div>
+<div class="sort-mobile js-location-mobile">
+    <div class="sort-mobile__top">
+        <span class="icon-outer">
+            <svg class="icon">
+                <use xlink:href="../../assets/img/icons.svg#icon-map-pin-f"></use>
+            </svg>
+        </span>
+        <div class="sort-mobile__top-title">
+            Konum Seç
+        </div>
+    </div>
+    <div class="sort-mobile__list">
+        @foreach (var hostCity in Model.EducationHostCities)
+        {
+            <div class="sort-mobile__item" data-id="@hostCity.Key">@hostCity.Value</div>
+        }
+    </div>
+</div>
+
+
+@section postScripts{
+    <script type="text/javascript">
+        var currentCategoryId = $("#current-category-id");
+        var currentPage = $("#current-page");
+        var currentHostCity = $("#current-host-city");
+        var currentOrder = $("#current-order");
+        var searchKey = $("#search-key");
+        var lessonsContent = $(".lesson-list__items");
+        var paginationContent = $(".pagination");
+
+        $(function () {
+            if (currentHostCity.val()>0) {
+                $("#hostCitySelect").val(currentHostCity.val()).trigger('change');
+            } else {
+                getSearchResults();
+            }
+        });
+
+
+        $(".js-sort-select").change(function () {
+            currentHostCity.val($("#hostCitySelect").val());
+            currentOrder.val($("#orderType").val());
+            getSearchResults();
+        })
+
+        function getSearchResults() {
+            $.ajax({
+                url: `/get-courses`,
+                method: "post",
+                data: {
+                    categoryId: currentCategoryId.val(),
+                    hostCity: currentHostCity.val(),
+                    page: currentPage.val(),
+                    order: currentOrder.val(),
+                    searchKey: searchKey.val()
+                },
+                success: (res) => {
+                    lessonsContent.html("");
+
+                    if (res.data.educations.length == 0) {
+                        lessonsContent.append(`<div  class="lesson-list__item empty-result">
+                                <span class="icon-outer">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-empty-content"></use>
+                                    </svg>
+                                </span>
+                                <span>
+                                    Aradığınız kriterlere uygun eğitim bulunmamaktadır.
+                                </span>
+                                </div>`);
+                    }
+                    $.each(res.data.educations, function (index, e) {
+                        var education = `<a href="/egitimler/${e.cSeo}/${e.seo}?searchKey=@Model.SearchKey" class="lesson-list__item">
+                                            <div class="lesson-list__item-img">
+                                                <img src="${e.imagePath}" alt="">
+                                            </div>
+                                            <div class="lesson-list__item-cnt">
+                                                <div class="lesson-list__item-left">
+                                                    <div class="lesson-list__item-title">
+                                                        ${e.name}
+                                                    </div>
+                                                    <div class="lesson-list__item-txt">
+                                                        ${e.description}
+                                                    </div>
+                                                </div>
+                                                <div class="lesson-list__item-right">
+                                                    <div class="lesson-list__item-date">
+                                                        <span class="icon-outer">
+                                                            <svg class="icon">
+                                                                <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                                                            </svg>
+                                                        </span>
+                                                        ${e.educationDays} gün ( ${e.educationHours} saat )
+                                                    </div>
+                                                    <div class="lesson-list__item-price">
+                                                         ${e.price} <span>TL</span>
+                                                    </div>
+                                                    <div class="button v-tablet">
+                                                        <span class="button-txt">Sepete Ekle</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </a>`;
+                        lessonsContent.append(education);
+                    });
+
+                    paginationContent.html("");
+                    var prev = `<a class="pagination__item prev" onclick=changePage('${res.data.pageIndex - 1}')>
+                                <span class="icon-outer">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
+                                    </svg>
+                                </span>
+                            </a>`;
+                    var next = `<a class="pagination__item next" onclick=changePage('${res.data.pageIndex + 1}')>
+                                <span class="icon-outer">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
+                                    </svg>
+                                </span>
+                            </a>`;
+                    if (res.data.pageIndex > 1) {
+                        paginationContent.append(prev);
+                    }
+                    for (var i = 1; i <= res.data.totalPageCount; i++) {
+
+                        var page = `<a onclick="changePage('${i}')" class="pagination__item ${i == res.data.pageIndex ? 'active' : ''}" >${i}</a>`;
+                        paginationContent.append(page);
+                    }
+                    if (res.data.pageIndex < res.data.totalPageCount) {
+                        paginationContent.append(next);
+                    }
+
+                }
+            });
+        }
+
+        $('body').on('click', '.js-location-mobile .sort-mobile__item', function () {
+            var locationId = $(this).data("id");
+            var sortMobileText = $(this).text();
+            $('.js-open-location-mobile .js-select-mobile-change').text(sortMobileText);
+            currentHostCity.val(locationId);
+            getSearchResults();
+        });
+        $('body').on('click', '.js-sort-mobile .sort-mobile__item', function () {
+            var orderTypeId = $(this).data("id");
+            var sortMobileText = $(this).text();
+            $('.js-open-sort-mobile .js-select-mobile-change').text(sortMobileText);
+            currentOrder.val(orderTypeId);
+            getSearchResults();
+        });
+
+        function changePage(page) {
+            currentPage.val(page);
+            getSearchResults();
+        }
+    </script>
+}

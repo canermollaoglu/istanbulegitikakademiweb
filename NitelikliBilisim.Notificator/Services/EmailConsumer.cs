@@ -16,18 +16,18 @@ namespace NitelikliBilisim.Notificator.Services
 
         const string QueueName = "email_notify";
         private IQueueClient _queueClient;
-        private EmailSender _emailSender;
+        private IEmailSender _emailSender;
         private readonly ILogger<EmailConsumer> _emailLogger;
 
-        public EmailConsumer(ILogger<EmailConsumer> emailLogger)
+        public EmailConsumer(ILogger<EmailConsumer> emailLogger,IEmailSender emailSender)
         {
             _emailLogger = emailLogger;
+            _emailSender = emailSender;
         }
 
         public Task MainAsync()
         {
             _queueClient = new QueueClient(ServiceBusConnectionString, QueueName);
-            _emailSender = new EmailSender();
             // Register QueueClient's MessageHandler and receive messages in a loop
             RegisterOnMessageHandlerAndReceiveMessages();
             //await _queueClient.CloseAsync();

@@ -1,124 +1,219 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using NitelikliBilisim.Core.Entities
+@using System.Security.Claims
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
-<header class="header fadeInDown">
-    <div id="logo">
-        <a href="/"><img src="~/assets/img/nb_logo_sm.png" width="149" height="42" data-retina="true" alt=""></a>
-    </div>
-    @*<div id="logo">
-        <a href="/">LOGO</a>
-    </div>*@
-    <ul id="top_menu">
-        @if (!User.Identity.IsAuthenticated)
-        {
-            <li><a href="/giris-yap" class="login">GİRİŞ YAP</a></li>
-        }
-        <li><a href="#0" class="search-overlay-menu-btn">Arama</a></li>
-        <li class="hidden_tablet"><a href="/biz-kimiz">BİZ KİMİZ?</a></li>
-        <li><a href="/sepet" style="background-color:#ef8d6f !important" class="btn_1 rounded" id="layout-header-cart"><i class="icon-cart"></i> (0)</a></li>
-        @if (!User.Identity.IsAuthenticated)
-        {
-            <li class="hidden_tablet"><a href="/kayit-ol" class="btn_1 rounded">KAYDOL</a></li>
-        }
-        else
-        {
-            <li><a href="/cikis-yap" class="btn_1">Çıkış Yap</a></li>
-        }
-        <li>
-            <div class="hamburger hamburger--spin">
-                <div class="hamburger-box">
-                    <div class="hamburger-inner"></div>
-                </div>
+@if (User.Identity.IsAuthenticated)
+{
+    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    var user = await UserManager.FindByIdAsync(userId);
+    <div id="userDropdown" class="user-dropdown">
+        <div class="user-dropdown__top">
+            <div class="user-dropdown__name">
+                @user.Name @user.Surname
             </div>
-        </li>
-    </ul>
-    <!-- /top_menu -->
-</header>
-<!-- /header -->
-
-<div id="main_menu">
-    <div class="container">
-        <nav class="version_2">
-            <div class="row">
-                <div class="col-md-3">
-                    <h3>Home</h3>
-                    <ul>
-                        <li><a href="index.html">Home version 1</a></li>
-                        <li><a href="index-2.html">Home version 2</a></li>
-                        <li><a href="index-6.html">Home version 3</a></li>
-                        <li><a href="index-3.html">Home version 4</a></li>
-                        <li><a href="index-4.html">Home version 5</a></li>
-                        <li><a href="index-5.html">With Cookie bar (EU law)</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-3">
-                    <h3>Courses</h3>
-                    <ul>
-                        <li><a href="courses-grid.html">Courses grid</a></li>
-                        <li><a href="courses-grid-sidebar.html">Courses grid sidebar</a></li>
-                        <li><a href="courses-list.html">Courses list</a></li>
-                        <li><a href="courses-list-sidebar.html">Courses list sidebar</a></li>
-                        <li><a href="course-detail.html">Course detail</a></li>
-                        <li><a href="course-detail-2.html">Course detail (working form)</a></li>
-                        <li><a href="admission.html">Admission wizard</a></li>
-                        <li><a href="teacher-detail.html">Teacher detail</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-3">
-                    <h3>Pages</h3>
-                    <ul>
-                        <li><a href="#0">Menu 1</a><span class="badge_info">New</span></li>
-                        <li><a href="about.html">About</a></li>
-                        <li><a href="blog.html">Blog</a></li>
-                        <li><a href="login.html">Login</a></li>
-                        <li><a href="register.html">Register</a></li>
-                        <li><a href="contacts.html">Contacts</a></li>
-                        <li><a href="404.html">404 page</a></li>
-                        <li><a href="agenda-calendar.html">Agenda Calendar</a></li>
-                        <li><a href="faq.html">Faq</a></li>
-                        <li><a href="help.html">Help</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-3">
-                    <h3>Extra pages</h3>
-                    <ul>
-                        <li><a href="media-gallery.html">Media gallery</a></li>
-                        <li><a href="cart-1.html">Cart page 1</a></li>
-                        <li><a href="cart-2.html">Cart page 2</a></li>
-                        <li><a href="cart-3.html">Cart page 3</a></li>
-                        <li><a href="pricing-tables.html">Responsive pricing tables</a></li>
-                        <li><a href="coming_soon/index.html">Coming soon</a></li>
-                        <li><a href="icon-pack-1.html">Icon pack 1</a></li>
-                        <li><a href="icon-pack-2.html">Icon pack 2</a></li>
-                        <li><a href="icon-pack-3.html">Icon pack 3</a></li>
-                        <li><a href="icon-pack-4.html">Icon pack 4</a></li>
-                    </ul>
-                </div>
+            <div class="user-dropdown__mail">
+                @user.Email
             </div>
-            <!-- /row -->
-        </nav>
-        <div class="follow_us">
-            <ul>
-                <li>BİZİ TAKİP EDİN</li>
-                <li><a href="#0"><i class="ti-facebook"></i></a></li>
-                <li><a href="#0"><i class="ti-twitter-alt"></i></a></li>
-                <li><a href="#0"><i class="ti-google"></i></a></li>
-                <li><a href="#0"><i class="ti-pinterest"></i></a></li>
-                <li><a href="#0"><i class="ti-instagram"></i></a></li>
-            </ul>
+        </div>
+        <div class="user-dropdown__list">
+            <a asp-controller="UserProfile" asp-action="Profile" class="user-dropdown__item">
+                <span class="icon-outer button-icon">
+                    <svg class="icon">
+                        <use xlink:href="../../assets/img/icons.svg#icon-home"></use>
+                    </svg>
+                </span>
+                Panelim
+            </a>
+            <a asp-controller="UserProfile" asp-action="MyCourses" class="user-dropdown__item">
+                <span class="icon-outer button-icon">
+                    <svg class="icon">
+                        <use xlink:href="../../assets/img/icons.svg#icon-code-c"></use>
+                    </svg>
+                </span>
+                Kurslarım
+            </a>
+            <a asp-controller="UserProfile" asp-action="AccountSettings" class="user-dropdown__item">
+                <span class="icon-outer button-icon">
+                    <svg class="icon">
+                        <use xlink:href="../../assets/img/icons.svg#icon-settings"></use>
+                    </svg>
+                </span>
+                Hesap Ayarları
+            </a>
+        </div>
+        <div class="user-dropdown__footer">
+            <a asp-controller="Account" asp-action="Logout" class="button button-fw button-icon-left">
+                <span class="icon-outer button-icon">
+                    <svg class="icon">
+                        <use xlink:href="../../assets/img/icons.svg#icon-logout"></use>
+                    </svg>
+                </span>
+                <span class="button-txt">Çıkış Yap</span>
+            </a>
         </div>
     </div>
-</div>
-<!-- /main_menu 2-->
+}
 
-<div class="search-overlay-menu">
-    <span class="search-overlay-close"><span class="closebt"><i class="ti-close"></i></span></span>
-    <form onsubmit="return false;">
-        <input value="" name="q" type="search" placeholder="Ara..." id="input-hidden-search" />
-        <button type="button" id="btn-hidden-search">
-            <i class="icon_search"></i>
-        </button>
-    </form>
-</div><!-- End Search Menu -->
+<div id="miniBasket" class="mini-basket">
+    <div class="mini-basket__top">
+        <div class="title title--small">
+            SEPETTEKİ
+            <span class="title--blue">ÜRÜNLERİM</span>
+        </div>
+        <div class="mini-basket__count">2 Ürün</div>
+    </div>
+    <div class="mini-basket__cnt">
+
+    </div>
+    <div class="mini-basket__footer">
+        <a asp-controller="Sale" asp-action="Cart" class="button button-fw button-icon-right">
+            <span class="button-txt">Alışverişi Tamamla</span>
+            <span class="icon-outer button-icon">
+                <svg class="icon">
+                    <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                </svg>
+            </span>
+        </a>
+    </div>
+</div>
+<header class="headerWrap">
+    <div class="container">
+        <div class="header">
+            <div class="header__inner">
+                <a asp-controller="Home" asp-action="Index" class="header__brand">
+                    <img src="~/assets/img/nitelikli-bilisim_logo.svg" alt="Nitelikli Bilişim Logo" height="35" />
+                </a>
+                <div class='education-overlay overlay js-close-modal'></div>
+                <span class="header__education js-open-education">
+                    <span class="icon-outer header__education-icon">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-dots"></use>
+                        </svg>
+                    </span>
+                    <span>Eğitimler</span>
+                </span>
+
+                @await Component.InvokeAsync("HeaderEducationsMenu")
+
+                <nav class="header__links">
+                    <li>
+                        <a href="#0" class="js-modal-trigger" data-trigger="egitimSihirbazi">Eğitim Sihirbazı</a>
+                    </li>
+                    <li>
+                        <a asp-controller="Blog" asp-action="List">Blog</a>
+                    </li>
+                    <li id="TumSayfalar" class="header__dropdown">
+                        <a href="javascript:void(0)">
+                            <span>Kurumsal</span>
+                        </a>
+                        <ul>
+                            <a asp-controller="Home" asp-action="AboutUs">Hakkımızda</a>
+                            <a asp-controller="Home" asp-action="CorporateMembershipApplication">Kurumsal Eğitim Talebi</a>
+                            <a asp-controller="Home" asp-action="EducatorApplication">Eğitmen Başvurusu</a>
+                            <a asp-controller="Home" asp-action="Contact">İletişim</a>
+                        </ul>
+                    </li>
+
+                </nav>
+
+                <nav class="header__right-side">
+                    <div class='header-overlay overlay js-close-modal'></div>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        @await Component.InvokeAsync("HeaderLoggedInUserInfo")
+                        <!-- giriş yapılmış -->
+                    }
+                    else
+                    {
+                        <!-- giriş yapılmamış -->
+                        <a asp-controller="Account" asp-action="Login" class="button button--ghost header__login-button">
+                            <span class="icon-outer button-icon">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-lock"></use>
+                                </svg>
+                            </span>
+                            <span>Giriş Yap</span>
+                        </a>
+                        <a asp-controller="Account" asp-action="Register" class="button header__register-button">
+                            <span class="icon-outer button-icon">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-user"></use>
+                                </svg>
+                            </span>
+                            <span>Üye Ol</span>
+                        </a>
+                        <!-- giriş yapılmamış -->
+                    }
+
+                    <a class="header__hamper js-open-mini-basket">
+                        <span class="icon-outer icon-basket">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-basket"></use>
+                            </svg>
+                        </span>
+                        <!-- <span class="header__count">3</span> -->
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+<header class="header-mobile">
+
+    <div class="container">
+        <div class="header-mobile__wrp">
+            <div class="header-mobile__dots js-open-mobile-menu">
+                <span class="icon-outer header-mobile__dots-open">
+                    <svg class="icon">
+                        <use xlink:href="../../assets/img/icons.svg#icon-dots"></use>
+                    </svg>
+                </span>
+                <span class="icon-outer header-mobile__dots-close">
+                    <svg class="icon">
+                        <use xlink:href="../../assets/img/icons.svg#icon-circle-close-c"></use>
+                    </svg>
+                </span>
+            </div>
+            <a asp-controller="Home" asp-action="Index" class="header-mobile__logo">
+                <img src="~/assets/img/nitelikli-bilisim_logo.svg" class="logolight" alt="Nitelikli Bilişim Logo" height="35" />
+                <img src="~/assets/img/nitelikli-bilisim_logo-dark.svg" class="logodark" alt="Nitelikli bilişim logo" height="35">
+            </a>
+            <div class="header-mobile__right">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <a asp-controller="UserProfile" asp-action="MyMenu" class="header-mobile__right-btn">
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-user"></use>
+                            </svg>
+                        </span>
+                    </a>
+                }
+                else
+                {
+                    <a asp-controller="Account" asp-action="Login" class="header-mobile__right-btn">
+                        <span class="icon-outer">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-user"></use>
+                            </svg>
+                        </span>
+                    </a>
+                }
+                <div class="header-mobile__right-btn js-open-mini-basket">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-basket"></use>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+        </div>
+        @await Component.InvokeAsync("MobileHeaderEducationsMenu")
+
+    </div>
+
+</header>
+<div class='header-overlay overlay js-close-modal header-overlay--mobile'></div>

@@ -1,8 +1,11 @@
-﻿@{
+﻿@model NitelikliBilisim.Core.ViewModels.areas.admin.educator.AddGetVm
+@using NitelikliBilisim.Core.Services.Abstracts
+@inject IStorageService StorageService
+@{
     ViewData["Title"] = "Eğitmen Ekle";
 }
 @section styles{
-    <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
+    <link href="~/vendor\select2/dist/css/select2.min.css" rel="stylesheet" />
     <link href="~/css/lib/file-uploader.css" rel="stylesheet" />
 }
 @section alerts{
@@ -14,52 +17,118 @@
         <div class="header_box version_2">
             <h2><i class="fa fa-file"></i>Kişisel Bilgiler</h2>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <div class="file-upload-container" id="file-upload-for-educator-photo">
-                        <img class="img-after-preview" id="img-after-preview-for-educator-photo" />
-                        <p><i class="fa fa-file"></i> Profil fotoğrafı yüklemek için tıklayınız...</p>
-                        <input type="file" />
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <div class="file-upload-container" id="file-upload-for-educator-photo">
+                            <img class="img-after-preview" id="img-after-preview-for-educator-photo" />
+                            <p><i class="fa fa-file"></i> Profil fotoğrafı yüklemek için tıklayınız...</p>
+                            <input type="file" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Ünvan</label>
+                                <input type="text" class="form-control" placeholder="Eğitmenin ünvanı" id="input-title">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>İsim</label>
+                                <input type="text" class="form-control" placeholder="Eğitmenin Adı" id="input-name">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Soyisim</label>
+                                <input type="text" class="form-control" placeholder="Eğitmenin Soyadı" id="input-surname">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Telefon</label>
+                                <input type="text" class="form-control" placeholder="Eğitmenin telefon numarası" id="input-phone">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>E-Posta</label>
+                                <input type="email" class="form-control" required placeholder="Eğitmenin e-posta adresi" id="input-email">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Banka</label>
+                                <select class="form-control" id="select-bank">
+                                    @foreach (var bank in Model.BankNames)
+                                    {
+                                        <option value="@bank.Key">@bank.Value</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>IBAN No</label>
+                                <input type="text" class="form-control" required placeholder="IBAN Numarası" id="input-iban" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Eğitmenin Sahip Olduğu Sertifikalar</label>
+                                <select id="select-certificates" multiple="multiple" class="form-control">
+                                    @foreach (var item in Model.Certificates)
+                                    {
+                                        <option data-image="@(StorageService.BlobUrl+item.CertificateImagePath)" value="@item.Id">@item.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Eğitmenin Uzmanlık Alanları</label>
+                                <select id="select-education-categories" multiple="multiple" class="form-control">
+                                    @foreach (var item in Model.EducationCategories)
+                                    {
+                                        <option value="@item.Id">@item.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Kısa Açıklama</label>
+                                <textarea rows="4" class="form-control" maxlength="400" placeholder="Eğitmen hakkında kısa bilgi" id="input-short-description"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Biyografi</label>
+                                <textarea rows="12" class="form-control" placeholder="Eğitmen Biyografisi" id="input-biography"></textarea>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label>Ünvan</label>
-                    <input type="text" class="form-control" placeholder="Eğitmenin ünvanı" id="input-title">
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label>İsim</label>
-                    <input type="text" class="form-control" placeholder="Eğitmenin ismi (varsa orta ismi)" id="input-name">
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label>Soyisim</label>
-                    <input type="text" class="form-control" placeholder="Eğitmenin soyismi" id="input-surname">
-                </div>
-            </div>
-        </div>
         <!-- /row-->
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>Telefon</label>
-                    <input type="text" class="form-control" placeholder="Eğitmenin telefon numarası" id="input-phone">
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>E-Posta</label>
-                    <input type="email" class="form-control" placeholder="Eğitmenin e-posta adresi" id="input-email">
-                </div>
-            </div>
-        </div>
+
     </div>
     <!-- /box_general-->
 
@@ -102,8 +171,7 @@
 <p><button id="btn-save" class="btn_1 medium">Kaydet</button></p>
 
 @section postScripts{
-    <script src="~/js/lib/security-support.js"></script>
-    <script src="~/js/sup/alert-sup.js"></script>
+    <script src="~/vendor\select2/dist/js/select2.min.js"></script>
     <script src="~/js/lib/file-uploader.js"></script>
     <script src="~/js/areas/admin/admin-educator-add.js"></script>
 }

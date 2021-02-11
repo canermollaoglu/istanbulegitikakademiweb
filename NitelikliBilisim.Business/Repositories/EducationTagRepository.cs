@@ -7,8 +7,10 @@ namespace NitelikliBilisim.Business.Repositories
 {
     public class EducationTagRepository : BaseRepository<EducationTag, Guid>
     {
+        private readonly NbDataContext _context;
         public EducationTagRepository(NbDataContext context) : base(context)
         {
+            _context = context;
         }
 
         public override Guid Insert(EducationTag entity, bool isSaveLater = false)
@@ -17,6 +19,11 @@ namespace NitelikliBilisim.Business.Repositories
                 return default;
 
             return base.Insert(entity, isSaveLater);
+        }
+
+        public IQueryable<EducationTag> GetListQueryable()
+        {
+            return _context.EducationTags;
         }
     }
 }

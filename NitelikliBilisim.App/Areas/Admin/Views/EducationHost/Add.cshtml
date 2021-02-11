@@ -1,0 +1,71 @@
+﻿@using NitelikliBilisim.Core.ViewModels.areas.admin.education_host 
+@model EducationHostAddGetVm
+@{
+    ViewData["Title"] = "Eğitim Kurumu Ekle";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    <link href="~/css/lib/file-uploader.css" rel="stylesheet" />
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="box_general padding_bottom">
+    <div class="header_box version_2">
+        <h2><i class="fa fa-file"></i>Eğitim Kurumu Ekle</h2>
+    </div>
+    <form id="form-add-education-host">
+        @Html.AntiForgeryToken()
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Kurum Adı</label>
+                            <input type="text" class="form-control" id="input-name">
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Google Map Url</label>
+                            <input type="text" class="form-control" id="input-map-url">
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Şehir Seçiniz</label>
+                            <select id="input-city" class="form-control">
+                                @foreach (var city in Model.HostCities)
+                                {
+                                    <option value="@city.Key">@city.Value</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Adresi</label>
+                            <textarea id="input-address" rows="5" class="form-control" style="height:100px;"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <input class="form-control" type="text" id="search_key" />
+                <div id="map" style="height:300px"></div>
+                <input type="hidden" id="input-latitude" value="0" />
+                <input type="hidden" id="input-longitude" value="0" />
+            </div>
+        </div>
+    </form>
+</div>
+
+<p><button id="btn-save" class="btn_1 medium">Kaydet</button></p>
+@section postScripts{
+    <script src="~/js/lib/file-uploader.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBwbBlZQaeP0fYu7xTiviCCWGAK3onN-iE&libraries=places&callback=initMap"></script>
+    <script src="~/js/areas/admin/admin-education-host-add.js"></script>
+}

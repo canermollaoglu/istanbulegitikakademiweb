@@ -1,13 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\NitelikliBilisim.Core\NitelikliBilisim.Core.csproj" />
     <ProjectReference Include="..\NitelikliBilisim.Data\NitelikliBilisim.Data.csproj" />
-    <ProjectReference Include="..\NitelikliBilisim.Support\NitelikliBilisim.Support.csproj" />
+    <ProjectReference Include="..\NitelikliBilisim.Notificator\NitelikliBilisim.Notificator.csproj" />
   </ItemGroup>
 
 </Project>

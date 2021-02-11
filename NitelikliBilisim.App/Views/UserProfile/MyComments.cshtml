@@ -1,0 +1,225 @@
+﻿@model List<NitelikliBilisim.Core.ViewModels.Main.Profile.MyCommentVm>
+@using NitelikliBilisim.Core.Services.Abstracts
+@using NitelikliBilisim.App.Utility
+@inject IStorageService StorageService
+@{
+    ViewData["Title"] = "Yorumlarım";
+    Layout = "~/Views/Shared/_LayoutHesap.cshtml";
+}
+
+<section class="account account--dashboard">
+    <div class="account-mobile__top">
+        <a asp-controller="UserProfile" asp-action="MyMenu" class="account-mobile__prev">
+            <span class="icon-outer">
+                <svg class="icon">
+                    <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                </svg>
+            </span>
+        </a>
+        <span class="account-mobile__txt">
+            YORUMLARIM
+        </span>
+    </div>
+    <div class="container">
+        <div class="account__wrp">
+            @await Component.InvokeAsync("MyAccountSidebar", AccountSideBarPageNames.MyComments)
+            <div class="account-content">
+                <div class="account-detail">
+                    <div class="account-detail__wrp">
+                        <div class="account-detail__title">
+                            YORUMLARIM
+                        </div>
+                        @foreach (var comment in Model)
+                        {
+                            var educationImage = "";
+                            if (!string.IsNullOrEmpty(comment.EducationFeaturedImage))
+                            {
+                                educationImage = StorageService.BlobUrl+comment.EducationFeaturedImage;
+                            }
+                            
+                            <div class="account-comment">
+                                <div class="account-comment__top">
+                                    
+                                        <div class="account-comment__img">
+                                            <img src="@educationImage" alt="">
+                                        </div>
+                                        <div class="account-comment__top-cnt">
+                                            <div class="account-comment__top-title">
+                                                <a asp-controller="Course" asp-action="Details" asp-route-seoUrl="@comment.SeoUrl" asp-route-catSeoUrl="@comment.CategorySeoUrl"> @comment.EducationName</a> 
+                                            </div>
+                                            <div class="account-comment__top-txt">
+                                                <a asp-controller="Course" asp-action="List" asp-route-catSeoUrl="@comment.CategorySeoUrl">@comment.CategoryName</a> 
+                                            </div>
+                                        </div>
+                                    
+                                    <div class="account-comment__like ml-auto">
+                                        <div class="account-comment__like-users">
+                                            @foreach (var pictureUrl in comment.EducatorPictureUrls)
+                                            {
+                                                <div class="account-comment__like-user">
+                                                    <img src="@(StorageService.BlobUrl+pictureUrl)" alt="">
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="account-comment__bottom">
+                                    <div class="account-comment__bottom-top">
+                                        <div class="main-stars">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                if (i <= comment.Point)
+                                                {
+                                                    <span class="icon-outer icon-star active">
+                                                        <svg class="icon">
+                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                        </svg>
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="icon-outer icon-star">
+                                                        <svg class="icon">
+                                                            <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                        </svg>
+                                                    </span>
+                                                }
+                                            }
+                                        </div>
+                                        <div class="account-comment__bottom-date">
+                                            @comment.Date
+                                        </div>
+                                        @if (comment.ApprovalStatus == NitelikliBilisim.Core.Enums.user_details.CommentApprovalStatus.Approved)
+                                        {
+                                            <div class="account-comment__bottom-status success">
+                                                <span class="icon-outer">
+                                                    <svg class="icon">
+                                                        <use xlink:href="../../assets/img/icons.svg#icon-check-circle-c"></use>
+                                                    </svg>
+                                                </span>
+                                                Yayınlandı
+                                            </div>
+                                        }
+                                        else if (comment.ApprovalStatus == NitelikliBilisim.Core.Enums.user_details.CommentApprovalStatus.Waiting)
+                                        {
+                                            <div class="account-comment__bottom-status waited">
+                                                <span class="icon-outer">
+                                                    <svg class="icon">
+                                                        <use xlink:href="../../assets/img/icons.svg#icon-sand-watch"></use>
+                                                    </svg>
+                                                </span>
+                                                Onay Bekliyor
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="account-comment__bottom-status refuse tooltip-hover"
+                                                 tooltip-text="Yorumunuz, yayın politikamız gereği yayınlanamamaktadır.">
+                                                <span class="icon-outer">
+                                                    <svg class="icon">
+                                                        <use xlink:href="../../assets/img/icons.svg#icon-circle-close-c"></use>
+                                                    </svg>
+                                                </span>
+                                                Reddedildi
+                                            </div>
+                                        }
+
+                                    </div>
+                                    <div class="account-comment__bottom-txt">
+                                        @comment.Content
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        @*<div class="account-comment">
+                            <div class="account-comment__top">
+                                <div class="account-comment__img">
+                                    <img src="../../assets/img/cardimg5.jpg" alt="">
+                                </div>
+                                <div class="account-comment__top-cnt">
+                                    <div class="account-comment__top-title">
+                                        ASP.Net Core Web API ile JWT Authentication
+                                    </div>
+                                    <div class="account-comment__top-txt">
+                                        web ve mobil programlama
+                                    </div>
+                                </div>
+                                <div class="account-comment__like ml-auto">
+                                    <div class="account-comment__like-icon">
+                                        <span class="icon-outer">
+                                            <svg class="icon">
+                                                <use xlink:href="../../assets/img/icons.svg#icon-heart"></use>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                    <div class="account-comment__like-users">
+                                        <div class="account-comment__like-user">
+                                            <img src="../../assets/img/teacher-1.jpg" alt="">
+                                        </div>
+                                        <div class="account-comment__like-user">
+                                            <img src="../../assets/img/teacher-1.jpg" alt="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="account-comment__bottom">
+                                <div class="account-comment__bottom-top">
+                                    <div class="main-stars">
+                                        <span class="icon-outer icon-star active">
+                                            <svg class="icon">
+                                                <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                            </svg>
+                                        </span>
+                                        <span class="icon-outer icon-star active">
+                                            <svg class="icon">
+                                                <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                            </svg>
+                                        </span>
+                                        <span class="icon-outer icon-star active">
+                                            <svg class="icon">
+                                                <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                            </svg>
+                                        </span>
+                                        <span class="icon-outer icon-star">
+                                            <svg class="icon">
+                                                <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                            </svg>
+                                        </span>
+                                        <span class="icon-outer icon-star">
+                                            <svg class="icon">
+                                                <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                    <div class="account-comment__bottom-date">
+                                        10 Mart 2020
+                                    </div>
+                                    <div class="account-comment__bottom-status waited">
+                                        <span class="icon-outer">
+                                            <svg class="icon">
+                                                <use xlink:href="../../assets/img/icons.svg#icon-sand-watch"></use>
+                                            </svg>
+                                        </span>
+                                        Onay Bekliyor
+                                    </div>
+                                </div>
+                                <div class="account-comment__bottom-txt">
+                                    Merhabalar, Ben Mehmet Fatih Bakacak. İstanbul Teknik Üniversitesi Telekomünikasyon Mühendisliği
+                                    mezunuyum. Şu anda yine İstanbul Üniversitesi’nde Uydu Haberleşmesi ve Uzaktan algılama üzerine
+                                    yüksek lisans yapmaktayım. 2014 yılında Wissen’den Cisco, sistem ve ağ uzmanlığı eğitimi aldım.
+                                    Aldığım eğitim sadece teorik bir eğitim değildi. Daha çok pratik bir eğitim aldık, gerçek cihazlarla
+                                    çalışma şansı yakaladım. Bu sayedeiş hayatına girmeden önce bu cihazlara aşina olduk, öncesinden
+                                    bilir hale geldik.
+                                </div>
+                            </div>
+                        </div>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="js-tooltip tooltip tooltip-top account-comment__bottom-status-tooltip">
+    <div class="tooltip__title">
+    </div>
+</div>

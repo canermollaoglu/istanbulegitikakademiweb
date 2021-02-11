@@ -1,0 +1,114 @@
+﻿@model NitelikliBilisim.Core.ViewModels.Main.Profile.InvoiceDetailsVm
+@using NitelikliBilisim.Core.Services.Abstracts
+@using NitelikliBilisim.App.Utility
+@inject IStorageService StorageService
+@{
+    ViewData["Title"] = Model.PaymentId +" Fatura Detayları";
+    Layout = "~/Views/Shared/_LayoutHesap.cshtml";
+}
+
+<section class="account account--dashboard">
+    <div class="account-mobile__top">
+        <a href="./hesap-menu.php" class="account-mobile__prev">
+            <span class="icon-outer">
+                <svg class="icon">
+                    <use xlink:href="assets/img/icons.svg#icon-arrow"></use>
+                </svg>
+            </span>
+        </a>
+        <span class="account-mobile__txt">
+            FATURA DETAYLARI
+        </span>
+    </div>
+    <div class="container">
+        <div class="account__wrp">
+            @await Component.InvokeAsync("MyAccountSidebar", AccountSideBarPageNames.MyInvoices)
+            <div class="account-content">
+                <div class="account-detail">
+                    <div class="account-detail__wrp">
+                        <div class="account-detail__title">
+                            FATURA DETAYLARI
+                        </div>
+                        <div class="account-courses certificate">
+                            <div class="checkout__subtop">
+                                <div class="checkout__subtop-title">
+                                    ÜRÜNLER
+                                </div>
+                                <div class="checkout__subtop-title ml-auto">
+                                    FİYAT
+                                </div>
+                            </div>
+                            <div class="checkout__product-wrp">
+                                @foreach (var detail in Model.Details)
+                                {
+                                    <div class="checkout__product-item">
+                                        <a asp-controller="Course" asp-action="Details" asp-route-catSeoUrl="@detail.CategorySeoUrl" asp-route-seoUrl="@detail.EducationSeoUrl" class="checkout__product-left">
+                                            <div class="checkout__product-img">
+                                                <img src="@(StorageService.BlobUrl+detail.EducationImage)" alt="">
+                                            </div>
+                                        </a>
+                                        <div class="checkout__product-right">
+                                            <div class="checkout__product-title">@detail.Education</div>
+                                            <div class="checkout__product-new">
+                                                 @detail.PaidPrice <span>TL</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <span class="checkout__fw-hr"></span>
+                            <div class="checkout__price-wrp">
+                                <div class="checkout__price-item">
+                                    <div class="checkout__price-title">Ürünler Toplamı</div>
+                                    <div class="checkout__price-new">
+                                         @Model.TotalPrice <span>TL</span>
+                                    </div>
+                                </div>
+                                <div class="checkout__price-item">
+                                    <div class="checkout__price-title">Toplam İndirimler</div>
+                                    <div class="checkout__price-new">
+                                         @Model.DiscountAmount <span>TL</span>
+                                    </div>
+                                </div>
+                                <div class="checkout__price-item payment-method">
+                                    <div class="checkout__price-title">Ödeme Yöntemi</div>
+                                    <div class="checkout__price-payment-method">
+                                        <span class="icon-outer">
+                                            <svg class="icon">
+                                                <!-- todo: havale ise icon-bank, kredi kartı ise icon-credit-card-f kullanılacak -->
+                                                <use xlink:href="assets/img/icons.svg#icon-credit-card-f"></use>
+                                                <!-- <use xlink:href="assets/img/icons.svg#icon-bank"></use> -->
+                                            </svg>
+                                        </span>
+                                        @if (Model.InstallmentInfo == 1)
+                                        {
+                                            <text>Kredi Kartı(Tek Çekim)</text>
+                                        }
+                                        else
+                                        {
+                                            <text>Kredi Kartı (@Model.InstallmentInfo Taksit)</text>
+                                        }
+
+                                        <!-- Havale / EFT -->
+                                    </div>
+                                </div>
+                                <div class="checkout__price-item totaly">
+                                    <div class="checkout__price-title">Toplam Tutar</div>
+                                    <div class="checkout__price-new">
+                                         @Model.PaidPrice <span>TL</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+<div class="js-tooltip tooltip tooltip-top account-dashboard__started-tooltip">
+    <div class="tooltip__title">
+    </div>
+</div>

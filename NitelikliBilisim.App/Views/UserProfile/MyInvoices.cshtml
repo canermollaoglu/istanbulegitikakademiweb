@@ -1,0 +1,165 @@
+﻿@model List<NitelikliBilisim.Core.ViewModels.Main.Profile.MyInvoicesVm>
+@{
+    ViewData["Title"] = "Faturalarım";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<main>
+    <div class="container margin_60_35">
+
+    </div>
+    <div class="container margin_60_35">
+        <div class="row">
+            <div class="col-lg-12">
+                @foreach (var item in Model)
+                {
+                    <div class="row">
+                        <div class="offset-md-2 col-md-8">
+                            <table class="table table-bordered">
+                                @if (DateTime.Now.Date==item.Invoice.CreatedDate.Date)
+                                {
+                                    <tr>
+                                        <td colspan="2"><button data-invoice-id="@item.Invoice.InvoiceId" class="btn btn-danger text-light btn-cancel-sale">Tüm satışı iptal et</button></td>
+                                    </tr>
+                                }
+                                <tr>
+                                    <th>Fatura Tipi</th>
+                                    <td>@item.Invoice.BillingType</td>
+                                </tr>
+                                <tr><th>Tarih</th><td>@item.Invoice.CreatedDate</td></tr>
+                                @if (!item.Invoice.IsIndividual)
+                                {
+                                    <tr>
+                                        <th>Şirket İsmi</th>
+                                        <td>@item.Invoice.CompanyInfo.CompanyName</td>
+                                    </tr>
+                                }
+                                @if (item.Invoice.PaymentCount > 1)
+                                {
+                                    <tr>
+                                        <th>Taksit Sayısı</th>
+                                        <td>@item.Invoice.PaymentCount</td>
+                                    </tr>
+                                }
+                                <tr>
+                                    <th>Tahsilat Durumu</th>
+                                    <td>@item.Invoice.TransactionStatus</td>
+                                </tr>
+                                <tr>
+                                    <th>Fatura Detayları</th>
+                                    <td>
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Eğitim</th>
+                                                    <th>Ödenen Miktar</th>
+                                                    <th>Grup Durumu</th>
+                                                    <th>İşlemler</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var details in item.InvoiceDetails)
+                                                {
+                                                    var rowStyle = details.IsCancelled ? "text-danger" : "text-success";
+                                                <tr class="@rowStyle">
+                                                    <td>@details.Education</td>
+                                                    <td>@details.PaidPriceText</td>
+                                                    @if (details.Group != null)
+                                                    {
+                                                        if (details.Group.IsGroupStarted)
+                                                        {
+                                                            <td>@details.Group.StartDateText tarihinde grup <b class="text-success">başlamıştır</b></td>
+                                                            <td><button data-invoice-details-id="@details.InvoiceDetailsId" @(details.IsCancelled ? "disabled" : "") class="btn btn-danger text-light btn-refund-request">İade Talebi</button></td>
+
+                                                        }
+                                                        else
+                                                        {
+                                                            <td>@details.Group.StartDateText tarihinde grup <b class="text-warning">başlayacaktır</b></td>
+                                                            <td><button data-invoice-details-id="@details.InvoiceDetailsId" @(details.IsCancelled ? "disabled" : "") class="btn btn-danger text-light btn-refund-request">İade Talebi</button></td>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <td>Gruba atanmamıştır</td>
+                                                        <td><button data-invoice-details-id="@details.InvoiceDetailsId" @(details.IsCancelled ? "disabled" : "") class="btn btn-danger text-light btn-refund-request">İade Talebi</button></td>
+                                                    }
+                                                </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</main>
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmCancelModalLabel" aria-hidden="true" id="confirm-cancel-modal">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="confirmCancelModalLabel">Satışın İptalini Onayla</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="invoice-id" />
+                <p>Bu satışı iptal etmekle, aldığınız bütün eğitimlerden ayrılacaksınız. Emin misiniz?</p>
+                <textarea id="txt-user-description" class="form-control" rows="3" placeholder="Açıklama giriniz..." style="resize:none;"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" id="btn-modal-yes">Evet, eminim.</button>
+                <button type="button" class="btn btn-danger" id="btn-modal-no">Hayır</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section postScripts{ 
+    <script>
+        var btnCancelSale = $(".btn-cancel-sale");
+        var btnModalYes = $("#btn-modal-yes");
+        var btnModalNo = $("#btn-modal-no");
+        var btnRefundRequest = $(".btn-refund-request");
+        var confirmCancelModal = $("#confirm-cancel-modal");
+
+        btnCancelSale.on("click", btnCancelSale_onClick);
+        btnModalYes.on("click", btnModalYes_onClick);
+        btnModalNo.on("click", btnModalNo_onClick);
+        btnRefundRequest.on("click", btnRefundRequest_onClick);
+
+        function btnCancelSale_onClick() {
+            var invoiceId = $(this).data('invoice-id');
+            $('#invoice-id').val(invoiceId)
+            confirmCancelModal.modal('show');
+        }
+        function btnModalYes_onClick() {
+            if ($('#txt-user-description').val() == '') return;
+
+            $.ajax({
+                url: '/iptal',
+                method: 'post',
+                data: {
+                    InvoiceId: $('#invoice-id').val(),
+                    UserDescription: $('#txt-user-description').val()
+                },
+                success: (res) => {
+                    if (res.success) {
+                        console.log(res.message);
+                        $("#confirmCancelModal").modal('hide');
+                    }
+                }
+            })
+        }
+        function btnModalNo_onClick() {
+            confirmCancelModal.modal('hide');
+        }
+        function btnRefundRequest_onClick() {
+            var invoiceDetailId = $(this).data('invoice-details-id');
+            window.location.href = `/iptal-formu/${invoiceDetailId}`;
+        }
+    </script>
+}

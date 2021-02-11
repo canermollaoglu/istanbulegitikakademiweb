@@ -1,316 +1,1026 @@
-﻿@*@model NitelikliBilisim.Core.ViewModels.EducationVm*@
+﻿@using NitelikliBilisim.Core.Services.Abstracts
+@inject IStorageService StorageService
 @model NitelikliBilisim.Core.ViewModels.Main.Course.CourseDetailsVm
 @{
     ViewData["Title"] = $"{Model.Details.Base.Name} Kurs Detayları";
+    ViewData["MetaDescription"] = Model.Details.Base.Description;
+    ViewData["MetaKeywords"] = Model.Details.Tags;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@section styles{
-    <style>
-        #hero_in.courses:before {
-            background: url(@Model.Details.Medias.Where(x => x.MediaType == NitelikliBilisim.Core.Enums.EducationMediaType.Banner).FirstOrDefault().FileUrl) center center no-repeat;
-        }
 
-    </style>
+@{
+    var hours = Model.Details.Base.DaysNumeric * Model.Details.Base.HoursPerDayNumeric;
+    var detail = Model.Details.Medias.FirstOrDefault(x => x.MediaType == NitelikliBilisim.Core.Enums.EducationMediaType.Detail);
+    var detailUrl = "";
+    if (detail != null)
+    {
+        detailUrl = StorageService.BlobUrl + detail.FileUrl;
+    }
+    var squareImage = Model.Details.Medias.FirstOrDefault(x => x.MediaType == NitelikliBilisim.Core.Enums.EducationMediaType.Square);
+    var squrareImageUrl = "";
+    if (squareImage != null)
+    {
+        squrareImageUrl = StorageService.BlobUrl + squareImage.FileUrl;
+    }
 }
 
-<main>
-    <section id="hero_in" class="courses">
-        <div class="wrapper">
-            <div class="container">
-                <input type="hidden" value="@Model.Details.Base.Id" id="_education-id" />
-                <h1 class="fadeInUp"><span></span>@Model.Details.Base.Name</h1>
+<div class="subheader subheader--detail">
+    <div class="subheader__wrp">
+        <div class="container">
+            <div class="subheader--detail__inner js-calc-height">
+                <div class="breadcrumb">
+                    <a asp-controller="Home" asp-action="Index" class="breadcrumb__item">
+                        Anasayfa
+                    </a>
+                    <a href="#0" class="breadcrumb__item">
+                        Eğitimler
+                    </a>
+                </div>
+                <div class="subheader__cnt">
+                    <input type="hidden" id="_education-id" asp-for="Details.Base.Id" />
+                    <div class="subheader__txt-cnt">
+                        <div class="subheader__title">
+                            @Model.Details.Base.Name
+                        </div>
+                        <div class="subheader--detail__infos">
+                            <div class="subheader--detail__tag">@Model.Details.Base.CategoryName</div>
+                            <div class="subheader--detail__point">
+                                <div class="main-stars">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        if (i <= Model.Details.Base.Point)
+                                        {
+                                            <span class="icon-outer icon-star active">
+                                                <svg class="icon">
+                                                    <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                </svg>
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="icon-outer icon-star">
+                                                <svg class="icon">
+                                                    <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                </svg>
+                                            </span>
+                                        }
+                                    }
+
+                                </div>
+                                <div class="subheader--detail__point-text">
+                                    @Model.Details.Base.PointText Puan
+                                    @if (Model.Details.Base.CommentCount > 15)
+                                    {
+                                        <span>(@Model.Details.Base.CommentCount Öğrenci)</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="subheader--detail__text js-read-more">
+                            <p>
+                                @Model.Details.Base.Description
+                            </p>
+                        </div>
+                        <div class="teacher-detail__about-button js-read-more-btn">
+                            <span class="teacher-detail__about-buttonicon"></span>
+                            Devamını Oku
+                        </div>
+                        <div class="lesson-detail__infos v-tablet-flex">
+                            <div class="lesson-detail__info">
+                                <span class="icon-outer icon-info">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-c-human"></use>
+                                    </svg>
+                                </span>
+                                <div class="lesson-detail__info-cnt">
+                                    <span class="lesson-detail__info-txt">Seviye</span>
+                                    <span class="lesson-detail__info-title js-data-change-seviye">@Model.Details.Base.Level</span>
+                                </div>
+                            </div>
+                            <div class="lesson-detail__info">
+                                <span class="icon-outer icon-info">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-c-calendar"></use>
+                                    </svg>
+                                </span>
+                                <div class="lesson-detail__info-cnt">
+                                    <span class="lesson-detail__info-txt">Eğitim Tarihi</span>
+                                    <span class="lesson-detail__info-title js-data-change-tarih">
+                                      
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="lesson-detail__info">
+                                <span class="icon-outer icon-info">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-c-clock"></use>
+                                    </svg>
+                                </span>
+                                <div class="lesson-detail__info-cnt">
+                                    <span class="lesson-detail__info-txt">Eğitim Süresi</span>
+                                    <span class="lesson-detail__info-title js-data-change-sure">
+                                        @Model.Details.Base.DaysText Gün
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="lesson-detail__info">
+                                <span class="icon-outer icon-info">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-c-doc-clock"></use>
+                                    </svg>
+                                </span>
+                                <div class="lesson-detail__info-cnt">
+                                    <span class="lesson-detail__info-txt">Eğitim Saati</span>
+                                    <span class="lesson-detail__info-title js-data-change-saat">@hours Saat</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </section>
+    </div>
+</div>
 
-    <div class="bg_color_1">
-        <nav class="secondary_nav sticky_horizontal">
-            <div class="container">
-                <ul class="clearfix">
-                    <li><a href="#description" class="active">Açıklama</a></li>
-                    <li><a href="#lessons">Eğitim İçeriği</a></li>
-                    <li><a href="#teachers">Eğitmenler</a></li>
-                    <li><a href="#reviews">Yorumlar</a></li>
-                </ul>
-            </div>
-        </nav>
-        <div class="container margin_60_35">
-            <div class="row">
-                <div class="col-lg-8">
-
-                    <section id="description">
-                        <div class="box_highlight">
-                            <ul class="additional_info">
-                                <li><i class="pe-7s-timer"></i>Kurs Süresi<strong>@Model.Details.Base.DaysText gün / @Model.Details.Base.HoursPerDayText saat</strong></li>
-                                <li>
-                                    <i class="pe-7s-date"></i>Başlangıç Tarihi<strong>
-                                        @if (Model.Group != null)
-                                        {
-                                            <text>@Model.Group.StartDate.ToString("dd.MM.yyyy")</text>
-                                        }
-                                        else
-                                        {
-                                            <text>-</text>
-                                        }
-                                    </strong>
-                                </li>
-                                <li>
-                                    <i class="fa-users"></i>Kontenjan<strong>
-                                        @if(Model.Group != null)
-                                        {
-                                            <text>@Model.Group.Quota</text>
-                                        }
-                                        else
-                                        {
-                                            <text>-</text>
-                                        }
-                                    </strong>
-                                    <i class="fa-user"></i>Course Fee<strong>2900 USD</strong>
-                                </li>
-                            </ul>
+<div class="lesson-detail">
+    <div class="detail-line"></div>
+    <div class="container">
+        <div class="lesson-detail__wrp">
+            <div class="lesson-detail__content">
+                <div class="lesson-detail__infos h-tablet">
+                    <div class="lesson-detail__info">
+                        <span class="icon-outer icon-info">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-c-human"></use>
+                            </svg>
+                        </span>
+                        <div class="lesson-detail__info-cnt">
+                            <span class="lesson-detail__info-txt">Seviye</span>
+                            <span class="lesson-detail__info-title js-data-change-seviye">@Model.Details.Base.Level</span>
                         </div>
-
-                        <h2>Açıklama</h2>
-                        <p>@Model.Details.Base.Description</p>
-                        <h5>Ne öğreneceksiniz?</h5>
-                        <ul class="list_ok">
-                            @*<li>
-                                    <h6>Suas summo id sed erat erant oporteat</h6>
-                                    <p>Ut unum diceret eos, mel cu velit principes, ut quo inani dolorem mediocritatem. Mea in justo posidonium necessitatibus.</p>
-                                </li>*@
-                            @foreach (var item in Model.Details.Gains)
-                            {
-                                <li>@item.Gain</li>
-                            }
-                        </ul>
-                        <hr>
-                        @if (!string.IsNullOrWhiteSpace(Model.Details.Base.Description2))
-                        {
-                            <p>@Model.Details.Base.Description2</p>
-                        }
-                        @*<div class="row">
-                                <div class="col-lg-6">
-                                    <ul class="bullets">
-                                        <li>Dolorem mediocritatem</li>
-                                        <li>Mea appareat</li>
-                                        <li>Prima causae</li>
-                                        <li>Singulis indoctum</li>
-                                    </ul>
+                    </div>
+                    <div class="lesson-detail__info">
+                        <span class="icon-outer icon-info">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-c-calendar"></use>
+                            </svg>
+                        </span>
+                        <div class="lesson-detail__info-cnt">
+                            <span class="lesson-detail__info-txt">Eğitim Tarihi</span>
+                            <span class="lesson-detail__info-title js-data-change-tarih">
+                                
+                            </span>
+                        </div>
+                    </div>
+                    <div class="lesson-detail__info">
+                        <span class="icon-outer icon-info">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-c-clock"></use>
+                            </svg>
+                        </span>
+                        <div class="lesson-detail__info-cnt">
+                            <span class="lesson-detail__info-txt">Eğitim Süresi</span>
+                            <span class="lesson-detail__info-title js-data-change-sure">
+                                @Model.Details.Base.DaysText Gün
+                            </span>
+                        </div>
+                    </div>
+                    <div class="lesson-detail__info">
+                        <span class="icon-outer icon-info">
+                            <svg class="icon">
+                                <use xlink:href="../../assets/img/icons.svg#icon-c-doc-clock"></use>
+                            </svg>
+                        </span>
+                        <div class="lesson-detail__info-cnt">
+                            <span class="lesson-detail__info-txt">Eğitim Saati</span>
+                            <span class="lesson-detail__info-title js-data-change-saat">@hours Saat</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="lesson-detail__tabs">
+                    <div class="lesson-detail__tab-header js-show-mobile-sticky js-magic-line js-scroll-tab">
+                        <div class="lesson-detail__tab-header--item magic-item js-scroll-tab-item active">
+                            <a href="#genelbakis" class="lesson-detail__tab-header--a">
+                                Genel Bakış
+                            </a>
+                        </div>
+                        <div class="lesson-detail__tab-header--item magic-item js-scroll-tab-item">
+                            <a href="#egitimicerigi" class="lesson-detail__tab-header--a">
+                                Eğitim İçeriği
+                            </a>
+                        </div>
+                        <div class="lesson-detail__tab-header--item magic-item js-scroll-tab-item">
+                            <a href="#egitmenbilgisi" class="lesson-detail__tab-header--a">
+                                Eğitmen Bilgisi
+                            </a>
+                        </div>
+                        <div class="lesson-detail__tab-header--item magic-item js-scroll-tab-item">
+                            <a href="#yorumlar" class="lesson-detail__tab-header--a">
+                                Yorumlar
+                            </a>
+                        </div>
+                    </div>
+                    <div class="lesson-detail__tab-content">
+                        <div id="genelbakis" class="lesson-detail__tab-item js-tab-content">
+                            <div class="lesson-detail__tab-title">
+                                <span> NELER <span class="colored">ÖĞRENECEKSİNİZ</span></span>
+                            </div>
+                            <div class="lesson-detail__tab-p-strong">
+                                @Model.Details.Base.Description
+                            </div>
+                            <div class="lesson-detail__tab-p">
+                                @Model.Details.Base.Description2
+                            </div>
+                            @*<ul class="lesson-detail__tab-ul">
+                                    <li>
+                                        <span class="icon-outer">
+                                            <svg class="icon">
+                                                <use xlink:href="../../assets/img/icons.svg#icon-check"></use>
+                                            </svg>
+                                        </span>
+                                        @gain.Gain
+                                    </li>
+                                </ul>*@
+                            <div class="lesson-detail__card-footer-top">
+                                <div class="lesson-detail__tab-title">
+                                    <span> EĞİTİM <span class="colored">KAZANIMLARI</span></span>
                                 </div>
-                                <div class="col-lg-6">
-                                    <ul class="bullets">
-                                        <li>Timeam inimicus</li>
-                                        <li>Oportere democritum</li>
-                                        <li>Cetero inermis</li>
-                                        <li>Pertinacia eum</li>
-                                    </ul>
-                                </div>
-                            </div>*@
-                    </section>
-
-                    <section id="lessons">
-                        <div class="intro_title">
-                            <h2>Dersler</h2>
-                            <ul>
-                                <li>@Model.Details.TotalPartCount parça</li>
-                                <li>@Model.Details.TotalDuration dk.</li>
-                            </ul>
-                        </div>
-                        <div id="accordion_lessons" role="tablist" class="add_bottom_45">
-                            @{
-                                var count = 1;
-                            }
-                            @foreach (var part in Model.Details.Parts)
-                            {
-                                <div class="card">
-                                    <div class="card-header" role="tab" id="heading_@count">
-                                        <h5 class="mb-0">
-                                            @{
-                                                var icon = count != 1 ? "ti-plus" : "ti-minus";
-                                            }
-                                            <a data-toggle="collapse" href="#collapse_@count" aria-expanded="true" aria-controls="collapse_@count"><i class="indicator @icon"></i> @part.Title</a>
-                                        </h5>
-                                    </div>
-                                    @{
-                                        var show = count != 1 ? "" : "show";
-                                    }
-                                    <div id="collapse_@count" class="collapse @show" role="tabpanel" aria-labelledby="heading_@count" data-parent="#accordion_lessons">
-                                        <div class="card-body">
-                                            <div class="list_lessons">
-                                                <ul>
-                                                    @foreach (var item in part.SubParts)
-                                                    {
-                                                        <li><a class="txt_doc">@item.Title</a><span></span></li>
-                                                    }
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                count++;
-                            }
-                        </div>
-                    </section>
-
-                    @* EĞİTMENLER *@
-                    <section id="teachers">
-                        <div class="intro_title">
-                            <h2>Eğitmenler</h2>
-                        </div>
-                        <p>Bu dersi veren, alanında uzman eğitmenlerimizi tanıyın!</p>
-                        <div class="row add_top_20 add_bottom_30">
-                            <div class="col-lg-6">
-                                <ul class="list_teachers">
-                                    @foreach (var educator in Model.Educators)
+                                <ul class="lesson-detail__tab-ul">
+                                    @foreach (var gain in Model.Details.Gains)
                                     {
                                         <li>
-                                            <a href="/egitmen-profili/@educator.EducatorId">
-                                                <figure><img src="@educator.ProfilePhoto" alt=""></figure>
-                                                <h5>@educator.Name @educator.Surname</h5>
-                                                <p>@educator.Title</p><i class="pe-7s-angle-right-circle"></i>
-                                            </a>
+                                            <span class="icon-outer">
+                                                <svg class="icon">
+                                                    <use xlink:href="../../assets/img/icons.svg#icon-code"></use>
+                                                </svg>
+                                            </span>
+                                            @gain.Gain
                                         </li>
                                     }
                                 </ul>
                             </div>
-                        </div>
-                        <!-- /row -->
-                    </section>
-
-                    @* YORUMLAR *@
-                    <section id="reviews">
-                        <h2>Reviews</h2>
-                        <div class="reviews-container">
-                            <div class="row">
-                                <div class="col-lg-3">
-                                    <div id="review_summary">
-                                        <strong>4.7</strong>
-                                        <div class="rating">
-                                            <i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i>
-                                        </div>
-                                        <small>Based on 4 reviews</small>
-                                    </div>
-                                </div>
-                                <div class="col-lg-9">
-                                    <div class="row">
-                                        <div class="col-lg-10 col-9">
-                                            <div class="progress">
-                                                <div class="progress-bar" role="progressbar" style="width: 90%" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-2 col-3"><small><strong>5 stars</strong></small></div>
-                                    </div>
-                                    <!-- /row -->
-                                    <div class="row">
-                                        <div class="col-lg-10 col-9">
-                                            <div class="progress">
-                                                <div class="progress-bar" role="progressbar" style="width: 95%" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-2 col-3"><small><strong>4 stars</strong></small></div>
-                                    </div>
-                                    <!-- /row -->
-                                    <div class="row">
-                                        <div class="col-lg-10 col-9">
-                                            <div class="progress">
-                                                <div class="progress-bar" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-2 col-3"><small><strong>3 stars</strong></small></div>
-                                    </div>
-                                    <!-- /row -->
-                                    <div class="row">
-                                        <div class="col-lg-10 col-9">
-                                            <div class="progress">
-                                                <div class="progress-bar" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-2 col-3"><small><strong>2 stars</strong></small></div>
-                                    </div>
-                                    <!-- /row -->
-                                    <div class="row">
-                                        <div class="col-lg-10 col-9">
-                                            <div class="progress">
-                                                <div class="progress-bar" role="progressbar" style="width: 0" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-2 col-3"><small><strong>1 stars</strong></small></div>
-                                    </div>
-                                    <!-- /row -->
-                                </div>
+                            <div class="lesson-detail__tab-title mt-4">
+                                <span> EĞİTİM <span class="colored">LOKASYONU</span></span>
                             </div>
-                            <!-- /row -->
-                        </div>
-
-                        <hr>
-
-                        <div class="reviews-container">
-
-                            <div class="review-box clearfix">
-                                <figure class="rev-thumb">
-                                    <img src="http://via.placeholder.com/150x150/ccc/fff/avatar1.jpg" alt="">
-                                </figure>
-                                <div class="rev-content">
-                                    <div class="rating">
-                                        <i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i>
+                            <div class="lesson-detail__card-footer-left">
+                                <div>
+                                    <div class="lesson-detail__tab-p-strong">
+                                        Merkez Adı:
                                     </div>
-                                    <div class="rev-info">
-                                        Admin – April 03, 2016:
+                                    <div class="js-data-change-merkez-adi">
+
                                     </div>
-                                    <div class="rev-text">
-                                        <p>
-                                            Sed eget turpis a pede tempor malesuada. Vivamus quis mi at leo pulvinar hendrerit. Cum sociis natoque penatibus et magnis dis
-                                        </p>
+                                    <div class="lesson-detail__tab-p-strong">
+                                        İl:
                                     </div>
+                                    <div class="js-data-change-il">
+
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="icon-outer">
+                                        <svg class="icon">
+                                            <use xlink:href="../../assets/img/icons.svg#icon-map-pin"></use>
+                                        </svg>
+                                    </span>
+                                    <div class="js-data-change-adres">
+                                        <div></div>
+                                    </div>
+                                    <a href="#" target="_blank" class="js-data-change-location-url">
+                                        <div class="lesson-detail__card-footer-inner">
+                                            <span class="lesson-detail__card-footer-left">
+                                                Yol Tarifi Al
+                                            </span>
+                                            <span class="icon-outer">
+                                                <svg class="icon">
+                                                    <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                                                </svg>
+                                            </span>
+                                        </div>
+                                    </a>
                                 </div>
                             </div>
                         </div>
-                    </section>
-                </div>
+                        <div id="egitimicerigi" class="lesson-detail__tab-item js-tab-content">
+                            <div class="lesson-detail__tab-title">
+                                <span>
+                                    DERSLERİ <span class="colored">KEŞFEDİN</span>
+                                </span>
+                                <div>
+                                    <span class="icon-outer">
+                                        <svg class="icon">
+                                            <use xlink:href="../../assets/img/icons.svg#icon-clock"></use>
+                                        </svg>
+                                    </span>
+                                    @Model.Details.Base.DaysText gün (@(Model.Details.Base.HoursPerDayNumeric*Model.Details.Base.DaysNumeric) Saat)
+                                </div>
+                            </div>
+                            <div class="accordion">
+                                @foreach (var part in Model.Details.Parts)
+                                {
+                                    <div class="accordion__item">
+                                        <div class="accordion__header">
+                                            <span class="icon-outer accordion__icon">
+                                            </span>
+                                            @part.Title
+                                        </div>
+                                        <div class="accordion__content">
+                                            <div class="js-calc-accordion-height">
+                                                <ul>
+                                                    @foreach (var subPart in part.SubParts)
+                                                    {
+                                                        <li>
+                                                            <span class="icon-outer">
+                                                                <svg class="icon">
+                                                                    <use xlink:href="../../assets/img/icons.svg#icon-code-browser"></use>
+                                                                </svg>
+                                                            </span>
+                                                            @subPart.Title
+                                                        </li>
+                                                    }
 
-                @* SAĞ TARAFTAKİ KURS DETAYLARI *@
-                <aside class="col-lg-4" id="sidebar">
-                    <div class="box_detail">
-                        <figure>
-
-                            <a href="https://www.youtube.com/watch?v=LDgd_gUcqCw" class="video"><i class="arrow_triangle-right"></i><img src="http://via.placeholder.com/800x533/ccc/fff/course_1.jpg" alt="" class="img-fluid"><span>View course preview</span></a>
-                        </figure>
-                        <div class="price">
-                            @Model.Details.Base.PriceText@*<span class="original_price"><em>$49</em>60% discount price</span>*@
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
                         </div>
-                        <button id="btn-buy" type="button" class="btn_1 full-width">Sepete Ekle</button>
-                        <a href="#0" class="btn_1 full-width outline"><i class="icon_heart"></i> İstek Listesine Ekle</a>
-                        <div id="list_feat">
-                            <h3>İçerikler</h3>
-                            <ul>
-                                <li><i class="icon_chat_alt"></i>Canlı dersler</li>
-                                <li><i class="icon_mobile"></i>Mobil desteği</li>
-                                <li><i class="icon_archive_alt"></i>Ders arşivi</li>
-                                <li><i class="icon_document_alt"></i>Kurs sertifikası</li>
-                            </ul>
+                        <div id="egitmenbilgisi" class="lesson-detail__tab-item js-tab-content">
+                            <div class="lesson-detail__tab-title">
+                                <span> UZMAN <span class="colored">EĞİTMENLERİMİZ</span></span>
+                            </div>
+                            <div class="lesson-detail__tab-teachers js-data-change-teachers">
+                                @foreach (var educator in Model.Educators)
+                                {
+                                    <a href="/egitmen-detayi/@educator.EducatorId" class="lesson-detail__tab-teachers--item">
+                                        <div class="lesson-detail__tab-teachers--img">
+                                            <img class="js-change-teacher-img" src="@educator.ProfilePhoto" alt="">
+                                        </div>
+                                        <div class="lesson-detail__tab-teachers--cnt">
+                                            <div class="lesson-detail__tab-teachers--name js-change-teacher-name">
+                                                @($"{educator.Name} {educator.Surname}")
+                                            </div>
+                                            <div class="lesson-detail__tab-teachers--txt">
+                                                @educator.Title
+                                            </div>
+                                        </div>
+                                        <div class="lesson-detail__tab-teachers--right">
+                                            <div class="main-stars">
+                                                <span class="icon-outer icon-star active">
+                                                    <svg class="icon">
+                                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                    </svg>
+                                                </span>
+                                                <span class="icon-outer icon-star active">
+                                                    <svg class="icon">
+                                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                    </svg>
+                                                </span>
+                                                <span class="icon-outer icon-star active">
+                                                    <svg class="icon">
+                                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                    </svg>
+                                                </span>
+                                                <span class="icon-outer icon-star">
+                                                    <svg class="icon">
+                                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                    </svg>
+                                                </span>
+                                                <span class="icon-outer icon-star">
+                                                    <svg class="icon">
+                                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                    </svg>
+                                                </span>
+                                            </div>
+                                            3.0 PUAN
+                                        </div>
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                        <div id="yorumlar" class="lesson-detail__tab-item js-tab-content">
+                            <div class="lesson-detail__tab-title">
+                                <span> KURSİYER <span class="colored">GÖRÜŞLERİ</span></span>
+                            </div>
+                            <div class="lesson-detail__comments">
+                                <div class="subheader--detail__point">
+                                    <div class="main-stars">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            if (i <= Model.Details.Base.Point)
+                                            {
+                                                <span class="icon-outer icon-star active">
+                                                    <svg class="icon">
+                                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                    </svg>
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="icon-outer icon-star">
+                                                    <svg class="icon">
+                                                        <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                    </svg>
+                                                </span>
+                                            }
+                                        }
+                                    </div>
+                                    <div class="subheader--detail__point-text">
+                                        @Model.Details.Base.PointText Puan
+                                        @if (Model.Details.Base.CommentCount > 15)
+                                        {
+                                            <span>(@Model.Details.Base.CommentCount Öğrenci)</span>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="lesson-detail__comments--wrp">
+
+                                </div>
+                                <div class="lesson-detail__comments--button js-load-comment">
+                                    <div class="button button--load-more">
+                                        <span class="button-txt">Daha Fazla Yorum Yükle</span>
+                                        <span class="icon-outer button-icon">
+                                            <svg class="icon">
+                                                <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                </div>
+                                @if (Model.Details.Base.IsCanComment)
+                                {
+                                    <form class="lesson-detail__commenting" id="comment-form"
+                                          action="/usercommentpost"
+                                          data-ajax-success="onCommentFormAjaxSuccess"
+                                          data-ajax-failure="onCommentFormAjaxFailed"
+                                          data-ajax="true" data-ajax-method="POST">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="EducationId" value="@Model.Details.Base.Id" />
+                                        <input type="hidden" name="Point" value="0" id="input-point" />
+                                        <div class="lesson-detail__tab-title">
+                                            <span> YORUM YAPMAK <span class="colored">İSTİYORUM</span></span>
+                                        </div>
+                                        <div class="commenting-box">
+                                            <div class="commenting-top">
+                                                <div class="commenting-name">
+                                                    <input type="text" name="Name" value="@Model.Details.CurrentUserName" readonly placeholder="Adınız...">
+                                                </div>
+                                                <div class="commenting-branch">
+                                                    <input type="text" name="Job" value="@Model.Details.CurrentUserJob" readonly placeholder="Mesleğiniz...">
+                                                </div>
+                                                <div class="commenting-pointed">
+                                                    <span>Puanla</span>
+                                                    <div class="js-let-point">
+                                                        <span class="icon-outer icon-star" data-point="1">
+                                                            <svg class="icon">
+                                                                <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                            </svg>
+                                                        </span>
+                                                        <span class="icon-outer icon-star" data-point="2">
+                                                            <svg class="icon">
+                                                                <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                            </svg>
+                                                        </span>
+                                                        <span class="icon-outer icon-star" data-point="3">
+                                                            <svg class="icon">
+                                                                <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                            </svg>
+                                                        </span>
+                                                        <span class="icon-outer icon-star" data-point="4">
+                                                            <svg class="icon">
+                                                                <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                            </svg>
+                                                        </span>
+                                                        <span class="icon-outer icon-star" data-point="5">
+                                                            <svg class="icon">
+                                                                <use xlink:href="../../assets/img/icons.svg#icon-star"></use>
+                                                            </svg>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="commenting-texting">
+                                                <textarea name="Content" maxlength="512" placeholder="Yorumlarınızı buradan yazın..."></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="commenting-footer">
+                                            <div class="clear-message">
+                                                <span class="icon-outer">
+                                                    <svg class="icon">
+                                                        <use xlink:href="../../assets/img/icons.svg#icon-circle-close"></use>
+                                                    </svg>
+                                                </span>
+                                                Sıfırla
+                                            </div>
+                                            <div class="commenting-footer-right">
+                                                <button type="submit" class="button button--dark button-fw">
+                                                    <span class="button--txt">
+                                                        Yorumu Gönder
+                                                    </span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                }
+
+                            </div>
                         </div>
                     </div>
-                </aside>
+                </div>
+            </div>
+            <div class="lesson-detail__side js-top-sized">
+                <div class="lesson-detail__card">
+                    <div class="lesson-detail__card-top ">
+                        @*js-video-btn data-video-id="@Model.Details.Base.VideoUrl"*@
+                        <img src="@detailUrl" alt="">
+                        @*<div class="card-play">
+            <span class="icon-outer">
+                <svg class="icon">
+                    <use xlink:href="../../assets/img/icons.svg#icon-play"></use>
+                </svg>
+            </span>
+        </div>*@
+                    </div>
+                    <div class="lesson-detail__card-cnt">
+                        <div class="lesson-detail__card-cnt-top">
+                            <div class="lesson-detail__card-infomessage">
+                                <span class="icon-outer">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-info-i"></use>
+                                    </svg>
+                                </span>
+                                @if (Model.AvaibleEducationCities.Count == 0)
+                                {
+                                    <text>Bu eğitim için aktif eğitim grubu bulunmamaktadır.</text>
+                                }
+                                else
+                                {
+                                    <text> Bu eğitimde birden fazla<br>
+                                        eğitim grubu bulunmaktadır.<br />
+                                        Lütfen eğitim almak istediğiniz grubu seçiniz.</text>
+                                }
+
+                            </div>
+                            <div class="lesson-detail__card-share js-share">
+                                <span class="icon-outer">
+                                    <svg class="icon">
+                                        <use xlink:href="../../assets/img/icons.svg#icon-share"></use>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="lesson-detail__card-share-items js-share-opened">
+                                <a target="_blank" href="http://www.facebook.com/share.php?u=@(Context.Request.Host)@(Context.Request.Path)">
+                                    <span class="icon-outer">
+                                        <svg class="icon">
+                                            <use xlink:href="../../assets/img/icons.svg#icon-facebook"></use>
+                                        </svg>
+                                    </span>
+                                </a>
+                                <a target="_blank" href="http://twitter.com/intent/tweet?text=Nitelikli%20Bilisim%20@(Model.Details.Base.Name)%20Egitimi&url=@(Context.Request.Host)@(Context.Request.Path)">
+                                    <span class="icon-outer">
+                                        <svg class="icon">
+                                            <use xlink:href="../../assets/img/icons.svg#icon-twitter"></use>
+                                        </svg>
+                                    </span>
+                                </a>
+                                <a target="_blank" href="https://www.linkedin.com/sharing/share-offsite/?url=@(Context.Request.Host)@(Context.Request.Path)">
+                                    <span class="icon-outer">
+                                        <svg class="icon">
+                                            <use xlink:href="../../assets/img/icons.svg#icon-linkedin"></use>
+                                        </svg>
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+                        @if (Model.AvaibleEducationCities.Count > 0)
+                        {
+                            <div class="lesson-detail__card-cnt-selects">
+                                <div class="lesson-detail__card-select custom-select bordered-select">
+                                    <select class="js-custom-select educationCityVal">
+                                        @foreach (var city in Model.AvaibleEducationCities)
+                                        {
+                                            <option value="@city.Key">@city.Value</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="lesson-detail__card-select custom-select2 bordered-select">
+                                    <select class="js-custom-select2 educationStateVal">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="lesson-detail__card-cnt-priceinfo js-show-mobile-price">
+                                <div class="lesson-detail__card-pricetext">
+                                    Kurs Ücreti
+                                </div>
+                                <div class="lesson-detail__card-priceright">
+                                    <div class="lesson-detail__card-price">
+                                        <span class="lesson-detail__card-oldprice">
+                                            <div class="js-data-change-eskifiyat"></div>
+
+                                        </span>
+                                        <span class="lesson-detail__card-newprice">
+                                            <div class="js-data-change-fiyat"> </div>
+
+                                        </span>
+                                    </div>
+                                    <div class="lesson-detail__card-sale">
+                                        %0
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="lesson-detail__card-cnt-buttons">
+                                <div class="button button--navy-blue button-icon-right button-fw js-btn-basket">
+                                    <span class="button-txt">
+                                        <span class="change-text">Sepete Ekle</span>
+                                    </span>
+                                    <span class="icon-outer button-icon">
+                                        <svg class="icon">
+                                            <use xlink:href="../../assets/img/icons.svg#icon-check-circle"></use>
+                                        </svg>
+                                    </span>
+                                </div>
+                                <div class="lesson-detail__card-fav js-btn-fav @(Model.Details.Base.IsWishListItem?"active":"")">
+                                    <span class="icon-outer fill">
+                                        <svg class="icon">
+                                            <use xlink:href="../../assets/img/icons.svg#icon-heart"></use>
+                                        </svg>
+                                    </span>
+                                    <span class="icon-outer filled">
+                                        <svg class="icon">
+                                            <use xlink:href="../../assets/img/icons.svg#icon-heart-filled"></use>
+                                        </svg>
+                                    </span>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</main>
+</div>
+<section class="section with-border is-popular-projects detail-section-bg pt-75 o-hidden">
+    <div class="container">
+        <div class="flex-center mb-4">
+            <h2 class="title title-section">Popüler <span class="title--blue">Proje Eğitimleri</span></h2>
+
+            <a asp-controller="Course" asp-action="List" class="all-link">
+                <span>Tüm Eğitimler</span>
+                <span class="icon-outer">
+                    <svg class="icon">
+                        <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                    </svg>
+                </span>
+            </a>
+        </div>
+
+        <div class="swiper-container js-card-slider mt-1">
+            <div class="swiper-wrapper">
+                @await Component.InvokeAsync("PopularEducations")
+
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+
+    </div>
+</section>
+<div class="lesson-detail__mobile-price">
+    <div class="lesson-detail__card-price">
+        <span class="lesson-detail__card-oldprice">
+            <div class="js-data-change-eskifiyat"> </div>
+        </span>
+        <span class="lesson-detail__card-newprice">
+            <div class="js-data-change-fiyat">0,00</div>
+        </span>
+    </div>
+    <div class="button button--navy-blue button-icon-right button-fw js-btn-basket">
+        <span class="button-txt">
+            <span class="change-text">Sepete Ekle</span>
+        </span>
+        <span class="icon-outer button-icon">
+            <svg class="icon">
+                <use xlink:href="../../assets/img/icons.svg#icon-check-circle"></use>
+            </svg>
+        </span>
+    </div>
+</div>
+
+
+<div class="modal modal--message success" id="modalSuccessMessage">
+    <div class="modal__close js-close-modal">
+        <span class="icon-outer">
+            <svg class="icon">
+                <use xlink:href="../../assets/img/icons.svg#icon-close"></use>
+            </svg>
+        </span>
+    </div>
+    <div class="modal__content">
+        <div class="side-subscribe__success">
+            <div class="side-subscribe__top">
+                <div class="side-subscribe__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-success"></use>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+            <div class="side-subscribe__content">
+                <div class="side-subscribe__title">Teşekkürler!</div>
+                <div class="side-subscribe__txt">
+                    Yorumunuz değerlendirilmek üzere tarafımıza ulaşmıştır..
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal modal--message wrong" id="modalWrongMessage">
+    <div class="modal__close js-close-modal">
+        <span class="icon-outer">
+            <svg class="icon">
+                <use xlink:href="../../assets/img/icons.svg#icon-close"></use>
+            </svg>
+        </span>
+    </div>
+    <div class="modal__content">
+        <div class="side-subscribe__success">
+            <div class="side-subscribe__top">
+                <div class="side-subscribe__icon">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-wrong"></use>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+            <div class="side-subscribe__content">
+                <div class="side-subscribe__title ">Başarısız!</div>
+                <div class="side-subscribe__txt">
+                    Talebiniz iletilememiştir.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section postScripts{
+
     <script src="~/js/sup/cart.js"></script>
     <script>
-        var _educationId = $("#_education-id").val();
+        var cart = new CartSupport.Cart();
+        var commentPageIndex = 1;
+        var commentContainer = $(".lesson-detail__comments--wrp");
+        /* fields */
+        var educationId = $("#_education-id").val();
+        var groups = [];
 
-        var btnBuy = $("#btn-buy");
 
-        btnBuy.on("click", btnBuy_onClick);
+        /* elements */
+        var selectGroups = $('.educationStateVal');
+        var selectCities = $(".educationCityVal");
 
-        function btnBuy_onClick() {
-            var cart = new CartSupport.Cart();
-            cart.addToCart(_educationId);
 
-            location.href = "/sepet";
+        /* assignments */
+        $(document).ready(document_onLoad);
+        $('.educationStateVal').on('change', selectGroups_onChange);
+        $('.educationCityVal').on('change', selectCities_onChange);
+
+        /* events */
+        function document_onLoad() {
+            loadGroups();
+            loadComments();
+        }
+
+
+        function selectGroups_onChange() {
+            var index = selectGroups.val();
+            var group = groups.find(x => x.host.hostId == index);
+            var educatorStars = "";
+            for (var i = 1; i <= 5; i++) {
+                if (i <= group.educator.point) {
+                    educatorStars += `<span class="icon-outer icon-star active"> <svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span>`;
+                } else {
+                    educatorStars += `<span class="icon-outer icon-star"> <svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span>`;
+                }
+
+            }
+            
+            var educator = `<a href="/egitmen-detayi/${group.educator.educatorId}" class="lesson-detail__tab-teachers--item">
+                                <div class="lesson-detail__tab-teachers--img">
+                                    <img class="js-change-teacher-img" src="${group.educator.profilePhoto}" alt="">
+                                </div>
+                                <div class="lesson-detail__tab-teachers--cnt">
+                                    <div class="lesson-detail__tab-teachers--name js-change-teacher-name">
+                                        ${group.educator.name} ${group.educator.surname}
+                                    </div>
+                                    <div class="lesson-detail__tab-teachers--txt">
+                                        ${group.educator.title}
+                                    </div>
+                                </div>
+                                <div class="lesson-detail__tab-teachers--right">
+                                    <div class="main-stars">
+                                        ${educatorStars}
+                                    </div>${group.educator.point} PUAN</div></a>`;
+
+
+            $('.js-data-change-merkez-adi').text(group.host.hostName);
+            $('.js-data-change-il').text(group.host.city);
+            $('.js-data-change-sure').text();
+            $('.js-data-change-seviye').text();
+            $('.js-data-change-tarih').text(group.startDateText);
+            $('.js-data-change-saat').text();
+            $('.lesson-detail__card-sale').text('%'+group.discountRate);
+            $('.js-data-change-eskifiyat').text(group.oldPriceText+ " TL");
+            $('.js-data-change-fiyat').text(group.newPriceText+" TL");
+            $('.js-data-change-adres').text(group.host.address);
+            $('.js-data-change-teachers a').remove();
+            $('.js-data-change-teachers').append(educator);
+            $('a.js-data-change-location-url').prop("href", group.host.locationUrl);
+            
+        }
+        function selectCities_onChange() {
+            loadGroups();
+        }
+        function loadGroups() {
+            var cityId = selectCities.find(":selected").val();
+            $.ajax({
+                url: `/get-available-groups-for-course?courseId=${educationId}&city=${cityId}`,
+                method: "get",
+                success: (res) => {
+                    groups = res.data;
+                    removeSelectGroupOptions();
+                    var appended = "";
+                    for (var i = 0; i < groups.length; i++) {
+                        var item = groups[i];
+                        appended += `<option value="${item.host.hostId}">${item.host.hostName}</option>`;
+                    }
+                    $(selectGroups).append(appended);
+                    selectGroups.selectedIndex = 0;
+                    selectGroups_onChange();
+                    cartControl();
+                }
+            });
+
+        }
+        function loadComments() {
+            $.ajax({
+                url: `/get-course-comments?educationId=${educationId}&page=${commentPageIndex}`,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        commentPageIndex++;
+                        var comments = res.data.comments;
+                        if (!res.data.isLoadCommentButtonActive) {
+                            $(".js-load-comment").hide();
+                        }
+                        $.each(comments, function (i, v) {
+                            var comment = v;
+                            var points = "";
+                            for (var i = 1; i <= 5; i++) {
+                                if (i<=comment.point) {
+                                    points+=(`<span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span>`);
+                                } else {
+                                    points+=(`<span class="icon-outer icon-star"><svg class="icon"><use xlink:href="../../assets/img/icons.svg#icon-star"></use></svg></span>`);
+                                }
+                            }
+                            var content = ` <div class="lesson-detail__comment">
+                                            <div class="lesson-detail__comment-img">
+                                                <img src="${comment.userAvatarPath}" alt="">
+                                            </div>
+                                            <div class="lesson-detail__comment-cnt">
+                                                <div class="lesson-detail__comment-top">
+                                                    <div class="main-stars">
+                                                                ${points}
+                                                    </div>
+                                                    <div class="lesson-detail__comment-date">
+                                                        ${comment.createdDateText}
+                                                    </div>
+                                                </div>
+                                                <div class="lesson-detail__comment-txt">
+                                                    ${comment.content}
+                                                </div>
+                                                <div class="lesson-detail__comment-author">
+                                                    <div class="lesson-detail__comment-name">${comment.userName} ${comment.userSurname}</div>
+                                                    <div class="lesson-detail__comment-branch">${!comment.userJob?"":comment.userJob}</div>
+                                                </div>
+                                            </div>
+                                        </div>`;
+                            commentContainer.append(content);
+                        });
+                    }
+                }
+            });
+        }
+
+        function removeSelectGroupOptions() {
+            $(selectGroups).find('option').remove().end();
+        }
+
+        $('.js-btn-basket').click(function () {
+            $('.js-btn-basket').toggleClass('active');
+        });
+        $('body').on('click', '.js-btn-basket', function () {
+            cart.removeFromCart(educationId);
+            $('.js-btn-basket')
+                .find('.button-txt')
+                .text('Sepete Ekle');
+        });
+        $('body').on('click', '.js-btn-basket.active', function () {
+
+            var index = selectGroups.val();
+            var group = groups.find(x => x.host.hostId == index);
+            var hostId = group.host.hostId;
+            var groupId = group.groupId;
+            var imageUrl = "@(squrareImageUrl)";
+            var newPrice = group.newPrice;
+            var educationName = "@(Model.Details.Base.Name)";
+            cart.addToCart(educationId, hostId, groupId, imageUrl, newPrice, educationName);
+            miniBasketReload();
+            $('.js-btn-basket')
+                .find('.button-txt')
+                .text('Sepete Eklendi');
+            $(".mini-basket__empty").remove();
+            $('.mini-basket__footer').show();
+        });
+
+        $('body').on('click', '.js-delete-item', function () {
+            cartControl();
+        });
+
+        function cartControl() {
+            var cartItems = cart.getItems();
+            var index = selectGroups.val();
+            var group = groups.find(x => x.host.hostId == index);
+            var statu = cartItems.find(x => x.groupId == group.groupId);
+            if (statu) {
+                $('.js-btn-basket')
+                    .find('.button-txt')
+                    .text('Sepete Eklendi');
+                $('.js-btn-basket').addClass("active");
+            } else {
+                $('.js-btn-basket')
+                    .find('.button-txt')
+                    .text('Sepete Ekle');
+                $('.js-btn-basket').removeClass("active");
+            }
+        }
+
+        $('.js-let-point span').click(function () {
+            var point = $(this).attr("data-point");
+            $("#input-point").val(point);
+            $(this)
+                .nextAll()
+                .removeClass('active');
+            $(this)
+                .prevAll()
+                .addClass('active');
+            $(this).addClass('active');
+        });
+
+        $('.js-btn-fav').click(function () {
+            $.ajax({
+                url: "/togglewishlistitem",
+                method: "post",
+                data: { educationId },
+                success: (res) => {
+                    if (res.isSuccess) {
+                        if (res.data) {
+                            $(this).addClass('active');
+                        } else {
+                            $(this).removeClass('active');
+                        }
+                    }
+                }
+            });
+        });
+
+        $('body').on('click', '.js-load-comment', function () {
+            loadComments();
+            //$('.lesson-detail__comment.is-load').addClass('is-loaded');
+        });
+
+        var onCommentFormAjaxSuccess = function (context) {
+            if (context.success) {
+                showModal('modalSuccessMessage');
+            } else {
+                showModal('modalWrongMessage');
+            }
+            $('#comment-form')[0].reset();
+        };
+        var onCommentFormAjaxFailed = function () {
+            showModal('modalWrongMessage');
+        }
+        function showModal(id) {
+            $('html, body').addClass('no-scroll');
+            $('.main-overlay').addClass('active');
+            $('.modal[id="' + id + '"]').addClass('modal--active');
+            $('.js-open-mobile-menu').removeClass('active');
+            $('.js-open-mobile-menu')
+                .closest('.header-mobile')
+                .removeClass('active');
+            $('html,body').removeClass('scroll-lock');
         }
     </script>
 }

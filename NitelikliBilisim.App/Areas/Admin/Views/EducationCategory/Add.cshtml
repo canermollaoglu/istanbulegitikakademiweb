@@ -4,8 +4,37 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 @section styles{
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="~/css/sup/alert-sup.css" rel="stylesheet" />
+    <link href="~/vendor\select2/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="~/css/lib/file-uploader.css" rel="stylesheet" />
+    <style>
+
+        .popular-technology__icon {
+            width: 55px;
+            height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            position: relative;
+            z-index: 1
+        }
+
+        span.icon-outer {
+            position: relative;
+            top: -2px;
+            font-size: 20px
+        }
+
+        .icon {
+            display: inline-block;
+            width: 1em;
+            height: 1em;
+            stroke-width: 0;
+            stroke: currentColor;
+            fill: currentColor;
+            color: white;
+        }
+    </style>
 }
 @section alerts{
     <partial name="partials/_Alert" />
@@ -39,29 +68,174 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>Kategori Açıklaması</label>
-                    <textarea id="input-description" rows="5" class="form-control" style="height:100px;resize:none;" placeholder="Kategori açıklaması kullanıcılar tarafından görülmeyecektir. Yalnızca admin panelde görülebilir..."></textarea>
+                    <label>Slogan</label>
+                    <textarea id="input-description" rows="5" class="form-control" placeholder="Tek cümlelik bir slogan girilmelidir. Eğitim listesi sayfasında Kategori Adı altında görüntülenir."></textarea>
                 </div>
             </div>
             <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Kategori Tipini Seçiniz</label>
+                            <select id="select-category-types" class="form-control">
+                                @foreach (var item in Model.Types)
+                                {
+                                    <option value="@item.Key">@item.Value</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-12" id="div-educationdaycount">
+                        <div class="form-group">
+                            <label>Eğitim Gün Sayısı</label>
+                            <input type="number" class="form-control" id="input-educationdaycount" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-6">
                 <div class="form-group">
-                    <label>Kategori Tipini Seçiniz</label>
-                    <select id="select-category-types" class="form-control">
-                        @foreach (var item in Model.Types)
-                        {
-                            <option value="@item.Key">@item.Value</option>
-                        }
-                    </select>
+                    <label>Seo Url   <i title="- dışında özel karakter girmeyiniz.Tamamen küçük harf olacak şekilde Türkçe karakter kullanmadan oluşturunuz." class="fa fa-question-circle"></i></label>
+                    <input type="text" placeholder="dot-net-core-mvc-egitimi" class="form-control" id="input-seo-url" value="">
+                </div>
+            </div>
+            <div class="col-md-6" id="div-iconurl">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>İkon Url   </label>
+                            <input type="text" placeholder="Yalnızca ikon ismini giriniz." class="form-control" id="input-icon-url" value="">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>İkon Renk Kodu</label>
+                            <input type="text" placeholder="#454fd2" class="form-control" id="input-color-code" value="">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Wizard Class</label>
+                            <input type="text" placeholder="webmobilprogramlama" class="form-control" id="input-wizard-class">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+        <div class="row" id="div-description2" style="display:none">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Açıklama</label>
+                    <textarea id="input-description2" rows="10" class="form-control" placeholder="Bu alan sana özel sayfasında yer alan popüler konu başlıkları alanında görüntülenir."></textarea>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Arkaplan Görseli</label>
+                            <div class="file-upload-container" id="file-upload-container-for-banner">
+                                <img class="img-after-preview" id="img-after-preview-for-banner" />
+                                <p><i class="fa fa-file"></i> Resim yüklemek için tıklayınız...</p>
+                                <input type="file" />
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>İkon</label>
+                            <div class="file-upload-container" id="file-upload-container-for-preview">
+                                <img class="img-after-preview" id="img-after-preview-for-preview" />
+                                <p><i class="fa fa-file"></i> Resim yüklemek için tıklayınız...</p>
+                                <input type="file" />
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </form>
 </div>
+<div class="row mt-5 box_general padding_bottom">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-2">
 
+                <div class="popular-technology__icon" style="background: #0072cd;">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-azure"></use>
+                        </svg>
+                    </span>
+                </div>
+                icon-azure
+            </div>
+            <div class="col-md-2">
+                <div class="popular-technology__icon" style="background: #0072cd;">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-window-code"></use>
+                        </svg>
+                    </span>
+                </div>
+                icon-window-code
+            </div>
+            <div class="col-md-2">
+                <div class="popular-technology__icon" style="background: #0072cd;">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-system-network"></use>
+                        </svg>
+                    </span>
+                </div>
+                icon-system-network
+            </div>
+            <div class="col-md-2">
+                <div class="popular-technology__icon" style="background: #0072cd;">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-microsoft-azure"></use>
+                        </svg>
+                    </span>
+                </div>
+                icon-microsoft-azure
+            </div>
+            <div class="col-md-2">
+                <div class="popular-technology__icon" style="background: #0072cd;">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-unity"></use>
+                        </svg>
+                    </span>
+                </div>
+                icon-unity
+            </div>
+            <div class="col-md-2">
+                <div class="popular-technology__icon" style="background: #0072cd;">
+                    <span class="icon-outer">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-dynamics"></use>
+                        </svg>
+                    </span>
+                </div>
+                icon-dynamics
+            </div>
+        </div>
+    </div>
+
+
+</div>
 <p><button id="btn-save" class="btn_1 medium">Kaydet</button></p>
 @section postScripts{
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+    <script src="~/vendor\select2/dist/js/select2.min.js"></script>
     <script src="~/js/sup/alert-sup.js"></script>
+    <script src="~/js/lib/file-uploader.js"></script>
     <script src="~/js/lib/security-support.js"></script>
     <script src="~/js/areas/admin/admin-category-add.js"></script>
 }

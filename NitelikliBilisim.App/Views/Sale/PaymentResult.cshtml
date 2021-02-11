@@ -1,0 +1,25 @@
+﻿@model NitelikliBilisim.Core.ViewModels.Main.Sales.NormalPaymentResultVm
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>PaymentResult</title>
+</head>
+<body>
+    <h1>@Model.Message</h1>
+
+    <script src="~/js/sup/cart.js"></script>
+    <script>
+        if ('@Model.Status' == "Success") {
+            var _cart = new CartSupport.Cart();
+            _cart.clearCart();
+        }
+    </script>
+</body>
+</html>
+

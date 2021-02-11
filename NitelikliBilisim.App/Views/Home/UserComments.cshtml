@@ -1,0 +1,361 @@
+﻿@model NitelikliBilisim.Core.ViewModels.Main.EducationComment.UserCommentsPageGetVm
+@using NitelikliBilisim.Core.Services.Abstracts
+@using MUsefulMethods
+@inject IStorageService StorageService
+@{
+    ViewData["Title"] = "Kullanıcı Yorumları";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="subheader">
+    <div class="subheader__wrp subheader__slider--fw">
+        <div class="container">
+            <div class="subheader__slider--cnt">
+                <div class="subheader__title">Kullanıcı Yorumları</div>
+                <div class="subheader__slider">
+                    <div class="swiper-container js-comment-card-slider">
+                        <div class="swiper-wrapper">
+                            @foreach (var featuredComment in Model.FeaturedComments)
+                            {
+                                var featuredImage = "";
+                                try
+                                {
+                                    featuredImage = StorageService.BlobUrl + featuredComment.PreviewImage;
+                                }
+                                catch
+                                {
+                                }
+
+                                <div class="swiper-slide">
+                                    <div class="comment-slider-card">
+                                        <div class="comment-slider-card__cnt">
+                                            <div class="comment-slider-card__icon">
+                                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="59px"
+                                                     height="45px">
+                                                    <text kerning="auto" font-family="Myriad Pro" fill="rgb(0, 0, 0)"
+                                                          transform="matrix( 1.00022414459494, 0, 0, 0.99980177798945,0.55601381578379, 85.0341019070173)"
+                                                          font-size="124.025px">
+                                                        <tspan font-size="124.025px" font-family="Proxima Nova" fill="#60D9DB">&#8220;</tspan>
+                                                    </text>
+                                                </svg>
+                                            </div>
+                                            <div class="comment-slider-card__txt">
+                                                @featuredComment.Content
+                                            </div>
+                                            <div class="comment-slider-card__name">
+                                                @featuredComment.Name @featuredComment.Surname
+                                            </div>
+                                            <div class="comment-slider-card__branch">
+                                                @featuredComment.Title
+                                            </div>
+                                        </div>
+                                        <div class="comment-slider-card__video js-video-btn" data-video-id="@featuredComment.PreviewVideo">
+                                            <img src="@featuredImage" alt="">
+                                            <div class="card-play">
+                                                <span class="icon-outer">
+                                                    <svg class="icon">
+                                                        <use xlink:href="../../assets/img/icons.svg#icon-play"></use>
+                                                    </svg>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            @*<div class="swiper-slide">
+                                    <div class="comment-slider-card">
+                                        <div class="comment-slider-card__cnt">
+                                            <div class="comment-slider-card__icon">
+                                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="59px"
+                                                     height="45px">
+                                                    <text kerning="auto" font-family="Myriad Pro" fill="rgb(0, 0, 0)"
+                                                          transform="matrix( 1.00022414459494, 0, 0, 0.99980177798945,0.55601381578379, 85.0341019070173)"
+                                                          font-size="124.025px">
+                                                        <tspan font-size="124.025px" font-family="Proxima Nova" fill="#60D9DB">&#8220;</tspan>
+                                                    </text>
+                                                </svg>
+                                            </div>
+                                            <div class="comment-slider-card__txt">
+                                                Merhabalar, Ben Mehmet Fatih Bakacak. İstanbul Teknik Üniversitesi Telekomünikasyon Mühendisliği
+                                                mezunuyum. Şu anda yine İstanbul Üniversitesi’nde Uydu Haberleşmesi ve Uzaktan algılama üzerine
+                                                yüksek lisans yapmaktayım...
+                                            </div>
+                                            <div class="comment-slider-card__name">
+                                                Mehmet Fatih BAKACAK
+                                            </div>
+                                            <div class="comment-slider-card__branch">
+                                                Bilgisayar Mühendisi
+                                            </div>
+                                        </div>
+                                        <div class="comment-slider-card__video js-video-btn" data-video-id="oxiU6A8MEMM">
+                                            <img src="../../assets/img/comment-card-img.jpg" alt="">
+                                            <div class="card-play">
+                                                <span class="icon-outer">
+                                                    <svg class="icon">
+                                                        <use xlink:href="../../assets/img/icons.svg#icon-play"></use>
+                                                    </svg>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>*@
+                        </div>
+
+                        <div class="swiper-button-prev swiper-button-circle">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="swiper-button-next swiper-button-circle">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-arrow"></use>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="comment-list">
+    <div class="container">
+        <div class="comment-list__top">
+            <h2 class="title title-section">NİTELİKLİ BİLİŞİM'İ <span class="title--blue">TERCİH EDENLER</span></h2>
+            <div class="comment-list__selects mobile-fw-wrap">
+                <form method="get">
+                    <div class="comment-list__select select-commentsort">
+                        <select class="js-comment-sort-select" id="orderType">
+                            @foreach (var sType in Model.SortingTypes)
+                            {
+                                <option value="@sType.Key")>@sType.Value</option>
+                            }
+                        </select>
+                        <div class="lesson-list__select--mobile js-open-sort-mobile">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-sort-gray"></use>
+                                </svg>
+                            </span>
+                            <div class="js-select-mobile-change">
+                                Sırala
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comment-list__select select-commentapp">
+                        <select class="js-comment-app-select" id="relatedCategory">
+                            <option value="" selected>Tüm Alanlar</option>
+                            @foreach (var category in Model.EducationCategories)
+                            {
+                                <option value="@category.Key">@category.Value</option>
+                            }
+                        </select>
+                        <div class="lesson-list__select--mobile js-open-filter-mobile">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-filter"></use>
+                                </svg>
+                            </span>
+                            <div class="js-select-mobile-change">
+                                Filtrele
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="comment-list__wrp">
+            
+        </div>
+        <div class="pagination">
+            
+        </div>
+    </div>
+</section>
+
+<div class="sort-mobile js-sort-mobile">
+    <div class="sort-mobile__top">
+        <span class="icon-outer">
+            <svg class="icon">
+                <use xlink:href="../../assets/img/icons.svg#icon-sort-gray"></use>
+            </svg>
+        </span>
+        <div class="sort-mobile__top-title">
+            Sırala
+        </div>
+    </div>
+    <div class="sort-mobile__list">
+        @foreach (var sType in Model.SortingTypes)
+        {
+            <div class="sort-mobile__item" data-id="@sType.Key">@sType.Value</div>
+        }
+    </div>
+</div>
+<div class="sort-mobile js-filter-mobile">
+    <div class="sort-mobile__top">
+        <span class="icon-outer">
+            <svg class="icon">
+                <use xlink:href="../../assets/img/icons.svg#icon-filter"></use>
+            </svg>
+        </span>
+        <div class="sort-mobile__top-title">
+            Filtrele
+        </div>
+    </div>
+    <div class="sort-mobile__list">
+        @foreach (var category in Model.EducationCategories)
+        {
+        <div class="sort-mobile__item" data-id="@category.Key">@category.Value</div>
+        }
+
+    </div>
+</div>
+
+<input type="hidden" id="current-category-id" />
+<input type="hidden" id="current-page" />
+<input type="hidden" id="current-order" />
+@section postScripts{
+    <script>
+        var currentCategoryId = $("#current-category-id");
+        var currentPage = $("#current-page");
+        var currentOrder = $("#current-order");
+        var commentContent = $(".comment-list__wrp");
+        var paginationContent = $(".pagination");
+
+        $(function () {
+            getSearchResults();
+        });
+
+        $(".js-comment-sort-select").change(function () {
+            currentOrder.val($(this).val());
+            getSearchResults();
+        });
+        $(".js-comment-app-select").change(function () {
+            currentCategoryId.val($(this).val());
+            currentPage.val(1);
+            getSearchResults();
+        })
+
+
+        function getSearchResults() {
+            $.ajax({
+                url: `/get-comments`,
+                method: "post",
+                data: {
+                    categoryId: currentCategoryId.val(),
+                    page: currentPage.val(),
+                    sType: currentOrder.val(),
+                },
+                success: (res) => {
+                    commentContent.html("");
+                    $.each(res.data.comments, function (index, e) {
+                        var points = "";
+                        for (var i = 1; i < 5; i++) {
+                            if (i <= e.point) {
+                                points += `<span class="icon-outer icon-star active"><svg class="icon"><use xlink:href="assets/img/icons.svg#icon-star"></use></svg></span>`;
+                            } else {
+                                points += `<span class="icon-outer icon-star"><svg class="icon"><use xlink:href="assets/img/icons.svg#icon-star"></use></svg></span>`;
+                            }
+                        }
+
+                        var content = `<div class="comment-card">
+                <div class="comment-card__cnt">
+                    <div class="comment-card__top">
+                        <div class="comment-card__title">${e.category}</div>
+                        <div class="comment-card__date">${e.date}</div>
+                    </div>
+                    <div class="scroll-more">
+                        <div class="comment-card__txt">
+                            <p>
+                                ${e.content}
+                            </p>
+                        </div>
+                        <div class="scroll-more-btn">
+                            Devamı için kaydırın
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="assets/img/icons.svg#icon-arrow-twins"></use>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="comment-card__footer">
+                    <div class="comment-card__author">
+                        <div class="comment-card__author-img">
+                            <img src="${e.avatarPath}" alt="">
+                        </div>
+                        <div class="comment-card__author-cnt">
+                            <div class="comment-card__author-name">${e.userName}</div>
+                            <div class="comment-card__author-branch">${e.job}</div>
+                        </div>
+                    </div>
+                    <div class="comment-card__stars">
+                        <div class="main-stars">
+                            ${points}
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+                        commentContent.append(content);
+                    });
+
+                    paginationContent.html("");
+                    var prev = `<a class="pagination__item prev" onclick=changePage('${res.data.pageIndex - 1}')>
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
+                                </svg>
+                            </span>
+                        </a>`;
+                    var next = `<a class="pagination__item next" onclick=changePage('${res.data.pageIndex + 1}')>
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="../../assets/img/icons.svg#icon-small-arrow"></use>
+                                </svg>
+                            </span>
+                        </a>`;
+                    if (res.data.pageIndex > 1) {
+                        paginationContent.append(prev);
+                    }
+                    for (var i = 1; i <= res.data.totalPageCount; i++) {
+
+                        var page = `<a onclick="changePage('${i}')" class="pagination__item ${i == res.data.pageIndex ? 'active' : ''}" >${i}</a>`;
+                        paginationContent.append(page);
+                    }
+                    if (res.data.pageIndex < res.data.totalPageCount) {
+                        paginationContent.append(next);
+                    }
+
+                }
+            });
+        }
+        function changePage(page) {
+            currentPage.val(page);
+            getSearchResults();
+        }
+
+
+        $('body').on('click', '.js-sort-mobile .sort-mobile__item', function () {
+            var sortMobileText = $(this).text();
+            $('.js-open-sort-mobile .js-select-mobile-change').text(sortMobileText);
+            currentOrder.val($(this).data("id"));
+            getSearchResults();
+        });
+
+        $('body').on('click', '.js-filter-mobile .sort-mobile__item', function () {
+            var sortMobileText = $(this).text();
+            $('.js-open-sort-mobile .js-select-mobile-change').text(sortMobileText);
+            currentCategoryId.val($(this).data("id"));
+            getSearchResults();
+        });
+
+        
+    </script>
+
+} 

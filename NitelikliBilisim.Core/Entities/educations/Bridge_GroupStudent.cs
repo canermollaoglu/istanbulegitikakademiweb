@@ -1,8 +1,6 @@
 ﻿using NitelikliBilisim.Core.Abstracts;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace NitelikliBilisim.Core.Entities
 {
@@ -14,6 +12,6 @@ namespace NitelikliBilisim.Core.Entities
         [ForeignKey("Id2")]
         public virtual Customer Customer { get; set; }
 
-        public Guid SaleId { get; set; }
+        public Guid TicketId { get; set; }
     }
 }

@@ -1,0 +1,130 @@
+﻿@model NitelikliBilisim.Core.ViewModels.areas.admin.education_group_attendances.AttendanceVm
+@{
+    ViewData["Title"] = "Yoklama Girişi Yap";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@section styles{
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+
+<input type="hidden" value="@Model.GroupId" id="_group-id" />
+<input type="hidden" value="@Model.Date" id="_date" />
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-table"></i> Yoklama Girişi @* <a href="/admin/grup/ayarlar/{groupId?}"></a> *@
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th colspan="4"><span style="color: red;">@Model.Date.ToLongDateString()</span> Yoklaması</th>
+                        </tr>
+                        <tr>
+                            <th>İsim</th>
+                            <th>Soyisim</th>
+                            <th>Geldi</th>
+                            <th>Mazaret</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-students">
+                        @foreach (var item in Model.Attendances)
+                        {
+                            <tr data-customer-id="@item.CustomerId">
+                                <td>@item.Name</td>
+                                <td>@item.Surname</td>
+                                <td>
+                                    @if (item.IsAttended)
+                                    {
+                                        <label>
+                                            <input checked class="checkbox-is-attended" type="checkbox" value="" />
+                                        </label>
+                                    }
+                                    else
+                                    {
+                                        <label>
+                                            <input class="checkbox-is-attended" type="checkbox" value="" />
+                                        </label>
+                                    }
+                                </td>
+                                <td>
+                                    <input class="reason-for-not-attending form-control" type="text" value="@item.Reason" data-customer-id="@item.CustomerId" />
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <button id="btn-save" class="btn btn-outline-success pull-right">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section postScripts{
+
+    <script>
+        var _groupId = document.getElementById("_group-id").value;
+        var _date = document.getElementById("_date").value;
+        var btnSave = $("#btn-save");
+
+        btnSave.on("click", btnSave_onClick);
+        var resultAlert = new AlertSupport.ResultAlert();
+        function btnSave_onClick() {
+            btnSave.off("click");
+            var data = {
+                GroupId: _groupId,
+                Date: _date,
+                StudentRecords: []
+            };
+            var tbody = document.getElementById("tbody-students");
+            var rows = tbody.getElementsByTagName("tr");
+            for (var i = 0; i < rows.length; i++) {
+                var row = $(rows[i]);
+                var isAttended = row.find(".checkbox-is-attended")[0].checked;
+                var reason = row.find(".reason-for-not-attending")[0].value;
+                var customerId = row.get(0).getAttribute("data-customer-id");
+
+                data.StudentRecords.push({
+                    CustomerId: customerId,
+                    IsAttended: isAttended,
+                    Reason: reason
+                });
+            }
+
+            $.ajax({
+                url: "/yoklamalari-kaydet",
+                method: "post",
+                data: data,
+                success: (res) => {
+                    if (res.isSuccess) {
+                        resultAlert.display({
+                            success: true,
+                            message: "Yoklama kaydı başarılı!",
+                        });
+                        setTimeout(
+                            function () {
+                                window.location = "/admin/grup-detay/" + _groupId;
+                            }, 4000);
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors
+                        });
+                        setTimeout(
+                            function () {
+                                window.location = "/admin/grup-detay/" + _groupId;
+                            }, 4000);
+                    }
+                    btnSave.on("click", btnSave_onClick);
+                }
+            });
+        }
+    </script>
+}

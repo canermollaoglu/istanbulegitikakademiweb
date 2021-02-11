@@ -1,0 +1,185 @@
+﻿@*@model NitelikliBilisim.Core.ViewModels.areas.admin.education_groups.ListGetVm*@
+@{
+    ViewData["Title"] = "List";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+
+    <style>
+        .dx-datagrid-content .dx-datagrid-table .dx-row > td:first-child, .dx-datagrid-content .dx-datagrid-table .dx-row > tr > td:first-child {
+            width: 44px !important;
+        }
+
+        .dx-datagrid .dx-column-lines > td {
+            border-right: none;
+            vertical-align: middle !important;
+        }
+
+        #educationGrup-grid {
+            margin-top: -15px !important;
+        }
+    </style>
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-table"></i> Eğitim Grupları
+    </div>
+    <div class="card-body">
+        <div id="educationGrup-grid"></div>
+    </div>
+    <div class="card-footer small text-muted">Veri tarihi: @DateTime.Now</div>
+</div>
+
+@section postScripts{
+
+    <script>
+        /* fields */
+        var confirmModalBuilder = new AlertSupport.ConfirmModalBuilder();
+        var resultAlert = new AlertSupport.ResultAlert();
+        /* assignments */
+        $(document).ready(document_onLoad);
+
+        /* events */
+        function document_onLoad() {
+            createGrid();
+        }
+
+        /*DataGrid*/
+        function createGrid() {
+            $("#educationGrup-grid").dxDataGrid({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    key: "id",
+                    loadUrl: "../../api/educationgroup/get-education-group-list"
+                }),
+                remoteOperations: {
+                    paging: true,
+                    filtering: true,
+                    sorting: true,
+                    grouping: true,
+                    summary: true,
+                    groupPaging: true
+                },
+                showBorders: true,
+                showColumnLines: true,
+                showRowLines: true,
+                wordWrapEnabled: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                searchPanel: {
+                    visible: true,
+                    width: 240,
+                    placeholder: "Ara..."
+                },
+                paging: {
+                    pageSize: 10
+                },
+                groupPanel: {
+                    visible: true
+                },
+                grouping: {
+                    autoExpandAll: true
+                },
+                headerFilter: {
+                    visible: true
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10, 20],
+                    showInfo: true
+                },
+                onExporting: function (e) {
+                    var workbook = new ExcelJS.Workbook();
+                    var worksheet = workbook.addWorksheet('Egitim Grupları');
+                    DevExpress.excelExporter.exportDataGrid({
+                        worksheet: worksheet,
+                        component: e.component,
+                        customizeCell: function (options) {
+                            var excelCell = options;
+                            excelCell.font = { name: 'Arial', size: 12 };
+                            excelCell.alignment = { horizontal: 'left' };
+                        }
+                    }).then(function () {
+                        workbook.xlsx.writeBuffer().then(function (buffer) {
+                            saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'Egitim Grupları Listesi' + parseInt(Math.random() * 1000000000) + '.xlsx');
+                        });
+                    });
+                    e.cancel = true;
+                },
+                export: {
+                    enabled: true
+                },
+                columns: [
+                    {
+                        caption: "Başlangıç Tarihi",
+                        dataField: "startDate",
+                        dataType: 'date',
+                        format: 'dd/MM/yyyy',
+                        sortOrder: "desc",
+                        width: 160
+                    },
+                    {
+                        caption: "Grup İsmi",
+                        dataField: "groupName",
+                        width: 140
+
+                    }, {
+                        caption: "Eğitim İsmi",
+                        dataField: "educationName"
+                    },
+
+                    {
+                        caption: "Konum",
+                        dataField: "hostName",
+                        width: 200
+                    },
+                    {
+                        caption: "Şehir",
+                        dataField: "hostCity",
+                        lookup: {
+                            dataSource: {
+                                store: DevExpress.data.AspNet.createStore({
+                                    key: "key",
+                                    loadUrl: "../../api/educationgroup/host-cities"
+                                })
+                            },
+                            displayExpr: "value",
+                            valueExpr: "key",
+                            width: 120
+                        }
+                    },
+                    {
+                        caption: "Fiyat",
+                        dataField: "newPrice",
+                        customizeText: function (newPrice) {
+                            return newPrice.value + " TL";
+                        },
+                        width: 90
+                    },
+                    {
+                        caption: "İşlem",
+                        allowSearch: false,
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            var div = $('<div class="btn-group" style="display: inline-flex; width:"auto"></div>');
+                            $(`<a class="btn btn-outline-primary btn-sm" href="/admin/grup-detay/${current.id}">Detay</a>`)
+                                .appendTo(div);
+                            $(`<a title="Grup Ayarları" class="btn btn-outline-warning btn-sm" href="/admin/grup/ayarlar/${current.id}"><i class=\"fa fa-cogs\"></i><span style="display: block"></span></a>`);
+                            $(`<a title="Eğitim günlerini sıfırla" class="btn btn-dark btn-sm" href="/make-sure-lesson-days-created/${current.id}"><i class=\"fa fa-archive\"></i><span style="display: block"></span></a>`);
+
+                            div.appendTo(container);
+
+                        },
+                        alignment: "center",
+                        width: 110
+                    }
+                ]
+            });
+        }
+    </script>
+}

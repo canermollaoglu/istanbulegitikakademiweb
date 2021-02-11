@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Areas.Admin.VmCreator.EducationGains;
+using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
@@ -9,9 +10,7 @@ using System.Collections.Generic;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    //[Authorize]
-    [Area("Admin")]
-    public class EducationGainController : Controller
+    public class EducationGainController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly EducationGainVmCreator _vmCreator;
@@ -23,6 +22,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/egitim-kazanim-yonetimi/{educationId}")]
         public IActionResult Manage(Guid? educationId)
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationGain");
             if (educationId == null)
                 return Redirect("/");
 
@@ -102,7 +102,43 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/egitim-kazanim-guncelle/{gainId}")]
         public IActionResult UpdateGain(Guid? gainId)
         {
-            return View();
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationUpdateGain");
+            if (gainId == null)
+                return Redirect("/admin/egitimler");
+
+            var gain = _unitOfWork.EducationGain.GetById(gainId.Value);
+            var education = _unitOfWork.Education.GetById(gain.EducationId);
+            var model = new UpdateGetVm
+            {
+                Id = gain.Id,
+                EducationId = gain.EducationId,
+                EducationName = education.Name,
+                Gain = gain.Gain
+            };
+            return View(model);
+        }
+
+        [HttpPost, Route("admin/egitim-kazanim-guncelle")]
+        public IActionResult Update(UpdatePostVm data)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelStateUtil.GetErrors(ModelState);
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = errors
+                });
+            }
+            var gain = _unitOfWork.EducationGain.GetById(data.GainId);
+            gain.EducationId = data.EducationId;
+            gain.Gain = data.Gain;
+            _unitOfWork.EducationGain.Update(gain);
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                message = "Eğitimin Kazanımı başarıyla güncellenmiştir"
+            });
         }
     }
 }

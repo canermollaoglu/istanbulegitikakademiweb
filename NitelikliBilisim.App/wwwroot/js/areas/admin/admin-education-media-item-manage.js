@@ -26,7 +26,6 @@ function document_onLoad() {
 function btnAdd_onClick() {
     btnAdd.off("click");
     var file = fileManager.getFile();
-    console.log(file);
     var data = {
         EducationId: _educationId,
         PostedFile: {
