@@ -10,23 +10,23 @@ using NitelikliBilisim.Data;
 namespace NitelikliBilisim.Data.Migrations
 {
     [DbContext(typeof(NbDataContext))]
-    [Migration("20210107060550_CustomerJobColumnChange")]
-    partial class CustomerJobColumnChange
+    [Migration("20210211084822_Beta1")]
+    partial class Beta1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.1");
+                .HasAnnotation("ProductVersion", "5.0.3")
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -50,7 +50,7 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -115,7 +115,7 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Changed")
                         .HasColumnType("nvarchar(max)");
@@ -615,6 +615,9 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsFeaturedEducation")
+                        .HasColumnType("bit");
+
                     b.Property<int>("Level")
                         .HasColumnType("int");
 
@@ -633,6 +636,10 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
 
+                    b.Property<string>("VideoUrl")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
@@ -645,6 +652,9 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("BackgroundImageUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("BaseCategoryId")
                         .HasColumnType("uniqueidentifier");
@@ -662,6 +672,9 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<string>("Description")
                         .HasMaxLength(512)
                         .HasColumnType("nvarchar(512)");
+
+                    b.Property<string>("Description2")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("EducationDayCount")
                         .HasColumnType("int");
@@ -689,6 +702,9 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<string>("UpdatedUser")
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("WizardClass")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -1211,7 +1227,7 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -2214,7 +2230,7 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("Day")
                         .HasColumnType("int");
@@ -2275,7 +2291,7 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("AddressType")
                         .HasColumnType("int");
@@ -2344,6 +2360,35 @@ namespace NitelikliBilisim.Data.Migrations
                     b.ToTable("Addresses");
                 });
 
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.user_details.Bridge_EducatorCategory", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid>("Id2")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedUser")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.HasKey("Id", "Id2");
+
+                    b.HasIndex("Id2");
+
+                    b.ToTable("Bridge_EducatorCategories");
+                });
+
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.user_details.Bridge_EducatorCertificate", b =>
                 {
                     b.Property<string>("Id")
@@ -2378,7 +2423,7 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -2391,12 +2436,45 @@ namespace NitelikliBilisim.Data.Migrations
                     b.ToTable("Cities");
                 });
 
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.user_details.CustomerCertificate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedUser")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("CustomerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("CustomerCertificates");
+                });
+
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.user_details.EducationDay", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
@@ -2419,7 +2497,7 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CertificateImagePath")
                         .HasColumnType("nvarchar(max)");
@@ -2454,7 +2532,7 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("CityId")
                         .HasColumnType("int");
@@ -2464,6 +2542,8 @@ namespace NitelikliBilisim.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CityId");
+
                     b.ToTable("States");
                 });
 
@@ -2472,7 +2552,7 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -2992,6 +3072,25 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Navigation("State");
                 });
 
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.user_details.Bridge_EducatorCategory", b =>
+                {
+                    b.HasOne("NitelikliBilisim.Core.Entities.Educator", "Educator")
+                        .WithMany()
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NitelikliBilisim.Core.Entities.EducationCategory", "EducationCategory")
+                        .WithMany()
+                        .HasForeignKey("Id2")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("EducationCategory");
+
+                    b.Navigation("Educator");
+                });
+
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.user_details.Bridge_EducatorCertificate", b =>
                 {
                     b.HasOne("NitelikliBilisim.Core.Entities.Educator", "Educator")
@@ -3011,6 +3110,15 @@ namespace NitelikliBilisim.Data.Migrations
                     b.Navigation("EducatorCertificate");
                 });
 
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.user_details.CustomerCertificate", b =>
+                {
+                    b.HasOne("NitelikliBilisim.Core.Entities.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId");
+
+                    b.Navigation("Customer");
+                });
+
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.user_details.EducationDay", b =>
                 {
                     b.HasOne("NitelikliBilisim.Core.Entities.StudentEducationInfo", "StudentEducationInfo")
@@ -3020,6 +3128,17 @@ namespace NitelikliBilisim.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("StudentEducationInfo");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.user_details.State", b =>
+                {
+                    b.HasOne("NitelikliBilisim.Core.Entities.user_details.City", "City")
+                        .WithMany("States")
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("City");
                 });
 
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.ApplicationRole", b =>
@@ -3092,6 +3211,11 @@ namespace NitelikliBilisim.Data.Migrations
             modelBuilder.Entity("NitelikliBilisim.Core.Entities.blog.BlogCategory", b =>
                 {
                     b.Navigation("BlogPosts");
+                });
+
+            modelBuilder.Entity("NitelikliBilisim.Core.Entities.user_details.City", b =>
+                {
+                    b.Navigation("States");
                 });
 #pragma warning restore 612, 618
         }
