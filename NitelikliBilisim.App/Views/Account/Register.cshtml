@@ -172,12 +172,16 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="register__error-messages">
+
+
+
+                            <div class="register__error-messages js-register-error">
 
                             </div>
                             <button type="button" class="button button-fw js-button-step-finish login__finish-button">
                                 Kaydol
                             </button>
+
                         </div>
                     </div>
                     <div class="login__is-logined">
@@ -373,9 +377,6 @@
     <script src="~/js/lib/cookie-agreement.js"></script>
     <script src="~/js/lib/security-support.js"></script>
     <script>
-        /* fields */
-        var __envoy = new StorageSupport.Envoy();
-
         /* elements */
         var inputName = $("#input-name");
         var inputSurname = $("#input-surname");
@@ -388,6 +389,7 @@
         var inputPassword = $("#input-password");
         var inputConfirmPassword = $("#input-confirm-password");
         var chkTermsAndConditions = document.getElementById("chk-terms-and-conditions");
+        var btnSubmit = $('.login__finish-button');
 
         $('.js-next-step2').bind('change click', function () {
             if ($('#registerForm').valid()) {
@@ -405,9 +407,7 @@
             }
         });
 
-        $('.login__finish-button').click(function () {
-            btnSubmit_onClick();
-        });
+        btnSubmit.on("click", btnSubmit_onClick);
 
         $('#registerForm').validate({
             errorLabelContainer: $('#registerForm div.error'),
@@ -472,13 +472,10 @@
         /* events */
         function document_onLoad() {
             chkTermsAndConditions.checked = false;
-            if (__envoy.isStorageExists("register")) {
-                var stored = __envoy.getRegisterForm();
-            }
-
         }
 
         function btnSubmit_onClick(e) {
+            btnSubmit.off("click");
             var data = {
                 Name: inputName.val(),
                 Surname: inputSurname.val(),
@@ -499,12 +496,12 @@
                 method: "post",
                 data: data,
                 success: (res) => {
-                    console.log(res);
                     if (res.isSuccess) {
                         location.href = "/giris-yap";
                     } else {
                         $(".register__error-messages").html(res.message);
                         $(".register__error-messages").show(500);
+                        btnSubmit.on("click", btnSubmit_onClick);
                     }
                 }
             });

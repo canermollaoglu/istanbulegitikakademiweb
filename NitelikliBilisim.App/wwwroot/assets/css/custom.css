@@ -50,6 +50,8 @@
 .register__error-messages {
     color:red;
     display: none;
+    margin-bottom:10px;
+    position:relative;
 }
 .card__money span {
     color: #110c2c;
