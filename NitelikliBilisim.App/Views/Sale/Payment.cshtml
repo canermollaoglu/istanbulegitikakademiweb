@@ -52,305 +52,305 @@
 </div>
 <section class="section section--checkout">
     <div class="container">
-        <div class="checkout__wrp">
-            <div class="checkout__left">
-                <div class="checkout__content">
-                    <div class="accordion accordion--big">
-                        <div class="accordion__item selected-cart active">
-                            <div class="accordion__header">
-                                <span class="icon-outer accordion__icon">
-                                </span>
-                                <div class="checkout__title">
-                                    KREDİ KARTI <span class="colored-blue">İLE ÖDEME</span>
-                                </div>
-                            </div>
-                            <div class="accordion__content">
-                                <div class="js-calc-accordion-height">
-
-                                    @if (TempData["ErrorMessage"] != null)
-                                    {
-                                        <div class="error-messages" style="display: block;">
-                                            @TempData["ErrorMessage"]
-                                        </div>
-                                    }
-
-                                    <div class="error-messages">
-                                        <div class="error-messages__title">
-                                            <span class="icon-outer">
-                                                <svg class="icon">
-                                                    <use xlink:href="assets/img/icons.svg#icon-warning"></use>
-                                                </svg>
-                                            </span>
-                                            İşlem<span>&nbsp;Başarısız Oldu</span>
-                                        </div>
-                                        <ul>
-                                            <li>
-                                                <span class="icon-outer">
-                                                    <svg class="icon">
-                                                        <use xlink:href="assets/img/icons.svg#icon-info-circle"></use>
-                                                    </svg>
-                                                </span>
-                                                <label for="CardInfo.NumberOnCard" class="error">cardnumber</label>
-                                            </li>
-                                            <li>
-                                                <span class="icon-outer">
-                                                    <svg class="icon">
-                                                        <use xlink:href="assets/img/icons.svg#icon-info-circle"></use>
-                                                    </svg>
-                                                </span>
-                                                <label for="CardInfo.NameOnCard" class="error">cardname</label>
-                                            </li>
-                                            <li>
-                                                <span class="icon-outer">
-                                                    <svg class="icon">
-                                                        <use xlink:href="assets/img/icons.svg#icon-info-circle"></use>
-                                                    </svg>
-                                                </span>
-                                                <label for="CardInfo.MonthOnCard" class="error">cardmonth</label>
-                                            </li>
-                                            <li>
-                                                <span class="icon-outer">
-                                                    <svg class="icon">
-                                                        <use xlink:href="assets/img/icons.svg#icon-info-circle"></use>
-                                                    </svg>
-                                                </span>
-                                                <label for="CardInfo.YearOnCard" class="error">cardyear</label>
-                                            </li>
-                                            <li>
-                                                <span class="icon-outer">
-                                                    <svg class="icon">
-                                                        <use xlink:href="assets/img/icons.svg#icon-info-circle"></use>
-                                                    </svg>
-                                                </span>
-                                                <label for="cardCvc" class="error">cardcvc</label>
-                                            </li>
-                                            <li>
-                                                <span class="icon-outer">
-                                                    <svg class="icon">
-                                                        <use xlink:href="assets/img/icons.svg#icon-info-circle"></use>
-                                                    </svg>
-                                                </span>
-                                                <label for="IsPreInformationConfirmed" class="error">IsPreInformationConfirmed</label>
-                                            </li>
-                                            <li>
-                                                <span class="icon-outer">
-                                                    <svg class="icon">
-                                                        <use xlink:href="assets/img/icons.svg#icon-info-circle"></use>
-                                                    </svg>
-                                                </span>
-                                                <label for="IsDistantSalesAgreementConfirmed" class="error">IsDistantSalesAgreementConfirmed</label>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class='card-wrapper card-wrapper--form'></div>
-                                    <form class="card-form" id="form-buy" method="post" action="/odeme-yap">
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" id="_is-distant-sales-agreement-confirmed" name="IsDistantSalesAgreementConfirmed" />
-                                        <input type="hidden" id="_is-pre-information-confirmed" name="IsPreInformationConfirmed" />
-                                        <input type="hidden" value="0" id="input-education-total-price" />
-                                        <input type="hidden" value="0" id="input-education-total-old-price" />
-                                        <input type="hidden" value="0" id="input-discount-amount" />
-                                        <input type="hidden" value="0" id="promotion-discount-amount" />
-                                        <input type="hidden" value="" id="_promotion-code" name="PromotionCode" />
-                                        <input type="hidden" value="" id="_installmentCount" name="PaymentInfo.Installments" />
-                                        <input type="hidden" value="0" id="_aId" name="AddressId" />
-                                        <input type="hidden" value="" id="_cart-items" name="CartItemsJson" />
-                                        <div class="input__outer no-icon">
-                                            <div class="input__title">Kart Numarası</div>
-                                            <input type="text" id="input-card-number"
-                                                   class="input input--bordered input--fw input--noshadow card__number" name="CardInfo.NumberOnCard"
-                                                   placeholder="_ _ _ _  _ _ _ _  _ _ _ _  _ _ _ _">
-                                        </div>
-                                        <div class="input__outer no-icon">
-                                            <div class="input__title">Adınız Soyadınız</div>
-                                            <input type="text" id="input-owner"
-                                                   class="input input--bordered input--fw input--noshadow card__name" name="CardInfo.NameOnCard"
-                                                   placeholder="Kart Sahibinin Adı Soyadı" />
-                                        </div>
-                                        <div class="input__column-2 input__column-card">
-                                            <div class="input__outer no-icon">
-                                                <div style="margin-right:20px;">
-                                                    <div class="input__title">Ay</div>
-                                                    <input type="text" id="select-months"
-                                                           class="input input--bordered input--fw input--noshadow card__expiry" name="CardInfo.MonthOnCard"
-                                                           placeholder="01" />
-                                                </div>
-                                                <div>
-                                                    <div class="input__title">Yıl</div>
-                                                    <input type="text" id="select-years"
-                                                           class="input input--bordered input--fw input--noshadow card__expiry" name="CardInfo.YearOnCard"
-                                                           placeholder="2026" />
-                                                </div>
-                                            </div>
-                                            <div class="input__outer no-icon">
-                                                <div class="input__title">
-                                                    CCV <span class="ccv-info tooltip-hover"
-                                                              tooltip-text="Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis, odit!.">?</span>
-                                                </div>
-                                                <input type="text" id="input-cvc"
-                                                       class="input input--bordered input--fw input--noshadow card__cvc" name="CardInfo.CVC"
-                                                       placeholder="_ _ _" />
-                                            </div>
-                                        </div>
-                                        <div class="input__outer">
-                                            <label class="main-checkbox">
-                                                <a href="#0">3d secure</a> ile ödeme yapacağım.
-                                                <input type="checkbox" id="chc3dSecure" name="Use3d" value="true">
-                                                <span class="main-checkbox__checkmark"></span>
-                                            </label>
-                                        </div>
-                                        <div class="checkout__subtop v-tablet">
-                                            <div class="checkout__subtop-title">
-                                                Taksit Sayısı
-                                            </div>
-                                        </div>
-                                        <div class="checkout__purchase">
-                                            <div class="checkout__purchase-top">
-                                                <div>
-                                                    Taksit Seçeneği
-                                                </div>
-                                                <div>
-                                                    Aylık Ödeme
-                                                </div>
-                                                <div>
-                                                    Toplam Tutar
-                                                </div>
-                                            </div>
-                                            <div class="checkout__purchase-wrp">
-                                                <p>Taksit seçeneklerini görebilmek için lütfen kart numaranızı giriniz.</p>
-
-                                            </div>
-                                        </div>
-
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                        @*<span class="checkout__fw-hr"></span>
-                            <div class="accordion__item selected-havale">
+        <form id="form-buy" method="post" action="/odeme-yap">
+            <div class="checkout__wrp">
+                <div class="checkout__left">
+                    <div class="checkout__content">
+                        <div class="accordion accordion--big">
+                            <div class="accordion__item selected-cart active">
                                 <div class="accordion__header">
                                     <span class="icon-outer accordion__icon">
                                     </span>
                                     <div class="checkout__title">
-                                        HAVALE İLE <span class="colored-blue">ÖDEME</span>
+                                        KREDİ KARTI <span class="colored-blue">İLE ÖDEME</span>
                                     </div>
                                 </div>
-                                <div class="accordion__content">
-                                    <div class="js-calc-accordion-height">
-                                        <div class="checkout__transfer-wrp">
-                                            <div class="checkout__transfer-item">
-                                                <label class="main-radio">
-                                                    <div class="checkout__transfer-top">
-                                                        <input type="radio" name="havale">
-                                                        <span class="main-radio__checkmark"></span>
-                                                        <img src="./assets/img/garantibbva.png" alt="">
+                                <div class="accordion__content_payment">
+                                    <div >
+
+                                        @if (TempData["ErrorMessage"] != null)
+                                        {
+                                            <div class="error-messages" style="display: block;">
+                                                @TempData["ErrorMessage"]
+                                            </div>
+                                        }
+
+                                        <div class="error-messages">
+                                            <div class="error-messages__title">
+                                                <span class="icon-outer">
+                                                    <svg class="icon">
+                                                        <use xlink:href="../../assets/img/icons.svg#icon-warning"></use>
+                                                    </svg>
+                                                </span>
+                                                İşlem<span>&nbsp;Başarısız Oldu</span>
+                                            </div>
+                                            <ul>
+                                                <li>
+                                                    <span class="icon-outer">
+                                                        <svg class="icon">
+                                                            <use xlink:href="../../assets/img/icons.svg#icon-info-circle"></use>
+                                                        </svg>
+                                                    </span>
+                                                    <label for="CardInfo.NumberOnCard" class="error"></label>
+                                                </li>
+                                                <li>
+                                                    <span class="icon-outer">
+                                                        <svg class="icon">
+                                                            <use xlink:href="../../assets/img/icons.svg#icon-info-circle"></use>
+                                                        </svg>
+                                                    </span>
+                                                    <label for="CardInfo.NameOnCard" class="error"></label>
+                                                </li>
+                                                <li>
+                                                    <span class="icon-outer">
+                                                        <svg class="icon">
+                                                            <use xlink:href="../../assets/img/icons.svg#icon-info-circle"></use>
+                                                        </svg>
+                                                    </span>
+                                                    <label for="CardInfo.MonthOnCard" class="error"></label>
+                                                </li>
+                                                <li>
+                                                    <span class="icon-outer">
+                                                        <svg class="icon">
+                                                            <use xlink:href="../../assets/img/icons.svg#icon-info-circle"></use>
+                                                        </svg>
+                                                    </span>
+                                                    <label for="CardInfo.YearOnCard" class="error"></label>
+                                                </li>
+                                                <li>
+                                                    <span class="icon-outer">
+                                                        <svg class="icon">
+                                                            <use xlink:href="../../assets/img/icons.svg#icon-info-circle"></use>
+                                                        </svg>
+                                                    </span>
+                                                    <label for="CardInfo.CVC" class="error"></label>
+                                                </li>
+                                                <li>
+                                                    <span class="icon-outer">
+                                                        <svg class="icon">
+                                                            <use xlink:href="../../assets/img/icons.svg#icon-info-circle"></use>
+                                                        </svg>
+                                                    </span>
+                                                    <label for="IsPreInformationConfirmed" class="error"></label>
+                                                </li>
+                                                <li>
+                                                    <span class="icon-outer">
+                                                        <svg class="icon">
+                                                            <use xlink:href="../../assets/img/icons.svg#icon-info-circle"></use>
+                                                        </svg>
+                                                    </span>
+                                                    <label for="IsDistantSalesAgreementConfirmed" class="error"></label>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class='card-wrapper card-wrapper--form'></div>
+                                        <div class="card-form">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" value="0" id="input-education-total-price" />
+                                            <input type="hidden" value="0" id="input-education-total-old-price" />
+                                            <input type="hidden" value="0" id="input-discount-amount" />
+                                            <input type="hidden" value="0" id="promotion-discount-amount" />
+                                            <input type="hidden" value="" id="_promotion-code" name="PromotionCode" />
+                                            <input type="hidden" value="" id="_installmentCount" name="PaymentInfo.Installments" />
+                                            <input type="hidden" value="0" id="_aId" name="AddressId" />
+                                            <input type="hidden" value="" id="_cart-items" name="CartItemsJson" />
+                                            <div class="input__outer no-icon">
+                                                <div class="input__title">Kart Numarası</div>
+                                                <input type="text" id="CardInfo.NumberOnCard" pattern="[0-9 ]+"
+                                                       class="input input--bordered input--fw input--noshadow card__number" name="CardInfo.NumberOnCard"
+                                                       placeholder="_ _ _ _  _ _ _ _  _ _ _ _  _ _ _ _">
+                                            </div>
+                                            <div class="input__outer no-icon">
+                                                <div class="input__title">Adınız Soyadınız</div>
+                                                <input type="text" id="CardInfo.NameOnCard"
+                                                       class="input input--bordered input--fw input--noshadow card__name" name="CardInfo.NameOnCard"
+                                                       placeholder="Kart Sahibinin Adı Soyadı" />
+                                            </div>
+                                            <div class="input__column-2 input__column-card">
+                                                <div class="input__outer no-icon">
+                                                    <div style="margin-right:20px;">
+                                                        <div class="input__title">Ay</div>
+                                                        <input type="text" id="CardInfo.MonthOnCard"
+                                                               class="input input--bordered input--fw input--noshadow card__expiry" name="CardInfo.MonthOnCard"
+                                                               placeholder="01" />
                                                     </div>
-                                                </label>
-                                                <div class="checkout__transfer-cnt">
-                                                    <div class="checkout__transfer-cnt-item">
-                                                        <div class="checkout__transfer-title">Firma Bilgileri</div>
-                                                        <div class="checkout__transfer-txt">Wissen Academie Eğitim Kurumları</div>
-                                                    </div>
-                                                    <div class="checkout__transfer-cnt-outer">
-                                                        <div class="checkout__transfer-cnt-item mr-40">
-                                                            <div class="checkout__transfer-title">IBAN</div>
-                                                            <div id="garantiIban" class="checkout__transfer-txt">1234 5678 2345 23523</div>
-                                                        </div>
-                                                        <div class="checkout__transfer-cnt-item">
-                                                            <div class="checkout__transfer-title">Şube</div>
-                                                            <div class="checkout__transfer-txt">Keçiören / Ankara</div>
-                                                        </div>
-                                                        <a id="garantiIban" name="copyElement" class="checkout__transfer-copy-button tooltip-click"
-                                                           tooltip-text="Iban Kopyalandı.">
-                                                            <span class="icon-outer">
-                                                                <svg class="icon">
-                                                                    <use xlink:href="assets/img/icons.svg#icon-copyboard"></use>
-                                                                </svg>
-                                                            </span>
-                                                        </a>
+                                                    <div>
+                                                        <div class="input__title">Yıl</div>
+                                                        <input type="text" id="CardInfo.YearOnCard"
+                                                               class="input input--bordered input--fw input--noshadow card__expiry" name="CardInfo.YearOnCard"
+                                                               placeholder="2026" />
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="checkout__transfer-item">
-                                                <label class="main-radio">
-                                                    <div class="checkout__transfer-top">
-                                                        <input type="radio" name="havale">
-                                                        <span class="main-radio__checkmark"></span>
-                                                        <img src="./assets/img/isbankasi.png" alt="">
+                                                <div class="input__outer no-icon">
+                                                    <div class="input__title">
+                                                        CCV <span class="ccv-info tooltip-hover"
+                                                                  tooltip-text="Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis, odit!.">?</span>
                                                     </div>
-                                                </label>
-                                                <div class="checkout__transfer-cnt">
-                                                    <div class="checkout__transfer-cnt-item">
-                                                        <div class="checkout__transfer-title">Firma Bilgileri</div>
-                                                        <div class="checkout__transfer-txt">Wissen Academie Eğitim Kurumları</div>
-                                                    </div>
-                                                    <div class="checkout__transfer-cnt-outer">
-                                                        <div class="checkout__transfer-cnt-item mr-40">
-                                                            <div class="checkout__transfer-title">IBAN</div>
-                                                            <div id="isbankasiIban" class="checkout__transfer-txt">1234 5678 2345 23523</div>
-                                                        </div>
-                                                        <div class="checkout__transfer-cnt-item">
-                                                            <div class="checkout__transfer-title">Şube</div>
-                                                            <div class="checkout__transfer-txt">Keçiören / Ankara</div>
-                                                        </div>
-                                                        <a id="isbankasiIban" name="copyElement"
-                                                           class="checkout__transfer-copy-button tooltip-click" tooltip-text="Iban Kopyalandı.">
-                                                            <span class="icon-outer">
-                                                                <svg class="icon">
-                                                                    <use xlink:href="assets/img/icons.svg#icon-copyboard"></use>
-                                                                </svg>
-                                                            </span>
-                                                        </a>
-                                                    </div>
+                                                    <input type="text" id="CardInfo.CVC"
+                                                           class="input input--bordered input--fw input--noshadow card__cvc" name="CardInfo.CVC"
+                                                           placeholder="_ _ _" />
                                                 </div>
                                             </div>
+                                            <div class="input__outer">
+                                                <label class="main-checkbox">
+                                                    <a href="#0">3d secure</a> ile ödeme yapacağım.
+                                                    <input type="checkbox" id="chc3dSecure" name="Use3d" value="true">
+                                                    <span class="main-checkbox__checkmark"></span>
+                                                </label>
+                                            </div>
+                                            <div class="checkout__subtop v-tablet">
+                                                <div class="checkout__subtop-title">
+                                                    Taksit Sayısı
+                                                </div>
+                                            </div>
+                                            <div class="checkout__purchase">
+                                                <div class="checkout__purchase-top">
+                                                    <div>
+                                                        Taksit Seçeneği
+                                                    </div>
+                                                    <div>
+                                                        Aylık Ödeme
+                                                    </div>
+                                                    <div>
+                                                        Toplam Tutar
+                                                    </div>
+                                                </div>
+                                                <div class="checkout__purchase-wrp">
+                                                    <p>Taksit seçeneklerini görebilmek için lütfen kart numaranızı giriniz.</p>
+
+                                                </div>
+                                            </div>
+
                                         </div>
                                     </div>
                                 </div>
-                            </div>*@
-                    </div>
-                </div>
-                <div class="checkout__content">
-                    <div class="accordion accordion--big">
-                        <div class="accordion__item">
+                            </div>
+                            @*<span class="checkout__fw-hr"></span>
+                        <div class="accordion__item selected-havale">
                             <div class="accordion__header">
                                 <span class="icon-outer accordion__icon">
                                 </span>
                                 <div class="checkout__title">
-                                    SÖZLEŞME VE <span class="colored-blue">FORMLAR</span>
+                                    HAVALE İLE <span class="colored-blue">ÖDEME</span>
                                 </div>
                             </div>
                             <div class="accordion__content">
                                 <div class="js-calc-accordion-height">
-                                    <div class="checkout__contract-wrp">
-                                        <div class="checkout__contract-item js-modal-trigger" data-trigger="caymaHakki">
-                                            <div class="checkout__contract-title">CAYMA HAKKI</div>
-                                            <div class="checkout__contract-button" data-trigger="caymaHakki">
-                                                <span class="icon-outer">
-                                                    <svg class="icon">
-                                                        <use xlink:href="assets/img/icons.svg#icon-arrow"></use>
-                                                    </svg>
-                                                </span>
+                                    <div class="checkout__transfer-wrp">
+                                        <div class="checkout__transfer-item">
+                                            <label class="main-radio">
+                                                <div class="checkout__transfer-top">
+                                                    <input type="radio" name="havale">
+                                                    <span class="main-radio__checkmark"></span>
+                                                    <img src="./assets/img/garantibbva.png" alt="">
+                                                </div>
+                                            </label>
+                                            <div class="checkout__transfer-cnt">
+                                                <div class="checkout__transfer-cnt-item">
+                                                    <div class="checkout__transfer-title">Firma Bilgileri</div>
+                                                    <div class="checkout__transfer-txt">Wissen Academie Eğitim Kurumları</div>
+                                                </div>
+                                                <div class="checkout__transfer-cnt-outer">
+                                                    <div class="checkout__transfer-cnt-item mr-40">
+                                                        <div class="checkout__transfer-title">IBAN</div>
+                                                        <div id="garantiIban" class="checkout__transfer-txt">1234 5678 2345 23523</div>
+                                                    </div>
+                                                    <div class="checkout__transfer-cnt-item">
+                                                        <div class="checkout__transfer-title">Şube</div>
+                                                        <div class="checkout__transfer-txt">Keçiören / Ankara</div>
+                                                    </div>
+                                                    <a id="garantiIban" name="copyElement" class="checkout__transfer-copy-button tooltip-click"
+                                                       tooltip-text="Iban Kopyalandı.">
+                                                        <span class="icon-outer">
+                                                            <svg class="icon">
+                                                                <use xlink:href="assets/img/icons.svg#icon-copyboard"></use>
+                                                            </svg>
+                                                        </span>
+                                                    </a>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="checkout__contract-item js-modal-trigger" data-trigger="onBilgilendirmeFormu">
-                                            <div class="checkout__contract-title">ÖN BİLGİLENDİRME FORMU</div>
-                                            <div class="checkout__contract-button" data-trigger="onBilgilendirmeFormu">
-                                                <span class="icon-outer">
-                                                    <svg class="icon">
-                                                        <use xlink:href="assets/img/icons.svg#icon-arrow"></use>
-                                                    </svg>
-                                                </span>
+                                        <div class="checkout__transfer-item">
+                                            <label class="main-radio">
+                                                <div class="checkout__transfer-top">
+                                                    <input type="radio" name="havale">
+                                                    <span class="main-radio__checkmark"></span>
+                                                    <img src="./assets/img/isbankasi.png" alt="">
+                                                </div>
+                                            </label>
+                                            <div class="checkout__transfer-cnt">
+                                                <div class="checkout__transfer-cnt-item">
+                                                    <div class="checkout__transfer-title">Firma Bilgileri</div>
+                                                    <div class="checkout__transfer-txt">Wissen Academie Eğitim Kurumları</div>
+                                                </div>
+                                                <div class="checkout__transfer-cnt-outer">
+                                                    <div class="checkout__transfer-cnt-item mr-40">
+                                                        <div class="checkout__transfer-title">IBAN</div>
+                                                        <div id="isbankasiIban" class="checkout__transfer-txt">1234 5678 2345 23523</div>
+                                                    </div>
+                                                    <div class="checkout__transfer-cnt-item">
+                                                        <div class="checkout__transfer-title">Şube</div>
+                                                        <div class="checkout__transfer-txt">Keçiören / Ankara</div>
+                                                    </div>
+                                                    <a id="isbankasiIban" name="copyElement"
+                                                       class="checkout__transfer-copy-button tooltip-click" tooltip-text="Iban Kopyalandı.">
+                                                        <span class="icon-outer">
+                                                            <svg class="icon">
+                                                                <use xlink:href="assets/img/icons.svg#icon-copyboard"></use>
+                                                            </svg>
+                                                        </span>
+                                                    </a>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="checkout__contract-item js-modal-trigger" data-trigger="mesafeliSatisSozlesmesi">
-                                            <div class="checkout__contract-title">MESAFELİ SATIŞ SÖZLEŞMESİ</div>
-                                            <div class="checkout__contract-button" data-trigger="mesafeliSatisSozlesmesi">
-                                                <span class="icon-outer">
-                                                    <svg class="icon">
-                                                        <use xlink:href="assets/img/icons.svg#icon-arrow"></use>
-                                                    </svg>
-                                                </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>*@
+                        </div>
+                    </div>
+                    <div class="checkout__content">
+                        <div class="accordion accordion--big">
+                            <div class="accordion__item">
+                                <div class="accordion__header">
+                                    <span class="icon-outer accordion__icon">
+                                    </span>
+                                    <div class="checkout__title">
+                                        SÖZLEŞME VE <span class="colored-blue">FORMLAR</span>
+                                    </div>
+                                </div>
+                                <div class="accordion__content">
+                                    <div class="js-calc-accordion-height">
+                                        <div class="checkout__contract-wrp">
+                                            <div class="checkout__contract-item js-modal-trigger" data-trigger="caymaHakki">
+                                                <div class="checkout__contract-title">CAYMA HAKKI</div>
+                                                <div class="checkout__contract-button" data-trigger="caymaHakki">
+                                                    <span class="icon-outer">
+                                                        <svg class="icon">
+                                                            <use xlink:href="assets/img/icons.svg#icon-arrow"></use>
+                                                        </svg>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="checkout__contract-item js-modal-trigger" data-trigger="preInformationConfirmed">
+                                                <div class="checkout__contract-title">ÖN BİLGİLENDİRME FORMU</div>
+                                                <div class="checkout__contract-button" data-trigger="preInformationConfirmed">
+                                                    <span class="icon-outer">
+                                                        <svg class="icon">
+                                                            <use xlink:href="assets/img/icons.svg#icon-arrow"></use>
+                                                        </svg>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="checkout__contract-item js-modal-trigger" data-trigger="distantSalesAgreementConfirmed">
+                                                <div class="checkout__contract-title">MESAFELİ SATIŞ SÖZLEŞMESİ</div>
+                                                <div class="checkout__contract-button" data-trigger="distantSalesAgreementConfirmed">
+                                                    <span class="icon-outer">
+                                                        <svg class="icon">
+                                                            <use xlink:href="assets/img/icons.svg#icon-arrow"></use>
+                                                        </svg>
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -358,125 +358,125 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <a asp-controller="Sale" asp-action="InvoiceInformation" class="button button--simple button-left checkout__button-prev">
-                    <span class="button-icon">
-                        <span class="icon-outer">
-                            <svg class="icon">
-                                <use xlink:href="assets/img/icons.svg#icon-arrow"></use>
-                            </svg>
+                    <a asp-controller="Sale" asp-action="InvoiceInformation" class="button button--simple button-left checkout__button-prev">
+                        <span class="button-icon">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="assets/img/icons.svg#icon-arrow"></use>
+                                </svg>
+                            </span>
                         </span>
-                    </span>
-                    <span class="button-txt">
-                        Önceki Adım
-                    </span>
-                </a>
-            </div>
-            <div class="checkout__side">
-                <div class="checkout__content no-shadow">
-                    <div class="checkout__top">
-                        <div class="checkout__title">
-                            SEPETTEKİ <span class="colored-blue">ÜRÜNLERİM</span>
-                        </div>
-                        <div class="checkout__top-right">
-                        </div>
-                    </div>
-                    <div class="checkout__basket-wrp">
-
-                    </div>
+                        <span class="button-txt">
+                            Önceki Adım
+                        </span>
+                    </a>
                 </div>
-                <div class="checkout__content no-shadow">
-                    <div class="checkout__top">
-                        <div class="checkout__title">
-                            SİPARİŞ <span class="colored-blue">ÖZETİ</span>
+                <div class="checkout__side">
+                    <div class="checkout__content no-shadow">
+                        <div class="checkout__top">
+                            <div class="checkout__title">
+                                SEPETTEKİ <span class="colored-blue">ÜRÜNLERİM</span>
+                            </div>
+                            <div class="checkout__top-right">
+                            </div>
+                        </div>
+                        <div class="checkout__basket-wrp">
+
                         </div>
                     </div>
-                    <div class="checkout__price-wrp js-discounts">
-                        <div class="checkout__price-item">
-                            <div class="checkout__price-title">Ürünler Toplamı</div>
-                            <div class="checkout__price-old">
-                                0,00 <span>TL</span>
+                    <div class="checkout__content no-shadow">
+                        <div class="checkout__top">
+                            <div class="checkout__title">
+                                SİPARİŞ <span class="colored-blue">ÖZETİ</span>
                             </div>
-                            <div class="checkout__price-new">
-                                <div class="checkout__price-new" id="oldPrice">
+                        </div>
+                        <div class="checkout__price-wrp js-discounts">
+                            <div class="checkout__price-item">
+                                <div class="checkout__price-title">Ürünler Toplamı</div>
+                                <div class="checkout__price-old">
+                                    0,00 <span>TL</span>
+                                </div>
+                                <div class="checkout__price-new">
+                                    <div class="checkout__price-new" id="oldPrice">
+                                        0,00 <span>TL</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="checkout__price-item">
+                                <div class="checkout__price-title">Toplam İndirimler</div>
+                                <div class="checkout__price-new" id="discountAmount">
                                     0,00 <span>TL</span>
                                 </div>
                             </div>
+
                         </div>
-                        <div class="checkout__price-item">
-                            <div class="checkout__price-title">Toplam İndirimler</div>
-                            <div class="checkout__price-new" id="discountAmount">
+                        <div class="checkout__price-item totaly">
+                            <div class="checkout__price-title">Toplam Tutar</div>
+                            <div class="checkout__price-new" id="newPrice">
                                 0,00 <span>TL</span>
                             </div>
                         </div>
-
                     </div>
-                    <div class="checkout__price-item totaly">
-                        <div class="checkout__price-title">Toplam Tutar</div>
-                        <div class="checkout__price-new" id="newPrice">
-                            0,00 <span>TL</span>
+
+
+                    <!-- geçersiz kod mesajını vermek için; main.js'de 1484'üncü satırda ki if'e, else if ile müdahale edebilirsiniz. -->
+                    <div class="checkout__sale-code js-cupon-form">
+                        <div class="wizard-loading">
+                            <div class="loader">
+                                <svg class="circular" viewBox="25 25 50 50">
+                                    <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="js-cupon-form__result">
+                            <span class="icon-font">
+                                <svg class="icon icon-check">
+                                    <use xlink:href="assets/img/icons.svg#icon-check"></use>
+                                </svg>
+                            </span>
+                            İndirim Başarılı ile Uygulandı!
+                        </div>
+                        <div>
+                            <input class="input js-cupon-input" id="promotion-code" type="text" placeholder="İndirim kodum var">
+                            <span class="icon-outer checkout__sale-code--icon js-cupon-btn">
+                                <svg class="icon">
+                                    <use xlink:href="assets/img/icons.svg#icon-plus"></use>
+                                </svg>
+                            </span>
                         </div>
                     </div>
-                </div>
+                    <div class="checkout__side-checkboxes">
+                        <label class="main-checkbox reverse">
+                            <a href="#0" class="js-modal-trigger" data-trigger="preInformationConfirmed">Ön Bilgilendirme</a> formunu
+                            okudum ve kabul ediyorum.
+                            <input type="checkbox" id="IsPreInformationConfirmed" value="true" name="IsPreInformationConfirmed" form="form-buy">
+                            <span class="main-checkbox__checkmark"></span>
+                        </label>
+                        <label class="main-checkbox reverse">
+                            <a href="#0" class="js-modal-trigger" data-trigger="distantSalesAgreementConfirmed">
+                                Mesafeli satış
+                                sözleşmesi‘ni
+                            </a> okudum ve kabul ediyorum.
+                            <input type="checkbox" id="IsDistantSalesAgreementConfirmed" value="true" name="IsDistantSalesAgreementConfirmed" form="form-buy">
+                            <span class="main-checkbox__checkmark"></span>
+                        </label>
+                    </div>
 
-
-                <!-- geçersiz kod mesajını vermek için; main.js'de 1484'üncü satırda ki if'e, else if ile müdahale edebilirsiniz. -->
-                <form class="checkout__sale-code js-cupon-form">
-                    <div class="wizard-loading">
-                        <div class="loader">
-                            <svg class="circular" viewBox="25 25 50 50">
-                                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="js-cupon-form__result">
-                        <span class="icon-font">
-                            <svg class="icon icon-check">
-                                <use xlink:href="assets/img/icons.svg#icon-check"></use>
-                            </svg>
+                    <button type="submit" form="form-buy" class="button button-icon-right button-fw checkout__next-button">
+                        <span class="button-txt">
+                            Siparişi Tamamla
                         </span>
-                        İndirim Başarılı ile Uygulandı!
-                    </div>
-                    <div>
-                        <input class="input js-cupon-input" id="promotion-code" type="text" placeholder="İndirim kodum var">
-                        <span class="icon-outer checkout__sale-code--icon js-cupon-btn">
-                            <svg class="icon">
-                                <use xlink:href="assets/img/icons.svg#icon-plus"></use>
-                            </svg>
+                        <span class="button-icon">
+                            <span class="icon-outer">
+                                <svg class="icon">
+                                    <use xlink:href="assets/img/icons.svg#icon-arrow"></use>
+                                </svg>
+                            </span>
                         </span>
-                    </div>
-                </form>
-                <div class="checkout__side-checkboxes">
-                    <label class="main-checkbox reverse">
-                        <a href="#0" class="js-modal-trigger" data-trigger="onBilgilendirmeFormu">Ön Bilgilendirme</a> formunu
-                        okudum ve kabul ediyorum.
-                        <input type="checkbox" id="onBilgilendirme" name="onBilgilendirme" form="form-buy" required>
-                        <span class="main-checkbox__checkmark"></span>
-                    </label>
-                    <label class="main-checkbox reverse">
-                        <a href="#0" class="js-modal-trigger" data-trigger="mesafeliSatisSozlesmesi">
-                            Mesafeli satış
-                            sözleşmesi‘ni
-                        </a> okudum ve kabul ediyorum.
-                        <input type="checkbox" id="MesafeliSatisSozlesmesi" name="MesafeliSatisSozlesmesi" form="form-buy"
-                               required>
-                        <span class="main-checkbox__checkmark"></span>
-                    </label>
+                    </button>
                 </div>
-                <button type="submit" form="form-buy" class="button button-icon-right button-fw checkout__next-button">
-                    <span class="button-txt">
-                        Siparişi Tamamla
-                    </span>
-                    <span class="button-icon">
-                        <span class="icon-outer">
-                            <svg class="icon">
-                                <use xlink:href="assets/img/icons.svg#icon-arrow"></use>
-                            </svg>
-                        </span>
-                    </span>
-                </button>
             </div>
-        </div>
+        </form>
     </div>
 </section>
 
@@ -647,7 +647,7 @@
         </p>
     </div>
 </div>
-<div class="modal" id="onBilgilendirmeFormu">
+<div class="modal" id="preInformationConfirmed">
     <div class="modal__header">
         <div class="modal__title">ÖN BİLGİLENDİRME FORMU</div>
         <div class="modal__close js-close-modal">
@@ -803,7 +803,7 @@
         </p>
     </div>
 </div>
-<div class="modal" id="mesafeliSatisSozlesmesi">
+<div class="modal" id="distantSalesAgreementConfirmed">
     <div class="modal__header">
         <div class="modal__title">MESAFELİ SATIŞ SÖZLEŞMESİ</div>
         <div class="modal__close js-close-modal">
@@ -976,94 +976,73 @@
         var installmentInfoDiv = $(".checkout__purchase-wrp");
         var inputInstallment = $("#_installmentCount");
         var aId = $("#_aId");
-        var mss = $("#_is-distant-sales-agreement-confirmed");
-        var obf = $("#_is-pre-information-confirmed");
-        var onBilgilendirme = $("#onBilgilendirme");
         var inputEducationTotalOldPrice = $("#input-education-total-old-price");
         var inputDiscountAmount = $("#input-discount-amount");
         var txtTotal = $("#newPrice");
         var txtOldTotal = $("#oldPrice");
         var txtTotalDiscount = $("#discountAmount");
 
-
-       
-        jQuery.validator.addMethod("mssValidator", function (value, element) {
-            return value == "true";
-        });
-        jQuery.validator.addMethod("obfValidator", function (value, element) {
-            return value == "true";
-        });
        
         $(document).ready(function () {
             aId.val(localStorage.getItem("_cA"));
             getCartItems();
             checkPromotionCode();
-            $('#form-buy').validate({
-                ignore: [],
-                errorLabelContainer: $('#form-buy div.error'),
-                errorContainer: 'div.error-messages',
-                errorLabelContainer: $('ul', 'div.error-messages'),
-                wrapper: 'li',
-                rules: {
-                    "CardInfo.NumberOnCard": {
-                        required: true,
-                    },
-                    "CardInfo.NameOnCard": {
-                        required: true,
-                    },
-                    "CardInfo.MonthOnCard": {
-                        required: true,
-                    },
-                    "CardInfo.YearOnCard": {
-                        required: true,
-                    },
-                    "CardInfo.CVC": {
-                        required: true,
-                    },
-                    "purchase": {
-                        required: true,
-                    },
-                    "IsDistantSalesAgreementConfirmed": {
-                        mssValidator: true
-                    },
-                    "IsPreInformationConfirmed": {
-                        obfValidator: true
-                    }
-
-
-                },
-                messages: {
-                    "CardInfo.NumberOnCard": 'Kart numarasını girmediniz.',
-                    "CardInfo.NameOnCard": 'Adınız ve soyadınızı girmediniz.',
-                    "CardInfo.MonthOnCard": 'Kart ayını girmediniz.',
-                    "CardInfo.YearOnCard": 'Kart yılını girmediniz.',
-                    "CardInfo.CVC": 'CCV kodunu girmediniz.',
-                    "purchase": 'Lütfen bir taksit seçimi yapın.',
-                    "IsDistantSalesAgreementConfirmed": "Mesafeli Satış Sözleşmesini onaylayınız.",
-                    "IsPreInformationConfirmed":"Ön Bilgilendirme Formunu onaylayınız."
-
-                },
-                submitHandler: function (form) {
-                    form.submit();
-                },
-                highlight: function (element) {
-                    $(element)
-                        .parent()
-                        .addClass('outer-error');
-                },
-                unhighlight: function (element) {
-                    $(element)
-                        .parent()
-                        .removeClass('outer-error');
-                },
-            });
         });
-
-        $("#onBilgilendirme").change(function () {
-            obf.val(this.checked);
-        });
-        $("#MesafeliSatisSozlesmesi").change(function () {
-            mss.val(this.checked);
+        
+        $('#form-buy').validate({
+            errorLabelContainer: $('#form-buy div.error'),
+            errorContainer: 'div.error-messages',
+            errorLabelContainer: $('ul', 'div.error-messages'),
+            wrapper: 'li',
+            rules: {
+                "CardInfo.NumberOnCard": {
+                    required: true,
+                    minlength:19
+                },
+                "CardInfo.NameOnCard": {
+                    required: true,
+                },
+                "CardInfo.MonthOnCard": {
+                    required: true,
+                },
+                "CardInfo.YearOnCard": {
+                    required: true,
+                },
+                "CardInfo.CVC": {
+                    required: true,
+                },
+                "IsDistantSalesAgreementConfirmed": {
+                    required:true,
+                },
+                "IsPreInformationConfirmed": {
+                    required: true,
+                }
+            },
+            messages: {
+                "CardInfo.NumberOnCard": { required: 'Kart numarasını girmediniz.', minlength:'Kart numarası 16 karakterli olmalıdır.'},
+                "CardInfo.NameOnCard": 'Adınız ve soyadınızı girmediniz.',
+                "CardInfo.MonthOnCard": 'Kart ayını girmediniz.',
+                "CardInfo.YearOnCard": 'Kart yılını girmediniz.',
+                "CardInfo.CVC": 'CCV kodunu girmediniz.',
+                "IsDistantSalesAgreementConfirmed": "Mesafeli Satış Sözleşmesini onaylayınız.",
+                "IsPreInformationConfirmed": "Ön Bilgilendirme Formunu onaylayınız."
+            },
+            submitHandler: function (form) {
+                form.submit();
+            },
+            invalidHandler: function (form, validator) {
+                $('html, body').animate({ scrollTop: '150px' }, 700);
+            },
+            highlight: function (element) {
+                $(element)
+                    .parent()
+                    .addClass('outer-error');
+            },
+            unhighlight: function (element) {
+                $(element)
+                    .parent()
+                    .removeClass('outer-error');
+            },
         });
 
         $('.js-cupon-btn').click(function () {
@@ -1207,7 +1186,7 @@
                 );
             }
         }
-        $('#input-card-number').focusout(function () {
+        $('.card__number').focusout(function () {
             var inputVal = this.value;
             if (inputVal.length > 7) {
                 loadInstallmentsInfo(inputVal);
@@ -1286,24 +1265,10 @@
                     }
                 });
             installmentInfoDiv.append(content);
-            resizeAccordionContent();
             inputInstallment.val(1);
         }
 
-        function resizeAccordionContent() {
-            var accordionContent = $('.accordion__item.selected')
-                .find('.js-calc-accordion-height')
-                .height();
-            $('.accordion__item.selected ')
-                .find('.accordion__content')
-                .css('height', accordionContent + 20);
-            var accordionContentCart = $('.accordion__item.selected-cart')
-                .find('.js-calc-accordion-height')
-                .height();
-            $('.accordion__item.selected-cart')
-                .find('.accordion__content')
-                .css('height', accordionContentCart + 20);
-        }
+        
         function getBasketBasedPromotion() {
             var items = _cart.getItems();
             var data = {

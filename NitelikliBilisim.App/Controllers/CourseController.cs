@@ -252,7 +252,7 @@ namespace NitelikliBilisim.App.Controllers
 
             foreach (var comment in model.Comments)
             {
-                comment.UserAvatarPath = _storageService.BlobUrl + comment.UserAvatarPath;
+                comment.UserAvatarPath =!string.IsNullOrEmpty(comment.UserAvatarPath)? _storageService.BlobUrl + comment.UserAvatarPath: "/img/no-avatar.png";
             }
             return Json(new ResponseModel
             {
