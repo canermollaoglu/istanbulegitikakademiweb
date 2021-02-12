@@ -65,8 +65,8 @@
                                         KREDİ KARTI <span class="colored-blue">İLE ÖDEME</span>
                                     </div>
                                 </div>
-                                <div class="accordion__content">
-                                    <div class="js-calc-accordion-height">
+                                <div class="accordion__content_payment">
+                                    <div >
 
                                         @if (TempData["ErrorMessage"] != null)
                                         {
@@ -156,7 +156,7 @@
                                             <input type="hidden" value="" id="_cart-items" name="CartItemsJson" />
                                             <div class="input__outer no-icon">
                                                 <div class="input__title">Kart Numarası</div>
-                                                <input type="text" id="CardInfo.NumberOnCard"
+                                                <input type="text" id="CardInfo.NumberOnCard" pattern="[0-9 ]+"
                                                        class="input input--bordered input--fw input--noshadow card__number" name="CardInfo.NumberOnCard"
                                                        placeholder="_ _ _ _  _ _ _ _  _ _ _ _  _ _ _ _">
                                             </div>
@@ -1265,24 +1265,10 @@
                     }
                 });
             installmentInfoDiv.append(content);
-            resizeAccordionContent();
             inputInstallment.val(1);
         }
 
-        function resizeAccordionContent() {
-            var accordionContent = $('.accordion__item.selected')
-                .find('.js-calc-accordion-height')
-                .height();
-            $('.accordion__item.selected ')
-                .find('.accordion__content')
-                .css('height', accordionContent + 20);
-            var accordionContentCart = $('.accordion__item.selected-cart')
-                .find('.js-calc-accordion-height')
-                .height();
-            $('.accordion__item.selected-cart')
-                .find('.accordion__content')
-                .css('height', accordionContentCart + 20);
-        }
+        
         function getBasketBasedPromotion() {
             var items = _cart.getItems();
             var data = {
