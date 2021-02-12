@@ -78,7 +78,7 @@
                                         <div class="error-messages__title">
                                             <span class="icon-outer">
                                                 <svg class="icon">
-                                                    <use xlink:href="assets/img/icons.svg#icon-warning"></use>
+                                                    <use xlink:href="../../assets/img/icons.svg#icon-warning"></use>
                                                 </svg>
                                             </span>
                                             İşlem<span>&nbsp;Başarısız Oldu</span>
@@ -87,23 +87,23 @@
                                             <li>
                                                 <span class="icon-outer">
                                                     <svg class="icon">
-                                                        <use xlink:href="assets/img/icons.svg#icon-info-circle"></use>
+                                                        <use xlink:href="../../assets/img/icons.svg#icon-info-circle"></use>
                                                     </svg>
                                                 </span>
-                                                <label for="CardInfo.NumberOnCard" class="error">cardnumber</label>
+                                                <label for="CardInfo.NumberOnCard" class="error">CardInfo.NumberOnCard</label>
                                             </li>
                                             <li>
                                                 <span class="icon-outer">
                                                     <svg class="icon">
-                                                        <use xlink:href="assets/img/icons.svg#icon-info-circle"></use>
+                                                        <use xlink:href="../../assets/img/icons.svg#icon-info-circle"></use>
                                                     </svg>
                                                 </span>
-                                                <label for="CardInfo.NameOnCard" class="error">cardname</label>
+                                                <label for="CardInfo.NameOnCard" class="error">CardInfo.NameOnCard</label>
                                             </li>
                                             <li>
                                                 <span class="icon-outer">
                                                     <svg class="icon">
-                                                        <use xlink:href="assets/img/icons.svg#icon-info-circle"></use>
+                                                        <use xlink:href="../../assets/img/icons.svg#icon-info-circle"></use>
                                                     </svg>
                                                 </span>
                                                 <label for="CardInfo.MonthOnCard" class="error">cardmonth</label>
@@ -111,7 +111,7 @@
                                             <li>
                                                 <span class="icon-outer">
                                                     <svg class="icon">
-                                                        <use xlink:href="assets/img/icons.svg#icon-info-circle"></use>
+                                                        <use xlink:href="../../assets/img/icons.svg#icon-info-circle"></use>
                                                     </svg>
                                                 </span>
                                                 <label for="CardInfo.YearOnCard" class="error">cardyear</label>
@@ -119,15 +119,15 @@
                                             <li>
                                                 <span class="icon-outer">
                                                     <svg class="icon">
-                                                        <use xlink:href="assets/img/icons.svg#icon-info-circle"></use>
+                                                        <use xlink:href="../../assets/img/icons.svg#icon-info-circle"></use>
                                                     </svg>
                                                 </span>
-                                                <label for="cardCvc" class="error">cardcvc</label>
+                                                <label for="CardInfo.CVC" class="error">cardcvc</label>
                                             </li>
                                             <li>
                                                 <span class="icon-outer">
                                                     <svg class="icon">
-                                                        <use xlink:href="assets/img/icons.svg#icon-info-circle"></use>
+                                                        <use xlink:href="../../assets/img/icons.svg#icon-info-circle"></use>
                                                     </svg>
                                                 </span>
                                                 <label for="IsPreInformationConfirmed" class="error">IsPreInformationConfirmed</label>
@@ -135,7 +135,7 @@
                                             <li>
                                                 <span class="icon-outer">
                                                     <svg class="icon">
-                                                        <use xlink:href="assets/img/icons.svg#icon-info-circle"></use>
+                                                        <use xlink:href="../../assets/img/icons.svg#icon-info-circle"></use>
                                                     </svg>
                                                 </span>
                                                 <label for="IsDistantSalesAgreementConfirmed" class="error">IsDistantSalesAgreementConfirmed</label>
@@ -145,8 +145,6 @@
                                     <div class='card-wrapper card-wrapper--form'></div>
                                     <form class="card-form" id="form-buy" method="post" action="/odeme-yap">
                                         @Html.AntiForgeryToken()
-                                        <input type="hidden" id="_is-distant-sales-agreement-confirmed" name="IsDistantSalesAgreementConfirmed" />
-                                        <input type="hidden" id="_is-pre-information-confirmed" name="IsPreInformationConfirmed" />
                                         <input type="hidden" value="0" id="input-education-total-price" />
                                         <input type="hidden" value="0" id="input-education-total-old-price" />
                                         <input type="hidden" value="0" id="input-discount-amount" />
@@ -333,9 +331,9 @@
                                                 </span>
                                             </div>
                                         </div>
-                                        <div class="checkout__contract-item js-modal-trigger" data-trigger="onBilgilendirmeFormu">
+                                        <div class="checkout__contract-item js-modal-trigger" data-trigger="preInformationConfirmed">
                                             <div class="checkout__contract-title">ÖN BİLGİLENDİRME FORMU</div>
-                                            <div class="checkout__contract-button" data-trigger="onBilgilendirmeFormu">
+                                            <div class="checkout__contract-button" data-trigger="preInformationConfirmed">
                                                 <span class="icon-outer">
                                                     <svg class="icon">
                                                         <use xlink:href="assets/img/icons.svg#icon-arrow"></use>
@@ -343,9 +341,9 @@
                                                 </span>
                                             </div>
                                         </div>
-                                        <div class="checkout__contract-item js-modal-trigger" data-trigger="mesafeliSatisSozlesmesi">
+                                        <div class="checkout__contract-item js-modal-trigger" data-trigger="distantSalesAgreementConfirmed">
                                             <div class="checkout__contract-title">MESAFELİ SATIŞ SÖZLEŞMESİ</div>
-                                            <div class="checkout__contract-button" data-trigger="mesafeliSatisSozlesmesi">
+                                            <div class="checkout__contract-button" data-trigger="distantSalesAgreementConfirmed">
                                                 <span class="icon-outer">
                                                     <svg class="icon">
                                                         <use xlink:href="assets/img/icons.svg#icon-arrow"></use>
@@ -448,21 +446,21 @@
                 </form>
                 <div class="checkout__side-checkboxes">
                     <label class="main-checkbox reverse">
-                        <a href="#0" class="js-modal-trigger" data-trigger="onBilgilendirmeFormu">Ön Bilgilendirme</a> formunu
+                        <a href="#0" class="js-modal-trigger" data-trigger="preInformationConfirmed">Ön Bilgilendirme</a> formunu
                         okudum ve kabul ediyorum.
-                        <input type="checkbox" id="onBilgilendirme" name="onBilgilendirme" form="form-buy" required>
+                        <input type="checkbox" id="IsPreInformationConfirmed" value="true" name="IsPreInformationConfirmed" form="form-buy">
                         <span class="main-checkbox__checkmark"></span>
                     </label>
                     <label class="main-checkbox reverse">
-                        <a href="#0" class="js-modal-trigger" data-trigger="mesafeliSatisSozlesmesi">
+                        <a href="#0" class="js-modal-trigger" data-trigger="distantSalesAgreementConfirmed">
                             Mesafeli satış
                             sözleşmesi‘ni
                         </a> okudum ve kabul ediyorum.
-                        <input type="checkbox" id="MesafeliSatisSozlesmesi" name="MesafeliSatisSozlesmesi" form="form-buy"
-                               required>
+                        <input type="checkbox" id="IsDistantSalesAgreementConfirmed" value="true" name="IsDistantSalesAgreementConfirmed" form="form-buy">
                         <span class="main-checkbox__checkmark"></span>
                     </label>
                 </div>
+                
                 <button type="submit" form="form-buy" class="button button-icon-right button-fw checkout__next-button">
                     <span class="button-txt">
                         Siparişi Tamamla
@@ -647,7 +645,7 @@
         </p>
     </div>
 </div>
-<div class="modal" id="onBilgilendirmeFormu">
+<div class="modal" id="preInformationConfirmed">
     <div class="modal__header">
         <div class="modal__title">ÖN BİLGİLENDİRME FORMU</div>
         <div class="modal__close js-close-modal">
@@ -803,7 +801,7 @@
         </p>
     </div>
 </div>
-<div class="modal" id="mesafeliSatisSozlesmesi">
+<div class="modal" id="distantSalesAgreementConfirmed">
     <div class="modal__header">
         <div class="modal__title">MESAFELİ SATIŞ SÖZLEŞMESİ</div>
         <div class="modal__close js-close-modal">
@@ -976,94 +974,73 @@
         var installmentInfoDiv = $(".checkout__purchase-wrp");
         var inputInstallment = $("#_installmentCount");
         var aId = $("#_aId");
-        var mss = $("#_is-distant-sales-agreement-confirmed");
-        var obf = $("#_is-pre-information-confirmed");
-        var onBilgilendirme = $("#onBilgilendirme");
         var inputEducationTotalOldPrice = $("#input-education-total-old-price");
         var inputDiscountAmount = $("#input-discount-amount");
         var txtTotal = $("#newPrice");
         var txtOldTotal = $("#oldPrice");
         var txtTotalDiscount = $("#discountAmount");
 
-
-       
-        jQuery.validator.addMethod("mssValidator", function (value, element) {
-            return value == "true";
-        });
-        jQuery.validator.addMethod("obfValidator", function (value, element) {
-            return value == "true";
-        });
        
         $(document).ready(function () {
             aId.val(localStorage.getItem("_cA"));
             getCartItems();
             checkPromotionCode();
-            $('#form-buy').validate({
-                ignore: [],
-                errorLabelContainer: $('#form-buy div.error'),
-                errorContainer: 'div.error-messages',
-                errorLabelContainer: $('ul', 'div.error-messages'),
-                wrapper: 'li',
-                rules: {
-                    "CardInfo.NumberOnCard": {
-                        required: true,
-                    },
-                    "CardInfo.NameOnCard": {
-                        required: true,
-                    },
-                    "CardInfo.MonthOnCard": {
-                        required: true,
-                    },
-                    "CardInfo.YearOnCard": {
-                        required: true,
-                    },
-                    "CardInfo.CVC": {
-                        required: true,
-                    },
-                    "purchase": {
-                        required: true,
-                    },
-                    "IsDistantSalesAgreementConfirmed": {
-                        mssValidator: true
-                    },
-                    "IsPreInformationConfirmed": {
-                        obfValidator: true
-                    }
-
-
-                },
-                messages: {
-                    "CardInfo.NumberOnCard": 'Kart numarasını girmediniz.',
-                    "CardInfo.NameOnCard": 'Adınız ve soyadınızı girmediniz.',
-                    "CardInfo.MonthOnCard": 'Kart ayını girmediniz.',
-                    "CardInfo.YearOnCard": 'Kart yılını girmediniz.',
-                    "CardInfo.CVC": 'CCV kodunu girmediniz.',
-                    "purchase": 'Lütfen bir taksit seçimi yapın.',
-                    "IsDistantSalesAgreementConfirmed": "Mesafeli Satış Sözleşmesini onaylayınız.",
-                    "IsPreInformationConfirmed":"Ön Bilgilendirme Formunu onaylayınız."
-
-                },
-                submitHandler: function (form) {
-                    form.submit();
-                },
-                highlight: function (element) {
-                    $(element)
-                        .parent()
-                        .addClass('outer-error');
-                },
-                unhighlight: function (element) {
-                    $(element)
-                        .parent()
-                        .removeClass('outer-error');
-                },
-            });
         });
-
-        $("#onBilgilendirme").change(function () {
-            obf.val(this.checked);
-        });
-        $("#MesafeliSatisSozlesmesi").change(function () {
-            mss.val(this.checked);
+        
+        $('#form-buy').validate({
+            errorLabelContainer: $('#form-buy div.error'),
+            errorContainer: 'div.error-messages',
+            errorLabelContainer: $('ul', 'div.error-messages'),
+            wrapper: 'li',
+            rules: {
+                "CardInfo.NumberOnCard": {
+                    required: true,
+                    minlength:19
+                },
+                "CardInfo.NameOnCard": {
+                    required: true,
+                },
+                "CardInfo.MonthOnCard": {
+                    required: true,
+                },
+                "CardInfo.YearOnCard": {
+                    required: true,
+                },
+                "CardInfo.CVC": {
+                    required: true,
+                },
+                "IsDistantSalesAgreementConfirmed": {
+                    required:true,
+                },
+                "IsPreInformationConfirmed": {
+                    required: true,
+                }
+            },
+            messages: {
+                "CardInfo.NumberOnCard": { required: 'Kart numarasını girmediniz.', minlength:'Kart numarası 16 karakterli olmalıdır.'},
+                "CardInfo.NameOnCard": 'Adınız ve soyadınızı girmediniz.',
+                "CardInfo.MonthOnCard": 'Kart ayını girmediniz.',
+                "CardInfo.YearOnCard": 'Kart yılını girmediniz.',
+                "CardInfo.CVC": 'CCV kodunu girmediniz.',
+                "IsDistantSalesAgreementConfirmed": "Mesafeli Satış Sözleşmesini onaylayınız.",
+                "IsPreInformationConfirmed": "Ön Bilgilendirme Formunu onaylayınız."
+            },
+            submitHandler: function (form) {
+                form.submit();
+            },
+            invalidHandler: function (form, validator) {
+                $('html, body').animate({ scrollTop: '150px' }, 700);
+            },
+            highlight: function (element) {
+                $(element)
+                    .parent()
+                    .addClass('outer-error');
+            },
+            unhighlight: function (element) {
+                $(element)
+                    .parent()
+                    .removeClass('outer-error');
+            },
         });
 
         $('.js-cupon-btn').click(function () {
