@@ -140,7 +140,6 @@ function createGrid() {
                 caption: "Yönet",
                 cellTemplate: function (container, options) {
                     var current = options.data;
-                    console.log(current);
                     $(`<a title="Önizle" class="btn btn-outline-primary btn-sm" href="/admin/blog/onizle?postId=${current.id}"><i class="fa fa-eye"></i></a>`)
                         .appendTo(container);
                     $(`<a title="Düzenle" class="btn btn-outline-warning btn-sm" href="/admin/blog/yazi-guncelle?postId=${current.id}"><i class="fa fa-edit"></i></a>`)
