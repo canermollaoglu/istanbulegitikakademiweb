@@ -1644,11 +1644,14 @@ if ($('.login__form').length > 0) {
         if ($(this).val() == 'true') {
             $('.login__is-true').addClass('active');
             $('.formStep2').css('height', '485px');
+            $('.js-register-error').css('top', loginStep2TrueHeight);
             $('.login__is-logined').css('top', '505px');
-            $('.js-button-step-finish').css('top', loginStep2TrueHeight);
+            $('.js-button-step-finish').css('top', loginStep2TrueHeight + 50);
+            $('.login__is-logined').css('top', '600px');
         } else if ($(this).val() == 'false') {
             $('.login__is-true').removeClass('active');
             $('.login__content').css('height', '280px');
+            $('.js-register-error').css('top', '0');
             $('.js-button-step-finish').css('top', '0');
             $('.login__is-logined').css('top', '225px');
         }
