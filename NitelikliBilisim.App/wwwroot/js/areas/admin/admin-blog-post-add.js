@@ -2,7 +2,7 @@
 var selectTags = $("#select-tags");
 var selectCategory = $("#select-categories");
 var btnSave = $("#btn-save");
-
+var fileManager1 = null;
 
 /* assignments */
 $(document).ready(document_onLoad);
@@ -40,39 +40,6 @@ function document_onLoad() {
         },
 
     });
-    /*Summernote Editor*/
-
-    $('#summernote').summernote({
-        lang: 'tr-TR',
-        placeholder: 'İçerik giriniz...',
-        tabsize: 2,
-        height: 450,
-        toolbar: [
-            ['style', ['style']],
-            ['font', ['bold', 'underline', 'clear']],
-            ['fontname', ['fontname']],
-            ['color', ['color']],
-            ['para', ['ul', 'ol', 'paragraph']],
-            ['table', ['table']],
-            ['insert', ['link', 'picture']],
-            ['view', ['fullscreen', 'codeview', 'help']]
-        ],
-        fontNames: ['Proxima Nova'],
-        callbacks: {
-            onPaste: function (e) {
-                var bufferText = ((e.originalEvent || e).clipboardData || window.clipboardData).getData('Text');
-                e.preventDefault();
-                document.execCommand('insertText', false, bufferText);
-            }
-        },
-        styleTags: [
-            { title: 'Baslik', tag: 'h2', className: 'blog-detail__title', value: 'h2' },
-            { title: 'Özet', tag: 'h1', className: 'blog-detail__blockquote', value: 'h1' },
-            { title: 'Paragraf', tag: 'p', className: 'blog-detail__txt', value: 'p' },
-            { title: 'Reklam', tag: 'div', className: '', value: 'div' }
-        ]
-    });
-
     fileManager1 = new UploadSupport.FileUploader();
     fileManager1.set({
         container: "file-upload-container-for-banner",
@@ -81,6 +48,38 @@ function document_onLoad() {
         style: { content: "Resim Yükle" }
     });
 }
+
+/*Summernote Editor*/
+$('#summernote').summernote({
+    lang: 'tr-TR',
+    placeholder: 'İçerik giriniz...',
+    tabsize: 2,
+    height: 450,
+    toolbar: [
+        ['style', ['style']],
+        ['font', ['bold', 'underline', 'clear']],
+        ['fontname', ['fontname']],
+        ['color', ['color']],
+        ['para', ['ul', 'ol', 'paragraph']],
+        ['table', ['table']],
+        ['insert', ['link', 'picture']],
+        ['view', ['fullscreen', 'codeview', 'help']]
+    ],
+    fontNames: ['Proxima Nova'],
+    callbacks: {
+        onPaste: function (e) {
+            var bufferText = ((e.originalEvent || e).clipboardData || window.clipboardData).getData('Text');
+            e.preventDefault();
+            document.execCommand('insertText', false, bufferText);
+        }
+    },
+    styleTags: [
+        { title: 'Baslik', tag: 'h2', className: 'blog-detail__title', value: 'h2' },
+        { title: 'Özet', tag: 'h1', className: 'blog-detail__blockquote', value: 'h1' },
+        { title: 'Paragraf', tag: 'p', className: 'blog-detail__txt', value: 'p' },
+        { title: 'Reklam', tag: 'div', className: '', value: 'div' }
+    ]
+});
 
 $(".banner-btn").on("click", function () {
     $('#summernote').summernote('editor.insertText', '[##' + $(this).data("code") + '##]');
