@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MUsefulMethods;
@@ -104,6 +103,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [Route("/admin/blog/yazi-ekle")]
         public async Task<IActionResult> Add(BlogPostAddVM data)
         {
             if (!ModelState.IsValid)
