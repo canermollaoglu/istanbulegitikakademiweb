@@ -978,7 +978,7 @@
                 url: `/get-states/${cityId}`,
                 method: "get",
                 success: (res) => {
-                    if (res.success) {
+                    if (res.isSuccess) {
                         fillStates(res.data);
                     } else {
                         selectStates.html(`<option value="" disabled>İlçe Seçiniz</option>`);

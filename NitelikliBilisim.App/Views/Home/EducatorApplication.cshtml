@@ -183,7 +183,7 @@
         });
 
         var onAjaxSuccess = function (context) {
-            if (context.success) {
+            if (context.isSuccess) {
                 showModal('modalSuccessMessage');
             } else {
                 showModal('modalWrongMessage');

@@ -745,10 +745,10 @@ namespace NitelikliBilisim.App.Controllers
         public IActionResult GetStatesByCityId(int cityId)
         {
             List<State> states = _unitOfWork.State.GetStateByCityId(cityId);
-            return Json(new ResponseData
+            return Json(new ResponseModel
             {
-                Success = true,
-                Data = states
+                isSuccess = true,
+                data = states
             });
 
         }

@@ -43,7 +43,7 @@ function miniBasketReload() {
 
 var onNewsletterSubsciptionSuccess = function (context) {
     $(".side-subscribe__txt").html(context.message);
-    if (context.success) {
+    if (context.isSuccess) {
         showModal('modalSuccessNewsletterSubscribe');
     } else {
         showModal('modalWrongNewsletterSubscribe');
