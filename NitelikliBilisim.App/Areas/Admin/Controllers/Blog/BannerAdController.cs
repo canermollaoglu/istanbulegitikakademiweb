@@ -44,6 +44,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Blog
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("admin/blog/banner-ekle")]
         public async Task<IActionResult> Add(AddBannerAdVm data)
         {
 
@@ -114,6 +115,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Blog
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("admin/blog/banner-guncelle")]
         public async Task<IActionResult> Update(UpdateBannerAdPostVm data)
         {
             if (!ModelState.IsValid)
