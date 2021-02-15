@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Configuration;
 using Nest;
+using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.ESOptions.ESEntities;
@@ -78,10 +79,10 @@ namespace NitelikliBilisim.App.Filters
                 context.ExceptionHandled = true;
                 context.HttpContext.Response.StatusCode = 500;
                 context.Result = new JsonResult(
-                    new ResponseData
+                    new ResponseModel
                     {
-                        Success = false,
-                        Message = "Beklenmeyen bir hata oluştu! Biz bundan haberdarız ve çalışıyoruz."
+                        isSuccess = false,
+                        message = "Beklenmeyen bir hata oluştu! Biz bundan haberdarız ve çalışıyoruz."
                     });
             }
             

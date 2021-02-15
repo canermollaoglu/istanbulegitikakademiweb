@@ -7,6 +7,7 @@ using MUsefulMethods;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Managers;
+using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ComplexTypes;
@@ -238,12 +239,11 @@ namespace NitelikliBilisim.App.Controllers
                 education.Image= _storageService.BlobUrl + education.Image;
                 education.CardImage = _storageService.BlobUrl + education.CardImage;
             }
-            return Json(new ResponseData
+            return Json(new ResponseModel
             {
-                Success = true,
-                Data = model
+                isSuccess = true,
+                data = model
             });
-
         }
 
         [HttpPost]
