@@ -53,7 +53,7 @@ namespace NitelikliBilisim.App.Controllers
                 {
                     Subject ="Nitelikli Bilişim Eğitim İptali",
                     Body = $"{user.Name} {user.Surname} ({user.Email}) kullanıcısı tarafından {invoice.CreatedDate} tarihinde oluşutrulmuş fatura için iptal talebi oluşturulmuştur.",
-                    Contacts = emails.ToArray()
+                    Contacts = emails
                 });
 
                 return Json(new ResponseData
@@ -103,7 +103,7 @@ namespace NitelikliBilisim.App.Controllers
                 {
                     Subject = "Nitelikli Bilişim Eğitim İadesi",
                     Body = $"{user.Name} {user.Surname} ({user.Email}) kullanıcısı tarafından satın alınan {group.GroupName} grubundaki eğitim iade edilmiştir.",
-                    Contacts = emails.ToArray()
+                    Contacts = emails
                 });
 
                 return Json(new ResponseData

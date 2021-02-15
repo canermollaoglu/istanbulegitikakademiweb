@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Entities.user_details;
@@ -19,11 +20,13 @@ namespace NitelikliBilisim.Business.Repositories
     {
         private readonly NbDataContext _context;
         private readonly IEmailSender _emailSender;
+        private readonly IConfiguration _configuration;
 
-        public SaleRepository(NbDataContext context,IEmailSender emailSender)
+        public SaleRepository(NbDataContext context,IEmailSender emailSender,IConfiguration configuration)
         {
             _context = context;
             _emailSender = emailSender;
+            _configuration = configuration;
         }
         public ApplicationUser GetUser(string userId)
         {
@@ -248,14 +251,13 @@ namespace NitelikliBilisim.Business.Repositories
 
             return tickets;
         }
-        private bool Auto__AssignTickets(List<Guid> invoiceDetailsIds)
+        private void Auto__AssignTickets(List<Guid> invoiceDetailsIds)
         {
-            try
-            {
-
+                string[] adminEmails = GetAdminEmails();
                 var tickets = _context.Tickets.Include(x=>x.Education).Include(x => x.Owner).ThenInclude(x => x.User)
                     .Where(x => invoiceDetailsIds.Contains(x.InvoiceDetailsId))
                     .ToList();
+                var user = _context.Users.First(x => x.Id == tickets[0].OwnerId);
 
                 foreach (var ticket in tickets)
                 {
@@ -269,11 +271,10 @@ namespace NitelikliBilisim.Business.Repositories
                     {
                         Task.Run(()=> _emailSender.SendAsync(new EmailMessage
                         {
-                            Subject = "Grup Atamanız Yapılamamıştır | Nitelikli Bilişim",
-                            Body = $"{ticket.Education.Name} eğitimine yönelik grupların kontenjanları dolduğu için gruba atamanız yapılamamıştır.",
-                            Contacts = new string[]{ ticket.Owner.User.Email }
+                            Subject = $"{user.Name} {user.Surname} Grup Atamanız Yapılamamıştır | Nitelikli Bilişim",
+                            Body = $"{user.Name} {user.Surname} kişisinin satınalımı sonucu {ticket.Education.Name} eğitimine ait grupların kontenjanları dolduğu için gruba ataması yapılamamıştır.",
+                            Contacts = adminEmails
                         }));
-                        return false;
                     }
 
                     _context.Bridge_GroupStudents.Add(new Bridge_GroupStudent
@@ -291,38 +292,22 @@ namespace NitelikliBilisim.Business.Repositories
 
                     Task.Run(()=> _emailSender.SendAsync(new EmailMessage
                     {
-                        Subject = "Grup Atamanız Yapılmıştır | Nitelikli Bilişim",
-                        Body = $"{ticket.Education.Name} eğitimi için {firstGroup.StartDate.ToShortDateString()} tarihinde başlayacak olan {firstGroup.GroupName} grubuna atamanız yapılmıştır.",
-                        Contacts = new string[] { ticket.Owner.User.Email }
+                        Subject = $"{user.Name} {user.Surname} Grup Ataması Yapılmıştır | Nitelikli Bilişim",
+                        Body = $"{user.Name} {user.Surname} kişisinin {ticket.Education.Name} eğitimi için {firstGroup.StartDate.ToShortDateString()} tarihinde başlayacak olan {firstGroup.GroupName} grubuna ataması yapılmıştır.",
+                        Contacts = adminEmails
                     }));
-                    var adminEmails = GetAdminEmails();
                     if (groupStudentsCount>=firstGroup.Quota-3)
                     {
                         Task.Run(() => _emailSender.SendAsync(new EmailMessage
                         {
                             Subject = "Grup Kontenjan Bilgisi | Nitelikli Bilişim",
                             Body = $"{firstGroup.GroupName} Grup kontenjanının dolması için {firstGroup.Quota-groupStudentsCount} kayıt kalmıştır.",
-                            Contacts =  adminEmails.ToArray()
+                            Contacts =  adminEmails
                         }));
                     }
-
                 }
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
         }
-        public List<string> GetAdminEmails()
-        {
-            return _context.UserRoles
-                .Include(x => x.Role)
-                .Include(x => x.User)
-                .Where(x => x.Role.Name == "Admin")
-                .Select(x => x.User.Email)
-                .ToList();
-        }
+        
         private bool Auto__UnassignTickets(List<Guid> invoiceDetailsIds)
         {
             try
@@ -358,6 +343,10 @@ namespace NitelikliBilisim.Business.Repositories
                 return false;
             }
             return true;
+        }
+        public string[] GetAdminEmails()
+        {
+            return _configuration.GetSection("SiteGeneralOptions").GetSection("AdminEmails").Value.Split(";");
         }
     }
 }

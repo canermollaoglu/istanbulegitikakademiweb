@@ -337,7 +337,7 @@ namespace NitelikliBilisim.Business.Repositories
             var filteredEducations = rawData.ToList();
             foreach (var education in filteredEducations)
             {
-                education.Price = Context.EducationGroups.OrderByDescending(x => x.CreatedDate).FirstOrDefault(y => y.HostId == hostId && y.EducationId == education.Id).NewPrice.GetValueOrDefault().ToString(CultureInfo.CreateSpecificCulture("tr-TR"));
+                education.Price = Context.EducationGroups.Where(x => x.StartDate > DateTime.Now).OrderBy(x => x.CreatedDate).FirstOrDefault(y => y.HostId == hostId && y.EducationId == education.Id).NewPrice.GetValueOrDefault().ToString(CultureInfo.CreateSpecificCulture("tr-TR"));
             }
             model.Educations = filteredEducations;
             return model;
@@ -974,7 +974,7 @@ namespace NitelikliBilisim.Business.Repositories
                     CategoryName = x.CategoryName,
                     CategorySeoUrl = x.CategorySeoUrl,
                     Level = EnumHelpers.GetDescription(x.Education.Level),
-                    Price = Context.EducationGroups.OrderByDescending(x => x.CreatedDate).FirstOrDefault(y => y.HostId == hostId && y.EducationId == x.Education.Id).NewPrice.GetValueOrDefault().ToString(CultureInfo.CreateSpecificCulture("tr-TR")),
+                    Price = Context.EducationGroups.Where(x => x.StartDate > DateTime.Now).OrderBy(x => x.CreatedDate).FirstOrDefault(y => y.HostId == hostId && y.EducationId == x.Education.Id).NewPrice.GetValueOrDefault().ToString(CultureInfo.CreateSpecificCulture("tr-TR")),
                     HoursPerDayText = x.Education.HoursPerDay.ToString(),
                     DaysText = x.Education.Days.ToString(),
                     DaysNumeric = x.Education.Days,
@@ -1020,7 +1020,7 @@ namespace NitelikliBilisim.Business.Repositories
                                     CategoryName = category.Name,
                                     CategorySeoUrl = category.SeoUrl,
                                     Level = EnumHelpers.GetDescription(education.Level),
-                                    Price = Context.EducationGroups.OrderByDescending(x => x.CreatedDate).FirstOrDefault(y => y.HostId == hostId && y.EducationId == education.Id).NewPrice.GetValueOrDefault().ToString(currentCulture),
+                                    Price = Context.EducationGroups.Where(x=>x.StartDate>DateTime.Now).OrderBy(x => x.CreatedDate).FirstOrDefault(y => y.HostId == hostId && y.EducationId == education.Id).NewPrice.GetValueOrDefault().ToString(currentCulture),
                                     HoursPerDayText = education.HoursPerDay.ToString(),
                                     DaysText = education.Days.ToString(),
                                     DaysNumeric = education.Days,

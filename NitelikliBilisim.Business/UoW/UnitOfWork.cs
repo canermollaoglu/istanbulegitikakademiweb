@@ -131,7 +131,7 @@ namespace NitelikliBilisim.Business.UoW
         {
             get
             {
-                return _saleRepository ?? (_saleRepository = new SaleRepository(_context,_emailSender));
+                return _saleRepository ?? (_saleRepository = new SaleRepository(_context,_emailSender,_configuration));
             }
         }
         public TempSaleDataRepository TempSaleData
@@ -166,7 +166,7 @@ namespace NitelikliBilisim.Business.UoW
         {
             get
             {
-                return _emailRepository ?? (_emailRepository = new EmailRepository(_context));
+                return _emailRepository ?? (_emailRepository = new EmailRepository(_context,_configuration));
             }
         }
         public EducatorSalaryRepository Salary
