@@ -270,7 +270,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 await _emailSender.SendAsync(new Core.ComplexTypes.EmailMessage
                 {
                     Body = "Grup açılmıştır. Fiyat bilgisi girildikten sonra aktif edilecektir.",
-                    Contacts = emails.ToArray()
+                    Contacts = emails
                 });
 
                 return Json(new ResponseModel
