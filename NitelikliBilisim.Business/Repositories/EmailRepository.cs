@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using NitelikliBilisim.Data;
 using System;
 using System.Collections.Generic;
@@ -10,22 +11,19 @@ namespace NitelikliBilisim.Business.Repositories
     public class EmailRepository
     {
         private readonly NbDataContext _context;
-        public EmailRepository(NbDataContext context)
+        private readonly IConfiguration _configuration;
+        public EmailRepository(NbDataContext context,IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
         public string GetUserEmail(string userId)
         {
             return _context.Users.First(x => x.Id == userId).Email;
         }
-        public List<string> GetAdminEmails()
+        public string[] GetAdminEmails()
         {
-            return _context.UserRoles
-                .Include(x => x.Role)
-                .Include(x => x.User)
-                .Where(x => x.Role.Name == "Admin")
-                .Select(x => x.User.Email)
-                .ToList();
+            return _configuration.GetSection("SiteGeneralOptions").GetSection("AdminEmails").Value.Split(";");
         }
         public List<string> GetEmailsOfTeachersByGroup(Guid groupId)
         {

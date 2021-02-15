@@ -383,7 +383,7 @@ namespace NitelikliBilisim.App.Controllers
                     }
                     #endregion
                     #region Admin Email
-                    string[] adminEmails = _configuration.GetSection("SiteGeneralOptions").GetSection("AdminEmails").Value.Split(";");
+                    string[] adminEmails = _unitOfWork.EmailHelper.GetAdminEmails();
                     var body = string.Empty;
                     body += $"{user.Name} {user.Surname} tarafından {paymentResultModel.SuccessDetails.InvoiceDetails.Select(x=>x.EducationName).Aggregate((x, y) => x + "," + y)} eğitim/leri satın alınmıştır.<br> Toplam Ödeme Tutarı : {paymentResultModel.SuccessDetails.TotalNewPrice} TL";
                     await _emailSender.SendAsync(new EmailMessage
@@ -494,7 +494,7 @@ namespace NitelikliBilisim.App.Controllers
                     #endregion
 
                     #region Admin Email
-                    string[] adminEmails = _configuration.GetSection("SiteGeneralOptions").GetSection("AdminEmails").Value.Split(";");
+                    string[] adminEmails = _unitOfWork.EmailHelper.GetAdminEmails();
                     var body = string.Empty;
                     body += $"{user.Name} {user.Surname} tarafından {retVal.SuccessDetails.InvoiceDetails.Select(x=>x.EducationName).Aggregate((x,y)=>x+","+y)} eğitim/leri satın alınmıştır.<br> Toplam Ödeme Tutarı : {retVal.SuccessDetails.TotalNewPrice} TL";
                     await _emailSender.SendAsync(new EmailMessage
