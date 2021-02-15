@@ -130,3 +130,12 @@
 .blog-detail__txt{
     margin-bottom:20px;
 }
+
+.account-course-detail__item-txt {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    text-rendering: optimizeLegibility !important;
+    -webkit-font-smoothing: antialiased !important;
+}
