@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using NitelikliBilisim.Core.Entities;
+﻿using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Entities.helper;
 using NitelikliBilisim.Core.Entities.user_details;
 using NitelikliBilisim.Data;
@@ -17,90 +16,7 @@ namespace NitelikliBilisim.Business.Repositories
             _context = context;
         }
 
-        public int Insert(OffDay entity)
-        {
-            using (var transaction = _context.Database.BeginTransaction())
-            {
-                try
-                {
-                    int id = base.Insert(entity);
-                    var customers = _context.Customers
-                        .Include(x => x.StudentEducationInfos)
-                        .ThenInclude(x => x.EducationDays)
-                        .Where(x => x.StudentEducationInfos != null && x.StudentEducationInfos.Count > 0).ToList();
-
-                    ReCalculateEducationDays(customers);
-                    transaction.Commit();
-                    return id;
-
-
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    throw new Exception(ex.Message);
-                }
-
-            }
-        }
-
-        public void Delete(int id)
-        {
-            using (var transaction = _context.Database.BeginTransaction())
-            {
-                try
-                {
-                    OffDay relatedOffDay = _context.OffDays.First(x => x.Id == id);
-                    int entityId = base.Delete(id);
-                    var customers = _context.Customers
-                        .Include(x => x.StudentEducationInfos)
-                        .ThenInclude(x => x.EducationDays)
-                        .Where(x => x.StudentEducationInfos != null && x.StudentEducationInfos.Count > 0).ToList();
-
-                    ReCalculateEducationDays(customers);
-                    transaction.Commit();
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    throw new Exception(ex.Message);
-                }
-
-            }
-        }
-
-        public int Update(OffDay entity)
-        {
-            using (var transaction = _context.Database.BeginTransaction())
-            {
-                try
-                {
-                    int id = base.Update(entity);
-                    var customers = _context.Customers
-                        .Include(x => x.StudentEducationInfos)
-                        .ThenInclude(x => x.EducationDays)
-                        .Where(x => x.StudentEducationInfos != null && x.StudentEducationInfos.Count > 0).ToList();
-
-                    ReCalculateEducationDays(customers);
-                    transaction.Commit();
-                    return id;
-
-
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    throw new Exception(ex.Message);
-                }
-
-            }
-
-
-
-        }
-
-
-
+        
 
         #region Helper Methods
         /// <summary>
