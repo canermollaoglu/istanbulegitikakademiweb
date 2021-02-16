@@ -86,11 +86,6 @@ namespace NitelikliBilisim.App.Controllers
         }
 
 
-        //[Route("yakinda")]
-        //public IActionResult ComingSoon()
-        //{
-        //    return View();
-        //}
 
 
         [Route("gizlilik-sozlesmesi")]
@@ -104,7 +99,6 @@ namespace NitelikliBilisim.App.Controllers
         {
             return View();
         }
-
         //public IActionResult Privacy()
         //{
         //    string sessionId = _session.GetString("userSessionId");
@@ -113,7 +107,6 @@ namespace NitelikliBilisim.App.Controllers
         //    ViewData["TotalRecommendationPoints"] = _unitOfWork.Suggestions.GetEducationSuggestionRate(userId);
         //    return View();
         //}
-
         [Route("hakkimizda")]
         public IActionResult AboutUs()
         {
