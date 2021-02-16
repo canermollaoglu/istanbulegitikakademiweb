@@ -21,14 +21,7 @@
     <partial name="partials/_Alert" />
 }
 @{
-    var filePath = "";
-    try
-    {
-        filePath = StorageService.BlobUrl+Model.AvatarPath;
-    }
-    catch
-    {
-    }
+    var filePath =string.IsNullOrEmpty(Model.AvatarPath)? "../../img/no-avatar.png" : StorageService.BlobUrl +Model.AvatarPath;
 }
 <!--Genel Bilgileri-->
 <div class="row">

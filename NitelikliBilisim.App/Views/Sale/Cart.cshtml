@@ -308,8 +308,13 @@
                                                         </a>
                                                         <div class="checkout__product-right">
                                                             <div class="checkout__product-title">${item.educationName}</div>
+                                                            <div>                                                            
+                                                            <div class="checkout__product-old">
+                                                                 ${item.oldPriceText} <span>TL</span>
+                                                            </div>                                                            
                                                             <div class="checkout__product-new">
                                                                  ${item.priceText} <span>TL</span>
+                                                            </div>
                                                             </div>
                                                         </div>
                                                         <div class="checkout__product-crash js-modal-trigger" onclick="setDeleteButtonAttribute('${item.educationId}')" data-trigger="ModalDelete">

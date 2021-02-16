@@ -19,8 +19,6 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_parts
         public byte? Order { get; set; }
         [Required(ErrorMessage = "Başlık boş geçilemez")]
         public string Title { get; set; }
-        [Required(ErrorMessage = "Süre boş geçilemez"), Range(1, 255, ErrorMessage = "Süre 1 ile 255 arasında bir değer olmalıdır")]
-        public byte? Duration { get; set; }
     }
 
     public class GetEducationPartsVm
@@ -35,7 +33,6 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.education_parts
         public Guid EducationId { get; set; }
         public string Title { get; set; }
         public byte Order { get; set; }
-        public byte Duration { get; set; }
         public string BasePartTitle { get; set; }
     }
 }

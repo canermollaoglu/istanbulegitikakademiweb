@@ -139,3 +139,27 @@
     text-rendering: optimizeLegibility !important;
     -webkit-font-smoothing: antialiased !important;
 }
+
+.checkout__price-old2 {
+    color: rgba(90,95,129,0.7);
+    text-decoration: line-through;
+    font-weight: 600;
+    font-size: 17px;
+    margin-right: 15px;
+    white-space: nowrap;
+    display: block
+}
+
+@media (max-width: 1024px) {
+    .checkout__price-old2 {
+        font-size: 15px;
+        margin-right: 5px;
+        white-space: nowrap
+    }
+}
+
+@media (max-width: 768px) {
+    .checkout__price-old2 {
+        margin-right: 0
+    }
+}
