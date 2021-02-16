@@ -24,7 +24,6 @@ function btnAdd_onClick() {
         EducationId: _educationId,
         Order: $("#input-order").val(),
         Title: $("#input-title").val(),
-        Duration: $("#input-duration").val(),
         BasePartId: selectBaseParts.options[selectBaseParts.selectedIndex].value
     };
     var tokenVerifier = new SecuritySupport.TokenVerifier();
@@ -111,8 +110,7 @@ function createTable(data) {
             content +=
                 `<tr>` +
                 `<td>${element.order}</td>` +
-                `<td>[<i>${element.basePartTitle}</i>] ${element.title}</td>` +
-                `<td>${element.duration} dk.</td>` +
+                `<td>[<i>${element.basePartTitle}</i>] ${element.title}</td>`+
                 `<td>` +
                 `<div class="btn-group">` +
                 `<a href="/admin/egitim-parca-guncelle/${element.id}" class="btn btn-warning"><i class="fa fa-edit"></i></a>` +

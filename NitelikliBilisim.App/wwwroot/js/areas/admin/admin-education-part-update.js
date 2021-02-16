@@ -28,7 +28,6 @@ function btnSave_onClick() {
         EducationId: _educationId,
         Order: $("#input-order").val(),
         Title: $("#input-title").val(),
-        Duration: $("#input-duration").val(),
         BasePartId: selectBaseParts.options[selectBaseParts.selectedIndex].value,
 
     };

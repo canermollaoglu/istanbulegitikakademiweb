@@ -97,7 +97,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 Title = data.Title,
                 EducationId = data.EducationId,
                 Order = data.Order.GetValueOrDefault(0),
-                Duration = data.Duration.GetValueOrDefault(0),
                 BasePartId = data.BasePartId
             });
 
@@ -159,7 +158,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 Order = part.Order,
                 Title = part.Title,
                 EducationId = part.EducationId,
-                Duration = part.Duration,
                 BasePartId = part.BasePartId,
                 BaseParts = baseParts
             };
@@ -182,7 +180,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             part.BasePartId = data.BasePartId;
             part.Order = data.Order.Value;
             part.Title = data.Title;
-            part.Duration = data.Duration.Value;
             _unitOfWork.EducationPart.Update(part);
             return Json(new ResponseModel
             {

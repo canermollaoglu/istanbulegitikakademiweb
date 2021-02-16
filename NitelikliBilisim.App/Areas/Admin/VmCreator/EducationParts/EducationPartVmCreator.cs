@@ -44,7 +44,6 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.EducationParts
                     EducationId = item.EducationId,
                     Title = item.Title,
                     Order = item.Order,
-                    Duration = item.Duration,
                     BasePartId = item.BasePartId,
                     BasePartTitle = item.BasePartId != null ? parts.First(x => x.Id == item.BasePartId).Title : "Üst Başlık"
                 });
