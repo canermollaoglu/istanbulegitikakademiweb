@@ -46,7 +46,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         }
 
         [HttpPost, Route("admin/egitim-ekle")]
-        public async Task<IActionResult> Add(AddPostVm data)
+        public IActionResult Add(AddPostVm data)
         {
             if (!ModelState.IsValid)
             {
@@ -57,24 +57,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     errors = errors
                 });
             }
-
-            var detailImageStream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.BannerFile.Base64Content));
-            var detailImageName = $"{StringHelpers.FormatForTag(data.Name)}-detail";
-            var detailPath = await _storage.UploadFile(detailImageStream, $"{detailImageName}.{data.BannerFile.Extension.ToLower()}", "media-items");
-            var detailImage = new EducationMedia
-            {
-                FileUrl = detailPath,
-                MediaType = EducationMediaType.Detail
-            };
-
-            var cardImageStream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.PreviewFile.Base64Content));
-            var cardImageFileName = $"{StringHelpers.FormatForTag(data.Name)}-card";
-            var cardImagePath = await _storage.UploadFile(cardImageStream, $"{cardImageFileName}.{data.PreviewFile.Extension.ToLower()}", "media-items");
-            var cardImage = new EducationMedia
-            {
-                FileUrl = cardImagePath,
-                MediaType = EducationMediaType.Card
-            };
 
             var education = new Education
             {
@@ -89,7 +71,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 CategoryId = data.CategoryId
             };
 
-            _unitOfWork.Education.Insert(education, data.Tags, new List<EducationMedia> { detailImage, cardImage });
+            _unitOfWork.Education.Insert(education, data.Tags);
 
             _unitOfWork.Education.CheckEducationState(education.Id);
 

@@ -2,12 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Configuration;
 using Nest;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
-using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.ESOptions.ESEntities;
 using NitelikliBilisim.Notificator.Services;
 using System;
@@ -30,10 +28,8 @@ namespace NitelikliBilisim.App.Filters
         {
             var descriptor = context.ActionDescriptor as ControllerActionDescriptor;
             string mailBody = string.Empty;
-            var server = string.Empty;
-#if  DEBUG
-            server = "Test Ortamı";
-#endif
+            string envName = _configuration.GetSection("SiteGeneralOptions:EnvironmentName").Value;
+
             var eInfo = new ExceptionInfo
             {
                 ControllerName = descriptor.ControllerName,
@@ -56,7 +52,7 @@ namespace NitelikliBilisim.App.Filters
             _emailSender.SendAsync(new Core.ComplexTypes.EmailMessage
             {
                 Body = mailBody,
-                Subject = $"Nitelikli Bilişim {server} Hata {DateTime.Now:F}",
+                Subject = $"Nitelikli Bilişim {envName} Hata {DateTime.Now:F}",
                 Contacts = adminEmails.Split(";")
             });
             /*ES INSERT*/

@@ -79,8 +79,8 @@ namespace NitelikliBilisim.App
 
             CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
             CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
-
-            if (env.IsDevelopment())
+            
+            if (env.IsDevelopment() || env.IsStaging())
             {
                  app.UseDeveloperExceptionPage();
             }

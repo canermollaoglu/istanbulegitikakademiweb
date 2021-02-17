@@ -109,6 +109,7 @@ function btnConfirmationModalTrigger_onClick() {
     confirmModalBuilder.display();
 }
 function confirm_onClick() {
+    event.preventDefault();
     var url = this.getAttribute("data-url");
     var btn = $(this);
     btn.off("click");
