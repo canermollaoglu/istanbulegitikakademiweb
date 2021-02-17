@@ -85,7 +85,7 @@ namespace NitelikliBilisim.Business.Repositories
         public List<EducationSearchTag> GetEducationSearchTags()
         {
             List<EducationSearchTag> searchTags = new();
-            var educations = Context.Educations.Where(x=>x.IsActive).Select(x => new { x.Id, x.Name }).ToList();
+            var educations = Context.Educations.Where(x => x.IsActive).Select(x => new { x.Id, x.Name }).ToList();
             var bridge = (from b in Context.Bridge_EducationTags
                           join t in Context.EducationTags on b.Id equals t.Id
                           select new
@@ -234,7 +234,7 @@ namespace NitelikliBilisim.Business.Repositories
         {
             Random r = new Random();
             var educationcount = Context.Educations.Where(x => x.IsActive && x.IsFeaturedEducation).Count();
-            var education = Context.Educations.Include(x=>x.Category).Where(x => x.IsActive && x.IsFeaturedEducation).ToList().ElementAt(r.Next(0, educationcount));
+            var education = Context.Educations.Include(x => x.Category).Where(x => x.IsActive && x.IsFeaturedEducation).ToList().ElementAt(r.Next(0, educationcount));
             var media = Context.EducationMedias.Where(x => x.EducationId == education.Id && x.MediaType == EducationMediaType.List).First();
             return new FeaturedEducationVm
             {
@@ -266,7 +266,7 @@ namespace NitelikliBilisim.Business.Repositories
         public CoursesPagePagedListVm GetCoursesPageEducations(Guid? categoryId, int? hostCity, int page, OrderCriteria order, string searchKey)
         {
             var model = new CoursesPagePagedListVm();
-            var educations = Context.Educations.Include(x => x.Category).Where(x=>x.IsActive);
+            var educations = Context.Educations.Include(x => x.Category).Where(x => x.IsActive);
             var hostId = Guid.Parse(_configuration.GetSection("SiteGeneralOptions").GetSection("PriceLocationId").Value);
             var rawData = (from education in educations
                            join eImage in Context.EducationMedias on education.Id equals eImage.EducationId
@@ -300,7 +300,7 @@ namespace NitelikliBilisim.Business.Repositories
             }
             if (!string.IsNullOrEmpty(searchKey))
             {
-                var ids = rawData.Where(x => x.Name == searchKey || x.Name.Contains(searchKey)).Select(x=>x.Id).ToList();
+                var ids = rawData.Where(x => x.Name == searchKey || x.Name.Contains(searchKey)).Select(x => x.Id).ToList();
                 searchKey = searchKey.FormatForTag();
                 var tags = Context.Bridge_EducationTags
                                     .Join(Context.EducationTags, l => l.Id, r => r.Id, (x, y) => new
@@ -343,7 +343,7 @@ namespace NitelikliBilisim.Business.Repositories
             return model;
         }
 
-        public Guid? Insert(Education entity, string[] tags, List<EducationMedia> medias, bool isSaveLater = false)
+        public Guid? Insert(Education entity, string[] tags, bool isSaveLater = false)
         {
             if (tags == null || tags.Length == 0)
                 return null;
@@ -357,11 +357,6 @@ namespace NitelikliBilisim.Business.Repositories
                     entity.IsActive = false;
                     var educationId = base.Insert(entity);
 
-                    foreach (var item in medias)
-                        item.EducationId = educationId;
-
-                    Context.EducationMedias.AddRange(medias);
-                    //_context.SaveChanges();
                     var dbTags = Context.EducationTags.ToList();
                     var bridge = new List<Bridge_EducationTag>();
                     foreach (var tagName in tags)
@@ -439,10 +434,7 @@ namespace NitelikliBilisim.Business.Repositories
 
         public bool CheckEducationState(Guid educationId)
         {
-            var hasBanner = Context.EducationMedias.Count(x => x.EducationId == educationId && x.MediaType == EducationMediaType.Card) > 0;
-            var hasPreview = Context.EducationMedias.Count(x => x.EducationId == educationId &&
-                (x.MediaType == EducationMediaType.List ||
-                x.MediaType == EducationMediaType.Detail)) > 0;
+            var hasBanner = Context.EducationMedias.Count(x => x.EducationId == educationId)>=4;
 
             var partCount = Context.EducationParts.Count(x => x.EducationId == educationId);
 
@@ -452,7 +444,7 @@ namespace NitelikliBilisim.Business.Repositories
 
             var education = Context.Educations.First(x => x.Id == educationId);
 
-            education.IsActive = hasBanner && hasPreview && partCount > 0 && gainCount > 0 && categoryCount > 0;
+            education.IsActive =  partCount > 0 && gainCount > 0 && categoryCount > 0;
 
             Context.SaveChanges();
 
@@ -629,7 +621,7 @@ namespace NitelikliBilisim.Business.Repositories
 
         public IQueryable<Education> GetAllEducationsWithCategory()
         {
-            return Context.Educations.Include(x => x.Category);
+            return Context.Educations.Include(x => x.Category).ThenInclude(x=>x.BaseCategory);
         }
 
         public List<EducationVm> GetEducationsByCategory(string category, int page = 0, OrderCriteria order = OrderCriteria.Latest)
@@ -764,7 +756,7 @@ namespace NitelikliBilisim.Business.Repositories
                     FileUrl = x.FileUrl,
                     MediaType = x.MediaType
                 }).ToList(),
-                Tags = string.Join(',',Context.Bridge_EducationTags.Include(x => x.Tag).Where(x => x.Id2 == education.Id).Select(x => x.Tag.Name).ToList())
+                Tags = string.Join(',', Context.Bridge_EducationTags.Include(x => x.Tag).Where(x => x.Id2 == education.Id).Select(x => x.Tag.Name).ToList())
             };
             if (comments.Count > 0)
             {
@@ -950,6 +942,7 @@ namespace NitelikliBilisim.Business.Repositories
 
         public List<EducationVm> GetBeginnerEducations(int count)
         {
+            var hostId = Guid.Parse(_configuration.GetSection("SiteGeneralOptions").GetSection("PriceLocationId").Value);
             var educationsList = Context.Educations.Where(x => x.IsActive && x.Level == EducationLevel.Beginner).OrderByDescending(x => x.CreatedDate).Take(count)
                  .Join(Context.EducationMedias.Where(x => x.MediaType == EducationMediaType.Card), l => l.Id, r => r.EducationId, (x, y) => new
                  {
@@ -963,29 +956,60 @@ namespace NitelikliBilisim.Business.Repositories
                      CategoryName = y.Name,
                      CategorySeoUrl = y.SeoUrl
                  }).ToList();
-            var hostId = Guid.Parse(_configuration.GetSection("SiteGeneralOptions").GetSection("PriceLocationId").Value);
-            var data = educationsList.Select(x => new EducationVm
-            {
-                Base = new EducationBaseVm
-                {
-                    Id = x.Education.Id,
-                    Name = x.Education.Name,
-                    Description = x.Education.Description,
-                    CategoryName = x.CategoryName,
-                    CategorySeoUrl = x.CategorySeoUrl,
-                    Level = EnumHelpers.GetDescription(x.Education.Level),
-                    Price = Context.EducationGroups.Where(x => x.StartDate > DateTime.Now).OrderBy(x => x.CreatedDate).FirstOrDefault(y => y.HostId == hostId && y.EducationId == x.Education.Id).NewPrice.GetValueOrDefault().ToString(CultureInfo.CreateSpecificCulture("tr-TR")),
-                    HoursPerDayText = x.Education.HoursPerDay.ToString(),
-                    DaysText = x.Education.Days.ToString(),
-                    DaysNumeric = x.Education.Days,
-                    HoursPerDayNumeric = x.Education.HoursPerDay,
-                    SeoUrl = x.Education.SeoUrl
-                },
-                Medias = new List<EducationMediaVm> { new EducationMediaVm { EducationId = x.Education.Id, FileUrl = x.EducationPreviewMedia.FileUrl } },
-            }
-     ).ToList();
 
-            return data;
+            var retVal = new List<EducationVm>();
+
+            foreach (var education in educationsList)
+            {
+                var priceGroup = Context.EducationGroups.Where(x => x.StartDate > DateTime.Now).OrderBy(x => x.CreatedDate).FirstOrDefault(y => y.HostId == hostId && y.EducationId == education.Education.Id);
+                if (priceGroup != null)
+                {
+                    retVal.Add(new EducationVm
+                    {
+                        Base = new EducationBaseVm
+                        {
+                            Id = education.Education.Id,
+                            Name = education.Education.Name,
+                            Description = education.Education.Description,
+                            CategoryName = education.CategoryName,
+                            CategorySeoUrl = education.CategorySeoUrl,
+                            Level = EnumHelpers.GetDescription(education.Education.Level),
+                            Price = priceGroup.NewPrice.GetValueOrDefault().ToString(CultureInfo.CreateSpecificCulture("tr-TR")),
+                            HoursPerDayText = education.Education.HoursPerDay.ToString(),
+                            DaysText = education.Education.Days.ToString(),
+                            DaysNumeric = education.Education.Days,
+                            HoursPerDayNumeric = education.Education.HoursPerDay,
+                            SeoUrl = education.Education.SeoUrl
+                        },
+                        Medias = new List<EducationMediaVm> { new EducationMediaVm { EducationId = education.Education.Id, FileUrl = education.EducationPreviewMedia.FileUrl } },
+                    });
+                }
+
+
+            }
+
+            //       var data = educationsList.Select(x => new EducationVm
+            //       {
+            //           Base = new EducationBaseVm
+            //           {
+            //               Id = x.Education.Id,
+            //               Name = x.Education.Name,
+            //               Description = x.Education.Description,
+            //               CategoryName = x.CategoryName,
+            //               CategorySeoUrl = x.CategorySeoUrl,
+            //               Level = EnumHelpers.GetDescription(x.Education.Level),
+            //               Price = Context.EducationGroups.Where(x => x.StartDate > DateTime.Now).OrderBy(x => x.CreatedDate).FirstOrDefault(y => y.HostId == hostId && y.EducationId == x.Education.Id).NewPrice.GetValueOrDefault().ToString(CultureInfo.CreateSpecificCulture("tr-TR")),
+            //               HoursPerDayText = x.Education.HoursPerDay.ToString(),
+            //               DaysText = x.Education.Days.ToString(),
+            //               DaysNumeric = x.Education.Days,
+            //               HoursPerDayNumeric = x.Education.HoursPerDay,
+            //               SeoUrl = x.Education.SeoUrl
+            //           },
+            //           Medias = new List<EducationMediaVm> { new EducationMediaVm { EducationId = x.Education.Id, FileUrl = x.EducationPreviewMedia.FileUrl } },
+            //       }
+            //).ToList();
+
+            return retVal;
         }
 
         public List<EducationVm> GetPopularEducations(int count)
@@ -1020,7 +1044,7 @@ namespace NitelikliBilisim.Business.Repositories
                                     CategoryName = category.Name,
                                     CategorySeoUrl = category.SeoUrl,
                                     Level = EnumHelpers.GetDescription(education.Level),
-                                    Price = Context.EducationGroups.Where(x=>x.StartDate>DateTime.Now).OrderBy(x => x.CreatedDate).FirstOrDefault(y => y.HostId == hostId && y.EducationId == education.Id).NewPrice.GetValueOrDefault().ToString(currentCulture),
+                                    Price = Context.EducationGroups.Where(x => x.StartDate > DateTime.Now).OrderBy(x => x.CreatedDate).FirstOrDefault(y => y.HostId == hostId && y.EducationId == education.Id).NewPrice.GetValueOrDefault().ToString(currentCulture),
                                     HoursPerDayText = education.HoursPerDay.ToString(),
                                     DaysText = education.Days.ToString(),
                                     DaysNumeric = education.Days,

@@ -78,8 +78,6 @@ namespace NitelikliBilisim.App.Controllers
 
         }
 
-
-        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("blog/{c?}")]
         public IActionResult List(string c,string sKey)
         {

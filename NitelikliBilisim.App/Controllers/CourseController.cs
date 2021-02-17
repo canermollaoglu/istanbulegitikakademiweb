@@ -126,13 +126,11 @@ namespace NitelikliBilisim.App.Controllers
         public IActionResult UserCommentPost(UserCommentPostVm model)
         {
             if (!ModelState.IsValid)
-                return Json(new ResponseData
+                return Json(new ResponseModel
                 {
-                    Success = false
+                    isSuccess = false
                 });
 
-            try
-            {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 _unitOfWork.EducationComment.Insert(new EducationComment
                 {
@@ -143,23 +141,13 @@ namespace NitelikliBilisim.App.Controllers
                     IsEducatorComment = false,
                     CommentatorId = userId
                 });
-                return Json(new ResponseData
+                return Json(new ResponseModel
                 {
-                    Success = true
+                    isSuccess = true
                 });
-            }
-            catch
-            {
-                return Json(new ResponseData
-                {
-                    Success = false
-                });
-            }
-
         }
 
         [Route("togglewishlistitem")]
-        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [HttpPost]
         public IActionResult ToggleWishListItem(Guid? educationId)
         {

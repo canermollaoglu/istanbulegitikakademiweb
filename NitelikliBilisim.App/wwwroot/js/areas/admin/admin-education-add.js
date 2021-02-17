@@ -3,8 +3,6 @@ var selectTags = $("#select-tags");
 var selectLevels = document.getElementById("select-levels");
 var selectCategories = document.getElementById("select-categories");
 var btnSave = $("#btn-save");
-var fileManager1 = null;
-var fileManager2 = null;
 var textRecommendedPrice = $("#text-recommended-price");
 
 
@@ -43,19 +41,6 @@ function document_onLoad() {
     });
     $(selectCategories).select2({ placeholder: "Eğitimin kategorilerini seçiniz..." });
     $(selectLevels).select2();
-    fileManager1 = new UploadSupport.FileUploader();
-    fileManager2 = new UploadSupport.FileUploader();
-    fileManager1.set({
-        container: "file-upload-container-for-banner",
-        preview: "img-after-preview-for-banner",
-        validExtensions: ["jpg", "jpeg"],
-        style: { content: "Resim Yükle" }
-    });
-    fileManager2.set({
-        container: "file-upload-container-for-preview",
-        preview: "img-after-preview-for-preview",
-        validExtensions: ["jpg", "jpeg", "mp4"]
-    });
 }
 $("#input-name").focusout(function () {
     var title = $("#input-name").val();
@@ -93,8 +78,7 @@ function btnSave_onClick() {
         return;
     }
 
-    var bannerFile = fileManager1.getFile();
-    var previewFile = fileManager2.getFile();
+   
     var data = {
         Name: $("#input-name").val(),
         SeoUrl: $("#input-seo-url").val(),
@@ -106,14 +90,7 @@ function btnSave_onClick() {
         EducationLevel: selectLevels.options[selectLevels.selectedIndex].value,
         CategoryId: selectCategories.options[selectCategories.selectedIndex].value,
         Tags: tags,
-        BannerFile: {
-            Base64Content: bannerFile.base64content,
-            Extension: bannerFile.extension
-        },
-        PreviewFile: {
-            Base64Content: previewFile.base64content,
-            Extension: previewFile.extension
-        }
+        
     };
     var tokenVerifier = new SecuritySupport.TokenVerifier();
     data = tokenVerifier.addToken("form-add-education", data);

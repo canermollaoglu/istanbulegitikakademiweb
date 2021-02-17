@@ -37,8 +37,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Models.Education
     }
     public class AddPostVm : EducationCrudVm
     {
-        public _PostedFile BannerFile { get; set; }
-        public _PostedFile PreviewFile { get; set; }
+       
     }
 
     public class _PostedFile

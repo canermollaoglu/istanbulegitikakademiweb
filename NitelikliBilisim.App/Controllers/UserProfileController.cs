@@ -7,6 +7,7 @@ using MUsefulMethods;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Managers;
+using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ComplexTypes;
@@ -58,7 +59,6 @@ namespace NitelikliBilisim.App.Controllers
             var model = _userUnitOfWork.User.GetPanelInfo(userId);
             return View(model);
         }
-        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("gruplarim/{ticketId?}")]
         public IActionResult MyGroup(Guid? ticketId)
         {
@@ -69,7 +69,6 @@ namespace NitelikliBilisim.App.Controllers
                 return Redirect($"/profil/{User.FindFirstValue(ClaimTypes.NameIdentifier)}");
             return View(model);
         }
-        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("faturalarim")]
         public IActionResult MyInvoices()
         {
@@ -80,7 +79,6 @@ namespace NitelikliBilisim.App.Controllers
             return View(model);
         }
 
-        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         public IActionResult Cancellation(Guid? ticketId)
         {
             if (!ticketId.HasValue)
@@ -238,12 +236,11 @@ namespace NitelikliBilisim.App.Controllers
                 education.Image= _storageService.BlobUrl + education.Image;
                 education.CardImage = _storageService.BlobUrl + education.CardImage;
             }
-            return Json(new ResponseData
+            return Json(new ResponseModel
             {
-                Success = true,
-                Data = model
+                isSuccess = true,
+                data = model
             });
-
         }
 
         [HttpPost]

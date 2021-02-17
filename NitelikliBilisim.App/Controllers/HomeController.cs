@@ -86,11 +86,6 @@ namespace NitelikliBilisim.App.Controllers
         }
 
 
-        //[Route("yakinda")]
-        //public IActionResult ComingSoon()
-        //{
-        //    return View();
-        //}
 
 
         [Route("gizlilik-sozlesmesi")]
@@ -104,7 +99,6 @@ namespace NitelikliBilisim.App.Controllers
         {
             return View();
         }
-
         //public IActionResult Privacy()
         //{
         //    string sessionId = _session.GetString("userSessionId");
@@ -113,7 +107,6 @@ namespace NitelikliBilisim.App.Controllers
         //    ViewData["TotalRecommendationPoints"] = _unitOfWork.Suggestions.GetEducationSuggestionRate(userId);
         //    return View();
         //}
-
         [Route("hakkimizda")]
         public IActionResult AboutUs()
         {
@@ -138,50 +131,38 @@ namespace NitelikliBilisim.App.Controllers
         public IActionResult Contact(ContactFormPostVm model)
         {
             if (!ModelState.IsValid)
-                return Json(new ResponseData
+                return Json(new ResponseModel
                 {
-                    Success = false
+                    isSuccess = false
                 });
-
-            try
+            _unitOfWork.ContactForm.Insert(new ContactForm
             {
-                _unitOfWork.ContactForm.Insert(new ContactForm
-                {
-                    Name = model.Name,
-                    Phone = model.Phone,
-                    Subject = EnumHelpers.GetDescription(model.ContactFormSubject),
-                    Email = model.Email,
-                    Content = model.Content,
-                    ContactFormType = ContactFormTypes.ContactForm
-                });
+                Name = model.Name,
+                Phone = model.Phone,
+                Subject = EnumHelpers.GetDescription(model.ContactFormSubject),
+                Email = model.Email,
+                Content = model.Content,
+                ContactFormType = ContactFormTypes.ContactForm
+            });
 
-                string htmlBody = "<b>Konu :</b>" + EnumHelpers.GetDescription(model.ContactFormSubject) + "<br/>";
-                htmlBody += "<b>Ad Soyad :</b>" + model.Name + "<br/>";
-                htmlBody += "<b>Telefon :</b>" + model.Phone + "<br/>";
-                htmlBody += "<b>E-Posta :</b>" + model.Email + "<br/>";
-                htmlBody += "<b>Mesaj :</b>" + model.Content + "<br/>";
-                string[] adminEmails = _configuration.GetSection("SiteGeneralOptions").GetSection("AdminEmails").Value.Split(";");
+            string htmlBody = "<b>Konu :</b>" + EnumHelpers.GetDescription(model.ContactFormSubject) + "<br/>";
+            htmlBody += "<b>Ad Soyad :</b>" + model.Name + "<br/>";
+            htmlBody += "<b>Telefon :</b>" + model.Phone + "<br/>";
+            htmlBody += "<b>E-Posta :</b>" + model.Email + "<br/>";
+            htmlBody += "<b>Mesaj :</b>" + model.Content + "<br/>";
+            string[] adminEmails = _configuration.GetSection("SiteGeneralOptions").GetSection("AdminEmails").Value.Split(";");
 
-                _emailSender.SendAsync(new EmailMessage
-                {
-                    Body = htmlBody,
-                    Subject = "Nitelikli Bilişim İletişim Formu",
-                    Contacts = adminEmails
-                });
-
-                return Json(new ResponseData
-                {
-                    Success = true
-                });
-            }
-            catch
+            _emailSender.SendAsync(new EmailMessage
             {
-                //Log ex
-                return Json(new ResponseData
-                {
-                    Success = false
-                });
-            }
+                Body = htmlBody,
+                Subject = "Nitelikli Bilişim İletişim Formu",
+                Contacts = adminEmails
+            });
+
+            return Json(new ResponseModel
+            {
+                isSuccess = true
+            });
 
         }
 
@@ -196,45 +177,34 @@ namespace NitelikliBilisim.App.Controllers
         public IActionResult FrequentlyAskedQuestionsForm(FAQContactFormPostVm model)
         {
             if (!ModelState.IsValid)
-                return Json(new ResponseData
+                return Json(new ResponseModel
                 {
-                    Success = false
+                    isSuccess = false
                 });
 
-            try
+            _unitOfWork.ContactForm.Insert(new ContactForm
             {
-                _unitOfWork.ContactForm.Insert(new ContactForm
-                {
-                    Name = model.Name,
-                    Email = model.Email,
-                    Content = model.Content,
-                    ContactFormType = ContactFormTypes.SSS
-                });
-                string htmlBody = "<b>Ad Soyad :</b>" + model.Name + "<br/>";
-                htmlBody += "<b>E-Posta :</b>" + model.Email + "<br/>";
-                htmlBody += "<b>Mesaj :</b>" + model.Content + "<br/>";
-                string[] adminEmails = _configuration.GetSection("SiteGeneralOptions").GetSection("AdminEmails").Value.Split(";");
+                Name = model.Name,
+                Email = model.Email,
+                Content = model.Content,
+                ContactFormType = ContactFormTypes.SSS
+            });
+            string htmlBody = "<b>Ad Soyad :</b>" + model.Name + "<br/>";
+            htmlBody += "<b>E-Posta :</b>" + model.Email + "<br/>";
+            htmlBody += "<b>Mesaj :</b>" + model.Content + "<br/>";
+            string[] adminEmails = _configuration.GetSection("SiteGeneralOptions").GetSection("AdminEmails").Value.Split(";");
 
-                _emailSender.SendAsync(new EmailMessage
-                {
-                    Body = htmlBody,
-                    Subject = "Nitelikli Bilişim S.S.S. Sayfası İletişim Formu",
-                    Contacts = adminEmails
-                });
-
-                return Json(new ResponseData
-                {
-                    Success = true
-                });
-            }
-            catch
+            _emailSender.SendAsync(new EmailMessage
             {
-                //Log ex
-                return Json(new ResponseData
-                {
-                    Success = false
-                });
-            }
+                Body = htmlBody,
+                Subject = "Nitelikli Bilişim S.S.S. Sayfası İletişim Formu",
+                Contacts = adminEmails
+            });
+
+            return Json(new ResponseModel
+            {
+                isSuccess = true
+            });
         }
 
 
@@ -283,38 +253,27 @@ namespace NitelikliBilisim.App.Controllers
         public IActionResult CorporateMembershipApplication(CorporateMembershipApplicationAddVm model)
         {
             if (!ModelState.IsValid)
-                return Json(new ResponseData
+                return Json(new ResponseModel
                 {
-                    Success = false
+                    isSuccess = false
                 });
 
-            try
-            {
-                _unitOfWork.CorporateMembershipApplication.Insert(new CorporateMembershipApplication
-                {
-                    CompanyName = model.CompanyName,
-                    Address = model.Address,
-                    CompanySector = model.CompanySector,
-                    NameSurname = model.NameSurname,
-                    Department = model.Department,
-                    Phone = model.Phone,
-                    RequestNote = model.RequestNote,
-                    NumberOfEmployees = model.NumberOfEmployees,
-                });
-                return Json(new ResponseData
-                {
-                    Success = true
-                });
-            }
-            catch
-            {
-                //Log ex
-                return Json(new ResponseData
-                {
-                    Success = false
-                });
-            }
 
+            _unitOfWork.CorporateMembershipApplication.Insert(new CorporateMembershipApplication
+            {
+                CompanyName = model.CompanyName,
+                Address = model.Address,
+                CompanySector = model.CompanySector,
+                NameSurname = model.NameSurname,
+                Department = model.Department,
+                Phone = model.Phone,
+                RequestNote = model.RequestNote,
+                NumberOfEmployees = model.NumberOfEmployees,
+            });
+            return Json(new ResponseModel
+            {
+                isSuccess = true
+            });
         }
 
         [HttpPost]
@@ -324,35 +283,24 @@ namespace NitelikliBilisim.App.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Json(new ResponseData
+                return Json(new ResponseModel
                 {
-                    Success = false
+                    isSuccess = false
                 });
             }
-            try
+            var mediaPath = await _storageService.UploadFile(model.Cv.OpenReadStream(), $"{model.NameSurname}.{Path.GetExtension(model.Cv.FileName.ToLower())}", "educator-cv");
+            _unitOfWork.EducatorApplication.Insert(new EducatorApplication
             {
-                var mediaPath = await _storageService.UploadFile(model.Cv.OpenReadStream(), $"{model.NameSurname}.{Path.GetExtension(model.Cv.FileName.ToLower())}", "educator-cv");
-                _unitOfWork.EducatorApplication.Insert(new EducatorApplication
-                {
-                    Email = model.Email,
-                    Note = model.Note,
-                    Phone = model.Phone,
-                    NameSurname = model.NameSurname,
-                    CvUrl = mediaPath
-                });
-                return Json(new ResponseData
-                {
-                    Success = true
-                });
-            }
-            catch
+                Email = model.Email,
+                Note = model.Note,
+                Phone = model.Phone,
+                NameSurname = model.NameSurname,
+                CvUrl = mediaPath
+            });
+            return Json(new ResponseModel
             {
-                //Log ex
-                return Json(new ResponseData
-                {
-                    Success = false
-                });
-            }
+                isSuccess = true
+            });
         }
 
 
@@ -378,7 +326,6 @@ namespace NitelikliBilisim.App.Controllers
             return View(model);
         }
 
-        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [HttpPost]
         public IActionResult DeleteWishListItem(Guid? educationId)
         {
@@ -423,42 +370,32 @@ namespace NitelikliBilisim.App.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Json(new ResponseData
+                return Json(new ResponseModel
                 {
-                    Success = false
+                    isSuccess = false
                 });
             }
-            try
-            {
-                var result = _unitOfWork.SubscriptionBlog.CheckSubscriber(email);
-                if (result)
-                    return Json(new ResponseData
-                    {
-                        Success = false,
-                        Message = "Bu e-posta adresi ile aktif blog aboneliğiniz bulunmaktadır."
-                    });
+
+            var result = _unitOfWork.SubscriptionBlog.CheckSubscriber(email);
+            if (result)
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    message = "Bu e-posta adresi ile aktif blog aboneliğiniz bulunmaktadır."
+                });
 
 
-                _unitOfWork.SubscriptionBlog.Insert(new BlogSubscriber
-                {
-                    Email = email,
-                    Name = name
-                });
-                return Json(new ResponseData
-                {
-                    Success = true,
-                    Message = "E-bülten'e kaydınız başarıyla sağlanmıştır. Güncel içerikleri tarafınıza ulaştıracağız."
-                });
-            }
-            catch
+            _unitOfWork.SubscriptionBlog.Insert(new BlogSubscriber
             {
-                //Log ex
-                return Json(new ResponseData
-                {
-                    Success = false,
-                    Message = "Beklenmeyen bir hata ile karşılaşıldı. Lütfen daha sonra tekrar deneyiniz."
-                });
-            }
+                Email = email,
+                Name = name
+            });
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                message = "E-bülten'e kaydınız başarıyla sağlanmıştır. Güncel içerikleri tarafınıza ulaştıracağız."
+            });
+
         }
 
         [HttpPost]
@@ -468,18 +405,18 @@ namespace NitelikliBilisim.App.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Json(new ResponseData
+                return Json(new ResponseModel
                 {
-                    Success = false
+                    isSuccess = false
                 });
             }
 
             var result = _unitOfWork.SubscriptionNewsletter.CheckSubscriber(email);
             if (result)
-                return Json(new ResponseData
+                return Json(new ResponseModel
                 {
-                    Success = false,
-                    Message = "Zaten blog aboneliğiniz bulunmaktadır."
+                    isSuccess = false,
+                    message = "Zaten e-bülten aboneliğiniz bulunmaktadır."
                 });
 
 
@@ -487,10 +424,10 @@ namespace NitelikliBilisim.App.Controllers
             {
                 Email = email
             });
-            return Json(new ResponseData
+            return Json(new ResponseModel
             {
-                Success = true,
-                Message = "Abonelik talebiniz başarı ile alındı."
+                isSuccess = true,
+                message = "Abonelik talebiniz başarı ile alındı."
             });
 
         }
@@ -505,10 +442,10 @@ namespace NitelikliBilisim.App.Controllers
                 return _unitOfWork.Suggestions.GetWizardFirstStepData();
             });
 
-            return Json(new ResponseData
+            return Json(new ResponseModel
             {
-                Success = true,
-                Data = list
+                isSuccess = true,
+                data = list
             });
 
         }
@@ -517,52 +454,29 @@ namespace NitelikliBilisim.App.Controllers
         [Route("wizard-second")]
         public IActionResult WizardGetSubCategories(List<Guid> relatedCategories)
         {
-            try
-            {
-                var list = _unitOfWork.Suggestions.GetWizardSecondStepData(relatedCategories);
+            var list = _unitOfWork.Suggestions.GetWizardSecondStepData(relatedCategories);
 
-                return Json(new ResponseData
-                {
-                    Success = true,
-                    Data = list
-                });
-            }
-            catch
+            return Json(new ResponseModel
             {
-                //Log ex
-                return Json(new ResponseData
-                {
-                    Success = false,
-                    Message = "Beklenmeyen bir hata ile karşılaşıldı. Lütfen daha sonra tekrar deneyiniz."
-                });
-            }
-
+                isSuccess = true,
+                data = list
+            });
         }
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [HttpPost]
         [Route("wizard-last")]
         public IActionResult WizardSuggestedEducations(List<WizardLastStepPostVm> lastdata)
         {
-            try
+            var list = _unitOfWork.Suggestions.GetWizardSuggestedEducations(lastdata);
+            foreach (var education in list)
             {
-                var list = _unitOfWork.Suggestions.GetWizardSuggestedEducations(lastdata);
-                foreach (var education in list)
-                {
-                    education.ImageUrl = _storageService.BlobUrl + education.ImageUrl;
-                }
-                return Json(new ResponseData
-                {
-                    Success = true,
-                    Data = list
-                });
+                education.ImageUrl = _storageService.BlobUrl + education.ImageUrl;
             }
-            catch
+            return Json(new ResponseModel
             {
-                return Json(new ResponseData
-                {
-                    Success = false,
-                    Message = "Beklenmeyen bir hata ile karşılaşıldı. Lütfen daha sonra tekrar deneyiniz."
-                });
-            }
+                isSuccess = true,
+                data = list
+            });
 
         }
 

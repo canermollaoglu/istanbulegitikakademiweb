@@ -1,6 +1,6 @@
 ﻿@model NitelikliBilisim.Core.ViewModels.areas.admin.education_parts.ManageVm
 @{
-    ViewData["Title"] = "Eğitim Parça Yönetimi";
+    ViewData["Title"] = "Ders Yönetimi";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
@@ -13,7 +13,7 @@
 }
 <div class="card mb-3">
     <div class="card-header">
-        <i class="fa fa-list"></i> <strong>@Model.EducationName</strong> Eğitiminin Parçaları
+        <i class="fa fa-list"></i> <strong>@Model.EducationName</strong> Eğitimi Dersleri
     </div>
     <div class="card-body">
         <div class="row">
@@ -41,19 +41,13 @@
                             <input type="text" value="" class="form-control" id="input-title" placeholder="Parça başlığı" />
                         </div>
                         <div class="col-md-3">
-                            <label>Süre (dk.)</label>
-                            <input type="text" value="" class="form-control" id="input-duration" placeholder="Süre (dakika)" />
-                        </div>
-                    </div>
-                    <div class="row" style="margin-top:1%;margin-bottom:1%">
-                        <div class="offset-md-11 col-md-1">
-                            <button id="btn-add" type="button" class="btn_1 form-control" style="cursor:pointer;"><i class="fa fa-plus"></i></button>
+                            <button id="btn-add" type="button" class="btn btn-outline-success btn-sm no-label"><i class="fa fa-plus"></i> Ekle</button>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
-        <div class="row">
+        <div class="row mt-4">
             <div class="col-md-12">
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -61,7 +55,6 @@
                             <tr>
                                 <th>Sıra</th>
                                 <th>Başlık</th>
-                                <th>Süre</th>
                                 <th>İşlem</th>
                             </tr>
                         </thead>
@@ -69,7 +62,6 @@
                             <tr>
                                 <th>Sıra</th>
                                 <th>Başlık</th>
-                                <th>Süre</th>
                                 <th>İşlem</th>
                             </tr>
                         </tfoot>

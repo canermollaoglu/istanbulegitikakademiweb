@@ -165,7 +165,7 @@
         function confirm_onClick() {
             var url = this.getAttribute("data-url");
             var btn = $(this);
-            btn.off("click");
+            btn.attr('disabled', 'disabled');
             $.ajax({
                 url: url,
                 method: "get",
@@ -176,15 +176,16 @@
                             success: true,
                             message: "Kayıt başarıyla silinmiştir"
                         });
-                        btn.on("click");
+                        btn.removeAttr('disabled');
                     } else {
                         resultAlert.display({
                             success: false,
                             errors: res.errors,
                             message: "Hataları düzeltiniz"
                         });
-                        btn.on("click");
+                        btn.removeAttr('disabled');
                     }
+
                 }
             });
         }
@@ -245,7 +246,7 @@
             divMultipleVal.show();
             divSingleVal.hide();
             $.ajax({
-                url: '/admin/education-categories-list-fill-select',
+                url: '/admin/education-sub-categories-list-fill-select',
                 type: "GET",
                 dataType: "JSON",
                 success: function (res) {

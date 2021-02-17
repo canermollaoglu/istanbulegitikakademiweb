@@ -114,12 +114,13 @@ function createGrid() {
             {
                 caption: "Ad",
                 dataField: "name",
+                width:100
 
             },
             {
                 caption: "Kod",
                 dataField: "promotionCode",
-                width: 100
+                width: 90
             },
             {
                 caption: "Başlangıç",
@@ -139,7 +140,7 @@ function createGrid() {
             {
                 caption: "Aktif Kullanım",
                 dataField: "countOfUses",
-                width: 120
+                width: 100
             },
             {
                 caption: "Min. Sepet ",
@@ -147,7 +148,7 @@ function createGrid() {
                 customizeText: function (minBasketAmount) {
                     return minBasketAmount.value + " ₺";
                 },
-                width: 110
+                width: 90
 
             },
             {
@@ -156,7 +157,7 @@ function createGrid() {
                 customizeText: function (discountAmount) {
                     return discountAmount.value + " ₺";
                 },
-                width: 120
+                width: 100
 
             },
 

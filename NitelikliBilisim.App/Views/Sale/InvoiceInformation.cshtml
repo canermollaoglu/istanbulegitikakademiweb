@@ -867,8 +867,13 @@
                                             </span>
                                         </div>
                                         <div class="checkout__basket-price">
-                                            <div class="checkout__price-new">
-                                                ${formatCurrency(item.priceText)}
+                                            <div>
+                                                <div class="checkout__price-old2">
+                                                     ${item.oldPriceText} <span>TL</span>
+                                                </div>  
+                                                <div class="checkout__price-new">
+                                                    ${item.priceText}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -978,7 +983,7 @@
                 url: `/get-states/${cityId}`,
                 method: "get",
                 success: (res) => {
-                    if (res.success) {
+                    if (res.isSuccess) {
                         fillStates(res.data);
                     } else {
                         selectStates.html(`<option value="" disabled>İlçe Seçiniz</option>`);

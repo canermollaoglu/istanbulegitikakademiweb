@@ -664,7 +664,7 @@ namespace NitelikliBilisim.Business.Repositories
                     PriceNumeric = group.NewPrice.GetValueOrDefault(),
                     PriceText = group.NewPrice.GetValueOrDefault().ToString(cultureInfo),
                     OldPriceNumeric = group.OldPrice.GetValueOrDefault(),
-                    OldPriceText = group.OldPrice.GetValueOrDefault().ToString()
+                    OldPriceText = group.OldPrice.GetValueOrDefault().ToString(cultureInfo)
                 });
             }
             return model;
