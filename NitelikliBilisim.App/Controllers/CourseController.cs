@@ -148,7 +148,6 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [Route("togglewishlistitem")]
-        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [HttpPost]
         public IActionResult ToggleWishListItem(Guid? educationId)
         {

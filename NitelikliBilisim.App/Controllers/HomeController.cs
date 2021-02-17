@@ -326,7 +326,6 @@ namespace NitelikliBilisim.App.Controllers
             return View(model);
         }
 
-        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [HttpPost]
         public IActionResult DeleteWishListItem(Guid? educationId)
         {
@@ -463,6 +462,7 @@ namespace NitelikliBilisim.App.Controllers
                 data = list
             });
         }
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [HttpPost]
         [Route("wizard-last")]
         public IActionResult WizardSuggestedEducations(List<WizardLastStepPostVm> lastdata)

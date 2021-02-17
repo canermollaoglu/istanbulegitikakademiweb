@@ -252,5 +252,32 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
         }
 
+        [Route("admin/education-sub-categories-list-fill-select")]
+        public IActionResult EducationSubCategoryListFillSelect()
+        {
+            try
+            {
+                List<SelectListItem> categoryList = _unitOfWork.EducationCategory.Get(x=>x.BaseCategoryId!=null).Select(e => new SelectListItem
+                {
+                    Text = e.Name,
+                    Value = e.Id.ToString()
+                }).ToList();
+
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    data = categoryList
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = false,
+                    errors = new List<string> { "Hata" + ex.Message }
+                }); ;
+            }
+
+        }
     }
 }

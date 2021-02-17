@@ -90,7 +90,6 @@ namespace NitelikliBilisim.App.Controllers
         {
             return View();
         }
-        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [HttpPost, IgnoreAntiforgeryToken, Route("get-cart-items")]
         public IActionResult GetCartItems(GetCartItemsData data)
         {
@@ -169,7 +168,7 @@ namespace NitelikliBilisim.App.Controllers
                 });
             }
         }
-
+        
         [HttpPost, IgnoreAntiforgeryToken, Route("get-promotion")]
         public IActionResult GetPromotion(GetPromotionCodeData data)
         {
@@ -201,6 +200,7 @@ namespace NitelikliBilisim.App.Controllers
                 });
             }
         }
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Authorize]
         [Route("odeme")]
         public IActionResult Payment()

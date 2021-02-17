@@ -59,7 +59,6 @@ namespace NitelikliBilisim.App.Controllers
             var model = _userUnitOfWork.User.GetPanelInfo(userId);
             return View(model);
         }
-        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("gruplarim/{ticketId?}")]
         public IActionResult MyGroup(Guid? ticketId)
         {
@@ -70,7 +69,6 @@ namespace NitelikliBilisim.App.Controllers
                 return Redirect($"/profil/{User.FindFirstValue(ClaimTypes.NameIdentifier)}");
             return View(model);
         }
-        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [Route("faturalarim")]
         public IActionResult MyInvoices()
         {
@@ -81,7 +79,6 @@ namespace NitelikliBilisim.App.Controllers
             return View(model);
         }
 
-        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         public IActionResult Cancellation(Guid? ticketId)
         {
             if (!ticketId.HasValue)
