@@ -5,12 +5,13 @@ namespace NitelikliBilisim.Core.ViewModels.Main.EducatorApplication
 {
     public class EducatorApplicationAddVm
     {
-        [Required]
+        [Required,MaxLength(100)]
         public string Email { get; set; }
+        [MaxLength(500)]
         public string Note { get; set; }
-        [Required]
+        [Required, MaxLength(15)]
         public string Phone { get; set; }
-        [Required]
+        [Required, MaxLength(100)]
         public string NameSurname { get; set; }
         [Required]
         public IFormFile Cv { get; set; }
