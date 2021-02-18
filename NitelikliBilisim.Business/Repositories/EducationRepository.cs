@@ -776,7 +776,6 @@ namespace NitelikliBilisim.Business.Repositories
                     EducationId = item.EducationId,
                     BasePartId = item.BasePartId,
                     Title = item.Title,
-                    Duration = parts.Where(x => x.BasePartId == item.Id).Sum(x => x.Duration),
                     Order = item.Order,
                     SubParts = parts.Where(y => y.BasePartId == item.Id).Select(z => new EducationPartVm
                     {
@@ -785,7 +784,6 @@ namespace NitelikliBilisim.Business.Repositories
                         BasePartId = z.BasePartId,
                         Title = z.Title,
                         Order = z.Order,
-                        Duration = z.Duration,
                         SubParts = null
                     }).ToList()
                 });
