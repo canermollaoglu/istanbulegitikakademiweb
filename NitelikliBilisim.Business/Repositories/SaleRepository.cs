@@ -136,8 +136,8 @@ namespace NitelikliBilisim.Business.Repositories
                 _context.OnlinePaymentDetailsInfos.AddRange(onlinePaymentDetailInfos);
 
                 _context.SaveChanges();
-                transaction.Commit();
                 Auto__AssignTickets(invoiceDetailsIds);
+                transaction.Commit();
             }
             catch (Exception ex)
             {
@@ -258,7 +258,8 @@ namespace NitelikliBilisim.Business.Repositories
                     .Where(x => invoiceDetailsIds.Contains(x.InvoiceDetailsId))
                     .ToList();
                 var user = _context.Users.First(x => x.Id == tickets[0].OwnerId);
-
+            try
+            {
                 foreach (var ticket in tickets)
                 {
                     var firstGroup = _context.EducationGroups
@@ -269,7 +270,7 @@ namespace NitelikliBilisim.Business.Repositories
 
                     if (firstGroup == null)
                     {
-                        Task.Run(()=> _emailSender.SendAsync(new EmailMessage
+                        Task.Run(() => _emailSender.SendAsync(new EmailMessage
                         {
                             Subject = $"{user.Name} {user.Surname} Grup Atamanız Yapılamamıştır | Nitelikli Bilişim",
                             Body = $"{user.Name} {user.Surname} kişisinin satınalımı sonucu {ticket.Education.Name} eğitimine ait grupların kontenjanları dolduğu için gruba ataması yapılamamıştır.",
@@ -290,22 +291,33 @@ namespace NitelikliBilisim.Business.Repositories
                         firstGroup.IsGroupOpenForAssignment = false;
                     _context.SaveChanges();
 
-                    Task.Run(()=> _emailSender.SendAsync(new EmailMessage
+                    Task.Run(() => _emailSender.SendAsync(new EmailMessage
                     {
                         Subject = $"{user.Name} {user.Surname} Grup Ataması Yapılmıştır | Nitelikli Bilişim",
                         Body = $"{user.Name} {user.Surname} kişisinin {ticket.Education.Name} eğitimi için {firstGroup.StartDate.ToShortDateString()} tarihinde başlayacak olan {firstGroup.GroupName} grubuna ataması yapılmıştır.",
                         Contacts = adminEmails
                     }));
-                    if (groupStudentsCount>=firstGroup.Quota-3)
+                    if (groupStudentsCount >= firstGroup.Quota - 3)
                     {
                         Task.Run(() => _emailSender.SendAsync(new EmailMessage
                         {
                             Subject = "Grup Kontenjan Bilgisi | Nitelikli Bilişim",
-                            Body = $"{firstGroup.GroupName} Grup kontenjanının dolması için {firstGroup.Quota-groupStudentsCount} kayıt kalmıştır.",
-                            Contacts =  adminEmails
+                            Body = $"{firstGroup.GroupName} Grup kontenjanının dolması için {firstGroup.Quota - groupStudentsCount} kayıt kalmıştır.",
+                            Contacts = adminEmails
                         }));
                     }
                 }
+            }
+            catch
+            {
+                Task.Run(() => _emailSender.SendAsync(new EmailMessage
+                {
+                    Subject = $"{user.Name} {user.Surname} Grup Ataması Yapılamamıştır!! | Nitelikli Bilişim",
+                    Body = $"{user.Name} {user.Surname} kişisinin satın aldığı eğitim/ler için grup ataması yapılamamıştır.",
+                    Contacts = adminEmails
+                }));
+            }
+                
         }
         
         private bool Auto__UnassignTickets(List<Guid> invoiceDetailsIds)
