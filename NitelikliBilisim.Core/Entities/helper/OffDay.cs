@@ -6,11 +6,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace NitelikliBilisim.Core.Entities.helper
 {
     [Table("OffDays")]
-    public class OffDay : IEntity<int>
+    public class OffDay : BaseEntity<int>
     {
-        [Key]
-        [Column(Order = 1)]
-        public int Id { get; set; }
         [Required]
         public string Name { get; set; }
         public int Year { get; set; }

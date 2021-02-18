@@ -14,7 +14,6 @@ namespace NitelikliBilisim.Core.Entities
         }
         [MaxLength(128)]
         public string Title { get; set; }
-        public byte Duration { get; set; }
         public byte Order { get; set; }
 
         [ForeignKey("Education")]

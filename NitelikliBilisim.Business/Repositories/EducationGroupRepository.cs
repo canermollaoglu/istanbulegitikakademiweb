@@ -282,10 +282,12 @@ namespace NitelikliBilisim.Business.Repositories
                         GroupId = entity.Id
                     });
                     _context.SaveChanges();
+                    var offDays = _context.OffDays.Where(x => x.Year == DateTime.Now.Year || x.Year == DateTime.Now.Year - 1 || x.Year == DateTime.Now.Year + 1).Select(x => x.Date).ToList();
+
                     var dates = CreateGroupLessonDays(
                     group: _context.EducationGroups.Include(x => x.Education).FirstOrDefault(x => x.Id == entity.Id),
                     daysInt: days,
-                    unwantedDays: new List<DateTime>());
+                    unwantedDays: offDays);
                     entity.StartDate = dates[0];
                     var groupLessonDays = new List<GroupLessonDay>();
                     foreach (var date in dates)
