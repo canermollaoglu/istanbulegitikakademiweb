@@ -223,38 +223,65 @@
             rules: {
                 CompanyName: {
                     required: true,
+                    maxlength: 150
                 },
                 NameSurname: {
-                    required: true
+                    required: true,
+                    maxlength:100
                 },
                 Phone: {
                     required: true,
+                    maxlength: 15
                 },
                 CompanySector: {
                     required: true,
+                    maxlength: 100
                 },
                 Department: {
                     required: true,
+                    maxlength: 100
                 },
                 NumberOfEmployees: {
                     required: true,
                 },
                 Address: {
-                    required: true,
+                    maxlength: 500
                 },
                 RequestNote: {
                     required: true,
+                    maxlength: 500
                 }
             },
             messages: {
-                CompanyName: 'Bu alan zorunludur.',
-                NameSurname: 'Bu alan zorunludur.',
-                Phone: 'Bu alan zorunludur.',
-                CompanySector: 'Bu alan zorunludur.',
-                Department: 'Bu alan zorunludur.',
+                CompanyName: {
+                    required: 'Bu alan zorunludur.',
+                    maxlength: 'Bu alan maksimum 150 karakter olabilir.'
+                },
+                NameSurname: {
+                    required: 'Bu alan zorunludur.',
+                    maxlength: 'Bu alan maksimum 100 karakter olabilir.'
+                },
+                Phone: {
+                    required: 'Bu alan zorunludur.',
+                    maxlength: 'Bu alan maksimum 15 karakter olabilir.'
+                },
+                CompanySector: {
+                    required: 'Bu alan zorunludur.',
+                    maxlength: 'Bu alan maksimum 100 karakter olabilir.'
+                },
+                Department: {
+                    required: 'Bu alan zorunludur.',
+                    maxlength: 'Bu alan maksimum 100 karakter olabilir.'
+                },
                 NumberOfEmployees: 'Bu alan zorunludur.',
-                Address: 'Bu alan zorunludur.',
-                RequestNote: 'Bu alan zorunludur.'
+                Address: {
+                    required: 'Bu alan zorunludur.',
+                    maxlength: 'Bu alan maksimum 500 karakter olabilir.'
+                },
+                RequestNote: {
+                    required: 'Bu alan zorunludur.',
+                    maxlength: 'Bu alan maksimum 500 karakter olabilir.'
+                },
             },
             highlight: function (element) {
                 $(element)

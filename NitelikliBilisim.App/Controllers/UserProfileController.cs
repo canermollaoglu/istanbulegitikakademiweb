@@ -470,7 +470,8 @@ namespace NitelikliBilisim.App.Controllers
             PdfQRBarcode barcode = new PdfQRBarcode();
 
             barcode.XDimension = 3;
-            var siteUrl = $"https://niteliklitest2.azurewebsites.net/sertifika-dogrula/{certificate.Id}";
+            var baseUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
+            var siteUrl = $"{baseUrl}/sertifika-dogrula/{certificate.Id}";
 
             barcode.Text = siteUrl;
             barcode.Size = new Syncfusion.Drawing.SizeF(100, 100);

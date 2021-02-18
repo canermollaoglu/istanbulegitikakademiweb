@@ -27,7 +27,7 @@
                         <a asp-controller="Home" asp-action="Index" class="breadcrumb__item">
                             Anasayfa
                         </a>
-                        <a href="#0" class="breadcrumb__item">
+                        <a asp-controller="Blog" asp-action="List" class="breadcrumb__item">
                             Blog
                         </a>
                     </div>
@@ -46,7 +46,7 @@
                                 </svg>
                             </span>
                         </a>
-                        <a target="_blank" href="http://twitter.com/intent/tweet?text=Nitelikli%20Bilisim%20@(Model.Title)%20Egitimi&url=@(Context.Request.Host)@(Context.Request.Path)">
+                        <a target="_blank" href="http://twitter.com/intent/tweet?text=@(Model.Title)%20-Nitelikli%20Bilisim&url=@(Context.Request.Host)@(Context.Request.Path)">
                             <span class="icon-outer">
                                 <svg class="icon">
                                     <use xlink:href="../../assets/img/icons.svg#icon-twitter"></use>

@@ -20,7 +20,9 @@ namespace NitelikliBilisim.Core.ViewModels.Main.CorporateMembershipApplication
         [Required, MaxLength(100)]
         public string Department { get; set; }
         public int NumberOfEmployees { get; set; }
+        [MaxLength(500)]
         public string Address { get; set; }
+        [Required, MaxLength(500)]
         public string RequestNote { get; set; }
     }
 }
