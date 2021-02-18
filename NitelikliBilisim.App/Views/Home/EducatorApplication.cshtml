@@ -212,25 +212,43 @@
             rules: {
                 NameSurname: {
                     required: true,
+                    maxlength:100
                 },
                 Phone: {
                     required: true,
+                    maxlength: 15
                 },
                 Email: {
                     required: true,
+                    email:true,
+                    maxlength: 100
                 },
                 Note: {
                     required: true,
+                    maxlength: 500
                 },
                 Cv: {
                     required: true,
                 }
             },
             messages: {
-                NameSurname: 'Bu alan zorunludur.',
-                Phone: 'Bu alan zorunludur.',
-                Email: 'Bu alan zorunludur.',
-                Note: 'Bu alan zorunludur.',
+                NameSurname: {
+                    required: 'Bu alan zorunludur.',
+                    maxlength: 'Bu alan maksimum 100 karakter olabilir.'
+                },
+                Phone: {
+                    required: 'Bu alan zorunludur.',
+                    maxlength: 'Bu alan maksimum 15 karakter olabilir.'
+                },
+                Email: {
+                    required: 'Bu alan zorunludur.',
+                    email: 'Lütfen geçerli bir e-posta adresi giriniz.',
+                    maxlength: 'Bu alan maksimum 100 karakter olabilir.'
+                },
+                Note: {
+                    required: 'Bu alan zorunludur.',
+                    maxlength: 'Bu alan maksimum 500 karakter olabilir.'
+                },
                 Cv: 'Bu alan zorunludur.'
             },
             highlight: function (element) {
