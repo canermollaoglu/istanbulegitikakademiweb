@@ -430,6 +430,7 @@
                 },
                 Password: {
                     required: true,
+                    minlength:6
                 },
                 ConfirmPassword: {
                     required: true,
@@ -442,7 +443,10 @@
             messages: {
                 Name: 'Bu alan zorunludur.',
                 Surname: 'Bu alan zorunludur.',
-                Password: 'Bu alan zorunludur.',
+                Password: {
+                    required: 'Bu alan zorunludur.',
+                    minlength: 'Şifreniz minimum 6 karaterden oluşmalıdır.'
+                },
                 ConfirmPassword: {
                     required: 'Bu alan zorunludur.',
                     equalTo: 'Şifreler uyuşmuyor.'

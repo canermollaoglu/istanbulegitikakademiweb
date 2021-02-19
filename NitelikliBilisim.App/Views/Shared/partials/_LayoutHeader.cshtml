@@ -17,32 +17,36 @@
                 @user.Email
             </div>
         </div>
-        <div class="user-dropdown__list">
-            <a asp-controller="UserProfile" asp-action="Profile" class="user-dropdown__item">
-                <span class="icon-outer button-icon">
-                    <svg class="icon">
-                        <use xlink:href="../../assets/img/icons.svg#icon-home"></use>
-                    </svg>
-                </span>
-                Panelim
-            </a>
-            <a asp-controller="UserProfile" asp-action="MyCourses" class="user-dropdown__item">
-                <span class="icon-outer button-icon">
-                    <svg class="icon">
-                        <use xlink:href="../../assets/img/icons.svg#icon-code-c"></use>
-                    </svg>
-                </span>
-                Kurslarım
-            </a>
-            <a asp-controller="UserProfile" asp-action="AccountSettings" class="user-dropdown__item">
-                <span class="icon-outer button-icon">
-                    <svg class="icon">
-                        <use xlink:href="../../assets/img/icons.svg#icon-settings"></use>
-                    </svg>
-                </span>
-                Hesap Ayarları
-            </a>
-        </div>
+        @if (User.IsInRole("User"))
+        {
+            <div class="user-dropdown__list">
+                <a asp-controller="UserProfile" asp-action="Profile" class="user-dropdown__item">
+                    <span class="icon-outer button-icon">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-home"></use>
+                        </svg>
+                    </span>
+                    Panelim
+                </a>
+                <a asp-controller="UserProfile" asp-action="MyCourses" class="user-dropdown__item">
+                    <span class="icon-outer button-icon">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-code-c"></use>
+                        </svg>
+                    </span>
+                    Kurslarım
+                </a>
+                <a asp-controller="UserProfile" asp-action="AccountSettings" class="user-dropdown__item">
+                    <span class="icon-outer button-icon">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-settings"></use>
+                        </svg>
+                    </span>
+                    Hesap Ayarları
+                </a>
+            </div>
+        }
+
         <div class="user-dropdown__footer">
             <a asp-controller="Account" asp-action="Logout" class="button button-fw button-icon-left">
                 <span class="icon-outer button-icon">
