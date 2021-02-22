@@ -29,6 +29,12 @@
                         <div class="account-detail__title">
                             KURSLARIM
                         </div>
+                        @if (TempData["Success"] != null)
+                        {
+                            <div class="success-messages" style="display: block;">
+                                @TempData["Success"]
+                            </div>
+                        }
                         <div class="account-courses course">
                             <div class="account-courses__top">
                                 <div class="account-courses__top-course">

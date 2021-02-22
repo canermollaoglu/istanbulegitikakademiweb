@@ -20,7 +20,7 @@ namespace NitelikliBilisim.Business.Repositories
 
         public InvoiceDetail GetByIdWithOnlinePaymentDetailInfo(Guid invoiceDetailId)
         {
-            return _context.InvoiceDetails.Include(x => x.OnlinePaymentDetailInfo).First(x => x.Id == invoiceDetailId);
+            return _context.InvoiceDetails.Include(x=>x.Invoice).Include(x => x.OnlinePaymentDetailInfo).First(x => x.Id == invoiceDetailId);
         }
 
         public PaymentSuccessDetailVm GetSuccessPaymentDetails(List<Guid> invoiceDetailIds, Guid? promotionId)

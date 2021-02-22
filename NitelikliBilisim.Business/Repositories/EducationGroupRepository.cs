@@ -14,6 +14,7 @@ using NitelikliBilisim.Core.ViewModels.areas.admin.group_expense;
 using NitelikliBilisim.Core.ViewModels.areas.admin.group_lesson_days;
 using NitelikliBilisim.Core.ViewModels.areas.admin.reports;
 using NitelikliBilisim.Core.ViewModels.Cart;
+using NitelikliBilisim.Core.ViewModels.Main.Sales;
 using NitelikliBilisim.Core.ViewModels.Sales;
 using NitelikliBilisim.Data;
 using System;
@@ -147,6 +148,24 @@ namespace NitelikliBilisim.Business.Repositories
 
             };
             return model;
+        }
+
+        public EducationGroupWithInvoiceInfoVm GetByIdWithInvoiceInfo(Guid groupId,string userId)
+        {
+            var data = (from ticket in _context.Tickets
+                        join eGroup in _context.EducationGroups on ticket.GroupId equals eGroup.Id
+                        join education in _context.Educations on eGroup.EducationId equals education.Id
+                        join invoiceInfo in _context.OnlinePaymentDetailsInfos on ticket.InvoiceDetailsId equals invoiceInfo.Id
+                        where ticket.GroupId == groupId && ticket.OwnerId == userId
+                        select new EducationGroupWithInvoiceInfoVm
+                        {
+                            GroupId = eGroup.Id,
+                            PaidPrice = invoiceInfo.PaidPrice,
+                            StartDate = eGroup.StartDate,
+                            EducationName = education.Name,
+                            GroupName = eGroup.GroupName
+                        }).FirstOrDefault();
+            return data;
         }
 
         public CalculateSalesPriceGetVm GetCalculateSalesPriceInformation(Guid groupId, int expectedProfitRate)

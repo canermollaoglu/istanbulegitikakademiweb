@@ -324,6 +324,7 @@ namespace NitelikliBilisim.Business.Repositories
         {
             try
             {
+                var adminEmails = GetAdminEmails();
                 var tickets = _context.Tickets.Include(x => x.Education).Include(x => x.Owner).ThenInclude(x => x.User)
                     .Where(x => invoiceDetailsIds.Contains(x.InvoiceDetailsId))
                     .ToList();
@@ -342,10 +343,10 @@ namespace NitelikliBilisim.Business.Repositories
                 {
                    Task.Run(()=> _emailSender.SendAsync(new EmailMessage
                     {
-                        Subject = "Gruptan Ayrıldınız | Nitelikli Bilişim",
-                        Body = $"{ticket.Education.Name} eğitimini iptal ettiğiniz için atandığınız gruptan ayrıldınız.",
-                        Contacts = new string[] { ticket.Owner.User.Email }
-                    }));
+                        Subject = "Gruptan Ayrılma İşlemi | Nitelikli Bilişim",
+                        Body = $"{ticket.Owner.User.Name} {ticket.Owner.User.Name} ({ticket.Owner.User.Email}) {ticket.Education.Name} eğitimi {groups.First(x=>x.Id == ticket.GroupId).GroupName} grubundan ayrılmıştır.",
+                        Contacts = adminEmails
+                   }));
                 }
                 _context.Bridge_GroupStudents.RemoveRange(bridges);
                 _context.SaveChanges();

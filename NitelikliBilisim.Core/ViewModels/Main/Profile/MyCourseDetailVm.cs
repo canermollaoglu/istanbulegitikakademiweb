@@ -31,5 +31,8 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public DateTime EducationEndDate { get; set; }
         public DateTime EducationDate { get; set; }
         public bool IsCertificateAvailable { get; set; }
+        public Guid InvoiceDetailId { get; set; }
+        public bool IsRefundable { get; set; }
+        public bool IsCancelled { get; set; }
     }
 }
