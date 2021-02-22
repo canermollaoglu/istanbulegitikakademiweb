@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@microsoft/signalr": "^3.1.8",
+    "apexcharts": "^3.25.0",
     "card": "^2.5.0",
     "jquery-validation": "^1.19.2",
     "modal-video": "^2.4.2",
