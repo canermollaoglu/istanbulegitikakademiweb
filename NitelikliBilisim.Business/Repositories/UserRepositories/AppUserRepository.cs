@@ -256,7 +256,7 @@ namespace NitelikliBilisim.Business.Repositories
             return certificates;
         }
 
-        
+
         public List<MyCertificateVm> GetUserCertificates(string userId)
         {
             var certificates = (from bridge in _context.Bridge_GroupStudents
@@ -482,7 +482,7 @@ namespace NitelikliBilisim.Business.Repositories
                          {
                              Id = comment.Id,
                              SeoUrl = education.SeoUrl,
-                             CategorySeoUrl  = category.SeoUrl,
+                             CategorySeoUrl = category.SeoUrl,
                              EducationId = education.Id,
                              Content = comment.Content,
                              Point = comment.Points,
@@ -495,7 +495,7 @@ namespace NitelikliBilisim.Business.Repositories
 
             foreach (var comment in model)
             {
-                comment.EducatorPictureUrls = _context.Bridge_EducationEducators.Include(x => x.Educator).ThenInclude(x => x.User).Where(x => x.Id == comment.EducationId).Select(x=>x.Educator.User.AvatarPath).ToList();
+                comment.EducatorPictureUrls = _context.Bridge_EducationEducators.Include(x => x.Educator).ThenInclude(x => x.User).Where(x => x.Id == comment.EducationId).Select(x => x.Educator.User.AvatarPath).ToList();
             }
 
             return model;
@@ -511,11 +511,14 @@ namespace NitelikliBilisim.Business.Repositories
                          join host in _context.EducationHosts on eGroup.HostId equals host.Id
                          join educatorUser in _context.Users on educator.Id equals educatorUser.Id
                          join eImage in _context.EducationMedias on education.Id equals eImage.EducationId
+                         join invoiceDetail in _context.InvoiceDetails.Include(x => x.Invoice) on new { GroupId = eGroup.Id, UserId = userId } equals new { invoiceDetail.GroupId, UserId = invoiceDetail.Invoice.CustomerId }
+                         join onlinePaymentDetailInfo in _context.OnlinePaymentDetailsInfos on invoiceDetail.Id equals onlinePaymentDetailInfo.Id
                          where eImage.MediaType == EducationMediaType.Card
                          && eGroup.Id == groupId
                          select new MyCourseDetailVm
                          {
                              GroupId = eGroup.Id,
+                             InvoiceDetailId = invoiceDetail.Id,
                              EducationDate = eGroup.StartDate,
                              EducationEndDate = eGroup.StartDate.AddDays(education.Days),
                              CategoryName = category.Name,
@@ -529,14 +532,16 @@ namespace NitelikliBilisim.Business.Repositories
                              EducatorName = $"{educatorUser.Name} {educatorUser.Surname}",
                              EducatorTitle = educator.Title,
                              EducatorAvatarPath = educatorUser.AvatarPath,
-                             PriceText = eGroup.NewPrice.GetValueOrDefault().ToString(cultureInfo),
+                             PriceText = onlinePaymentDetailInfo.PaidPrice.ToString(cultureInfo),
                              Days = education.Days.ToString(),
                              Hours = (education.Days * education.HoursPerDay).ToString(),
-                             Host = host.HostName
+                             Host = host.HostName,
+                             IsCancelled = onlinePaymentDetailInfo.IsCancelled
                          }).FirstOrDefault();
             model.EducatorPoint = GetEducatorPoint(model.EducatorId);
             model.EducatorStudentCount = _context.Bridge_GroupStudents.Include(x => x.Group).Where(x => x.Group.EducatorId == model.EducatorId).Count();
-
+            var group = _context.EducationGroups.Include(x => x.GroupLessonDays).First(x => x.Id == groupId);
+            model.IsRefundable =model.IsCancelled || group.GroupLessonDays.OrderByDescending(x => x.DateOfLesson).First().DateOfLesson.Date < DateTime.Now.Date ? false : true;
             #region test 
             var attendance = _context.GroupAttendances.Where(x => x.GroupId == model.GroupId && x.CustomerId == userId).ToList();
             if (attendance.Count == 0 && model.EducationEndDate < DateTime.Now)
@@ -624,7 +629,7 @@ namespace NitelikliBilisim.Business.Repositories
 
 
         #region Counts
-        
+
         public int GetUserCertificateCount(string userId)
         {
             return _context.Bridge_GroupStudents.Include(x => x.Group).ThenInclude(x => x.Education).Where(x => x.Id2 == userId && x.Group.StartDate.AddDays(x.Group.Education.Days) < DateTime.Now).Count();
@@ -658,7 +663,7 @@ namespace NitelikliBilisim.Business.Repositories
                                  && ids.Contains(eGroup.Id)
                                  select new PurchasedEducationVm
                                  {
-                                     CreatedDate= eGroup.StartDate,
+                                     CreatedDate = eGroup.StartDate,
                                      EducationId = education.Id,
                                      SeoUrl = education.SeoUrl,
                                      GroupId = eGroup.Id,
@@ -669,7 +674,7 @@ namespace NitelikliBilisim.Business.Repositories
                                      FeaturedImageUrl = eImage.FileUrl,
                                      EducatorImageUrl = educatorUser.AvatarPath,
                                  }
-                ).OrderByDescending(x=>x.CreatedDate).ToList();
+                ).OrderByDescending(x => x.CreatedDate).ToList();
             foreach (var data in educationList)
             {
                 data.CompletionRate = GetEducationCompletionRate(data.GroupId);
@@ -713,7 +718,7 @@ namespace NitelikliBilisim.Business.Repositories
                                       HoursText = (education.HoursPerDay * education.Days).ToString(),
                                       DaysText = education.Days.ToString(),
                                       FeaturedImageUrl = featuredImage.FileUrl
-                                  }).OrderByDescending(x=>x.CreatedDate).ToList();
+                                  }).OrderByDescending(x => x.CreatedDate).ToList();
             return educationsList;
         }
 
@@ -919,7 +924,7 @@ namespace NitelikliBilisim.Business.Repositories
             };
             return retVal;
         }
-       
+
         //public List<MyInvoicesVm> GetUserInvoices(string userId)
         //{
         //    var invoices = _context.OnlinePaymentDetailsInfos

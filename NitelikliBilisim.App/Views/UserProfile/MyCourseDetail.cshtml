@@ -45,6 +45,24 @@
                             </span>
                             KURS LİSTESİNE GERİ DÖN
                         </a>
+                        @if (TempData["Success"] != null)
+                        {
+                            <div class="success-messages" style="display: block;">
+                                @TempData["Success"]
+                            </div>
+                        }
+                        @if (TempData["Error"] != null)
+                        {
+                            <div class="error-messages" style="display: block;">
+                                @TempData["Error"]
+                            </div>
+                        }
+                        @if (Model.IsCancelled)
+                        {
+                            <div class="error-messages" style="display: block;">
+                               Bu eğitim iptal edilmiştir.
+                            </div>
+                        }
                         <div class="account-course-detail">
                             <div class="account-course-detail__item">
                                 <div class="account-course-detail__item-img">
@@ -132,7 +150,7 @@
                                 else
                                 {
                                     <div class="account-course-detail__certificate-button">
-                                        <a  class="button button-fw button-yellow button-icon-right">
+                                        <a class="button button-fw button-yellow button-icon-right">
                                             <span class="button-txt">Hazırlanıyor</span>
                                             <span class="button-icon">
                                                 <span class="icon-outer">
@@ -211,7 +229,14 @@
                                 </div>
                             </div>
                         </div>
+                        @if (Model.IsRefundable)
+                        {
+                            <div class="account-course-detail__refund">
+                                <a class="account-course-detail__refund__link js-modal-trigger" href="#0" data-trigger="refundModal">Eğitim İptal Talebi</a>
+                            </div>
+                        }
                     </div>
+
                 </div>
             </div>
         </div>
@@ -221,3 +246,64 @@
     <div class="tooltip__title">
     </div>
 </div>
+
+
+@if (Model.IsRefundable)
+{
+    <div class="modal" id="refundModal">
+        <div class="modal__header">
+            <div class="modal__title">Eğitim İptali</div>
+            <div class="modal__close js-close-modal">
+                <span class="icon-outer">
+                    <svg class="icon">
+                        <use xlink:href="../../assets/img/icons.svg#icon-close"></use>
+                    </svg>
+                </span>
+            </div>
+        </div>
+        <div class="modal__content">
+            <form action="/iade" method="post" id="refundForm">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="InvoiceDetailId" value="@Model.InvoiceDetailId" />
+                <div class="input__outer input--textarea">
+                    <span class="icon-outer input__icon">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-speak-balloon"></use>
+                        </svg>
+                    </span>
+                    <textarea name="UserDescription" class="input input--fw" placeholder="İptal sebebinizi giriniz..."></textarea>
+                </div>
+                <button type="submit" class="button button-fw button-icon-right">İptal Et</button>
+            </form>
+        </div>
+    </div>
+
+    @section postScripts{
+        <script type="text/javascript">
+            $('#refundForm').validate({
+                errorLabelContainer: $('#refundForm div.error'),
+                errorContainer: 'div.error-messages',
+                errorLabelContainer: $('ul', 'div.error-messages'),
+                wrapper: 'li',
+                rules: {
+                    UserDescription: {
+                        required: true,
+                    }
+                },
+                messages: {
+                    UserDescription: 'Lütfen iade sebebini giriniz.'
+                },
+                highlight: function (element) {
+                    $(element)
+                        .parent()
+                        .addClass('outer-error');
+                },
+                unhighlight: function (element) {
+                    $(element)
+                        .parent()
+                        .removeClass('outer-error');
+                }
+            });
+        </script>
+    }
+}

@@ -38,6 +38,7 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [HttpPost, Route("iptal")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Cancel(CancellationFormPostVm data)
         {
             var invoice = _unitOfWork.Invoice.GetByIdWithOnlinePaymentInfos(data.InvoiceId);
@@ -71,53 +72,65 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [HttpPost, Route("iade")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Refund(RefundVm data)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var invoiceDetail = _unitOfWork.InvoiceDetail.GetByIdWithOnlinePaymentDetailInfo(data.InvoiceDetailId);
+            if (invoiceDetail.Invoice.CustomerId != userId)
+            {
+                TempData["Error"] = "İşlem gerçekleşmedi! Lütfen yöneticiye danışınız.";
+                return RedirectToAction("MyCourseDetail", "UserProfile",new { groupId =invoiceDetail.GroupId});
+            }
+
             decimal refundPrice = 0;
             var conversationId = Guid.NewGuid().ToString();
-            var invoiceDetail = _unitOfWork.InvoiceDetail.GetByIdWithOnlinePaymentDetailInfo(data.InvoiceDetailId);
-            var group = _unitOfWork.EducationGroup.GetById(invoiceDetail.GroupId);
+            var group = _unitOfWork.EducationGroup.GetByIdWithInvoiceInfo(invoiceDetail.GroupId,userId);
             var ticket = _unitOfWork.Ticket.GetByInvoiceDetailId(invoiceDetail.Id);
             
             if (ticket!=null && ticket.IsUsed && DateTime.Now.Date>group.StartDate.Date)
             {//Kısmi İptal (Kalan gün)
                 var education = ticket.Education;
-                decimal dailyPrice = group.NewPrice.Value / education.Days;
+                decimal dailyPrice = group.PaidPrice/ education.Days;
                 var gStudent = _unitOfWork.EducationGroup.GetEducationGroupByTicketId(ticket.Id);
                 var daysLeft = gStudent.GroupLessonDays.Count(x => x.DateOfLesson.Date > DateTime.Now.Date);
                 refundPrice = daysLeft * dailyPrice;
             }
             else//Tamamı iptal ediliyor.
             {
-                refundPrice = invoiceDetail.OnlinePaymentDetailInfo.Price;
+                refundPrice = invoiceDetail.OnlinePaymentDetailInfo.PaidPrice;
             }
             var refundRequest = _paymentService.CreateRefundRequest(conversationId, invoiceDetail.OnlinePaymentDetailInfo.TransactionId, refundPrice, "", RefundReason.BUYER_REQUEST, data.UserDescription);
+            var user = _unitOfWork.Customer.GetCustomerDetail(ticket.OwnerId);
 
             if (refundRequest.Status == PaymentServiceMessages.ResponseSuccess)
             {
-                var user = _unitOfWork.Customer.GetCustomerDetail(ticket.OwnerId);
                 _unitOfWork.Sale.RefundPayment(data.InvoiceDetailId,refundPrice);
 
                 var emails = _unitOfWork.EmailHelper.GetAdminEmails();
                 await _emailSender.SendAsync(new EmailMessage
                 {
                     Subject = "Nitelikli Bilişim Eğitim İadesi",
-                    Body = $"{user.Name} {user.Surname} ({user.Email}) kullanıcısı tarafından satın alınan {group.GroupName} grubundaki eğitim iade edilmiştir.",
+                    Body = $"{user.Name} {user.Surname} ({user.Email}) kullanıcısı tarafından satın alınan {group.GroupName} grubundaki {group.EducationName} eğitimi iade edilmiştir.",
                     Contacts = emails
                 });
 
-                return Json(new ResponseData
+                TempData["Success"] = "İptal talebiniz alınmıştır.";
+                return RedirectToAction("MyCourseDetail", "UserProfile", new { groupId = invoiceDetail.GroupId });
+            }
+            else
+            {
+                var emails = _unitOfWork.EmailHelper.GetAdminEmails();
+                await _emailSender.SendAsync(new EmailMessage
                 {
-                    Success = true,
-                    Message = "İade talebiniz alınmıştır."
+                    Subject = "Nitelikli Bilişim Eğitim İadesi",
+                    Body = $"{user.Name} {user.Surname} ({user.Email}) kullanıcısı tarafından satın alınan {group.GroupName} grubundaki {group.EducationName} eğitimi iade edilememiştir.<br>Hata: {refundRequest.ErrorMessage}",
+                    Contacts = emails
                 });
+                TempData["Error"] = "İptal işleminiz gerçekleşmedi ilgili birimlerimiz kısa sürede sizinle iletişime geçecektir.";
+                return RedirectToAction("MyCourseDetail", "UserProfile", new { groupId = invoiceDetail.GroupId });
             }
 
-            return Json(new ResponseData
-            {
-                Success = false,
-                Message = "Bir sorun oluştu."
-            });
         }
     }
 }
