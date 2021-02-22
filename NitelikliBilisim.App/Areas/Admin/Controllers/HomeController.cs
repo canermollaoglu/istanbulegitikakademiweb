@@ -1,13 +1,22 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Models;
+using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.ViewModels.areas.admin.dashboard;
 using System.Text.RegularExpressions;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
     public class HomeController : BaseController
     {
+        private readonly UnitOfWork _unitOfWork;
+        public HomeController(UnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
+
         [Route("admin/panel")]
         public IActionResult Index()
         {
@@ -67,5 +76,42 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
 
         }
+
+
+        #region Dashboard
+        [Route("admin/dashboard/widget-infos")]
+        public IActionResult GetDashboardWidgetData()
+        {
+            var retVal = new AdminDashboardWidgetsVm();
+            retVal.StudentInfoWidget = _unitOfWork.Dashboard.GetStudentInfo();
+            retVal.SalesInfoWidget = _unitOfWork.Dashboard.GetSalesInfo();
+            retVal.EducationGroupWidget = _unitOfWork.Dashboard.GetEducationGroupInfo();
+            retVal.ProfitWidget = _unitOfWork.Dashboard.GetProfitInfo();
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = retVal
+            });
+        }
+
+        [Route("admin/dashboard/sales-chart-data")]
+        public IActionResult GetDashboardSalesChartData()
+        {
+
+            var retVal = new AdminDashboardSalesChartDataVm();
+            retVal = _unitOfWork.Dashboard.GetSalesChartData();
+
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = retVal
+            });
+
+
+        }
+
+
+        #endregion
+
     }
 }

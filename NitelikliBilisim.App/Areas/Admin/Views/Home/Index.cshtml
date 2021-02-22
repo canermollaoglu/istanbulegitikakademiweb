@@ -4,7 +4,6 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
-@*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />*@
 @section styles{
     <link href="~/vendor\apexcharts\dist\apexcharts.css" rel="stylesheet" />
     <style>
@@ -97,19 +96,21 @@
                         <div class="row ">
                             <div class="col-xl-3 col-lg-6">
                                 <div class="card l-bg-cherry">
-                                    <div class="card-statistic-3 p-4">
+                                    <div  class="card-statistic-3 p-4">
                                         <div class="card-icon card-icon-large"><i class="fa fa-shopping-cart fa-5x"></i></div>
                                         <div class="mb-4">
-                                            <h5 class="card-title mb-0 text-white">Satışlar</h5>
+                                            <h5 class="card-title mb-0 text-white"><a class="text-white" asp-area="Admin" asp-controller="EarningsReport" asp-action="SalesReport">Satışlar</a></h5>
                                         </div>
                                         <div class="row align-items-center mb-2 d-flex">
-                                            <div class="col-8">
-                                                <h3 class="d-flex align-items-center mb-0 text-white">
-                                                    ₺ 3,243
+                                            <div class="col-md-12 text-center loading" style="display:none;">
+                                                <img src="~/img/loader.gif" height="50" width="50" alt="Loading..." />
+                                            </div>
+                                            <div class="col-12">
+                                                <h3 id="salesPrice" class="d-flex align-items-center mb-0 text-white">
                                                 </h3>
                                             </div>
-                                            <div class="col-4 text-right">
-                                                <span>12.5% <i class="fa fa-arrow-up"></i></span>
+                                            <div class="col-12 mt-4 text-right">
+                                                <span id="salesRate"></span><span id="salesRateStatus"></span>
                                             </div>
                                         </div>
 
@@ -121,16 +122,18 @@
                                     <div class="card-statistic-3 p-4">
                                         <div class="card-icon card-icon-large"><i class="fa fa-5x fa-user"></i></div>
                                         <div class="mb-4">
-                                            <h5 class="card-title mb-0 text-white">Öğrenci</h5>
+                                            <h5 class="card-title mb-0 text-white"><a class="text-white" asp-area="Admin" asp-controller="Student" asp-action="Index">Öğrenci</a></h5>
                                         </div>
                                         <div class="row align-items-center mb-2 d-flex">
-                                            <div class="col-8">
-                                                <h3 class="d-flex align-items-center mb-0 text-white">
-                                                    15
+                                            <div class="col-md-12 text-center loading"  style="display:none;">
+                                                <img src="~/img/loader.gif" height="50" width="50" alt="Loading..." />
+                                            </div>
+                                            <div class="col-12">
+                                                <h3 id="studentCount" class="d-flex align-items-center mb-0 text-white">
                                                 </h3>
                                             </div>
-                                            <div class="col-4 text-right">
-                                                <span>9.23% <i class="fa fa-arrow-up"></i></span>
+                                            <div class="col-12 mt-4 text-right">
+                                                <span id="studentRate"></span> <span id="studentRateStatus"></span>
                                             </div>
                                         </div>
 
@@ -142,16 +145,18 @@
                                     <div class="card-statistic-3 p-4">
                                         <div class="card-icon card-icon-large"><i class="fa fa-5x fa-users"></i></div>
                                         <div class="mb-4">
-                                            <h5 class="card-title mb-0 text-white">Grup</h5>
+                                            <h5 class="card-title mb-0 text-white"><a class="text-white" asp-area="Admin" asp-controller="EducationGroup" asp-action="List">Grup</a></h5>
                                         </div>
                                         <div class="row align-items-center mb-2 d-flex">
-                                            <div class="col-8">
-                                                <h3 class="d-flex align-items-center mb-0 text-white">
-                                                    578
+                                            <div class="col-md-12 text-center loading" style="display:none;">
+                                                <img src="~/img/loader.gif" height="50" width="50" alt="Loading..." />
+                                            </div>
+                                            <div class="col-12">
+                                                <h3 id="educationGroupCount" class="d-flex align-items-center mb-0 text-white">
                                                 </h3>
                                             </div>
-                                            <div class="col-4 text-right">
-                                                <span>10% <i class="fa fa-arrow-up"></i></span>
+                                            <div class="col-12 text-right mt-4">
+                                                <span id="educationGroupRate"></span><span id="educationGroupRateStatus"></span>
                                             </div>
                                         </div>
 
@@ -163,16 +168,18 @@
                                     <div class="card-statistic-3 p-4">
                                         <div class="card-icon card-icon-large"><i class="fa fa-area-chart  fa-5x"></i></div>
                                         <div class="mb-4">
-                                            <h5 class="card-title mb-0 text-white">Kar</h5>
+                                            <h5 class="card-title mb-0 text-white">Kâr</h5>
                                         </div>
                                         <div class="row align-items-center mb-2 d-flex">
-                                            <div class="col-8">
-                                                <h3 class="d-flex align-items-center mb-0 text-white">
-                                                    ₺ 1,200
+                                            <div class="col-md-12 text-center loading" style="display:none;">
+                                                <img src="~/img/loader.gif" height="50" width="50" alt="Loading..." />
+                                            </div>
+                                            <div class="col-12">
+                                                <h3 id="profitPrice" class="d-flex align-items-center mb-0 text-white">
                                                 </h3>
                                             </div>
-                                            <div class="col-4 text-right">
-                                                <span>2.5% <i class="fa fa-arrow-up"></i></span>
+                                            <div class="col-12 mt-4 text-right">
+                                                <span id="profitRate"> </span> <span id="profitRateStatus"></span>
                                             </div>
                                         </div>
 
@@ -207,16 +214,88 @@
 @section postScripts{
     <script src="~/vendor\apexcharts\dist\apexcharts.min.js"></script>
     <script>
-        var options = {
-            series: [{
-                name: "Desktops",
-                data: [10, 41, 35, 51, 49, 62, 69, 91, 148]
-            }],
+        /* fields */
+        var studentCount = $("#studentCount");
+        var educationGroupCount = $("#educationGroupCount");
+        var salesPrice = $("#salesPrice");
+        var profitPrice = $("#profitPrice");
+        var studentRate = $("#studentRate");
+        var salesRate = $("#salesRate");
+        var educationGroupRate = $("#educationGroupRate");
+        var profitRate = $("#profitRate");
+        var studentRateStatus = $("#studentRateStatus");
+        var salesRateStatus = $("#salesRateStatus");
+        var educationGroupRateStatus = $("#educationGroupRateStatus");
+        var profitRateStatus = $("#profitRateStatus");
+
+        /* assignments */
+        $(document).ready(document_onLoad);
+
+        /* events */
+        function document_onLoad() {
+            loadStudentInfoWidget();
+            loadChartData();
+        }
+        function loadStudentInfoWidget() {
+            $(".loading").show();
+            $.ajax({
+                url: "/admin/dashboard/widget-infos",
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        var studentInfoWidget = res.data.studentInfoWidget;
+                        var salesInfoWidget = res.data.salesInfoWidget;
+                        var edcuationGroupWidget = res.data.educationGroupWidget;
+                        var profitWidget = res.data.profitWidget;
+
+                        //StudentWidget
+                        studentCount.text(studentInfoWidget.value);
+                        studentRate.text(studentInfoWidget.rate + ' %');
+                        if (studentInfoWidget.isPositive) {
+                            studentRateStatus.html('<i class="fa fa-arrow-up"></i>');
+                        } else {
+                            studentRateStatus.html('<i class="fa fa-arrow-down"></i>');
+                        }
+                        //SalesWidget
+                        salesPrice.text("₺ "+salesInfoWidget.value);
+                        salesRate.text(salesInfoWidget.rate + ' %');
+                        if (salesInfoWidget.isPositive) {
+                            salesRateStatus.html('<i class="fa fa-arrow-up"></i>');
+                        } else {
+                            salesRateStatus.html('<i class="fa fa-arrow-down"></i>');
+                        }
+                        //EducationGroupWidget
+                        educationGroupCount.text(edcuationGroupWidget.value);
+                        educationGroupRate.text(edcuationGroupWidget.rate + ' %');
+                        if (edcuationGroupWidget.isPositive) {
+                            educationGroupRateStatus.html('<i class="fa fa-arrow-up"></i>');
+                        } else {
+                            educationGroupRateStatus.html('<i class="fa fa-arrow-down"></i>');
+                        }
+                        //ProfitWidget
+                        profitPrice.text("₺ " + profitWidget.value);
+                        profitRate.text(profitWidget.rate + ' %');
+                        if (profitWidget.isPositive) {
+                            profitRateStatus.html('<i class="fa fa-arrow-up"></i>');
+                        } else {
+                            profitRateStatus.html('<i class="fa fa-arrow-down"></i>');
+                        }
+                    } else {
+
+                    }
+                },
+                complete: function () {
+                   $(".loading").hide();
+                }
+            });
+        }
+        var options = {     
+            series: [],
             chart: {
                 height: 350,
                 type: 'line',
                 zoom: {
-                    enabled: false
+                    enabled: true
                 }
             },
             dataLabels: {
@@ -225,22 +304,42 @@
             stroke: {
                 curve: 'straight'
             },
+            noData: {
+                text: 'Yükleniyor...'
+            },
             title: {
-                text: 'Product Trends by Month',
+                text: 'Aylara Göre Satışlar',
                 align: 'left'
             },
             grid: {
                 row: {
-                    colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+                    colors: ['#f3f3f3', 'transparent'],
                     opacity: 0.5
                 },
             },
             xaxis: {
-                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+                type: 'category',
             }
         };
-
         var chart = new ApexCharts(document.querySelector("#chart"), options);
         chart.render();
+
+        function loadChartData() {
+           
+            $.ajax({
+                url: "/admin/dashboard/sales-chart-data",
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        chart.updateSeries([{
+                            name: 'Sales',
+                            data: res.data.values
+                        }])
+                    } else {
+
+                    }
+                }
+            });
+        }
     </script>
 }
