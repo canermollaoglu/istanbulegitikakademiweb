@@ -505,16 +505,16 @@ namespace NitelikliBilisim.Business.Repositories
         {
             CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("tr-TR");
             var model = (from eGroup in _context.EducationGroups
+                         where eGroup.Id == groupId
                          join education in _context.Educations on eGroup.EducationId equals education.Id
                          join category in _context.EducationCategories on education.CategoryId equals category.Id
                          join educator in _context.Educators on eGroup.EducatorId equals educator.Id
                          join host in _context.EducationHosts on eGroup.HostId equals host.Id
                          join educatorUser in _context.Users on educator.Id equals educatorUser.Id
-                         join eImage in _context.EducationMedias on education.Id equals eImage.EducationId
+                         join eImage in _context.EducationMedias on new { Id = education.Id, MediaType = EducationMediaType.Card } equals new { Id = eImage.EducationId, MediaType = eImage.MediaType }
                          join invoiceDetail in _context.InvoiceDetails.Include(x => x.Invoice) on new { GroupId = eGroup.Id, UserId = userId } equals new { invoiceDetail.GroupId, UserId = invoiceDetail.Invoice.CustomerId }
                          join onlinePaymentDetailInfo in _context.OnlinePaymentDetailsInfos on invoiceDetail.Id equals onlinePaymentDetailInfo.Id
-                         where eImage.MediaType == EducationMediaType.Card
-                         && eGroup.Id == groupId
+                         where !onlinePaymentDetailInfo.IsCancelled
                          select new MyCourseDetailVm
                          {
                              GroupId = eGroup.Id,
@@ -537,11 +537,11 @@ namespace NitelikliBilisim.Business.Repositories
                              Hours = (education.Days * education.HoursPerDay).ToString(),
                              Host = host.HostName,
                              IsCancelled = onlinePaymentDetailInfo.IsCancelled
-                         }).FirstOrDefault();
+                         }).First();
             model.EducatorPoint = GetEducatorPoint(model.EducatorId);
             model.EducatorStudentCount = _context.Bridge_GroupStudents.Include(x => x.Group).Where(x => x.Group.EducatorId == model.EducatorId).Count();
             var group = _context.EducationGroups.Include(x => x.GroupLessonDays).First(x => x.Id == groupId);
-            model.IsRefundable =model.IsCancelled || group.GroupLessonDays.OrderByDescending(x => x.DateOfLesson).First().DateOfLesson.Date < DateTime.Now.Date ? false : true;
+            model.IsRefundable = model.IsCancelled || group.GroupLessonDays.OrderByDescending(x => x.DateOfLesson).First().DateOfLesson.Date < DateTime.Now.Date ? false : true;
             #region test 
             var attendance = _context.GroupAttendances.Where(x => x.GroupId == model.GroupId && x.CustomerId == userId).ToList();
             if (attendance.Count == 0 && model.EducationEndDate < DateTime.Now)
@@ -570,15 +570,16 @@ namespace NitelikliBilisim.Business.Repositories
 
         public List<MyCourseVm> GetPurschasedEducationsByUserIdMyCoursesPage(string userId)
         {
-            var purchasedEducations = _context.Bridge_GroupStudents.Where(x => x.Id2 == userId);
+            //var purchasedEducations = _context.Bridge_GroupStudents.Where(x => x.Id2 == userId);
             var wishListItems = _context.Wishlist.Where(x => x.Id == userId).Select(x => x.Id2).ToList();
 
-            List<Guid> ids = purchasedEducations.Select(x => x.Id).ToList();
-            var educationList = (from eGroup in _context.EducationGroups
+            //List<Guid> ids = purchasedEducations.Select(x => x.Id).ToList();
+            var educationList = (from bridge in _context.Bridge_GroupStudents where bridge.Id2 == userId
+                                 join ticket in _context.Tickets on bridge.TicketId equals ticket.Id
+                                 join eGroup in _context.EducationGroups on bridge.Id equals eGroup.Id
                                  join education in _context.Educations on eGroup.EducationId equals education.Id
-                                 join eImage in _context.EducationMedias on education.Id equals eImage.EducationId
-                                 where eImage.MediaType == EducationMediaType.Square
-                                  && ids.Contains(eGroup.Id)
+                                 join eImage in _context.EducationMedias on new { Id = education.Id, IType = EducationMediaType.Square } equals new { Id = eImage.EducationId, IType = eImage.MediaType }
+                                 where ticket.IsUsed
                                  select new MyCourseVm
                                  {
                                      Id = eGroup.Id,

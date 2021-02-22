@@ -1,14 +1,18 @@
 ﻿using Iyzipay.Model;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ComplexTypes;
+using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.PaymentModels;
 using NitelikliBilisim.Core.Services.Payments;
 using NitelikliBilisim.Core.ViewModels.Main.Sales;
 using NitelikliBilisim.Notificator.Services;
 using System;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -21,11 +25,15 @@ namespace NitelikliBilisim.App.Controllers
         private readonly UnitOfWork _unitOfWork;
         private readonly IPaymentService _paymentService;
         private readonly IEmailSender _emailSender;
-        public SaleCancellationController(UnitOfWork unitOfWork, IPaymentService paymentService,IEmailSender emailSender)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IWebHostEnvironment _env;
+        public SaleCancellationController(IWebHostEnvironment env,UserManager<ApplicationUser> userManager,UnitOfWork unitOfWork, IPaymentService paymentService,IEmailSender emailSender)
         {
             _unitOfWork = unitOfWork;
             _paymentService = paymentService;
             _emailSender = emailSender;
+            _userManager = userManager;
+            _env = env;
         }
 
         [Route("iptal-formu/{invoiceDetailId?}")]
@@ -87,7 +95,7 @@ namespace NitelikliBilisim.App.Controllers
             var conversationId = Guid.NewGuid().ToString();
             var group = _unitOfWork.EducationGroup.GetByIdWithInvoiceInfo(invoiceDetail.GroupId,userId);
             var ticket = _unitOfWork.Ticket.GetByInvoiceDetailId(invoiceDetail.Id);
-            
+            var user = await _userManager.GetUserAsync(HttpContext.User);
             if (ticket!=null && ticket.IsUsed && DateTime.Now.Date>group.StartDate.Date)
             {//Kısmi İptal (Kalan gün)
                 var education = ticket.Education;
@@ -101,7 +109,7 @@ namespace NitelikliBilisim.App.Controllers
                 refundPrice = invoiceDetail.OnlinePaymentDetailInfo.PaidPrice;
             }
             var refundRequest = _paymentService.CreateRefundRequest(conversationId, invoiceDetail.OnlinePaymentDetailInfo.TransactionId, refundPrice, "", RefundReason.BUYER_REQUEST, data.UserDescription);
-            var user = _unitOfWork.Customer.GetCustomerDetail(ticket.OwnerId);
+            
 
             if (refundRequest.Status == PaymentServiceMessages.ResponseSuccess)
             {
@@ -114,9 +122,29 @@ namespace NitelikliBilisim.App.Controllers
                     Body = $"{user.Name} {user.Surname} ({user.Email}) kullanıcısı tarafından satın alınan {group.GroupName} grubundaki {group.EducationName} eğitimi iade edilmiştir.",
                     Contacts = emails
                 });
+                #region Customer Email
+                var builder = string.Empty;
+                var templatePath = Path.Combine(_env.WebRootPath, "mail-templates", "mail-template.html");
+                using (StreamReader r = System.IO.File.OpenText(templatePath))
+                {
+                    builder = r.ReadToEnd();
+                }
+                builder = builder.Replace("[##subject##]", "Eğitiminiz İptal Edilmiştir!");
+                builder = builder.Replace("[##content##]", $"Sayın {user.Name} {user.Surname}, eğitim eğitim iptali işleminiz başarılı bir şekilde gerçekleşmiştir.");
+                builder = builder.Replace("[##content2##]", "Eğitim ödemenizden kalan tutar hesabınıza iade edilmiştir.");
+                if (user.Email != null)
+                {
+                    await _emailSender.SendAsync(new EmailMessage
+                    {
+                        Subject = "Eğitim iptal işleminiz tamamlanmıştır. | Nitelikli Bilişim",
+                        Body = builder,
+                        Contacts = new[] { user.Email }
+                    });
+                }
+                #endregion
 
-                TempData["Success"] = "İptal talebiniz alınmıştır.";
-                return RedirectToAction("MyCourseDetail", "UserProfile", new { groupId = invoiceDetail.GroupId });
+                TempData["Success"] =  $"{group.EducationName} Eğitimi için iptal işleminiz tamamlanmıştır.";
+                return RedirectToAction("MyCourses", "UserProfile");
             }
             else
             {
