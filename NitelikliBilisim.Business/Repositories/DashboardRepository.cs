@@ -21,10 +21,8 @@ namespace NitelikliBilisim.Business.Repositories
 
         public AdminDashboardWidgetVm GetStudentInfo()
         {
-            // Son iki aylık veri çekiliyor.
-            var data = _context.Customers.Where(x => x.CreatedDate >= DateTime.Now.Date.AddMonths(-2)).ToList();
-            var firstMonth = data.Count(x => x.CreatedDate >= DateTime.Now.Date.AddMonths(-1));
-            var secondMonth = data.Count(x => x.CreatedDate < DateTime.Now.Date.AddMonths(-1));
+            var firstMonth = _context.Customers.Count(x => x.CreatedDate >= DateTime.Now.Date.AddMonths(-1));
+            var secondMonth = _context.Customers.Count(x => x.CreatedDate >= DateTime.Now.Date.AddMonths(-2) && x.CreatedDate < DateTime.Now.Date.AddMonths(-1));
             var retVal = new AdminDashboardWidgetVm();
             retVal.Value = firstMonth.ToString();
             var rate = (((firstMonth - secondMonth) * 100) / secondMonth);
@@ -98,9 +96,8 @@ namespace NitelikliBilisim.Business.Repositories
 
         public AdminDashboardWidgetVm GetEducationGroupInfo()
         {
-            var data = _context.EducationGroups.Where(x => x.CreatedDate >= DateTime.Now.AddMonths(-2)).ToList();
-            var firstMonth = data.Count(x => x.CreatedDate >= DateTime.Now.Date.AddMonths(-1));
-            var secondMonth = data.Count(x => x.CreatedDate < DateTime.Now.Date.AddMonths(-1));
+            var firstMonth = _context.EducationGroups.Count(x => x.StartDate >= DateTime.Now.Date.AddMonths(-1));
+            var secondMonth = _context.EducationGroups.Count(x => x.StartDate < DateTime.Now.Date.AddMonths(-1) && x.StartDate >= DateTime.Now.Date.AddMonths(-2));
             var retVal = new AdminDashboardWidgetVm();
             retVal.Value = firstMonth.ToString();
             var rate = (((firstMonth - secondMonth) * 100) / secondMonth);
@@ -112,24 +109,23 @@ namespace NitelikliBilisim.Business.Repositories
 
         public AdminDashboardWidgetVm GetProfitInfo()
         {
-            var groups = _context.EducationGroups.Include(x => x.GroupExpenses).Include(x => x.GroupLessonDays).Where(x => x.CreatedDate >= DateTime.Now.AddMonths(-2)).ToList();
+            var groups = _context.EducationGroups.Include(x=>x.GroupExpenses).Include(x => x.GroupLessonDays).Where(x => x.StartDate.Date >= DateTime.Now.AddMonths(-2).Date && x.StartDate.Date<=DateTime.Now.Date).ToList();
 
-            var firstMonthGroups = groups.Where(x => x.CreatedDate >= DateTime.Now.Date.AddMonths(-1));
+            var firstMonthGroups = groups.Where(x => x.StartDate >= DateTime.Now.Date.AddMonths(-1));
             var firstMonthGroupIds = firstMonthGroups.Select(x => x.Id).ToList();
             var firstMonthIncomes = _context.InvoiceDetails.Include(x => x.OnlinePaymentDetailInfo)
                 .Where(x => firstMonthGroupIds.Contains(x.GroupId) && !x.OnlinePaymentDetailInfo.IsCancelled)
-                .Select(x => x.OnlinePaymentDetailInfo)
-                .Sum(x => x.MerchantPayout);
-            var firstMonthExpense = _context.GroupExpenses.Where(x => firstMonthGroupIds.Contains(x.GroupId)).Sum(x => x.Price * x.Count);
+                .Sum(x => x.OnlinePaymentDetailInfo.MerchantPayout);
+            var firstMonthExpense = firstMonthGroups.Sum(x => x.GroupExpenses.Sum(y => y.Price)); //_context.GroupExpenses.Where(x => firstMonthGroupIds.Contains(x.GroupId)).Sum(x => x.Price * x.Count);
             var firstMonthEducatorExpense = firstMonthGroups.Sum(x => x.GroupLessonDays.Sum(y => y.EducatorSalary));
             var firstMonthProfit = firstMonthIncomes - (firstMonthExpense + firstMonthEducatorExpense);
 
-            var secondMonthGroups = groups.Where(x => x.CreatedDate < DateTime.Now.Date.AddMonths(-1));
+            var secondMonthGroups = groups.Where(x => x.StartDate < DateTime.Now.Date.AddMonths(-1));
             var secondMonthGroupIds = secondMonthGroups.Select(x => x.Id).ToList();
             var secondMonthIncomes = _context.InvoiceDetails.Include(x => x.OnlinePaymentDetailInfo)
                .Where(x => secondMonthGroupIds.Contains(x.GroupId) && !x.OnlinePaymentDetailInfo.IsCancelled)
                .Sum(x => x.OnlinePaymentDetailInfo.MerchantPayout);
-            var secondMonthExpense = _context.GroupExpenses.Where(x => secondMonthGroupIds.Contains(x.GroupId)).Sum(x => x.Price * x.Count);
+            var secondMonthExpense = secondMonthGroups.Sum(x => x.GroupExpenses.Sum(y => y.Price));//_context.GroupExpenses.Where(x => secondMonthGroupIds.Contains(x.GroupId)).Sum(x => x.Price * x.Count);
             var secondMonthEducatorExpense = secondMonthGroups.Sum(x => x.GroupLessonDays.Sum(y => y.EducatorSalary));
             var secondMonthProfit = secondMonthIncomes - (secondMonthExpense + secondMonthEducatorExpense);
 
