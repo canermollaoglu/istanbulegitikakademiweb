@@ -97,10 +97,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/dashboard/sales-chart-data")]
         public IActionResult GetDashboardSalesChartData()
         {
+            var retVal = new AdminDashboardChartDatasVm();
 
-            var retVal = new AdminDashboardSalesChartDataVm();
-            retVal = _unitOfWork.Dashboard.GetSalesChartData();
-
+            retVal.SalesChartData = _unitOfWork.Dashboard.GetSalesChartData();
+            retVal.GroupExpensesChartData = _unitOfWork.Dashboard.GetGroupExpenseChartData();
+            retVal.EducatorExpenseChartData = _unitOfWork.Dashboard.GetEducatorExpenseChartData();
             return Json(new ResponseModel
             {
                 isSuccess = true,
@@ -109,7 +110,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
 
         }
-
 
         #endregion
 

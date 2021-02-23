@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace NitelikliBilisim.Business.Repositories
 {
-    public class DashboardRepository 
+    public class DashboardRepository
     {
         private readonly NbDataContext _context;
         public DashboardRepository(NbDataContext context)
@@ -64,15 +64,15 @@ namespace NitelikliBilisim.Business.Repositories
 
         public AdminDashboardWidgetVm GetProfitInfo()
         {
-            var groups = _context.EducationGroups.Include(x => x.GroupExpenses).Include(x=>x.GroupLessonDays).Where(x => x.CreatedDate >= DateTime.Now.AddMonths(-2)).ToList();
-            
+            var groups = _context.EducationGroups.Include(x => x.GroupExpenses).Include(x => x.GroupLessonDays).Where(x => x.CreatedDate >= DateTime.Now.AddMonths(-2)).ToList();
+
             var firstMonthGroups = groups.Where(x => x.CreatedDate >= DateTime.Now.Date.AddMonths(-1));
             var firstMonthGroupIds = firstMonthGroups.Select(x => x.Id).ToList();
             var firstMonthIncomes = _context.InvoiceDetails.Include(x => x.OnlinePaymentDetailInfo)
                 .Where(x => firstMonthGroupIds.Contains(x.GroupId) && !x.OnlinePaymentDetailInfo.IsCancelled)
-                .Select(x=>x.OnlinePaymentDetailInfo)
+                .Select(x => x.OnlinePaymentDetailInfo)
                 .Sum(x => x.MerchantPayout);
-            var firstMonthExpense = _context.GroupExpenses.Where(x => firstMonthGroupIds.Contains(x.GroupId)).Sum(x=>x.Price);
+            var firstMonthExpense = _context.GroupExpenses.Where(x => firstMonthGroupIds.Contains(x.GroupId)).Sum(x => x.Price*x.Count);
             var firstMonthEducatorExpense = firstMonthGroups.Sum(x => x.GroupLessonDays.Sum(y => y.EducatorSalary));
             var firstMonthProfit = firstMonthIncomes - (firstMonthExpense + firstMonthEducatorExpense);
 
@@ -81,13 +81,13 @@ namespace NitelikliBilisim.Business.Repositories
             var secondMonthIncomes = _context.InvoiceDetails.Include(x => x.OnlinePaymentDetailInfo)
                .Where(x => secondMonthGroupIds.Contains(x.GroupId) && !x.OnlinePaymentDetailInfo.IsCancelled)
                .Sum(x => x.OnlinePaymentDetailInfo.MerchantPayout);
-            var secondMonthExpense = _context.GroupExpenses.Where(x => secondMonthGroupIds.Contains(x.GroupId)).Sum(x => x.Price);
+            var secondMonthExpense = _context.GroupExpenses.Where(x => secondMonthGroupIds.Contains(x.GroupId)).Sum(x => x.Price*x.Count);
             var secondMonthEducatorExpense = secondMonthGroups.Sum(x => x.GroupLessonDays.Sum(y => y.EducatorSalary));
             var secondMonthProfit = secondMonthIncomes - (secondMonthExpense + secondMonthEducatorExpense);
 
             var culture = CultureInfo.CreateSpecificCulture("tr-TR");
             var retVal = new AdminDashboardWidgetVm();
-            retVal.Value = firstMonthProfit.GetValueOrDefault().ToString(culture);
+            retVal.Value = decimal.Round(firstMonthProfit.GetValueOrDefault(),2).ToString(culture);
             var rate = (((firstMonthProfit.GetValueOrDefault() - secondMonthProfit.GetValueOrDefault()) * 100) / secondMonthProfit.GetValueOrDefault());
             retVal.IsPositive = rate > 0;
             retVal.Rate = Math.Abs((int)rate).ToString();
@@ -95,30 +95,71 @@ namespace NitelikliBilisim.Business.Repositories
             return retVal;
         }
 
-        public AdminDashboardSalesChartDataVm GetSalesChartData()
+        public AdminDashboardChartDataVm GetSalesChartData()
         {
-            //var salesData = _context.OnlinePaymentDetailsInfos
-            //    .Where(x => x.CreatedDate.Year == DateTime.Now.Date.Year)
-            //    .GroupBy(x => x.CreatedDate.Month)
-            //    .Select(x => new
-            //    {
-            //        Key = x.Key,
-            //        Value = x.Sum(x => x.MerchantPayout)
-            //    }).ToDictionary(x=>x.Key,x=>x.Value);
             var currentCulture = CultureInfo.CreateSpecificCulture("tr-TR");
             var salesData = _context.OnlinePaymentDetailsInfos
-                .Where(x => x.CreatedDate.Year == DateTime.Now.Date.Year)
-                .GroupBy(x => new { x.CreatedDate.Date.Month, x.CreatedDate.Year })
-                .Select(x => new ApexChartModel
+                .Where(x => x.CreatedDate.Year == DateTime.Now.Date.Year && !x.IsCancelled);
+            var sales = new List<ApexChartModel>();
+            var month = DateTime.Now.Month;
+            for (int i = 1; i <= month; i++)
+            {
+                var currentMonthSales = salesData.Where(x => x.CreatedDate.Month == i).Sum(x => x.PaidPrice);
+                sales.Add(new ApexChartModel
                 {
-                    x = x.Key.Month.ToString()+"."+x.Key.Year.ToString(),
-                    y = x.Sum(x => x.PaidPrice).ToString(currentCulture)
-                }).ToArray();
+                    x = new DateTime(2020, i, 1).ToString("MMMM", currentCulture),
+                    y = currentMonthSales.ToString(currentCulture)
+                });
+            }
 
-            var retVal = new AdminDashboardSalesChartDataVm();
-            retVal.Values =salesData;
+            var retVal = new AdminDashboardChartDataVm();
+            retVal.Values = sales.ToArray();
             return retVal;
         }
+
+        public AdminDashboardChartDataVm GetGroupExpenseChartData()
+        {
+            var currentCulture = CultureInfo.CreateSpecificCulture("tr-TR");
+            var expenseData = _context.GroupExpenses
+                .Where(x => x.CreatedDate.Year == DateTime.Now.Date.Year);
+            var expenses = new List<ApexChartModel>();
+            var month = DateTime.Now.Month;
+            for (int i = 1; i <= month; i++)
+            {
+                var currentMonthSales = expenseData.Where(x => x.CreatedDate.Month == i).Sum(x => x.Price*x.Count);
+                expenses.Add(new ApexChartModel
+                {
+                    x = new DateTime(2020, i, 1).ToString("MMMM", currentCulture),
+                    y = currentMonthSales.ToString(currentCulture)
+                });
+            }
+            var retVal = new AdminDashboardChartDataVm();
+            retVal.Values = expenses.ToArray();
+            return retVal;
+        }
+
+        public AdminDashboardChartDataVm GetEducatorExpenseChartData()
+        {
+            var currentCulture = CultureInfo.CreateSpecificCulture("tr-TR");
+            var expenseData = _context.GroupLessonDays
+                .Where(x => x.DateOfLesson.Year == DateTime.Now.Date.Year);
+            var expenses = new List<ApexChartModel>();
+            var month = DateTime.Now.Month;
+            for (int i = 1; i <= month; i++)
+            {
+                var currentMonthSales = expenseData.Where(x => x.DateOfLesson.Month == i).Sum(x => x.EducatorSalary.GetValueOrDefault());
+                expenses.Add(new ApexChartModel
+                {
+                    x = new DateTime(2020, i, 1).ToString("MMMM", currentCulture),
+                    y = currentMonthSales.ToString(currentCulture)
+                });
+            }
+            var retVal = new AdminDashboardChartDataVm();
+            retVal.Values = expenses.ToArray();
+            return retVal;
+        }
+
+
     }
 }
 

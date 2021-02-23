@@ -96,10 +96,10 @@
                         <div class="row ">
                             <div class="col-xl-3 col-lg-6">
                                 <div class="card l-bg-cherry">
-                                    <div  class="card-statistic-3 p-4">
+                                    <div class="card-statistic-3 p-4">
                                         <div class="card-icon card-icon-large"><i class="fa fa-shopping-cart fa-5x"></i></div>
                                         <div class="mb-4">
-                                            <h5 class="card-title mb-0 text-white"><a class="text-white" asp-area="Admin" asp-controller="EarningsReport" asp-action="SalesReport">Satışlar</a></h5>
+                                            <h5 class="card-title mb-0 text-white"><a class="text-white" title="Satış Raporu" asp-area="Admin" asp-controller="EarningsReport" asp-action="SalesReport">Satışlar</a></h5>
                                         </div>
                                         <div class="row align-items-center mb-2 d-flex">
                                             <div class="col-md-12 text-center loading" style="display:none;">
@@ -122,10 +122,10 @@
                                     <div class="card-statistic-3 p-4">
                                         <div class="card-icon card-icon-large"><i class="fa fa-5x fa-user"></i></div>
                                         <div class="mb-4">
-                                            <h5 class="card-title mb-0 text-white"><a class="text-white" asp-area="Admin" asp-controller="Student" asp-action="Index">Öğrenci</a></h5>
+                                            <h5 class="card-title mb-0 text-white"><a class="text-white" title="Öğrenci Listesi" asp-area="Admin" asp-controller="Student" asp-action="Index">Öğrenci</a></h5>
                                         </div>
                                         <div class="row align-items-center mb-2 d-flex">
-                                            <div class="col-md-12 text-center loading"  style="display:none;">
+                                            <div class="col-md-12 text-center loading" style="display:none;">
                                                 <img src="~/img/loader.gif" height="50" width="50" alt="Loading..." />
                                             </div>
                                             <div class="col-12">
@@ -145,7 +145,7 @@
                                     <div class="card-statistic-3 p-4">
                                         <div class="card-icon card-icon-large"><i class="fa fa-5x fa-users"></i></div>
                                         <div class="mb-4">
-                                            <h5 class="card-title mb-0 text-white"><a class="text-white" asp-area="Admin" asp-controller="EducationGroup" asp-action="List">Grup</a></h5>
+                                            <h5 class="card-title mb-0 text-white"><a title="Grup Listesi" class="text-white" asp-area="Admin" asp-controller="EducationGroup" asp-action="List">Grup</a></h5>
                                         </div>
                                         <div class="row align-items-center mb-2 d-flex">
                                             <div class="col-md-12 text-center loading" style="display:none;">
@@ -198,7 +198,7 @@
     <div class="col-md-12">
         <div class="card">
             <h5 class="card-header">
-                Aylara Göre Satış Grafiği
+                Aylara Göre Gelir-Gider Grafiği
             </h5>
             <div class="card-body">
                 <div class="row">
@@ -214,6 +214,7 @@
 @section postScripts{
     <script src="~/vendor\apexcharts\dist\apexcharts.min.js"></script>
     <script>
+
         /* fields */
         var studentCount = $("#studentCount");
         var educationGroupCount = $("#educationGroupCount");
@@ -236,6 +237,103 @@
             loadStudentInfoWidget();
             loadChartData();
         }
+        Apex.chart = {
+            locales: [
+                {
+                    "name": "tr",
+                    "options": {
+                        "months": [
+                            "Ocak",
+                            "Şubat",
+                            "Mart",
+                            "Nisan",
+                            "Mayıs",
+                            "Haziran",
+                            "Temmuz",
+                            "Ağustos",
+                            "Eylül",
+                            "Ekim",
+                            "Kasım",
+                            "Aralık"
+                        ],
+                        "shortMonths": [
+                            "Oca",
+                            "Şub",
+                            "Mar",
+                            "Nis",
+                            "May",
+                            "Haz",
+                            "Tem",
+                            "Ağu",
+                            "Eyl",
+                            "Eki",
+                            "Kas",
+                            "Ara"
+                        ],
+                        "days": [
+                            "Pazar",
+                            "Pazartesi",
+                            "Salı",
+                            "Çarşamba",
+                            "Perşembe",
+                            "Cuma",
+                            "Cumartesi"
+                        ],
+                        "shortDays": ["Paz", "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt"],
+                        "toolbar": {
+                            "exportToSVG": "SVG İndir",
+                            "exportToPNG": "PNG İndir",
+                            "exportToCSV": "CSV İndir",
+                            "menu": "Menü",
+                            "selection": "Seçim",
+                            "selectionZoom": "Seçim Yakınlaştır",
+                            "zoomIn": "Yakınlaştır",
+                            "zoomOut": "Uzaklaştır",
+                            "pan": "Kaydır",
+                            "reset": "Yakınlaştırmayı Sıfırla"
+                        }
+                    }
+                }
+
+            ],
+            defaultLocale: "tr"
+        };
+        var options = {
+            series: [],
+            chart: {
+                height: 350,
+                type: 'line',
+                zoom: {
+                    enabled: true
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                curve: 'straight'
+            },
+            noData: {
+                text: 'Yükleniyor...'
+            },
+            colors: ['#2ecc71', '#f1c40f', '#e74c3c'],
+            title: {
+                text: '',
+                align: 'left'
+            },
+            grid: {
+                row: {
+                    colors: ['#f3f3f3', 'transparent'],
+                    opacity: 0.5
+                },
+            },
+            xaxis: {
+                type: 'category',
+
+            }
+        };
+        var chart = new ApexCharts(document.querySelector("#chart"), options);
+        chart.render();
         function loadStudentInfoWidget() {
             $(".loading").show();
             $.ajax({
@@ -257,7 +355,7 @@
                             studentRateStatus.html('<i class="fa fa-arrow-down"></i>');
                         }
                         //SalesWidget
-                        salesPrice.text("₺ "+salesInfoWidget.value);
+                        salesPrice.text("₺ " + salesInfoWidget.value);
                         salesRate.text(salesInfoWidget.rate + ' %');
                         if (salesInfoWidget.isPositive) {
                             salesRateStatus.html('<i class="fa fa-arrow-up"></i>');
@@ -285,61 +383,40 @@
                     }
                 },
                 complete: function () {
-                   $(".loading").hide();
+                    $(".loading").hide();
                 }
             });
         }
-        var options = {     
-            series: [],
-            chart: {
-                height: 350,
-                type: 'line',
-                zoom: {
-                    enabled: true
-                }
-            },
-            dataLabels: {
-                enabled: false
-            },
-            stroke: {
-                curve: 'straight'
-            },
-            noData: {
-                text: 'Yükleniyor...'
-            },
-            title: {
-                text: 'Aylara Göre Satışlar',
-                align: 'left'
-            },
-            grid: {
-                row: {
-                    colors: ['#f3f3f3', 'transparent'],
-                    opacity: 0.5
-                },
-            },
-            xaxis: {
-                type: 'category',
-            }
-        };
-        var chart = new ApexCharts(document.querySelector("#chart"), options);
-        chart.render();
 
         function loadChartData() {
-           
+
             $.ajax({
                 url: "/admin/dashboard/sales-chart-data",
                 method: "get",
                 success: (res) => {
+                    console.log(res);
                     if (res.isSuccess) {
-                        chart.updateSeries([{
-                            name: 'Sales',
-                            data: res.data.values
-                        }])
-                    } else {
-
+                        chart.updateSeries([
+                            {
+                                name: "Satışlar",
+                                data: res.data.salesChartData.values
+                            },
+                            {
+                                name: "Eğitmen Ödemeleri",
+                                data: res.data.educatorExpenseChartData.values
+                            },
+                            {
+                                name: "Grup Giderleri",
+                                data: res.data.groupExpensesChartData.values
+                            }
+                        ], true);
                     }
                 }
             });
         }
+
+
+
+
     </script>
 }
