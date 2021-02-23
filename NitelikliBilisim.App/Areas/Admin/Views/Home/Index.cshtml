@@ -210,6 +210,36 @@
         </div>
     </div>
 </div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <h5 class="card-header">
+                Son Satışlar
+            </h5>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="last-sales-grid"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <h5 class="card-header">
+                Son İadeler
+            </h5>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="last-refunds-grid"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section postScripts{
     <script src="~/vendor\apexcharts\dist\apexcharts.min.js"></script>
@@ -228,7 +258,7 @@
         var salesRateStatus = $("#salesRateStatus");
         var educationGroupRateStatus = $("#educationGroupRateStatus");
         var profitRateStatus = $("#profitRateStatus");
-
+        
         /* assignments */
         $(document).ready(document_onLoad);
 
@@ -236,6 +266,8 @@
         function document_onLoad() {
             loadStudentInfoWidget();
             loadChartData();
+            createLastSalesGrid();
+            createLastRefundsGrid();
         }
         Apex.chart = {
             locales: [
@@ -394,7 +426,6 @@
                 url: "/admin/dashboard/sales-chart-data",
                 method: "get",
                 success: (res) => {
-                    console.log(res);
                     if (res.isSuccess) {
                         chart.updateSeries([
                             {
@@ -416,7 +447,178 @@
         }
 
 
+        function createLastSalesGrid() {
+            $("#last-sales-grid").dxDataGrid({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    key: "id",
+                    loadUrl: "../../api/home/get-last-sales"
+                }),
+                remoteOperations: {
+                    paging: true,
+                    filtering: true,
+                    sorting: true,
+                    grouping: true,
+                    summary: true,
+                    groupPaging: true
+                },
+                showBorders: true,
+                showColumnLines: true,
+                showRowLines: true,
+                headerFilter: {
+                    visible: true
+                },
+                allowHeaderFiltering: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                paging: {
+                    pageSize: 5
+                },
+                onContentReady: function () {
+                    var deleteButtons = $(".btn-confirmation-modal-trigger");
+                    for (var i = 0; i < deleteButtons.length; i++) {
+                        var btn = deleteButtons[i];
+                        btn.onclick = btnConfirmationModalTrigger_onClick;
+                    }
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10],
+                    showInfo: true
+                },
+                columns: [
+                    {
+                        caption: "Tarih",
+                        dataField: "date",
+                        dataType: "date",
+                        format: 'dd/MM/yyyy',
+                        sortOrder: "desc",
+                        width: 120
+                    },
+                    {
+                        caption: "Ad",
+                        dataField: "studentName",
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            $(`<a target="_blank" href="/admin/ogrenci-detay?studentId=${current.studentId}">${current.studentName}</a>`)
+                                .appendTo(container);
+                        }
+                    },
+                    {
+                        caption: "Soyad",
+                        dataField: "studentSurname",
+                        dataField: "studentSurname",
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            $(`<a target="_blank" href="/admin/ogrenci-detay?studentId=${current.studentId}">${current.studentSurname}</a>`)
+                                .appendTo(container);
+                        }
+                    },
+                    {
+                        caption: "Grup",
+                        dataField: "groupName",
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            $(`<a target="_blank" href="/admin/grup-detay/${current.groupId}">${current.groupName}</a>`)
+                                .appendTo(container);
+                        }
+                    }, {
+                        caption: "Ödeme Tutarı",
+                        dataField: "paidPrice",
+                        customizeText: function (paidPrice) {
+                            return paidPrice.value + " ₺";
+                        }
+                    }
+                ]
+            });
+        }
 
+        function createLastRefundsGrid() {
+            $("#last-refunds-grid").dxDataGrid({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    key: "id",
+                    loadUrl: "../../api/home/get-last-refunds"
+                }),
+                remoteOperations: {
+                    paging: true,
+                    filtering: true,
+                    sorting: true,
+                    grouping: true,
+                    summary: true,
+                    groupPaging: true
+                },
+                showBorders: true,
+                showColumnLines: true,
+                showRowLines: true,
+                headerFilter: {
+                    visible: true
+                },
+                allowHeaderFiltering: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                paging: {
+                    pageSize: 5
+                },
+                onContentReady: function () {
+                    var deleteButtons = $(".btn-confirmation-modal-trigger");
+                    for (var i = 0; i < deleteButtons.length; i++) {
+                        var btn = deleteButtons[i];
+                        btn.onclick = btnConfirmationModalTrigger_onClick;
+                    }
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10],
+                    showInfo: true
+                },
+                columns: [
+                    {
+                        caption: "Tarih",
+                        dataField: "refundDate",
+                        dataType: "date",
+                        format: 'dd/MM/yyyy',
+                        sortOrder: "desc",
+                        width: 120
+                    },
+                    {
+                        caption: "Ad",
+                        dataField: "studentName",
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            $(`<a target="_blank" href="/admin/ogrenci-detay?studentId=${current.studentId}">${current.studentName}</a>`)
+                                .appendTo(container);
+                        }
+                    },
+                    {
+                        caption: "Soyad",
+                        dataField: "studentSurname",
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            $(`<a target="_blank" href="/admin/ogrenci-detay?studentId=${current.studentId}">${current.studentSurname}</a>`)
+                                .appendTo(container);
+                        }
+                    },
+                    {
+                        caption: "Grup",
+                        dataField: "groupName",
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            $(`<a target="_blank" href="/admin/grup-detay/${current.groupId}">${current.groupName}</a>`)
+                                .appendTo(container);
+                        }
+                    }, {
+                        caption: "İade Tutarı",
+                        dataField: "refundPrice",
+                        customizeText: function (paidPrice) {
+                            return paidPrice.value + " ₺";
+                        }
+                    }
+                ]
+            });
+        }
 
     </script>
 }

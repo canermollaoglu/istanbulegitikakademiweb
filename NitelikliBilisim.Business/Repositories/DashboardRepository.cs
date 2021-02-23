@@ -34,6 +34,54 @@ namespace NitelikliBilisim.Business.Repositories
             return retVal;
         }
 
+        public IQueryable<LastRefundVm> GetLastRefunds()
+        {
+            var data = from onlinePaymentDetailInfo in _context.OnlinePaymentDetailsInfos
+                       join invoiceDetail in _context.InvoiceDetails on onlinePaymentDetailInfo.Id equals invoiceDetail.Id
+                       join invoice in _context.Invoices on invoiceDetail.InvoiceId equals invoice.Id
+                       join eGroup in _context.EducationGroups on invoiceDetail.GroupId equals eGroup.Id
+                       join education in _context.Educations on eGroup.EducationId equals education.Id
+                       join user in _context.Users on invoice.CustomerId equals user.Id
+                       where onlinePaymentDetailInfo.IsCancelled
+                       select new LastRefundVm
+                       {
+                           Id = onlinePaymentDetailInfo.Id,
+                           StudentId=user.Id,
+                           GroupId = eGroup.Id,
+                           RefundDate = onlinePaymentDetailInfo.CancellationDate.Value,
+                           StudentName = user.Name,
+                           StudentSurname = user.Surname,
+                           EducationName = education.Name,
+                           GroupName = eGroup.GroupName,
+                           RefundPrice = onlinePaymentDetailInfo.RefundPrice
+                       };
+            return data;
+        }
+
+        public IQueryable<LastSalesVm> GetLastSales()
+        {
+            var data = from onlinePaymentDetailInfo in _context.OnlinePaymentDetailsInfos
+                       join invoiceDetail in _context.InvoiceDetails on onlinePaymentDetailInfo.Id equals invoiceDetail.Id
+                       join invoice in _context.Invoices on invoiceDetail.InvoiceId equals invoice.Id
+                       join eGroup in _context.EducationGroups on invoiceDetail.GroupId equals eGroup.Id
+                       join education in _context.Educations on eGroup.EducationId equals education.Id
+                       join user in _context.Users on invoice.CustomerId equals user.Id
+                       where !onlinePaymentDetailInfo.IsCancelled
+                       select new LastSalesVm
+                       {
+                           Id = onlinePaymentDetailInfo.Id,
+                           StudentId = user.Id,
+                           GroupId  = eGroup.Id,
+                           Date = onlinePaymentDetailInfo.CreatedDate,
+                           StudentName = user.Name,
+                           StudentSurname = user.Surname,
+                           EducationName = education.Name,
+                           GroupName = eGroup.GroupName,
+                           PaidPrice = onlinePaymentDetailInfo.PaidPrice
+                       };
+            return data;
+        }
+
         public AdminDashboardWidgetVm GetSalesInfo()
         {
             var culture = CultureInfo.CreateSpecificCulture("tr-TR");
@@ -72,7 +120,7 @@ namespace NitelikliBilisim.Business.Repositories
                 .Where(x => firstMonthGroupIds.Contains(x.GroupId) && !x.OnlinePaymentDetailInfo.IsCancelled)
                 .Select(x => x.OnlinePaymentDetailInfo)
                 .Sum(x => x.MerchantPayout);
-            var firstMonthExpense = _context.GroupExpenses.Where(x => firstMonthGroupIds.Contains(x.GroupId)).Sum(x => x.Price*x.Count);
+            var firstMonthExpense = _context.GroupExpenses.Where(x => firstMonthGroupIds.Contains(x.GroupId)).Sum(x => x.Price * x.Count);
             var firstMonthEducatorExpense = firstMonthGroups.Sum(x => x.GroupLessonDays.Sum(y => y.EducatorSalary));
             var firstMonthProfit = firstMonthIncomes - (firstMonthExpense + firstMonthEducatorExpense);
 
@@ -81,13 +129,13 @@ namespace NitelikliBilisim.Business.Repositories
             var secondMonthIncomes = _context.InvoiceDetails.Include(x => x.OnlinePaymentDetailInfo)
                .Where(x => secondMonthGroupIds.Contains(x.GroupId) && !x.OnlinePaymentDetailInfo.IsCancelled)
                .Sum(x => x.OnlinePaymentDetailInfo.MerchantPayout);
-            var secondMonthExpense = _context.GroupExpenses.Where(x => secondMonthGroupIds.Contains(x.GroupId)).Sum(x => x.Price*x.Count);
+            var secondMonthExpense = _context.GroupExpenses.Where(x => secondMonthGroupIds.Contains(x.GroupId)).Sum(x => x.Price * x.Count);
             var secondMonthEducatorExpense = secondMonthGroups.Sum(x => x.GroupLessonDays.Sum(y => y.EducatorSalary));
             var secondMonthProfit = secondMonthIncomes - (secondMonthExpense + secondMonthEducatorExpense);
 
             var culture = CultureInfo.CreateSpecificCulture("tr-TR");
             var retVal = new AdminDashboardWidgetVm();
-            retVal.Value = decimal.Round(firstMonthProfit.GetValueOrDefault(),2).ToString(culture);
+            retVal.Value = decimal.Round(firstMonthProfit.GetValueOrDefault(), 2).ToString(culture);
             var rate = (((firstMonthProfit.GetValueOrDefault() - secondMonthProfit.GetValueOrDefault()) * 100) / secondMonthProfit.GetValueOrDefault());
             retVal.IsPositive = rate > 0;
             retVal.Rate = Math.Abs((int)rate).ToString();
@@ -126,7 +174,7 @@ namespace NitelikliBilisim.Business.Repositories
             var month = DateTime.Now.Month;
             for (int i = 1; i <= month; i++)
             {
-                var currentMonthSales = expenseData.Where(x => x.CreatedDate.Month == i).Sum(x => x.Price*x.Count);
+                var currentMonthSales = expenseData.Where(x => x.CreatedDate.Month == i).Sum(x => x.Price * x.Count);
                 expenses.Add(new ApexChartModel
                 {
                     x = new DateTime(2020, i, 1).ToString("MMMM", currentCulture),
