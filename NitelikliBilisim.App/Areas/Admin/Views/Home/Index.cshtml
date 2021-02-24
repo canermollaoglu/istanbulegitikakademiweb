@@ -520,7 +520,7 @@
                         dataField: "groupName",
                         cellTemplate: function (container, options) {
                             var current = options.data;
-                            $(`<a target="_blank" href="/admin/grup-detay/${current.groupId}">${current.groupName}</a>`)
+                            $(`<a target="_blank" title="${current.educationName}" href="/admin/grup-detay/${current.groupId}">${current.groupName}</a>`)
                                 .appendTo(container);
                         }
                     }, {
@@ -606,7 +606,7 @@
                         dataField: "groupName",
                         cellTemplate: function (container, options) {
                             var current = options.data;
-                            $(`<a target="_blank" href="/admin/grup-detay/${current.groupId}">${current.groupName}</a>`)
+                            $(`<a target="_blank" title="${current.educationName}" href="/admin/grup-detay/${current.groupId}">${current.groupName}</a>`)
                                 .appendTo(container);
                         }
                     }, {
