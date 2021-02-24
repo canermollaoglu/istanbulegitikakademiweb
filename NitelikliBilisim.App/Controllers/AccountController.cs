@@ -69,7 +69,7 @@ namespace NitelikliBilisim.App.Controllers
                 return Json(new ResponseModel
                 {
                     isSuccess = false,
-                    errors = ModelStateUtil.GetErrors(ModelState)
+                    message = ModelStateUtil.GetErrors(ModelState).Aggregate((x, y) => x + "<br>"+y)
                 });
 
 

@@ -4,4 +4,621 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Admin Paneli</h1>
+@section styles{
+    <link href="~/vendor\apexcharts\dist\apexcharts.css" rel="stylesheet" />
+    <style>
+        .card {
+            background-color: #fff;
+            border-radius: 10px;
+            border: none;
+            position: relative;
+            margin-bottom: 30px;
+            box-shadow: 0 0.46875rem 2.1875rem rgba(90,97,105,0.1), 0 0.9375rem 1.40625rem rgba(90,97,105,0.1), 0 0.25rem 0.53125rem rgba(90,97,105,0.12), 0 0.125rem 0.1875rem rgba(90,97,105,0.1);
+        }
+
+        .l-bg-cherry {
+            background: linear-gradient(to right, #493240, #f09) !important;
+            color: #fff;
+            min-height: 150px;
+        }
+
+        .l-bg-blue-dark {
+            background: linear-gradient(to right, #373b44, #4286f4) !important;
+            color: #fff;
+            min-height: 150px;
+        }
+
+        .l-bg-green-dark {
+            background: linear-gradient(to right, #0a504a, #38ef7d) !important;
+            color: #fff;
+            min-height: 150px;
+        }
+
+        .l-bg-orange-dark {
+            background: linear-gradient(to right, #a86008, #ffba56) !important;
+            color: #fff;
+            min-height: 150px;
+        }
+
+        .card .card-statistic-3 .card-icon-large .fas, .card .card-statistic-3 .card-icon-large .far, .card .card-statistic-3 .card-icon-large .fab, .card .card-statistic-3 .card-icon-large .fal {
+            font-size: 110px;
+        }
+
+        .card .card-statistic-3 .card-icon {
+            text-align: center;
+            line-height: 50px;
+            margin-left: 15px;
+            color: #000;
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            opacity: 0.1;
+        }
+
+        .l-bg-cyan {
+            background: linear-gradient(135deg, #289cf5, #84c0ec) !important;
+            color: #fff;
+            min-height: 150px;
+        }
+
+        .l-bg-green {
+            background: linear-gradient(135deg, #23bdb8 0%, #43e794 100%) !important;
+            color: #fff;
+            min-height: 150px;
+        }
+
+        .l-bg-orange {
+            background: linear-gradient(to right, #f9900e, #ffba56) !important;
+            color: #fff;
+            min-height: 150px;
+        }
+
+        .l-bg-cyan {
+            background: linear-gradient(135deg, #289cf5, #84c0ec) !important;
+            color: #fff;
+            min-height: 150px;
+        }
+
+        .text-white {
+            color: #fff !important;
+        }
+    </style>
+}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <h5 class="card-header">
+                1 Aylık Değişim Grafikleri
+            </h5>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 ">
+                        <div class="row ">
+                            <div class="col-xl-3 col-lg-6">
+                                <div class="card l-bg-cherry">
+                                    <div class="card-statistic-3 p-4">
+                                        <div class="card-icon card-icon-large"><i class="fa fa-shopping-cart fa-5x"></i></div>
+                                        <div class="mb-4">
+                                            <h5 class="card-title mb-0 text-white"><a class="text-white" title="Satış Raporu" asp-area="Admin" asp-controller="EarningsReport" asp-action="SalesReport">Satışlar</a></h5>
+                                        </div>
+                                        <div class="row align-items-center mb-2 d-flex">
+                                            <div class="col-md-12 text-center loading" style="display:none;">
+                                                <img src="~/img/loader.gif" height="50" width="50" alt="Loading..." />
+                                            </div>
+                                            <div class="col-12">
+                                                <h3 title="Son 30 gün içerisinde yapılan ödeme toplamı." id="salesPrice" class="d-flex align-items-center mb-0 text-white">
+                                                </h3>
+                                            </div>
+                                            <div class="col-12 mt-4 text-right">
+                                                <span id="salesRate"></span><span id="salesRateStatus"></span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-6">
+                                <div class="card l-bg-blue-dark">
+                                    <div class="card-statistic-3 p-4">
+                                        <div class="card-icon card-icon-large"><i class="fa fa-5x fa-user"></i></div>
+                                        <div class="mb-4">
+                                            <h5 class="card-title mb-0 text-white"><a class="text-white" title="Öğrenci Listesi" asp-area="Admin" asp-controller="Student" asp-action="Index">Öğrenci</a></h5>
+                                        </div>
+                                        <div class="row align-items-center mb-2 d-flex">
+                                            <div class="col-md-12 text-center loading" style="display:none;">
+                                                <img src="~/img/loader.gif" height="50" width="50" alt="Loading..." />
+                                            </div>
+                                            <div class="col-12">
+                                                <h3 title="son 30 gün içerisinde kaydolan öğrenci sayısı." id="studentCount" class="d-flex align-items-center mb-0 text-white">
+                                                </h3>
+                                            </div>
+                                            <div class="col-12 mt-4 text-right">
+                                                <span id="studentRate"></span> <span id="studentRateStatus"></span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-6">
+                                <div class="card l-bg-green-dark">
+                                    <div class="card-statistic-3 p-4">
+                                        <div class="card-icon card-icon-large"><i class="fa fa-5x fa-users"></i></div>
+                                        <div class="mb-4">
+                                            <h5 class="card-title mb-0 text-white"><a title="Grup Listesi" class="text-white" asp-area="Admin" asp-controller="EducationGroup" asp-action="List">Grup</a></h5>
+                                        </div>
+                                        <div class="row align-items-center mb-2 d-flex">
+                                            <div class="col-md-12 text-center loading" style="display:none;">
+                                                <img src="~/img/loader.gif" height="50" width="50" alt="Loading..." />
+                                            </div>
+                                            <div class="col-12">
+                                                <h3 title="Son 30 gün içerisinde başlayan grup sayısı." id="educationGroupCount" class="d-flex align-items-center mb-0 text-white">
+                                                </h3>
+                                            </div>
+                                            <div class="col-12 text-right mt-4">
+                                                <span id="educationGroupRate"></span><span id="educationGroupRateStatus"></span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-6">
+                                <div class="card l-bg-orange-dark">
+                                    <div class="card-statistic-3 p-4">
+                                        <div class="card-icon card-icon-large"><i class="fa fa-area-chart  fa-5x"></i></div>
+                                        <div class="mb-4">
+                                            <h5 class="card-title mb-0 text-white">Kâr</h5>
+                                        </div>
+                                        <div class="row align-items-center mb-2 d-flex">
+                                            <div class="col-md-12 text-center loading" style="display:none;">
+                                                <img src="~/img/loader.gif" height="50" width="50" alt="Loading..." />
+                                            </div>
+                                            <div class="col-12">
+                                                <h3 title="Son 30 gün içerisinde açılmış olan gruplardan elde edilen ciro - komisyon - eğitmen ücretleri - grup giderleri." id="profitPrice" class="d-flex align-items-center mb-0 text-white">
+                                                </h3>
+                                            </div>
+                                            <div class="col-12 mt-4 text-right">
+                                                <span id="profitRate"> </span> <span id="profitRateStatus"></span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <h5 class="card-header">
+                Aylara Göre Gelir-Gider Grafiği
+            </h5>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 ">
+                        <div id="chart"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <h5 class="card-header">
+                Son Satışlar
+            </h5>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="last-sales-grid"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <h5 class="card-header">
+                Son İadeler
+            </h5>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="last-refunds-grid"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section postScripts{
+    <script src="~/vendor\apexcharts\dist\apexcharts.min.js"></script>
+    <script>
+
+        /* fields */
+        var studentCount = $("#studentCount");
+        var educationGroupCount = $("#educationGroupCount");
+        var salesPrice = $("#salesPrice");
+        var profitPrice = $("#profitPrice");
+        var studentRate = $("#studentRate");
+        var salesRate = $("#salesRate");
+        var educationGroupRate = $("#educationGroupRate");
+        var profitRate = $("#profitRate");
+        var studentRateStatus = $("#studentRateStatus");
+        var salesRateStatus = $("#salesRateStatus");
+        var educationGroupRateStatus = $("#educationGroupRateStatus");
+        var profitRateStatus = $("#profitRateStatus");
+        
+        /* assignments */
+        $(document).ready(document_onLoad);
+
+        /* events */
+        function document_onLoad() {
+            loadStudentInfoWidget();
+            loadChartData();
+            createLastSalesGrid();
+            createLastRefundsGrid();
+        }
+        Apex.chart = {
+            locales: [
+                {
+                    "name": "tr",
+                    "options": {
+                        "months": [
+                            "Ocak",
+                            "Şubat",
+                            "Mart",
+                            "Nisan",
+                            "Mayıs",
+                            "Haziran",
+                            "Temmuz",
+                            "Ağustos",
+                            "Eylül",
+                            "Ekim",
+                            "Kasım",
+                            "Aralık"
+                        ],
+                        "shortMonths": [
+                            "Oca",
+                            "Şub",
+                            "Mar",
+                            "Nis",
+                            "May",
+                            "Haz",
+                            "Tem",
+                            "Ağu",
+                            "Eyl",
+                            "Eki",
+                            "Kas",
+                            "Ara"
+                        ],
+                        "days": [
+                            "Pazar",
+                            "Pazartesi",
+                            "Salı",
+                            "Çarşamba",
+                            "Perşembe",
+                            "Cuma",
+                            "Cumartesi"
+                        ],
+                        "shortDays": ["Paz", "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt"],
+                        "toolbar": {
+                            "exportToSVG": "SVG İndir",
+                            "exportToPNG": "PNG İndir",
+                            "exportToCSV": "CSV İndir",
+                            "menu": "Menü",
+                            "selection": "Seçim",
+                            "selectionZoom": "Seçim Yakınlaştır",
+                            "zoomIn": "Yakınlaştır",
+                            "zoomOut": "Uzaklaştır",
+                            "pan": "Kaydır",
+                            "reset": "Yakınlaştırmayı Sıfırla"
+                        }
+                    }
+                }
+
+            ],
+            defaultLocale: "tr"
+        };
+        var options = {
+            series: [],
+            chart: {
+                height: 350,
+                type: 'line',
+                zoom: {
+                    enabled: true
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                curve: 'straight'
+            },
+            noData: {
+                text: 'Yükleniyor...'
+            },
+            colors: ['#2ecc71', '#f1c40f', '#e74c3c'],
+            title: {
+                text: '',
+                align: 'left'
+            },
+            grid: {
+                row: {
+                    colors: ['#f3f3f3', 'transparent'],
+                    opacity: 0.5
+                },
+            },
+            xaxis: {
+                type: 'category',
+
+            }
+        };
+        var chart = new ApexCharts(document.querySelector("#chart"), options);
+        chart.render();
+        function loadStudentInfoWidget() {
+            $(".loading").show();
+            $.ajax({
+                url: "/admin/dashboard/widget-infos",
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        var studentInfoWidget = res.data.studentInfoWidget;
+                        var salesInfoWidget = res.data.salesInfoWidget;
+                        var edcuationGroupWidget = res.data.educationGroupWidget;
+                        var profitWidget = res.data.profitWidget;
+
+                        //StudentWidget
+                        studentCount.text(studentInfoWidget.value);
+                        studentRate.text(studentInfoWidget.rate + ' %');
+                        if (studentInfoWidget.isPositive) {
+                            studentRateStatus.html('<i class="fa fa-arrow-up"></i>');
+                        } else {
+                            studentRateStatus.html('<i class="fa fa-arrow-down"></i>');
+                        }
+                        //SalesWidget
+                        salesPrice.text("₺ " + salesInfoWidget.value);
+                        salesRate.text(salesInfoWidget.rate + ' %');
+                        if (salesInfoWidget.isPositive) {
+                            salesRateStatus.html('<i class="fa fa-arrow-up"></i>');
+                        } else {
+                            salesRateStatus.html('<i class="fa fa-arrow-down"></i>');
+                        }
+                        //EducationGroupWidget
+                        educationGroupCount.text(edcuationGroupWidget.value);
+                        educationGroupRate.text(edcuationGroupWidget.rate + ' %');
+                        if (edcuationGroupWidget.isPositive) {
+                            educationGroupRateStatus.html('<i class="fa fa-arrow-up"></i>');
+                        } else {
+                            educationGroupRateStatus.html('<i class="fa fa-arrow-down"></i>');
+                        }
+                        //ProfitWidget
+                        profitPrice.text("₺ " + profitWidget.value);
+                        profitRate.text(profitWidget.rate + ' %');
+                        if (profitWidget.isPositive) {
+                            profitRateStatus.html('<i class="fa fa-arrow-up"></i>');
+                        } else {
+                            profitRateStatus.html('<i class="fa fa-arrow-down"></i>');
+                        }
+                    } else {
+
+                    }
+                },
+                complete: function () {
+                    $(".loading").hide();
+                }
+            });
+        }
+
+        function loadChartData() {
+
+            $.ajax({
+                url: "/admin/dashboard/sales-chart-data",
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        chart.updateSeries([
+                            {
+                                name: "Satışlar",
+                                data: res.data.salesChartData.values
+                            },
+                            {
+                                name: "Eğitmen Ödemeleri",
+                                data: res.data.educatorExpenseChartData.values
+                            },
+                            {
+                                name: "Grup Giderleri",
+                                data: res.data.groupExpensesChartData.values
+                            }
+                        ], true);
+                    }
+                }
+            });
+        }
+
+
+        function createLastSalesGrid() {
+            $("#last-sales-grid").dxDataGrid({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    key: "id",
+                    loadUrl: "../../api/home/get-last-sales"
+                }),
+                remoteOperations: {
+                    paging: true,
+                    filtering: true,
+                    sorting: true,
+                    grouping: true,
+                    summary: true,
+                    groupPaging: true
+                },
+                showBorders: true,
+                showColumnLines: true,
+                showRowLines: true,
+                headerFilter: {
+                    visible: true
+                },
+                allowHeaderFiltering: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                paging: {
+                    pageSize: 5
+                },
+                onContentReady: function () {
+                    var deleteButtons = $(".btn-confirmation-modal-trigger");
+                    for (var i = 0; i < deleteButtons.length; i++) {
+                        var btn = deleteButtons[i];
+                        btn.onclick = btnConfirmationModalTrigger_onClick;
+                    }
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10],
+                    showInfo: true
+                },
+                columns: [
+                    {
+                        caption: "Tarih",
+                        dataField: "date",
+                        dataType: "date",
+                        format: 'dd/MM/yyyy',
+                        sortOrder: "desc",
+                        width: 120
+                    },
+                    {
+                        caption: "Ad",
+                        dataField: "studentName",
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            $(`<a target="_blank" href="/admin/ogrenci-detay?studentId=${current.studentId}">${current.studentName}</a>`)
+                                .appendTo(container);
+                        }
+                    },
+                    {
+                        caption: "Soyad",
+                        dataField: "studentSurname",
+                        dataField: "studentSurname",
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            $(`<a target="_blank" href="/admin/ogrenci-detay?studentId=${current.studentId}">${current.studentSurname}</a>`)
+                                .appendTo(container);
+                        }
+                    },
+                    {
+                        caption: "Grup",
+                        dataField: "groupName",
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            $(`<a target="_blank" href="/admin/grup-detay/${current.groupId}">${current.groupName}</a>`)
+                                .appendTo(container);
+                        }
+                    }, {
+                        caption: "Ödeme Tutarı",
+                        dataField: "paidPrice",
+                        customizeText: function (paidPrice) {
+                            return paidPrice.value + " ₺";
+                        }
+                    }
+                ]
+            });
+        }
+
+        function createLastRefundsGrid() {
+            $("#last-refunds-grid").dxDataGrid({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    key: "id",
+                    loadUrl: "../../api/home/get-last-refunds"
+                }),
+                remoteOperations: {
+                    paging: true,
+                    filtering: true,
+                    sorting: true,
+                    grouping: true,
+                    summary: true,
+                    groupPaging: true
+                },
+                showBorders: true,
+                showColumnLines: true,
+                showRowLines: true,
+                headerFilter: {
+                    visible: true
+                },
+                allowHeaderFiltering: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                paging: {
+                    pageSize: 5
+                },
+                onContentReady: function () {
+                    var deleteButtons = $(".btn-confirmation-modal-trigger");
+                    for (var i = 0; i < deleteButtons.length; i++) {
+                        var btn = deleteButtons[i];
+                        btn.onclick = btnConfirmationModalTrigger_onClick;
+                    }
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10],
+                    showInfo: true
+                },
+                columns: [
+                    {
+                        caption: "Tarih",
+                        dataField: "refundDate",
+                        dataType: "date",
+                        format: 'dd/MM/yyyy',
+                        sortOrder: "desc",
+                        width: 120
+                    },
+                    {
+                        caption: "Ad",
+                        dataField: "studentName",
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            $(`<a target="_blank" href="/admin/ogrenci-detay?studentId=${current.studentId}">${current.studentName}</a>`)
+                                .appendTo(container);
+                        }
+                    },
+                    {
+                        caption: "Soyad",
+                        dataField: "studentSurname",
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            $(`<a target="_blank" href="/admin/ogrenci-detay?studentId=${current.studentId}">${current.studentSurname}</a>`)
+                                .appendTo(container);
+                        }
+                    },
+                    {
+                        caption: "Grup",
+                        dataField: "groupName",
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            $(`<a target="_blank" href="/admin/grup-detay/${current.groupId}">${current.groupName}</a>`)
+                                .appendTo(container);
+                        }
+                    }, {
+                        caption: "İade Tutarı",
+                        dataField: "refundPrice",
+                        customizeText: function (paidPrice) {
+                            return paidPrice.value + " ₺";
+                        }
+                    }
+                ]
+            });
+        }
+
+    </script>
+}
