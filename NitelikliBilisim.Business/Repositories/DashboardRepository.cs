@@ -167,7 +167,7 @@ namespace NitelikliBilisim.Business.Repositories
             var month = DateTime.Now.Month;
             for (int i = 1; i <= month; i++)
             {
-                var currentMonthSales = salesData.Where(x => x.CreatedDate.Month == i).Sum(x => x.PaidPrice);
+                var currentMonthSales = salesData.Where(x => x.CreatedDate.Month == i).Sum(x => x.MerchantPayout);
                 sales.Add(new ApexChartModel
                 {
                     x = new DateTime(2020, i, 1).ToString("MMMM", currentCulture),
