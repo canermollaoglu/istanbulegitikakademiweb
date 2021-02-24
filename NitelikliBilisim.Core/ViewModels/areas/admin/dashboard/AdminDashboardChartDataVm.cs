@@ -7,6 +7,6 @@
     public class ApexChartModel
     {
         public string x { get; set; }
-        public string y { get; set; }
+        public decimal y { get; set; }
     }
 }

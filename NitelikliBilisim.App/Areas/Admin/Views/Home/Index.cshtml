@@ -8,8 +8,9 @@
     <link href="~/vendor\apexcharts\dist\apexcharts.css" rel="stylesheet" />
     <style>
         .popover {
-            max-width:800px;
+            max-width: 800px;
         }
+
         .card {
             background-color: #fff;
             border-radius: 10px;
@@ -246,6 +247,7 @@
 
 @section postScripts{
     <script src="~/vendor\apexcharts\dist\apexcharts.min.js"></script>
+
     <script>
 
         /* fields */
@@ -261,7 +263,7 @@
         var salesRateStatus = $("#salesRateStatus");
         var educationGroupRateStatus = $("#educationGroupRateStatus");
         var profitRateStatus = $("#profitRateStatus");
-        
+
         /* assignments */
         $(document).ready(document_onLoad);
 
@@ -345,6 +347,11 @@
                     enabled: true
                 }
             },
+            tooltip: {
+                y: {
+                    formatter: (value) => { return "₺ " + formatMoney(value) },
+                }
+            },
             dataLabels: {
                 enabled: false
             },
@@ -393,7 +400,7 @@
                             studentRateStatus.html('<i class="fa fa-arrow-down"></i>');
                         }
                         //SalesWidget
-                        salesPrice.text("₺ " + salesInfoWidget.value);
+                        salesPrice.text(salesInfoWidget.value);
                         salesRate.text(salesInfoWidget.rate + ' %');
                         if (salesInfoWidget.isPositive) {
                             salesRateStatus.html('<i class="fa fa-arrow-up"></i>');
@@ -409,7 +416,7 @@
                             educationGroupRateStatus.html('<i class="fa fa-arrow-down"></i>');
                         }
                         //ProfitWidget
-                        profitPrice.text("₺ " + profitWidget.value);
+                        profitPrice.text(profitWidget.value);
                         profitRate.text(profitWidget.rate + ' %');
                         if (profitWidget.isPositive) {
                             profitRateStatus.html('<i class="fa fa-arrow-up"></i>');
@@ -452,7 +459,7 @@
             });
         }
 
-        
+
         function createLastSalesGrid() {
             $("#last-sales-grid").dxDataGrid({
                 dataSource: DevExpress.data.AspNet.createStore({
@@ -625,6 +632,8 @@
                 ]
             });
         }
+
+        
 
     </script>
 }
