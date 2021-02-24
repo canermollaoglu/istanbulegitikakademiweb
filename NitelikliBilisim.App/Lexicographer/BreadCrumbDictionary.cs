@@ -70,6 +70,9 @@ namespace NitelikliBilisim.App.Lexicographer
             /*EducationGrup*/
             _dictionary.Add("AdminEducationGrupList",
             new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Eğitim Grupları Listele", url: null) });
+            _dictionary.Add("AdminEducationGrupAdd",
+            new BreadCrumbItem[] { new BreadCrumbItem(title: "Eğitim Grubu Listesi", url: "/admin/gruplar"), new BreadCrumbItem(title: "Eğitim Grubu Ekle", url: null) });
+
             _dictionary.Add("AdminEducationGrupDetail",
             new BreadCrumbItem[] { new BreadCrumbItem(title: "Eğitim Grubu Listesi", url: "/admin/gruplar"), new BreadCrumbItem(title: "Eğitim Grubu Detayı", url: null) });
             _dictionary.Add("AdminEducationGrupEnterAttendance",

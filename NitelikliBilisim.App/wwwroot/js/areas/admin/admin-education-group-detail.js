@@ -329,17 +329,19 @@ function calculateSalesPrice() {
     var salesPrice = $("#input-sales-price");
     var kayipOncesi = (100 * expectedStudentCount) / (100 - estimatedLossRate);
 
+
     var profitability = totalExpense * expectedRateOfProfitability / 100;
     var operasyonKarTutari = totalExpense + profitability;
     console.clear();
+    console.log("Toplam Gider:" + totalExpense);
     console.log("Operasyon Kar Tutarı : " + operasyonKarTutari);
     console.log("Beklenen Kar Tutarı : " + profitability);
     //--------//
     var sonuc = 0;
-    var posCommissionPrice = (profitability + totalExpense) / kayipOncesi * (posComissionRate / 100);
+    var posCommissionPrice = (profitability + totalExpense) / expectedStudentCount * (posComissionRate / 100);
     console.log("Pos komisyon tutarı: " + posCommissionPrice);
 
-    var posKomisyonTutari = posCommissionPrice * kayipOncesi;
+    var posKomisyonTutari = posCommissionPrice * expectedStudentCount;
     console.log("Pos komisyon tutarı X kayip: " + posKomisyonTutari);
 
 
@@ -533,7 +535,7 @@ function fillCalculationsTable(data) {
     `<td class="text-right text-danger">${data.groupExpenses}</td>` +
         "</tr>" +
         "<tr>" +
-    `<td>Eğitmen Ücreti Toplamı <i class="fa fa-info-circle" title="${data.educatorExpensesAverage} (Ort Saatlik Ücret) X ${data.totalEducationHours} (Toplam Eğitim Saati)X 1.45"></i></td>` +
+    `<td>Eğitmen Ücreti Toplamı <i class="fa fa-info-circle" title="Eğitmen ücretleri toplamı X 1.45"></i></td>` +
     `<td class="text-right text-danger">${data.educatorExpenses}</td>` +
         "</tr>" +
         "<tr>" +
