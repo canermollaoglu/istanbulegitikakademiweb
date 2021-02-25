@@ -31,7 +31,6 @@ namespace NitelikliBilisim.App.Filters
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
-            //Controller ve Action name için ActionDescriptor seçiliyor.
             var descriptor = context.ActionDescriptor as ControllerActionDescriptor;
             string currentUserRoleName = context.HttpContext.User.FindFirstValue(ClaimTypes.Role);
             string sessionId = context.HttpContext.Session.GetString("userSessionId");
@@ -42,15 +41,39 @@ namespace NitelikliBilisim.App.Filters
             }
             //if (context.HttpContext.Request.Method.Equals("POST"))
 
+            #region Referans Url Bilgileri Loglanıyor
+
+            var parameters = context.HttpContext.Request.Query;
+
+            if (parameters.ContainsKey("c_name"))
+            {
+                var referrer = context.HttpContext.Request.GetTypedHeaders().Referer;
+                string referrerUrl =referrer!=null?referrer.ToString():"www.niteliklibilisim.com.tr";
+                string campaignName = parameters["c_name"].ToString();
+                var ipAddress = context.HttpContext.Connection.RemoteIpAddress.ToString();
+
+                CampaignLog cLog = new CampaignLog
+                {
+                    Id = Guid.NewGuid(),
+                    RefererUrl = referrerUrl,
+                    CampaignName = campaignName,
+                    IpAddress = ipAddress
+                };
+                CheckCampaignLogIndex();
+                _elasticClient.IndexDocument(cLog);
+
+            }
+            #endregion
+
             //Admin işlemleri log dışı tutuluyor.
             if (descriptor.ControllerName == "Blog" && descriptor.ActionName == "Detail")
             {
-                if (context.ActionArguments["seoUrl"]!=null && context.ActionArguments["catSeoUrl"]!=null)
+                if (context.ActionArguments["seoUrl"] != null && context.ActionArguments["catSeoUrl"] != null)
                 {
                     var ipAddress = context.HttpContext.Connection.RemoteIpAddress.ToString();
                     string catSeoUrl = context.ActionArguments["catSeoUrl"].ToString();
                     string seoUrl = context.ActionArguments["seoUrl"].ToString();
-                   var anyIp = AnyIpAddress(ipAddress,catSeoUrl,seoUrl);
+                    var anyIp = AnyIpAddress(ipAddress, catSeoUrl, seoUrl);
                     if (!anyIp)
                     {
                         BlogViewLog bViewLog = new BlogViewLog
@@ -67,9 +90,9 @@ namespace NitelikliBilisim.App.Filters
                 }
             }
 
+            #region Create and Insert TransactionLog
             if (currentUserRoleName != "Admin")
             {
-                #region Create and Insert TransactionLog
                 TransactionLog log = new TransactionLog
                 {
                     ControllerName = descriptor.ControllerName,
@@ -91,20 +114,20 @@ namespace NitelikliBilisim.App.Filters
                 //Nesne es ye insert ediliyor.
                 var response = _elasticClient.IndexDocument(log);
                 Console.WriteLine(response.IsValid);
-                #endregion
             }
+            #endregion
         }
 
 
         #region Helper Methods
 
-        private bool AnyIpAddress(string ipAddress,string catSeoUrl, string seoUrl)
+        private bool AnyIpAddress(string ipAddress, string catSeoUrl, string seoUrl)
         {
             int count = 0;
             var counts = _elasticClient.Count<BlogViewLog>(s =>
             s.Query(
                 q =>
-                q.Term(t=>t.IpAddress,ipAddress) &&
+                q.Term(t => t.IpAddress, ipAddress) &&
                 q.Term(t => t.CatSeoUrl, catSeoUrl) &&
                 q.Term(t => t.SeoUrl, seoUrl)));
             if (counts.IsValid)
@@ -119,7 +142,7 @@ namespace NitelikliBilisim.App.Filters
         /// </summary>
         private List<LogParameter> GetParameters(IDictionary<string, object> actionArguments)
         {
-            return actionArguments.Where(x=>x.Value!=null).Select(x => new LogParameter
+            return actionArguments.Where(x => x.Value != null).Select(x => new LogParameter
             {
                 ParameterName = x.Key,
                 ParameterValue = JsonConvert.SerializeObject(x.Value),
@@ -136,7 +159,7 @@ namespace NitelikliBilisim.App.Filters
         private bool UpdateTransactionLogsSetUserId(string userId, string sessionId)
         {
             var response = _elasticClient.UpdateByQuery<TransactionLog>(u => u
-                .Query(q => q.Term(t => t.SessionId,sessionId) && q.Bool(b => b.MustNot(m => m.Exists(t => t.Field(f => f.UserId)))))
+                .Query(q => q.Term(t => t.SessionId, sessionId) && q.Bool(b => b.MustNot(m => m.Exists(t => t.Field(f => f.UserId)))))
                 .Script(s => s.
                 Source("ctx._source.userId = params.userId")
                 .Lang(ScriptLang.Painless)
@@ -158,8 +181,18 @@ namespace NitelikliBilisim.App.Filters
                    index.Map<TransactionLog>(x => x.AutoMap()));
             }
         }
+        private void CheckCampaignLogIndex()
+        {
+            var response = _elasticClient.Indices.Exists(ElasticSearchIndexNameUtility.CampaignLogIndex);
+            if (!response.Exists)
+            {
+                _elasticClient.Indices.Create(ElasticSearchIndexNameUtility.CampaignLogIndex, index =>
+                   index.Map<CampaignLog>(x => x.AutoMap()));
+            }
+        }
 
-        private void CheckBlogViewLogIndex() {
+        private void CheckBlogViewLogIndex()
+        {
             var response = _elasticClient.Indices.Exists(ElasticSearchIndexNameUtility.BlogViewLogIndex);
             if (!response.Exists)
             {

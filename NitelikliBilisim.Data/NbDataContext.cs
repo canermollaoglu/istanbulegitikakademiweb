@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using NitelikliBilisim.Core.Abstracts;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Entities.blog;
+using NitelikliBilisim.Core.Entities.campaign;
 using NitelikliBilisim.Core.Entities.educations;
 using NitelikliBilisim.Core.Entities.groups;
 using NitelikliBilisim.Core.Entities.helper;
@@ -162,6 +163,7 @@ namespace NitelikliBilisim.Data
         public DbSet<BannerAd> BannerAds { get; set; }
         public DbSet<Bridge_EducatorCategory> Bridge_EducatorCategories { get; set; }
         public DbSet<CustomerCertificate> CustomerCertificates { get; set; }
+        public DbSet<Campaign> Campaigns { get; set; }
 
 
     }

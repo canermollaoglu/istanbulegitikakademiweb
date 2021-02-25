@@ -1,0 +1,268 @@
+﻿
+@{
+    ViewData["Title"] = "Kampanya Listesi";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-table"></i>  Kampanyalar
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card-header">
+                    <i class="fa fa-table"></i> Kampanya Ekle
+                </div>
+                <div class="card-body">
+                    <form id="form-add-campaign">
+                        @Html.AntiForgeryToken()
+                        <div class="form-group">
+                            <label>İsim</label>
+                            <input type="text" required class="form-control" id="input-name">
+                        </div>
+                        <div class="form-group">
+                            <label>Hedef Url</label>
+                            <input type="text" required class="form-control" id="input-target-url">
+                        </div>
+                        <div class="form-group">
+                            <label>Kampanya Url</label>
+                            <input type="text" required class="form-control" id="input-campaign-url">
+                        </div>
+                        <div class="form-group">
+                            <label>Açıklama</label>
+                            <textarea type="text" required rows="4" class="form-control" id="input-description"></textarea>
+                        </div>
+                        <button id="btn-save" type="button" class="btn btn-success btn-sm pull-right">Kaydet</button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card-header">
+                    <i class="fa fa-table"></i> Kampanya Listesi
+                </div>
+                <div class="card-body">
+                    <div id="campaign-grid"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="card-footer small text-muted">Veri tarihi: @DateTime.Now</div>
+</div>
+
+@section postScripts{
+    <script>
+        /* fields */
+        var confirmModalBuilder = new AlertSupport.ConfirmModalBuilder();
+        /* elements */
+        var inputName = document.getElementById("input-name");
+        var inputTargetUrl = document.getElementById("input-target-url");
+        var inputDescription = document.getElementById("input-description");
+        var btnSave = $("#btn-save");
+
+        /* assignments */
+        $(document).ready(document_onLoad);
+        btnSave.on("click", btnSave_onClick);
+        $("#input-name").focusout(function () {
+            createCampaignUrl();
+        });
+        $("#input-target-url").focusout(function () {
+            createCampaignUrl();
+        });
+        /* events */
+        function document_onLoad() {
+            confirmModalBuilder.buildModal({
+                title: "Emin misiniz?",
+                bodyText: "Seçmiş olduğunuz kayıt kalıcı olarak silinecektir.",
+                cancelText: "Hayır, iptal et",
+                confirmText: "Evet, eminim",
+                onConfirmClick: confirm_onClick
+            });
+            createGrid();
+        }
+
+        function btnConfirmationModalTrigger_onClick() {
+            var url = this.getAttribute("data-url");
+            confirmModalBuilder.setUrl(url);
+            confirmModalBuilder.display();
+        }
+
+        function confirm_onClick() {
+            var url = this.getAttribute("data-url");
+            $.ajax({
+                url: url,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        createGrid();
+                    } else {
+                        var resultAlert = new AlertSupport.ResultAlert();
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors,
+                            message: "Hataları düzeltiniz"
+                        });
+                    }
+                }
+            });
+        }
+
+        function btnSave_onClick() {
+            btnSave.off("click");
+            var data = {
+                CampaignName: inputName.value,
+                CampaignUrl: inputTargetUrl.value,
+                Description: inputDescription.value
+            }
+
+            var tokenVerfier = new SecuritySupport.TokenVerifier();
+            data = tokenVerfier.addToken("form-add-campaign", data);
+            $.ajax({
+                url: "/admin/campaign/add",
+                method: "post",
+                data: data,
+                success: (res) => {
+                    var resultAlert = new AlertSupport.ResultAlert();
+                    if (res.isSuccess) {
+                        $("#form-add-campaign")[0].reset();
+                        createGrid();
+                        resultAlert.display({
+                            success: true,
+                            message: "İşlem başarılı.",
+                        });
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors,
+                            message: "Sayfayı yenilemek için {link}",
+                            redirectElement: {
+                                content: "tıklayınız",
+                                link: location.href
+                            }
+                        });
+                    }
+                    btnSave.on("click", btnSave_onClick);
+                }
+            });
+        }
+        function createCampaignUrl() {
+            var name = $("#input-name").val();
+            var targetUrl = $("#input-target-url").val();
+            var campaignUrl = $("#input-campaign-url");
+            if (name && targetUrl) {
+                campaignUrl.val(targetUrl + "?c_name=" + name)
+            }
+        }
+
+        /*DataGrid*/
+        function createGrid() {
+            $("#campaign-grid").dxDataGrid({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    key: "id",
+                    loadUrl: "../../api/campaign/get-campaigns"
+                }),
+                remoteOperations: {
+                    paging: true,
+                    filtering: true,
+                    sorting: true,
+                    grouping: true,
+                    summary: true,
+                    groupPaging: true
+                },
+                showBorders: true,
+                showColumnLines: true,
+                showRowLines: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                searchPanel: {
+                    visible: true,
+                    width: 120
+                },
+                paging: {
+                    pageSize: 10
+                },
+                onContentReady: function () {
+                    var deleteButtons = $(".btn-confirmation-modal-trigger");
+                    for (var i = 0; i < deleteButtons.length; i++) {
+                        var btn = deleteButtons[i];
+                        btn.onclick = btnConfirmationModalTrigger_onClick;
+                    }
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10, 20],
+                    showInfo: true
+                },
+                export: {
+                    enabled: true
+                },
+                onExporting: function (e) {
+                    var workbook = new ExcelJS.Workbook();
+                    var worksheet = workbook.addWorksheet('Kampanya Listesi');
+                    DevExpress.excelExporter.exportDataGrid({
+                        worksheet: worksheet,
+                        component: e.component,
+                        customizeCell: function (options) {
+                            var excelCell = options;
+                            excelCell.font = { name: 'Arial', size: 12 };
+                            excelCell.alignment = { horizontal: 'left' };
+                        }
+                    }).then(function () {
+                        workbook.xlsx.writeBuffer().then(function (buffer) {
+                            saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'Kampanya Listesi' + parseInt(Math.random() * 1000000000) + '.xlsx');
+                        });
+                    });
+                    e.cancel = true;
+                },
+                grouping: {
+                    autoExpandAll: true
+                },
+                headerFilter: {
+                    visible: true
+                },
+                groupPanel: {
+                    visible: true
+                },
+                allowColumnResizing: true,
+                columnAutoWidth: true,
+                columns: [
+                    {
+                        caption: "İsim",
+                        dataField: "campaignName",
+                    },
+                    {
+                        caption: "Hedef Url",
+                        dataField:"campaignUrl",
+                    },
+                    {
+                        caption: "Kampanya Url",
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            $(`<span>${current.campaignUrl}?c_name=${current.campaignName}</span>`)
+                                .appendTo(container);
+                            
+                        }
+                    },
+                    {
+                        caption: "Yönet",
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            $(`<a title="Düzenle" class="btn btn-primary btn-sm" href="/admin/kampanya-guncelle?campaignId=${current.id}">Güncelle</a>`)
+                                .appendTo(container);
+                            $(`<a title="Sil" href="#" class="btn btn-danger btn-sm btn-confirmation-modal-trigger" data-url="/admin/campaign/delete?campaignId=${current.id}" style="cursor:pointer;">Sil</a>`)
+                                .appendTo(container);
+                        }
+                    }
+                ]
+            });
+        }
+
+
+    </script>
+}
