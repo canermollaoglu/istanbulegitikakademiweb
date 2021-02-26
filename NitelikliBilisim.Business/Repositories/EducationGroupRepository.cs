@@ -200,7 +200,7 @@ namespace NitelikliBilisim.Business.Repositories
                                   ClassRoomName = classRoom.Name,
                                   DateOfLesson = lessonDay.DateOfLesson,
                                   EducatorFullName = $"{educator.Name} {educator.Surname}",
-                                  EducatorSalary = lessonDay.EducatorSalary.GetValueOrDefault() * eGroup.Education.HoursPerDay,
+                                  EducatorSalary = lessonDay.EducatorSalary.GetValueOrDefault(),
                                   Id = lessonDay.Id,
                                   HasAttendanceRecord = lessonDay.HasAttendanceRecord
                               }).OrderBy(x => x.DateOfLesson).ToList();
@@ -318,7 +318,7 @@ namespace NitelikliBilisim.Business.Repositories
                             HasAttendanceRecord = false,
                             IsImmuneToAutoChange = false,
                             EducatorId = entity.EducatorId,
-                            EducatorSalary = educatorSalary
+                            EducatorSalary = educatorSalary*entity.Education.HoursPerDay
                         });
 
                     _context.GroupLessonDays.AddRange(groupLessonDays);
@@ -344,12 +344,12 @@ namespace NitelikliBilisim.Business.Repositories
             var lessonDays = group.GroupLessonDays.ToList();
 
             decimal groupExpenses = group.GroupExpenses.Sum(x => (x.Price * x.Count));
-            decimal educatorExpensesAverage = lessonDays != null && lessonDays.Count > 0 ? lessonDays.Average(x => x.EducatorSalary.GetValueOrDefault()) : 0;
+           // decimal educatorExpensesAverage = lessonDays != null && lessonDays.Count > 0 ? lessonDays.Average(x => x.EducatorSalary.GetValueOrDefault()) : 0;
 
             decimal studentIncomes = GetGroupTotalIncomes(groupId);
             decimal totalPosCommissionAmount = GetGroupTotalPosCommission(groupId);
 
-            decimal totalEducatorExpense = (totalHours * educatorExpensesAverage) * (decimal)1.45;
+            decimal totalEducatorExpense = lessonDays!=null&& lessonDays.Count>0?lessonDays.Sum(x=>x.EducatorSalary.GetValueOrDefault()) * (decimal)1.45:0;
             decimal totalExpense = groupExpenses + totalEducatorExpense;
             decimal kdv = totalExpense * 8 / 100;
             totalExpense = totalExpense + kdv;
@@ -360,7 +360,6 @@ namespace NitelikliBilisim.Business.Repositories
             return new GroupExpenseAndIncomeVm
             {
                 TotalEducationHours = totalHours,
-                EducatorExpensesAverage = educatorExpensesAverage,
                 GroupExpenses = groupExpenses.ToString("c", culture),
                 EducatorExpenses = totalEducatorExpense.ToString("c", culture),
                 TotalExpenses = totalExpense.ToString("c", culture),
@@ -616,8 +615,8 @@ namespace NitelikliBilisim.Business.Repositories
             decimal groupExpenses = group.GroupExpenses.Sum(x => (x.Price * x.Count));
             var totalHours = group.Education.HoursPerDay * group.Education.Days;
             var lessonDays = group.GroupLessonDays.ToList();
-            decimal educatorExpensesAverage = lessonDays != null && lessonDays.Count > 0 ? lessonDays.Average(x => x.EducatorSalary.GetValueOrDefault()) : 0;
-            var educatorExpenses = (educatorExpensesAverage * (decimal)1.45) * totalHours;
+            var totalEducatorExpense =lessonDays.Sum(x => x.EducatorSalary.GetValueOrDefault());
+            var educatorExpenses = (totalEducatorExpense * (decimal)1.45);
             return groupExpenses + educatorExpenses;
         }
         /// <summary>

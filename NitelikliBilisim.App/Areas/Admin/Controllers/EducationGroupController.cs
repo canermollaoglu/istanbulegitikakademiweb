@@ -157,6 +157,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/grup-olustur")]
         public IActionResult Add()
         {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationGrupAdd");
             var model = new AddGetVm
             {
                 Educations = _unitOfWork.Education.Get(x => x.IsActive, x => x.OrderBy(o => o.CategoryId)),

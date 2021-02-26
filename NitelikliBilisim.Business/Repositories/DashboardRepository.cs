@@ -18,20 +18,27 @@ namespace NitelikliBilisim.Business.Repositories
         {
             _context = context;
         }
-
+        /// <summary>
+        /// Son 1 ay içerisinde kayıt olan öğrenci sayısını ve bir önceki aya olan oranını döner.
+        /// </summary>
+        /// <returns></returns>
         public AdminDashboardWidgetVm GetStudentInfo()
         {
             var firstMonth = _context.Customers.Count(x => x.CreatedDate >= DateTime.Now.Date.AddMonths(-1));
             var secondMonth = _context.Customers.Count(x => x.CreatedDate >= DateTime.Now.Date.AddMonths(-2) && x.CreatedDate < DateTime.Now.Date.AddMonths(-1));
             var retVal = new AdminDashboardWidgetVm();
             retVal.Value = firstMonth.ToString();
-            var rate = (((firstMonth - secondMonth) * 100) / secondMonth);
-            retVal.IsPositive = rate > 0;
+
+            var rate =secondMonth>0 && firstMonth>0? (((firstMonth - secondMonth) * 100) / secondMonth):0;
+            retVal.IsPositive = rate >= 0;
             retVal.Rate = Math.Abs(rate).ToString();
 
             return retVal;
         }
-
+        /// <summary>
+        /// Yapılan iade bilgilerini döner
+        /// </summary>
+        /// <returns></returns>
         public IQueryable<LastRefundVm> GetLastRefunds()
         {
             var data = from onlinePaymentDetailInfo in _context.OnlinePaymentDetailsInfos
@@ -55,7 +62,10 @@ namespace NitelikliBilisim.Business.Repositories
                        };
             return data;
         }
-
+        /// <summary>
+        /// Satış bilgilerini döner (İadeler hariç)
+        /// </summary>
+        /// <returns></returns>
         public IQueryable<LastSalesVm> GetLastSales()
         {
             var data = from onlinePaymentDetailInfo in _context.OnlinePaymentDetailsInfos
@@ -79,7 +89,10 @@ namespace NitelikliBilisim.Business.Repositories
                        };
             return data;
         }
-
+        /// <summary>
+        /// Son 1 ay içerisinde yapılan ödemeleri (İptal edilmemişler) ve bir önceki 30 güne oranını döner
+        /// </summary>
+        /// <returns></returns>
         public AdminDashboardWidgetVm GetSalesInfo()
         {
             var culture = CultureInfo.CreateSpecificCulture("tr-TR");
@@ -87,29 +100,35 @@ namespace NitelikliBilisim.Business.Repositories
             var firstMonth = data.Where(x => x.CreatedDate >= DateTime.Now.Date.AddMonths(-1)).Sum(x => x.PaidPrice);
             var secondMonth = data.Where(x => x.CreatedDate < DateTime.Now.Date.AddMonths(-1)).Sum(x => x.PaidPrice);
             var retVal = new AdminDashboardWidgetVm();
-            retVal.Value = firstMonth.ToString(culture);
-            var rate = (((firstMonth - secondMonth) * 100) / secondMonth);
-            retVal.IsPositive = rate > 0;
+            retVal.Value = firstMonth.ToString("C",culture);
+            var rate = secondMonth > 0 && firstMonth > 0 ? (((firstMonth - secondMonth) * 100) / secondMonth):0;
+            retVal.IsPositive = rate >= 0;
             retVal.Rate = Math.Abs((int)rate).ToString();
             return retVal;
         }
-
+        /// <summary>
+        /// Son 1 ay içerisinnde açılan grup sayısını ve önceki aya oranını döner (Grup başlangıç tarihi baz alınır.)
+        /// </summary>
+        /// <returns></returns>
         public AdminDashboardWidgetVm GetEducationGroupInfo()
         {
             var firstMonth = _context.EducationGroups.Count(x => x.StartDate >= DateTime.Now.Date.AddMonths(-1));
             var secondMonth = _context.EducationGroups.Count(x => x.StartDate < DateTime.Now.Date.AddMonths(-1) && x.StartDate >= DateTime.Now.Date.AddMonths(-2));
             var retVal = new AdminDashboardWidgetVm();
             retVal.Value = firstMonth.ToString();
-            var rate = (((firstMonth - secondMonth) * 100) / secondMonth);
-            retVal.IsPositive = rate > 0;
+            var rate = secondMonth > 0 && firstMonth > 0 ? (((firstMonth - secondMonth) * 100) / secondMonth):0;
+            retVal.IsPositive = rate >= 0;
             retVal.Rate = Math.Abs(rate).ToString();
 
             return retVal;
         }
-
+        /// <summary>
+        /// Son 1 ay içerisinde açılan gruplara yapılan ödemelerden (İptal edilmemiş) grup giderleri ve eğitmen ücretleri çılarılarak kar hesaplanır.
+        /// </summary>
+        /// <returns></returns>
         public AdminDashboardWidgetVm GetProfitInfo()
         {
-            var groups = _context.EducationGroups.Include(x=>x.GroupExpenses).Include(x => x.GroupLessonDays).Where(x => x.StartDate.Date >= DateTime.Now.AddMonths(-2).Date && x.StartDate.Date<=DateTime.Now.Date).ToList();
+            var groups = _context.EducationGroups.Include(x=>x.Education).Include(x=>x.GroupExpenses).Include(x => x.GroupLessonDays).Where(x => x.StartDate.Date >= DateTime.Now.AddMonths(-2).Date && x.StartDate.Date<=DateTime.Now.Date).ToList();
 
             var firstMonthGroups = groups.Where(x => x.StartDate >= DateTime.Now.Date.AddMonths(-1));
             var firstMonthGroupIds = firstMonthGroups.Select(x => x.Id).ToList();
@@ -117,7 +136,7 @@ namespace NitelikliBilisim.Business.Repositories
                 .Where(x => firstMonthGroupIds.Contains(x.GroupId) && !x.OnlinePaymentDetailInfo.IsCancelled)
                 .Sum(x => x.OnlinePaymentDetailInfo.MerchantPayout);
             var firstMonthExpense = firstMonthGroups.Sum(x => x.GroupExpenses.Sum(y => y.Price)); //_context.GroupExpenses.Where(x => firstMonthGroupIds.Contains(x.GroupId)).Sum(x => x.Price * x.Count);
-            var firstMonthEducatorExpense = firstMonthGroups.Sum(x => x.GroupLessonDays.Sum(y => y.EducatorSalary));
+            var firstMonthEducatorExpense = firstMonthGroups.Sum(x => x.GroupLessonDays.Where(x=>x.HasAttendanceRecord).Sum(y => y.EducatorSalary.GetValueOrDefault()));
             var firstMonthProfit = firstMonthIncomes - (firstMonthExpense + firstMonthEducatorExpense);
 
             var secondMonthGroups = groups.Where(x => x.StartDate < DateTime.Now.Date.AddMonths(-1));
@@ -126,14 +145,14 @@ namespace NitelikliBilisim.Business.Repositories
                .Where(x => secondMonthGroupIds.Contains(x.GroupId) && !x.OnlinePaymentDetailInfo.IsCancelled)
                .Sum(x => x.OnlinePaymentDetailInfo.MerchantPayout);
             var secondMonthExpense = secondMonthGroups.Sum(x => x.GroupExpenses.Sum(y => y.Price));//_context.GroupExpenses.Where(x => secondMonthGroupIds.Contains(x.GroupId)).Sum(x => x.Price * x.Count);
-            var secondMonthEducatorExpense = secondMonthGroups.Sum(x => x.GroupLessonDays.Sum(y => y.EducatorSalary));
+            var secondMonthEducatorExpense = secondMonthGroups.Sum(x => x.GroupLessonDays.Where(x=>x.HasAttendanceRecord).Sum(y => y.EducatorSalary.GetValueOrDefault()));
             var secondMonthProfit = secondMonthIncomes - (secondMonthExpense + secondMonthEducatorExpense);
 
             var culture = CultureInfo.CreateSpecificCulture("tr-TR");
             var retVal = new AdminDashboardWidgetVm();
-            retVal.Value = decimal.Round(firstMonthProfit.GetValueOrDefault(), 2).ToString(culture);
-            var rate = (((firstMonthProfit.GetValueOrDefault() - secondMonthProfit.GetValueOrDefault()) * 100) / secondMonthProfit.GetValueOrDefault());
-            retVal.IsPositive = rate > 0;
+            retVal.Value = decimal.Round(firstMonthProfit, 2).ToString("C",culture);
+            var rate = firstMonthProfit > 0 && secondMonthProfit > 0 ? (((firstMonthProfit - secondMonthProfit) * 100) / secondMonthProfit):0;
+            retVal.IsPositive = rate >= 0;
             retVal.Rate = Math.Abs((int)rate).ToString();
 
             return retVal;
@@ -148,11 +167,11 @@ namespace NitelikliBilisim.Business.Repositories
             var month = DateTime.Now.Month;
             for (int i = 1; i <= month; i++)
             {
-                var currentMonthSales = salesData.Where(x => x.CreatedDate.Month == i).Sum(x => x.PaidPrice);
+                var currentMonthSales = salesData.Where(x => x.CreatedDate.Month == i).Sum(x => x.MerchantPayout);
                 sales.Add(new ApexChartModel
                 {
                     x = new DateTime(2020, i, 1).ToString("MMMM", currentCulture),
-                    y = currentMonthSales.ToString(currentCulture)
+                    y = currentMonthSales
                 });
             }
 
@@ -174,7 +193,7 @@ namespace NitelikliBilisim.Business.Repositories
                 expenses.Add(new ApexChartModel
                 {
                     x = new DateTime(2020, i, 1).ToString("MMMM", currentCulture),
-                    y = currentMonthSales.ToString(currentCulture)
+                    y = currentMonthSales
                 });
             }
             var retVal = new AdminDashboardChartDataVm();
@@ -185,8 +204,8 @@ namespace NitelikliBilisim.Business.Repositories
         public AdminDashboardChartDataVm GetEducatorExpenseChartData()
         {
             var currentCulture = CultureInfo.CreateSpecificCulture("tr-TR");
-            var expenseData = _context.GroupLessonDays
-                .Where(x => x.DateOfLesson.Year == DateTime.Now.Date.Year);
+            var expenseData = _context.GroupLessonDays.Include(x=>x.Group).ThenInclude(x=>x.Education)
+                .Where(x => x.DateOfLesson.Year == DateTime.Now.Date.Year && x.HasAttendanceRecord);
             var expenses = new List<ApexChartModel>();
             var month = DateTime.Now.Month;
             for (int i = 1; i <= month; i++)
@@ -195,7 +214,7 @@ namespace NitelikliBilisim.Business.Repositories
                 expenses.Add(new ApexChartModel
                 {
                     x = new DateTime(2020, i, 1).ToString("MMMM", currentCulture),
-                    y = currentMonthSales.ToString(currentCulture)
+                    y = currentMonthSales
                 });
             }
             var retVal = new AdminDashboardChartDataVm();

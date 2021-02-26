@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Nest;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
+using NitelikliBilisim.Core.ESOptions;
 using NitelikliBilisim.Core.ESOptions.ESEntities;
 using NitelikliBilisim.Notificator.Services;
 using System;
