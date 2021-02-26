@@ -65,6 +65,8 @@ namespace NitelikliBilisim.Business.UoW
         private BannerAdsRepository _bannerAdsRepository;
         private CustomerCertificateRepository _customerCertificateRepository;
         private DashboardRepository _dashboardRepository;
+        private CampaignRepository _campaignRepository;
+
         private IElasticClient _elasticClient;
         private IConfiguration _configuration;
         private IEmailSender _emailSender;
@@ -80,6 +82,7 @@ namespace NitelikliBilisim.Business.UoW
             _context.EnsureAutoHistory();
             return _context.SaveChanges();
         }
+        public CampaignRepository Campaign => _campaignRepository ??= new CampaignRepository(_context,_elasticClient);
         public DashboardRepository Dashboard => _dashboardRepository ??= new DashboardRepository(_context);
         public CustomerCertificateRepository CustomerCertificate => _customerCertificateRepository ??= new CustomerCertificateRepository(_context);
         public FeaturedCommentRepository FeaturedComment => _featuredCommentRepository ??= new FeaturedCommentRepository(_context);

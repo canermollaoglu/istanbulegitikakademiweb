@@ -1,0 +1,96 @@
+﻿@model NitelikliBilisim.Core.ViewModels.areas.admin.campaign.CampaignDetailsVm
+@{
+    ViewData["Title"] = "Kampanya Detayları";
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+
+
+<div class="panel-group">
+    <!--Genel Kampanya Bilgileri-->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card border-info mb-3">
+                <div class="card-header">
+                    Genel Kampanya Bilgileri
+                    <a asp-controller="Campaign" asp-action="Update" asp-route-campaignId="@Model.Id" class="btn btn-sm pull-right" title="Bilgileri Güncelle"><i class="fa fa-edit"></i></a>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <b>Kampanya Adı</b>
+                                </td>
+                                <td>
+                                  @Model.CampaignName
+                                </td>
+                                
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Oluşturulma Tarihi</b>
+                                </td>
+                                <td>
+                                    @Model.CreatedDate
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Hedef Url</b>
+                                </td>
+                                <td >
+                                    @Model.CampaignUrl
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Kampanya Url</b>
+                                </td>
+                                <td >
+                                    @($"{Model.CampaignUrl}?c_name={Model.CampaignName}")
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Açıklama</b>
+                                </td>
+                                <td >
+                                    @Model.Description
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card border-info mb-3">
+                <div class="card-header">
+                    Kampanya Trafik Bilgileri
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <td>Kaynak</td>
+                                <td>Adet</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                            @foreach (var detail in Model.Details)
+                            {
+                                <tr>
+                                    <td>@detail.Source</td>
+                                    <td>@detail.Count</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -7,6 +7,10 @@
 @section styles{
     <link href="~/vendor\apexcharts\dist\apexcharts.css" rel="stylesheet" />
     <style>
+        .popover {
+            max-width: 800px;
+        }
+
         .card {
             background-color: #fff;
             border-radius: 10px;
@@ -88,7 +92,7 @@
     <div class="col-md-12">
         <div class="card">
             <h5 class="card-header">
-                1 Aylık Değişim Grafikleri
+                1 Aylık Değişim Grafikleri <i data-trigger="hover" data-html="true" data-toggle="popover" title="Veri Kısıtları" data-content="<b>Satışlar:</b>Son bir ay içerisinde yapılan ödemeler (İptal edilmemiş) ve bir önceki ay yapılan ödemelere oranı. Pos komisyonları düşülmemiştir. <br/><b>Öğrenci:</b>Son bir ay içerisinde kayıt olan öğrenci sayısı ve bir önceki ay kayıt olan öğrenci sayısına oranı.<br/><b>Grup:</b>Son bir ay içerisinde başlayan grup sayısı ve bir önceki ay başlayan grup sayısına oranı.<br/><b>Kâr:</b>Son bir ay içerisinde açılan gruplara yapılan ödemelerden (İptal edilmemiş) pos komisyonları, grup giderleri ve eğitmen ücretleri çılarılarak kâr hesaplanır." class="fa fa-question-circle pull-right"></i>
             </h5>
             <div class="card-body">
                 <div class="row">
@@ -198,7 +202,7 @@
     <div class="col-md-12">
         <div class="card">
             <h5 class="card-header">
-                Aylara Göre Gelir-Gider Grafiği
+                Aylara Göre Gelir-Gider Grafiği <i data-trigger="hover" data-html="true" data-toggle="popover" title="Veri Kısıtları" data-content="<b>Satışlar:</b>Berlirtilen ayda yapılan ödemelerin toplamıdır.Pos komisyonlarının düşülmüş halidir.<br/><b>Eğitmen Ödemeleri:</b>Belirtilen ayda oluşturulmuş gruplar için hakedilmiş veya hakedilecek olan eğitmen ödemeleri toplamıdır.<br/><b>Grup Giderleri:</b>Belirtilen ayda oluşturulmuş grup giderleri toplamıdır." class="fa fa-question-circle pull-right"></i>
             </h5>
             <div class="card-body">
                 <div class="row">
@@ -243,6 +247,7 @@
 
 @section postScripts{
     <script src="~/vendor\apexcharts\dist\apexcharts.min.js"></script>
+
     <script>
 
         /* fields */
@@ -258,12 +263,15 @@
         var salesRateStatus = $("#salesRateStatus");
         var educationGroupRateStatus = $("#educationGroupRateStatus");
         var profitRateStatus = $("#profitRateStatus");
-        
+
         /* assignments */
         $(document).ready(document_onLoad);
 
         /* events */
         function document_onLoad() {
+            $('[data-toggle="popover"]').popover({
+                container: 'body'
+            });
             loadStudentInfoWidget();
             loadChartData();
             createLastSalesGrid();
@@ -339,6 +347,11 @@
                     enabled: true
                 }
             },
+            tooltip: {
+                y: {
+                    formatter: (value) => { return "₺ " + formatMoney(value) },
+                }
+            },
             dataLabels: {
                 enabled: false
             },
@@ -387,7 +400,7 @@
                             studentRateStatus.html('<i class="fa fa-arrow-down"></i>');
                         }
                         //SalesWidget
-                        salesPrice.text("₺ " + salesInfoWidget.value);
+                        salesPrice.text(salesInfoWidget.value);
                         salesRate.text(salesInfoWidget.rate + ' %');
                         if (salesInfoWidget.isPositive) {
                             salesRateStatus.html('<i class="fa fa-arrow-up"></i>');
@@ -403,7 +416,7 @@
                             educationGroupRateStatus.html('<i class="fa fa-arrow-down"></i>');
                         }
                         //ProfitWidget
-                        profitPrice.text("₺ " + profitWidget.value);
+                        profitPrice.text(profitWidget.value);
                         profitRate.text(profitWidget.rate + ' %');
                         if (profitWidget.isPositive) {
                             profitRateStatus.html('<i class="fa fa-arrow-up"></i>');
@@ -520,7 +533,7 @@
                         dataField: "groupName",
                         cellTemplate: function (container, options) {
                             var current = options.data;
-                            $(`<a target="_blank" href="/admin/grup-detay/${current.groupId}">${current.groupName}</a>`)
+                            $(`<a target="_blank" title="${current.educationName}" href="/admin/grup-detay/${current.groupId}">${current.groupName}</a>`)
                                 .appendTo(container);
                         }
                     }, {
@@ -606,7 +619,7 @@
                         dataField: "groupName",
                         cellTemplate: function (container, options) {
                             var current = options.data;
-                            $(`<a target="_blank" href="/admin/grup-detay/${current.groupId}">${current.groupName}</a>`)
+                            $(`<a target="_blank" title="${current.educationName}" href="/admin/grup-detay/${current.groupId}">${current.groupName}</a>`)
                                 .appendTo(container);
                         }
                     }, {
@@ -619,6 +632,8 @@
                 ]
             });
         }
+
+        
 
     </script>
 }

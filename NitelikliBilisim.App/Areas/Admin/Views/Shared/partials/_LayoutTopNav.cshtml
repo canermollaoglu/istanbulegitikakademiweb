@@ -199,6 +199,17 @@
                     </li>
                 </ul>
             </li>
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Kampanyalar">
+                <a class="nav-link nav-link-collapse" data-toggle="collapse" href="#collapseCampaigns" data-parent="#exampleAccordion">
+                    <i class="fa fa-fw fa-retweet"></i>
+                    <span class="nav-link-text">Kampanyalar</span>
+                </a>
+                <ul class="sidenav-second-level collapse" id="collapseCampaigns">
+                    <li>
+                        <a asp-controller="Campaign" asp-action="List">Kampanyalar</a>
+                    </li>
+                </ul>
+            </li>
 
             <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Diğer Ayarlar">
                 <a class="nav-link nav-link-collapse" data-toggle="collapse" href="#collapseOther" data-parent="#exampleAccordion">
@@ -207,17 +218,17 @@
                 </a>
                 <ul class="sidenav-second-level collapse" id="collapseOther">
                     <li>
-                        <a asp-controller="Offday" asp-action="Manage" >Tatil Günleri</a>
+                        <a asp-controller="Offday" asp-action="Manage">Tatil Günleri</a>
                     </li>
 
                     <li>
-                        <a asp-controller="GroupExpenseType" asp-action="List" >Grup Gider Tipleri</a>
-                    </li>  
-                           
-                    <li>   
+                        <a asp-controller="GroupExpenseType" asp-action="List">Grup Gider Tipleri</a>
+                    </li>
+
+                    <li>
                         <a asp-controller="EducationHost" asp-action="List">Eğitim Kurumları</a>
-                    </li>  
-                    <li>   
+                    </li>
+                    <li>
                         <a asp-controller="CacheManagement" asp-action="Management">Cache Yönetimi</a>
                     </li>
                 </ul>
@@ -225,7 +236,7 @@
 
 
 
-           
+
         </ul>
         <ul class="navbar-nav sidenav-toggler">
             <li class="nav-item">

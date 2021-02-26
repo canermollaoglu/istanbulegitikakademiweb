@@ -4,6 +4,7 @@ using Nest;
 using NitelikliBilisim.Core.ESOptions.ESEntities;
 using NitelikliBilisim.App.Utility;
 using System;
+using NitelikliBilisim.Core.ESOptions;
 
 namespace NitelikliBilisim.App.Extensions
 {
@@ -22,16 +23,18 @@ namespace NitelikliBilisim.App.Extensions
                  .DefaultIndex(defaultIndex)
                  .DefaultMappingFor<TransactionLog>(m => m
                     .IndexName(ElasticSearchIndexNameUtility.TransactionLogIndex)
-                    .IdProperty(p => p.Id)
-                )
+                    .IdProperty(p => p.Id))
                  .DefaultMappingFor<ExceptionInfo>(m => m
                  .IndexName(ElasticSearchIndexNameUtility.ExceptionLogIndex)
                  .IdProperty(p => p.Id))
-                 .DefaultMappingFor<BlogViewLog>(m=> m
+                 .DefaultMappingFor<BlogViewLog>(m => m
                  .IndexName(ElasticSearchIndexNameUtility.BlogViewLogIndex)
-                 .IdProperty(p=>p.Id));
+                 .IdProperty(p => p.Id))
+                 .DefaultMappingFor<CampaignLog>(m => m
+                 .IndexName(ElasticSearchIndexNameUtility.CampaignLogIndex)
+                 .IdProperty(p => p.Id));
 
-            
+
             settings.BasicAuthentication(userName, password);
 
             var client = new ElasticClient(settings);
