@@ -4,6 +4,7 @@ using Nest;
 using NitelikliBilisim.Core.ESOptions.ESEntities;
 using NitelikliBilisim.App.Utility;
 using System;
+using NitelikliBilisim.Core.ESOptions;
 
 namespace NitelikliBilisim.App.Extensions
 {

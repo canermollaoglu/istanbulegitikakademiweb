@@ -13,34 +13,44 @@
     </div>
     <div class="card-body">
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-12">
                 <div class="card-header">
                     <i class="fa fa-table"></i> Kampanya Ekle
                 </div>
                 <div class="card-body">
                     <form id="form-add-campaign">
                         @Html.AntiForgeryToken()
-                        <div class="form-group">
-                            <label>İsim</label>
-                            <input type="text" required class="form-control" id="input-name">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>İsim</label>
+                                    <input type="text" required class="form-control" id="input-name">
+                                </div>
+                                <div class="form-group">
+                                    <label>Hedef Url</label>
+                                    <input type="text" required class="form-control" id="input-target-url">
+                                </div>
+                                <div class="form-group">
+                                    <label>Kampanya Url</label>
+                                    <input type="text" required class="form-control" id="input-campaign-url">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Açıklama</label>
+                                    <textarea type="text" required rows="4" class="form-control" id="input-description"></textarea>
+                                </div>
+                                <button id="btn-save" type="button" class="btn btn-success btn-sm pull-right">Kaydet</button>
+
+                            </div>
+                            
                         </div>
-                        <div class="form-group">
-                            <label>Hedef Url</label>
-                            <input type="text" required class="form-control" id="input-target-url">
-                        </div>
-                        <div class="form-group">
-                            <label>Kampanya Url</label>
-                            <input type="text" required class="form-control" id="input-campaign-url">
-                        </div>
-                        <div class="form-group">
-                            <label>Açıklama</label>
-                            <textarea type="text" required rows="4" class="form-control" id="input-description"></textarea>
-                        </div>
-                        <button id="btn-save" type="button" class="btn btn-success btn-sm pull-right">Kaydet</button>
+                        
+                        
                     </form>
                 </div>
             </div>
-            <div class="col-md-8">
+            <div class="col-md-12">
                 <div class="card-header">
                     <i class="fa fa-table"></i> Kampanya Listesi
                 </div>
@@ -233,6 +243,18 @@
                 columnAutoWidth: true,
                 columns: [
                     {
+                        caption: "Yönet",
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            $(`<a title="Kampanya Detayları" class="btn btn-warning btn-sm" href="/admin/kampanya-detay?campaignId=${current.id}"><i class="fa fa-info"></i></a>`)
+                                .appendTo(container);
+                            $(`<a title="Düzenle" class="btn btn-primary btn-sm" href="/admin/kampanya-guncelle?campaignId=${current.id}"><i class="fa fa-edit"></i></a>`)
+                                .appendTo(container);
+                            $(`<a title="Sil" href="#" class="btn btn-danger btn-sm btn-confirmation-modal-trigger" data-url="/admin/campaign/delete?campaignId=${current.id}" style="cursor:pointer;"><i class="fa fa-trash"></i></a>`)
+                                .appendTo(container);
+                        }
+                    },
+                    {
                         caption: "İsim",
                         dataField: "campaignName",
                     },
@@ -247,16 +269,6 @@
                             $(`<span>${current.campaignUrl}?c_name=${current.campaignName}</span>`)
                                 .appendTo(container);
                             
-                        }
-                    },
-                    {
-                        caption: "Yönet",
-                        cellTemplate: function (container, options) {
-                            var current = options.data;
-                            $(`<a title="Düzenle" class="btn btn-primary btn-sm" href="/admin/kampanya-guncelle?campaignId=${current.id}">Güncelle</a>`)
-                                .appendTo(container);
-                            $(`<a title="Sil" href="#" class="btn btn-danger btn-sm btn-confirmation-modal-trigger" data-url="/admin/campaign/delete?campaignId=${current.id}" style="cursor:pointer;">Sil</a>`)
-                                .appendTo(container);
                         }
                     }
                 ]

@@ -218,6 +218,8 @@ namespace NitelikliBilisim.App.Lexicographer
                new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Kampanyalar", url: null) });
             _dictionary.Add("AdminCampaignUpdate",
               new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Kampanya Güncelle", url: null) });
+            _dictionary.Add("AdminCampaignDetail",
+             new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Kampanya Detay", url: null) });
 
         }
 

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Nest;
 using Newtonsoft.Json;
 using NitelikliBilisim.App.Utility;
+using NitelikliBilisim.Core.ESOptions;
 using NitelikliBilisim.Core.ESOptions.ESEntities;
 using System;
 using System.Collections.Generic;

@@ -1,4 +1,4 @@
-﻿namespace NitelikliBilisim.App.Utility
+﻿namespace NitelikliBilisim.Core.ESOptions
 {
     public static class ElasticSearchIndexNameUtility
     {

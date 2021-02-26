@@ -70,8 +70,18 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminCampaignUpdate");
             if (campaignId == null)
                 return Redirect("/admin/kampanya-listesi");
-            var category = _unitOfWork.Campaign.GetById(campaignId.Value);
-            return View(category);
+            var campaign = _unitOfWork.Campaign.GetById(campaignId.Value);
+            return View(campaign);
+        }
+        [HttpGet]
+        [Route("/admin/kampanya-detay")]
+        public IActionResult Detail(Guid? campaignId)
+        {
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminCampaignDetail");
+            if (campaignId == null)
+                return Redirect("/admin/kampanya-listesi");
+            var campaign = _unitOfWork.Campaign.GetCampaignDetails(campaignId.Value);
+            return View(campaign);
         }
 
         [HttpPost]
