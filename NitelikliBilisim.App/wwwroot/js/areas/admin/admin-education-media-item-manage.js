@@ -23,6 +23,11 @@ function document_onLoad() {
         style: { content: "Resim Yükle" }
     });
 }
+$(document).ajaxStart(function () {
+    $("#loading").show();
+}).ajaxStop(function () {
+    $("#loading").hide();
+});
 function btnAdd_onClick() {
     btnAdd.off("click");
     var file = fileManager.getFile();
