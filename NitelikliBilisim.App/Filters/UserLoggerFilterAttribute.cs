@@ -49,20 +49,22 @@ namespace NitelikliBilisim.App.Filters
             if (parameters.ContainsKey("c_name"))
             {
                 var referrer = context.HttpContext.Request.GetTypedHeaders().Referer;
-                string referrerUrl =referrer!=null?referrer.ToString():"www.niteliklibilisim.com.tr";
+                string referrerUrl = referrer != null ? referrer.ToString() : "www.niteliklibilisim.com.tr";
                 string campaignName = parameters["c_name"].ToString();
                 var ipAddress = context.HttpContext.Connection.RemoteIpAddress.ToString();
-
-                CampaignLog cLog = new CampaignLog
+                var anyIp = AnyIpAddressCampaignLog(ipAddress);
+                if (!anyIp)
                 {
-                    Id = Guid.NewGuid(),
-                    RefererUrl = referrerUrl,
-                    CampaignName = campaignName,
-                    IpAddress = ipAddress
-                };
-                CheckCampaignLogIndex();
-                _elasticClient.IndexDocument(cLog);
-
+                    CampaignLog cLog = new CampaignLog
+                    {
+                        Id = Guid.NewGuid(),
+                        RefererUrl = referrerUrl,
+                        CampaignName = campaignName,
+                        IpAddress = ipAddress
+                    };
+                    CheckCampaignLogIndex();
+                    _elasticClient.IndexDocument(cLog);
+                }
             }
             #endregion
 
@@ -138,6 +140,19 @@ namespace NitelikliBilisim.App.Filters
             return count > 0 ? true : false;
         }
 
+        private bool AnyIpAddressCampaignLog(string ipAddress)
+        {
+            int count = 0;
+            var counts = _elasticClient.Count<BlogViewLog>(s =>
+            s.Query(
+                q =>
+                q.Term(t => t.IpAddress, ipAddress)));
+            if (counts.IsValid)
+            {
+                count = (int)counts.Count;
+            }
+            return count > 0 ? true : false;
+        }
         /// <summary>
         /// ActionArguments içerisindeki parametreleri Liste halinde Log Parameter e map ederek döndürür.
         /// </summary>

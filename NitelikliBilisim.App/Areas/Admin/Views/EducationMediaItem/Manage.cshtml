@@ -6,6 +6,31 @@
 @section styles{
     <link href="~/assets/css/area-admin/dataTables.bootstrap4.css" rel="stylesheet" />
     <link href="~/css/lib/file-uploader.css" rel="stylesheet" />
+    <style>
+       
+        #loading {
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            position: fixed;
+            display: block;
+            opacity: 0.7;
+            background-color: #fff;
+            z-index: 99999999;
+            text-align: center;
+        }
+
+        #loading-image {
+            position: absolute;
+            top: 45%;
+            left: 45%;
+            z-index: 99999999;
+            height: 100px;
+            width: 100px;
+        }
+    </style>
+
 }
 @section alerts{
     <partial name="partials/_Alert" />
@@ -16,6 +41,9 @@
     </div>
     <div class="card-body">
         <div class="row">
+            <div id="loading">
+                <img id="loading-image" src="~/img/loader.gif" alt="Loading..." />
+            </div>
             <div class="col-md-8 offset-md-2">
                 <form id="form-add-education-media-items">
                     @Html.AntiForgeryToken()

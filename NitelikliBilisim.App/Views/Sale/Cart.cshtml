@@ -217,6 +217,9 @@
         /* functions */
         function getCartItems() {
             var items = _cart.getItems();
+            if (items.length==0) {
+                $(".checkout__next-button").attr("href", "/");
+            }
             var data = {
                 Items: items
             };
