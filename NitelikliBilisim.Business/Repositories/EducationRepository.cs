@@ -262,7 +262,60 @@ namespace NitelikliBilisim.Business.Repositories
             var hours = Context.Educations.Sum(x => x.Days);
             return hours * hoursParDay;
         }
+        public EducationUpdateInfoVm GetEducationInfo(Guid educationId)
+        {
+            var model = new EducationUpdateInfoVm();
+            var education = Context.Educations.First(x => x.Id == educationId);
+            var groups = Context.EducationGroups.Count(x => x.StartDate.Date > DateTime.Now.Date && x.EducationId == educationId);
+            var medias = Context.EducationMedias.Where(x => x.EducationId == educationId).ToList();
+            var partCount = Context.EducationParts.Count(x => x.EducationId == educationId);
+            var gainCount = Context.EducationGains.Count(x => x.EducationId == educationId);
+            var educatorCount = Context.Bridge_EducationEducators.Count(x => x.Id == educationId);
+            model.IsCreated = true;
 
+            if (medias.Count(x => x.MediaType == EducationMediaType.Card) == 0)
+            {
+                model.Messages.Add("Eğitimde kart görseli bulunmamaktadır!");
+                model.IsCreated = false;
+            }
+            if (medias.Count(x => x.MediaType == EducationMediaType.Detail) == 0)
+            {
+                model.Messages.Add("Eğitimde eğitim detay görseli bulunmamaktadır!");
+                model.IsCreated = false;
+            }
+            if (medias.Count(x => x.MediaType == EducationMediaType.List) == 0)
+            {
+                model.Messages.Add("Eğitimde liste görseli bulunmamaktadır!");
+                model.IsCreated = false;
+            }
+            if (medias.Count(x => x.MediaType == EducationMediaType.Square) == 0)
+            {
+                model.Messages.Add("Eğitimde kare görsel bulunmamaktadır!");
+                model.IsCreated = false;
+            }
+            if (partCount == 0)
+            {
+                model.Messages.Add("Eğitimde ders bulunmamaktadır!");
+                model.IsCreated = false;
+            }
+            if (gainCount == 0)
+            {
+                model.Messages.Add("Eğitimde kazanım bulunmamaktadır!");
+                model.IsCreated = false;
+            }
+            if (educatorCount == 0)
+            {
+                model.Messages.Add("Eğitimde eğitmen bulunmamaktadır!");
+                model.IsCreated = false;
+            }
+            if (groups ==0 )
+            {
+                model.Messages.Add("Eğitimde grup bulunmamaktadır. Grup ekleme işleminden sonra fiyat bilgisi girerek eğitimi otomatik aktif edebilirsiniz.");
+                model.IsCreated = false;
+            }
+
+            return model;
+        }
         public CoursesPagePagedListVm GetCoursesPageEducations(Guid? categoryId, int? hostCity, int page, OrderCriteria order, string searchKey)
         {
             var model = new CoursesPagePagedListVm();

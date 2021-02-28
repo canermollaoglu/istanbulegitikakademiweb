@@ -550,17 +550,9 @@
                                         <use xlink:href="../../assets/img/icons.svg#icon-info-i"></use>
                                     </svg>
                                 </span>
-                                @if (Model.AvaibleEducationCities.Count == 0)
-                                {
-                                    <text>Bu eğitim için aktif eğitim grubu bulunmamaktadır.</text>
-                                }
-                                else
-                                {
-                                    <text> Bu eğitimde birden fazla<br>
-                                        eğitim grubu bulunmaktadır.<br />
-                                        Lütfen eğitim almak istediğiniz grubu seçiniz.</text>
-                                }
+                                <div id="group-count-info">
 
+                                </div>
                             </div>
                             <div class="lesson-detail__card-share js-share">
                                 <span class="icon-outer">
@@ -860,6 +852,11 @@
                     selectGroups.selectedIndex = 0;
                     selectGroups_onChange();
                     cartControl();
+                    if (groups.length>1) {
+                        $("#group-count-info").html("Bu eğitimde birden fazla<br>eğitim grubu bulunmaktadır.<br/>Lütfen eğitim almak istediğiniz grubu seçiniz.");
+                    } else {
+                        $("#group-count-info").html("Bu eğitimde bir eğitim grubu bulunmaktadır.");
+                    }
                 }
             });
 

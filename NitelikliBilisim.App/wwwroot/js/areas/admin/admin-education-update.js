@@ -13,7 +13,7 @@ function document_onLoad() {
         tags: true,
         placeholder: "Ara",
         tokenSeparators: [',', ' '],
-        minimumInputLength: 3,
+        minimumInputLength: 2,
         ajax: {
             url: '/admin/educationtag/searchtag',
             dataType: 'json',
