@@ -100,7 +100,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 BasePartId = data.BasePartId
             });
 
-            _unitOfWork.Education.CheckEducationState(data.EducationId);
 
             return Json(new ResponseModel
             {
@@ -128,8 +127,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             var educationId = _unitOfWork.EducationPart.GetById(partId.Value).EducationId;
 
             _unitOfWork.EducationPart.Delete(partId.Value);
-
-            _unitOfWork.Education.CheckEducationState(educationId);
 
             return Json(new ResponseModel
             {

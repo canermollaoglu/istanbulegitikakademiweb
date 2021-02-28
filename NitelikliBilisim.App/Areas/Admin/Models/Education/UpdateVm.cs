@@ -1,4 +1,5 @@
 ﻿using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.ViewModels.areas.admin.education;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Models.Education
     {
         public Core.Entities.Education Education { get; set; }
         public List<EducationTag> RelatedTags { get; set; }
+        public EducationUpdateInfoVm EducationUpdateInfo { get; internal set; }
     }
 
     public class UpdatePostVm : EducationCrudVm

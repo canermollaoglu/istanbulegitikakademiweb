@@ -39,11 +39,13 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.Education
             var addGetVm = CreateAddGetVm();
             var education = _unitOfWork.Education.GetById(educationId);
             var relatedTags = _unitOfWork.Education.GetTags(educationId);
+            var educationInfo = _unitOfWork.Education.GetEducationInfo(educationId);
             return new UpdateGetVm
             {
                 Levels = addGetVm.Levels,
                 Education = education,
-                RelatedTags = relatedTags
+                RelatedTags = relatedTags,
+                EducationUpdateInfo = educationInfo
             };
         }
 

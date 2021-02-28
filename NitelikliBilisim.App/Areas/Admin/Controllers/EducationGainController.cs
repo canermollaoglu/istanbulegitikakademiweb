@@ -69,7 +69,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 Gain = data.Gain
             });
 
-            _unitOfWork.Education.CheckEducationState(data.EducationId);
 
             return Json(new ResponseModel
             {
@@ -91,7 +90,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
             _unitOfWork.EducationGain.Delete(gainId.Value);
 
-            _unitOfWork.Education.CheckEducationState(educationId);
 
             return Json(new ResponseModel
             {

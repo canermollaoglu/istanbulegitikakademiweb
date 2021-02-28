@@ -99,11 +99,11 @@
                             </div>
                         </div>
                         @*<div class="col-md-4">
-                            <div class="form-group">
-                                <label>Satış Fiyatı</label>
-                                <input type="number" class="form-control" id="input-price">
-                            </div>
-                        </div>*@
+                <div class="form-group">
+                    <label>Satış Fiyatı</label>
+                    <input type="number" class="form-control" id="input-price">
+                </div>
+            </div>*@
                     </div>
 
                     <!-- Ders günleri seçimi -->
@@ -151,6 +151,9 @@
                     <div class="alert alert-warning" id="education-days-info" style="display:none">
 
                     </div>
+                    <div class="alert alert-danger" id="education-error-info" style="display:none">
+
+                    </div>
                     <div class="row">
                         <div class="offset-md-10 col-md-2">
                             <button id="btn-save" type="button" class="btn_1 form-control">Kaydet</button>
@@ -183,6 +186,7 @@
         var inputQuota = $("#input-quota");
         var btnSave = $("#btn-save");
         var educationDaysInfoDiv = $("#education-days-info");
+        var educationErrorInfoDiv = $("#education-error-info");
         var groupNameValidationFeedbackDiv = $("#group-name-validation-feedback");
 
 
@@ -211,13 +215,20 @@
 
             var educationId = selectEducations.options[selectEducations.selectedIndex].value;
             $.ajax({
-                url: `/admin/get-education-days-info/${educationId}`,
+                url: `/admin/get-education-info/${educationId}`,
                 method: "get",
                 success: (res) => {
                     if (res.isSuccess) {
-                        educationDaysInfoDiv.html(`<span>Seçtiğiniz eğitim toplam ${res.data.days} gün sürmektedir.</span>`).show();
-                    } else {
-                        educationDaysInfoDiv.hide();
+                        console.log(res.data);
+                        educationDaysInfoDiv.html(`<span>Seçtiğiniz eğitim toplam ${res.data.educationDay} gün sürmektedir.</span>`).show();
+                        if (!res.data.isCreated) {
+                            $.each(res.data.messages, function () {
+                                educationErrorInfoDiv.append($("<li></li>").text(this))
+                            });
+                            educationErrorInfoDiv.append(`<span>Grup oluşturmak için eksik alanları tamamlayınız. Listeye gitmek için <a href="/admin/egitimler">tıklayınız.</a></span>`);
+                            educationErrorInfoDiv.show();
+                            btnSave.prop("disabled", true);
+                        }
                     }
                 }
             });

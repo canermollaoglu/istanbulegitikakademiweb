@@ -70,12 +70,10 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
             _unitOfWork.Education.Insert(education, data.Tags);
 
-            _unitOfWork.Education.CheckEducationState(education.Id);
-
             return Json(new ResponseModel
             {
                 isSuccess = true,
-                message = "Eğitim başarıyla eklenmiştir"
+                message = "Eğitim başarıyla eklenmiştir."
             });
         }
 

@@ -150,6 +150,74 @@ namespace NitelikliBilisim.Business.Repositories
             return model;
         }
 
+        public GroupEducationInfoVm GetEducationInfo(Guid educationId)
+        {
+            var model = new GroupEducationInfoVm();
+            var education = Context.Educations.First(x => x.Id == educationId);
+            var medias = Context.EducationMedias.Where(x => x.EducationId == educationId).ToList();
+            var partCount = Context.EducationParts.Count(x => x.EducationId == educationId);
+            var gainCount = Context.EducationGains.Count(x => x.EducationId == educationId);
+            var educatorCount = Context.Bridge_EducationEducators.Count(x => x.Id == educationId);
+            model.IsCreated = true;
+            model.EducationDay = education.Days;
+
+            if (medias.Count(x=>x.MediaType == EducationMediaType.Card)==0)
+            {
+                model.Messages.Add("Eğitimde kart görseli bulunmamaktadır!");
+                model.IsCreated = false;
+            }
+            if (medias.Count(x => x.MediaType == EducationMediaType.Detail) == 0)
+            {
+                model.Messages.Add("Eğitimde eğitim detay görseli bulunmamaktadır!");
+                model.IsCreated = false;
+            }
+            if (medias.Count(x => x.MediaType == EducationMediaType.List) == 0)
+            {
+                model.Messages.Add("Eğitimde liste görseli bulunmamaktadır!");
+                model.IsCreated = false;
+            }
+            if (medias.Count(x => x.MediaType == EducationMediaType.Square) == 0)
+            {
+                model.Messages.Add("Eğitimde kare görsel bulunmamaktadır!");
+                model.IsCreated = false;
+            }
+            if (partCount==0)
+            {
+                model.Messages.Add("Eğitimde ders bulunmamaktadır!");
+                model.IsCreated = false;
+            }
+            if (gainCount==0)
+            {
+                model.Messages.Add("Eğitimde kazanım bulunmamaktadır!");
+                model.IsCreated = false;
+            }
+            if (educatorCount==0)
+            {
+                model.Messages.Add("Eğitimde eğitmen bulunmamaktadır!");
+                model.IsCreated = false;
+            }
+            return model;
+        }
+
+        public bool CheckEducationState(Guid educationId)
+        {
+            var hasBanner = Context.EducationMedias.Count(x => x.EducationId == educationId) >= 4;
+
+            var partCount = Context.EducationParts.Count(x => x.EducationId == educationId);
+
+            var gainCount = Context.EducationGains.Count(x => x.EducationId == educationId);
+
+            var categoryCount = Context.Bridge_EducationTags.Count(x => x.Id2 == educationId);
+
+            var education = Context.Educations.First(x => x.Id == educationId);
+
+            education.IsActive = partCount > 0 && gainCount > 0 && categoryCount > 0;
+
+            Context.SaveChanges();
+
+            return education.IsActive;
+        }
+
         public EducationGroupWithInvoiceInfoVm GetByIdWithInvoiceInfo(Guid groupId,string userId)
         {
             var data = (from ticket in _context.Tickets
@@ -501,7 +569,8 @@ namespace NitelikliBilisim.Business.Repositories
                         join eGroup in _context.EducationGroups on education.Id equals eGroup.EducationId
                         where eGroup.EducatorId == educatorId
                         select (int)eComment.Points).ToList();
-            return Math.Round(data.Average(),2);
+            
+            return data!=null && data.Count>0? Math.Round(data.Average(),2):0;
         }
 
         private string SerializeDays(List<int> days)
