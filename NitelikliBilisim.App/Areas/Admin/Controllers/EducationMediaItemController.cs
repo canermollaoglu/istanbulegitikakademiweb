@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using MUsefulMethods;
 using NitelikliBilisim.App.Areas.Admin.VmCreator.EducationMediaItems;
@@ -72,37 +71,25 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     errors = errors
                 });
             }
-            try
+
+            var education = _unitOfWork.Education.GetById(data.EducationId);
+
+            var mediaStream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.PostedFile.Base64Content));
+            var mediaFileName = $"{StringHelpers.FormatForTag(education.Name)}-{EnumHelpers.GetDescription((EducationMediaType)data.MediaItemType).ToLower()}";
+            var mediaPath = await _storage.UploadFile(mediaStream, $"{mediaFileName}.{data.PostedFile.Extension.ToLower()}", "media-items");
+
+            _unitOfWork.EducationMedia.Insert(new EducationMedia
             {
-                var education = _unitOfWork.Education.GetById(data.EducationId);
+                EducationId = data.EducationId,
+                MediaType = (EducationMediaType)data.MediaItemType,
+                FileUrl = mediaPath
+            });
 
-                var mediaStream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.PostedFile.Base64Content));
-                var mediaFileName = $"{StringHelpers.FormatForTag(education.Name)}-{EnumHelpers.GetDescription((EducationMediaType)data.MediaItemType).ToLower()}";
-                var mediaPath = await _storage.UploadFile(mediaStream, $"{mediaFileName}.{data.PostedFile.Extension.ToLower()}", "media-items");
-              
-                _unitOfWork.EducationMedia.Insert(new EducationMedia
-                {
-                    EducationId = data.EducationId,
-                    MediaType = (EducationMediaType)data.MediaItemType,
-                    FileUrl = mediaPath
-                });
-
-                _unitOfWork.Education.CheckEducationState(data.EducationId);
-
-                return Json(new ResponseModel
-                {
-                    isSuccess = true
-                });
-            }
-            catch (Exception ex)
+            return Json(new ResponseModel
             {
-                Console.WriteLine(ex.Message);
-                return Json(new ResponseModel
-                {
-                    isSuccess = false,
-                    errors = new List<string> { "Dosya yüklenirken hata oluştu" }
-                });
-            }
+                isSuccess = true
+            });
+
         }
 
         [Route("admin/delete-education-media-item/{mediaItemId}")]
@@ -122,11 +109,10 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     isSuccess = false,
                     errors = new List<string> { "Eğitimin medyasını silerken bir hata oluştu" }
                 });
-                
+
             _fileManager.Delete(mediaItem.FileUrl);
             _unitOfWork.EducationMedia.Delete(mediaItemId.Value);
 
-            _unitOfWork.Education.CheckEducationState(mediaItem.EducationId);
 
             return Json(new ResponseModel
             {

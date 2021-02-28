@@ -71,13 +71,13 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Eğitim Detay-Eğitim Kartı-Eğitim Listeleme Kısa Bilgi Alanları</label>
-                    <textarea id="input-description" rows="5" class="form-control" style="height:100px;resize:none;" >@Model.Education.Description</textarea>
+                    <textarea id="input-description" rows="5" class="form-control" style="height:100px;resize:none;">@Model.Education.Description</textarea>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Neler Öğreneceksiniz Açıklama</label>
-                    <textarea id="input-description2" rows="5" class="form-control" style="height:100px;resize:none;" >@Model.Education.Description2</textarea>
+                    <textarea id="input-description2" rows="5" class="form-control" style="height:100px;resize:none;">@Model.Education.Description2</textarea>
                 </div>
             </div>
         </div>
@@ -108,7 +108,7 @@
                     <label>Öne Çıkar</label>
                     <div class="form-check">
                         <label class="form-check-label">
-                            <input type="checkbox"  class="form-check-input" name="optcheck" id="input-is-featured" @isFeatured>Öne Çıkar
+                            <input type="checkbox" class="form-check-input" name="optcheck" id="input-is-featured" @isFeatured>Öne Çıkar
                         </label>
                     </div>
                 </div>
@@ -119,6 +119,7 @@
                 <div class="form-group">
                     @{
                         var isChecked = Model.Education.IsActive ? "checked" : "";
+                        
                     }
                     <label>Eğitimi Kilitle/Aç</label>
                     <div class="form-check">
@@ -128,15 +129,26 @@
                     </div>
                     <div class="form-check">
                         <label class="form-check-label text-success">
-                            <input type="radio" class="form-check-input" name="optradio" @isChecked>Aç
+                            <input type="radio" disabled="@(!Model.EducationUpdateInfo.IsCreated)" class="form-check-input" name="optradio" @isChecked>Aç
                         </label>
                     </div>
                 </div>
+                @if (!Model.EducationUpdateInfo.IsCreated)
+                {
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach (var item in Model.EducationUpdateInfo.Messages)
+                            {
+                                <li>@item</li>
+                            }
+                        </ul>
+                        <span>Eğitim kilidini açabilmek için eksik alanları tamamlayınız.</span>
+                    </div>
+                }
             </div>
         </div>
     </form>
 </div>
-
 <p><button id="btn-save" class="btn_1 medium">Kaydet</button></p>
 @section postScripts{
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>

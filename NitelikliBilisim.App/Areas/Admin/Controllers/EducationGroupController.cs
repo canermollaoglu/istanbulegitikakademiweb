@@ -160,7 +160,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationGrupAdd");
             var model = new AddGetVm
             {
-                Educations = _unitOfWork.Education.Get(x => x.IsActive, x => x.OrderBy(o => o.CategoryId)),
+                Educations = _unitOfWork.Education.Get(null,x => x.OrderBy(o => o.CategoryId)),
                 Hosts = _unitOfWork.EducationHost.Get(null, x => x.OrderBy(o => o.HostName))
             };
             return View(model);
@@ -200,10 +200,10 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
 
 
-        [Route("admin/get-education-days-info/{educationId?}")]
+        [Route("admin/get-education-info/{educationId?}")]
         public IActionResult GetEducationDaysInfo(Guid educationId)
         {
-            var model = _unitOfWork.Education.GetById(educationId);
+            var model = _unitOfWork.EducationGroup.GetEducationInfo(educationId);
             return Json(new ResponseModel
             {
                 isSuccess = true,
@@ -370,6 +370,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 if (data.NewPrice>0 && data.OldPrice>0)
                 {
                     group.IsGroupOpenForAssignment = true;
+                    var education = _unitOfWork.Education.GetById(group.EducationId);
+                    if (!education.IsActive)
+                    {
+                        education.IsActive = true;
+                    }
+                    _unitOfWork.Education.Update(education);
                 }
                 _unitOfWork.EducationGroup.Update(group);
                 return Json(new ResponseModel
@@ -399,7 +405,17 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             {
                 var group = _unitOfWork.EducationGroup.GetById(data.GroupId);
                 group.NewPrice = data.NewPrice.GetValueOrDefault();
-                group.IsGroupOpenForAssignment = true;
+
+                if (data.NewPrice > 0 && group.OldPrice > 0)
+                {
+                    group.IsGroupOpenForAssignment = true;
+                    var education = _unitOfWork.Education.GetById(group.EducationId);
+                    if (!education.IsActive)
+                    {
+                        education.IsActive = true;
+                    }
+                    _unitOfWork.Education.Update(education);
+                }
                 _unitOfWork.EducationGroup.Update(group);
                 return Json(new ResponseModel
                 {
