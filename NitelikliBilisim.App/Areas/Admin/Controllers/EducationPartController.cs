@@ -72,6 +72,30 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             });
         }
 
+        [Route("admin/get-part-order")]
+        public IActionResult GetPartOrder(Guid? basePartId,Guid educationId)
+        {
+            try
+            {
+                var order = _unitOfWork.EducationPart.GetPartOrder(basePartId,educationId);
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    data = order
+                });
+            }
+            catch
+            {
+                return Json(new ResponseModel
+                {
+                    isSuccess = true,
+                    data = 1
+                });
+            }
+           
+
+        }
+
         [HttpPost, Route("admin/add-education-part")]
         public IActionResult AddPart(AddPartVm data)
         {

@@ -15,7 +15,12 @@ btnAdd.on("click", btnAdd_onClick);
 function document_onLoad() {
     $("#select-base-parts").select2();
     getEducationParts();
+    getPartOrder();
 }
+
+$("#select-base-parts").on("change", function() {
+    getPartOrder();
+});
 
 function btnAdd_onClick() {
     var selectBaseParts = document.getElementById("select-base-parts");
@@ -80,6 +85,8 @@ function confirm_onClick() {
         }
     });
 }
+
+
 
 /* functions */
 function getEducationParts() {
@@ -163,4 +170,21 @@ function refreshBaseParts() {
             }
         }
     });
+    getPartOrder();
+}
+
+function getPartOrder() {
+    var basePartId = $("#select-base-parts").val();
+    var educationId = $("#_education-id").val();
+    $.ajax({
+        url: `/admin/get-part-order?basePartId=${basePartId}&educationId=${educationId}`,
+        method: "get",
+        success: (res) => {
+            if (res.isSuccess) {
+                $("#input-order").val(res.data);
+            }
+        }
+    });
+
+
 }
