@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using MUsefulMethods;
 using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Managers;
@@ -24,11 +25,13 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         private readonly UnitOfWork _unitOfWork;
         private readonly FileUploadManager _fileManager;
         private readonly IStorageService _storage;
-        public BlogPostController(UnitOfWork unitOfWork, IWebHostEnvironment hostingEnvironment, IStorageService storage)
+        private readonly IMemoryCache _memCache;
+        public BlogPostController(UnitOfWork unitOfWork, IMemoryCache memCache, IWebHostEnvironment hostingEnvironment, IStorageService storage)
         {
             _unitOfWork = unitOfWork;
             _fileManager = new FileUploadManager(hostingEnvironment, "jpg", "jpeg", "png");
             _storage = storage;
+            _memCache = memCache;
         }
 
         [HttpGet]
@@ -75,9 +78,9 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     htmlContent += $"<div class=\"custom-banner__txt\">{banner.Content}</div>";
                     htmlContent += "</div>";
                     htmlContent += "<div class=\"custom-banner__img\">";
-                    htmlContent += $"<img src=\"{_storage.BlobUrl+banner.ImageUrl}\">";
+                    htmlContent += $"<img src=\"{_storage.BlobUrl + banner.ImageUrl}\">";
                     htmlContent += "</div></a>";
-                    model.Content= post.Content.Replace("[##" + code + "##]", htmlContent);
+                    model.Content = post.Content.Replace("[##" + code + "##]", htmlContent);
                 }
             }
 
@@ -132,7 +135,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             };
 
             _unitOfWork.BlogPost.Insert(newBlogPost, data.Tags);
-
+            RefreshCache();
             return Json(new ResponseModel
             {
                 isSuccess = true,
@@ -209,39 +212,30 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     errors = errors
                 });
             }
-            try
-            {
-                var post = _unitOfWork.BlogPost.GetById(data.Id);
-                if (!string.IsNullOrEmpty(data.FeaturedImage.Base64Content))
-                {
-                    var stream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.FeaturedImage.Base64Content));
-                    var fileName = data.Title.FormatForTag();
-                    var dbPath = await _storage.UploadFile(stream, $"{fileName}.{data.FeaturedImage.Extension}", "blog-featured-images");
-                    post.FeaturedImageUrl = dbPath;
-                }
-                post.Title = data.Title;
-                post.SummaryContent = data.SummaryContent;
-                post.Content = data.Content;
-                post.SeoUrl = data.SeoUrl;
-                post.ReadingTime = CalculateReadingTime(data.Content);
-                post.CategoryId = data.CategoryId;
 
-                int retVal = _unitOfWork.BlogPost.Update(post, data.Tags);
-
-                return Json(new ResponseModel
-                {
-                    isSuccess = true,
-                    message = "Yazı başarıyla güncellenmiştir."
-                });
-            }
-            catch (Exception ex)
+            var post = _unitOfWork.BlogPost.GetById(data.Id);
+            if (!string.IsNullOrEmpty(data.FeaturedImage.Base64Content))
             {
-                return Json(new ResponseModel
-                {
-                    isSuccess = false,
-                    errors = new List<string> { ex.Message }
-                });
+                var stream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.FeaturedImage.Base64Content));
+                var fileName = data.Title.FormatForTag();
+                var dbPath = await _storage.UploadFile(stream, $"{fileName}.{data.FeaturedImage.Extension}", "blog-featured-images");
+                post.FeaturedImageUrl = dbPath;
             }
+            post.Title = data.Title;
+            post.SummaryContent = data.SummaryContent;
+            post.Content = data.Content;
+            post.SeoUrl = data.SeoUrl;
+            post.ReadingTime = CalculateReadingTime(data.Content);
+            post.CategoryId = data.CategoryId;
+
+            int retVal = _unitOfWork.BlogPost.Update(post, data.Tags);
+            RefreshCache();
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                message = "Yazı başarıyla güncellenmiştir."
+            });
+
         }
 
         public IActionResult Delete(Guid? postId)
@@ -252,23 +246,13 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     isSuccess = false,
                     errors = new List<string> { "Yazı silinirken bir hata oluştu." }
                 });
-            try
-            {
-                _unitOfWork.BlogPost.Delete(postId.Value);
 
-                return Json(new ResponseModel
-                {
-                    isSuccess = true
-                });
-            }
-            catch (Exception ex)
+            _unitOfWork.BlogPost.Delete(postId.Value);
+            RefreshCache();
+            return Json(new ResponseModel
             {
-                return Json(new ResponseModel
-                {
-                    isSuccess = false,
-                    errors = new List<string> { "Hata : " + ex.Message }
-                });
-            }
+                isSuccess = true
+            });
 
         }
 
@@ -333,6 +317,17 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             BinaryReader reader = new BinaryReader(image.OpenReadStream());
             CoverImageBytes = reader.ReadBytes((int)image.Length);
             return CoverImageBytes;
+        }
+
+
+        private void RefreshCache()
+        {
+            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+            {
+                SlidingExpiration = TimeSpan.FromDays(1)
+            };
+            _memCache.Remove(CacheKeyUtility.BlogLastPosts);
+            _memCache.Set(CacheKeyUtility.BlogLastPosts, _unitOfWork.BlogPost.LastBlogPosts(5), options);
         }
         #endregion
     }

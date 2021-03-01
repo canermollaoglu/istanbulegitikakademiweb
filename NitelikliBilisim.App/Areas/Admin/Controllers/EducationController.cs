@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Caching.Memory;
 using MUsefulMethods;
 using NitelikliBilisim.App.Areas.Admin.Models.Education;
 using NitelikliBilisim.App.Areas.Admin.VmCreator.Education;
@@ -26,13 +27,15 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly FileUploadManager _fileManager;
         private readonly IStorageService _storage;
-        public EducationController(UnitOfWork unitOfWork, IWebHostEnvironment hostingEnvironment, IStorageService storage)
+        private readonly IMemoryCache _memCache;
+        public EducationController(UnitOfWork unitOfWork, IMemoryCache memCache, IWebHostEnvironment hostingEnvironment, IStorageService storage)
         {
             _unitOfWork = unitOfWork;
             _vmCreator = new EducationVmCreator(_unitOfWork);
             _hostingEnvironment = hostingEnvironment;
-            _fileManager = new FileUploadManager(hostingEnvironment, "mp4", "jpg", "jpeg", "png");
+            _fileManager = new FileUploadManager(hostingEnvironment, "jpg", "jpeg", "png");
             _storage = storage;
+            _memCache = memCache;
         }
         [Route("admin/egitim-ekle")]
         public IActionResult Add()
@@ -69,7 +72,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             };
 
             _unitOfWork.Education.Insert(education, data.Tags);
-
+            RefreshCache();
             return Json(new ResponseModel
             {
                 isSuccess = true,
@@ -118,7 +121,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 });
 
             _vmCreator.SendVmToUpdate(data);
-
+            RefreshCache();
             return Json(new ResponseModel
             {
                 isSuccess = true
@@ -238,6 +241,22 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 });
             }
 
+        }
+
+        private void RefreshCache()
+        {
+            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+            {
+                SlidingExpiration = TimeSpan.FromDays(1)
+            };
+            _memCache.Remove(CacheKeyUtility.HeaderMenu);
+            _memCache.Remove(CacheKeyUtility.BeginnerEducations);
+            _memCache.Remove(CacheKeyUtility.PopularEducations);
+            _memCache.Remove(CacheKeyUtility.HomeEducationTags);
+            _memCache.Set(CacheKeyUtility.HeaderMenu, _unitOfWork.Education.GetHeaderEducationMenu(), options);
+            _memCache.Set(CacheKeyUtility.BeginnerEducations, _unitOfWork.Education.GetBeginnerEducations(5), options);
+            _memCache.Set(CacheKeyUtility.PopularEducations, _unitOfWork.Education.GetPopularEducations(5), options);
+            _memCache.Set(CacheKeyUtility.HomeEducationTags, _unitOfWork.Education.GetEducationSearchTags(), options);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
@@ -13,9 +14,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Blog
     public class BlogCategoryController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
-        public BlogCategoryController(UnitOfWork unitOfWork)
+        private readonly IMemoryCache _memCache;
+
+        public BlogCategoryController(UnitOfWork unitOfWork, IMemoryCache memCache)
         {
             _unitOfWork = unitOfWork;
+            _memCache = memCache;
         }
         [Route("/admin/blog/kategori-listesi")]
         public IActionResult List()
@@ -38,23 +42,15 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Blog
                 });
             }
 
-            try
+            _unitOfWork.BlogCategory.Insert(data);
+            RefreshCache();
+            return Json(new ResponseModel
             {
-                _unitOfWork.BlogCategory.Insert(data);
-                return Json(new ResponseModel
-                {
-                    isSuccess = true,
-                    message = "Blog kategorisi başarı ile eklenmiştir."
-                });
-            }
-            catch (Exception ex)
-            {
-                return Json(new ResponseModel
-                {
-                    isSuccess = false,
-                    errors = new List<string> { "Hata " + ex.Message }
-                });
-            }
+                isSuccess = true,
+                message = "Blog kategorisi başarı ile eklenmiştir."
+            });
+
+
 
         }
 
@@ -68,23 +64,14 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Blog
                     errors = new List<string> { "Hata: Sayfayı yenileyerek tekrar deneyiniz." }
                 });
             }
-            try
+            _unitOfWork.BlogCategory.Delete(categoryId.Value);
+            RefreshCache();
+            return Json(new ResponseModel
             {
-                _unitOfWork.BlogCategory.Delete(categoryId.Value);
-                return Json(new ResponseModel
-                {
-                    isSuccess = true,
-                    message = "Kategori başarıyla silinmiştir."
-                });
-            }
-            catch (Exception ex)
-            {
-                return Json(new ResponseModel
-                {
-                    isSuccess = false,
-                    errors = new List<string> { "Hata " + ex.Message }
-                });
-            }
+                isSuccess = true,
+                message = "Kategori başarıyla silinmiştir."
+            });
+
 
         }
 
@@ -112,24 +99,23 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.Blog
                     errors = errors
                 });
             }
-            try
+            _unitOfWork.BlogCategory.Update(data);
+            RefreshCache();
+            return Json(new ResponseModel
             {
-                _unitOfWork.BlogCategory.Update(data);
-                return Json(new ResponseModel
-                {
-                    isSuccess = true
-                });
-            }
-            catch (Exception ex)
-            {
-                return Json(new ResponseModel
-                {
-                    isSuccess = false,
-                    errors = new List<string> { "Hata " + ex.Message }
-                });
-            }
-        }
+                isSuccess = true
+            });
 
+        }
+        private void RefreshCache()
+        {
+            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+            {
+                SlidingExpiration = TimeSpan.FromDays(1)
+            };
+            _memCache.Remove(CacheKeyUtility.BlogCategories);
+            _memCache.Set(CacheKeyUtility.BlogCategories, _unitOfWork.BlogCategory.GetListForBlogListPage(), options);
+        }
 
     }
 }
