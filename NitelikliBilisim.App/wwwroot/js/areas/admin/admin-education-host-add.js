@@ -37,6 +37,8 @@ function initMap() {
         }, function (results, status) {
             if (status == google.maps.GeocoderStatus.OK) {
                 if (results[0]) {
+                    console.log(results[0]);
+                    $("#input-map-url").val(`https://www.google.com/maps/search/?api=1&query=${mapsMouseEvent.latLng.lat()},${mapsMouseEvent.latLng.lng()}`);
                     $("#input-address").val(results[0].formatted_address);
                 } else {
                     $("#input-address").val("Adres bulunamadı! Lütfen kendiniz doldurunuz.");
