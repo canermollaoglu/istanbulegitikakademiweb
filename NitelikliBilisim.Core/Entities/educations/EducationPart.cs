@@ -12,7 +12,6 @@ namespace NitelikliBilisim.Core.Entities
         {
             Id = Guid.NewGuid();
         }
-        [MaxLength(128)]
         public string Title { get; set; }
         public byte Order { get; set; }
 

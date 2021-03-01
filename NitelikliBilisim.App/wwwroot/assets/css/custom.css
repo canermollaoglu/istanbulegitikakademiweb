@@ -174,3 +174,43 @@
 .account-course-detail__refund__link{
     color:red;
 }
+
+.accordion__item__open {
+    padding: 25px;
+    background: #f7f9fc;
+    border-bottom: 1px solid #dce3f1;
+    cursor: pointer;
+    transition: 0.3s
+}
+
+@media (max-width: 768px) {
+    .accordion__item__open {
+        padding: 20px
+    }
+}
+
+.accordion__item__open:last-child {
+    border-bottom: none
+}
+
+.accordion__item__open.disabled {
+    opacity: 0.4;
+    pointer-events: none
+}
+
+.accordion__item__open.active {
+    background: #fff
+}
+
+    .accordion__item__open.active .accordion__icon {
+        background: #1f1941
+    }
+
+        .accordion__item__open.active .accordion__icon:before {
+            transform: translate(-50%, -50%) rotate(90deg);
+            background: #fff
+        }
+
+        .accordion__item__open.active .accordion__icon:after {
+            opacity: 0
+        }

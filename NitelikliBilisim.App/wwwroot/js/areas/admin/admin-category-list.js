@@ -129,13 +129,20 @@ function createGrid() {
             caption: "Slogan"
         },
         {
-            dataField: "educationDayCount",
-            caption:"Süre (Gün)",
-            width: 200,
-            alignment:"center"
+            caption: "Sıra",
+            dataField: "order",
+            width: 100,
+            alignment: "center",
+            sortOrder: "asc",
         },
         {
-            caption:"İşlem",
+            dataField: "educationDayCount",
+            caption: "Süre (Gün)",
+            width: 200,
+            alignment: "center"
+        },
+        {
+            caption: "İşlem",
             allowSearch: false,
             cellTemplate: function (container, options) {
                 var current = options.data;
@@ -195,6 +202,13 @@ function createGrid() {
                             {
                                 headerCellTemplate: $('<b>Slogan</b>'),
                                 dataField: 'description',
+                            },
+                            {
+                                headerCellTemplate: $('<b>Sıra</b>'),
+                                dataField: 'order',
+                                width: 100,
+                                alignment: "center",
+                                sortOrder: "asc",
                             },
                             {
                                 headerCellTemplate: $('<b>İşlem</b>'),

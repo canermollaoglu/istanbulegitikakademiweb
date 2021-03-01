@@ -25,6 +25,7 @@ namespace NitelikliBilisim.Core.Entities
         [MaxLength(128)]
         public string SeoUrl { get; set; }
         public string IconUrl { get; set; }
+        public byte Order { get; set; }
         public string BackgroundImageUrl { get; set; }
         public string WizardClass { get; set; }
         public string IconColor { get; set; }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Caching.Memory;
 using MUsefulMethods;
 using NitelikliBilisim.App.Areas.Admin.Models.Category;
 using NitelikliBilisim.App.Lexicographer;
@@ -26,11 +27,13 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         private readonly UnitOfWork _unitOfWork; 
         private readonly FileUploadManager _fileManager;
         private readonly IStorageService _storage;
-        public EducationCategoryController(UnitOfWork unitOfWork, IWebHostEnvironment hostingEnvironment, IStorageService storage)
+        private readonly IMemoryCache _memCache;
+        public EducationCategoryController(UnitOfWork unitOfWork,IMemoryCache memCache ,IWebHostEnvironment hostingEnvironment, IStorageService storage)
         {
             _unitOfWork = unitOfWork; 
             _fileManager = new FileUploadManager(hostingEnvironment,"jpg", "jpeg", "png");
             _storage = storage;
+            _memCache = memCache;
         }
         [Route("admin/kategori-ekle")]
         public IActionResult Add()
@@ -73,7 +76,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         public async Task<JsonResult> Add(AddPostVm data)
         {
             if (!ModelState.IsValid)
-
             {
                 var errors = ModelStateUtil.GetErrors(ModelState);
                 return Json(new ResponseModel
@@ -93,7 +95,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 BaseCategoryId = data.BaseCategoryId,
                 CategoryType = (CategoryType)data.CategoryType,
                 IsCurrent = true,
-                Description2 = data.Description2
+                Description2 = data.Description2,
+                Order = data.Order
             };
             if (data.BaseCategoryId ==null)
             {
@@ -115,6 +118,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             }
 
             _unitOfWork.EducationCategory.Insert(category);
+            RefreshCache();
             return Json(new ResponseModel
             {
                 isSuccess = true,
@@ -142,6 +146,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             category.EducationDayCount = data.EducationDayCount;
             category.IconColor = data.IconColor;
             category.Description2 = data.Description2;
+            category.Order = data.Order;
             if (data.BaseCategoryId == null)
             {
                 category.IconUrl = data.IconUrl;
@@ -165,6 +170,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             }
 
             _unitOfWork.EducationCategory.Update(category);
+            RefreshCache();
             return Json(new ResponseModel
             {
                 isSuccess = true,
@@ -216,7 +222,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 });
 
             _unitOfWork.EducationCategory.Delete(categoryId.Value);
-
+            RefreshCache();
             return Json(new ResponseModel
             {
                 isSuccess = true,
@@ -278,6 +284,18 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 }); ;
             }
 
+        }
+
+        private void RefreshCache()
+        {
+            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+            {
+                SlidingExpiration = TimeSpan.FromDays(1)
+            };
+            _memCache.Remove(CacheKeyUtility.HomeNbuyCategories);
+            _memCache.Remove(CacheKeyUtility.HeaderMenu);
+            _memCache.Set(CacheKeyUtility.HeaderMenu, _unitOfWork.Education.GetHeaderEducationMenu(), options);
+            _memCache.Set(CacheKeyUtility.HomeNbuyCategories, _unitOfWork.EducationCategory.GetNBUYEducationCategories(), options);
         }
     }
 }

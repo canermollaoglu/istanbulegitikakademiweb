@@ -49,7 +49,7 @@ namespace NitelikliBilisim.Business.Repositories
         public List<CoursesPageEducationCategoryVm> GetCoursesPageCategories()
         {
             List<CoursesPageEducationCategoryVm> model = new List<CoursesPageEducationCategoryVm>();
-            var baseCategories = _context.EducationCategories.Where(x => !x.BaseCategoryId.HasValue).ToList();
+            var baseCategories = _context.EducationCategories.Where(x => !x.BaseCategoryId.HasValue).OrderBy(x=>x.Order).ToList();
 
             foreach (var baseCategory in baseCategories)
             {
