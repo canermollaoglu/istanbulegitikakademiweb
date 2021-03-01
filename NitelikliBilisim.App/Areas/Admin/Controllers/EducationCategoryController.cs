@@ -293,7 +293,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             _memCache.Remove(CacheKeyUtility.HomeNbuyCategories);
             _memCache.Remove(CacheKeyUtility.HeaderMenu);
             _memCache.Set(CacheKeyUtility.HeaderMenu, _unitOfWork.Education.GetHeaderEducationMenu(), options);
-            _memCache.Set(CacheKeyUtility.HomeNbuyCategories, _unitOfWork.Education.GetBeginnerEducations(5), options);
+            _memCache.Set(CacheKeyUtility.HomeNbuyCategories, _unitOfWork.EducationCategory.GetNBUYEducationCategories(), options);
         }
     }
 }
