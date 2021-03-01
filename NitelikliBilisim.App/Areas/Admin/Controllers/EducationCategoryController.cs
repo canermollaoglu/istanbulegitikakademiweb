@@ -95,7 +95,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 BaseCategoryId = data.BaseCategoryId,
                 CategoryType = (CategoryType)data.CategoryType,
                 IsCurrent = true,
-                Description2 = data.Description2
+                Description2 = data.Description2,
+                Order = data.Order
             };
             if (data.BaseCategoryId ==null)
             {
@@ -145,6 +146,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             category.EducationDayCount = data.EducationDayCount;
             category.IconColor = data.IconColor;
             category.Description2 = data.Description2;
+            category.Order = data.Order;
             if (data.BaseCategoryId == null)
             {
                 category.IconUrl = data.IconUrl;

@@ -2,6 +2,7 @@
 var selectBaseCategories = document.getElementById("select-base-categories");
 var inputName = document.getElementById("input-name");
 var inputSeoUrl = document.getElementById("input-seo-url");
+var inputOrder = document.getElementById("input-order");
 var inputDescription = document.getElementById("input-description");
 var inputEducationDayCount = document.getElementById("input-educationdaycount");
 var inputIconUrl = document.getElementById("input-icon-url");
@@ -47,6 +48,7 @@ function btnSave_onClick() {
         EducationDayCount: inputEducationDayCount.value,
         IconColor: inputIconColor.value,
         WizardClass: inputWizardClass.value,
+        Order: inputOrder.value,
         Description2: inputDescription2.value,
         BackgroundImage: {
             Base64Content: bgImage.base64content,
