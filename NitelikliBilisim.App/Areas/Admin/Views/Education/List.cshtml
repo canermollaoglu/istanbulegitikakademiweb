@@ -149,12 +149,20 @@
                     {
                         caption: "Gün",
                         dataField: "days",
-                        width: 80
+                        width: 80,
+                        alignment: "center"
                     },
                     {
                         caption: "Saat",
                         dataField: "hoursPerDay",
-                        width: 80
+                        width: 80,
+                        alignment: "center"
+                    },
+                    {
+                        caption: "Sıra",
+                        dataField: "order",
+                        width: 120,
+                        alignment: "center"
                     },
                     {
                         caption: "Seviye",
@@ -196,7 +204,6 @@
                             $(`<a title="Eğitmen Ata" class="btn btn-success btn-sm" href="/admin/egitmen-ata/${current.id}"><i class=\"fa fa-users\"></i><span style="display: block"></span></a>`)
                                 .appendTo(container);
                         },
-                        width: "auto",
                         alignment: "center"
                     }
                 ]

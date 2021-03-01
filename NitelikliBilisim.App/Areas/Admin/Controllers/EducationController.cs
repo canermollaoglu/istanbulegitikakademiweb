@@ -68,7 +68,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 Level = (EducationLevel)data.EducationLevel.GetValueOrDefault(),
                 Days = data.Days.GetValueOrDefault(),
                 HoursPerDay = data.HoursPerDay.GetValueOrDefault(),
-                CategoryId = data.CategoryId
+                CategoryId = data.CategoryId,
+                Order = data.Order
             };
 
             _unitOfWork.Education.Insert(education, data.Tags);

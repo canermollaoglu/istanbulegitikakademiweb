@@ -56,6 +56,7 @@ namespace NitelikliBilisim.Business.Repositories
                        Days = e.Days,
                        HoursPerDay = e.HoursPerDay,
                        isActive = e.IsActive,
+                       Order = e.Order,
                        IsFeaturedEducation = e.IsFeaturedEducation
                    };
         }
@@ -329,6 +330,7 @@ namespace NitelikliBilisim.Business.Repositories
                            {
                                Id = education.Id,
                                Seo = education.SeoUrl,
+                               Order = education.Order,
                                CSeo = education.Category.SeoUrl,
                                CreatedDate = education.CreatedDate,
                                Name = education.Name,
@@ -387,7 +389,7 @@ namespace NitelikliBilisim.Business.Repositories
             model.TotalPageCount = (int)Math.Ceiling(rawData.Count() / (double)6);
             model.PageIndex = page;
             rawData = rawData.Skip((page - 1) * 6).Take(6);
-            var filteredEducations = rawData.ToList();
+            var filteredEducations = rawData.OrderBy(x => x.Order).ToList();
             foreach (var education in filteredEducations)
             {
                 education.Price = Context.EducationGroups.Where(x => x.StartDate > DateTime.Now).OrderBy(x => x.CreatedDate).FirstOrDefault(y => y.HostId == hostId && y.EducationId == education.Id).NewPrice.GetValueOrDefault().ToString(CultureInfo.CreateSpecificCulture("tr-TR"));
@@ -1114,7 +1116,7 @@ namespace NitelikliBilisim.Business.Repositories
             var model = new HeaderEducationMenuVm();
             var baseCategories = Context.EducationCategories.Where(x => x.BaseCategoryId == null).OrderBy(x=>x.Order).ToList();
             var subCategories = Context.EducationCategories.Where(x => x.BaseCategoryId != null).Include(x => x.Educations).OrderBy(x => x.Order).ToList();
-            var allEducations = Context.Educations.Where(x => x.IsActive).Include(x => x.Category).ToList();
+            var allEducations = Context.Educations.Where(x => x.IsActive).Include(x => x.Category).OrderBy(x=>x.Order).ToList();
             foreach (var baseCategory in baseCategories)
             {
                 var baseCategoryModel = new HeaderBaseCategory();
@@ -1132,7 +1134,7 @@ namespace NitelikliBilisim.Business.Repositories
                     subCategoryModel.SeoUrl = subCategory.SeoUrl;
                     subCategoryModel.Id = subCategory.Id;
 
-                    foreach (var education in subCategory.Educations.Where(x => x.IsActive))
+                    foreach (var education in subCategory.Educations.Where(x => x.IsActive).OrderBy(x=>x.Order))
                     {
                         var educationModel = new HeaderEducation();
                         educationModel.Id = education.Id;

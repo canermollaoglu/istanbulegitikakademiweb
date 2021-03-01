@@ -86,6 +86,7 @@ function btnSave_onClick() {
         Description: $("#input-description").val(),
         Description2: $("#input-description2").val(),
         Days: $("#input-days").val(),
+        Order:$("#input-order").val(),
         HoursPerDay: $("#input-hours-per-day").val(),
         EducationLevel: selectLevels.options[selectLevels.selectedIndex].value,
         CategoryId: selectCategories.options[selectCategories.selectedIndex].value,

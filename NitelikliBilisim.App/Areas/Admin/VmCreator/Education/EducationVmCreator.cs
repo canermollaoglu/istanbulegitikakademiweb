@@ -65,7 +65,8 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.Education
                 SeoUrl = data.SeoUrl,
                 VideoUrl = data.VideoUrl,
                 IsActive = data.IsActive,
-                IsFeaturedEducation = data.IsFeauredEducation
+                IsFeaturedEducation = data.IsFeauredEducation,
+                Order = data.Order
             }, data.Tags);
         }
 
