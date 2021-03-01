@@ -355,8 +355,8 @@ namespace NitelikliBilisim.Business.Repositories
             }
             if (!string.IsNullOrEmpty(searchKey))
             {
-                var ids = rawData.Where(x => x.Name == searchKey || x.Name.Contains(searchKey)).Select(x => x.Id).ToList();
                 searchKey = searchKey.FormatForTag();
+                var ids = rawData.Where(x => x.Name == searchKey || x.Name.Contains(searchKey)).Select(x => x.Id).ToList();
                 var tags = Context.Bridge_EducationTags
                                     .Join(Context.EducationTags, l => l.Id, r => r.Id, (x, y) => new
                                     {
@@ -416,10 +416,10 @@ namespace NitelikliBilisim.Business.Repositories
                     var bridge = new List<Bridge_EducationTag>();
                     foreach (var tagName in tags)
                     {
-                        if (!dbTags.Any(x => x.Name == tagName))
+                        var formatTagName = tagName.FormatForTag();
+                        if (!dbTags.Any(x => x.Name == formatTagName))
                         {
-
-                            var educationTag = new EducationTag { Name = tagName };
+                            var educationTag = new EducationTag { Name = formatTagName };
                             var model = Context.EducationTags.Add(educationTag);
                             Context.SaveChanges();
                             bridge.Add(new Bridge_EducationTag
@@ -432,7 +432,7 @@ namespace NitelikliBilisim.Business.Repositories
                         {
                             bridge.Add(new Bridge_EducationTag
                             {
-                                Id = dbTags.First(x => x.Name == tagName).Id,
+                                Id = dbTags.First(x => x.Name == formatTagName).Id,
                                 Id2 = educationId
                             });
                         }
@@ -521,10 +521,11 @@ namespace NitelikliBilisim.Business.Repositories
                     var dbTags = Context.EducationTags.ToList();
                     foreach (var tagName in tags)
                     {
-                        if (!dbTags.Any(x => x.Name == tagName))
+                        var formattedTagName = tagName.FormatForTag();
+                        if (!dbTags.Any(x => x.Name == formattedTagName))
                         {
 
-                            var educationTag = new EducationTag { Name = tagName };
+                            var educationTag = new EducationTag { Name = formattedTagName };
                             var model = Context.EducationTags.Add(educationTag);
                             Context.SaveChanges();
                             newItems.Add(new Bridge_EducationTag
@@ -537,7 +538,7 @@ namespace NitelikliBilisim.Business.Repositories
                         {
                             newItems.Add(new Bridge_EducationTag
                             {
-                                Id = dbTags.First(x => x.Name == tagName).Id,
+                                Id = dbTags.First(x => x.Name == formattedTagName).Id,
                                 Id2 = entity.Id
                             });
                         }
