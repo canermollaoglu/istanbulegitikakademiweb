@@ -56,6 +56,7 @@ namespace NitelikliBilisim.Business.Repositories
                        Days = e.Days,
                        HoursPerDay = e.HoursPerDay,
                        isActive = e.IsActive,
+                       Order = e.Order,
                        IsFeaturedEducation = e.IsFeaturedEducation
                    };
         }
@@ -329,6 +330,7 @@ namespace NitelikliBilisim.Business.Repositories
                            {
                                Id = education.Id,
                                Seo = education.SeoUrl,
+                               Order = education.Order,
                                CSeo = education.Category.SeoUrl,
                                CreatedDate = education.CreatedDate,
                                Name = education.Name,
@@ -353,8 +355,8 @@ namespace NitelikliBilisim.Business.Repositories
             }
             if (!string.IsNullOrEmpty(searchKey))
             {
-                var ids = rawData.Where(x => x.Name == searchKey || x.Name.Contains(searchKey)).Select(x => x.Id).ToList();
                 searchKey = searchKey.FormatForTag();
+                var ids = rawData.Where(x => x.Name == searchKey || x.Name.Contains(searchKey)).Select(x => x.Id).ToList();
                 var tags = Context.Bridge_EducationTags
                                     .Join(Context.EducationTags, l => l.Id, r => r.Id, (x, y) => new
                                     {
@@ -387,7 +389,7 @@ namespace NitelikliBilisim.Business.Repositories
             model.TotalPageCount = (int)Math.Ceiling(rawData.Count() / (double)6);
             model.PageIndex = page;
             rawData = rawData.Skip((page - 1) * 6).Take(6);
-            var filteredEducations = rawData.ToList();
+            var filteredEducations = rawData.OrderBy(x => x.Order).ToList();
             foreach (var education in filteredEducations)
             {
                 education.Price = Context.EducationGroups.Where(x => x.StartDate > DateTime.Now).OrderBy(x => x.CreatedDate).FirstOrDefault(y => y.HostId == hostId && y.EducationId == education.Id).NewPrice.GetValueOrDefault().ToString(CultureInfo.CreateSpecificCulture("tr-TR"));
@@ -414,10 +416,10 @@ namespace NitelikliBilisim.Business.Repositories
                     var bridge = new List<Bridge_EducationTag>();
                     foreach (var tagName in tags)
                     {
-                        if (!dbTags.Any(x => x.Name == tagName))
+                        var formatTagName = tagName.FormatForTag();
+                        if (!dbTags.Any(x => x.Name == formatTagName))
                         {
-
-                            var educationTag = new EducationTag { Name = tagName };
+                            var educationTag = new EducationTag { Name = formatTagName };
                             var model = Context.EducationTags.Add(educationTag);
                             Context.SaveChanges();
                             bridge.Add(new Bridge_EducationTag
@@ -430,7 +432,7 @@ namespace NitelikliBilisim.Business.Repositories
                         {
                             bridge.Add(new Bridge_EducationTag
                             {
-                                Id = dbTags.First(x => x.Name == tagName).Id,
+                                Id = dbTags.First(x => x.Name == formatTagName).Id,
                                 Id2 = educationId
                             });
                         }
@@ -519,10 +521,11 @@ namespace NitelikliBilisim.Business.Repositories
                     var dbTags = Context.EducationTags.ToList();
                     foreach (var tagName in tags)
                     {
-                        if (!dbTags.Any(x => x.Name == tagName))
+                        var formattedTagName = tagName.FormatForTag();
+                        if (!dbTags.Any(x => x.Name == formattedTagName))
                         {
 
-                            var educationTag = new EducationTag { Name = tagName };
+                            var educationTag = new EducationTag { Name = formattedTagName };
                             var model = Context.EducationTags.Add(educationTag);
                             Context.SaveChanges();
                             newItems.Add(new Bridge_EducationTag
@@ -535,7 +538,7 @@ namespace NitelikliBilisim.Business.Repositories
                         {
                             newItems.Add(new Bridge_EducationTag
                             {
-                                Id = dbTags.First(x => x.Name == tagName).Id,
+                                Id = dbTags.First(x => x.Name == formattedTagName).Id,
                                 Id2 = entity.Id
                             });
                         }
@@ -1112,9 +1115,9 @@ namespace NitelikliBilisim.Business.Repositories
         public HeaderEducationMenuVm GetHeaderEducationMenu()
         {
             var model = new HeaderEducationMenuVm();
-            var baseCategories = Context.EducationCategories.Where(x => x.BaseCategoryId == null).ToList();
-            var subCategories = Context.EducationCategories.Where(x => x.BaseCategoryId != null).Include(x => x.Educations).ToList();
-            var allEducations = Context.Educations.Where(x => x.IsActive).Include(x => x.Category).ToList();
+            var baseCategories = Context.EducationCategories.Where(x => x.BaseCategoryId == null).OrderBy(x=>x.Order).ToList();
+            var subCategories = Context.EducationCategories.Where(x => x.BaseCategoryId != null).Include(x => x.Educations).OrderBy(x => x.Order).ToList();
+            var allEducations = Context.Educations.Where(x => x.IsActive).Include(x => x.Category).OrderBy(x=>x.Order).ToList();
             foreach (var baseCategory in baseCategories)
             {
                 var baseCategoryModel = new HeaderBaseCategory();
@@ -1132,7 +1135,7 @@ namespace NitelikliBilisim.Business.Repositories
                     subCategoryModel.SeoUrl = subCategory.SeoUrl;
                     subCategoryModel.Id = subCategory.Id;
 
-                    foreach (var education in subCategory.Educations.Where(x => x.IsActive))
+                    foreach (var education in subCategory.Educations.Where(x => x.IsActive).OrderBy(x=>x.Order))
                     {
                         var educationModel = new HeaderEducation();
                         educationModel.Id = education.Id;

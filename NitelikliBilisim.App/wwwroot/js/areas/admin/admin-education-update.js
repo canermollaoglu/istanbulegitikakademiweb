@@ -65,6 +65,7 @@ function btnSave_onClick() {
         VideoUrl: $("#input-video-id").val(),
         Description: $("#input-description").val(),
         Description2: $("#input-description2").val(),
+        Order:$("#input-order").val(),
         Days: $("#input-days").val(),
         HoursPerDay: $("#input-hours-per-day").val(),
         EducationLevel: selectLevels.options[selectLevels.selectedIndex].value,

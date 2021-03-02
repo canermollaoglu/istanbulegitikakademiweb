@@ -319,14 +319,14 @@
                             <div class="accordion">
                                 @foreach (var part in Model.Details.Parts)
                                 {
-                                    <div class="accordion__item">
+                                    <div class="accordion__item__open active">
                                         <div class="accordion__header">
                                             <span class="icon-outer accordion__icon">
                                             </span>
                                             @part.Title
                                         </div>
                                         <div class="accordion__content">
-                                            <div class="js-calc-accordion-height">
+                                            <div class="js-calc-accordion-height-open">
                                                 <ul>
                                                     @foreach (var subPart in part.SubParts)
                                                     {
@@ -783,6 +783,7 @@
         function document_onLoad() {
             loadGroups();
             loadComments();
+            setAccordionHeight();
         }
 
 
@@ -997,7 +998,43 @@
             loadComments();
             //$('.lesson-detail__comment.is-load').addClass('is-loaded');
         });
-
+        $('.accordion .accordion__item__open .accordion__header').click(function () {
+            var accordionContent = $(this)
+                .parent()
+                .find('.js-calc-accordion-height-open')
+                .height();
+            if (
+                $(this)
+                    .parent()
+                    .hasClass('active')
+            ) {
+                $(this)
+                    .parent()
+                    .removeClass('active');
+                $(this)
+                    .parent()
+                    .find('.accordion__content')
+                    .css('height', '0');
+            } else {
+                $(this)
+                    .parent()
+                    .addClass('active');
+                $(this)
+                    .parent()
+                    .find('.accordion__content')
+                    .css('height', accordionContent + 20);
+            }
+        });
+        function setAccordionHeight() {
+            $('.accordion__content').each(function () {
+                var currentElement = $(this);
+                var openHeight = currentElement
+                    .children('.js-calc-accordion-height-open')
+                    .height();
+                currentElement
+                    .css('height', openHeight + 20);
+            });
+        }
         var onCommentFormAjaxSuccess = function (context) {
             if (context.isSuccess) {
                 showModal('modalSuccessMessage');

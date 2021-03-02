@@ -42,7 +42,7 @@ function btnSave_onClick() {
                 $("#form-add-education-parts")[0].reset();
                 resultAlert.display({
                     success: true,
-                    message: "Kayıt işlemi başarılı. Listeye gitmek için {Link}",
+                    message: "Kayıt işlemi başarılı. Listeye gitmek için",
                     redirectElement: {
                         content: "tıklayınız",
                         link: `/admin/egitim-parca-yonetimi/${data.EducationId}`

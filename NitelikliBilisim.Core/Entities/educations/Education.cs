@@ -30,6 +30,7 @@ namespace NitelikliBilisim.Core.Entities
         [MaxLength(128)]
         public string VideoUrl { get; set; }
         public bool IsFeaturedEducation { get; set; }
+        public byte Order { get; set; }
 
         public Guid CategoryId { get; set; }
         [ForeignKey("CategoryId")]

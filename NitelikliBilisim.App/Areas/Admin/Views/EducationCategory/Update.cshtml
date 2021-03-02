@@ -75,9 +75,19 @@
         </div>
         <div class="row">
             <div class="col-md-6">
-                <div class="form-group">
-                    <label>Seo Url   <i title="- dışında özel karakter girmeyiniz.Tamamen küçük harf olacak şekilde Türkçe karakter kullanmadan oluşturunuz." class="fa fa-question-circle"></i></label>
-                    <input type="text" placeholder="dot-net-core-mvc-egitimi" class="form-control" id="input-seo-url" value="@Model.Category.SeoUrl">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label>Seo Url   <i title="- dışında özel karakter girmeyiniz.Tamamen küçük harf olacak şekilde Türkçe karakter kullanmadan oluşturunuz." class="fa fa-question-circle"></i></label>
+                            <input type="text" placeholder="dot-net-core-mvc-egitimi" class="form-control" id="input-seo-url" value="@Model.Category.SeoUrl">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Sıra <i title="Menü'de kategorinin görüntülenme sırası" required class="fa fa-question-circle"></i></label>
+                            <input type="number" placeholder="3" class="form-control" id="input-order" value="@Model.Category.Order">
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-md-6" @(Model.BaseCategory != null ? "style=display:none;" : "")>
@@ -119,10 +129,10 @@
             </div>
         </div>
         <div class="row" id="div-description2" @(Model.BaseCategory == null ? "style=display:none;" : "")>
-            <div class="col-md-6" >
+            <div class="col-md-6">
                 <div class="form-group">
                     <label>Açıklama</label>
-                    <textarea id="input-description2" rows="5" class="form-control" >@Model.Category.Description2</textarea>
+                    <textarea id="input-description2" rows="5" class="form-control">@Model.Category.Description2</textarea>
                 </div>
             </div>
             <div class="col-md-6">
