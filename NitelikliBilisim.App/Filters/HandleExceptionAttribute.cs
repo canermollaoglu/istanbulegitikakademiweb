@@ -3,11 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Configuration;
-using Nest;
 using NitelikliBilisim.App.Models;
-using NitelikliBilisim.App.Utility;
-using NitelikliBilisim.Core.ESOptions;
-using NitelikliBilisim.Core.ESOptions.ESEntities;
+using NitelikliBilisim.Business.Repositories.MongoDbRepositories;
+using NitelikliBilisim.Core.MongoOptions.Entities;
 using NitelikliBilisim.Notificator.Services;
 using System;
 using System.Security.Claims;
@@ -16,22 +14,21 @@ namespace NitelikliBilisim.App.Filters
 {
     public class HandleExceptionAttribute : Attribute, IExceptionFilter
     {
-        private readonly IElasticClient _elasticClient;
         private readonly IEmailSender _emailSender;
         private readonly IConfiguration _configuration;
-        public HandleExceptionAttribute(IElasticClient elasticClient, IEmailSender emailSender, IConfiguration configuration)
+        private readonly ExceptionInfoRepository _eInfo;
+        public HandleExceptionAttribute(ExceptionInfoRepository eInfo, IEmailSender emailSender, IConfiguration configuration)
         {
-            _elasticClient = elasticClient;
             _emailSender = emailSender;
             _configuration = configuration;
+            _eInfo = eInfo;
         }
         public void OnException(ExceptionContext context)
         {
             var descriptor = context.ActionDescriptor as ControllerActionDescriptor;
             string mailBody = string.Empty;
             string envName = _configuration.GetSection("SiteGeneralOptions:EnvironmentName").Value;
-
-            var eInfo = new ExceptionInfo
+            ExceptionInfo newLog = new ExceptionInfo
             {
                 ControllerName = descriptor.ControllerName,
                 ActionName = descriptor.ActionName,
@@ -40,14 +37,16 @@ namespace NitelikliBilisim.App.Filters
                 StackTrace = context.Exception.StackTrace,
                 InnerException = context.Exception.InnerException?.Message,
             };
+            _eInfo.Create(newLog);
+
             string adminEmails = _configuration.GetSection("SiteGeneralOptions:AdminEmails").Value;
-            mailBody = $"<b>Controller:</b>{eInfo.ControllerName}<br>";
-            mailBody += $"<b>Action:</b>{eInfo.ActionName}<br>";
-            mailBody += $"<b>User Id:</b>{eInfo.UserId}<br>";
-            mailBody += $"<b>Message:</b>{eInfo.Message}<br>";
-            mailBody += $"<b>StackTrace:</b>{eInfo.StackTrace}<br>";
-            if (string.IsNullOrEmpty(eInfo.InnerException))
-                mailBody += $"<b>InnerException:</b>{eInfo.InnerException}<br>";
+            mailBody = $"<b>Controller:</b>{newLog.ControllerName}<br>";
+            mailBody += $"<b>Action:</b>{newLog.ActionName}<br>";
+            mailBody += $"<b>User Id:</b>{newLog.UserId}<br>";
+            mailBody += $"<b>Message:</b>{newLog.Message}<br>";
+            mailBody += $"<b>StackTrace:</b>{newLog.StackTrace}<br>";
+            if (string.IsNullOrEmpty(newLog.InnerException))
+                mailBody += $"<b>InnerException:</b>{newLog.InnerException}<br>";
 
             //Mail Log
             _emailSender.SendAsync(new Core.ComplexTypes.EmailMessage
@@ -56,11 +55,7 @@ namespace NitelikliBilisim.App.Filters
                 Subject = $"Nitelikli Bilişim {envName} Hata {DateTime.Now:F}",
                 Contacts = adminEmails.Split(";")
             });
-            /*ES INSERT*/
-            CheckExceptionLogIndex();
-            var response = _elasticClient.IndexDocument(eInfo);
-
-
+            
             /*--------*/
             if (!IsAjaxRequest(context.HttpContext.Request))
             {
@@ -87,27 +82,7 @@ namespace NitelikliBilisim.App.Filters
         }
 
 
-        /// <summary>
-        /// Indıcesin varlığını kontrol edip yoksa oluşturuyor.
-        /// </summary>
-        private void CheckExceptionLogIndex()
-        {
-            var response = _elasticClient.Indices.Exists(ElasticSearchIndexNameUtility.ExceptionLogIndex);
-            if (!response.Exists)
-            {
-                _elasticClient.Indices.Create(ElasticSearchIndexNameUtility.ExceptionLogIndex, index =>
-                   index.Map<ExceptionInfo>(x => x.AutoMap()));
-            }
-        }
-
-        /// <summary>
-        /// Determines whether the specified HTTP request is an AJAX request.
-        /// </summary>
-        /// 
-        /// <returns>
-        /// true if the specified HTTP request is an AJAX request; otherwise, false.
-        /// </returns>
-        /// <param name="request">The HTTP request.</param><exception cref="T:System.ArgumentNullException">The <paramref name="request"/> parameter is null (Nothing in Visual Basic).</exception>
+       
         public static bool IsAjaxRequest(HttpRequest request)
         {
             return request.Headers["X-Requested-With"] == "XMLHttpRequest";

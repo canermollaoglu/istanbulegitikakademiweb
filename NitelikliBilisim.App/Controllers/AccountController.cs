@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
+using NitelikliBilisim.Business.Repositories.MongoDbRepositories;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
@@ -34,12 +35,13 @@ namespace NitelikliBilisim.App.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UnitOfWork _unitOfWork;
         private readonly UserUnitOfWork _userUnitOfWork;
+        private readonly TransactionLogRepository _transactionLogRepository;
         private readonly IEmailSender _emailSender;
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
 
 
-        public AccountController(IWebHostEnvironment env,IConfiguration configuration, UserUnitOfWork userUnitOfWork, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, UnitOfWork unitOfWork, IEmailSender emailSender)
+        public AccountController(IWebHostEnvironment env,TransactionLogRepository transactionLogRepository, IConfiguration configuration, UserUnitOfWork userUnitOfWork, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, UnitOfWork unitOfWork, IEmailSender emailSender)
         {
             this._userManager = userManager;
             this._signInManager = signInManager;
@@ -48,6 +50,7 @@ namespace NitelikliBilisim.App.Controllers
             _configuration = configuration;
             _userUnitOfWork = userUnitOfWork;
             _env = env;
+            _transactionLogRepository = transactionLogRepository;
         }
 
         [Route("kayit-ol")]
@@ -69,7 +72,7 @@ namespace NitelikliBilisim.App.Controllers
                 return Json(new ResponseModel
                 {
                     isSuccess = false,
-                    message = ModelStateUtil.GetErrors(ModelState).Aggregate((x, y) => x + "<br>"+y)
+                    message = ModelStateUtil.GetErrors(ModelState).Aggregate((x, y) => x + "<br>" + y)
                 });
 
 
@@ -122,7 +125,7 @@ namespace NitelikliBilisim.App.Controllers
                 var message = "";
                 if (identityErrors != null)
                 {
-                    if (identityErrors.Any(x=>x.Code.Contains("DuplicateEmail")))
+                    if (identityErrors.Any(x => x.Code.Contains("DuplicateEmail")))
                     {
                         message = "Bu e-posta sistemde kayıtlı! Eğer şifrenizi hatırlamıyorsanız <a href=\"/sifremi-unuttum\">buraya</a> tıklayarak yeni şifre oluşturabilirsiniz.";
                     }
@@ -171,6 +174,7 @@ namespace NitelikliBilisim.App.Controllers
             ViewBag.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             return View(new LoginViewModel() { ReturnUrl = returnUrl });
         }
+        [TypeFilter(typeof(UserLoggerFilterAttribute))]
         [HttpPost, Route("giris-yap")]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
@@ -183,6 +187,13 @@ namespace NitelikliBilisim.App.Controllers
             if (result.Succeeded)
             {
                 var user = await _userManager.FindByNameAsync(model.UserName);
+                string sessionId = HttpContext.Session.GetString("userSessionId");
+                if (!string.IsNullOrEmpty(sessionId))
+                {
+                    UpdateTransactionLogsSetUserId(user.Id, sessionId);
+                }
+
+
                 //var isNbuy = _unitOfWork.Customer.IsNbuyStudent(user.Id);
                 var roles = await _userManager.GetRolesAsync(user);
                 if (roles.Contains("Admin"))
@@ -194,6 +205,24 @@ namespace NitelikliBilisim.App.Controllers
             ModelState.AddModelError(string.Empty, "Kullanıcı adı veya şifre hatalı!");
             return View(model);
         }
+
+        /// <summary>
+        /// Kullanıcı giriş yaptığında sahip olduğu sessionId ile tutulan ve userId alanı boş olan tüm loglara userId import ediliyor.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="sessionId"></param>
+        /// <returns></returns>
+        private void UpdateTransactionLogsSetUserId(string userId, string sessionId)
+        {
+            var logList = _transactionLogRepository.GetList(x => x.SessionId==sessionId&& string.IsNullOrEmpty(x.UserId));
+
+            foreach (var log in logList)
+            {
+                log.UserId = userId;
+                _transactionLogRepository.Update(log.Id.ToString(), log);
+            }
+        }
+
 
         [Route("sifremi-unuttum")]
         public IActionResult ForgotPassword()
@@ -220,11 +249,11 @@ namespace NitelikliBilisim.App.Controllers
                 {
                     builder = r.ReadToEnd();
                 }
-               
+
                 builder = builder.Replace("[##subject##]", "Şifre Sıfırlama!");
                 builder = builder.Replace("[##content##]", $"Merhaba {user.Name} {user.Surname},<br/> Şifrenizi yenilemek için <a href=\"{passwordResetLink}\" target=\"_blank\"><b>buraya</b></a> tıklayınız.");
                 builder = builder.Replace("[##content2##]", "");
-                
+
                 await _emailSender.SendAsync(new Core.ComplexTypes.EmailMessage
                 {
                     Subject = "Nitelikli Bilişim Şifre Yenileme",

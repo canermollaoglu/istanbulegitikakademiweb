@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using HtmlAgilityPack;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Filters;
@@ -9,6 +10,7 @@ using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels.Main.Blog;
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace NitelikliBilisim.App.Controllers
 {
@@ -67,6 +69,33 @@ namespace NitelikliBilisim.App.Controllers
                         htmlContent += "</div></a>";
                         model.Content = model.Content.Replace("[##" + code + "##]", htmlContent);
                     }
+                }
+
+                Regex ItemRegex = new Regex(@"<h[2][^>]*?>(?<TagText>.*?)</h[2]>", RegexOptions.Compiled);
+                foreach (Match ItemMatch in ItemRegex.Matches(model.Content))
+                {
+                    var startIndex = ItemMatch.Value.IndexOf(">");
+                    var endIndex = ItemMatch.Value.LastIndexOf("<");
+
+                    var title = ItemMatch.Value.Substring(startIndex+1, (endIndex - startIndex)-1);
+                    var array = title.Split(" ");
+                    if (array.Length>1)
+                    {
+                        var firstHalf = "";
+                        var secondHalf = "";
+                        for (int i = 0; i < array.Length; i++)
+                        {
+                            if (i<array.Length/2)
+                                firstHalf += array[i]+" ";
+                            else
+                                secondHalf += array[i]+" ";
+                        }
+                        secondHalf = $"<span class='title--blue'>{secondHalf}</span>";
+                        title = (firstHalf + secondHalf).Trim();
+                    }
+
+
+                    model.Content = model.Content.Replace(ItemMatch.Value, $"<h2 class='blog-detail__title'>{title}</h2>");
                 }
 
                 return View(model);
