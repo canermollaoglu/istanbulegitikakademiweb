@@ -30,8 +30,7 @@ using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Controllers
 {
-    [TypeFilter(typeof(HandleExceptionAttribute))]
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly RoleManager<ApplicationRole> _roleManager;
@@ -336,29 +335,16 @@ namespace NitelikliBilisim.App.Controllers
                 });
             }
 
-            try
+            var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            _unitOfWork.WishListItem.Delete(userId, educationId.Value);
+
+            return Json(new ResponseModel
             {
-                var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                isSuccess = true,
+                message = "Eğitim favorilerden çıkarılmıştır."
+            });
 
-                _unitOfWork.WishListItem.Delete(userId, educationId.Value);
-
-                return Json(new ResponseModel
-                {
-                    isSuccess = true,
-                    message = "Eğitim favorilerden çıkarılmıştır."
-                });
-
-
-            }
-            catch (Exception ex)
-            {
-                Console.Write(ex.Message);
-                return Json(new ResponseModel
-                {
-                    isSuccess = false,
-                    errors = new List<string> { "Bir sorunla karşılaşıldı." }
-                });
-            }
         }
 
         [HttpPost]
