@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MUsefulMethods;
-using Nest;
+using NitelikliBilisim.Business.Repositories.MongoDbRepositories;
 using NitelikliBilisim.Core.Entities.blog;
-using NitelikliBilisim.Core.ESOptions.ESEntities;
-using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels.Main.Blog;
 using NitelikliBilisim.Data;
 using System;
@@ -15,11 +13,11 @@ namespace NitelikliBilisim.Business.Repositories.BlogRepositories
     public class BlogPostRepository : BaseRepository<BlogPost, Guid>
     {
         NbDataContext _context;
-        private readonly IElasticClient _elasticClient;
-        public BlogPostRepository(NbDataContext context,IElasticClient elasticClient) : base(context)
+        private readonly BlogViewLogRepository _blogViewLogRepository;
+        public BlogPostRepository(NbDataContext context, BlogViewLogRepository blogViewLogRepository) : base(context)
         {
             _context = context;
-            _elasticClient = elasticClient;
+            _blogViewLogRepository = blogViewLogRepository;
         }
 
         public BlogPost GetByIdWithCategory(Guid postId)
@@ -109,7 +107,7 @@ namespace NitelikliBilisim.Business.Repositories.BlogRepositories
 
             retVal.Posts = list;
             retVal.TotalCount = totalCount;
-            retVal.TotalPageCount = (int)Math.Ceiling(totalCount/ (double)6);
+            retVal.TotalPageCount = (int)Math.Ceiling(totalCount/ (double)8);
             retVal.PageIndex = pageIndex;
 
             return retVal;
@@ -298,17 +296,7 @@ namespace NitelikliBilisim.Business.Repositories.BlogRepositories
 
         public int GetBlogPostViewCount(string seoUrl, string catSeoUrl)
         {
-            int count = 0;
-            var counts = _elasticClient.Count<BlogViewLog>(s =>
-            s.Query(
-                q =>
-                q.Term(t => t.CatSeoUrl, catSeoUrl) &&
-                q.Term(t => t.SeoUrl, seoUrl)));
-            if (counts.IsValid)
-            {
-                count = (int)counts.Count;
-            }
-            return count;
+            return _blogViewLogRepository.Count(x => x.SeoUrl == seoUrl && x.CatSeoUrl == catSeoUrl);
         }
 
     }

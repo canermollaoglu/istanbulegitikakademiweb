@@ -1,14 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
 using MUsefulMethods;
-using Nest;
 using Newtonsoft.Json;
+using NitelikliBilisim.Business.Repositories.MongoDbRepositories;
 using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Enums.educations;
-using NitelikliBilisim.Core.ESOptions.ESEntities;
+using NitelikliBilisim.Core.MongoOptions.Entities;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.Main.Profile;
 using NitelikliBilisim.Core.ViewModels.Main.Wizard;
@@ -24,14 +23,14 @@ namespace NitelikliBilisim.Business.Repositories
     public class SuggestionRepository
     {
         private readonly NbDataContext _context;
-        private readonly IElasticClient _elasticClient;
         private readonly SuggestionSystemOptions _options;
+        private readonly TransactionLogRepository _transactionLogRepository;
         private readonly IConfiguration _configuration;
 
-        public SuggestionRepository(NbDataContext context, IElasticClient elasticClient, IConfiguration configuration)
+        public SuggestionRepository(NbDataContext context,TransactionLogRepository transactionLogRepository, IConfiguration configuration)
         {
             _context = context;
-            _elasticClient = elasticClient;
+            _transactionLogRepository = transactionLogRepository;
             _configuration = configuration;
             _options = configuration.GetSection("EducationSuggestionSystemOptions").Get<SuggestionSystemOptions>(); ;
         }
@@ -236,12 +235,6 @@ namespace NitelikliBilisim.Business.Repositories
             return retVal.OrderByDescending(x=>x.AppropriateCriterionCount).ToList();
         }
 
-        
-
-
-
-
-
         public List<WizardFirstStepData> GetWizardFirstStepData()
         {
             return _context.EducationCategories.Where(x => x.BaseCategoryId == null && x.CategoryType== CategoryType.NBUY).OrderBy(x=>x.Order).Select(x =>
@@ -313,144 +306,6 @@ namespace NitelikliBilisim.Business.Repositories
 
 
         #region 1 KRİTERLERE GÖRE EĞİTİM ÖNERİLERİ
-
-        /// <summary>
-        /// Kriterlere göre önerilen eğitimler
-        /// </summary>
-        /// <param name="isLoggedIn"></param>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        /// 
-        //public List<SuggestedEducationVm> GetSuggestedEducationList(bool isLoggedIn, string userId)
-        //{
-        //    List<EducationPoint> educationAppropriateCriterionRate = new List<EducationPoint>();
-        //    var studentEducationInfo = _context.StudentEducationInfos.FirstOrDefault(x => x.CustomerId == userId);
-        //    if (isLoggedIn)
-        //    {
-        //        var customer = _context.Customers.FirstOrDefault(x => x.Id == userId);
-        //        if (customer != null)
-        //        {
-        //            //Öğrencinin en yakın eğitim günü. (Müşteri hafta sonu veya tatil günü sisteme giriş yaptığını varsayarak geçmiş en yakın gün baz alındı.)
-        //            int nearestDay = 0;
-        //            var educationDay = studentEducationInfo != null ? _context.EducationDays.Where(x => x.StudentEducationInfoId == studentEducationInfo.Id && x.Date <= DateTime.Now).OrderByDescending(c => c.Date).First().Day : 0;
-        //            nearestDay = educationDay;
-        //            var allEducations = _context.Educations.Include(x => x.Category).Include(x => x.EducationSuggestionCriterions).Where(x => x.IsActive);
-        //            /*Öğrencinin NBUY eğitimi varsa o kategorideki eğitimler yoksa tüm eğitimler.*/
-        //            var educations = studentEducationInfo != null ? allEducations.Where(x => x.Category.BaseCategoryId == studentEducationInfo.CategoryId.Value || x.Category.Id == studentEducationInfo.CategoryId.Value) : allEducations;
-        //            #region Favori eklenen eğitimler
-        //            List<string> userWishList = _context.Wishlist.Where(x => x.Id == customer.Id).Include(x => x.Education).Select(x => x.Education.Id.ToString().ToLower()).ToList();
-        //            #endregion
-        //            #region Satın alınan eğitimler
-        //            List<string> userPurchasedEducations = new List<string>();
-        //            var tickets = _context.Tickets
-        //            .Where(x => x.OwnerId == customer.Id)
-        //            .ToList();
-        //            tickets.ForEach(x => userPurchasedEducations.Add(x.EducationId.ToString().ToLower()));
-        //            #endregion
-
-
-        //            #region Kriterlerin uygunluğunun kontrolü
-        //            foreach (var education in educations)
-        //            {
-        //                int appropriateCriterion = 0;
-        //                if (education.EducationSuggestionCriterions != null && education.EducationSuggestionCriterions.Count > 0)
-        //                {
-        //                    foreach (var criterion in education.EducationSuggestionCriterions)
-        //                    {
-        //                        #region Eğitim Günü Kriteri
-        //                        if (studentEducationInfo != null && criterion.CriterionType == CriterionType.EducationDay)
-        //                        {
-        //                            if (nearestDay <= criterion.MaxValue && nearestDay >= criterion.MinValue)
-        //                                appropriateCriterion += _options.EducationDayCriterion;//Eğitim günü kriteri %50 etkilediği için 100 puan üzerinden 50 puan ekleniyor.
-        //                            else if (nearestDay > criterion.MaxValue && nearestDay < criterion.MaxValue + 7)
-        //                                appropriateCriterion += _options.EducationDayOneWeekAfter;//Eğitim günü kriteri iki hafta öncesine kadar 30 puan etkiliyor.
-        //                            else if (nearestDay < criterion.MinValue && nearestDay >= criterion.MinValue - 14)
-        //                                appropriateCriterion += _options.EducationDayOneWeekAfter;//Eğitim günü kriteri bir hafta sonrasına kadar 30 puan etkiliyor.
-        //                        }
-        //                        #endregion
-        //                        #region Favorilere Eklenmiş Eğitimler Kriteri
-        //                        if (criterion.CriterionType == CriterionType.WishListEducations)
-        //                        {
-        //                            List<string> wishListItemIds = JsonConvert.DeserializeObject<string[]>(criterion.CharValue).ToList();
-        //                            appropriateCriterion = appropriateCriterion + (int)TotalSameElementPoint(criterion.CriterionType, wishListItemIds, userWishList);
-        //                        }
-        //                        #endregion
-        //                        #region Satın Alınmış Eğitimler Kriteri
-        //                        if (criterion.CriterionType == CriterionType.PurchasedEducations)
-        //                        {
-        //                            List<string> criterionItemIds = JsonConvert.DeserializeObject<string[]>(criterion.CharValue).ToList();
-        //                            appropriateCriterion = appropriateCriterion + (int)TotalSameElementPoint(criterion.CriterionType, criterionItemIds, userPurchasedEducations);
-        //                        }
-        //                        #endregion
-        //                    }
-        //                }
-        //                educationAppropriateCriterionRate.Add(
-        //                    new EducationPoint { EducationId = education.Id, Point = appropriateCriterion }
-        //                    );
-        //            }
-        //            #endregion
-
-        //            //Yukarıda seçilen eğitimler içerisinden en çok kritere uyan 5 eğitim seçiliyor.
-        //            var selectedEducations = educationAppropriateCriterionRate.OrderByDescending(x => x.Point)
-        //                 .Take(5)
-        //                 .ToDictionary(pair => pair.EducationId, pair => pair.Point);
-
-        //            //Eğer seçilmiş eğitimler 5 taneyi tamamlayamıyorsa son eklenen 5 eğitim ile doldurulacak.
-        //            var lastEducations = _context.Educations.OrderByDescending(x => x.CreatedDate).Where(x => x.IsActive).Take(10).ToList();
-        //            int i = 0;
-        //            int educationCount = _context.Educations.Count(x => x.IsActive);
-        //            while (educationCount > 5 && selectedEducations.Count < 5)
-        //            {
-        //                if (!selectedEducations.ContainsKey(lastEducations[i].Id))
-        //                {
-        //                    selectedEducations.Add(lastEducations[i].Id, 0);
-        //                }
-        //                i++;
-        //            }
-
-        //            return FillSuggestedEducationList(selectedEducations);
-        //        }
-        //        return new List<SuggestedEducationVm>();
-        //    }
-        //    else
-        //    {
-        //        //Üye olmayanlar veya NBUY eğitimi almamış olanlar için son eklenen 5 eğitim.
-        //        var educationsList = _context.Educations.Where(x => x.IsActive).OrderByDescending(x => x.CreatedDate).Take(5)
-        //         .Join(_context.EducationMedias.Where(x => x.MediaType == EducationMediaType.PreviewPhoto), l => l.Id, r => r.EducationId, (x, y) => new
-        //         {
-        //             Education = x,
-        //             EducationPreviewMedia = y
-        //         })
-        //         .Join(_context.EducationCategories, l => l.Education.CategoryId, r => r.Id, (x, y) => new
-        //         {
-        //             Education = x.Education,
-        //             EducationPreviewMedia = x.EducationPreviewMedia,
-        //             CategoryName = y.Name
-        //         }).ToList();
-
-        //        var data = educationsList.Select(x => new SuggestedEducationVm
-        //        {
-        //            Base = new EducationBaseVm
-        //            {
-        //                Id = x.Education.Id,
-        //                Name = x.Education.Name,
-        //                Description = x.Education.Description,
-        //                CategoryName = x.CategoryName,
-        //                Level = EnumSupport.GetDescription(x.Education.Level),
-        //                PriceText = x.Education.NewPrice.GetValueOrDefault().ToString("C", CultureInfo.CreateSpecificCulture("tr-TR")),
-        //                HoursPerDayText = x.Education.HoursPerDay.ToString(),
-        //                DaysText = x.Education.Days.ToString(),
-        //                DaysNumeric = x.Education.Days,
-        //                HoursPerDayNumeric = x.Education.HoursPerDay
-        //            },
-        //            Medias = new List<EducationMediaVm> { new EducationMediaVm { EducationId = x.Education.Id, FileUrl = x.EducationPreviewMedia.FileUrl } },
-        //            AppropriateCriterionCount = 0
-        //        }
-        // ).ToList();
-
-        //        return data;
-        //    }
-        //}
 
         public List<EducationPoint> GetCriteriaBasedSuggestions(string userId)
         {
@@ -603,170 +458,7 @@ namespace NitelikliBilisim.Business.Repositories
         #endregion
 
         #region 2 KULLANICI DAVRANIŞLARINA GÖRE EĞİTİM ÖNERİLERİ
-        #region Closed
-        ///// <summary>
-        ///// Parametre olarak verilen sessionId ile incelenmiş eğitim listesini döner
-        ///// </summary>
-        ///// <param name="sessionId"></param>
-        ///// <returns>List Education</returns>
-        //public List<Education> GetViewingEducationsBySessionId(string sessionId)
-        //{
-        //    List<TransactionLog> transactionLogs = new List<TransactionLog>();
-        //    List<Guid> educationIds = new List<Guid>();
-
-        //    var count = _elasticClient.Count<TransactionLog>(s =>
-        //    s.Query(
-        //        q =>
-        //        q.Term(t => t.SessionId, sessionId) &&
-        //        q.Term(t => t.ControllerName, "course") &&
-        //        q.Term(t => t.ActionName, "details")));
-
-        //    var result = _elasticClient.Search<TransactionLog>(s =>
-        //    s.Size((int)count.Count)
-        //    .Query(
-        //        q =>
-        //        q.Term(t => t.SessionId, sessionId) &&
-        //        q.Term(t => t.ControllerName, "course") &&
-        //        q.Term(t => t.ActionName, "details")));
-
-        //    if (result.IsValid && result.Documents != null && result.Documents.Count > 0)
-        //    {
-        //        foreach (var log in result.Documents)
-        //        {
-        //            if (log.Parameters != null && log.Parameters.Any(x => x.ParameterName == "courseId"))
-        //                educationIds.Add(JsonConvert.DeserializeObject<Guid>(log.Parameters.First(x => x.ParameterName == "courseId").ParameterValue));
-        //        }
-        //    }
-        //    return _context.Educations.Where(x => educationIds.Contains(x.Id)).ToList();
-        //}
-        ///// <summary>
-        ///// Parametre olarak verilen userId ile incelenmiş eğitim listesini döner
-        ///// </summary>
-        ///// <param name="userId"></param>
-        ///// <returns>List Education</returns>
-        //public List<Education> GetViewingEducationsByUserId(string userId)
-        //{
-        //    if (string.IsNullOrEmpty(userId))
-        //        return new List<Education>();
-
-
-        //    var transactionLogs = new List<TransactionLog>();
-        //    var educationIds = new List<Guid>();
-        //    var count = _elasticClient.Count<TransactionLog>(s =>
-        //   s.Query(
-        //       q =>
-        //       q.Term(t => t.UserId, userId) &&
-        //       q.Term(t => t.ControllerName, "course") &&
-        //       q.Term(t => t.ActionName, "details")));
-
-        //    var result = _elasticClient.Search<TransactionLog>(s =>
-        //    s.Size((int)count.Count)
-        //    .Query(
-        //       q =>
-        //       q.Term(t => t.UserId, userId) &&
-        //       q.Term(t => t.ControllerName, "course") &&
-        //       q.Term(t => t.ActionName, "details")));
-
-        //    if (result.IsValid && result.Documents != null && result.Documents.Count > 0)
-        //    {
-        //        foreach (var log in result.Documents)
-        //        {
-        //            if (log.Parameters != null && log.Parameters.Any(x => x.ParameterName == "courseId"))
-        //                educationIds.Add(JsonConvert.DeserializeObject<Guid>(log.Parameters.First(x => x.ParameterName == "courseId").ParameterValue));
-        //        }
-        //    }
-        //    return _context.Educations.Where(x => educationIds.Contains(x.Id)).ToList();
-        //}
-        ///// <summary>
-        ///// User Id ile incelenmiş eğitimlerin kaç adet incelendiğini döner.
-        ///// </summary>
-        ///// <param name="userId"></param>
-        ///// <returns>Dictionary<EğitimId,İncelenme sayısı></returns>
-        //public Dictionary<Education, int> EducationDetailViewsCountByUserId(string userId)
-        //{
-        //    if (string.IsNullOrEmpty(userId))
-        //        return new Dictionary<Education, int>();
-
-        //    Dictionary<Guid, int> retVal = new Dictionary<Guid, int>();
-        //    Dictionary<Education, int> viewingInformation = new Dictionary<Education, int>();
-        //    var count = _elasticClient.Count<TransactionLog>(s =>
-        //   s.Query(
-        //       q =>
-        //       q.Term(t => t.UserId, userId) &&
-        //       q.Term(t => t.ControllerName, "course") &&
-        //       q.Term(t => t.ActionName, "details")));
-
-        //    var result = _elasticClient.Search<TransactionLog>(s =>
-        //    s.Size((int)count.Count)
-        //    .Query(
-        //        q =>
-        //        q.Term(t => t.UserId, userId) &&
-        //        q.Term(t => t.ControllerName, "course") &&
-        //        q.Term(t => t.ActionName, "details")));
-
-        //    if (result.IsValid && result.Documents != null && result.Documents.Count > 0)
-        //    {
-        //        foreach (TransactionLog log in result.Documents)
-        //        {
-        //            if (log.Parameters != null && log.Parameters.Any(x => x.ParameterName == "courseId"))
-        //            {
-        //                Guid educationId = JsonConvert.DeserializeObject<Guid>(log.Parameters.First(x => x.ParameterName == "courseId").ParameterValue);
-        //                if (retVal.ContainsKey(educationId))
-        //                    retVal[educationId]++;
-        //                else
-        //                    retVal.Add(educationId, 1);
-        //            }
-        //        }
-        //    }
-        //    var educations = _context.Educations.Where(x => retVal.Keys.Contains(x.Id)).ToList();
-        //    foreach (var val in retVal)
-        //    {
-        //        viewingInformation.Add(educations.First(x => x.Id == val.Key), val.Value);
-        //    }
-
-        //    return viewingInformation;
-
-        //}
-
-        ///// <summary>
-        ///// UserId ile arama yapılmış kelimeleri listeler.
-        ///// </summary>
-        ///// <param name="userId"></param>
-        ///// <returns>List string</returns>
-        //public List<string> GetSearchedTextsByUserId(string userId)
-        //{
-        //    if (string.IsNullOrEmpty(userId))
-        //        return new List<string>();
-
-        //    List<string> texts = new List<string>();
-
-        //    var searchedTextCount = _elasticClient.Count<TransactionLog>(s =>
-        //    s.Query(
-        //        q =>
-        //        q.Term(t => t.UserId, userId) &&
-        //        q.Term(t => t.ControllerName, "browser") &&
-        //        q.Term(t => t.ActionName, "getcourses")));
-
-        //    var result = _elasticClient.Search<TransactionLog>(s =>
-        //    s.Size((int)searchedTextCount.Count)
-        //    .Query(q =>
-        //        q.Term(t => t.UserId, userId) &&
-        //        q.Term(t => t.ControllerName, "browser") &&
-        //        q.Term(t => t.ActionName, "getcourses")));
-
-        //    if (result.IsValid && result.Documents != null && result.Documents.Count > 0)
-        //    {
-        //        foreach (var log in result.Documents)
-        //        {
-        //            if (log.Parameters != null && log.Parameters.Any(x => x.ParameterName == "searchText"))
-        //                texts.Add(JsonConvert.DeserializeObject<string>(log.Parameters.First(x => x.ParameterName == "searchText").ParameterValue));
-        //            //Todo aranılan kelime ile bulunacak olan eğitimler listelenebilir (_unitOfWork.Education.GetInfiniteScrollSearchResults(categoryName, searchText, page, order, filter);)
-        //        }
-        //    }
-        //    return texts.Distinct().ToList();
-
-        //}
-        #endregion
+        
         public EducationDetailLog GetEducationDetailLogs(string userId)
         {
 
@@ -807,14 +499,14 @@ namespace NitelikliBilisim.Business.Repositories
         /// <param name="result"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        private List<SearchedEducationList> GetSearchedEducations(ISearchResponse<TransactionLog> result, string userId)
+        private List<SearchedEducationList> GetSearchedEducations(List<TransactionLog> result, string userId)
         {
             List<SearchedEducationList> model = new List<SearchedEducationList>();
             Dictionary<string, int> getAllSearching = GetAllSearchedKeyAndSearchCount(userId);
             int totalEducationSearchCount = CountOfEducationsSearchedAndViewed(result, getAllSearching);
-            if (result.IsValid && result.Documents != null && result.Documents.Count > 0)
+            if (result != null && result.Count > 0)
             {
-                foreach (var log in result.Documents)
+                foreach (var log in result)
                 {//Aranılarak incelenmiş eğitimler
                     if (log.Parameters != null && log.Parameters.Any(x => x.ParameterName == "searchKey"))
                     {
@@ -853,13 +545,13 @@ namespace NitelikliBilisim.Business.Repositories
         /// </summary>
         /// <param name="result">Elastic search üzerinden dönen veriler.</param>
         /// <returns></returns>
-        private List<ViewingEducation> GetViewingEducations(ISearchResponse<TransactionLog> result)
+        private List<ViewingEducation> GetViewingEducations(List<TransactionLog> result)
         {
             List<ViewingEducation> model = new List<ViewingEducation>();
             int totalEducationViewCount = GetEducationViewTotalCount(result);
-            if (result.IsValid && result.Documents != null && result.Documents.Count > 0)
+            if (result != null && result.Count > 0)
             {
-                foreach (var log in result.Documents)
+                foreach (var log in result)
                 {
                     if (log.Parameters != null && log.Parameters.Any(x => x.ParameterName == "seoUrl") && !log.Parameters.Any(x => x.ParameterName == "searchKey"))
                     {
@@ -971,12 +663,12 @@ namespace NitelikliBilisim.Business.Repositories
         /// <param name="result"></param>
         /// <param name="getAllSearching"></param>
         /// <returns></returns>
-        private int CountOfEducationsSearchedAndViewed(ISearchResponse<TransactionLog> result, Dictionary<string, int> getAllSearching)
+        private int CountOfEducationsSearchedAndViewed(List<TransactionLog> result, Dictionary<string, int> getAllSearching)
         {
             Dictionary<string, int> counter = new Dictionary<string, int>();
-            if (result.IsValid && result.Documents != null && result.Documents.Count > 0)
+            if (result != null && result.Count > 0)
             {
-                foreach (var log in result.Documents)
+                foreach (var log in result)
                 {//Aranılarak incelenmiş eğitimler
                     if (log.Parameters != null && log.Parameters.Any(x => x.ParameterName == "searchKey"))
                     {
@@ -990,12 +682,12 @@ namespace NitelikliBilisim.Business.Repositories
             }
             return counter.Sum(x => x.Value);
         }
-        private int GetEducationViewTotalCount(ISearchResponse<TransactionLog> result)
+        private int GetEducationViewTotalCount(List<TransactionLog> result)
         {
             int total = 0;
-            if (result.IsValid && result.Documents != null && result.Documents.Count > 0)
+            if (result != null && result.Count > 0)
             {
-                foreach (var log in result.Documents)
+                foreach (var log in result)
                 {
                     if (log.Parameters != null && !log.Parameters.Any(x => x.ParameterName == "searchKey"))
                     {
@@ -1022,22 +714,9 @@ namespace NitelikliBilisim.Business.Repositories
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        private ISearchResponse<TransactionLog> GetViewedEducations(string userId)
+        private List<TransactionLog> GetViewedEducations(string userId)
         {
-            var count = _elasticClient.Count<TransactionLog>(s =>
-            s.Query(
-                q =>
-                q.Term(t => t.UserId, userId) &&
-                q.Term(t => t.ControllerName, "course") &&
-                q.Term(t => t.ActionName, "details")));
-
-            var result = _elasticClient.Search<TransactionLog>(s =>
-            s.Size((int)count.Count)
-            .Query(
-                q =>
-                q.Term(t => t.UserId, userId) &&
-                q.Term(t => t.ControllerName, "course") &&
-                q.Term(t => t.ActionName, "details")));
+            var result = _transactionLogRepository.GetList(x => x.UserId == userId && x.ControllerName == "Course" && x.ActionName == "Details");
             return result;
         }
 
@@ -1051,22 +730,12 @@ namespace NitelikliBilisim.Business.Repositories
         private Dictionary<string, int> GetAllSearchedKeyAndSearchCount(string userId)
         {
             Dictionary<string, int> allSearchings = new Dictionary<string, int>();
-            var searchedTextCount = _elasticClient.Count<TransactionLog>(s =>
-            s.Query(
-                q =>
-                q.Term(t => t.UserId, userId) &&
-                q.Term(t => t.ControllerName, "course") &&
-                q.Term(t => t.ActionName, "getcourses")));
-            var searchedTexts = _elasticClient.Search<TransactionLog>(s =>
-            s.Size((int)searchedTextCount.Count)
-            .Query(q =>
-                q.Term(t => t.UserId, userId) &&
-                q.Term(t => t.ControllerName, "course") &&
-                q.Term(t => t.ActionName, "getcourses")));
 
-            if (searchedTexts.IsValid && searchedTexts.Documents != null && searchedTexts.Documents.Count > 0)
+            var searchedTexts = _transactionLogRepository.GetList(x => x.UserId == userId && x.ControllerName == "Course" && x.ActionName == "GetCourses");
+                
+            if (searchedTexts != null && searchedTexts.Count > 0)
             {
-                foreach (var log in searchedTexts.Documents)
+                foreach (var log in searchedTexts)
                 {
                     if (log.Parameters != null && log.Parameters.Any(x => x.ParameterName == "searchKey"))
                     {

@@ -1,12 +1,12 @@
 ﻿using DevExtreme.AspNet.Data;
 using Microsoft.AspNetCore.Mvc;
 using MUsefulMethods;
-using Nest;
 using Newtonsoft.Json;
 using NitelikliBilisim.App.Extensions;
+using NitelikliBilisim.Business.Repositories.MongoDbRepositories;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Enums.user_details;
-using NitelikliBilisim.Core.ESOptions.ESEntities;
+using NitelikliBilisim.Core.ViewModels.areas.admin.student;
 using NitelikliBilisim.Core.ViewModels.HelperVM;
 using System.Linq;
 
@@ -15,11 +15,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.WebAPI
     public class StudentController : BaseApiController
     {
         private readonly UnitOfWork _unitOfWork;
-        private readonly IElasticClient _elasticClient;
-        public StudentController(UnitOfWork unitOfWork, IElasticClient elasticClient)
+        private readonly TransactionLogRepository _transactionLog;
+        public StudentController(UnitOfWork unitOfWork,TransactionLogRepository transactionLog)
         {
             _unitOfWork = unitOfWork;
-            _elasticClient = elasticClient;
+            _transactionLog = transactionLog;
         }
 
         [HttpGet]
@@ -34,27 +34,20 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.WebAPI
         [Route("get-student-log-list")]
         public IActionResult Logs(DataSourceLoadOptions loadOptions, string studentId)
         {
-            var count = _elasticClient.Count<TransactionLog>(s => s.Query
-            (q => q.Term(t => t.UserId, studentId)));
-            var data = _elasticClient.Search<TransactionLog>(s =>
-            s.From(0).Size((int)count.Count).Query(q => q.Term(t => t.UserId, studentId))).Documents.Select(x => new TransactionLogListViewModel
+            var data = _transactionLog.GetListQueryable().Where(x => x.UserId == studentId).Select(x => new TransactionLogListViewModel
             {
                 ActionName = x.ActionName,
                 ControllerName = x.ControllerName,
                 CreatedDate = x.CreatedDate,
                 Id = x.Id,
                 IpAddress = x.IpAddress,
-                Parameters = JsonConvert.SerializeObject(x.Parameters),
                 SessionId = x.SessionId,
                 UserId = x.UserId
-            }).ToList();
+            });
 
             loadOptions.PrimaryKey = new[] { "Id" };
 
-            var lastData = DataSourceLoader.Load(data, loadOptions);
-            lastData.totalCount = (int)count.Count;
-
-            return Ok(lastData);
+            return Ok(DataSourceLoader.Load(data, loadOptions));
         }
 
 

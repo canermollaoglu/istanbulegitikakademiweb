@@ -10,8 +10,10 @@ using Microsoft.Extensions.Hosting;
 using NitelikliBilisim.App.Extensions;
 using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Hubs;
+using NitelikliBilisim.Business.Repositories.MongoDbRepositories;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.MongoOptions;
 using NitelikliBilisim.Data;
 using System.Globalization;
 using System.IO;
@@ -55,6 +57,17 @@ namespace NitelikliBilisim.App
                 .AddDefaultTokenProviders();
 
             services.AddScoped<UnitOfWork>();
+            #region MongoRepositories
+            
+            string mongoConnectionString = Configuration["MongoDbSettings:ConnectionString"];
+            string mongoDbName = Configuration["MongoDbSettings:DatabaseName"];
+
+            services.AddTransient(s => new BlogViewLogRepository(mongoConnectionString, mongoDbName, MongoCollectionNames.BlogViewLog));
+            services.AddTransient(s => new TransactionLogRepository(mongoConnectionString, mongoDbName, MongoCollectionNames.TransactionLog));
+            services.AddTransient(s => new CampaignLogRepository(mongoConnectionString, mongoDbName, MongoCollectionNames.CampaignLog));
+            services.AddTransient(s => new ExceptionInfoRepository(mongoConnectionString, mongoDbName, MongoCollectionNames.ExceptionLog));
+
+            #endregion
             services.AddScoped<ComingSoonActionFilter>();
             services.AddApplicationServices(this.Configuration);
             services.AddSession(options =>

@@ -1,16 +1,12 @@
-﻿using Elasticsearch.Net;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Nest;
 using Newtonsoft.Json;
-using NitelikliBilisim.App.Utility;
-using NitelikliBilisim.Core.ESOptions;
-using NitelikliBilisim.Core.ESOptions.ESEntities;
+using NitelikliBilisim.Business.Repositories.MongoDbRepositories;
+using NitelikliBilisim.Core.MongoOptions.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.NetworkInformation;
 using System.Security.Claims;
 
 
@@ -18,11 +14,16 @@ namespace NitelikliBilisim.App.Filters
 {
     public class UserLoggerFilterAttribute : Attribute, IActionFilter
     {
-        private readonly IElasticClient _elasticClient;
+        private readonly BlogViewLogRepository _blogViewLog;
+        private readonly TransactionLogRepository _transactionLog;
+        private readonly CampaignLogRepository _campaignLog;
 
-        public UserLoggerFilterAttribute(IElasticClient elasticClient)
+
+        public UserLoggerFilterAttribute(TransactionLogRepository transactionLog, CampaignLogRepository campaignLog, BlogViewLogRepository blogViewLog)
         {
-            _elasticClient = elasticClient;
+            _blogViewLog = blogViewLog;
+            _transactionLog = transactionLog;
+            _campaignLog = campaignLog;
         }
 
 
@@ -40,7 +41,6 @@ namespace NitelikliBilisim.App.Filters
             {
                 context.HttpContext.Session.SetString("userSessionId", Guid.NewGuid().ToString());
             }
-            //if (context.HttpContext.Request.Method.Equals("POST"))
 
             #region Referans Url Bilgileri Loglanıyor
 
@@ -52,23 +52,20 @@ namespace NitelikliBilisim.App.Filters
                 string referrerUrl = referrer != null ? referrer.ToString() : "www.niteliklibilisim.com.tr";
                 string campaignName = parameters["c_name"].ToString();
                 var ipAddress = context.HttpContext.Connection.RemoteIpAddress.ToString();
-                var anyIp = AnyIpAddressCampaignLog(ipAddress);
+                var anyIp = _campaignLog.Any(x => x.IpAddress == ipAddress);
                 if (!anyIp)
                 {
-                    CampaignLog cLog = new CampaignLog
+                    CampaignLog newLog = new CampaignLog
                     {
-                        Id = Guid.NewGuid(),
                         RefererUrl = referrerUrl,
                         CampaignName = campaignName,
                         IpAddress = ipAddress
                     };
-                    CheckCampaignLogIndex();
-                    _elasticClient.IndexDocument(cLog);
+                    _campaignLog.Create(newLog);
                 }
             }
             #endregion
 
-            //Admin işlemleri log dışı tutuluyor.
             if (descriptor.ControllerName == "Blog" && descriptor.ActionName == "Detail")
             {
                 if (context.ActionArguments["seoUrl"] != null && context.ActionArguments["catSeoUrl"] != null)
@@ -76,19 +73,18 @@ namespace NitelikliBilisim.App.Filters
                     var ipAddress = context.HttpContext.Connection.RemoteIpAddress.ToString();
                     string catSeoUrl = context.ActionArguments["catSeoUrl"].ToString();
                     string seoUrl = context.ActionArguments["seoUrl"].ToString();
-                    var anyIp = AnyIpAddress(ipAddress, catSeoUrl, seoUrl);
+                    var anyIp = _blogViewLog.Any(x => x.CatSeoUrl == catSeoUrl && x.SeoUrl == seoUrl && x.IpAddress == ipAddress);
                     if (!anyIp)
                     {
-                        BlogViewLog bViewLog = new BlogViewLog
+                        BlogViewLog newLog = new BlogViewLog
                         {
-                            SeoUrl = context.ActionArguments["seoUrl"],
-                            CatSeoUrl = context.ActionArguments["catSeoUrl"],
+                            SeoUrl = context.ActionArguments["seoUrl"].ToString(),
+                            CatSeoUrl = context.ActionArguments["catSeoUrl"].ToString(),
                             SessionId = context.HttpContext.Session.GetString("userSessionId"),
                             IpAddress = context.HttpContext.Connection.RemoteIpAddress.ToString(),
                             UserId = context.HttpContext.User.Identity.IsAuthenticated ? context.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier) : null
                         };
-                        CheckBlogViewLogIndex();
-                        _elasticClient.IndexDocument(bViewLog);
+                        _blogViewLog.Create(newLog);
                     }
                 }
             }
@@ -96,7 +92,7 @@ namespace NitelikliBilisim.App.Filters
             #region Create and Insert TransactionLog
             if (currentUserRoleName != "Admin")
             {
-                TransactionLog log = new TransactionLog
+                TransactionLog newLog = new TransactionLog
                 {
                     ControllerName = descriptor.ControllerName,
                     ActionName = descriptor.ActionName,
@@ -105,54 +101,13 @@ namespace NitelikliBilisim.App.Filters
                     IpAddress = context.HttpContext.Connection.RemoteIpAddress.ToString(),
                     UserId = context.HttpContext.User.Identity.IsAuthenticated ? context.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier) : null
                 };
-
-
-                if (log.UserId != null && sessionId != null)
-                {
-                    UpdateTransactionLogsSetUserId(log.UserId, sessionId);
-                }
-
-                //Index kontrol ediliyor yoksa oluşturuluyor.
-                CheckLogIndex();
-                //Nesne es ye insert ediliyor.
-                var response = _elasticClient.IndexDocument(log);
-                Console.WriteLine(response.IsValid);
+                _transactionLog.Create(newLog);
             }
             #endregion
         }
 
 
         #region Helper Methods
-
-        private bool AnyIpAddress(string ipAddress, string catSeoUrl, string seoUrl)
-        {
-            int count = 0;
-            var counts = _elasticClient.Count<BlogViewLog>(s =>
-            s.Query(
-                q =>
-                q.Term(t => t.IpAddress, ipAddress) &&
-                q.Term(t => t.CatSeoUrl, catSeoUrl) &&
-                q.Term(t => t.SeoUrl, seoUrl)));
-            if (counts.IsValid)
-            {
-                count = (int)counts.Count;
-            }
-            return count > 0 ? true : false;
-        }
-
-        private bool AnyIpAddressCampaignLog(string ipAddress)
-        {
-            int count = 0;
-            var counts = _elasticClient.Count<BlogViewLog>(s =>
-            s.Query(
-                q =>
-                q.Term(t => t.IpAddress, ipAddress)));
-            if (counts.IsValid)
-            {
-                count = (int)counts.Count;
-            }
-            return count > 0 ? true : false;
-        }
         /// <summary>
         /// ActionArguments içerisindeki parametreleri Liste halinde Log Parameter e map ederek döndürür.
         /// </summary>
@@ -166,81 +121,6 @@ namespace NitelikliBilisim.App.Filters
             }).ToList();
         }
 
-        /// <summary>
-        /// Kullanıcı giriş yaptığında sahip olduğu sessionId ile tutulan ve userId alanı boş olan tüm loglara userId import ediliyor.
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="sessionId"></param>
-        /// <returns></returns>
-        private bool UpdateTransactionLogsSetUserId(string userId, string sessionId)
-        {
-            var response = _elasticClient.UpdateByQuery<TransactionLog>(u => u
-                .Query(q => q.Term(t => t.SessionId, sessionId) && q.Bool(b => b.MustNot(m => m.Exists(t => t.Field(f => f.UserId)))))
-                .Script(s => s.
-                Source("ctx._source.userId = params.userId")
-                .Lang(ScriptLang.Painless)
-                .Params(p => p.Add("userId", userId)))
-                .Conflicts(Conflicts.Proceed)
-                .Refresh(true)
-              );
-            return response.IsValid;
-        }
-        /// <summary>
-        /// Indıcesin varlığını kontrol edip yoksa oluşturuyor.
-        /// </summary>
-        private void CheckLogIndex()
-        {
-            var response = _elasticClient.Indices.Exists(ElasticSearchIndexNameUtility.TransactionLogIndex);
-            if (!response.Exists)
-            {
-                _elasticClient.Indices.Create(ElasticSearchIndexNameUtility.TransactionLogIndex, index =>
-                   index.Map<TransactionLog>(x => x.AutoMap()));
-            }
-        }
-        private void CheckCampaignLogIndex()
-        {
-            var response = _elasticClient.Indices.Exists(ElasticSearchIndexNameUtility.CampaignLogIndex);
-            if (!response.Exists)
-            {
-                _elasticClient.Indices.Create(ElasticSearchIndexNameUtility.CampaignLogIndex, index =>
-                   index.Map<CampaignLog>(x => x.AutoMap()));
-            }
-        }
-
-        private void CheckBlogViewLogIndex()
-        {
-            var response = _elasticClient.Indices.Exists(ElasticSearchIndexNameUtility.BlogViewLogIndex);
-            if (!response.Exists)
-            {
-                _elasticClient.Indices.Create(ElasticSearchIndexNameUtility.BlogViewLogIndex, index =>
-                   index.Map<BlogViewLog>(x => x.AutoMap()));
-            }
-        }
-
-        /// <summary>
-        /// Finds the MAC address of the NIC with maximum speed.
-        /// </summary>
-        /// <returns>The MAC address.</returns>
-        private string GetMacAddress()
-        {
-            const int MIN_MAC_ADDR_LENGTH = 12;
-            string macAddress = string.Empty;
-            long maxSpeed = -1;
-
-            foreach (NetworkInterface nic in NetworkInterface.GetAllNetworkInterfaces())
-            {
-                string tempMac = nic.GetPhysicalAddress().ToString();
-                if (nic.Speed > maxSpeed &&
-                    !string.IsNullOrEmpty(tempMac) &&
-                    tempMac.Length >= MIN_MAC_ADDR_LENGTH)
-                {
-                    maxSpeed = nic.Speed;
-                    macAddress = tempMac;
-                }
-            }
-
-            return macAddress;
-        }
         #endregion
     }
 }

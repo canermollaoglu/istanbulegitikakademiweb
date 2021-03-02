@@ -24,7 +24,6 @@ namespace NitelikliBilisim.App.Extensions
             services.AddSingleton<IStorageService, StorageService>();
             services.AddScoped<IPaymentService, PaymentService>();
             services.AddSingleton<IEmailSender, EmailSender>();
-            services.AddElasticsearch(configuration);
             #endregion
 
             #region signalR
@@ -133,7 +132,8 @@ namespace NitelikliBilisim.App.Extensions
             //    });
 
             #endregion
-            
+
+
             return services;
         }
     }

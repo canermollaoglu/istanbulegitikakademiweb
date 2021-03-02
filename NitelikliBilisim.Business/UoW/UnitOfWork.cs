@@ -1,9 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Nest;
 using NitelikliBilisim.Business.Repositories;
 using NitelikliBilisim.Business.Repositories.BlogRepositories;
+using NitelikliBilisim.Business.Repositories.MongoDbRepositories;
 using NitelikliBilisim.Data;
 using NitelikliBilisim.Notificator.Services;
 
@@ -11,6 +10,7 @@ namespace NitelikliBilisim.Business.UoW
 {
     public class UnitOfWork : IUnitOfWork
     {
+        #region Repositories
         private readonly NbDataContext _context;
         private EducationCategoryRepository _educationCategoryRepository;
         private EducationTagRepository _educationTagRepository;
@@ -66,23 +66,29 @@ namespace NitelikliBilisim.Business.UoW
         private CustomerCertificateRepository _customerCertificateRepository;
         private DashboardRepository _dashboardRepository;
         private CampaignRepository _campaignRepository;
-
-        private IElasticClient _elasticClient;
+        #endregion
+        #region Mongo Repositories
+        private BlogViewLogRepository _blogViewLogRepository;
+        private CampaignLogRepository _campaignLogRepository;
+        private TransactionLogRepository _transactionLogRepository;
+        #endregion
         private IConfiguration _configuration;
         private IEmailSender _emailSender;
-        public UnitOfWork(NbDataContext context, IElasticClient elasticClient,IConfiguration configuration,IEmailSender emailSender)
+        public UnitOfWork(NbDataContext context,TransactionLogRepository transactionLogRepository,CampaignLogRepository campaignLogRepository,BlogViewLogRepository blogViewLogRepository,IConfiguration configuration,IEmailSender emailSender)
         {
-            _elasticClient = elasticClient;
             _context = context;
             _configuration = configuration;
             _emailSender = emailSender;
+            _blogViewLogRepository = blogViewLogRepository;
+            _campaignLogRepository = campaignLogRepository;
+            _transactionLogRepository = transactionLogRepository;
         }
         public int Save()
         {
             _context.EnsureAutoHistory();
             return _context.SaveChanges();
         }
-        public CampaignRepository Campaign => _campaignRepository ??= new CampaignRepository(_context,_elasticClient);
+        public CampaignRepository Campaign => _campaignRepository ??= new CampaignRepository(_context,_campaignLogRepository);
         public DashboardRepository Dashboard => _dashboardRepository ??= new DashboardRepository(_context);
         public CustomerCertificateRepository CustomerCertificate => _customerCertificateRepository ??= new CustomerCertificateRepository(_context);
         public FeaturedCommentRepository FeaturedComment => _featuredCommentRepository ??= new FeaturedCommentRepository(_context);
@@ -100,7 +106,7 @@ namespace NitelikliBilisim.Business.UoW
         public GroupExpenseTypeRepository GroupExpenseType => _groupExpenseTypeRepository ??= new GroupExpenseTypeRepository(_context);
         public InvoiceDetailRepository InvoiceDetail => _invoiceDetailRepository ??= new InvoiceDetailRepository(_context);
         public InvoiceRepository Invoice => _invoiceRepository ??= new InvoiceRepository(_context);
-        public SuggestionRepository Suggestions => _suggestionRepository ??= new SuggestionRepository(_context, _elasticClient,_configuration);
+        public SuggestionRepository Suggestions => _suggestionRepository ??= new SuggestionRepository(_context, _transactionLogRepository,_configuration);
         public EducationCategoryRepository EducationCategory => _educationCategoryRepository ??= new EducationCategoryRepository(_context);
 
         public EducationTagRepository EducationTag => _educationTagRepository ??= new EducationTagRepository(_context);
@@ -196,7 +202,7 @@ namespace NitelikliBilisim.Business.UoW
         public EducationDayRepository EducationDay => _educationDayRepository ??= new EducationDayRepository(_context);
         public EducationSuggestionCriterionRepository EducationSuggestionCriterion => _educationSuggestionCriterionRepository ??= new EducationSuggestionCriterionRepository(_context);
         public WishListRepository WishListItem => _wishListItemRepository ??= new WishListRepository(_context);
-        public BlogPostRepository BlogPost => _blogPostRepository ??= new BlogPostRepository(_context,_elasticClient);
+        public BlogPostRepository BlogPost => _blogPostRepository ??= new BlogPostRepository(_context, _blogViewLogRepository);
         public BlogCategoryRepository BlogCategory => _blogCategoryRepository ??= new BlogCategoryRepository(_context);
         public BlogTagRepository BlogTag => _blogTagRepository ??= new BlogTagRepository(_context);
         public BannerAdsRepository BannerAds => _bannerAdsRepository ??= new BannerAdsRepository(_context);
