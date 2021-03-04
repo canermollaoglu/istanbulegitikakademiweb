@@ -355,8 +355,8 @@ namespace NitelikliBilisim.Business.Repositories
             }
             if (!string.IsNullOrEmpty(searchKey))
             {
+                var ids = rawData.Where(x => x.Name == searchKey||x.Name == searchKey.FormatForTag()||x.Name.Contains(searchKey.FormatForTag()) || x.Name.Contains(searchKey)).Select(x => x.Id).ToList();
                 searchKey = searchKey.FormatForTag();
-                var ids = rawData.Where(x => x.Name == searchKey || x.Name.Contains(searchKey)).Select(x => x.Id).ToList();
                 var tags = Context.Bridge_EducationTags
                                     .Join(Context.EducationTags, l => l.Id, r => r.Id, (x, y) => new
                                     {

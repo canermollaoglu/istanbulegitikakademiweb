@@ -318,7 +318,12 @@ namespace NitelikliBilisim.App.Controllers
                 discountAmount = basketBasedPromotion.DiscountAmount;
                 data.DiscountAmount = basketBasedPromotion.DiscountAmount;
             }
-
+            var address = _unitOfWork.Address.GetFullAddressById(data.AddressId);
+            if (address == null)
+            {
+                TempData["ErrorMessage"] = "Adres bilgileriniz bulunamadı. Lütfen adres seçtiğinizden emin olunuz. Fatura bilgileri sayfasından adresinizi tekrar seçerek işleme devam edebilirsiniz.";
+                return RedirectToAction(nameof(Payment));
+            }
             data.CardInfo.NumberOnCard = FormatCardNumber(data.CardInfo.NumberOnCard);
             data.SpecialInfo.Ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
             data.SpecialInfo.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -332,7 +337,7 @@ namespace NitelikliBilisim.App.Controllers
             var transactionType = cardInfoChecker.DecideTransactionType(info, data.Use3d);
 
             var manager = new PaymentManager(_paymentService, transactionType);
-            var address = _unitOfWork.Address.GetFullAddressById(data.AddressId);
+            
             data.InvoiceAddress = address;
 
             var result = manager.Pay(_unitOfWork, data);

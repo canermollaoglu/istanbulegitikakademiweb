@@ -1,7 +1,5 @@
-﻿using Nest;
+﻿using NitelikliBilisim.Business.Repositories.MongoDbRepositories;
 using NitelikliBilisim.Core.Entities.campaign;
-using NitelikliBilisim.Core.ESOptions;
-using NitelikliBilisim.Core.ESOptions.ESEntities;
 using NitelikliBilisim.Core.ViewModels.areas.admin.campaign;
 using NitelikliBilisim.Data;
 using System;
@@ -13,11 +11,11 @@ namespace NitelikliBilisim.Business.Repositories
     public class CampaignRepository : BaseRepository<Campaign, Guid>
     {
         private readonly NbDataContext _context;
-        private readonly IElasticClient _elasticClient;
-        public CampaignRepository(NbDataContext context, IElasticClient elasticClient) : base(context)
+        private readonly CampaignLogRepository _campaignLogRepository;
+        public CampaignRepository(NbDataContext context,CampaignLogRepository campaignLogRepository) : base(context)
         {
             _context = context;
-            _elasticClient = elasticClient;
+            _campaignLogRepository = campaignLogRepository;
         }
 
         public CampaignDetailsVm GetCampaignDetails(Guid id)
@@ -39,27 +37,17 @@ namespace NitelikliBilisim.Business.Repositories
         {
             List<CampaignDetailLog> detailLogs = new();
 
-            var count = _elasticClient.Count<CampaignLog>(s =>
-             s.Query(
-                 q =>
-                 q.Term(t => t.CampaignName, campaignName)));
+            var campaignItems = _campaignLogRepository.GetList(x => x.CampaignName == campaignName);
 
-            var result = _elasticClient.Search<CampaignLog>(s =>
-            s.Size((int)count.Count)
-            .Query(
-                q =>
-                 q.Term(t => t.CampaignName, campaignName)));
-
-            if (result.IsValid && result.Documents != null && result.Documents.Count > 0)
+            if (campaignItems!=null&& campaignItems.Count>0)
             {
-               var dl= result.Documents.GroupBy(x => x.RefererUrl).Select(x => new CampaignDetailLog
+               var dl= campaignItems.GroupBy(x => x.RefererUrl).Select(x => new CampaignDetailLog
                 {
                     Source = x.Key,
                     Count = x.Count()
                 });
                 detailLogs.AddRange(dl);
             }
-
             return detailLogs;
         }
 
