@@ -29,12 +29,12 @@ namespace NitelikliBilisim.Business.Repositories
             if (!basePartId.HasValue)
             {
                var lastPart= parts.Where(x => x.BasePart == null && x.EducationId == educationId).OrderBy(x => x.Order).LastOrDefault();
-                return lastPart != null ? (byte)(lastPart.Order+1) : 1;
+                return (byte)(lastPart != null ? (byte)(lastPart.Order+1) : 1);
             }
             else
             {
                 var childParts = parts.Where(x => x.BasePartId == basePartId).OrderBy(x => x.Order).LastOrDefault();
-                return childParts != null ? (byte)(childParts.Order+1) : 1;
+                return (byte)(childParts != null ? (byte)(childParts.Order+1) : 1);
             }
 
         }
