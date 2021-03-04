@@ -27,7 +27,7 @@ namespace NitelikliBilisim.RefreshSuggestedEducations
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+                    services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
                     services.Configure<AppSettings>(hostContext.Configuration.GetSection("Config"));
                     string mongoDbName = hostContext.Configuration["MongoDbSettings:DatabaseName"];
                     string mongoConnectionString = hostContext.Configuration["MongoDbSettings:ConnectionString"];
