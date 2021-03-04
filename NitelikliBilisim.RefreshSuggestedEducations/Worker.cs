@@ -43,7 +43,7 @@ namespace NitelikliBilisim.RefreshSuggestedEducations
             _adminEmails = configuration.GetValue<string>("GeneralSettings:AdminEmails").Split(";");
         }
 
-        public override Task StartAsync(CancellationToken cancellationToken)
+        public override async Task StartAsync(CancellationToken cancellationToken)
         {
             using (var scope = Services.CreateScope())
             {
@@ -53,14 +53,14 @@ namespace NitelikliBilisim.RefreshSuggestedEducations
                     var _context = scope.ServiceProvider.GetRequiredService<NbDataContext>();
                     var allEducations = _context.Educations.Include(c => c.Category).Include(x => x.EducationSuggestionCriterions).Where(x => x.IsActive).ToList();
                     var customerIds = _context.Customers.Select(x => x.Id).ToList();
-                    
+
                     foreach (var userId in customerIds)
                     {
-                        
+
                         var result = _transactionLog.GetList(x => x.UserId == userId && x.ControllerName == "Course" && x.ActionName == "Details");
                         var groupStudents = _context.Bridge_GroupStudents.Include(x => x.Group).Where(x=>x.Id2 == userId).ToList();
                         var educations = allEducations.Where(x => !groupStudents.Any(y => y.Group.EducationId == x.Id)).ToList();
-                        
+
                         #region Arama kelimesi, arama sayýsý ve bu arama ile incelenmiþ eðitimlerin id ve puanlarý //
                         List<SearchedEducationList> model = new List<SearchedEducationList>();
                         var searchedTexts = _transactionLog.GetList(x => x.UserId == userId && x.ControllerName == "Course" && x.ActionName == "GetCourses");
@@ -215,7 +215,7 @@ namespace NitelikliBilisim.RefreshSuggestedEducations
                         var selectedEducations = educationPoints.OrderByDescending(x => x.Point)
                                      .Take(4)
                                      .ToDictionary(pair => pair.SeoUrl, pair => pair.Point);
-                        var lastEducations =educations.OrderByDescending(x => x.CreatedDate).Where(x => x.IsActive).Take(10).ToList();
+                        var lastEducations = educations.OrderByDescending(x => x.CreatedDate).Where(x => x.IsActive).Take(10).ToList();
                         int i = 0;
                         int educationCount = educations.Count();
                         while (educationCount > 4 && selectedEducations.Count() < 4)
@@ -241,7 +241,7 @@ namespace NitelikliBilisim.RefreshSuggestedEducations
 
                     if (_isSendEmail)
                     {
-                        _sender.SendAsync(new EmailMessage
+                        await _sender.SendAsync(new EmailMessage
                         {
                             Body = "Eðitim önerileri güncelleme servisi baþarýyla tamamlandý.",
                             Subject = "Nitelikli Biliþim Eðitim Öneri Servisi - Baþarýlý",
@@ -251,23 +251,20 @@ namespace NitelikliBilisim.RefreshSuggestedEducations
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogInformation("Hata: "+ex.Message, DateTimeOffset.Now);
+                    _logger.LogInformation("Hata: " + ex.Message, DateTimeOffset.Now);
                     if (_isSendEmail)
                     {
-                        _sender.SendAsync(new EmailMessage
+                        await _sender.SendAsync(new EmailMessage
                         {
-                            Body = "Eðitim önerileri güncelleme servisi hata aldý.<br/> Hata:"+ex.Message,
+                            Body = "Eðitim önerileri güncelleme servisi hata aldý.<br/> Hata:" + ex.Message,
                             Subject = "Nitelikli Biliþim Eðitim Öneri Servisi - Hata",
                             Contacts = _adminEmails
                         });
                     }
                 }
-               
-
-
-                return base.StartAsync(cancellationToken);
-
             }
+           await Task.CompletedTask;
+
         }
         /// <summary>
         /// Kriter bazlý ve Kullanýcý davranýþlarý bazlý eðitim puanlarýný alarak nihai puanlarý hesaplar.
