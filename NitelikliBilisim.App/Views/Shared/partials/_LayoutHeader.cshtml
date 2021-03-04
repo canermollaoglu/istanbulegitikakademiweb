@@ -46,6 +46,19 @@
                 </a>
             </div>
         }
+        @if (User.IsInRole("Admin"))
+        {
+            <div class="user-dropdown__list">
+                <a asp-controller="Home" asp-action="Index" asp-area="Admin" class="user-dropdown__item">
+                    <span class="icon-outer button-icon">
+                        <svg class="icon">
+                            <use xlink:href="../../assets/img/icons.svg#icon-home"></use>
+                        </svg>
+                    </span>
+                    Yönetim Paneli
+                </a>
+            </div>
+        }
 
         <div class="user-dropdown__footer">
             <a asp-controller="Account" asp-action="Logout" class="button button-fw button-icon-left">

@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using MUsefulMethods;
-using Nest;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Managers;
@@ -26,13 +25,11 @@ using NitelikliBilisim.Notificator.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Controllers
 {
-
     public class HomeController : BaseController
     {
         private readonly IWebHostEnvironment _hostingEnvironment;
@@ -45,7 +42,7 @@ namespace NitelikliBilisim.App.Controllers
         private readonly IConfiguration _configuration;
         private readonly IMemoryCache _memoryCache;
         private ISession _session => _httpContextAccessor.HttpContext.Session;
-        public HomeController(IMemoryCache memoryCache, IConfiguration configuration, IEmailSender emailSender, IWebHostEnvironment hostingEnvironment, UnitOfWork unitOfWork, RoleManager<ApplicationRole> roleManager, IElasticClient elasticClient, IHttpContextAccessor httpContextAccessor, IStorageService storageService)
+        public HomeController(IMemoryCache memoryCache, IConfiguration configuration, IEmailSender emailSender, IWebHostEnvironment hostingEnvironment, UnitOfWork unitOfWork, RoleManager<ApplicationRole> roleManager, IHttpContextAccessor httpContextAccessor, IStorageService storageService)
         {
             _configuration = configuration;
             _hostingEnvironment = hostingEnvironment;
@@ -338,29 +335,16 @@ namespace NitelikliBilisim.App.Controllers
                 });
             }
 
-            try
+            var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            _unitOfWork.WishListItem.Delete(userId, educationId.Value);
+
+            return Json(new ResponseModel
             {
-                var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                isSuccess = true,
+                message = "Eğitim favorilerden çıkarılmıştır."
+            });
 
-                _unitOfWork.WishListItem.Delete(userId, educationId.Value);
-
-                return Json(new ResponseModel
-                {
-                    isSuccess = true,
-                    message = "Eğitim favorilerden çıkarılmıştır."
-                });
-
-
-            }
-            catch (Exception ex)
-            {
-                Console.Write(ex.Message);
-                return Json(new ResponseModel
-                {
-                    isSuccess = false,
-                    errors = new List<string> { "Bir sorunla karşılaşıldı." }
-                });
-            }
         }
 
         [HttpPost]
