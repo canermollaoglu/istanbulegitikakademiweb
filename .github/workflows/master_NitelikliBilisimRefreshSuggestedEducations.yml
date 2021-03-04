@@ -1,12 +1,13 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: niteliklitest2
+name: RefreshSuggestedEducations
 
 on:
   push:
     branches:
-      - test-ready
+      - master
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
@@ -21,15 +22,15 @@ jobs:
           dotnet-version: "5.0.x"
 
       - name: Build with dotnet
-        run: dotnet build --configuration Debug
+        run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish D:\a\niteliklibilisim\niteliklibilisim\NitelikliBilisim.App\NitelikliBilisim.App.csproj -c Debug -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish D:\a\niteliklibilisim\niteliklibilisim\NitelikliBilisim.RefreshSuggestedEducations\NitelikliBilisim.RefreshSuggestedEducations.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
-          app-name: "niteliklitest2"
+          app-name: "NitelikliBilisimRefreshSuggestedEducations"
           slot-name: "production"
-          publish-profile: ${{ secrets.AzureAppService_PublishProfile_3ae9eb712fee410e9866e93a98a22e02 }}
+          publish-profile: ${{ secrets.AzureAppService_PublishProfile_23ddc5da2c4d4cb0a4259a7eaabf3b39 }}
           package: ${{env.DOTNET_ROOT}}/myapp
