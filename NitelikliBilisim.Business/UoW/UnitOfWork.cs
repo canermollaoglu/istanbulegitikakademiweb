@@ -71,10 +71,11 @@ namespace NitelikliBilisim.Business.UoW
         private BlogViewLogRepository _blogViewLogRepository;
         private CampaignLogRepository _campaignLogRepository;
         private TransactionLogRepository _transactionLogRepository;
+        private SuggestedEducationsRepository _suggestedEducationsRepository;
         #endregion
         private IConfiguration _configuration;
         private IEmailSender _emailSender;
-        public UnitOfWork(NbDataContext context,TransactionLogRepository transactionLogRepository,CampaignLogRepository campaignLogRepository,BlogViewLogRepository blogViewLogRepository,IConfiguration configuration,IEmailSender emailSender)
+        public UnitOfWork(NbDataContext context,SuggestedEducationsRepository suggestedEducationsRepository,TransactionLogRepository transactionLogRepository,CampaignLogRepository campaignLogRepository,BlogViewLogRepository blogViewLogRepository,IConfiguration configuration,IEmailSender emailSender)
         {
             _context = context;
             _configuration = configuration;
@@ -82,6 +83,7 @@ namespace NitelikliBilisim.Business.UoW
             _blogViewLogRepository = blogViewLogRepository;
             _campaignLogRepository = campaignLogRepository;
             _transactionLogRepository = transactionLogRepository;
+            _suggestedEducationsRepository = suggestedEducationsRepository;
         }
         public int Save()
         {
@@ -106,7 +108,7 @@ namespace NitelikliBilisim.Business.UoW
         public GroupExpenseTypeRepository GroupExpenseType => _groupExpenseTypeRepository ??= new GroupExpenseTypeRepository(_context);
         public InvoiceDetailRepository InvoiceDetail => _invoiceDetailRepository ??= new InvoiceDetailRepository(_context);
         public InvoiceRepository Invoice => _invoiceRepository ??= new InvoiceRepository(_context);
-        public SuggestionRepository Suggestions => _suggestionRepository ??= new SuggestionRepository(_context, _transactionLogRepository,_configuration);
+        public SuggestionRepository Suggestions => _suggestionRepository ??= new SuggestionRepository(_context, _suggestedEducationsRepository, _transactionLogRepository,_configuration);
         public EducationCategoryRepository EducationCategory => _educationCategoryRepository ??= new EducationCategoryRepository(_context);
 
         public EducationTagRepository EducationTag => _educationTagRepository ??= new EducationTagRepository(_context);

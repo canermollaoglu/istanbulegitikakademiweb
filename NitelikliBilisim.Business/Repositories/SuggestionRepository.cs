@@ -25,12 +25,14 @@ namespace NitelikliBilisim.Business.Repositories
         private readonly NbDataContext _context;
         private readonly SuggestionSystemOptions _options;
         private readonly TransactionLogRepository _transactionLogRepository;
+        private readonly SuggestedEducationsRepository _suggestedEducations;
         private readonly IConfiguration _configuration;
 
-        public SuggestionRepository(NbDataContext context,TransactionLogRepository transactionLogRepository, IConfiguration configuration)
+        public SuggestionRepository(NbDataContext context, SuggestedEducationsRepository suggestedEducations, TransactionLogRepository transactionLogRepository, IConfiguration configuration)
         {
             _context = context;
             _transactionLogRepository = transactionLogRepository;
+            _suggestedEducations = suggestedEducations;
             _configuration = configuration;
             _options = configuration.GetSection("EducationSuggestionSystemOptions").Get<SuggestionSystemOptions>(); ;
         }
@@ -62,7 +64,7 @@ namespace NitelikliBilisim.Business.Repositories
         /// <param name="userId"></param>
         /// <param name="count">kaç adet dönmesi gerektiği</param>
         /// <returns></returns>
-        public List<SuggestedEducationVm> GetUserSuggestedEducations(string userId, int count)
+        public void GetUserSuggestedEducations(string userId, int count)
         {
 
             var educationPoints = GetEducationSuggestionRate(userId);
@@ -81,9 +83,22 @@ namespace NitelikliBilisim.Business.Repositories
                 }
                 i++;
             }
+            _suggestedEducations.Create(new MSuggestedEducation { UserId = userId, Educations = selectedEducations, });
 
-            return FillSuggestedEducationList(selectedEducations);
         }
+        public List<SuggestedEducationVm> GetUserSuggestedEducations(string userId)
+        {
+            var educations = _suggestedEducations.GetByUserId(userId);
+            if (educations == null)
+            {
+                return GetGuestUserSuggestedEducations();
+            }
+            else
+            {
+                return FillSuggestedEducationList(educations.Educations);
+            }
+        }
+
 
         /// <summary>
         /// Misafir kullanıcılara önerilen eğitimleri döner
@@ -91,7 +106,7 @@ namespace NitelikliBilisim.Business.Repositories
         /// <returns></returns>
         public List<SuggestedEducationVm> GetGuestUserSuggestedEducations()
         {
-            var educationsList = _context.Educations.Where(x => x.IsActive).OrderByDescending(x => x.CreatedDate).Take(5)
+            var educationsList = _context.Educations.Where(x => x.IsActive).OrderByDescending(x => x.CreatedDate).Take(4)
                  .Join(_context.EducationMedias.Where(x => x.MediaType == EducationMediaType.Card), l => l.Id, r => r.EducationId, (x, y) => new
                  {
                      Education = x,
@@ -171,7 +186,7 @@ namespace NitelikliBilisim.Business.Repositories
             return retVal;
         }
 
-        public List<EducationOfTheWeekVm> GetEducationsOfTheWeek(int week,string userId)
+        public List<EducationOfTheWeekVm> GetEducationsOfTheWeek(int week, string userId)
         {
             var eInfo = _context.StudentEducationInfos.FirstOrDefault(x => x.CustomerId == userId);
             var categoryId = Guid.Empty;
@@ -181,11 +196,11 @@ namespace NitelikliBilisim.Business.Repositories
             }
             var nearestDay = week * 7;
             var educations = _context.Educations.Include(c => c.Category).Include(x => x.EducationSuggestionCriterions).Where(x => x.IsActive && x.Category.BaseCategoryId == categoryId);
-            
-            var thisWeekEducations = new Dictionary<string,double>();
+
+            var thisWeekEducations = new Dictionary<string, double>();
             foreach (var education in educations)
             {
-                if (education.EducationSuggestionCriterions!=null && education.EducationSuggestionCriterions.Count>0)
+                if (education.EducationSuggestionCriterions != null && education.EducationSuggestionCriterions.Count > 0)
                 {
                     foreach (var criterion in education.EducationSuggestionCriterions)
                     {
@@ -193,38 +208,38 @@ namespace NitelikliBilisim.Business.Repositories
                         {
                             if (nearestDay <= criterion.MaxValue && nearestDay >= criterion.MinValue)
                                 thisWeekEducations.Add(education.SeoUrl, 3);//İçinde bulunulan hafta en öncelikli olduğu için sıra 3 
-                            else if (criterion.MaxValue<=nearestDay-7 && criterion.MinValue>nearestDay-14)
+                            else if (criterion.MaxValue <= nearestDay - 7 && criterion.MinValue > nearestDay - 14)
                                 thisWeekEducations.Add(education.SeoUrl, 1);//sonraki hafta için sıra 1 
-                            else if (criterion.MaxValue<=nearestDay+7 && criterion.MinValue>nearestDay)
+                            else if (criterion.MaxValue <= nearestDay + 7 && criterion.MinValue > nearestDay)
                                 thisWeekEducations.Add(education.SeoUrl, 2);//onceki hafta için sıra 2
                         }
                     }
                 }
             }
-            if (thisWeekEducations.Count>4)
+            if (thisWeekEducations.Count > 4)
             {
-                thisWeekEducations = thisWeekEducations.OrderByDescending(x => x.Value).Take(4).ToDictionary(x=>x.Key,x=>x.Value);
+                thisWeekEducations = thisWeekEducations.OrderByDescending(x => x.Value).Take(4).ToDictionary(x => x.Key, x => x.Value);
             }
 
-           
+
             var retVal = (from education in _context.Educations
-                         join category in _context.EducationCategories on education.CategoryId equals category.Id
-                         join eImage in _context.EducationMedias on new { Id = education.Id, MediaType = EducationMediaType.List } equals new { Id = eImage.EducationId, MediaType = eImage.MediaType }
-                         join cardImage in _context.EducationMedias on new {Id=education.Id,MediaType = EducationMediaType.Card} equals new {Id=cardImage.EducationId,MediaType = cardImage.MediaType}
+                          join category in _context.EducationCategories on education.CategoryId equals category.Id
+                          join eImage in _context.EducationMedias on new { Id = education.Id, MediaType = EducationMediaType.List } equals new { Id = eImage.EducationId, MediaType = eImage.MediaType }
+                          join cardImage in _context.EducationMedias on new { Id = education.Id, MediaType = EducationMediaType.Card } equals new { Id = cardImage.EducationId, MediaType = cardImage.MediaType }
                           where thisWeekEducations.Keys.Contains(education.SeoUrl)
                           select new EducationOfTheWeekVm
-                         {
-                             Id = education.Id,
-                             Name = education.Name,
-                             CategoryName = category.Name,
-                             Description = education.Description,
-                             CategorySeoUrl = category.SeoUrl,
-                             Day = education.Days,
-                             Hour = education.Days * education.HoursPerDay,
-                             SeoUrl = education.SeoUrl,
-                             Image = eImage.FileUrl,
-                             CardImage = cardImage.FileUrl
-                         }).ToList();
+                          {
+                              Id = education.Id,
+                              Name = education.Name,
+                              CategoryName = category.Name,
+                              Description = education.Description,
+                              CategorySeoUrl = category.SeoUrl,
+                              Day = education.Days,
+                              Hour = education.Days * education.HoursPerDay,
+                              SeoUrl = education.SeoUrl,
+                              Image = eImage.FileUrl,
+                              CardImage = cardImage.FileUrl
+                          }).ToList();
 
             var hostId = Guid.Parse(_configuration.GetSection("SiteGeneralOptions").GetSection("PriceLocationId").Value);
             foreach (var education in retVal)
@@ -232,26 +247,26 @@ namespace NitelikliBilisim.Business.Repositories
                 education.Price = _context.EducationGroups.Where(x => x.StartDate > DateTime.Now).OrderBy(x => x.CreatedDate).FirstOrDefault(y => y.HostId == hostId && y.EducationId == education.Id).NewPrice.GetValueOrDefault().ToString(CultureInfo.CreateSpecificCulture("tr-TR"));
                 education.AppropriateCriterionCount = thisWeekEducations.FirstOrDefault(y => y.Key == education.SeoUrl).Value;
             }
-            return retVal.OrderByDescending(x=>x.AppropriateCriterionCount).ToList();
+            return retVal.OrderByDescending(x => x.AppropriateCriterionCount).ToList();
         }
 
         public List<WizardFirstStepData> GetWizardFirstStepData()
         {
-            return _context.EducationCategories.Where(x => x.BaseCategoryId == null && x.CategoryType== CategoryType.NBUY).OrderBy(x=>x.Order).Select(x =>
-              new WizardFirstStepData
-              {
-                  Id = x.Id,
-                  Name = x.Name,
-                  IconUrl = x.IconUrl,
-                  WizardClass= x.WizardClass
-              }).ToList();
+            return _context.EducationCategories.Where(x => x.BaseCategoryId == null && x.CategoryType == CategoryType.NBUY).OrderBy(x => x.Order).Select(x =>
+                 new WizardFirstStepData
+                 {
+                     Id = x.Id,
+                     Name = x.Name,
+                     IconUrl = x.IconUrl,
+                     WizardClass = x.WizardClass
+                 }).ToList();
         }
 
         public List<WizardSecondStepData> GetWizardSecondStepData(List<Guid> relatedCategories)
         {
             var retval = new List<WizardSecondStepData>();
-            var categories = _context.EducationCategories.Where(x => relatedCategories.Contains(x.Id) ).ToList();
-            var subCategories = _context.EducationCategories.Where(x =>x.BaseCategoryId!=null&& relatedCategories.Contains(x.BaseCategoryId.Value)).ToList();
+            var categories = _context.EducationCategories.Where(x => relatedCategories.Contains(x.Id)).ToList();
+            var subCategories = _context.EducationCategories.Where(x => x.BaseCategoryId != null && relatedCategories.Contains(x.BaseCategoryId.Value)).ToList();
             foreach (var baseCategory in categories)
             {
                 var data = new WizardSecondStepData
@@ -273,33 +288,33 @@ namespace NitelikliBilisim.Business.Repositories
         {
             var hostId = Guid.Parse(_configuration.GetSection("SiteGeneralOptions").GetSection("PriceLocationId").Value);
 
-            var educations = _context.Educations.Where(x =>x.IsActive).ToList();
+            var educations = _context.Educations.Where(x => x.IsActive).ToList();
             var suggestedEducations = new List<Education>();
 
             foreach (var data in lastdata)
             {
                 var eList = educations.Where(x => x.CategoryId == data.Id && (int)x.Level == data.Level);
-               suggestedEducations.AddRange(eList);
+                suggestedEducations.AddRange(eList);
             }
 
             var retVal = (from education in suggestedEducations
                           join category in _context.EducationCategories on education.CategoryId equals category.Id
                           join eImage in _context.EducationMedias on education.Id equals eImage.EducationId
-                           where
-                           eImage.MediaType == EducationMediaType.List && education.IsActive
-                           select new WizardSuggestedEducationVm
-                           {
-                               Id = education.Id,
-                               SeoUrl = education.SeoUrl,
-                               CatSeoUrl = category.SeoUrl,
-                               Name = education.Name,
-                               Day = education.Days,
-                               Hours = education.Days*education.HoursPerDay,
-                               ImageUrl = eImage.FileUrl,
-                               Description = education.Description,
-                               Price = _context.EducationGroups.Where(x => x.StartDate > DateTime.Now).OrderBy(x => x.CreatedDate).FirstOrDefault(y => y.HostId == hostId && y.EducationId == education.Id).NewPrice.GetValueOrDefault().ToString(CultureInfo.CreateSpecificCulture("tr-TR"))
-                           }).ToList();
-            
+                          where
+                          eImage.MediaType == EducationMediaType.List && education.IsActive
+                          select new WizardSuggestedEducationVm
+                          {
+                              Id = education.Id,
+                              SeoUrl = education.SeoUrl,
+                              CatSeoUrl = category.SeoUrl,
+                              Name = education.Name,
+                              Day = education.Days,
+                              Hours = education.Days * education.HoursPerDay,
+                              ImageUrl = eImage.FileUrl,
+                              Description = education.Description,
+                              Price = _context.EducationGroups.Where(x => x.StartDate > DateTime.Now).OrderBy(x => x.CreatedDate).FirstOrDefault(y => y.HostId == hostId && y.EducationId == education.Id).NewPrice.GetValueOrDefault().ToString(CultureInfo.CreateSpecificCulture("tr-TR"))
+                          }).ToList();
+
             return retVal;
         }
 
@@ -317,9 +332,9 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 var customer = _context.Customers.FirstOrDefault(x => x.Id == userId);
                 //Müşterinin en yakın eğitim günü. (Müşteri hafta sonu veya tatil günü sisteme giriş yaptığını varsayarak geçmiş en yakın gün baz alındı.)
-                
+
                 var educationDay = _context.EducationDays.Where(x => x.StudentEducationInfoId == studentEducationInfo.Id && x.Date <= DateTime.Now).OrderByDescending(c => c.Date).FirstOrDefault();
-                int nearestDay = educationDay!=null?educationDay.Day: 0;
+                int nearestDay = educationDay != null ? educationDay.Day : 0;
 
                 /*Müşterinin NBUY eğitimi aldığı kategoriye göre eğitim listesi.*/
                 //Todo burada yalnızca nbuy kategorisi mi geçerli olacak yoksa tüm kategorilerdeki eğitimler dikkate alınacak mı konusunun netleştirilmesi gerekli.
@@ -458,7 +473,7 @@ namespace NitelikliBilisim.Business.Repositories
         #endregion
 
         #region 2 KULLANICI DAVRANIŞLARINA GÖRE EĞİTİM ÖNERİLERİ
-        
+
         public EducationDetailLog GetEducationDetailLogs(string userId)
         {
 
@@ -568,7 +583,7 @@ namespace NitelikliBilisim.Business.Repositories
                             model.Add(new ViewingEducation
                             {
                                 SeoUrl = seoUrl,
-                                Education =_context.Educations.FirstOrDefault(x=>x.SeoUrl == seoUrl),
+                                Education = _context.Educations.FirstOrDefault(x => x.SeoUrl == seoUrl),
                                 ViewingCount = 1,
                                 Point = CalculateViewedEducationPoint(1, totalEducationViewCount)
                             });
@@ -732,7 +747,7 @@ namespace NitelikliBilisim.Business.Repositories
             Dictionary<string, int> allSearchings = new Dictionary<string, int>();
 
             var searchedTexts = _transactionLogRepository.GetList(x => x.UserId == userId && x.ControllerName == "Course" && x.ActionName == "GetCourses");
-                
+
             if (searchedTexts != null && searchedTexts.Count > 0)
             {
                 foreach (var log in searchedTexts)

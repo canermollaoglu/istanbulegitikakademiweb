@@ -218,7 +218,6 @@ namespace NitelikliBilisim.App.Controllers
         [Route("get-courses")]
         public IActionResult GetCourses(Guid? categoryId, int? hostCity, string searchKey, int page = 1, OrderCriteria order = OrderCriteria.Latest)
         {
-
             var model = _unitOfWork.Education.GetCoursesPageEducations(categoryId, hostCity, page, order, searchKey);
 
             foreach (var education in model.Educations)
@@ -229,9 +228,7 @@ namespace NitelikliBilisim.App.Controllers
             {
                 data = model
             });
-
         }
-
 
         [Route("get-course-comments")]
         public IActionResult GetCourseComments(Guid educationId, int page)

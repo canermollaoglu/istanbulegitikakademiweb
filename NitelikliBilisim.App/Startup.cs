@@ -66,6 +66,7 @@ namespace NitelikliBilisim.App
             services.AddTransient(s => new TransactionLogRepository(mongoConnectionString, mongoDbName, MongoCollectionNames.TransactionLog));
             services.AddTransient(s => new CampaignLogRepository(mongoConnectionString, mongoDbName, MongoCollectionNames.CampaignLog));
             services.AddTransient(s => new ExceptionInfoRepository(mongoConnectionString, mongoDbName, MongoCollectionNames.ExceptionLog));
+            services.AddTransient(s => new SuggestedEducationsRepository(mongoConnectionString, mongoDbName, MongoCollectionNames.SuggestedEducations));
 
             #endregion
             services.AddScoped<ComingSoonActionFilter>();

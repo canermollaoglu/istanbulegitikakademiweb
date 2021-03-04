@@ -12,5 +12,6 @@ namespace NitelikliBilisim.Core.MongoOptions
         public const string ExceptionLog = "exception_log";
         public const string BlogViewLog = "blog_view_log";
         public const string CampaignLog = "campaign_log";
+        public const string SuggestedEducations = "suggested_educations";
     }
 }
