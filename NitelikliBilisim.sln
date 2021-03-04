@@ -24,8 +24,11 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NitelikliBilisim.Test", "NitelikliBilisim.Test\NitelikliBilisim.Test.csproj", "{CBBEBA0C-A467-4CD6-94B1-FA347EF7512E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WorkerService", "WorkerService", "{1E391C72-798C-402A-BC7B-512F35A6AAFE}"
+	ProjectSection(SolutionItems) = preProject
+		NitelikliBilisim.App\ScaffoldingReadMe.txt = NitelikliBilisim.App\ScaffoldingReadMe.txt
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NitelikliBilisim.RefreshSuggestedEducations", "NitelikliBilisim.RefreshSuggestedEducations\NitelikliBilisim.RefreshSuggestedEducations.csproj", "{26810954-CB62-4058-9576-B2786E09C289}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NitelikliBilisim.RefreshSuggestedEducations", "NitelikliBilisim.RefreshSuggestedEducations\NitelikliBilisim.RefreshSuggestedEducations.csproj", "{26810954-CB62-4058-9576-B2786E09C289}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
