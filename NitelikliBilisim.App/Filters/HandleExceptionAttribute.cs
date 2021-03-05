@@ -3,10 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.Repositories.MongoDbRepositories;
 using NitelikliBilisim.Core.MongoOptions.Entities;
-using NitelikliBilisim.Notificator.Services;
+using NitelikliBilisim.Core.Services.Abstracts;
 using System;
 using System.Security.Claims;
 
@@ -14,10 +15,10 @@ namespace NitelikliBilisim.App.Filters
 {
     public class HandleExceptionAttribute : Attribute, IExceptionFilter
     {
-        private readonly IEmailSender _emailSender;
+        private readonly IMessageService _emailSender;
         private readonly IConfiguration _configuration;
         private readonly ExceptionInfoRepository _eInfo;
-        public HandleExceptionAttribute(ExceptionInfoRepository eInfo, IEmailSender emailSender, IConfiguration configuration)
+        public HandleExceptionAttribute(ExceptionInfoRepository eInfo, IMessageService emailSender, IConfiguration configuration)
         {
             _emailSender = emailSender;
             _configuration = configuration;
@@ -49,12 +50,13 @@ namespace NitelikliBilisim.App.Filters
                 mailBody += $"<b>InnerException:</b>{newLog.InnerException}<br>";
 
             //Mail Log
-            _emailSender.SendAsync(new Core.ComplexTypes.EmailMessage
+            var emailMessage = new Core.ComplexTypes.EmailMessage
             {
                 Body = mailBody,
                 Subject = $"Nitelikli Bilişim {envName} Hata {DateTime.Now:F}",
                 Contacts = adminEmails.Split(";")
-            });
+            };
+            _emailSender.SendAsync(JsonConvert.SerializeObject(emailMessage));
             
             /*--------*/
             if (!IsAjaxRequest(context.HttpContext.Request))
