@@ -3,8 +3,8 @@ using Microsoft.Extensions.Configuration;
 using NitelikliBilisim.Business.Repositories;
 using NitelikliBilisim.Business.Repositories.BlogRepositories;
 using NitelikliBilisim.Business.Repositories.MongoDbRepositories;
+using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Data;
-using NitelikliBilisim.Notificator.Services;
 
 namespace NitelikliBilisim.Business.UoW
 {
@@ -74,8 +74,8 @@ namespace NitelikliBilisim.Business.UoW
         private SuggestedEducationsRepository _suggestedEducationsRepository;
         #endregion
         private IConfiguration _configuration;
-        private IEmailSender _emailSender;
-        public UnitOfWork(NbDataContext context,SuggestedEducationsRepository suggestedEducationsRepository,TransactionLogRepository transactionLogRepository,CampaignLogRepository campaignLogRepository,BlogViewLogRepository blogViewLogRepository,IConfiguration configuration,IEmailSender emailSender)
+        private IMessageService _emailSender;
+        public UnitOfWork(NbDataContext context,SuggestedEducationsRepository suggestedEducationsRepository,TransactionLogRepository transactionLogRepository,CampaignLogRepository campaignLogRepository,BlogViewLogRepository blogViewLogRepository,IConfiguration configuration, IMessageService emailSender)
         {
             _context = context;
             _configuration = configuration;

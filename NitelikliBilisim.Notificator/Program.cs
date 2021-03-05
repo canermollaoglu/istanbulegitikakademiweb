@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using NitelikliBilisim.Notificator.Services;
 
 namespace NitelikliBilisim.Notificator
 {
@@ -15,6 +16,7 @@ namespace NitelikliBilisim.Notificator
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddHostedService<Worker>();
+                    services.AddSingleton<IEmailSender, EmailSender>();
                 });
     }
 }
