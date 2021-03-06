@@ -14,6 +14,6 @@ namespace NitelikliBilisim.Core.Entities
         }
         [Required, MaxLength(150)]
         public string Email { get; set; }
-
+        public bool IsCanceled { get; set; }
     }
 }

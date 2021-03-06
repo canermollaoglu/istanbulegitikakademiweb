@@ -210,6 +210,20 @@
                     </li>
                 </ul>
             </li>
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Abonelikler">
+                <a class="nav-link nav-link-collapse" data-toggle="collapse" href="#collapseSubscribers" data-parent="#exampleAccordion">
+                    <i class="fa fa-fw fa-retweet"></i>
+                    <span class="nav-link-text">Abonelikler</span>
+                </a>
+                <ul class="sidenav-second-level collapse" id="collapseSubscribers">
+                    <li>
+                        <a asp-controller="Subscriber" asp-action="BlogSubscribers">Blog Abonelikleri</a>
+                    </li>
+                    <li>
+                        <a asp-controller="Subscriber" asp-action="NewsletterSubscribers">Haber Bülteni Abonelikleri</a>
+                    </li>
+                </ul>
+            </li>
 
             <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Diğer Ayarlar">
                 <a class="nav-link nav-link-collapse" data-toggle="collapse" href="#collapseOther" data-parent="#exampleAccordion">

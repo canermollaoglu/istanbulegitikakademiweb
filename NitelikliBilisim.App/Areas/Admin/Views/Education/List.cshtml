@@ -119,12 +119,12 @@
                             var current = options.data;
                             if (current.isActive == true) {
                                 $(`<a href="/admin/egitim-guncelle/${current.id}">
-                                                                                                    <i class=\"fa fa-unlock text-success\" style=\"font-size:200%;\"></i></a>`)
+                                                                                                        <i class=\"fa fa-unlock text-success\" style=\"font-size:200%;\"></i></a>`)
                                     .appendTo(container);
                             }
                             else {
                                 $(`<a href="/admin/egitim-guncelle/${current.id}">
-                                                                                                    <i class=\"fa fa-lock text-danger\" style=\"font-size:200%;\"></i></a>`)
+                                                                                                        <i class=\"fa fa-lock text-danger\" style=\"font-size:200%;\"></i></a>`)
                                     .appendTo(container);
                             }
                         },
@@ -133,7 +133,7 @@
                     {
                         dataField: "createdDate",
                         visible: false,
-                        sortOrder:"desc"
+                        sortOrder: "desc"
                     },
                     {
                         dataField: "name",
@@ -145,7 +145,7 @@
                         dataField: "categoryName",
                         width: 200
                     },
-                    
+
                     {
                         caption: "Gün",
                         dataField: "days",
@@ -192,7 +192,7 @@
                                 $(`<a title="Öne Çıkar" class="btn btn-outline-success btn-sm" onClick="setFeaturedStatus('${current.id}')"><i class="fa fa-thumbs-up"}"></i><span style="display: block"></span></a>`)
                                     .appendTo(container);
                             }
-                            
+
                             $(`<a title="Öneri Yönetimi" class="btn btn-warning btn-sm" href="/admin/egitim-oneri-kriteri-yonetimi?educationId=${current.id}"><i class=\"fa fa-lightbulb-o\"></i><span style="display: block"></span></a>`)
                                 .appendTo(container);
                             $(`<a title="Medya Yönetimi" class="btn btn-primary btn-sm" href="/admin/egitim-medya-yonetimi/${current.id}"><i class=\"fa fa-file-photo-o\"></i><span style="display: block"></span></a>`)

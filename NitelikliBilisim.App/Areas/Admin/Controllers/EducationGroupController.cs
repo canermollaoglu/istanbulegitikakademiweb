@@ -452,7 +452,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 var message = new EmailMessage
                 {
                     Subject = "Nitelikli Bilişim Eğitim Tarihi Değişikliği",
-                    Body = $"Katıldığınız {education.Name} eğitimi {data.StartDate} tarihinden itibaren devam edecek şekilde güncellenmiştir.",
+                    Body = $"Katıldığınız {education.Name} eğitimi {data.StartDate.ToShortDateString()} tarihine ertelenmiştir.",
                     Contacts = emails.ToArray()
                 };
                 await _emailSender.SendAsync(JsonConvert.SerializeObject(message));
