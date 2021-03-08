@@ -212,15 +212,31 @@
             </li>
             <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Abonelikler">
                 <a class="nav-link nav-link-collapse" data-toggle="collapse" href="#collapseSubscribers" data-parent="#exampleAccordion">
-                    <i class="fa fa-fw fa-retweet"></i>
+                    <i class="fa fa-fw fa-newspaper-o"></i>
                     <span class="nav-link-text">Abonelikler</span>
                 </a>
                 <ul class="sidenav-second-level collapse" id="collapseSubscribers">
                     <li>
-                        <a asp-controller="Subscriber" asp-action="BlogSubscribers">Blog Abonelikleri</a>
+                        <a class="nav-link nav-link-collapse" data-toggle="collapse" href="#collapseblogabone" data-parent="#exampleAccordion">Blog Abonelikleri</a>
+                        <ul class="sidenav-third-level collapse" id="collapseblogabone">
+                            <li>
+                                <a asp-controller="Subscriber" asp-action="CreateNewPost" asp-route-type="1020">Gönderi Yayınla</a>
+                            </li>
+                            <li>
+                                <a asp-controller="Subscriber" asp-action="BlogSubscribers">Abone Listesi</a>
+                            </li>
+                        </ul>
                     </li>
                     <li>
-                        <a asp-controller="Subscriber" asp-action="NewsletterSubscribers">Haber Bülteni Abonelikleri</a>
+                        <a class="nav-link nav-link-collapse" data-toggle="collapse" href="#collapsenews" data-parent="#exampleAccordion">Haber Bülteni Abonelikleri</a>
+                        <ul class="sidenav-third-level collapse" id="collapsenews">
+                            <li>
+                                <a asp-controller="Subscriber" asp-action="CreateNewPost" asp-route-type ="1010">Gönderi Yayınla</a>
+                            </li>
+                            <li>
+                                <a asp-controller="Subscriber" asp-action="NewsletterSubscribers">Abone Listesi</a>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
             </li>

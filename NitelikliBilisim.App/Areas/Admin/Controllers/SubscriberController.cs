@@ -1,20 +1,28 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
+using NitelikliBilisim.Core.ComplexTypes;
+using NitelikliBilisim.Core.Enums;
+using NitelikliBilisim.Core.Services.Abstracts;
+using NitelikliBilisim.Core.ViewModels.areas.admin.subscriber;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
     public class SubscriberController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
-        public SubscriberController(UnitOfWork unitOfWork)
+        private readonly IMessageService _messageService;
+        public SubscriberController(UnitOfWork unitOfWork,IMessageService messageService)
         {
             _unitOfWork = unitOfWork;
+            _messageService = messageService;
         }
 
 
@@ -23,6 +31,65 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         {
             ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("BlogSubscribersList");
             return View();
+        }
+        [Route("admin/yeni-gonderi-yayinla")]
+        public IActionResult CreateNewPost(SubscriptionBroadcastType type)
+        {
+
+            var templates = type == SubscriptionBroadcastType.NewsletterBroadcast ?
+                _unitOfWork.EmailTemplate.Get(x => x.Type == EmailTemplateType.NewsletterSubscribersPostTemplate)
+                            .ToDictionary(x => x.Id, x => x.Name)
+                            : _unitOfWork.EmailTemplate.Get(x => x.Type == EmailTemplateType.BlogSubscribersPostTemplate)
+                            .ToDictionary(x => x.Id, x => x.Name);
+            ViewData["type"] = type;
+
+            ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("SubscribersCreateNewPost");
+            return View(templates);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("admin/yeni-gonderi-yayinla")]
+        public IActionResult SendPost(SubscriberPostVm data)
+        {
+            var subscribers = new List<string>();
+            if (data.Type == SubscriptionBroadcastType.BlogBroadcast)
+            {
+                subscribers.AddRange(_unitOfWork.SubscriptionBlog.Get(x => !x.IsCanceled).Select(x => x.Email));
+            }
+            else if(data.Type == SubscriptionBroadcastType.NewsletterBroadcast)
+            {
+                subscribers.AddRange(_unitOfWork.SubscriptionNewsletter.Get(x => !x.IsCanceled).Select(x => x.Email));
+            }
+
+            var message = new EmailMessage
+            {
+                Subject = data.Title,
+                Body = data.Content,
+                Contacts = subscribers.ToArray()
+            };
+            _messageService.SendAsync(JsonConvert.SerializeObject(message));
+
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                message = "Gönderi başarı ile yayınlanmıştır."
+            });
+
+        }
+
+
+        [Route("admin/email-tema-icerik")]
+        public IActionResult GetEmailTemplateContent(Guid templateId)
+        {
+
+            var template = _unitOfWork.EmailTemplate.GetById(templateId).Content;
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = template
+            });
+
         }
 
         [Route("admin/blog-abonesi-sil")]

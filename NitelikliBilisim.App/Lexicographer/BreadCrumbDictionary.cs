@@ -226,7 +226,9 @@ namespace NitelikliBilisim.App.Lexicographer
               new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Blog Takipçileri Listesi", url: null) });
             _dictionary.Add("NewsLetterSubscribersList",
               new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Haber Bülteni Takipçileri Listesi", url: null) });
-
+            _dictionary.Add("SubscribersCreateNewPost",
+             new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Yeni Gönderi Yayınla", url: null) });
+            
 
         }
 
