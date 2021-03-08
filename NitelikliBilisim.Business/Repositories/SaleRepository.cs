@@ -1,14 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Entities.user_details;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Enums.user_details;
 using NitelikliBilisim.Core.PaymentModels;
+using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels.Sales;
 using NitelikliBilisim.Data;
-using NitelikliBilisim.Notificator.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,10 +20,10 @@ namespace NitelikliBilisim.Business.Repositories
     public class SaleRepository
     {
         private readonly NbDataContext _context;
-        private readonly IEmailSender _emailSender;
+        private readonly IMessageService _emailSender;
         private readonly IConfiguration _configuration;
 
-        public SaleRepository(NbDataContext context,IEmailSender emailSender,IConfiguration configuration)
+        public SaleRepository(NbDataContext context, IMessageService emailSender,IConfiguration configuration)
         {
             _context = context;
             _emailSender = emailSender;
@@ -270,12 +271,13 @@ namespace NitelikliBilisim.Business.Repositories
 
                     if (firstGroup == null)
                     {
-                        Task.Run(() => _emailSender.SendAsync(new EmailMessage
+                        var message = new EmailMessage
                         {
                             Subject = $"{user.Name} {user.Surname} Grup Atamanız Yapılamamıştır | Nitelikli Bilişim",
                             Body = $"{user.Name} {user.Surname} kişisinin satınalımı sonucu {ticket.Education.Name} eğitimine ait grupların kontenjanları dolduğu için gruba ataması yapılamamıştır.",
                             Contacts = adminEmails
-                        }));
+                        };
+                        Task.Run(() => _emailSender.SendAsync(JsonConvert.SerializeObject(message)));
                     }
 
                     _context.Bridge_GroupStudents.Add(new Bridge_GroupStudent
@@ -290,32 +292,34 @@ namespace NitelikliBilisim.Business.Repositories
                     if (groupStudentsCount == firstGroup.Quota)
                         firstGroup.IsGroupOpenForAssignment = false;
                     _context.SaveChanges();
-
-                    Task.Run(() => _emailSender.SendAsync(new EmailMessage
+                    var emailMessage = new EmailMessage
                     {
                         Subject = $"{user.Name} {user.Surname} Grup Ataması Yapılmıştır | Nitelikli Bilişim",
                         Body = $"{user.Name} {user.Surname} kişisinin {ticket.Education.Name} eğitimi için {firstGroup.StartDate.ToShortDateString()} tarihinde başlayacak olan {firstGroup.GroupName} grubuna ataması yapılmıştır.",
                         Contacts = adminEmails
-                    }));
+                    };
+                    Task.Run(() => _emailSender.SendAsync(JsonConvert.SerializeObject(emailMessage)));
                     if (groupStudentsCount >= firstGroup.Quota - 3)
                     {
-                        Task.Run(() => _emailSender.SendAsync(new EmailMessage
+                        var infoEmailMessage = new EmailMessage
                         {
                             Subject = "Grup Kontenjan Bilgisi | Nitelikli Bilişim",
                             Body = $"{firstGroup.GroupName} Grup kontenjanının dolması için {firstGroup.Quota - groupStudentsCount} kayıt kalmıştır.",
                             Contacts = adminEmails
-                        }));
+                        };
+                        Task.Run(() => _emailSender.SendAsync(JsonConvert.SerializeObject(infoEmailMessage)));
                     }
                 }
             }
             catch
             {
-                Task.Run(() => _emailSender.SendAsync(new EmailMessage
+                var errorEmailMessage = new EmailMessage
                 {
                     Subject = $"{user.Name} {user.Surname} Grup Ataması Yapılamamıştır!! | Nitelikli Bilişim",
                     Body = $"{user.Name} {user.Surname} kişisinin satın aldığı eğitim/ler için grup ataması yapılamamıştır.",
                     Contacts = adminEmails
-                }));
+                };
+                Task.Run(() => _emailSender.SendAsync(JsonConvert.SerializeObject(errorEmailMessage)));
             }
                 
         }
@@ -341,12 +345,13 @@ namespace NitelikliBilisim.Business.Repositories
                 }
                 foreach (var ticket in tickets)
                 {
-                   Task.Run(()=> _emailSender.SendAsync(new EmailMessage
+                    var unassignEmailMessage = new EmailMessage
                     {
                         Subject = "Gruptan Ayrılma İşlemi | Nitelikli Bilişim",
-                        Body = $"{ticket.Owner.User.Name} {ticket.Owner.User.Name} ({ticket.Owner.User.Email}) {ticket.Education.Name} eğitimi {groups.First(x=>x.Id == ticket.GroupId).GroupName} grubundan ayrılmıştır.",
+                        Body = $"{ticket.Owner.User.Name} {ticket.Owner.User.Name} ({ticket.Owner.User.Email}) {ticket.Education.Name} eğitimi {groups.First(x => x.Id == ticket.GroupId).GroupName} grubundan ayrılmıştır.",
                         Contacts = adminEmails
-                   }));
+                    };
+                   Task.Run(()=> _emailSender.SendAsync(JsonConvert.SerializeObject(unassignEmailMessage)));
                 }
                 _context.Bridge_GroupStudents.RemoveRange(bridges);
                 _context.SaveChanges();

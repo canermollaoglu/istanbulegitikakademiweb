@@ -11,21 +11,23 @@ namespace NitelikliBilisim.Notificator
     {
         private readonly ILogger<Worker> _logger;
         private readonly ILogger<EmailConsumer> _emailLogger;
+        private readonly IEmailSender _emailSender;
         private Task _executingTask;
         private CancellationTokenSource _cts;
 
-        public Worker(ILogger<Worker> logger, ILogger<EmailConsumer> emailLogger)
+        public Worker(ILogger<Worker> logger, ILogger<EmailConsumer> emailLogger,IEmailSender emailSender)
         {
             _logger = logger;
             _emailLogger = emailLogger;
+            _emailSender = emailSender;
         }
 
         public override Task StartAsync(CancellationToken cancellationToken)
         {
             _logger.LogWarning("Worker service started.");
 
-            //var emailConsumer = new EmailConsumer(_emailLogger);
-           // emailConsumer.MainAsync().Wait(cancellationToken);
+            var emailConsumer = new EmailConsumer(_emailLogger,_emailSender);
+            emailConsumer.MainAsync().Wait(cancellationToken);
 
             _cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             _executingTask = ExecuteAsync(_cts.Token);

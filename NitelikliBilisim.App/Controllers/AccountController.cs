@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using MUsefulMethods;
 using Newtonsoft.Json;
-using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.Repositories.MongoDbRepositories;
@@ -16,8 +15,8 @@ using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Entities.helper;
 using NitelikliBilisim.Core.Entities.user_details;
 using NitelikliBilisim.Core.Enums;
+using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels.Account;
-using NitelikliBilisim.Notificator.Services;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -36,12 +35,12 @@ namespace NitelikliBilisim.App.Controllers
         private readonly UnitOfWork _unitOfWork;
         private readonly UserUnitOfWork _userUnitOfWork;
         private readonly TransactionLogRepository _transactionLogRepository;
-        private readonly IEmailSender _emailSender;
+        private readonly IMessageService _emailSender;
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
 
 
-        public AccountController(IWebHostEnvironment env,TransactionLogRepository transactionLogRepository, IConfiguration configuration, UserUnitOfWork userUnitOfWork, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, UnitOfWork unitOfWork, IEmailSender emailSender)
+        public AccountController(IWebHostEnvironment env,TransactionLogRepository transactionLogRepository, IConfiguration configuration, UserUnitOfWork userUnitOfWork, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, UnitOfWork unitOfWork, IMessageService emailSender)
         {
             this._userManager = userManager;
             this._signInManager = signInManager;
@@ -82,23 +81,20 @@ namespace NitelikliBilisim.App.Controllers
                 var user = (ApplicationUser)retVal.Data;
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 var htmlToken = HttpUtility.UrlEncode(token);
-
-                var builder = string.Empty;
-                var templatePath = Path.Combine(_env.WebRootPath, "mail-templates", "mail-template.html");
-                using (StreamReader r = System.IO.File.OpenText(templatePath))
-                {
-                    builder = r.ReadToEnd();
-                }
+                var template = _unitOfWork.EmailTemplate.Get(x => x.Type == EmailTemplateType.General).First();
+                var builder = template.Content;
+                
                 var confirmationLink = $"{ Request.Scheme}://{Request.Host}{Request.PathBase}/email-aktivasyonu?token={htmlToken}&email={user.Email}";
                 builder = builder.Replace("[##subject##]", "E-Posta Aktivasyonu!");
                 builder = builder.Replace("[##content##]", $"E-posta adresinizi onaylamak için <a href=\"{confirmationLink}\">tıklayınız.</a>");
                 builder = builder.Replace("[##content2##]", "");
-                await _emailSender.SendAsync(new EmailMessage
+                var message = new EmailMessage
                 {
                     Contacts = new string[] { user.Email },
                     Subject = "Nitelikli Bilişim Email Aktivasyonu",
                     Body = builder
-                });
+                };
+                await _emailSender.SendAsync(JsonConvert.SerializeObject(message));
                 TempData["Message"] = "Hesabınız başarılı bir şekilde oluşturuldu. E-Posta onayı sonrası giriş yapabilirsiniz.";
                 return Json(new ResponseModel
                 {
@@ -110,12 +106,13 @@ namespace NitelikliBilisim.App.Controllers
                 string[] adminEmails = _configuration.GetSection("SiteGeneralOptions").GetSection("AdminEmails").Value.Split(";");
                 string mailBody = $"Kullanıcı Adı :{model.Email}<br>Telefon:{model.Phone}<br>Ad:{model.Name}<br>Soyad:{model.Surname}";
                 mailBody += $"<br>Hata : {JsonConvert.SerializeObject(retVal.Data)} + {retVal.Message}";
-                await _emailSender.SendAsync(new EmailMessage
+                var eMailMessage = new EmailMessage
                 {
                     Body = mailBody,
                     Subject = "Nitelikli Bilişim Kullanıcı Kayıt Hatası!",
                     Contacts = adminEmails
-                });
+                };
+                await _emailSender.SendAsync(JsonConvert.SerializeObject(eMailMessage));
                 IEnumerable<IdentityError> identityErrors = null;
                 if (retVal.Data != null)
                 {
@@ -242,23 +239,18 @@ namespace NitelikliBilisim.App.Controllers
             {
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
                 var passwordResetLink = Url.Action("ResetPassword", "Account", new { email = model.Email, token = token }, Request.Scheme);
-                var builder = string.Empty;
-                var templatePath = Path.Combine(_env.WebRootPath, "mail-templates", "mail-template.html");
-                using (StreamReader r = System.IO.File.OpenText(templatePath))
-                {
-                    builder = r.ReadToEnd();
-                }
-
+                var template = _unitOfWork.EmailTemplate.Get(x => x.Type == EmailTemplateType.General).First();
+                var builder = template.Content;
                 builder = builder.Replace("[##subject##]", "Şifre Sıfırlama!");
                 builder = builder.Replace("[##content##]", $"Merhaba {user.Name} {user.Surname},<br/> Şifrenizi yenilemek için <a href=\"{passwordResetLink}\" target=\"_blank\"><b>buraya</b></a> tıklayınız.");
                 builder = builder.Replace("[##content2##]", "");
-
-                await _emailSender.SendAsync(new Core.ComplexTypes.EmailMessage
+                var emailMessage = new EmailMessage
                 {
                     Subject = "Nitelikli Bilişim Şifre Yenileme",
                     Contacts = new string[] { model.Email },
                     Body = builder
-                });
+                };
+                await _emailSender.SendAsync(JsonConvert.SerializeObject(emailMessage));
                 TempData["Message"] = "Şifre yenileme linki E-posta adresinize gönderilmiştir.";
                 return RedirectToAction("Login", "Account");
             }

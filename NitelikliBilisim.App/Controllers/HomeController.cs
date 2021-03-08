@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using MUsefulMethods;
+using Newtonsoft.Json;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Managers;
@@ -21,7 +22,6 @@ using NitelikliBilisim.Core.ViewModels.Main.EducationComment;
 using NitelikliBilisim.Core.ViewModels.Main.EducatorApplication;
 using NitelikliBilisim.Core.ViewModels.Main.Home;
 using NitelikliBilisim.Core.ViewModels.Main.Wizard;
-using NitelikliBilisim.Notificator.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -36,24 +36,24 @@ namespace NitelikliBilisim.App.Controllers
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly UnitOfWork _unitOfWork;
         private readonly FileUploadManager _fileManager;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IStorageService _storageService;
-        private readonly IEmailSender _emailSender;
         private readonly IConfiguration _configuration;
         private readonly IMemoryCache _memoryCache;
-        private ISession _session => _httpContextAccessor.HttpContext.Session;
-        public HomeController(IMemoryCache memoryCache, IConfiguration configuration, IEmailSender emailSender, IWebHostEnvironment hostingEnvironment, UnitOfWork unitOfWork, RoleManager<ApplicationRole> roleManager, IHttpContextAccessor httpContextAccessor, IStorageService storageService)
+
+
+        private readonly IMessageService _messageService;
+
+        public HomeController(IMemoryCache memoryCache, IMessageService messageService, IConfiguration configuration, IWebHostEnvironment hostingEnvironment, UnitOfWork unitOfWork, RoleManager<ApplicationRole> roleManager, IStorageService storageService)
         {
             _configuration = configuration;
             _hostingEnvironment = hostingEnvironment;
             _fileManager = new FileUploadManager(_hostingEnvironment, "pdf", "doc");
-            _httpContextAccessor = httpContextAccessor;
             _roleManager = roleManager;
             CheckRoles().Wait();
             _storageService = storageService;
             _unitOfWork = unitOfWork;
-            _emailSender = emailSender;
             _memoryCache = memoryCache;
+            _messageService = messageService;
         }
 
         [TypeFilter(typeof(UserLoggerFilterAttribute))]
@@ -81,10 +81,6 @@ namespace NitelikliBilisim.App.Controllers
 
             return View(model);
         }
-
-
-
-
         [Route("gizlilik-sozlesmesi")]
         public IActionResult NonDisclosureAgreement()
         {
@@ -149,12 +145,14 @@ namespace NitelikliBilisim.App.Controllers
             htmlBody += "<b>Mesaj :</b>" + model.Content + "<br/>";
             string[] adminEmails = _configuration.GetSection("SiteGeneralOptions").GetSection("AdminEmails").Value.Split(";");
 
-            _emailSender.SendAsync(new EmailMessage
+            var message = new EmailMessage
             {
                 Body = htmlBody,
                 Subject = "Nitelikli Bilişim İletişim Formu",
                 Contacts = adminEmails
-            });
+            };
+
+            _messageService.SendAsync(JsonConvert.SerializeObject(message));
 
             return Json(new ResponseModel
             {
@@ -191,13 +189,14 @@ namespace NitelikliBilisim.App.Controllers
             htmlBody += "<b>Mesaj :</b>" + model.Content + "<br/>";
             string[] adminEmails = _configuration.GetSection("SiteGeneralOptions").GetSection("AdminEmails").Value.Split(";");
 
-            _emailSender.SendAsync(new EmailMessage
+            var message= new EmailMessage
             {
                 Body = htmlBody,
                 Subject = "Nitelikli Bilişim S.S.S. Sayfası İletişim Formu",
                 Contacts = adminEmails
-            });
-
+            };
+            _messageService.SendAsync(JsonConvert.SerializeObject(message));
+            
             return Json(new ResponseModel
             {
                 isSuccess = true

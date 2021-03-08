@@ -9,9 +9,9 @@ using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
+using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education_groups;
 using NitelikliBilisim.Core.ViewModels.HelperVM;
-using NitelikliBilisim.Notificator.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,9 +22,9 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
     public class EducationGroupController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
-        private readonly IEmailSender _emailSender;
+        private readonly IMessageService _emailSender;
         private readonly IConfiguration _configuration;
-        public EducationGroupController(UnitOfWork unitOfWork, IConfiguration configuration,IEmailSender emailSender)
+        public EducationGroupController(UnitOfWork unitOfWork, IConfiguration configuration, IMessageService emailSender)
         {
             _unitOfWork = unitOfWork;
             _emailSender = emailSender;
@@ -268,11 +268,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     throw new Exception("Grup eklenemedi!");
                 }
                 var emails = _unitOfWork.EmailHelper.GetAdminEmails();
-                await _emailSender.SendAsync(new Core.ComplexTypes.EmailMessage
+                var message = new EmailMessage
                 {
                     Body = "Grup açılmıştır. Fiyat bilgisi girildikten sonra aktif edilecektir.",
                     Contacts = emails
-                });
+                };
+                await _emailSender.SendAsync(JsonConvert.SerializeObject(message));
 
                 return Json(new ResponseModel
                 {
@@ -448,12 +449,13 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
                 _unitOfWork.GroupLessonDay.PostponeLessons(data.GroupId, data.StartDate);
                 var emails = _unitOfWork.EmailHelper.GetEmailsOfStudentsByGroup(data.GroupId);
-                await _emailSender.SendAsync(new EmailMessage
+                var message = new EmailMessage
                 {
-                    Subject="Nitelikli Bilişim Eğitim Tarihi Değişikliği",
-                    Body =$"Katıldığınız {education.Name} eğitimi {data.StartDate} tarihinden itibaren devam edecek şekilde güncellenmiştir.",
+                    Subject = "Nitelikli Bilişim Eğitim Tarihi Değişikliği",
+                    Body = $"Katıldığınız {education.Name} eğitimi {data.StartDate.ToShortDateString()} tarihine ertelenmiştir.",
                     Contacts = emails.ToArray()
-                });
+                };
+                await _emailSender.SendAsync(JsonConvert.SerializeObject(message));
                 return Json(new ResponseModel
                 {
                     isSuccess = true

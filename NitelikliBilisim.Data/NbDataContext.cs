@@ -104,7 +104,7 @@ namespace NitelikliBilisim.Data
             });
             #endregion
         }
-
+        public DbSet<EmailTemplate> EmailTemplates { get; set; }
         public DbSet<CorporateMembershipApplication> CorporateMembershipApplications{ get; set; }
         public DbSet<EducatorApplication> EducatorApplications { get; set; }
         public DbSet<AutoHistory> DataHistories { get; set; }

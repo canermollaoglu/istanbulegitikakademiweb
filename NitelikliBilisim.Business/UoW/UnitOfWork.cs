@@ -3,8 +3,8 @@ using Microsoft.Extensions.Configuration;
 using NitelikliBilisim.Business.Repositories;
 using NitelikliBilisim.Business.Repositories.BlogRepositories;
 using NitelikliBilisim.Business.Repositories.MongoDbRepositories;
+using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Data;
-using NitelikliBilisim.Notificator.Services;
 
 namespace NitelikliBilisim.Business.UoW
 {
@@ -66,6 +66,7 @@ namespace NitelikliBilisim.Business.UoW
         private CustomerCertificateRepository _customerCertificateRepository;
         private DashboardRepository _dashboardRepository;
         private CampaignRepository _campaignRepository;
+        private EmailTemplateRepository _emailTemplateRepository;
         #endregion
         #region Mongo Repositories
         private BlogViewLogRepository _blogViewLogRepository;
@@ -74,8 +75,8 @@ namespace NitelikliBilisim.Business.UoW
         private SuggestedEducationsRepository _suggestedEducationsRepository;
         #endregion
         private IConfiguration _configuration;
-        private IEmailSender _emailSender;
-        public UnitOfWork(NbDataContext context,SuggestedEducationsRepository suggestedEducationsRepository,TransactionLogRepository transactionLogRepository,CampaignLogRepository campaignLogRepository,BlogViewLogRepository blogViewLogRepository,IConfiguration configuration,IEmailSender emailSender)
+        private IMessageService _emailSender;
+        public UnitOfWork(NbDataContext context,SuggestedEducationsRepository suggestedEducationsRepository,TransactionLogRepository transactionLogRepository,CampaignLogRepository campaignLogRepository,BlogViewLogRepository blogViewLogRepository,IConfiguration configuration, IMessageService emailSender)
         {
             _context = context;
             _configuration = configuration;
@@ -90,6 +91,7 @@ namespace NitelikliBilisim.Business.UoW
             _context.EnsureAutoHistory();
             return _context.SaveChanges();
         }
+        public EmailTemplateRepository EmailTemplate => _emailTemplateRepository ??= new EmailTemplateRepository(_context);
         public CampaignRepository Campaign => _campaignRepository ??= new CampaignRepository(_context,_campaignLogRepository);
         public DashboardRepository Dashboard => _dashboardRepository ??= new DashboardRepository(_context);
         public CustomerCertificateRepository CustomerCertificate => _customerCertificateRepository ??= new CustomerCertificateRepository(_context);

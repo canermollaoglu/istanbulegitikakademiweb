@@ -19,8 +19,10 @@ using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Entities.educations;
 using NitelikliBilisim.Core.Entities.user_details;
+using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Enums.promotion;
 using NitelikliBilisim.Core.PaymentModels;
+using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.Services.Payments;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education;
 using NitelikliBilisim.Core.ViewModels.Cart;
@@ -28,7 +30,6 @@ using NitelikliBilisim.Core.ViewModels.Main.Cart;
 using NitelikliBilisim.Core.ViewModels.Main.InvoiceInfo;
 using NitelikliBilisim.Core.ViewModels.Main.Sales;
 using NitelikliBilisim.Core.ViewModels.Sales;
-using NitelikliBilisim.Notificator.Services;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -45,12 +46,12 @@ namespace NitelikliBilisim.App.Controllers
         private readonly SaleVmCreator _vmCreator;
         private readonly UserUnitOfWork _userUnitOfWork;
         private readonly IPaymentService _paymentService;
-        private readonly IEmailSender _emailSender;
+        private readonly IMessageService _emailSender;
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public SaleController(IConfiguration configuration, IWebHostEnvironment env, UserManager<ApplicationUser> userManager, UnitOfWork unitOfWork, IPaymentService paymentService, UserUnitOfWork userUnitOfWork, IEmailSender emailSender)
+        public SaleController(IConfiguration configuration, IWebHostEnvironment env, UserManager<ApplicationUser> userManager, UnitOfWork unitOfWork, IPaymentService paymentService, UserUnitOfWork userUnitOfWork, IMessageService emailSender)
         {
             _unitOfWork = unitOfWork;
             _paymentService = paymentService;
@@ -368,35 +369,33 @@ namespace NitelikliBilisim.App.Controllers
                     paymentResultModel.Message = "Ödemeniz başarılı bir şekilde gerçekleşmiştir.";
                     paymentResultModel.SuccessDetails = _unitOfWork.InvoiceDetail.GetSuccessPaymentDetails(result.Success.InvoiceDetailIds, promotionId);
                     #region Customer Email
-                    var builder = string.Empty;
-                    var templatePath = Path.Combine(_env.WebRootPath, "mail-templates", "mail-template.html");
-                    using (StreamReader r = System.IO.File.OpenText(templatePath))
-                    {
-                        builder = r.ReadToEnd();
-                    }
+                    var template = _unitOfWork.EmailTemplate.Get(x => x.Type == EmailTemplateType.General).First();
+                    var builder = template.Content;
                     builder = builder.Replace("[##subject##]", "Ödemeniz Alınmıştır!");
                     builder = builder.Replace("[##content##]", $"Sayın {user.Name} {user.Surname}, eğitim ödemeniz başarılı bir şekilde gerçekleşmiştir.");
                     builder = builder.Replace("[##content2##]", "Müşteri temsilcimiz kısa süre içerisinde sizinle iletişime geçecektir.");
                     if (customerEmail != null)
                     {
-                        await _emailSender.SendAsync(new EmailMessage
+                        var customerEmailMessage = new EmailMessage
                         {
                             Subject = "Eğitim ödemeniz alınmıştır | Nitelikli Bilişim",
                             Body = builder,
                             Contacts = new[] { customerEmail }
-                        });
+                        };
+                        await _emailSender.SendAsync(JsonConvert.SerializeObject(customerEmailMessage));
                     }
                     #endregion
                     #region Admin Email
                     string[] adminEmails = _unitOfWork.EmailHelper.GetAdminEmails();
                     var body = string.Empty;
                     body += $"{user.Name} {user.Surname} tarafından {paymentResultModel.SuccessDetails.InvoiceDetails.Select(x=>x.EducationName).Aggregate((x, y) => x + "," + y)} eğitim/leri satın alınmıştır.<br> Toplam Ödeme Tutarı : {paymentResultModel.SuccessDetails.TotalNewPrice} TL";
-                    await _emailSender.SendAsync(new EmailMessage
+                    var emailMessage = new EmailMessage
                     {
                         Subject = "Satın Alım İşlemi | Nitelikli Bilişim",
                         Body = body,
                         Contacts = adminEmails
-                    });
+                    };
+                    await _emailSender.SendAsync(JsonConvert.SerializeObject(emailMessage));
 
                     #endregion
                 }
@@ -478,23 +477,20 @@ namespace NitelikliBilisim.App.Controllers
                     var user = await _userManager.FindByIdAsync(paymentModelSuccess.UserId);
                     var customerEmail = user.Email;
                     #region Customer EMail
-                    var builder = string.Empty;
-                    var templatePath = Path.Combine(_env.WebRootPath, "mail-templates", "mail-template.html");
-                    using (StreamReader r = System.IO.File.OpenText(templatePath))
-                    {
-                        builder = r.ReadToEnd();
-                    }
+                    var template = _unitOfWork.EmailTemplate.Get(x => x.Type == EmailTemplateType.General).First();
+                    var builder = template.Content;
                     builder = builder.Replace("[##subject##]", "Ödemeniz Alınmıştır!");
                     builder = builder.Replace("[##content##]", $"Sayın {user.Name} {user.Surname}, eğitim ödemeniz başarılı bir şekilde gerçekleşmiştir.");
                     builder = builder.Replace("[##content2##]", "Müşteri temsilcimiz kısa süre içerisinde sizinle iletişime geçecektir.");
                     if (customerEmail != null)
                     {
-                        await _emailSender.SendAsync(new EmailMessage
+                        var customerEmailMessage = new EmailMessage
                         {
                             Subject = "Eğitim ödemeniz alınmıştır | Nitelikli Bilişim",
                             Body = builder,
                             Contacts = new[] { customerEmail }
-                        });
+                        };
+                        await _emailSender.SendAsync(JsonConvert.SerializeObject(customerEmailMessage));
                     }
                     #endregion
 
@@ -502,12 +498,13 @@ namespace NitelikliBilisim.App.Controllers
                     string[] adminEmails = _unitOfWork.EmailHelper.GetAdminEmails();
                     var body = string.Empty;
                     body += $"{user.Name} {user.Surname} tarafından {retVal.SuccessDetails.InvoiceDetails.Select(x=>x.EducationName).Aggregate((x,y)=>x+","+y)} eğitim/leri satın alınmıştır.<br> Toplam Ödeme Tutarı : {retVal.SuccessDetails.TotalNewPrice} TL";
-                    await _emailSender.SendAsync(new EmailMessage
+                    var emailMessage = new EmailMessage
                     {
                         Subject = "Satın Alım İşlemi | Nitelikli Bilişim",
                         Body = body,
                         Contacts = adminEmails
-                    });
+                    };
+                    await _emailSender.SendAsync(JsonConvert.SerializeObject(emailMessage));
 
                     #endregion
 

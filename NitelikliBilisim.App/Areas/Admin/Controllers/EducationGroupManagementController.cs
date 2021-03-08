@@ -1,22 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ComplexTypes;
-using NitelikliBilisim.Core.Enums.group;
-using NitelikliBilisim.Notificator.Services;
+using NitelikliBilisim.Core.Services.Abstracts;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
     public class EducationGroupManagementController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
-        private readonly IEmailSender _emailSender;
-        public EducationGroupManagementController(UnitOfWork unitOfWork,IEmailSender emailSender)
+        private readonly IMessageService _emailSender;
+        public EducationGroupManagementController(UnitOfWork unitOfWork, IMessageService emailSender)
         {
             _unitOfWork = unitOfWork;
             _emailSender = emailSender;
@@ -81,7 +80,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
         }
         [HttpPost, Route("admin/postpone-dates")]
-        public async Task<IActionResult> PostponeDates(PostponeData data)
+        public IActionResult PostponeDates(PostponeData data)
         {
             if (!data.groupId.HasValue)
                 return Json(new ResponseModel
@@ -92,11 +91,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             _unitOfWork.GroupLessonDay.PostponeLessons(data.groupId.Value, data.from);
 
             var emails = _unitOfWork.EmailHelper.GetEmailsOfStudentsByGroup(data.groupId.Value);
-           // emails.Add(_unitOfWork.EmailHelper.GetEmailOfTeacherAtDate(data.groupId.Value, newDates.First()));
-            await _emailSender.SendAsync(new EmailMessage
-            {
-                Contacts = emails.ToArray()
-            });
+            //emails.Add(_unitOfWork.EmailHelper.GetEmailOfTeacherAtDate(data.groupId.Value, newDates.First()));
+            //await _emailSender.SendAsync(new EmailMessage
+            //{
+            //    Contacts = emails.ToArray()
+            //});
 
             return Json(new ResponseModel
             {
@@ -118,13 +117,14 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             var educationGrupName = _unitOfWork.EducationGroup.Get(x => x.Id == data.groupId).First().GroupName;
             if (educationGrupName != null)
             {
-                await _emailSender.SendAsync(new EmailMessage
+                var message = new EmailMessage
                 {
                     Subject = "Eğitmen Değiştirme | Nitelikli Bilişim",
                     Body = $"{educationGrupName} eğitimi için Başlangıç tarihi = {data.from.ToShortDateString()}" +
                            $" Bitiş Tarihi =  {data.to.Value.ToShortDateString()} yapılacak olan derslere atamanız yapılmıştır.",
                     Contacts = new string[] { switchEducatorMessage }
-                });
+                };
+                await _emailSender.SendAsync(JsonConvert.SerializeObject(message));
             }
 
             return Json(new ResponseModel
@@ -145,11 +145,16 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             _unitOfWork.GroupLessonDay.ChangeClassroom(data.groupId.Value, data.from, data.to, data.classroomId);
             var studentEmails = _unitOfWork.EmailHelper.GetEmailsOfStudentsByGroup(data.groupId.Value);
             if (studentEmails.Count != 0)
-                await _emailSender.SendAsync(new EmailMessage
+            {
+                var message = new EmailMessage
                 {
                     Body = "Sınıf değişmiştir",
                     Contacts = studentEmails.ToArray()
-                });
+                };
+                await _emailSender.SendAsync(JsonConvert.SerializeObject(message));
+            }
+
+
             return Json(new ResponseModel
             {
                 isSuccess = true
@@ -157,7 +162,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         }
 
         [HttpPost, Route("admin/change-educator-salary")]
-        public  IActionResult ChangeEducatorSalary(EducatorSalaryData data)
+        public IActionResult ChangeEducatorSalary(EducatorSalaryData data)
         {
             if (!data.groupId.HasValue)
                 return Json(new ResponseModel
@@ -179,11 +184,15 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 _unitOfWork.GroupLessonDay.ChangeClassroom(data.GroupId, data.StartDate, data.UpdateType, data.ClassroomId);
                 var studentEmails = _unitOfWork.EmailHelper.GetEmailsOfStudentsByGroup(data.GroupId);
                 if (studentEmails.Count != 0)
-                    await _emailSender.SendAsync(new EmailMessage
+                {
+                    var message = new EmailMessage
                     {
                         Body = "Sınıf değişmiştir",
                         Contacts = studentEmails.ToArray()
-                    });
+                    };
+                    await _emailSender.SendAsync(JsonConvert.SerializeObject(message));
+
+                }
                 return Json(new ResponseModel
                 {
                     isSuccess = true
@@ -198,7 +207,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 }); ;
             }
         }
-        [HttpPost,Route("admin/change-educator")]
+        [HttpPost, Route("admin/change-educator")]
         public async Task<IActionResult> ChangeEducator(ChangeEducatorVm data)
         {
             try
@@ -209,12 +218,13 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 DateTime startDate = data.StartDate.HasValue ? data.StartDate.Value : educationGroup.StartDate;
                 if (educationGroup != null)
                 {
-                    await _emailSender.SendAsync(new EmailMessage
+                    var message = new EmailMessage
                     {
                         Subject = "Eğitmen Değiştirme | Nitelikli Bilişim",
                         Body = $"{educationGroup.GroupName} eğitimi için {startDate.ToShortDateString()} tarihinde başlayacak şekilde atamanız yapılmıştır.",
                         Contacts = new string[] { switchEducatorMessage }
-                    });
+                    };
+                    await _emailSender.SendAsync(JsonConvert.SerializeObject(message));
                 }
 
                 return Json(new ResponseModel

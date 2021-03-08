@@ -3,14 +3,16 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.PaymentModels;
+using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.Services.Payments;
 using NitelikliBilisim.Core.ViewModels.Main.Sales;
-using NitelikliBilisim.Notificator.Services;
 using System;
 using System.IO;
 using System.Linq;
@@ -24,10 +26,10 @@ namespace NitelikliBilisim.App.Controllers
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly IPaymentService _paymentService;
-        private readonly IEmailSender _emailSender;
+        private readonly IMessageService _emailSender;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IWebHostEnvironment _env;
-        public SaleCancellationController(IWebHostEnvironment env,UserManager<ApplicationUser> userManager,UnitOfWork unitOfWork, IPaymentService paymentService,IEmailSender emailSender)
+        public SaleCancellationController(IWebHostEnvironment env,UserManager<ApplicationUser> userManager,UnitOfWork unitOfWork, IPaymentService paymentService, IMessageService emailSender)
         {
             _unitOfWork = unitOfWork;
             _paymentService = paymentService;
@@ -58,12 +60,13 @@ namespace NitelikliBilisim.App.Controllers
                 _unitOfWork.Sale.CancelPayment(data.InvoiceId);
 
                 var emails = _unitOfWork.EmailHelper.GetAdminEmails();
-                await _emailSender.SendAsync(new EmailMessage
+                var emailMessage = new EmailMessage
                 {
-                    Subject ="Nitelikli Bilişim Eğitim İptali",
+                    Subject = "Nitelikli Bilişim Eğitim İptali",
                     Body = $"{user.Name} {user.Surname} ({user.Email}) kullanıcısı tarafından {invoice.CreatedDate} tarihinde oluşutrulmuş fatura için iptal talebi oluşturulmuştur.",
                     Contacts = emails
-                });
+                };
+                await _emailSender.SendAsync(JsonConvert.SerializeObject(emailMessage));
 
                 return Json(new ResponseData
                 {
@@ -116,30 +119,28 @@ namespace NitelikliBilisim.App.Controllers
                 _unitOfWork.Sale.RefundPayment(data.InvoiceDetailId,refundPrice);
 
                 var emails = _unitOfWork.EmailHelper.GetAdminEmails();
-                await _emailSender.SendAsync(new EmailMessage
+                var emailMessage = new EmailMessage
                 {
                     Subject = "Nitelikli Bilişim Eğitim İadesi",
                     Body = $"{user.Name} {user.Surname} ({user.Email}) kullanıcısı tarafından satın alınan {group.GroupName} grubundaki {group.EducationName} eğitimi iade edilmiştir.",
                     Contacts = emails
-                });
+                };
+                await _emailSender.SendAsync(JsonConvert.SerializeObject(emailMessage));
                 #region Customer Email
-                var builder = string.Empty;
-                var templatePath = Path.Combine(_env.WebRootPath, "mail-templates", "mail-template.html");
-                using (StreamReader r = System.IO.File.OpenText(templatePath))
-                {
-                    builder = r.ReadToEnd();
-                }
+                var template = _unitOfWork.EmailTemplate.Get(x => x.Type == EmailTemplateType.General).First();
+                var builder = template.Content;
                 builder = builder.Replace("[##subject##]", "Eğitiminiz İptal Edilmiştir!");
                 builder = builder.Replace("[##content##]", $"Sayın {user.Name} {user.Surname}, eğitim eğitim iptali işleminiz başarılı bir şekilde gerçekleşmiştir.");
                 builder = builder.Replace("[##content2##]", "Eğitim ödemenizden kalan tutar hesabınıza iade edilmiştir.");
                 if (user.Email != null)
                 {
-                    await _emailSender.SendAsync(new EmailMessage
+                    var refundEmailMessage = new EmailMessage
                     {
                         Subject = "Eğitim iptal işleminiz tamamlanmıştır. | Nitelikli Bilişim",
                         Body = builder,
                         Contacts = new[] { user.Email }
-                    });
+                    };
+                    await _emailSender.SendAsync(JsonConvert.SerializeObject(refundEmailMessage));
                 }
                 #endregion
 
@@ -149,12 +150,13 @@ namespace NitelikliBilisim.App.Controllers
             else
             {
                 var emails = _unitOfWork.EmailHelper.GetAdminEmails();
-                await _emailSender.SendAsync(new EmailMessage
+                var message = new EmailMessage
                 {
                     Subject = "Nitelikli Bilişim Eğitim İadesi",
                     Body = $"{user.Name} {user.Surname} ({user.Email}) kullanıcısı tarafından satın alınan {group.GroupName} grubundaki {group.EducationName} eğitimi iade edilememiştir.<br>Hata: {refundRequest.ErrorMessage}",
                     Contacts = emails
-                });
+                };
+                await _emailSender.SendAsync(JsonConvert.SerializeObject(message));
                 TempData["Error"] = "İptal işleminiz gerçekleşmedi ilgili birimlerimiz kısa sürede sizinle iletişime geçecektir.";
                 return RedirectToAction("MyCourseDetail", "UserProfile", new { groupId = invoiceDetail.GroupId });
             }

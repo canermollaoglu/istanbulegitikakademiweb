@@ -214,3 +214,7 @@
         .accordion__item__open.active .accordion__icon:after {
             opacity: 0
         }
+
+.checkout__purchase-item > div > span {
+    color: #1f1941 !important;
+}
