@@ -19,6 +19,7 @@ using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Entities.educations;
 using NitelikliBilisim.Core.Entities.user_details;
+using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Enums.promotion;
 using NitelikliBilisim.Core.PaymentModels;
 using NitelikliBilisim.Core.Services.Abstracts;
@@ -368,12 +369,8 @@ namespace NitelikliBilisim.App.Controllers
                     paymentResultModel.Message = "Ödemeniz başarılı bir şekilde gerçekleşmiştir.";
                     paymentResultModel.SuccessDetails = _unitOfWork.InvoiceDetail.GetSuccessPaymentDetails(result.Success.InvoiceDetailIds, promotionId);
                     #region Customer Email
-                    var builder = string.Empty;
-                    var templatePath = Path.Combine(_env.WebRootPath, "mail-templates", "mail-template.html");
-                    using (StreamReader r = System.IO.File.OpenText(templatePath))
-                    {
-                        builder = r.ReadToEnd();
-                    }
+                    var template = _unitOfWork.EmailTemplate.Get(x => x.Type == EmailTemplateType.General).First();
+                    var builder = template.Content;
                     builder = builder.Replace("[##subject##]", "Ödemeniz Alınmıştır!");
                     builder = builder.Replace("[##content##]", $"Sayın {user.Name} {user.Surname}, eğitim ödemeniz başarılı bir şekilde gerçekleşmiştir.");
                     builder = builder.Replace("[##content2##]", "Müşteri temsilcimiz kısa süre içerisinde sizinle iletişime geçecektir.");
@@ -480,12 +477,8 @@ namespace NitelikliBilisim.App.Controllers
                     var user = await _userManager.FindByIdAsync(paymentModelSuccess.UserId);
                     var customerEmail = user.Email;
                     #region Customer EMail
-                    var builder = string.Empty;
-                    var templatePath = Path.Combine(_env.WebRootPath, "mail-templates", "mail-template.html");
-                    using (StreamReader r = System.IO.File.OpenText(templatePath))
-                    {
-                        builder = r.ReadToEnd();
-                    }
+                    var template = _unitOfWork.EmailTemplate.Get(x => x.Type == EmailTemplateType.General).First();
+                    var builder = template.Content;
                     builder = builder.Replace("[##subject##]", "Ödemeniz Alınmıştır!");
                     builder = builder.Replace("[##content##]", $"Sayın {user.Name} {user.Surname}, eğitim ödemeniz başarılı bir şekilde gerçekleşmiştir.");
                     builder = builder.Replace("[##content2##]", "Müşteri temsilcimiz kısa süre içerisinde sizinle iletişime geçecektir.");

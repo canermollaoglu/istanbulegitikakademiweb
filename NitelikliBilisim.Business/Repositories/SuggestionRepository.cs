@@ -449,7 +449,7 @@ namespace NitelikliBilisim.Business.Repositories
                     CategoryName = x.CategoryName,
                     CategorySeoUrl = x.CategorySeoUrl,
                     Level = EnumHelpers.GetDescription(x.Education.Level),
-                    Price = _context.EducationGroups.Where(x => x.StartDate > DateTime.Now).OrderBy(x => x.CreatedDate).FirstOrDefault(y => y.HostId == hostId && y.EducationId == x.Education.Id).NewPrice.GetValueOrDefault().ToString(CultureInfo.CreateSpecificCulture("tr-TR")),
+                    //Price = _context.EducationGroups.Where(x => x.StartDate > DateTime.Now).OrderBy(x => x.CreatedDate).FirstOrDefault(y => y.HostId == hostId && y.EducationId == x.Education.Id).NewPrice.GetValueOrDefault().ToString(CultureInfo.CreateSpecificCulture("tr-TR")),
                     HoursPerDayText = x.Education.HoursPerDay.ToString(),
                     DaysText = x.Education.Days.ToString(),
                     DaysNumeric = x.Education.Days,
@@ -460,7 +460,20 @@ namespace NitelikliBilisim.Business.Repositories
                 AppropriateCriterionCount = educationAndAppropriateCriterion.FirstOrDefault(y => y.Key == x.Education.SeoUrl).Value
             }
           ).OrderByDescending(x => x.AppropriateCriterionCount).ToList();
-
+            for (int i = 0; i < data.Count; i++)
+            {
+                var education = data[i];
+                var group = _context.EducationGroups.Where(x => x.StartDate > DateTime.Now).OrderBy(x => x.CreatedDate).FirstOrDefault(y => y.HostId == hostId && y.EducationId == education.Base.Id);
+                if (group == null)
+                {
+                    data.Remove(education);
+                }
+                else
+                {
+                    education.Base.Price = group.NewPrice.GetValueOrDefault().ToString(CultureInfo.CreateSpecificCulture("tr-TR"));
+                }
+            }
+            
             return data;
         }
         public Guid GetBaseCategoryId(Guid categoryId)
