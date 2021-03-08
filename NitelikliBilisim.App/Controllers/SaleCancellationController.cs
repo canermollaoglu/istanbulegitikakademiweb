@@ -8,6 +8,7 @@ using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.PaymentModels;
 using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.Services.Payments;
@@ -126,12 +127,8 @@ namespace NitelikliBilisim.App.Controllers
                 };
                 await _emailSender.SendAsync(JsonConvert.SerializeObject(emailMessage));
                 #region Customer Email
-                var builder = string.Empty;
-                var templatePath = Path.Combine(_env.WebRootPath, "mail-templates", "mail-template.html");
-                using (StreamReader r = System.IO.File.OpenText(templatePath))
-                {
-                    builder = r.ReadToEnd();
-                }
+                var template = _unitOfWork.EmailTemplate.Get(x => x.Type == EmailTemplateType.General).First();
+                var builder = template.Content;
                 builder = builder.Replace("[##subject##]", "Eğitiminiz İptal Edilmiştir!");
                 builder = builder.Replace("[##content##]", $"Sayın {user.Name} {user.Surname}, eğitim eğitim iptali işleminiz başarılı bir şekilde gerçekleşmiştir.");
                 builder = builder.Replace("[##content2##]", "Eğitim ödemenizden kalan tutar hesabınıza iade edilmiştir.");

@@ -1,0 +1,180 @@
+﻿
+@{
+    ViewData["Title"] = "Blog Aboneleri";
+}
+
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-table"></i> Blog Aboneleri
+    </div>
+    <div class="card-body">
+        <div id="blog-subscribers-grid"></div>
+    </div>
+    <div class="card-footer small text-muted">Veri tarihi: @DateTime.Now</div>
+</div>
+
+
+@section postScripts{
+
+    <script>
+        var confirmModalBuilder = new AlertSupport.ConfirmModalBuilder();
+
+        /* assignments */
+        $(document).ready(document_onLoad);
+
+        /* events */
+        
+        function btnConfirmationModalTrigger_onClick() {
+            /* assigned @@ document_onLoad */
+            var url = this.getAttribute("data-url");
+            confirmModalBuilder.setUrl(url);
+            confirmModalBuilder.display();
+        }
+        function confirm_onClick() {
+            var url = this.getAttribute("data-url");
+            $.ajax({
+                url: url,
+                method: "get",
+                success: (res) => {
+                    if (res.isSuccess) {
+                        $("#blog-subscribers-grid").dxDataGrid("instance").refresh();
+                    } else {
+                        var resultAlert = new AlertSupport.ResultAlert();
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors,
+                            message: "Hataları düzeltiniz"
+                        });
+                    }
+                }
+            });
+        }
+        /* assignments */
+        $(document).ready(document_onLoad);
+        /* events */
+        function document_onLoad() {
+            confirmModalBuilder.buildModal({
+                title: "Emin misiniz?",
+                bodyText: "Seçmiş olduğunuz kayıt kalıcı olarak silinecektir.",
+                cancelText: "Hayır, iptal et",
+                confirmText: "Evet, eminim",
+                onConfirmClick: confirm_onClick
+            });
+            createGrid();
+        }
+        /*DataGrid*/
+        function createGrid() {
+            $("#blog-subscribers-grid").dxDataGrid({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    key: "id",
+                    loadUrl: "../../api/subscriber/get-blog-subscribers-list"
+                }),
+                remoteOperations: {
+                    paging: true,
+                    filtering: true,
+                    sorting: true,
+                    grouping: true,
+                    summary: true,
+                    groupPaging: true
+                },
+                showBorders: true,
+                showColumnLines: true,
+                showRowLines: true,
+                wordWrapEnabled: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                onContentReady: function () {
+                    var deleteButtons = $(".btn-confirmation-modal-trigger");
+                    for (var i = 0; i < deleteButtons.length; i++) {
+                        var btn = deleteButtons[i];
+                        btn.onclick = btnConfirmationModalTrigger_onClick;
+                    }
+                },
+                searchPanel: {
+                    visible: true,
+                    width: 240
+                },
+                paging: {
+                    pageSize: 10
+                },
+                groupPanel: {
+                    visible: true
+                },
+                grouping: {
+                    autoExpandAll: true
+                },
+                headerFilter: {
+                    visible: true
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10, 20],
+                    showInfo: true
+                },
+                onExporting: function (e) {
+                    var workbook = new ExcelJS.Workbook();
+                    var worksheet = workbook.addWorksheet('Blog Takipçileri');
+                    DevExpress.excelExporter.exportDataGrid({
+                        worksheet: worksheet,
+                        component: e.component,
+                        customizeCell: function (options) {
+                            var excelCell = options;
+                            excelCell.font = { name: 'Arial', size: 12 };
+                            excelCell.alignment = { horizontal: 'left' };
+                        }
+                    }).then(function () {
+                        workbook.xlsx.writeBuffer().then(function (buffer) {
+                            saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'Blog Takipçileri' + parseInt(Math.random() * 1000000000) + '.xlsx');
+                        });
+                    });
+                    e.cancel = true;
+                },
+                export: {
+                    enabled: true
+                },
+                columns: [
+                    {
+                        caption: "Abonelik Tarihi",
+                        dataField: "createdDate",
+                        dataType: 'date',
+                        format: 'dd/MM/yyyy',
+                        width: 160,
+                        sortOrder: "desc"
+                    },
+                    {
+                        caption: "Ad Soyad",
+                        dataField: "name",
+                        width: 250
+
+                    }, {
+                        caption: "E-Posta",
+                        dataField: "email"
+                    },
+                    {
+                        caption: "İptal Edildi mi?",
+                        dataField: "isCanceled",
+                        width: 140
+                    },
+                    {
+                        caption: "İşlem",
+                        allowSearch: false,
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            $(`<button title="Sil" class="btn-confirmation-modal-trigger btn btn-danger btn-sm" data-url="/admin/blog-abonesi-sil?subscriberId=${current.id}" style="cursor:pointer;"><i class="fa fa-trash"></i></button>`)
+                                .appendTo(container);
+                        },
+                        alignment: "center",
+                        width: 100
+                    }
+
+                ]
+            });
+        }
+    </script>
+}
+

@@ -81,13 +81,9 @@ namespace NitelikliBilisim.App.Controllers
                 var user = (ApplicationUser)retVal.Data;
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 var htmlToken = HttpUtility.UrlEncode(token);
-
-                var builder = string.Empty;
-                var templatePath = Path.Combine(_env.WebRootPath, "mail-templates", "mail-template.html");
-                using (StreamReader r = System.IO.File.OpenText(templatePath))
-                {
-                    builder = r.ReadToEnd();
-                }
+                var template = _unitOfWork.EmailTemplate.Get(x => x.Type == EmailTemplateType.General).First();
+                var builder = template.Content;
+                
                 var confirmationLink = $"{ Request.Scheme}://{Request.Host}{Request.PathBase}/email-aktivasyonu?token={htmlToken}&email={user.Email}";
                 builder = builder.Replace("[##subject##]", "E-Posta Aktivasyonu!");
                 builder = builder.Replace("[##content##]", $"E-posta adresinizi onaylamak için <a href=\"{confirmationLink}\">tıklayınız.</a>");
@@ -243,13 +239,8 @@ namespace NitelikliBilisim.App.Controllers
             {
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
                 var passwordResetLink = Url.Action("ResetPassword", "Account", new { email = model.Email, token = token }, Request.Scheme);
-                var builder = string.Empty;
-                var templatePath = Path.Combine(_env.WebRootPath, "mail-templates", "mail-template.html");
-                using (StreamReader r = System.IO.File.OpenText(templatePath))
-                {
-                    builder = r.ReadToEnd();
-                }
-
+                var template = _unitOfWork.EmailTemplate.Get(x => x.Type == EmailTemplateType.General).First();
+                var builder = template.Content;
                 builder = builder.Replace("[##subject##]", "Şifre Sıfırlama!");
                 builder = builder.Replace("[##content##]", $"Merhaba {user.Name} {user.Surname},<br/> Şifrenizi yenilemek için <a href=\"{passwordResetLink}\" target=\"_blank\"><b>buraya</b></a> tıklayınız.");
                 builder = builder.Replace("[##content2##]", "");

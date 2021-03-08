@@ -66,6 +66,7 @@ namespace NitelikliBilisim.Business.UoW
         private CustomerCertificateRepository _customerCertificateRepository;
         private DashboardRepository _dashboardRepository;
         private CampaignRepository _campaignRepository;
+        private EmailTemplateRepository _emailTemplateRepository;
         #endregion
         #region Mongo Repositories
         private BlogViewLogRepository _blogViewLogRepository;
@@ -90,6 +91,7 @@ namespace NitelikliBilisim.Business.UoW
             _context.EnsureAutoHistory();
             return _context.SaveChanges();
         }
+        public EmailTemplateRepository EmailTemplate => _emailTemplateRepository ??= new EmailTemplateRepository(_context);
         public CampaignRepository Campaign => _campaignRepository ??= new CampaignRepository(_context,_campaignLogRepository);
         public DashboardRepository Dashboard => _dashboardRepository ??= new DashboardRepository(_context);
         public CustomerCertificateRepository CustomerCertificate => _customerCertificateRepository ??= new CustomerCertificateRepository(_context);
