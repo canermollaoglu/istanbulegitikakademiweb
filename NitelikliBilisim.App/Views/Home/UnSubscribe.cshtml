@@ -1,0 +1,48 @@
+﻿@model NitelikliBilisim.Core.ViewModels.Main.Home.UnSubscribeVm
+
+<!DOCTYPE html>
+<html lang="tr" class="h-100-percent">
+
+<head>
+    <title>Abonelik İptali - Nitelikli Bilişim</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <partial name="partials/_BaseAssetsHeader" />
+</head>
+
+<body class="h-100-percent">
+    <partial name="partials/_header-simple" />
+    <section class="default-centered">
+        <div class="container">
+            <div class="default-centered__wrp">
+                <div class="forget-password__top">
+                    <div class="forget-password__title">
+                        @if (string.IsNullOrEmpty(Model.SubscriberTypeText))
+                        {
+                            <span>Aboneliğiniz bulunmamaktadır.</span>
+                        }
+                        else
+                        {
+                            <span>@Model.SubscriberTypeText  İptali</span>
+
+                        }
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.SubscriberTypeText))
+                    {
+                        <div class="forget-password__txt">
+                            <b>@Model.SubscriberTypeText İptali işleminiz başarılı bir şekilde tamamlanmıştır.</b><br />
+                            Artık @Model.SubscriberTypeText maillerini almayacaksınız.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <partial name="partials/_footer-copyright" />
+</body>
+
+</html>
+
+
+

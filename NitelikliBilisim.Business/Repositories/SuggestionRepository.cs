@@ -296,12 +296,13 @@ namespace NitelikliBilisim.Business.Repositories
                 var eList = educations.Where(x => x.CategoryId == data.Id && (int)x.Level == data.Level);
                 suggestedEducations.AddRange(eList);
             }
+            var activeGroups = _context.EducationGroups.Where(x => x.StartDate > DateTime.Now && x.HostId == hostId).Select(x => x.EducationId);
 
             var retVal = (from education in suggestedEducations
                           join category in _context.EducationCategories on education.CategoryId equals category.Id
                           join eImage in _context.EducationMedias on education.Id equals eImage.EducationId
                           where
-                          eImage.MediaType == EducationMediaType.List && education.IsActive
+                          eImage.MediaType == EducationMediaType.List && education.IsActive && activeGroups.Contains(education.Id)
                           select new WizardSuggestedEducationVm
                           {
                               Id = education.Id,
