@@ -184,7 +184,7 @@
                                             educatorImage = StorageService.BlobUrl + education.EducatorImageUrl;
                                         }
                                         <div class="swiper-slide">
-                                            <a asp-controller="Course" asp-action="Details" asp-route-catSeoUrl="@education.CategorySeoUrl" asp-route-seoUrl="@education.SeoUrl" as class="card card--course">
+                                            <a asp-controller="UserProfile" asp-action="MyCourseDetail" asp-route-groupId="@education.GroupId" class="card card--course">
                                                 <figure>
                                                     <img src="@bannerUrl" alt="">
                                                 </figure>

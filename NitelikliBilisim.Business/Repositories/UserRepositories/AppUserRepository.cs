@@ -664,13 +664,11 @@ namespace NitelikliBilisim.Business.Repositories
                                  && ids.Contains(eGroup.Id)
                                  select new PurchasedEducationVm
                                  {
+                                     GroupId = eGroup.Id,
                                      CreatedDate = eGroup.StartDate,
                                      EducationId = education.Id,
-                                     SeoUrl = education.SeoUrl,
-                                     GroupId = eGroup.Id,
                                      Name = education.Name,
                                      CategoryName = category.Name,
-                                     CategorySeoUrl = category.SeoUrl,
                                      City = EnumHelpers.GetDescription(host.City),
                                      FeaturedImageUrl = eImage.FileUrl,
                                      EducatorImageUrl = educatorUser.AvatarPath,
