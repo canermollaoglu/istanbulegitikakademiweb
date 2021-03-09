@@ -137,7 +137,7 @@ namespace NitelikliBilisim.App.Controllers
             var model = _userUnitOfWork.User.GetCustomerInvoices(userId);
             return View(model);
         }
-        [Route("hesap/fatura-detay")]
+        [Route("hesap/fatura-detay/{invoiceId}")]
         public IActionResult InvoiceDetails(Guid invoiceId)
         {
             var model = _userUnitOfWork.User.GetCustomerInvoiceDetails(invoiceId);

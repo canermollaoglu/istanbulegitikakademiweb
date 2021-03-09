@@ -309,7 +309,7 @@ namespace NitelikliBilisim.Business.Repositories
                            join education in _context.Educations on invoiceDetail.EducationId equals education.Id
                            join category in _context.EducationCategories on education.CategoryId equals category.Id
                            join educationImage in _context.EducationMedias on education.Id equals educationImage.EducationId
-                           where educationImage.MediaType == EducationMediaType.Card && invoiceDetail.InvoiceId == invoiceId
+                           where educationImage.MediaType == EducationMediaType.Square && invoiceDetail.InvoiceId == invoiceId
                            select new InvoiceDetailListVm
                            {
                                Id = invoiceDetail.Id,
