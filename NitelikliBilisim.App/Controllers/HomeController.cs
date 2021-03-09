@@ -415,6 +415,38 @@ namespace NitelikliBilisim.App.Controllers
 
         }
 
+        [Route("unsubscribe")]
+        public IActionResult UnSubscribe(Guid? i)
+        {
+            UnSubscribeVm model = new UnSubscribeVm();
+
+            var subscriberBlog = _unitOfWork.SubscriptionBlog.GetById(i.Value);
+            if (subscriberBlog == null)
+            {
+               var  subscriberNewsletter = _unitOfWork.SubscriptionNewsletter.GetById(i.Value);
+                if (subscriberNewsletter != null)
+                {
+                    subscriberNewsletter.IsCanceled = true;
+                _unitOfWork.SubscriptionNewsletter.Update(subscriberNewsletter);
+                    model.IsCancelled = true;
+                    model.SubscriberType = SubscriberType.NewsletterSubscriber;
+                    model.SubscriberTypeText = EnumHelpers.GetDescription(SubscriberType.NewsletterSubscriber);
+                }
+            }
+            else
+            {
+                subscriberBlog.IsCanceled = true;
+                _unitOfWork.SubscriptionBlog.Update(subscriberBlog);
+                model.IsCancelled = true;
+                model.SubscriberType = SubscriberType.BlogSubscriber;
+                model.SubscriberTypeText = EnumHelpers.GetDescription(SubscriberType.BlogSubscriber);
+            }
+
+            return View(model);
+
+        }
+
+
         [Route("wizard-first")]
         [HttpGet]
         public IActionResult WizardGetCategoryDatas()
