@@ -14,6 +14,7 @@ using NitelikliBilisim.Core.ViewModels.areas.admin.education_media_items;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
@@ -73,6 +74,12 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             }
 
             var education = _unitOfWork.Education.GetById(data.EducationId);
+            var mediaItem = _unitOfWork.EducationMedia.Get(x => x.EducationId == data.EducationId && x.MediaType == (EducationMediaType)data.MediaItemType).FirstOrDefault();
+            if (mediaItem != null)
+            {
+                await _storage.DeleteFile(Path.GetFileName(mediaItem.FileUrl), Path.GetDirectoryName(mediaItem.FileUrl));
+                _unitOfWork.EducationMedia.Delete(mediaItem);
+            }
 
             var mediaStream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.PostedFile.Base64Content));
             var mediaFileName = $"{StringHelpers.FormatForTag(education.Name)}-{EnumHelpers.GetDescription((EducationMediaType)data.MediaItemType).ToLower()}";
@@ -107,10 +114,10 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 return Json(new ResponseModel
                 {
                     isSuccess = false,
-                    errors = new List<string> { "Eğitimin medyasını silerken bir hata oluştu" }
+                    errors = new List<string> { "Eğitimin medyası silindi." }
                 });
 
-            _fileManager.Delete(mediaItem.FileUrl);
+            _storage.DeleteFile(Path.GetFileName(mediaItem.FileUrl), Path.GetDirectoryName(mediaItem.FileUrl));
             _unitOfWork.EducationMedia.Delete(mediaItemId.Value);
 
 

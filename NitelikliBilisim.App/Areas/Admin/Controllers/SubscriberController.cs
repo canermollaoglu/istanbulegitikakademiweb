@@ -19,7 +19,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly IMessageService _messageService;
-        public SubscriberController(UnitOfWork unitOfWork,IMessageService messageService)
+        public SubscriberController(UnitOfWork unitOfWork, IMessageService messageService)
         {
             _unitOfWork = unitOfWork;
             _messageService = messageService;
@@ -52,23 +52,41 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         [Route("admin/yeni-gonderi-yayinla")]
         public IActionResult SendPost(SubscriberPostVm data)
         {
-            var subscribers = new List<string>();
             if (data.Type == SubscriptionBroadcastType.BlogBroadcast)
             {
-                subscribers.AddRange(_unitOfWork.SubscriptionBlog.Get(x => !x.IsCanceled).Select(x => x.Email));
+                var subscribers = _unitOfWork.SubscriptionBlog.Get(x => !x.IsCanceled).ToList();
+                foreach (var subscriber in subscribers)
+                {
+                    string cancellationLink = $"{Request.Scheme}://{Request.Host}{Request.PathBase}/unsubscribe?i={subscriber.Id}";
+                    data.Content = data.Content.Replace("##CancellationLink##", cancellationLink);
+                    var message = new EmailMessage
+                    {
+                        Subject = data.Title,
+                        Body = data.Content,
+                        Contacts = new string[] { subscriber.Email }
+                    };
+
+                    _messageService.SendAsync(JsonConvert.SerializeObject(message));
+                }
             }
-            else if(data.Type == SubscriptionBroadcastType.NewsletterBroadcast)
+            else if (data.Type == SubscriptionBroadcastType.NewsletterBroadcast)
             {
-                subscribers.AddRange(_unitOfWork.SubscriptionNewsletter.Get(x => !x.IsCanceled).Select(x => x.Email));
+                var subscribers = _unitOfWork.SubscriptionNewsletter.Get(x => !x.IsCanceled).ToList();
+                foreach (var subscriber in subscribers)
+                {
+                    string cancellationLink = $"{Request.Scheme}://{Request.Host}{Request.PathBase}/unsubscribe?i={subscriber.Id}";
+                    data.Content = data.Content.Replace("##CancellationLink##", cancellationLink);
+                    var message = new EmailMessage
+                    {
+                        Subject = data.Title,
+                        Body = data.Content,
+                        Contacts = new string[] { subscriber.Email }
+                    };
+
+                    _messageService.SendAsync(JsonConvert.SerializeObject(message));
+                }
             }
 
-            var message = new EmailMessage
-            {
-                Subject = data.Title,
-                Body = data.Content,
-                Contacts = subscribers.ToArray()
-            };
-            _messageService.SendAsync(JsonConvert.SerializeObject(message));
 
             return Json(new ResponseModel
             {
