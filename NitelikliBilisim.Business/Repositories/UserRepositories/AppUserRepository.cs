@@ -263,11 +263,15 @@ namespace NitelikliBilisim.Business.Repositories
                                 join eGroup in _context.EducationGroups on bridge.Id equals eGroup.Id
                                 join student in _context.Customers on bridge.Id2 equals student.Id
                                 join education in _context.Educations on eGroup.EducationId equals education.Id
+                                join educationImage in _context.EducationMedias on new {id=education.Id,mType =EducationMediaType.Square } equals new { id=educationImage.EducationId,mType=educationImage.MediaType}
+                                join educationCardImage in _context.EducationMedias on new { id = education.Id, mType = EducationMediaType.Card } equals new { id = educationCardImage.EducationId, mType = educationCardImage.MediaType }
                                 where bridge.Id2 == userId && eGroup.StartDate.AddDays(education.Days) < DateTime.Now
                                 select new MyCertificateVm
                                 {
                                     GroupId = eGroup.Id,
                                     EducationName = education.Name,
+                                    EducationImageUrl = educationImage.FileUrl,
+                                    EducationCardImageUrl = educationCardImage.FileUrl,
                                     EducationDate = eGroup.StartDate,
                                     EducationSeoUrl = education.SeoUrl,
                                     CategorySeoUrl = education.Category.SeoUrl,
