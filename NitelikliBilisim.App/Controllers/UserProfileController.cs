@@ -137,7 +137,7 @@ namespace NitelikliBilisim.App.Controllers
             var model = _userUnitOfWork.User.GetCustomerInvoices(userId);
             return View(model);
         }
-        [Route("hesap/fatura-detay")]
+        [Route("hesap/fatura-detay/{invoiceId}")]
         public IActionResult InvoiceDetails(Guid invoiceId)
         {
             var model = _userUnitOfWork.User.GetCustomerInvoiceDetails(invoiceId);
@@ -372,7 +372,7 @@ namespace NitelikliBilisim.App.Controllers
             return RedirectToAction("AccountSettings", "UserProfile");
         }
 
-        [Route("download-student-certificate")]
+        [Route("sertifika-indir/{groupId}")]
         public IActionResult DownloadStudentCertificate(Guid? groupId)
         {
             if (!groupId.HasValue)
@@ -452,7 +452,7 @@ namespace NitelikliBilisim.App.Controllers
 
             //Yazı tipini belirle
             string path = Path.Combine(webrootPath, "assets/fonts/ProximaNova-Bold.ttf");
-            Stream fontStream = new FileStream(path, FileMode.Open, FileAccess.ReadWrite);
+            Stream fontStream = new FileStream(path, FileMode.Open, FileAccess.Read);
             //Create a new PDF true type font.
             PdfTrueTypeFont tFont = new PdfTrueTypeFont(fontStream, 12, PdfFontStyle.Regular);
             // Ad soyad yazdır

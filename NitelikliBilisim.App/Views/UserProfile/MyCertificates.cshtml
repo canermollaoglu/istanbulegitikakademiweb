@@ -53,7 +53,7 @@
                                         <div class="account-courses__item">
                                             <a href="#0" class="account-courses__item-cnt">
                                                 <div class="account-courses__item-img">
-                                                    <img src="../../assets/img/certificate.jpg" alt="">
+                                                    <img src="@(StorageService.BlobUrl+certificate.EducationImageUrl)" alt="">
                                                 </div>
                                             </a>
                                             <div class="account-courses__item-item certificate-name">
@@ -63,7 +63,7 @@
                                                 @certificate.EducationDateText
                                             </div>
                                             <div class="account-courses__item-item downloaded">
-                                               <a href="/download-student-certificate?groupId=@certificate.GroupId" class="button button-fw button-icon-right">
+                                               <a asp-controller="UserProfile" asp-action="DownloadStudentCertificate" asp-route-groupId="@certificate.GroupId" class="button button-fw button-icon-right">
                                                         <span class="button-txt">PDF İndir</span>
                                                         <span class="button-icon">
                                                             <span class="icon-outer">
