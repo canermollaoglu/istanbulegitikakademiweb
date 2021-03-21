@@ -263,11 +263,15 @@ namespace NitelikliBilisim.Business.Repositories
                                 join eGroup in _context.EducationGroups on bridge.Id equals eGroup.Id
                                 join student in _context.Customers on bridge.Id2 equals student.Id
                                 join education in _context.Educations on eGroup.EducationId equals education.Id
+                                join educationImage in _context.EducationMedias on new {id=education.Id,mType =EducationMediaType.Square } equals new { id=educationImage.EducationId,mType=educationImage.MediaType}
+                                join educationCardImage in _context.EducationMedias on new { id = education.Id, mType = EducationMediaType.Card } equals new { id = educationCardImage.EducationId, mType = educationCardImage.MediaType }
                                 where bridge.Id2 == userId && eGroup.StartDate.AddDays(education.Days) < DateTime.Now
                                 select new MyCertificateVm
                                 {
                                     GroupId = eGroup.Id,
                                     EducationName = education.Name,
+                                    EducationImageUrl = educationImage.FileUrl,
+                                    EducationCardImageUrl = educationCardImage.FileUrl,
                                     EducationDate = eGroup.StartDate,
                                     EducationSeoUrl = education.SeoUrl,
                                     CategorySeoUrl = education.Category.SeoUrl,
@@ -309,7 +313,7 @@ namespace NitelikliBilisim.Business.Repositories
                            join education in _context.Educations on invoiceDetail.EducationId equals education.Id
                            join category in _context.EducationCategories on education.CategoryId equals category.Id
                            join educationImage in _context.EducationMedias on education.Id equals educationImage.EducationId
-                           where educationImage.MediaType == EducationMediaType.Card && invoiceDetail.InvoiceId == invoiceId
+                           where educationImage.MediaType == EducationMediaType.Square && invoiceDetail.InvoiceId == invoiceId
                            select new InvoiceDetailListVm
                            {
                                Id = invoiceDetail.Id,
@@ -664,13 +668,11 @@ namespace NitelikliBilisim.Business.Repositories
                                  && ids.Contains(eGroup.Id)
                                  select new PurchasedEducationVm
                                  {
+                                     GroupId = eGroup.Id,
                                      CreatedDate = eGroup.StartDate,
                                      EducationId = education.Id,
-                                     SeoUrl = education.SeoUrl,
-                                     GroupId = eGroup.Id,
                                      Name = education.Name,
                                      CategoryName = category.Name,
-                                     CategorySeoUrl = category.SeoUrl,
                                      City = EnumHelpers.GetDescription(host.City),
                                      FeaturedImageUrl = eImage.FileUrl,
                                      EducatorImageUrl = educatorUser.AvatarPath,

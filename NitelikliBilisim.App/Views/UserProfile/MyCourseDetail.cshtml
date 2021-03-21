@@ -116,7 +116,7 @@
                             <div class="account-course-detail__certificate">
                                 <div class="account-course-detail__certificate-img"
                                      data-name="@Model.EducationName">
-                                    <img src="../../assets/img/certificate.jpg" alt="">
+                                    <img src="@(StorageService.BlobUrl+Model.EducationFeaturedImage)" alt="">
                                 </div>
                                 <div class="account-course-detail__certificate-cnt">
                                     <div class="account-course-detail__certificate-txt">
@@ -129,7 +129,7 @@
                                 @if (Model.IsCertificateAvailable)
                                 {
                                     <div class="account-course-detail__certificate-button">
-                                        <a href="/download-student-certificate?groupId=@Model.GroupId" class="button button-fw button-icon-right">
+                                        <a asp-controller="UserProfile" asp-action="DownloadStudentCertificate" asp-route-groupId="@Model.GroupId" class="button button-fw button-icon-right">
                                             <span class="button-txt">PDF İndir</span>
                                             <span class="button-icon">
                                                 <span class="icon-outer">

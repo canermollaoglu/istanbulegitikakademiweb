@@ -16,5 +16,7 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public string CategorySeoUrl { get; set; }
         public string CategoryName { get; set; }
         public Guid GroupId { get; set; }
+        public string EducationImageUrl { get; set; }
+        public string EducationCardImageUrl { get; set; }
     }
 }
