@@ -43,6 +43,7 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.Education
             return new UpdateGetVm
             {
                 Levels = addGetVm.Levels,
+                Categories = addGetVm.Categories,
                 Education = education,
                 RelatedTags = relatedTags,
                 EducationUpdateInfo = educationInfo

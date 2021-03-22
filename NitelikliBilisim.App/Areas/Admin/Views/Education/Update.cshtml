@@ -21,7 +21,6 @@
     <form id="form-update-education">
         @Html.AntiForgeryToken()
         <input type="hidden" value="@Model.Education.Id" id="_education-id" />
-        <input type="hidden" value="@Model.Education.CategoryId" id="_categories-id" />
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
@@ -51,8 +50,20 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>Seo Url   <i title="- dışında özel karakter girmeyiniz.Tamamen küçük harf olacak şekilde Türkçe karakter kullanmadan oluşturunuz." class="fa fa-question-circle"></i></label>
-                    <input type="text" placeholder="dot-net-core-mvc-egitimi" class="form-control" id="input-seo-url" value="@Model.Education.SeoUrl">
+                    <label>Kategori Seçiniz</label>
+                    <select id="select-categories" class="form-control">
+                        @foreach (var item in Model.Categories)
+                        {
+                            if (item.Id == Model.Education.CategoryId)
+                            {
+                                <option value="@item.Id" selected>@item.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+                        }
+                    </select>
                 </div>
             </div>
             <div class="col-md-6">
@@ -64,6 +75,14 @@
                             <option value="@item.Id" selected>@item.Name</option>
                         }
                     </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Seo Url   <i title="- dışında özel karakter girmeyiniz.Tamamen küçük harf olacak şekilde Türkçe karakter kullanmadan oluşturunuz." class="fa fa-question-circle"></i></label>
+                    <input type="text" placeholder="dot-net-core-mvc-egitimi" class="form-control" id="input-seo-url" value="@Model.Education.SeoUrl">
                 </div>
             </div>
         </div>
