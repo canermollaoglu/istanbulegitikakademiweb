@@ -789,6 +789,7 @@ namespace NitelikliBilisim.Business.Repositories
                     HoursPerDayText = education.HoursPerDay.ToString(),
                     Description = education.Description,
                     Description2 = education.Description2,
+                    Description3 = education.Description3,
                     IsWishListItem = false,
                     IsCanComment = false,
                     Comments = comments,

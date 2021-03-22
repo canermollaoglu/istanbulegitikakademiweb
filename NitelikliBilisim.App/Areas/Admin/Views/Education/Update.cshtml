@@ -85,6 +85,22 @@
                     <input type="text" placeholder="dot-net-core-mvc-egitimi" class="form-control" id="input-seo-url" value="@Model.Education.SeoUrl">
                 </div>
             </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label>Eğitim Video Url</label>
+                            <input type="text" class="form-control" placeholder="Youtube video Id" id="input-video-id" value="@Model.Education.VideoUrl" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Sıra</label>
+                            <input type="number" class="form-control" id="input-order" value="@Model.Education.Order" />
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="row">
             <div class="col-md-6">
@@ -100,38 +116,29 @@
                 </div>
             </div>
         </div>
+
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>Eğitim Süresi (Gün)</label>
-                    <input type="text" class="form-control" placeholder="Eğitimin kaç gün süreceğini giriniz..." id="input-days" value="@Model.Education.Days">
+                    <label>Öğrenilecek Teknolojiler</label>
+                    <textarea id="input-description3" rows="5" class="form-control" style="height:100px;resize:none;">@Model.Education.Description3</textarea>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="form-group">
-                    <label>Günde Kaç Saat</label>
-                    <input type="text" class="form-control" placeholder="Derslerin günlük kaç saat işleneceğinizi giriniz..." id="input-hours-per-day" value="@Model.Education.HoursPerDay">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label>Eğitim Süresi (Gün)</label>
+                        <input type="text" class="form-control" id="input-days" value="@Model.Education.Days">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Günde Kaç Saat</label>
+                        <input type="text" class="form-control" id="input-hours-per-day" value="@Model.Education.HoursPerDay">
+                    </div>
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6">
-                <div class="row">
-                    <div class="col-md-8">
-                        <div class="form-group">
-                            <label>Eğitim Video Url</label>
-                            <input type="text" class="form-control" placeholder="Youtube video Id" id="input-video-id" value="@Model.Education.VideoUrl" />
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>Sıra</label>
-                            <input type="number" class="form-control"  id="input-order" value="@Model.Education.Order" />
-                        </div>
-                    </div>
-                </div>
-               
-            </div>
+            
             <div class="col-md-6">
                 <div class="form-group">
                     @{var isFeatured = Model.Education.IsFeaturedEducation ? "checked" : "";}
@@ -149,7 +156,7 @@
                 <div class="form-group">
                     @{
                         var isChecked = Model.Education.IsActive ? "checked" : "";
-                        
+
                     }
                     <label>Eğitimi Kilitle/Aç</label>
                     <div class="form-check">
