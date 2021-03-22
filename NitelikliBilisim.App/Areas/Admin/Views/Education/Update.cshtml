@@ -21,7 +21,6 @@
     <form id="form-update-education">
         @Html.AntiForgeryToken()
         <input type="hidden" value="@Model.Education.Id" id="_education-id" />
-        <input type="hidden" value="@Model.Education.CategoryId" id="_categories-id" />
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
@@ -51,8 +50,20 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>Seo Url   <i title="- dışında özel karakter girmeyiniz.Tamamen küçük harf olacak şekilde Türkçe karakter kullanmadan oluşturunuz." class="fa fa-question-circle"></i></label>
-                    <input type="text" placeholder="dot-net-core-mvc-egitimi" class="form-control" id="input-seo-url" value="@Model.Education.SeoUrl">
+                    <label>Kategori Seçiniz</label>
+                    <select id="select-categories" class="form-control">
+                        @foreach (var item in Model.Categories)
+                        {
+                            if (item.Id == Model.Education.CategoryId)
+                            {
+                                <option value="@item.Id" selected>@item.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+                        }
+                    </select>
                 </div>
             </div>
             <div class="col-md-6">
@@ -70,32 +81,10 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>Eğitim Detay-Eğitim Kartı-Eğitim Listeleme Kısa Bilgi Alanları</label>
-                    <textarea id="input-description" rows="5" class="form-control" style="height:100px;resize:none;">@Model.Education.Description</textarea>
+                    <label>Seo Url   <i title="- dışında özel karakter girmeyiniz.Tamamen küçük harf olacak şekilde Türkçe karakter kullanmadan oluşturunuz." class="fa fa-question-circle"></i></label>
+                    <input type="text" placeholder="dot-net-core-mvc-egitimi" class="form-control" id="input-seo-url" value="@Model.Education.SeoUrl">
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>Neler Öğreneceksiniz Açıklama</label>
-                    <textarea id="input-description2" rows="5" class="form-control" style="height:100px;resize:none;">@Model.Education.Description2</textarea>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>Eğitim Süresi (Gün)</label>
-                    <input type="text" class="form-control" placeholder="Eğitimin kaç gün süreceğini giriniz..." id="input-days" value="@Model.Education.Days">
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>Günde Kaç Saat</label>
-                    <input type="text" class="form-control" placeholder="Derslerin günlük kaç saat işleneceğinizi giriniz..." id="input-hours-per-day" value="@Model.Education.HoursPerDay">
-                </div>
-            </div>
-        </div>
-        <div class="row">
             <div class="col-md-6">
                 <div class="row">
                     <div class="col-md-8">
@@ -107,12 +96,49 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label>Sıra</label>
-                            <input type="number" class="form-control"  id="input-order" value="@Model.Education.Order" />
+                            <input type="number" class="form-control" id="input-order" value="@Model.Education.Order" />
                         </div>
                     </div>
                 </div>
-               
             </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Eğitim Detay-Eğitim Kartı-Eğitim Listeleme Kısa Bilgi Alanları</label>
+                    <textarea id="input-description" rows="5" class="form-control" style="height:100px;resize:none;">@Model.Education.Description</textarea>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Neler Öğreneceksiniz Açıklama</label>
+                    <textarea id="input-description2" rows="5" class="form-control" style="height:100px;resize:none;">@Model.Education.Description2</textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Öğrenilecek Teknolojiler</label>
+                    <textarea id="input-description3" rows="5" class="form-control" style="height:100px;resize:none;">@Model.Education.Description3</textarea>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label>Eğitim Süresi (Gün)</label>
+                        <input type="text" class="form-control" id="input-days" value="@Model.Education.Days">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Günde Kaç Saat</label>
+                        <input type="text" class="form-control" id="input-hours-per-day" value="@Model.Education.HoursPerDay">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            
             <div class="col-md-6">
                 <div class="form-group">
                     @{var isFeatured = Model.Education.IsFeaturedEducation ? "checked" : "";}
@@ -130,7 +156,7 @@
                 <div class="form-group">
                     @{
                         var isChecked = Model.Education.IsActive ? "checked" : "";
-                        
+
                     }
                     <label>Eğitimi Kilitle/Aç</label>
                     <div class="form-check">

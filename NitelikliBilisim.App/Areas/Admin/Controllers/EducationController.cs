@@ -65,6 +65,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 VideoUrl = data.VideoUrl,
                 Description = data.Description,
                 Description2 = data.Description2,
+                Description3 = data.Description3,
                 Level = (EducationLevel)data.EducationLevel.GetValueOrDefault(),
                 Days = data.Days.GetValueOrDefault(),
                 HoursPerDay = data.HoursPerDay.GetValueOrDefault(),

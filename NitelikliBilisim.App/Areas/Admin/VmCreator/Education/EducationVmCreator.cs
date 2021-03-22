@@ -43,6 +43,7 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.Education
             return new UpdateGetVm
             {
                 Levels = addGetVm.Levels,
+                Categories = addGetVm.Categories,
                 Education = education,
                 RelatedTags = relatedTags,
                 EducationUpdateInfo = educationInfo
@@ -60,6 +61,7 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.Education
                 HoursPerDay = data.HoursPerDay.GetValueOrDefault(),
                 Description = data.Description,
                 Description2 = data.Description2,
+                Description3 = data.Description3,
                 Level = (EducationLevel)data.EducationLevel,
                 Name = data.Name,
                 SeoUrl = data.SeoUrl,

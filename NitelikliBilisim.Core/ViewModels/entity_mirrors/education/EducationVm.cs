@@ -47,6 +47,7 @@ namespace NitelikliBilisim.Core.ViewModels
         public string CategorySeoUrl { get; set; }
         public string Price { get; set; }
         public string VideoUrl { get; set; }
+        public string Description3 { get; set; }
     }
 
     public class EducationListVm
