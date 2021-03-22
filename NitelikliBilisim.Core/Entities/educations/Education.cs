@@ -21,6 +21,8 @@ namespace NitelikliBilisim.Core.Entities
         public string Description { get; set; }
         [MaxLength(512)]
         public string Description2 { get; set; }
+        [MaxLength(512)]
+        public string Description3 { get; set; }
         public byte Days { get; set; }
         public byte HoursPerDay { get; set; }
         public EducationLevel Level { get; set; }

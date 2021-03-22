@@ -789,6 +789,7 @@ namespace NitelikliBilisim.Business.Repositories
                     HoursPerDayText = education.HoursPerDay.ToString(),
                     Description = education.Description,
                     Description2 = education.Description2,
+                    Description3 = education.Description3,
                     IsWishListItem = false,
                     IsCanComment = false,
                     Comments = comments,
@@ -800,7 +801,7 @@ namespace NitelikliBilisim.Business.Repositories
                     Level = EnumHelpers.GetDescription(education.Level),
                     //PriceText = education.NewPrice.GetValueOrDefault(0).ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"))
                 },
-                Gains = Context.EducationGains.Where(x => x.EducationId == education.Id)
+                Gains = Context.EducationGains.Where(x => x.EducationId == education.Id).OrderBy(x=>x.CreatedDate)
                 .Select(x => new EducationGainVm
                 {
                     EducationId = education.Id,

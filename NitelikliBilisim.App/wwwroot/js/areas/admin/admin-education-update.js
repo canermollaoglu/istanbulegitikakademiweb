@@ -1,5 +1,6 @@
 ﻿/* elements */
 var selectTags = $("#select-tags");
+var selectCategories = document.getElementById("select-categories");
 var selectLevels = document.getElementById("select-levels");
 var btnSave = $("#btn-save");
 
@@ -34,6 +35,7 @@ function document_onLoad() {
             }
         }
     });
+    $(selectCategories).select2();
     $(selectLevels).select2();
 
 }
@@ -65,11 +67,12 @@ function btnSave_onClick() {
         VideoUrl: $("#input-video-id").val(),
         Description: $("#input-description").val(),
         Description2: $("#input-description2").val(),
-        Order:$("#input-order").val(),
+        Description3: $("#input-description3").val(),
+        Order: $("#input-order").val(),
         Days: $("#input-days").val(),
         HoursPerDay: $("#input-hours-per-day").val(),
         EducationLevel: selectLevels.options[selectLevels.selectedIndex].value,
-        CategoryId: $("#_categories-id").val(),
+        CategoryId: selectCategories.options[selectCategories.selectedIndex].value,
         Tags: tags,
         IsActive: !isActive,
         IsFeauredEducation: $("#input-is-featured").is(':checked')

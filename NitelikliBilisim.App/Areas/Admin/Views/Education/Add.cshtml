@@ -20,7 +20,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Eğitim İsmi</label>
-                    <input type="text"  class="form-control" placeholder="Eğitim ismini giriniz..." id="input-name">
+                    <input type="text" class="form-control" placeholder="Eğitim ismini giriniz..." id="input-name">
                 </div>
             </div>
             <div class="col-md-6">
@@ -60,36 +60,6 @@
                     <input type="text" placeholder="dot-net-core-mvc-egitimi" class="form-control" id="input-seo-url" value="">
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>Eğitim Detay-Eğitim Kartı-Eğitim Listeleme Kısa Bilgi Alanları </label>
-                    <textarea id="input-description" rows="5" class="form-control" style="height:100px;resize:none;" placeholder="Eğitim Detay-Eğitim Kartı-Eğitim Listeleme Kısa Bilgi Alanları"></textarea>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>Neler Öğreneceksiniz Açıklama</label>
-                    <textarea id="input-description2" rows="5" class="form-control" style="height:100px;resize:none;" placeholder="Neler Öğreneceksiniz Açıklama alanı"></textarea>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>Eğitim Süresi (Gün)</label>
-                    <input type="number" class="form-control" placeholder="Eğitimin kaç gün süreceğini giriniz..." id="input-days">
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>Günde Kaç Saat</label>
-                    <input type="number" class="form-control" placeholder="Derslerin günlük kaç saat işleneceğinizi giriniz..." id="input-hours-per-day">
-                </div>
-            </div>
-        </div>
-        <div class="row">
             <div class="col-md-6">
                 <div class="row">
                     <div class="col-md-8">
@@ -105,14 +75,47 @@
                         </div>
                     </div>
                 </div>
-                
             </div>
         </div>
-       
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Eğitim Detay-Eğitim Kartı-Eğitim Listeleme Kısa Bilgi Alanları </label>
+                    <textarea id="input-description" rows="5" class="form-control" style="height:100px;resize:none;" placeholder="Eğitim Detay-Eğitim Kartı-Eğitim Listeleme Kısa Bilgi Alanları"></textarea>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Neler Öğreneceksiniz Açıklama</label>
+                    <textarea id="input-description2" rows="5" class="form-control" style="height:100px;resize:none;" placeholder="Neler Öğreneceksiniz 1. açıklama alanı (İlk paragraf)"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Öğrenilecek Teknolojiler</label>
+                    <textarea id="input-description3" rows="5" class="form-control" style="height:100px;resize:none;" placeholder="Neler Öğreneceksiniz 2. açıklama alanı (İkinci paragraf)"></textarea>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label>Eğitim Süresi (Gün)</label>
+                        <input type="number" class="form-control" placeholder="Eğitimin kaç gün süreceği bilgisi..." id="input-days">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Günde Kaç Saat</label>
+                        <input type="number" class="form-control" placeholder="Günlük ders saati bilgisi..." id="input-hours-per-day">
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </form>
 </div>
 
-<p><button id="btn-save" class="btn_1 medium">Kaydet</button></p>
+<p><button id="btn-save" class="btn btn-outline-success pull-right">Kaydet</button></p>
 @section postScripts{
     <script src="~/vendor\select2/dist/js/select2.min.js"></script>
     <script src="~/js/lib/file-uploader.js"></script>

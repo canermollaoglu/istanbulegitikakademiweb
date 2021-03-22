@@ -85,6 +85,7 @@ function btnSave_onClick() {
         VideoUrl: $("#input-video-id").val(),
         Description: $("#input-description").val(),
         Description2: $("#input-description2").val(),
+        Description3: $("#input-description3").val(),
         Days: $("#input-days").val(),
         Order:$("#input-order").val(),
         HoursPerDay: $("#input-hours-per-day").val(),

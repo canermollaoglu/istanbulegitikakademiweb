@@ -8,6 +8,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "App", "App", "{D1B31095-F5D1-4376-B9C8-AE36424A6A28}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{A4B3C5F1-FCD4-4CC3-B5EB-DD6160F9586F}"
+	ProjectSection(SolutionItems) = preProject
+		NitelikliBilisim.App\web.config = NitelikliBilisim.App\web.config
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NitelikliBilisim.Core", "NitelikliBilisim.Core\NitelikliBilisim.Core.csproj", "{2F5C37C1-F226-481B-A40E-CDD89076E5E6}"
 EndProject
