@@ -12,6 +12,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Models.Education
         public Core.Entities.Education Education { get; set; }
         public List<EducationTag> RelatedTags { get; set; }
         public EducationUpdateInfoVm EducationUpdateInfo { get; internal set; }
+        public List<Guid> RelatedNBUYCategories { get; internal set; }
     }
 
     public class UpdatePostVm : EducationCrudVm

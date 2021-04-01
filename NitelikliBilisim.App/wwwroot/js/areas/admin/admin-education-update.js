@@ -1,5 +1,6 @@
 ﻿/* elements */
 var selectTags = $("#select-tags");
+var selectSuggestedCategories = $("#select-suggested-categories");
 var selectCategories = document.getElementById("select-categories");
 var selectLevels = document.getElementById("select-levels");
 var btnSave = $("#btn-save");
@@ -35,10 +36,16 @@ function document_onLoad() {
             }
         }
     });
+    selectSuggestedCategories.select2();
     $(selectCategories).select2();
     $(selectLevels).select2();
 
 }
+$(selectCategories).on("change", function () {
+    var baseId = $(this).find(':selected').data('base');
+    selectSuggestedCategories.val(null).trigger("change");
+    selectSuggestedCategories.val(baseId).trigger("change");
+});
 function btnSave_onClick() {
     btnSave.off("click");
     var tags = [];
@@ -73,6 +80,7 @@ function btnSave_onClick() {
         HoursPerDay: $("#input-hours-per-day").val(),
         EducationLevel: selectLevels.options[selectLevels.selectedIndex].value,
         CategoryId: selectCategories.options[selectCategories.selectedIndex].value,
+        SuggestedCategories: selectSuggestedCategories.val(),
         Tags: tags,
         IsActive: !isActive,
         IsFeauredEducation: $("#input-is-featured").is(':checked')

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using MUsefulMethods;
+using Newtonsoft.Json;
 using NitelikliBilisim.Business.PagedEntity;
 using NitelikliBilisim.Core.DTO;
 using NitelikliBilisim.Core.Entities;
@@ -59,6 +60,11 @@ namespace NitelikliBilisim.Business.Repositories
                        Order = e.Order,
                        IsFeaturedEducation = e.IsFeaturedEducation
                    };
+        }
+
+        public Education GetNoTracking(Guid educationId)
+        {
+            return Context.Educations.AsNoTracking().First(x => x.Id == educationId);
         }
 
         public bool CheckIsCanComment(string userId, Guid educationId)
@@ -309,7 +315,7 @@ namespace NitelikliBilisim.Business.Repositories
                 model.Messages.Add("Eğitimde eğitmen bulunmamaktadır!");
                 model.IsCreated = false;
             }
-            if (groups ==0 )
+            if (groups == 0)
             {
                 model.Messages.Add("Eğitimde grup bulunmamaktadır. Grup ekleme işleminden sonra fiyat bilgisi girerek eğitimi otomatik aktif edebilirsiniz.");
                 model.IsCreated = false;
@@ -356,7 +362,7 @@ namespace NitelikliBilisim.Business.Repositories
             }
             if (!string.IsNullOrEmpty(searchKey))
             {
-                var ids = rawData.Where(x => x.Name == searchKey||x.Name == searchKey.FormatForTag()||x.Name.Contains(searchKey.FormatForTag()) || x.Name.Contains(searchKey)).Select(x => x.Id).ToList();
+                var ids = rawData.Where(x => x.Name == searchKey || x.Name == searchKey.FormatForTag() || x.Name.Contains(searchKey.FormatForTag()) || x.Name.Contains(searchKey)).Select(x => x.Id).ToList();
                 searchKey = searchKey.FormatForTag();
                 var tags = Context.Bridge_EducationTags
                                     .Join(Context.EducationTags, l => l.Id, r => r.Id, (x, y) => new
@@ -490,7 +496,7 @@ namespace NitelikliBilisim.Business.Repositories
 
         public bool CheckEducationState(Guid educationId)
         {
-            var hasBanner = Context.EducationMedias.Count(x => x.EducationId == educationId)>=4;
+            var hasBanner = Context.EducationMedias.Count(x => x.EducationId == educationId) >= 4;
 
             var partCount = Context.EducationParts.Count(x => x.EducationId == educationId);
 
@@ -500,15 +506,17 @@ namespace NitelikliBilisim.Business.Repositories
 
             var education = Context.Educations.First(x => x.Id == educationId);
 
-            education.IsActive =  partCount > 0 && gainCount > 0 && categoryCount > 0;
+            education.IsActive = partCount > 0 && gainCount > 0 && categoryCount > 0;
 
             Context.SaveChanges();
 
             return education.IsActive;
         }
 
-        public int Update(Education entity, string[] tags, bool isSaveLater = false)
+        public void Update(Education entity, string[] tags, bool isSaveLater = false)
         {
+            var oldEducation = Context.Educations.AsNoTracking().First(x => x.Id == entity.Id);
+
             using (var transaction = Context.Database.BeginTransaction())
             {
                 try
@@ -516,7 +524,7 @@ namespace NitelikliBilisim.Business.Repositories
                     var currentTags = Context.Bridge_EducationTags.Where(x => x.Id2 == entity.Id).ToList();
                     Context.Bridge_EducationTags.RemoveRange(currentTags);
                     Context.SaveChanges();
-                    var educationId = base.Update(entity);
+                    base.Update(entity);
                     Context.SaveChanges();
                     var newItems = new List<Bridge_EducationTag>();
                     var dbTags = Context.EducationTags.ToList();
@@ -546,8 +554,58 @@ namespace NitelikliBilisim.Business.Repositories
                     }
                     Context.Bridge_EducationTags.AddRange(newItems);
                     Context.SaveChanges();
+                    #region Eğitim günü veya saatinde değişiklik olması durumunda gelecek gruplar için oluşturulan eğitim günü bilgilerinde ilgili değişiklik uygulanıyor.
+                    if (oldEducation.HoursPerDay != entity.HoursPerDay || oldEducation.Days != entity.Days)
+                    {
+                        //Henüz başlamamış olan gruplar etkilenecek.
+                        var relatedGroups = Context.EducationGroups.Include(x => x.GroupLessonDays).Where(x => x.EducationId == entity.Id && x.StartDate.Date > DateTime.Now.Date).ToList();
+                        if (relatedGroups != null && relatedGroups.Count > 0)
+                        {
+                            foreach (var relatedGroup in relatedGroups)
+                            {
+                                if (relatedGroup.GroupLessonDays != null && relatedGroup.GroupLessonDays.Count > 0)
+                                {
+                                    //Yeni eğitim günlerindeki tüm özellikler ilk güne göre oluşacak.
+                                    var firstDay = relatedGroup.GroupLessonDays.OrderBy(x => x.DateOfLesson).First();
+                                    var groupWeekDays = GetWeekDaysOfGroup(relatedGroup.Id, null);
+                                    var lessonDays = relatedGroup.GroupLessonDays.ToList();
+                                    var classRoom = lessonDays[0].ClassroomId.GetValueOrDefault();
+                                    var hoursEducatorSalary = firstDay.EducatorSalary / oldEducation.HoursPerDay;
+                                    var offDays = Context.OffDays.AsNoTracking().Where(x => x.Year == DateTime.Now.Year || x.Year == DateTime.Now.Year - 1 || x.Year == DateTime.Now.Year + 1).Select(x => x.Date).ToList();
+
+                                    var dates = CreateGroupLessonDays(
+                                     group: relatedGroup,
+                                     educationDay:entity.Days,
+                                     daysInt: groupWeekDays.Select(x => (int)x).ToList(),
+                                     unwantedDays: offDays);
+                                    foreach (var lessonDay in lessonDays)
+                                    {
+                                        Context.GroupLessonDays.Remove(lessonDay);
+                                    }
+                                    Context.SaveChanges();
+                                    var groupLessonDays = new List<GroupLessonDay>();
+                                    foreach (var date in dates)
+                                        groupLessonDays.Add(new GroupLessonDay
+                                        {
+                                            DateOfLesson = date,
+                                            GroupId = relatedGroup.Id,
+                                            ClassroomId = classRoom,
+                                            HasAttendanceRecord = false,
+                                            IsImmuneToAutoChange = false,
+                                            EducatorId = relatedGroup.EducatorId,
+                                            EducatorSalary = hoursEducatorSalary * entity.HoursPerDay
+                                        });
+
+                                    Context.GroupLessonDays.AddRange(groupLessonDays);
+                                    Context.SaveChanges();
+                                }
+                            }
+                        }
+                    }
+                    #endregion
+
                     transaction.Commit();
-                    return educationId;
+
                 }
                 catch (Exception ex)
                 {
@@ -557,7 +615,78 @@ namespace NitelikliBilisim.Business.Repositories
 
             }
         }
+        public List<DateTime> CreateGroupLessonDays(EducationGroup group,int educationDay, List<int> daysInt, List<DateTime> unwantedDays, bool isReset = false)
+        {
+            if (isReset)
+                Context.GroupLessonDays.RemoveRange(Context.GroupLessonDays.Where(x => x.GroupId == group.Id));
 
+            daysInt = MakeSureWeekDaysExists(group.Id, daysInt);
+            var validDays = new List<DayOfWeek>();
+            foreach (var dayInt in daysInt)
+                validDays.Add((DayOfWeek)dayInt);
+
+            var dayCount = educationDay;
+            var date = group.StartDate;
+            var dates = new List<DateTime>();
+            for (int i = 0; i < dayCount; i++)
+            {
+                if (!validDays.Contains(date.DayOfWeek) || unwantedDays.Contains(date))
+                {
+                    date = date.AddDays(1);
+                    i--;
+                    continue;
+                }
+                dates.Add(date);
+                date = date.AddDays(1);
+            }
+            var groupLessonDays = new List<GroupLessonDay>();
+            foreach (var item in dates)
+                groupLessonDays.Add(new GroupLessonDay
+                {
+                    DateOfLesson = item,
+                    GroupId = group.Id,
+                    HasAttendanceRecord = false,
+                    IsImmuneToAutoChange = false
+                });
+
+            if (isReset)
+            {
+                Context.GroupLessonDays.AddRange(groupLessonDays);
+                Context.SaveChanges();
+            }
+
+            return dates;
+        }
+        public List<int> MakeSureWeekDaysExists(Guid groupId, List<int> daysInt)
+        {
+            if (daysInt == null || daysInt.Count == 0)
+            {
+                var weekDays = Context.WeekDaysOfGroups.FirstOrDefault(x => x.GroupId == groupId);
+                if (weekDays == null)
+                {
+                    daysInt = new List<int> { 6, 0 };
+                    Context.WeekDaysOfGroups.Add(new WeekDaysOfGroup
+                    {
+                        GroupId = groupId,
+                        DaysJson = JsonConvert.SerializeObject(daysInt)
+                    });
+                    Context.SaveChanges();
+                }
+                else
+                    daysInt = JsonConvert.DeserializeObject<List<int>>(weekDays.DaysJson);
+            }
+
+            return daysInt;
+        }
+        private DayOfWeek[] GetWeekDaysOfGroup(Guid groupId, List<int> daysInt)
+        {
+            daysInt = MakeSureWeekDaysExists(groupId, daysInt);
+            var days = new List<DayOfWeek>();
+            foreach (var item in daysInt)
+                days.Add((DayOfWeek)item);
+
+            return days.ToArray();
+        }
         public List<EducationVm> GetInfiniteScrollSearchResults(string categoryName, string searchText = "", int page = 0, OrderCriteria order = OrderCriteria.Latest, FiltersVm filter = null)
         {
             var shownResults = 4;
@@ -678,7 +807,7 @@ namespace NitelikliBilisim.Business.Repositories
 
         public IQueryable<Education> GetAllEducationsWithCategory()
         {
-            return Context.Educations.Include(x => x.Category).ThenInclude(x=>x.BaseCategory);
+            return Context.Educations.Include(x => x.Category).ThenInclude(x => x.BaseCategory);
         }
 
         public List<EducationVm> GetEducationsByCategory(string category, int page = 0, OrderCriteria order = OrderCriteria.Latest)
@@ -801,7 +930,7 @@ namespace NitelikliBilisim.Business.Repositories
                     Level = EnumHelpers.GetDescription(education.Level),
                     //PriceText = education.NewPrice.GetValueOrDefault(0).ToString("C", CultureInfo.CreateSpecificCulture("tr-TR"))
                 },
-                Gains = Context.EducationGains.Where(x => x.EducationId == education.Id).OrderBy(x=>x.CreatedDate)
+                Gains = Context.EducationGains.Where(x => x.EducationId == education.Id).OrderBy(x => x.CreatedDate)
                 .Select(x => new EducationGainVm
                 {
                     EducationId = education.Id,
@@ -1086,7 +1215,7 @@ namespace NitelikliBilisim.Business.Repositories
             foreach (var ePoint in points)
             {
                 var priceGroup = Context.EducationGroups.Where(x => x.StartDate > DateTime.Now).OrderBy(x => x.CreatedDate).FirstOrDefault(y => y.HostId == hostId && y.EducationId == ePoint.Key);
-                if (priceGroup!=null)
+                if (priceGroup != null)
                 {
                     retVal.Add((from education in Context.Educations
                                 join category in Context.EducationCategories on education.CategoryId equals category.Id
@@ -1114,7 +1243,7 @@ namespace NitelikliBilisim.Business.Repositories
                                     Medias = new List<EducationMediaVm> { new EducationMediaVm { EducationId = education.Id, FileUrl = educationMedia.FileUrl } },
                                 }).First());
                 }
-                
+
             }
             return retVal;
         }
@@ -1122,9 +1251,9 @@ namespace NitelikliBilisim.Business.Repositories
         public HeaderEducationMenuVm GetHeaderEducationMenu()
         {
             var model = new HeaderEducationMenuVm();
-            var baseCategories = Context.EducationCategories.Where(x => x.BaseCategoryId == null).OrderBy(x=>x.Order).ToList();
+            var baseCategories = Context.EducationCategories.Where(x => x.BaseCategoryId == null).OrderBy(x => x.Order).ToList();
             var subCategories = Context.EducationCategories.Where(x => x.BaseCategoryId != null).Include(x => x.Educations).OrderBy(x => x.Order).ToList();
-            var allEducations = Context.Educations.Where(x => x.IsActive).Include(x => x.Category).OrderBy(x=>x.Order).ToList();
+            var allEducations = Context.Educations.Where(x => x.IsActive).Include(x => x.Category).OrderBy(x => x.Order).ToList();
             foreach (var baseCategory in baseCategories)
             {
                 var baseCategoryModel = new HeaderBaseCategory();
@@ -1142,7 +1271,7 @@ namespace NitelikliBilisim.Business.Repositories
                     subCategoryModel.SeoUrl = subCategory.SeoUrl;
                     subCategoryModel.Id = subCategory.Id;
 
-                    foreach (var education in subCategory.Educations.Where(x => x.IsActive).OrderBy(x=>x.Order))
+                    foreach (var education in subCategory.Educations.Where(x => x.IsActive).OrderBy(x => x.Order))
                     {
                         var educationModel = new HeaderEducation();
                         educationModel.Id = education.Id;

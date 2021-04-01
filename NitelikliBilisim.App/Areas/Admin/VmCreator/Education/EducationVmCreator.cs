@@ -1,4 +1,5 @@
 ﻿using MUsefulMethods;
+using Newtonsoft.Json;
 using NitelikliBilisim.App.Areas.Admin.Models.Education;
 using NitelikliBilisim.Business.UoW;
 using NitelikliBilisim.Core.DTO;
@@ -19,13 +20,15 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.Education
         }
         public AddGetVm CreateAddGetVm()
         {
-            var tags = _unitOfWork.EducationTag.Get(null, x => x.OrderBy(o => o.Name));
+            //var tags = _unitOfWork.EducationTag.Get(null, x => x.OrderBy(o => o.Name));
             var categories = _unitOfWork.EducationCategory.Get(x => x.BaseCategoryId != null, x => x.OrderBy(o => o.Name));
+            var baseCategories = _unitOfWork.EducationCategory.Get(x => x.BaseCategoryId == null, x => x.OrderBy(o => o.Name));
             var levels = EnumHelpers.ToKeyValuePair<EducationLevel>();
             return new AddGetVm
             {
                 Levels = levels,
-                Categories = categories
+                Categories = categories,
+                BaseCategories = baseCategories
             };
         }
 
@@ -38,21 +41,23 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.Education
         {
             var addGetVm = CreateAddGetVm();
             var education = _unitOfWork.Education.GetById(educationId);
+            var relatedNBUYCategories = !string.IsNullOrEmpty(education.RelatedNBUYCategories) ? JsonConvert.DeserializeObject<List<Guid>>(education.RelatedNBUYCategories):new List<Guid>();
             var relatedTags = _unitOfWork.Education.GetTags(educationId);
             var educationInfo = _unitOfWork.Education.GetEducationInfo(educationId);
             return new UpdateGetVm
             {
                 Levels = addGetVm.Levels,
                 Categories = addGetVm.Categories,
+                BaseCategories = addGetVm.BaseCategories,
                 Education = education,
                 RelatedTags = relatedTags,
+                RelatedNBUYCategories = relatedNBUYCategories,
                 EducationUpdateInfo = educationInfo
             };
         }
 
         public void SendVmToUpdate(UpdatePostVm data)
         {
-           // var education = _unitOfWork.Education.GetById(data.EducationId);
             _unitOfWork.Education.Update(new Core.Entities.Education
             {
                 Id = data.EducationId,
@@ -68,7 +73,8 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.Education
                 VideoUrl = data.VideoUrl,
                 IsActive = data.IsActive,
                 IsFeaturedEducation = data.IsFeauredEducation,
-                Order = data.Order
+                Order = data.Order,
+                RelatedNBUYCategories = JsonConvert.SerializeObject(data.SuggestedCategories)
             }, data.Tags);
         }
 

@@ -340,8 +340,6 @@ namespace NitelikliBilisim.Business.Repositories
 
                     _context.GroupLessonDays.AddRange(groupLessonDays);
                     _context.SaveChanges();
-
-                    _context.SaveChanges();
                     transation.Commit();
                 }
                 catch
