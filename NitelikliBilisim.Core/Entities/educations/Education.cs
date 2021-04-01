@@ -33,6 +33,11 @@ namespace NitelikliBilisim.Core.Entities
         public string VideoUrl { get; set; }
         public bool IsFeaturedEducation { get; set; }
         public byte Order { get; set; }
+        /// <summary>
+        /// Bu field kullanıcıya haftalık eğitim önerilerinde kullanılmak üzere oluşturuldu. 
+        /// Önerilerde bu eğitimin önerileceği kişinin fieldde belirtilen kategorilerden birinde olması şartı arandı.
+        /// </summary>
+        public string RelatedNBUYCategories { get; set; }
 
         public Guid CategoryId { get; set; }
         [ForeignKey("CategoryId")]

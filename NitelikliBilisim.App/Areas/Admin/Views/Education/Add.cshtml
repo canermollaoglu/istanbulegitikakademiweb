@@ -42,7 +42,7 @@
                     <select id="select-categories" class="form-control">
                         @foreach (var item in Model.Categories)
                         {
-                            <option value="@item.Id">@item.Name</option>
+                            <option data-base="@item.BaseCategoryId" value="@item.Id">@item.Name</option>
                         }
                     </select>
                 </div>
@@ -61,19 +61,14 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="row">
-                    <div class="col-md-8">
-                        <div class="form-group">
-                            <label>Eğitim Video Url</label>
-                            <input type="text" class="form-control" placeholder="Youtube video Id" id="input-video-id" />
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>Sıra</label>
-                            <input type="number" class="form-control" id="input-order" value="" />
-                        </div>
-                    </div>
+                <div class="form-group">
+                    <label>Önerilecek Öğrenci NBUY Kategorilerini Seçiniz <i title="Burada seçilen kategoriler öğrencilerin bulunduğu NBUY kategorilerine göre bu eğitimin önerilme durumunu etkiler(Haftalık eğitim önerileri alanında)." class="fa fa-question-circle"></i></label>
+                    <select id="select-suggested-categories" multiple="multiple" class="form-control">
+                        @foreach (var item in Model.BaseCategories)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
                 </div>
             </div>
         </div>
@@ -99,6 +94,20 @@
                 </div>
             </div>
             <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label>Eğitim Video Url</label>
+                            <input type="text" class="form-control" placeholder="Youtube video Id" id="input-video-id" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Sıra</label>
+                            <input type="number" class="form-control" id="input-order" value="" />
+                        </div>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="form-group col-md-6">
                         <label>Eğitim Süresi (Gün)</label>

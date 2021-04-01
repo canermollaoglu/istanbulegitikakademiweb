@@ -195,24 +195,25 @@ namespace NitelikliBilisim.Business.Repositories
                 categoryId = eInfo.CategoryId;
             }
             var nearestDay = week * 7;
-            var educations = _context.Educations.Include(c => c.Category).Include(x => x.EducationSuggestionCriterions).Where(x => x.IsActive && x.Category.BaseCategoryId == categoryId);
+            var educations = _context.Educations.Include(c => c.Category).Include(x => x.EducationSuggestionCriterions).Where(x => x.IsActive);
             var hostId = Guid.Parse(_configuration.GetSection("SiteGeneralOptions").GetSection("PriceLocationId").Value);
             var activeGroups = _context.EducationGroups.Where(x => x.StartDate > DateTime.Now && x.HostId == hostId).Select(x => x.EducationId);
             var thisWeekEducations = new Dictionary<string, double>();
             foreach (var education in educations)
             {
-                if (activeGroups.Contains(education.Id) && education.EducationSuggestionCriterions != null && education.EducationSuggestionCriterions.Count > 0)
+                var relatedNBUYCategories = !string.IsNullOrEmpty(education.RelatedNBUYCategories)? JsonConvert.DeserializeObject<List<Guid>>(education.RelatedNBUYCategories):new List<Guid>();
+                if (activeGroups.Contains(education.Id) && relatedNBUYCategories.Contains(education.Category.BaseCategoryId.Value) &&  education.EducationSuggestionCriterions != null && education.EducationSuggestionCriterions.Count > 0)
                 {
                     foreach (var criterion in education.EducationSuggestionCriterions)
                     {
                         if (criterion.CriterionType == CriterionType.EducationDay)
                         {
                             if (nearestDay <= criterion.MaxValue && nearestDay >= criterion.MinValue)
-                                thisWeekEducations.Add(education.SeoUrl, 3);//İçinde bulunulan hafta en öncelikli olduğu için sıra 3 
+                                thisWeekEducations.Add(education.SeoUrl, education.Category.BaseCategoryId == categoryId ? 6 : 3);//İçinde bulunulan hafta en öncelikli olduğu için sıra 3 
                             else if (criterion.MaxValue <= nearestDay - 7 && criterion.MinValue > nearestDay - 14)
-                                thisWeekEducations.Add(education.SeoUrl, 1);//sonraki hafta için sıra 1 
+                                thisWeekEducations.Add(education.SeoUrl, education.Category.BaseCategoryId == categoryId ? 2 : 1);//sonraki hafta için sıra 1 
                             else if (criterion.MaxValue <= nearestDay + 7 && criterion.MinValue > nearestDay)
-                                thisWeekEducations.Add(education.SeoUrl, 2);//onceki hafta için sıra 2
+                                thisWeekEducations.Add(education.SeoUrl, education.Category.BaseCategoryId == categoryId ? 4 : 2);//onceki hafta için sıra 2
                         }
                     }
                 }
@@ -441,32 +442,32 @@ namespace NitelikliBilisim.Business.Repositories
             var hostId = Guid.Parse(_configuration.GetSection("SiteGeneralOptions").GetSection("PriceLocationId").Value);
 
             var retVal = new List<SuggestedEducationVm>();
-          //  var data = educationsList.Select(x => new SuggestedEducationVm
-          //  {
-          //      Base = new EducationBaseVm
-          //      {
-          //          Id = x.Education.Id,
-          //          Name = x.Education.Name,
-          //          Description = x.Education.Description,
-          //          CategoryName = x.CategoryName,
-          //          CategorySeoUrl = x.CategorySeoUrl,
-          //          Level = EnumHelpers.GetDescription(x.Education.Level),
-          //          //Price = _context.EducationGroups.Where(x => x.StartDate > DateTime.Now).OrderBy(x => x.CreatedDate).FirstOrDefault(y => y.HostId == hostId && y.EducationId == x.Education.Id).NewPrice.GetValueOrDefault().ToString(CultureInfo.CreateSpecificCulture("tr-TR")),
-          //          HoursPerDayText = x.Education.HoursPerDay.ToString(),
-          //          DaysText = x.Education.Days.ToString(),
-          //          DaysNumeric = x.Education.Days,
-          //          HoursPerDayNumeric = x.Education.HoursPerDay,
-          //          SeoUrl = x.Education.SeoUrl
-          //      },
-          //      Medias = new List<EducationMediaVm> { new EducationMediaVm { EducationId = x.Education.Id, FileUrl = x.EducationPreviewMedia.FileUrl } },
-          //      AppropriateCriterionCount = educationAndAppropriateCriterion.FirstOrDefault(y => y.Key == x.Education.SeoUrl).Value
-          //  }
-          //).OrderByDescending(x => x.AppropriateCriterionCount).ToList();
+            //  var data = educationsList.Select(x => new SuggestedEducationVm
+            //  {
+            //      Base = new EducationBaseVm
+            //      {
+            //          Id = x.Education.Id,
+            //          Name = x.Education.Name,
+            //          Description = x.Education.Description,
+            //          CategoryName = x.CategoryName,
+            //          CategorySeoUrl = x.CategorySeoUrl,
+            //          Level = EnumHelpers.GetDescription(x.Education.Level),
+            //          //Price = _context.EducationGroups.Where(x => x.StartDate > DateTime.Now).OrderBy(x => x.CreatedDate).FirstOrDefault(y => y.HostId == hostId && y.EducationId == x.Education.Id).NewPrice.GetValueOrDefault().ToString(CultureInfo.CreateSpecificCulture("tr-TR")),
+            //          HoursPerDayText = x.Education.HoursPerDay.ToString(),
+            //          DaysText = x.Education.Days.ToString(),
+            //          DaysNumeric = x.Education.Days,
+            //          HoursPerDayNumeric = x.Education.HoursPerDay,
+            //          SeoUrl = x.Education.SeoUrl
+            //      },
+            //      Medias = new List<EducationMediaVm> { new EducationMediaVm { EducationId = x.Education.Id, FileUrl = x.EducationPreviewMedia.FileUrl } },
+            //      AppropriateCriterionCount = educationAndAppropriateCriterion.FirstOrDefault(y => y.Key == x.Education.SeoUrl).Value
+            //  }
+            //).OrderByDescending(x => x.AppropriateCriterionCount).ToList();
 
             foreach (var education in educationsList)
             {
                 var priceGroup = _context.EducationGroups.Where(x => x.StartDate > DateTime.Now).OrderBy(x => x.CreatedDate).FirstOrDefault(y => y.HostId == hostId && y.EducationId == education.Education.Id);
-                if (priceGroup!=null)
+                if (priceGroup != null)
                 {
                     retVal.Add(new SuggestedEducationVm
                     {
@@ -490,7 +491,7 @@ namespace NitelikliBilisim.Business.Repositories
                     });
                 }
             }
-            
+
             return retVal.OrderByDescending(x => x.AppropriateCriterionCount).ToList();
         }
         public Guid GetBaseCategoryId(Guid categoryId)

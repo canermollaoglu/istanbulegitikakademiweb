@@ -1,5 +1,6 @@
 ﻿/* elements */
 var selectTags = $("#select-tags");
+var selectSuggestedCategories = $("#select-suggested-categories");
 var selectLevels = document.getElementById("select-levels");
 var selectCategories = document.getElementById("select-categories");
 var btnSave = $("#btn-save");
@@ -39,8 +40,10 @@ function document_onLoad() {
             }
         }
     });
-    $(selectCategories).select2({ placeholder: "Eğitimin kategorilerini seçiniz..." });
+    selectSuggestedCategories.select2();
+    $(selectCategories).select2();
     $(selectLevels).select2();
+    $(selectCategories).trigger("change");
 }
 $("#input-name").focusout(function () {
     var title = $("#input-name").val();
@@ -57,6 +60,12 @@ $("#input-name").focusout(function () {
             alert(error.message);
         }
     });
+});
+
+$(selectCategories).on("change", function () {
+    var baseId = $(this).find(':selected').data('base');
+    selectSuggestedCategories.val(null).trigger("change");
+    selectSuggestedCategories.val(baseId).trigger("change");
 });
 
 function btnSave_onClick() {
@@ -92,7 +101,7 @@ function btnSave_onClick() {
         EducationLevel: selectLevels.options[selectLevels.selectedIndex].value,
         CategoryId: selectCategories.options[selectCategories.selectedIndex].value,
         Tags: tags,
-        
+        SuggestedCategories: selectSuggestedCategories.val()
     };
     var tokenVerifier = new SecuritySupport.TokenVerifier();
     data = tokenVerifier.addToken("form-add-education", data);
