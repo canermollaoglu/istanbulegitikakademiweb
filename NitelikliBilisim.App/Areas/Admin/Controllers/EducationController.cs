@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Caching.Memory;
 using MUsefulMethods;
+using Newtonsoft.Json;
 using NitelikliBilisim.App.Areas.Admin.Models.Education;
 using NitelikliBilisim.App.Areas.Admin.VmCreator.Education;
 using NitelikliBilisim.App.Lexicographer;
@@ -70,7 +71,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 Days = data.Days.GetValueOrDefault(),
                 HoursPerDay = data.HoursPerDay.GetValueOrDefault(),
                 CategoryId = data.CategoryId,
-                Order = data.Order
+                Order = data.Order,
+                RelatedNBUYCategories = JsonConvert.SerializeObject(data.SuggestedCategories)
             };
 
             _unitOfWork.Education.Insert(education, data.Tags);

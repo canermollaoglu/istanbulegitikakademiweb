@@ -11,6 +11,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Models.Education
     {
         public List<EducationCategory> Categories { get; set; }
         public Dictionary<int, string> Levels { get; set; }
+        public List<EducationCategory> BaseCategories { get; internal set; }
     }
 
     public class EducationCrudVm
@@ -39,6 +40,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Models.Education
         public byte Order{ get; set; }
         public string VideoUrl { get; set; }
         public string[] Tags { get; set; }
+        [Required(ErrorMessage = "Eğitimin önerileceği NBUY öğrenci kategorilerini seçmelisiniz.")]
+        public string[] SuggestedCategories { get; set; }
     }
     public class AddPostVm : EducationCrudVm
     {
