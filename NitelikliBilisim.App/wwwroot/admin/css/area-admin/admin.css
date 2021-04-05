@@ -1126,3 +1126,7 @@ select.form-control:not([size]):not([multiple]) {
 .sbOptions .sbSub {
   padding-left: 17px;
 }
+
+.select2 {
+    width: 100% !important;
+}
