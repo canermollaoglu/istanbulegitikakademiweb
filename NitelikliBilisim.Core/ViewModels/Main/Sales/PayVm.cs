@@ -22,6 +22,7 @@ namespace NitelikliBilisim.Core.ViewModels.Sales
         public decimal DiscountAmount { get; set; }
         public List<_CartItem> CartItems { get; set; }
         public int AddressId { get; set; } = 0;
+        public string PaidPrice { get; set; }
     }
 
     public class _CardInfo

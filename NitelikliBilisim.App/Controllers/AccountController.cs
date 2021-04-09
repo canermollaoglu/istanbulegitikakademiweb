@@ -376,7 +376,7 @@ namespace NitelikliBilisim.App.Controllers
                     {
                         model.Photo = info.Principal.FindFirstValue("photo");
                     }
-                    return View("ExternalLogin", model);
+                    return View(nameof(ExternalLogin), model);
                 }
 
             }
@@ -387,7 +387,7 @@ namespace NitelikliBilisim.App.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View("ExternalLogin", model);
+                return View(nameof(ExternalLogin), model);
             }
             // Get the information about the user from the external login provider
             var info = await _signInManager.GetExternalLoginInfoAsync();
