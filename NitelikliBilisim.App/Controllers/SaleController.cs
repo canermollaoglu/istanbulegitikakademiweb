@@ -214,7 +214,12 @@ namespace NitelikliBilisim.App.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var binNumber = FormatCardNumber(data.CardNumber).Substring(0, 6);
             decimal discountAmount = 0m;
-            if (!string.IsNullOrEmpty(data.PromotionCode))
+            var basketBasedPromotion = CheckBasketBasedPromotion(userId, data.CartItems);
+            if (basketBasedPromotion!=null)
+            {
+                discountAmount = basketBasedPromotion.DiscountAmount;
+            }
+            else if (!string.IsNullOrEmpty(data.PromotionCode))
             {
                 var response = CheckPromotionCode(userId, data.PromotionCode, data.CartItems);
                 if (response.Success)
@@ -231,6 +236,7 @@ namespace NitelikliBilisim.App.Controllers
                     });
                 }
             }
+
             var info = _paymentService.CheckInstallment(data.ConversationId.ToString(), binNumber, GetPriceSumForCartItems(data.CartItems, discountAmount));
             if (info.Status == PaymentServiceMessages.ResponseSuccess)
             {
@@ -333,6 +339,9 @@ namespace NitelikliBilisim.App.Controllers
                 conversationId: data.ConversationId.ToString(),
                 binNumber: data.CardInfo.NumberOnCard.Substring(0, 6),
                 price: GetPriceSumForCartItems(data.CartItems, discountAmount));
+
+            var totalPrice = info.InstallmentDetails[0].InstallmentPrices.First(x => x.InstallmentNumber == data.PaymentInfo.Installments).TotalPrice;
+            data.PaidPrice = totalPrice;
 
             var cardInfoChecker = new CardInfoChecker();
             var transactionType = cardInfoChecker.DecideTransactionType(info, data.Use3d);

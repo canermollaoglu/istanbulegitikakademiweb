@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using Microsoft.Extensions.Configuration;
 using NitelikliBilisim.Core.Enums.user_details;
+using System.Linq;
 
 namespace NitelikliBilisim.Core.Services.Payments
 {
@@ -37,16 +38,23 @@ namespace NitelikliBilisim.Core.Services.Payments
         private CreatePaymentRequest InitDefaultRequest(PayData data, ApplicationUser user, List<CartItem> cartItems)
         {
             var totalPrice = 0.0m;
+            var enPahali = cartItems.FirstOrDefault(x => x.EducationGroup.NewPrice.GetValueOrDefault() == cartItems.Max(y => y.EducationGroup.NewPrice.GetValueOrDefault())) ;
+            //Yapılan indirim sepetteki en pahalı üründen düşülüyor.
             foreach (var item in cartItems)
+            {
+                if (item.InvoiceDetailsId == enPahali.InvoiceDetailsId)
+                {
+                    item.EducationGroup.NewPrice = item.EducationGroup.NewPrice - data.DiscountAmount;
+                }
                 totalPrice += item.EducationGroup.NewPrice.GetValueOrDefault();
-            decimal paidPrice = totalPrice - data.DiscountAmount;
-
+            }
+            
             var request = new CreatePaymentRequest
             {
                 Locale = Locale.TR.ToString(),
                 ConversationId = data.ConversationId.ToString(),
                 Price = totalPrice.ToString(new CultureInfo("en-US")),
-                PaidPrice = paidPrice.ToString(new CultureInfo("en-US")),
+                PaidPrice = data.PaidPrice.ToString(new CultureInfo("en-US")),
                 Currency = Currency.TRY.ToString(),
                 Installment = data.PaymentInfo.Installments,
                 BasketId = data.BasketId.ToString(),
