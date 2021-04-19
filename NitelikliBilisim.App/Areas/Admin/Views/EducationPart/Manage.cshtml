@@ -22,25 +22,33 @@
                     @Html.AntiForgeryToken()
                     <input type="hidden" value="@Model.EducationId" id="_education-id" />
                     <div class="row">
-                        <div class="col-md-3">
-                            <label>Üst Başlık</label>
-                            <select id="select-base-parts" class="form-control">
-                                <option value="">Üst Başlık</option>
-                                @foreach (var item in Model.BaseParts)
-                                {
-                                    <option value="@item.Id">@item.Title</option>
-                                }
-                            </select>
-                        </div>
-                        <div class="col-md-1">
-                            <label>Sıra</label>
-                            <input type="text" value="" class="form-control" id="input-order" placeholder="#" />
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Üst Başlık</label>
+                                        <select id="select-base-parts" class="form-control">
+                                            <option value="">Üst Başlık</option>
+                                            @foreach (var item in Model.BaseParts)
+                                            {
+                                                <option value="@item.Id">@item.Title</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Sıra</label>
+                                        <input type="text" value="" class="form-control" id="input-order" placeholder="#" />
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-md-8">
                             <label>Başlık</label>
-                            <input type="text" value="" class="form-control" id="input-title" placeholder="Parça başlığı" />
+                            <textarea rows="5" class="form-control" id="input-title" placeholder="Parça başlığı"></textarea>
                         </div>
-                        
+
                     </div>
                     <div class="row" style="margin-top:1%;margin-bottom:1%">
                         <div class="col-md-12">
