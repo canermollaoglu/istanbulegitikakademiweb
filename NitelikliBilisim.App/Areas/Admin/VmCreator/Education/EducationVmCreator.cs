@@ -75,7 +75,7 @@ namespace NitelikliBilisim.App.Areas.Admin.VmCreator.Education
                 IsFeaturedEducation = data.IsFeauredEducation,
                 Order = data.Order,
                 RelatedNBUYCategories = JsonConvert.SerializeObject(data.SuggestedCategories)
-            }, data.Tags);
+            }, data.Tags.Distinct().ToArray());
         }
 
         public Core.ViewModels.areas.admin.educator.ManageAssignEducatorsGetVm CreateManageAssignEducatorsVm(Guid educationId)

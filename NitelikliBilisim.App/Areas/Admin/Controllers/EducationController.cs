@@ -75,7 +75,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 RelatedNBUYCategories = JsonConvert.SerializeObject(data.SuggestedCategories)
             };
 
-            _unitOfWork.Education.Insert(education, data.Tags);
+            _unitOfWork.Education.Insert(education, data.Tags.Distinct().ToArray());
             RefreshCache();
             return Json(new ResponseModel
             {
