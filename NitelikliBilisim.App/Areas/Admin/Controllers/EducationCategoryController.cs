@@ -60,8 +60,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             EducationCategory baseCategory = null;
             if (category.BaseCategoryId.HasValue) {
                 baseCategory = _unitOfWork.EducationCategory.GetById(category.BaseCategoryId.Value);
-                category.IconUrl = _storage.BlobUrl + category.IconUrl;
-                category.BackgroundImageUrl = _storage.BlobUrl + category.BackgroundImageUrl;
             }
             
             var model = new UpdateGetVm
@@ -73,7 +71,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             return View(model);
         }
         [HttpPost, Route("admin/kategori-ekle")]
-        public async Task<JsonResult> Add(AddPostVm data)
+        public JsonResult Add(AddPostVm data)
         {
             if (!ModelState.IsValid)
             {
@@ -95,26 +93,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 BaseCategoryId = data.BaseCategoryId,
                 CategoryType = (CategoryType)data.CategoryType,
                 IsCurrent = true,
-                Description2 = data.Description2,
                 Order = data.Order
             };
             if (data.BaseCategoryId ==null)
             {
                 category.IconUrl = data.IconUrl;
-            }
-            else
-            {
-                if (data.IconImage.Base64Content!=null && data.BackgroundImage.Base64Content!=null)
-                {
-                    var iconImageStream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.IconImage.Base64Content));
-                    var iconFileName = $"{StringHelpers.FormatForTag(data.Name)}-iconImage";
-                    var iconPath = await _storage.UploadFile(iconImageStream, $"{iconFileName}.{data.IconImage.Extension.ToLower()}", "education-category-media");
-                    category.IconUrl = iconPath;
-                    var bgImageStream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.BackgroundImage.Base64Content));
-                    var bgImageFileName = $"{StringHelpers.FormatForTag(data.Name)}-bgImage";
-                    var bgImagePath = await _storage.UploadFile(bgImageStream, $"{bgImageFileName}.{data.BackgroundImage.Extension.ToLower()}", "education-category-media");
-                    category.BackgroundImageUrl = bgImagePath;
-                }
             }
 
             _unitOfWork.EducationCategory.Insert(category);
@@ -126,7 +109,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             });
         }
         [HttpPost, Route("admin/kategori-guncelle")]
-        public async Task<IActionResult> Update(UpdatePostVm data)
+        public IActionResult Update(UpdatePostVm data)
         {
             if (!ModelState.IsValid)
             {
@@ -145,28 +128,10 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             category.WizardClass = data.WizardClass;
             category.EducationDayCount = data.EducationDayCount;
             category.IconColor = data.IconColor;
-            category.Description2 = data.Description2;
             category.Order = data.Order;
             if (data.BaseCategoryId == null)
             {
                 category.IconUrl = data.IconUrl;
-            }
-            else
-            {
-                if (data.IconImage.Base64Content != null)
-                {
-                    var iconImageStream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.IconImage.Base64Content));
-                    var iconFileName = $"{StringHelpers.FormatForTag(data.Name)}-iconImage";
-                    var iconPath = await _storage.UploadFile(iconImageStream, $"{iconFileName}.{data.IconImage.Extension.ToLower()}", "education-category-media");
-                    category.IconUrl = iconPath;
-                }
-                if (data.BackgroundImage.Base64Content!=null)
-                {
-                    var bgImageStream = new MemoryStream(_fileManager.ConvertBase64StringToByteArray(data.BackgroundImage.Base64Content));
-                    var bgImageFileName = $"{StringHelpers.FormatForTag(data.Name)}-bgImage";
-                    var bgImagePath = await _storage.UploadFile(bgImageStream, $"{bgImageFileName}.{data.BackgroundImage.Extension.ToLower()}", "education-category-media");
-                    category.BackgroundImageUrl = bgImagePath;
-                }
             }
 
             _unitOfWork.EducationCategory.Update(category);
