@@ -19,7 +19,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.WebAPI
         public IActionResult GetEducationList(DataSourceLoadOptions loadOptions)
         {
             loadOptions.PrimaryKey = new[] { "Id" };
-            var data = _unitOfWork.Education.GetListQueryable();
+            //var data = _unitOfWork.Education.GetListQueryable();
+            var data = _unitOfWork.EducationSuggestionCriterion.GetQueryableWithDayCriterion();
             return Ok(DataSourceLoader.Load(data, loadOptions));
         }
 

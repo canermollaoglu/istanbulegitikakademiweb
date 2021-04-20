@@ -74,6 +74,36 @@ function createGrid() {
             visible: true,
             width: 240
         },
+        onExporting: function (e) {
+            var workbook = new ExcelJS.Workbook();
+            var worksheet = workbook.addWorksheet('Öneri Kriteri Listesi');
+            DevExpress.excelExporter.exportDataGrid({
+                worksheet: worksheet,
+                component: e.component,
+                customizeCell: function (options) {
+                    var excelCell = options;
+                    excelCell.font = { name: 'Arial', size: 12 };
+                    excelCell.alignment = { horizontal: 'left' };
+                }
+            }).then(function () {
+                workbook.xlsx.writeBuffer().then(function (buffer) {
+                    saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'Oneri Kriteri Listesi' + parseInt(Math.random() * 1000000000) + '.xlsx');
+                });
+            });
+            e.cancel = true;
+        },
+        export: {
+            enabled: true
+        },
+        headerFilter: {
+            visible: true
+        },
+        grouping: {
+            autoExpandAll: true
+        },
+        groupPanel: {
+            visible: true
+        },
         paging: {
             pageSize: 10
         },
@@ -96,17 +126,18 @@ function createGrid() {
         },
         {
             caption: "Eğitim Adı",
-            dataField: "name",
+            dataField: "educationName",
         },
         {
-            caption: "Gün/Saat",
-            cellTemplate: function (container, options) {
-                var current = options.data;
-                $(`<span>${current.days} gün / ${current.hoursPerDay} saat</span>`)
-                    .appendTo(container);
-            },
+            caption: "Başlangıç",
+            dataField: "minValue",
             width:120
-        },
+            },
+            {
+                caption: "Bitiş",
+                dataField: "maxValue",
+                width: 120
+            },
         {
             caption: "Aktif Mi",
             dataField: "isActive",
@@ -121,17 +152,15 @@ function createGrid() {
                     .appendTo(container);
             },
             width:75
-        },
-
-        ]
-        ,
+        }
+        ],
         masterDetail: {
             enabled: true,
             template: function (container, options) {
                 var currentEducationData = options.data;
                 var currentDiv = $("<div>")
                     .appendTo(container);
-                var title = $(`<div class="font-weight-bold row" style="margin-bottom:5px;">${currentEducationData.name} Eğitimine ait öneri kriterleri:</div>`);
+                var title = $(`<div class="font-weight-bold row" style="margin-bottom:5px;">${currentEducationData.educationName} Eğitimine ait öneri kriterleri:</div>`);
                 title.appendTo(currentDiv);
                 $.ajax({
                     url: `/admin/educationsuggestioncriterion/getlist?educationId=${currentEducationData.id}`,

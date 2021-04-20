@@ -1,4 +1,5 @@
-﻿using MUsefulMethods;
+﻿using Microsoft.EntityFrameworkCore;
+using MUsefulMethods;
 using Newtonsoft.Json;
 using NitelikliBilisim.Core.Entities.educations;
 using NitelikliBilisim.Core.Enums.educations;
@@ -52,5 +53,22 @@ namespace NitelikliBilisim.Business.Repositories
             return retVal;
         }
 
+        public IQueryable<EducationSuggestionCriterionListVm> GetQueryableWithDayCriterion()
+        {
+            return from education in _context.Educations.Include(x => x.Category)
+                       join criterion in _context.EducationSuggestionCriterions on
+                       new { EducationId = education.Id, CriterionType = CriterionType.EducationDay } equals
+                       new { EducationId = criterion.EducationId, CriterionType = criterion.CriterionType } into ps
+                       from criterion in ps.DefaultIfEmpty()
+                       select new EducationSuggestionCriterionListVm
+                       {
+                           Id=education.Id,
+                           CategoryName = education.Category.Name,
+                           EducationName = education.Name,
+                           MinValue = criterion != null ? criterion.MinValue : null,
+                           MaxValue = criterion != null ? criterion.MaxValue : null,
+                           IsActive = education.IsActive,
+                       };
+        }
     }
 }
