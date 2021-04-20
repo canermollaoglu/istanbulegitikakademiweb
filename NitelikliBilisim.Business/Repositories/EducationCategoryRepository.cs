@@ -139,19 +139,19 @@ namespace NitelikliBilisim.Business.Repositories
             return categories;
         }
 
-        public List<PopularCategoryVm> GetPopularCategories()
-        {
-            return _context.EducationCategories.Where(x => x.BaseCategoryId != null
-            && !string.IsNullOrEmpty(x.BackgroundImageUrl)
-            && !string.IsNullOrEmpty(x.IconUrl)).Select(x=> new PopularCategoryVm { 
-            Id = x.Id,
-            Name = x.Name,
-            Description = x.Description2,
-            IconUrl = x.IconUrl,
-            BackgroundImageUrl = x.BackgroundImageUrl,
-            SeoUrl = x.SeoUrl
-            }).ToList();
-        }
+        //public List<PopularCategoryVm> GetPopularCategories()
+        //{
+        //    return _context.EducationCategories.Where(x => x.BaseCategoryId != null
+        //    && !string.IsNullOrEmpty(x.BackgroundImageUrl)
+        //    && !string.IsNullOrEmpty(x.IconUrl)).Select(x=> new PopularCategoryVm { 
+        //    Id = x.Id,
+        //    Name = x.Name,
+        //    Description = x.Description2,
+        //    IconUrl = x.IconUrl,
+        //    BackgroundImageUrl = x.BackgroundImageUrl,
+        //    SeoUrl = x.SeoUrl
+        //    }).ToList();
+        //}
     }
 
     public class _EducationCountByCategory

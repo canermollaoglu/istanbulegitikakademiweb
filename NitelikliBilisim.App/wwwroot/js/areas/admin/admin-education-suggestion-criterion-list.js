@@ -131,18 +131,18 @@ function createGrid() {
         {
             caption: "Başlangıç",
             dataField: "minValue",
-            width:120
-            },
-            {
-                caption: "Bitiş",
-                dataField: "maxValue",
-                width: 120
-            },
+            width: 120
+        },
+        {
+            caption: "Bitiş",
+            dataField: "maxValue",
+            width: 120
+        },
         {
             caption: "Aktif Mi",
             dataField: "isActive",
-            width:100
-            
+            width: 100
+
         },
         {
             caption: "Yönet",
@@ -151,7 +151,7 @@ function createGrid() {
                 $(`<a class="btn btn-outline-primary btn-sm" href="/admin/egitim-oneri-kriteri-yonetimi?educationId=${current.id}">Yönet</a>`)
                     .appendTo(container);
             },
-            width:75
+            width: 75
         }
         ],
         masterDetail: {

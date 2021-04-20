@@ -144,6 +144,20 @@
                     </li>
                 </ul>
             </li>
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Popüler Konu Başlıkları">
+                <a class="nav-link nav-link-collapse" data-toggle="collapse" href="#collapsepopulartopics" data-parent="#exampleAccordion">
+                    <i class="fa fa-fw fa-fire"></i>
+                    <span class="nav-link-text">Popüler Konu Başlıkları</span>
+                </a>
+                <ul class="sidenav-second-level collapse" id="collapsepopulartopics">
+                    <li>
+                        <a asp-controller="PopularTopic" asp-action="Index">Listele</a>
+                    </li>
+                    <li>
+                        <a asp-controller="PopularTopic" asp-action="Add">Ekle</a>
+                    </li>
+                </ul>
+            </li>
 
             <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Yorumlar">
                 <a class="nav-link nav-link-collapse" data-toggle="collapse" href="#collapseComments" data-parent="#exampleAccordion">
@@ -231,7 +245,7 @@
                         <a class="nav-link nav-link-collapse" data-toggle="collapse" href="#collapsenews" data-parent="#exampleAccordion">Haber Bülteni Abonelikleri</a>
                         <ul class="sidenav-third-level collapse" id="collapsenews">
                             <li>
-                                <a asp-controller="Subscriber" asp-action="CreateNewPost" asp-route-type ="1010">Gönderi Yayınla</a>
+                                <a asp-controller="Subscriber" asp-action="CreateNewPost" asp-route-type="1010">Gönderi Yayınla</a>
                             </li>
                             <li>
                                 <a asp-controller="Subscriber" asp-action="NewsletterSubscribers">Abone Listesi</a>

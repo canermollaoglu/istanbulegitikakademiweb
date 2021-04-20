@@ -196,13 +196,13 @@ namespace NitelikliBilisim.App.Controllers
             model.TotalEducationCount = _unitOfWork.Education.TotalEducationCount();
             model.Educators = _unitOfWork.Educator.GetEducatorsAboutUsPage();
             model.FeaturedEducation = _unitOfWork.Education.GetFeaturedEducation();
-            var popularCategories = _unitOfWork.EducationCategory.GetPopularCategories();
-            foreach (var category in popularCategories)
+            var popularTopics = _unitOfWork.PopularTopic.Get().ToList();
+            foreach (var popularTopic in popularTopics)
             {
-                category.IconUrl = _storageService.BlobUrl + category.IconUrl;
-                category.BackgroundImageUrl = _storageService.BlobUrl + category.BackgroundImageUrl;
+                popularTopic.IconUrl = _storageService.BlobUrl + popularTopic.IconUrl;
+                popularTopic.BackgroundUrl = _storageService.BlobUrl + popularTopic.BackgroundUrl;
             };
-            model.PopularCategories = popularCategories;
+            model.PopularTopics = popularTopics;
             return View(model);
         }
 
