@@ -195,7 +195,7 @@ namespace NitelikliBilisim.App.Controllers
             model.EducationHostCities = EnumHelpers.ToKeyValuePair<HostCity>();
             model.TotalEducationCount = _unitOfWork.Education.TotalEducationCount();
             model.Educators = _unitOfWork.Educator.GetEducatorsAboutUsPage();
-            model.FeaturedEducation = _unitOfWork.Education.GetFeaturedEducation();
+            model.FeaturedEducation = _unitOfWork.Education.GetFeaturedEducation(userId);
             var popularTopics = _unitOfWork.PopularTopic.Get().ToList();
             foreach (var popularTopic in popularTopics)
             {

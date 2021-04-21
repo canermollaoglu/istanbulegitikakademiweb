@@ -237,12 +237,28 @@ namespace NitelikliBilisim.Business.Repositories
             return educationDtos;
         }
 
-        public FeaturedEducationVm GetFeaturedEducation()
+        public FeaturedEducationVm GetFeaturedEducation(string userId)
         {
             Random r = new Random();
-            var educationcount = Context.Educations.Where(x => x.IsActive && x.IsFeaturedEducation).Count();
-            var education = Context.Educations.Include(x => x.Category).Where(x => x.IsActive && x.IsFeaturedEducation).ToList().ElementAt(r.Next(0, educationcount));
-            var media = Context.EducationMedias.Where(x => x.EducationId == education.Id && x.MediaType == EducationMediaType.List).First();
+            var userInfo = Context.StudentEducationInfos.FirstOrDefault(x => x.CustomerId == userId);
+            
+            var educationcount = Context.Educations.Include(x=>x.Category).
+                Where(x => x.IsActive && x.IsFeaturedEducation && x.Category.BaseCategoryId == userInfo.CategoryId)
+                .Count();
+            if (educationcount == 0)
+            {
+                return null;
+            }
+
+            var education = Context.Educations.Include(x => x.Category)
+                .Where(x => x.IsActive && x.IsFeaturedEducation && x.Category.BaseCategoryId == userInfo.CategoryId)
+                .ToList()
+                .ElementAt(r.Next(0, educationcount));
+
+            var media = Context.EducationMedias
+                .Where(x => x.EducationId == education.Id && x.MediaType == EducationMediaType.List)
+                .First();
+
             return new FeaturedEducationVm
             {
                 Id = education.Id,
