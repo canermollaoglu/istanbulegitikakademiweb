@@ -435,5 +435,15 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 data = educations
             });
         }
+        public IActionResult GetGroupFollowUpReportData() {
+
+            var data = _unitOfWork.Report.GetGroupFollowUpReportData();
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = data
+            });
+        }
+
     }
 }

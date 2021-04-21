@@ -41,17 +41,86 @@
 
         /* events */
         function document_onLoad() {
+            createGroupFollowUpReportGrid();
             createNonGroupEducationsGrid();
         }
 
-        function createNonGroupEducationsGrid() {
-            $("#non-group-educations-grid").dxDataGrid({
-                dataSource: `/admin/report/NonGroupEducations`,
+        function createGroupFollowUpReportGrid() {
+            $("#group-report-grid").dxDataGrid({
+                dataSource: "@Url.Action("GetGroupFollowUpReportData", "Report")",
                 showBorders: true,
                 showColumnLines: true,
                 showRowLines: true,
                 headerFilter: {
                     visible: true
+                },
+                allowHeaderFiltering: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                searchPanel: {
+                    visible: true,
+                    width: 240
+                },
+                paging: {
+                    pageSize: 10
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10, 20],
+                    showInfo: true
+                },
+                columns: [
+                    {
+                        caption: "Eğitim Adı",
+                        dataField: "educationName",
+                    },
+                    {
+                        caption: "Grup Adı",
+                        dataField: "groupName",
+                    },
+                    {
+                        caption: "Grup Başlangıç Tarihi",
+                        dataField: "groupStartDate",
+                        dataType: "date",
+                        format:"dd/MM/yyyy"
+                    },
+                    {
+                        caption: "Grup Bitiş Tarihi",
+                        dataField: "groupEndDate",
+                        dataType: "date",
+                        format: "dd/MM/yyyy"
+                    },
+                    {
+                        caption: "Kalan Gün",
+                        dataField: "leftDay"
+                    },
+                    {
+                        caption: "Yedek Grup Var Mı?",
+                        dataField:"isReserve"
+                    },
+                    {
+                        caption: "Yönet",
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            $(`<button class="btn btn-outline-primary btn-sm" onClick="createGroup('${current.educationId}')"><i class="fa fa-plus-circle"></i> Grup Oluştur</a>`)
+                                .appendTo(container);
+                        },
+                        width: 150
+                    }
+                ]
+            });
+        }
+
+        function createNonGroupEducationsGrid() {
+            $("#non-group-educations-grid").dxDataGrid({
+                dataSource: "@Url.Action("NonGroupEducations", "Report")",
+                showBorders: true,
+                showColumnLines: true,
+                showRowLines: true,
+                headerFilter: {
+                    visibUrle: true
                 },
                 allowHeaderFiltering: true,
                 filterRow: {
