@@ -1,0 +1,105 @@
+﻿
+@{
+    ViewData["Title"] = "GroupFollowUpReport";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-list"></i> <strong>Grubu Olmayan Eğitimler</strong>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div id="non-group-educations-grid">
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-list"></i> <strong>Grup Takip Raporu</strong>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div id="group-report-grid">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{ 
+    <script>
+        /* assignments */
+        $(document).ready(document_onLoad);
+
+        /* events */
+        function document_onLoad() {
+            createNonGroupEducationsGrid();
+        }
+
+        function createNonGroupEducationsGrid() {
+            $("#non-group-educations-grid").dxDataGrid({
+                dataSource: `/admin/report/NonGroupEducations`,
+                showBorders: true,
+                showColumnLines: true,
+                showRowLines: true,
+                headerFilter: {
+                    visible: true
+                },
+                allowHeaderFiltering: true,
+                filterRow: {
+                    visible: true,
+                    applyFilter: "auto"
+                },
+                searchPanel: {
+                    visible: true,
+                    width: 240
+                },
+                paging: {
+                    pageSize: 10
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10, 20],
+                    showInfo: true
+                },
+                columns: [
+                    {
+                        caption: "İsim",
+                        dataField: "name",
+                    },
+                    {
+                        caption: "Kategori",
+                        dataField: "categoryName",
+                    },
+                    {
+                        caption: "Aktif Mi?",
+                        dataField: "isActive",
+                        width:120
+                    },
+                    {
+                        caption: "Yönet",
+                        cellTemplate: function (container, options) {
+                            var current = options.data;
+                            $(`<button class="btn btn-outline-primary btn-sm" onClick="createGroup('${current.id}')"><i class="fa fa-plus-circle"></i> Grup Oluştur</a>`)
+                                .appendTo(container);
+                        },
+                        width: 150
+                    }
+                ]
+            });
+        }
+
+        function createGroup(id) {
+            localStorage.setItem("_cG", id);
+            location.href = '/admin/grup-olustur';
+        }
+    </script>
+}  

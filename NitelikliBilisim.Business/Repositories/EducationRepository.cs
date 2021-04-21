@@ -9,6 +9,7 @@ using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Enums.user_details;
 using NitelikliBilisim.Core.ViewModels;
 using NitelikliBilisim.Core.ViewModels.areas.admin.education;
+using NitelikliBilisim.Core.ViewModels.areas.admin.reports;
 using NitelikliBilisim.Core.ViewModels.Main;
 using NitelikliBilisim.Core.ViewModels.Main.Course;
 using NitelikliBilisim.Core.ViewModels.Main.EducationComment;
@@ -631,6 +632,27 @@ namespace NitelikliBilisim.Business.Repositories
 
             }
         }
+
+        /// <summary>
+        /// Grubu olmayan eğitimler listesini oluşturur.
+        /// </summary>
+        /// <returns></returns>
+        public List<NonGroupEducationVm> GetNonGroupEducations()
+        {
+            var retVal = new List<NonGroupEducationVm>();
+
+            var educations = Context.Educations.Include(x=>x.Category).ToList();
+            var educationIds = Context.EducationGroups.Where(x => x.StartDate.Date > DateTime.Now.Date).GroupBy(x=>x.EducationId).Select(x=>x.Key).ToList();
+           retVal = educations.Where(x => !educationIds.Contains(x.Id)).Select(x => new NonGroupEducationVm
+            {
+                Id = x.Id,
+                Name = x.Name,
+                CategoryName = x.Category.Name,
+                IsActive = x.IsActive,
+            }).ToList();
+            return retVal;
+        }
+
         public List<DateTime> CreateGroupLessonDays(EducationGroup group,int educationDay, List<int> daysInt, List<DateTime> unwantedDays, bool isReset = false)
         {
             if (isReset)

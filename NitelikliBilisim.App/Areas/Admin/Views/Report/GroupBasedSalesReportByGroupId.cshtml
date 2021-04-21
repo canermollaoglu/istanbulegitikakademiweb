@@ -271,7 +271,7 @@
 
         }
         function createStudentsGrid() {
-            var SERVICE_URL = "../../api/earningsreport/get-group-based-sales-report?groupId=" + groupId.val();
+            var SERVICE_URL = "../../api/report/get-group-based-sales-report?groupId=" + groupId.val();
             $("#group-based-sales-report-grid").dxDataGrid({
                 dataSource: DevExpress.data.AspNet.createStore({
                     key: "id",
@@ -545,7 +545,7 @@
             });
         }
         function createCancellationSalesGrid() {
-            var SERVICE_URL = "../../api/earningsreport/get-group-based-cancellation-sales-report?groupId=" + groupId.val();
+            var SERVICE_URL = "../../api/report/get-group-based-cancellation-sales-report?groupId=" + groupId.val();
             $("#group-based-cancellation-sales-report-grid").dxDataGrid({
                 dataSource: DevExpress.data.AspNet.createStore({
                     key: "id",
