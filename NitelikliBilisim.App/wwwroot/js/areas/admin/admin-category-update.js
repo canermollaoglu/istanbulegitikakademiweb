@@ -10,9 +10,7 @@ var inputIconColor = document.getElementById("input-color-code");
 var inputWizardClass = document.getElementById("input-wizard-class");
 var inputDescription2 = document.getElementById("input-description2");
 var btnSave = $("#btn-save");
-/*ImageFields*/
-var fileManager1 = null;
-var fileManager2 = null;
+
 /* assignments */
 $(document).ready(document_onLoad);
 btnSave.on("click", btnSave_onClick);
@@ -20,23 +18,10 @@ btnSave.on("click", btnSave_onClick);
 /* events */
 function document_onLoad() {
     $(selectBaseCategories).select2();
-    fileManager1 = new UploadSupport.FileUploader();
-    fileManager2 = new UploadSupport.FileUploader();
-    fileManager1.set({
-        container: "file-upload-container-for-banner",
-        preview: "img-after-preview-for-banner",
-        validExtensions: ["jpg", "jpeg"]
-    });
-    fileManager2.set({
-        container: "file-upload-container-for-preview",
-        preview: "img-after-preview-for-preview",
-        validExtensions: ["jpg", "jpeg"]
-    });
+    
 }
 function btnSave_onClick() {
     btnSave.off("click");
-    var bgImage = fileManager1.getFile();
-    var iconImage = fileManager2.getFile();
     var baseCategoryId = selectBaseCategories.options[selectBaseCategories.selectedIndex].value;
     var data = {
         CategoryId: $("#_category-id").val(),
@@ -49,15 +34,7 @@ function btnSave_onClick() {
         IconColor: inputIconColor.value,
         WizardClass: inputWizardClass.value,
         Order: inputOrder.value,
-        Description2: inputDescription2.value,
-        BackgroundImage: {
-            Base64Content: bgImage.base64content,
-            Extension: bgImage.extension
-        },
-        IconImage: {
-            Base64Content: iconImage.base64content,
-            Extension: iconImage.extension
-        }
+        
     }
 
     var tokenVerfier = new SecuritySupport.TokenVerifier();

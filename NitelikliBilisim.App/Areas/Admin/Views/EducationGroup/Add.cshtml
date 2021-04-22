@@ -210,6 +210,7 @@
                 var item = dayCheckboxes[i];
                 item.onchange = dayCheckbox_onChange;
             }
+            selectedEducationIdControl();
         }
         function selectEducations_onChange() {
 
@@ -363,8 +364,12 @@
 
         }
 
-        function validateData() {
-            // ?
+        function selectedEducationIdControl() {
+            var selectEducationId = localStorage.getItem("_cG");
+            if (selectEducationId) {
+                $('#select-educations').val(selectEducationId).trigger('change');
+                localStorage.removeItem("_cG");
+            }
         }
 
 

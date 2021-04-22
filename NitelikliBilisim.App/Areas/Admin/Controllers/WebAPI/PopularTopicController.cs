@@ -5,24 +5,21 @@ using NitelikliBilisim.Business.UoW;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers.WebAPI
 {
-
-    public class EducationSuggestionCriterionController : BaseApiController
+    public class PopularTopicController : BaseApiController
     {
         private readonly UnitOfWork _unitOfWork;
-        public EducationSuggestionCriterionController(UnitOfWork unitOfWork)
+        public PopularTopicController(UnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
 
         [HttpGet]
-        [Route("get-education-list")]
-        public IActionResult GetEducationList(DataSourceLoadOptions loadOptions)
+        [Route("list")]
+        public IActionResult GetList(DataSourceLoadOptions loadOptions)
         {
             loadOptions.PrimaryKey = new[] { "Id" };
-            //var data = _unitOfWork.Education.GetListQueryable();
-            var data = _unitOfWork.EducationSuggestionCriterion.GetQueryableWithDayCriterion();
+            var data = _unitOfWork.PopularTopic.Get();
             return Ok(DataSourceLoader.Load(data, loadOptions));
         }
-
     }
 }

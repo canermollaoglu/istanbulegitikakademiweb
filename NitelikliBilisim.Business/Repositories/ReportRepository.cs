@@ -199,5 +199,36 @@ namespace NitelikliBilisim.Business.Repositories
             }
             return model;
         }
+        public List<GroupFollowUpReportVm> GetGroupFollowUpReportData()
+        {
+            var reportData = new List<GroupFollowUpReportVm>();
+            //1 ay içerisinde eğitime başlamış veya 1 ay sonrasına kadar başlayacak olan gruplar
+            var groups = _context.EducationGroups
+                .Include(x=>x.Education)
+                .Where(x => x.StartDate.Date <= DateTime.Now.Date.AddMonths(1)&& x.StartDate.Date >= DateTime.Now.Date)
+                .OrderBy(x=>x.StartDate)
+                .ToList();
+
+            foreach (var group in groups)
+            {
+                var endDate = group.StartDate.AddDays(group.Education.Days-1);
+                if (group.StartDate<=DateTime.Now.Date && !reportData.Any(x=>x.EducationId == group.EducationId))
+                {
+                    reportData.Add(new GroupFollowUpReportVm
+                    {
+                        Id = group.Id,
+                        EducationId = group.EducationId,
+                        EducationName = group.Education.Name,
+                        EducationDay = group.Education.Days,
+                        GroupName = group.GroupName,
+                        GroupStartDate = group.StartDate,
+                        GroupEndDate = endDate,
+                        IsReserve = groups.Count(x=>x.EducationId == group.EducationId)>1?true:false,
+                        LeftDay = (int)(endDate - group.StartDate).TotalDays
+                    });
+                }
+            }
+            return reportData;
+        }
     }
 }
