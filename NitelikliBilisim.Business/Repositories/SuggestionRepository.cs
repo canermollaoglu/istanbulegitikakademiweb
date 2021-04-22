@@ -198,8 +198,10 @@ namespace NitelikliBilisim.Business.Repositories
             }
             var nearestDay = week * 7;
             var educations = _context.Educations.Include(c => c.Category).Include(x => x.EducationSuggestionCriterions).Where(x => x.IsActive);
+
+
             var hostId = Guid.Parse(_configuration.GetSection("SiteGeneralOptions").GetSection("PriceLocationId").Value);
-            var activeGroups = _context.EducationGroups.Where(x => x.StartDate > DateTime.Now && x.HostId == hostId).Select(x => x.EducationId);
+            var activeGroups = _context.EducationGroups.Where(x => x.StartDate > DateTime.Now && x.HostId == hostId).Select(x => x.EducationId).ToList();
             var thisWeekEducations = new Dictionary<string, double>();
 
             var weeklySuggestedEducations = new List<WeeklySuggestedEducationsVm>();
@@ -266,7 +268,7 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 if (currentWeekEducationCount>1)
                 {
-                    while (thisWeekEducations.Count <= 2)
+                    while (thisWeekEducations.Count < 2)
                     {
                         var ed = currentWeekEducations.ElementAt(new Random().Next(0, currentWeekEducationCount));
                         if (!thisWeekEducations.ContainsKey(ed.SeoUrl))
@@ -283,12 +285,12 @@ namespace NitelikliBilisim.Business.Repositories
 
             if (lastWeekEducations.Any())
             {
-                var maxDay = lastWeekEducations.OrderByDescending(x => x.EndDay).First();
+                var maxDay = lastWeekEducations.OrderByDescending(x=>x.Point).ThenByDescending(x => x.EndDay).First();
                 thisWeekEducations.Add(maxDay.SeoUrl,maxDay.Point);
             }
             if (nextWeekEducations.Any())
             {
-                var maxDay = nextWeekEducations.OrderBy(x => x.StartDay).First();
+                var maxDay = nextWeekEducations.OrderByDescending(x=>x.Point).ThenBy(x => x.StartDay).First();
                 thisWeekEducations.Add(maxDay.SeoUrl, maxDay.Point);
             }
 
