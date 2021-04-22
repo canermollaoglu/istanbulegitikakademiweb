@@ -5,7 +5,6 @@ using NitelikliBilisim.App.Controllers.Base;
 using NitelikliBilisim.App.Filters;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.Business.UoW;
-using NitelikliBilisim.Core.ComplexTypes;
 using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Services.Abstracts;
@@ -22,7 +21,9 @@ namespace NitelikliBilisim.App.Controllers
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly IStorageService _storageService;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager; 
+            
+
         public CourseController(UserManager<ApplicationUser> userManager, UnitOfWork unitOfWork, IStorageService storageService)
         {
             _unitOfWork = unitOfWork;
@@ -67,7 +68,7 @@ namespace NitelikliBilisim.App.Controllers
 
             return View(model);
         }
-
+        
         [Route("arama-sonuclari")]
         public IActionResult SearchResults(string s, HostCity h)
         {
@@ -165,9 +166,11 @@ namespace NitelikliBilisim.App.Controllers
                 var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (userId != null)
                 {
-                    WishlistItem wishListItem = new WishlistItem();
-                    wishListItem.Id = userId;
-                    wishListItem.Id2 = educationId.Value;
+                    var wishListItem = new WishlistItem
+                    {
+                        Id = userId,
+                        Id2 = educationId.Value
+                    };
                     var retVal = _unitOfWork.WishListItem.ToggleWishListItem(wishListItem);
                     return Json(new ResponseModel
                     {
