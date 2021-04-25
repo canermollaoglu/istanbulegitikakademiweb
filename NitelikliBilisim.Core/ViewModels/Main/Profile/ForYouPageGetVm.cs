@@ -1,4 +1,5 @@
-﻿using NitelikliBilisim.Core.ViewModels.Main.AboutUs;
+﻿using NitelikliBilisim.Core.Entities;
+using NitelikliBilisim.Core.ViewModels.Main.AboutUs;
 using NitelikliBilisim.Core.ViewModels.Main.Course;
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Profile
         public string CategoryShortDescription { get; set; }
         public Guid? CategoryId { get; set; }
         public FeaturedEducationVm FeaturedEducation { get; set; }
-        public List<PopularCategoryVm> PopularCategories { get; set; }
+        public List<PopularTopic> PopularTopics { get; set; }
     }
 
     public class EducationMonth

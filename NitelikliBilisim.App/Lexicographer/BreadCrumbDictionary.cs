@@ -228,7 +228,12 @@ namespace NitelikliBilisim.App.Lexicographer
               new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Haber Bülteni Takipçileri Listesi", url: null) });
             _dictionary.Add("SubscribersCreateNewPost",
              new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Yeni Gönderi Yayınla", url: null) });
-            
+            /*Popular Topics*/
+            _dictionary.Add("AdminPopularTopics",
+         new BreadCrumbItem[] { new BreadCrumbItem(title: "Admin Panel", url: "/admin/panel"), new BreadCrumbItem(title: "Popüler Konu Başlıkları", url: null) });
+            _dictionary.Add("AdminPopularTopicAdd",
+              new BreadCrumbItem[] { new BreadCrumbItem(title: "Popüler Konu Başlıkları", url: "/admin/populartopic/index"), new BreadCrumbItem(title: "Popüler Konu Başlığı Ekle", url: null) });
+
 
         }
 

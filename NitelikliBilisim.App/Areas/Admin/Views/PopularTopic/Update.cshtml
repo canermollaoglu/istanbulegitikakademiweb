@@ -1,0 +1,186 @@
+﻿@model NitelikliBilisim.Core.Entities.PopularTopic
+@{
+    ViewData["Title"] = "Popüler Konu Başlığı Ekle";
+}
+
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+@section styles{
+    <link href="~/vendor\select2/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="~/css/lib/file-uploader.css" rel="stylesheet" />
+}
+<div class="box_general padding_bottom">
+    <div class="header_box version_2">
+        <h2><i class="fa fa-file"></i>Popüler Konu Başlığı Ekle</h2>
+    </div>
+    <form id="form-update">
+        @Html.AntiForgeryToken()
+        <input type="hidden" value="@Model.Id" id="input-id" />
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Kısa Başlık </label>
+                    <input type="text" value="@Model.ShortTitle" class="form-control" id="input-short-title">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Başlık</label>
+                    <input type="text" value="@Model.Title" class="form-control" id="input-title">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Açıklama</label>
+                    <textarea id="input-description" rows="14" class="form-control">@Model.Description</textarea>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Hedef Url</label>
+                            <input type="text" class="form-control" value="@Model.TargetUrl" id="input-target-url">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Arkaplan Görseli</label>
+                            <div class="file-upload-container" id="file-upload-container-for-banner">
+                                <img src="@Model.BackgroundUrl" class="img-after-preview" id="img-after-preview-for-banner" />
+                                <p><i class="fa fa-file"></i> Resim yüklemek için tıklayınız...</p>
+                                <input type="file" />
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>İkon</label>
+                            <div class="file-upload-container" id="file-upload-container-for-preview">
+                                <img src="@Model.IconUrl" class="img-after-preview" id="img-after-preview-for-preview" />
+                                <p><i class="fa fa-file"></i> Resim yüklemek için tıklayınız...</p>
+                                <input type="file" />
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <button id="btn-save" type="button" class="btn btn-outline-success pull-right">Kaydet</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section postScripts{
+    <script src="~/vendor\select2/dist/js/select2.min.js"></script>
+    <script src="~/js/sup/alert-sup.js"></script>
+    <script src="~/js/lib/file-uploader.js"></script>
+    <script src="~/js/lib/security-support.js"></script>
+    <script>
+        /* elements */
+        var inputId = $("#input-id");
+        var inputShortTitle = $("#input-short-title");
+        var inputTitle = $("#input-title");
+        var inputDescription = $("#input-description");
+        var inputTargetUrl = $("#input-target-url");
+        var btnSave = $("#btn-save");
+        /*ImageFields*/
+        var fileManager1 = null;
+        var fileManager2 = null;
+
+        /* assignments */
+        $(document).ready(document_onLoad);
+        btnSave.on("click", btnSave_onClick);
+        inputShortTitle.on("change", inputShort_onChange);
+        /* events */
+        function document_onLoad() {
+            fileManager1 = new UploadSupport.FileUploader();
+            fileManager2 = new UploadSupport.FileUploader();
+            fileManager1.set({
+                container: "file-upload-container-for-banner",
+                preview: "img-after-preview-for-banner",
+                validExtensions: ["jpg", "jpeg"]
+            });
+            fileManager2.set({
+                container: "file-upload-container-for-preview",
+                preview: "img-after-preview-for-preview",
+                validExtensions: ["jpg", "jpeg"]
+            });
+        }
+        function inputShort_onChange() {
+            var val = $(this).val();
+            inputTargetUrl.val("/arama-sonuclari?s=" + val);
+        }
+        function btnSave_onClick() {
+            btnSave.off("click");
+            var bgImage = fileManager1.getFile();
+            var iconImage = fileManager2.getFile();
+
+            var data = {
+                Id: inputId.val(),
+                ShortTitle: inputShortTitle.val(),
+                Title: inputTitle.val(),
+                Description: inputDescription.val(),
+                TargetUrl: inputTargetUrl.val(),
+                BackgroundImage: {
+                    Base64Content: bgImage.base64content,
+                    Extension: bgImage.extension
+                },
+                IconImage: {
+                    Base64Content: iconImage.base64content,
+                    Extension: iconImage.extension
+                }
+            };
+
+            var tokenVerfier = new SecuritySupport.TokenVerifier();
+            data = tokenVerfier.addToken("form-update", data);
+            
+            console.log(data);
+           $.ajax({
+               url: "/admin/populartopic/update",
+               method: "post",
+               data: data,
+               success: (res) => {
+                   var resultAlert = new AlertSupport.ResultAlert();
+                   if (res.isSuccess) {
+                       $("#form-update")[0].reset();
+                       resultAlert.display({
+                           success: true,
+                           message: "İşlem başarılı. Listeye dönmek için {link}",
+                           redirectElement: {
+                               content: "tıklayınız",
+                               link: "/admin/populer-konu-basliklari"
+                           }
+                       });
+                   } else {
+                       resultAlert.display({
+                           success: false,
+                           errors: res.errors,
+                           message: "Sayfayı yenilemek için {link}",
+                           redirectElement: {
+                               content: "tıklayınız",
+                               link: location.href
+                           }
+                       });
+                   }
+          
+                   btnSave.on("click", btnSave_onClick);
+               }
+           });
+        }
+
+    </script>
+}

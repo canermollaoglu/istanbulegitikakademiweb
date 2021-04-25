@@ -169,6 +169,8 @@
     </div>
 </section>
 
+@if (Model.FeaturedEducation !=null)
+{
 <section class="section section-featured">
     <img src="../../assets/img/dots-shape.svg" class="popular-technology--shape right-bottom" alt="">
     <div class="container">
@@ -216,7 +218,7 @@
         </div>
     </div>
 </section>
-
+}
 <section class="section section-for-you-popular">
     <div class="container">
         <div class="title title-section d-flex justify-content-center mb-2">
@@ -228,19 +230,19 @@
         </div>
         <div class="for-you-popular__wrp with-normal-tab">
             <div class="for-you-popular__left">
-                @foreach (var category in Model.PopularCategories)
-	{
-                <div id="@category.SeoUrl" class="for-you-popular__content main-tab__item active">
+                @foreach (var popularTopic in Model.PopularTopics)
+                {
+                <div id="@popularTopic.Id" class="for-you-popular__content main-tab__item @(Model.PopularTopics.First().Id == popularTopic.Id?"active":"")">
                     <div class="for-you-popular__img">
-                        <img src="@category.BackgroundImageUrl" alt="">
+                        <img src="@popularTopic.BackgroundUrl" alt="">
                         <div class="for-you-popular__cnt">
                             <div class="for-you-popular__title">
-                                @category.Name
+                                @popularTopic.Title
                             </div>
                             <div class="for-you-popular__txt">
-                                @category.Description
+                                @popularTopic.Description
                             </div>
-                            <a asp-controller="Course" asp-action="List" asp-route-catSeoUrl="@category.SeoUrl" class="button button--simple button-white">
+                            <a asp-controller="Course" asp-action="SearchResults" asp-route-s="@popularTopic.ShortTitle" class="button button--simple button-white">
                                 <span class="button-txt">
                                     Eğitimleri İncele
                                 </span>
@@ -260,15 +262,15 @@
             <div class="for-you-popular__right">
                 <div class="for-you-popular__list swiper-container js-foryou-scrolled-slider">
                     <div class="swiper-wrapper">
-                        @foreach (var category in Model.PopularCategories)
-	{
-                        <div class="for-you-popular__item js-main-tab-item active swiper-slide">
-                            <a href="#@category.SeoUrl">
+                        @foreach (var popularTopic in Model.PopularTopics)
+                        {
+                        <div class="for-you-popular__item js-main-tab-item @(Model.PopularTopics.First().Id == popularTopic.Id?"active":"") swiper-slide">
+                            <a href="#@popularTopic.Id">
                                 <div class="for-you-popular__item-icon">
-                                    <img src="@category.IconUrl" alt="">
+                                    <img src="@popularTopic.IconUrl" alt="">
                                 </div>
                                 <div class="for-you-popular__item-txt">
-                                    @category.Name
+                                    @popularTopic.ShortTitle
                                 </div>
                             </a>
                         </div>
@@ -582,7 +584,7 @@
         var paginationContent = $(".pagination");
         var swiper = new Swiper('.js-for-you-card-slider', {
             keyboard: true,
-            loop: true,
+            loop: false,
             pagination: {
                 el: '.swiper-pagination',
                 clickable: true,
@@ -654,7 +656,10 @@
                 .find('.for-you__week-item-num')
                 .text();
             $('.js-take-week').text(jsTakeWeek);
-            foryouSlider.slideTo((jsTakeWeek /4), 200, false);
+            var week = parseInt(jsTakeWeek, 10);
+            var selectWeekSlide = week %4 == 0 ? (week / 4) - 1 : week / 4;
+            foryouSlider.slideTo(selectWeekSlide, 200, false);
+            swiper.slideTo(0, 200, false);
             loadSuggestedEducations(jsTakeWeek);
             loadEducations();
         });

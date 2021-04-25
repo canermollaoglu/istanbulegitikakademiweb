@@ -39,8 +39,6 @@ namespace NitelikliBilisim.App.Controllers
         private readonly IStorageService _storageService;
         private readonly IConfiguration _configuration;
         private readonly IMemoryCache _memoryCache;
-
-
         private readonly IMessageService _messageService;
 
         public HomeController(IMemoryCache memoryCache, IMessageService messageService, IConfiguration configuration, IWebHostEnvironment hostingEnvironment, UnitOfWork unitOfWork, RoleManager<ApplicationRole> roleManager, IStorageService storageService)

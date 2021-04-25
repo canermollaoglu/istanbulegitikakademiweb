@@ -13,10 +13,10 @@ using System.Linq;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
-    public class EarningsReportController : BaseController
+    public class ReportController : BaseController
     {
         private readonly UnitOfWork _unitOfWork;
-        public EarningsReportController(UnitOfWork unitOfWork)
+        public ReportController(UnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
@@ -418,5 +418,32 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
 
 
         }
+
+        [Route("raporlar/grup-takip-raporu")]
+        public IActionResult GroupFollowUpReport()
+        {
+            return View();
+        }
+
+
+        public IActionResult NonGroupEducations()
+        {
+            var educations = _unitOfWork.Education.GetNonGroupEducations();
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = educations
+            });
+        }
+        public IActionResult GetGroupFollowUpReportData() {
+
+            var data = _unitOfWork.Report.GetGroupFollowUpReportData();
+            return Json(new ResponseModel
+            {
+                isSuccess = true,
+                data = data
+            });
+        }
+
     }
 }
