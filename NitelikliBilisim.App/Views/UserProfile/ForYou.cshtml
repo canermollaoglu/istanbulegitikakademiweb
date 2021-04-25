@@ -242,7 +242,7 @@
                             <div class="for-you-popular__txt">
                                 @popularTopic.Description
                             </div>
-                            <a asp-controller="Course" asp-action="SearchResults" asp-route-s="@popularTopic.ShortTitle" class="button button--simple button-white">
+                            <a href="@popularTopic.TargetUrl" class="button button--simple button-white">
                                 <span class="button-txt">
                                     Eğitimleri İncele
                                 </span>
