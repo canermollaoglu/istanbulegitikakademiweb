@@ -5,7 +5,7 @@
 }
 
 @section styles{
-    <link href="~/assets/css/area-admin/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/vendor\summernote/dist/summernote-bs4.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
 }
 @section alerts{
@@ -46,7 +46,7 @@
                 </div>
                 <div class="col-md-8">
                     <label>Başlık</label>
-                    <textarea type="text" rows="5" class="form-control" id="input-title" placeholder="Parça başlığı">@Model.Title</textarea>
+                    <div id="summernote"></div>
                 </div>
             </div>
             <div class="row" style="margin-top:1%;margin-bottom:1%">
@@ -60,7 +60,45 @@
 
 @section postScripts{
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
-    <script src="~/assets/js/area-admin/jquery.dataTables.js"></script>
-    <script src="~/assets/js/area-admin/dataTables.bootstrap4.js"></script>
+    <script src="~/vendor\summernote/dist/summernote-bs4.js"></script>
+    <script src="~/vendor\summernote/dist/lang/summernote-tr-TR.min.js"></script>
+    <script>
+        /*Summernote Editor*/
+        $(document).ready(function () {
+
+            $('#summernote').summernote({
+                lang: 'tr-TR',
+                placeholder: 'İçerik giriniz...',
+                tabsize: 2,
+                height: 450,
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'underline', 'clear']],
+                    ['fontname', ['fontname']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['table', ['table']],
+                    ['insert', ['link', 'picture']],
+                    ['view', ['fullscreen', 'codeview', 'help']]
+                ],
+                fontNames: ['Proxima Nova'],
+                callbacks: {
+                    onPaste: function (e) {
+                        var bufferText = ((e.originalEvent || e).clipboardData || window.clipboardData).getData('Text');
+                        e.preventDefault();
+                        document.execCommand('insertText', false, bufferText);
+                    }
+                },
+                styleTags: [
+                    { title: 'Baslik', tag: 'h2', className: 'blog-detail__title', value: 'h2' },
+                    { title: 'Özet', tag: 'h1', className: 'blog-detail__blockquote', value: 'h1' },
+                    { title: 'Paragraf', tag: 'p', className: 'blog-detail__txt', value: 'p' },
+                    { title: 'Reklam', tag: 'div', className: '', value: 'div' }
+                ]
+            });
+
+            $('#summernote').summernote('code', `@Html.Raw(Model.Title)`);
+        });
+    </script>
     <script src="~/js/areas/admin/admin-education-part-update.js"></script>
 }

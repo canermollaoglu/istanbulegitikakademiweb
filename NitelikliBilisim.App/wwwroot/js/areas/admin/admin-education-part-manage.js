@@ -28,7 +28,7 @@ function btnAdd_onClick() {
     var data = {
         EducationId: _educationId,
         Order: $("#input-order").val(),
-        Title: $("#input-title").val(),
+        Title: $('#summernote').summernote('code'),
         BasePartId: selectBaseParts.options[selectBaseParts.selectedIndex].value
     };
     var tokenVerifier = new SecuritySupport.TokenVerifier();
@@ -86,7 +86,32 @@ function confirm_onClick() {
     });
 }
 
-
+/*SummerNote Editor*/
+$('#summernote').summernote({
+    lang: 'tr-TR',
+    placeholder: 'İçerik giriniz...',
+    tabsize: 2,
+    height: 300,
+    toolbar: [
+        ['style', ['style']],
+        ['font', ['bold', 'underline', 'clear']],
+        ['fontname', ['fontname']],
+        ['color', ['color']],
+        ['para', ['ul', 'ol', 'paragraph']],
+        ['table', ['table']],
+        ['insert', ['link', 'picture']],
+        ['view', ['fullscreen', 'codeview', 'help']]
+    ],
+    fontNames: ['Proxima Nova'],
+    callbacks: {
+        onPaste: function (e) {
+            var bufferText = ((e.originalEvent || e).clipboardData || window.clipboardData).getData('Text');
+            e.preventDefault();
+            document.execCommand('insertText', false, bufferText);
+        }
+    },
+   
+});
 
 /* functions */
 function getEducationParts() {

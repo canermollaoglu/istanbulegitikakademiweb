@@ -5,8 +5,8 @@
 }
 
 @section styles{
-    <link href="~/assets/css/area-admin/dataTables.bootstrap4.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="~/vendor\summernote/dist/summernote-bs4.css" rel="stylesheet" />
 }
 @section alerts{
     <partial name="partials/_Alert" />
@@ -46,7 +46,7 @@
                         </div>
                         <div class="col-md-8">
                             <label>Başlık</label>
-                            <textarea rows="5" class="form-control" id="input-title" placeholder="Parça başlığı"></textarea>
+                            <div id="summernote"></div>
                         </div>
 
                     </div>
@@ -87,7 +87,7 @@
 </div>
 @section postScripts{
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
-    <script src="~/assets/js/area-admin/jquery.dataTables.js"></script>
-    <script src="~/assets/js/area-admin/dataTables.bootstrap4.js"></script>
+    <script src="~/vendor\summernote/dist/summernote-bs4.js"></script>
+    <script src="~/vendor\summernote/dist/lang/summernote-tr-TR.min.js"></script>
     <script src="~/js/areas/admin/admin-education-part-manage.js"></script>
 }
