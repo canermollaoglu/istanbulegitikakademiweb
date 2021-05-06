@@ -242,7 +242,7 @@
                             <div class="for-you-popular__txt">
                                 @popularTopic.Description
                             </div>
-                            <a asp-controller="Course" asp-action="SearchResults" asp-route-s="@popularTopic.ShortTitle" class="button button--simple button-white">
+                            <a href="@popularTopic.TargetUrl" class="button button--simple button-white">
                                 <span class="button-txt">
                                     Eğitimleri İncele
                                 </span>
@@ -584,7 +584,7 @@
         var paginationContent = $(".pagination");
         var swiper = new Swiper('.js-for-you-card-slider', {
             keyboard: true,
-            loop: true,
+            loop: false,
             pagination: {
                 el: '.swiper-pagination',
                 clickable: true,
@@ -656,7 +656,10 @@
                 .find('.for-you__week-item-num')
                 .text();
             $('.js-take-week').text(jsTakeWeek);
-            foryouSlider.slideTo((jsTakeWeek /4), 200, false);
+            var week = parseInt(jsTakeWeek, 10);
+            var selectWeekSlide = week %4 == 0 ? (week / 4) - 1 : week / 4;
+            foryouSlider.slideTo(selectWeekSlide, 200, false);
+            swiper.slideTo(0, 200, false);
             loadSuggestedEducations(jsTakeWeek);
             loadEducations();
         });

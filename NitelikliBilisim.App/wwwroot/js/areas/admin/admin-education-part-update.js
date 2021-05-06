@@ -27,7 +27,7 @@ function btnSave_onClick() {
         BasePartId: _basepartId,
         EducationId: _educationId,
         Order: $("#input-order").val(),
-        Title: $("#input-title").val(),
+        Title: $('#summernote').summernote('code'),
         BasePartId: selectBaseParts.options[selectBaseParts.selectedIndex].value,
 
     };

@@ -4,11 +4,8 @@ using NitelikliBilisim.App.Lexicographer;
 using NitelikliBilisim.App.Models;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
-using NitelikliBilisim.Core.ComplexTypes;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
@@ -103,7 +100,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 _memCache.Set(key, _unitOfWork.BlogCategory.GetListForBlogListPage(), options);
             else if (key.Equals(CacheKeyUtility.BlogLastPosts))
                 _memCache.Set(key, _unitOfWork.BlogPost.LastBlogPosts(5), options);
-           
+
         }
 
     }

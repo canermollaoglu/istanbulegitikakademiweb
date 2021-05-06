@@ -9,6 +9,7 @@ using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.Enums.educations;
 using NitelikliBilisim.Core.MongoOptions.Entities;
 using NitelikliBilisim.Core.ViewModels;
+using NitelikliBilisim.Core.ViewModels.areas.admin.suggestion;
 using NitelikliBilisim.Core.ViewModels.Main.Profile;
 using NitelikliBilisim.Core.ViewModels.Main.Wizard;
 using NitelikliBilisim.Core.ViewModels.Suggestion;
@@ -17,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using NitelikliBilisim.Core.Enums.suggestion;
 
 namespace NitelikliBilisim.Business.Repositories
 {
@@ -196,38 +198,110 @@ namespace NitelikliBilisim.Business.Repositories
             }
             var nearestDay = week * 7;
             var educations = _context.Educations.Include(c => c.Category).Include(x => x.EducationSuggestionCriterions).Where(x => x.IsActive);
+
+
             var hostId = Guid.Parse(_configuration.GetSection("SiteGeneralOptions").GetSection("PriceLocationId").Value);
-            var activeGroups = _context.EducationGroups.Where(x => x.StartDate > DateTime.Now && x.HostId == hostId).Select(x => x.EducationId);
+            var activeGroups = _context.EducationGroups.Where(x => x.StartDate > DateTime.Now && x.HostId == hostId).Select(x => x.EducationId).ToList();
             var thisWeekEducations = new Dictionary<string, double>();
+
+            var weeklySuggestedEducations = new List<WeeklySuggestedEducationsVm>();
+
             foreach (var education in educations)
             {
-                var relatedNBUYCategories = !string.IsNullOrEmpty(education.RelatedNBUYCategories)? JsonConvert.DeserializeObject<List<Guid>>(education.RelatedNBUYCategories):new List<Guid>();
-                if (activeGroups.Contains(education.Id) && relatedNBUYCategories.Contains(education.Category.BaseCategoryId.Value) &&  education.EducationSuggestionCriterions != null && education.EducationSuggestionCriterions.Count > 0)
+                var relatedNbuyCategories = !string.IsNullOrEmpty(education.RelatedNBUYCategories) ? JsonConvert.DeserializeObject<List<Guid>>(education.RelatedNBUYCategories) : new List<Guid>();
+
+                if (activeGroups.Contains(education.Id) && relatedNbuyCategories.Contains(education.Category.BaseCategoryId.Value) && education.EducationSuggestionCriterions != null && education.EducationSuggestionCriterions.Count > 0)
                 {
                     foreach (var criterion in education.EducationSuggestionCriterions)
                     {
                         if (criterion.CriterionType == CriterionType.EducationDay)
                         {
                             if (nearestDay <= criterion.MaxValue && nearestDay >= criterion.MinValue)
-                                thisWeekEducations.Add(education.SeoUrl, education.Category.BaseCategoryId == categoryId ? 6 : 3);//İçinde bulunulan hafta en öncelikli olduğu için sıra 3 
+                            {
+                                weeklySuggestedEducations.Add(new WeeklySuggestedEducationsVm
+                                {
+                                    SeoUrl = education.SeoUrl,
+                                    IsCurrentCategory = education.Category.BaseCategoryId == categoryId,
+                                    StartDay = criterion.MinValue.Value,
+                                    EndDay = criterion.MaxValue.Value,
+                                    Point = education.Category.BaseCategoryId == categoryId?4:2,
+                                    WeekType = WeekType.CurrentWeek
+                                });
+                                //thisWeekEducations.Add(education.SeoUrl, education.Category.BaseCategoryId == categoryId ? 6 : 3);//İçinde bulunulan hafta en öncelikli olduğu için sıra 3 
+                            }
                             else if (criterion.MaxValue <= nearestDay - 7 && criterion.MinValue > nearestDay - 14)
-                                thisWeekEducations.Add(education.SeoUrl, education.Category.BaseCategoryId == categoryId ? 2 : 1);//sonraki hafta için sıra 1 
+                            {
+                                weeklySuggestedEducations.Add(new WeeklySuggestedEducationsVm
+                                {
+                                    SeoUrl = education.SeoUrl,
+                                    IsCurrentCategory = education.Category.BaseCategoryId == categoryId,
+                                    StartDay = criterion.MinValue.Value,
+                                    EndDay = criterion.MaxValue.Value,
+                                    Point = education.Category.BaseCategoryId == categoryId ? 3 : 1,
+                                    WeekType = WeekType.NextWeek
+                                });
+                            }
+                            //thisWeekEducations.Add(education.SeoUrl, education.Category.BaseCategoryId == categoryId ? 2 : 1);//sonraki hafta için sıra 1 
                             else if (criterion.MaxValue <= nearestDay + 7 && criterion.MinValue > nearestDay)
-                                thisWeekEducations.Add(education.SeoUrl, education.Category.BaseCategoryId == categoryId ? 4 : 2);//onceki hafta için sıra 2
+                            {
+                                weeklySuggestedEducations.Add(new WeeklySuggestedEducationsVm
+                                {
+                                    SeoUrl = education.SeoUrl,
+                                    IsCurrentCategory = education.Category.BaseCategoryId == categoryId,
+                                    StartDay = criterion.MinValue.Value,
+                                    EndDay = criterion.MaxValue.Value,
+                                    Point = education.Category.BaseCategoryId == categoryId ? 3 : 1,
+                                    WeekType = WeekType.LastWeek
+                                });
+                            }
+                            //thisWeekEducations.Add(education.SeoUrl, education.Category.BaseCategoryId == categoryId ? 4 : 2);//onceki hafta için sıra 2
                         }
                     }
                 }
             }
-            if (thisWeekEducations.Count > 4)
+            
+            var currentWeekEducations = weeklySuggestedEducations.Where(x => x.WeekType == WeekType.CurrentWeek).ToList();
+            var lastWeekEducations = weeklySuggestedEducations.Where(x => x.WeekType == WeekType.LastWeek).ToList();
+            var nextWeekEducations = weeklySuggestedEducations.Where(x => x.WeekType == WeekType.NextWeek).ToList();
+            var currentWeekEducationCount = currentWeekEducations.Count();
+            if (currentWeekEducationCount>0)
             {
-                thisWeekEducations = thisWeekEducations.OrderByDescending(x => x.Value).Take(4).ToDictionary(x => x.Key, x => x.Value);
+                if (currentWeekEducationCount>1)
+                {
+                    while (thisWeekEducations.Count < 2)
+                    {
+                        var ed = currentWeekEducations.ElementAt(new Random().Next(0, currentWeekEducationCount));
+                        if (!thisWeekEducations.ContainsKey(ed.SeoUrl))
+                        {
+                            thisWeekEducations.Add(ed.SeoUrl, ed.Point);
+                        }
+                    }
+                }
+                else
+                {
+                        thisWeekEducations.Add(currentWeekEducations[0].SeoUrl,currentWeekEducations[0].Point);
+                }
             }
+
+            if (lastWeekEducations.Any())
+            {
+                var maxDay = lastWeekEducations.OrderByDescending(x=>x.Point).ThenByDescending(x => x.EndDay).First();
+                thisWeekEducations.Add(maxDay.SeoUrl,maxDay.Point);
+            }
+            if (nextWeekEducations.Any())
+            {
+                var maxDay = nextWeekEducations.OrderByDescending(x=>x.Point).ThenBy(x => x.StartDay).First();
+                thisWeekEducations.Add(maxDay.SeoUrl, maxDay.Point);
+            }
+
+
+
 
 
             var retVal = (from education in _context.Educations
                           join category in _context.EducationCategories on education.CategoryId equals category.Id
-                          join eImage in _context.EducationMedias on new { Id = education.Id, MediaType = EducationMediaType.List } equals new { Id = eImage.EducationId, MediaType = eImage.MediaType }
-                          join cardImage in _context.EducationMedias on new { Id = education.Id, MediaType = EducationMediaType.Card } equals new { Id = cardImage.EducationId, MediaType = cardImage.MediaType }
+                          join eImage in _context.EducationMedias on new {  education.Id, MediaType = EducationMediaType.List } equals new { Id = eImage.EducationId, eImage.MediaType }
+                          join cardImage in _context.EducationMedias on new { education.Id, MediaType = EducationMediaType.Card } equals new { Id = cardImage.EducationId, MediaType = cardImage.MediaType }
                           where thisWeekEducations.Keys.Contains(education.SeoUrl)
                           select new EducationOfTheWeekVm
                           {

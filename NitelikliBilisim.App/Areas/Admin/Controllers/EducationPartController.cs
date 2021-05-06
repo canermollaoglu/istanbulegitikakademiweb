@@ -148,7 +148,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                     errors = new List<string> { "Silinmek istenilen parçaya ait parçalar vardır. Öncelikle alt başlıklıkları siliniz." }
                 });
 
-            var educationId = _unitOfWork.EducationPart.GetById(partId.Value).EducationId;
+            //var educationId = _unitOfWork.EducationPart.GetById(partId.Value).EducationId;
 
             _unitOfWork.EducationPart.Delete(partId.Value);
 
