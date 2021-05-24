@@ -218,3 +218,7 @@
 .checkout__purchase-item > div > span {
     color: #1f1941 !important;
 }
+
+.accordion__content p {
+    padding-left: 0px !important;
+}
