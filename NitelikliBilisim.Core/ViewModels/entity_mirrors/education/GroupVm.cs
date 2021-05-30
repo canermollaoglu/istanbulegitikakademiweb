@@ -29,5 +29,7 @@ namespace NitelikliBilisim.Core.ViewModels
         public int HostCity { get; set; }
         public decimal? NewPrice { get; set; }
         public DateTime CreatedDate { get; set; }
+        public string CategoryName { get; set; }
+        public bool IsCompleted { get; set; }
     }
 }
