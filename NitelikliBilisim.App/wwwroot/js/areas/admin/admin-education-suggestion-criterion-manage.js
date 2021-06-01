@@ -70,6 +70,31 @@ function btnUpdate_onClick() {
 }
 function btnAdd_onClick() {
     btnAdd.off("click");
+    var minVal = $("#input-minVal").val();
+    var maksVal = $('#input-maksVal').val();
+
+    if (selectSuggestionCriterionTypes.val() == "1010") {
+        if (!minVal || !maksVal) {
+            resultAlert.display({
+                success: false,
+                errors: ["Minimum ve maksimum değer alanları boş geçilemez."]
+            });
+            btnAdd.on("click", btnAdd_onClick);
+            return;
+        }
+    } else {
+        if ($("#selectEducationLlist :selected").length == 0) {
+            resultAlert.display({
+                success: false,
+                errors: ["Değer alanı boş geçilemez."]
+            });
+            btnAdd.on("click", btnAdd_onClick);
+            return;
+        }
+    }
+
+
+
     var data = {
         EducationId: _educationId,
         MinValue: $('#input-minVal').val(),
