@@ -337,6 +337,7 @@ namespace NitelikliBilisim.Business.Repositories
         {
             return (from egroup in _context.EducationGroups
                     join education in _context.Educations on egroup.EducationId equals education.Id
+                    join category in _context.EducationCategories on education.CategoryId equals category.Id
                     join host in _context.EducationHosts on egroup.HostId equals host.Id
                     select new EducationGroupListVm
                     {
@@ -345,9 +346,11 @@ namespace NitelikliBilisim.Business.Repositories
                         StartDate = egroup.StartDate,
                         NewPrice = egroup.NewPrice.HasValue ? egroup.NewPrice : 0,
                         EducationName = education.Name,
+                        CategoryName = category.Name,
                         GroupName = egroup.GroupName,
                         HostName = host.HostName,
-                        HostCity = (int)host.City
+                        HostCity = (int)host.City,
+                        IsCompleted = egroup.StartDate.Date < DateTime.Now.Date
                     });
         }
 

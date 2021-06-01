@@ -93,19 +93,27 @@
                     allowedPageSizes: [5, 10, 20],
                     showInfo: true
                 },
-                onExporting: function (e) {
+                onRowPrepared: function (e) {
+                    
+                    if (e.rowType === "data") {
+                    if (e.data.isCompleted) {  
+                        e.rowElement.css("background-color", "#FFB5C6");  
+                    }  
+                    }
+                },
+                onExporting: function(e) {
                     var workbook = new ExcelJS.Workbook();
                     var worksheet = workbook.addWorksheet('Egitim Grupları');
                     DevExpress.excelExporter.exportDataGrid({
                         worksheet: worksheet,
                         component: e.component,
-                        customizeCell: function (options) {
+                        customizeCell: function(options) {
                             var excelCell = options;
                             excelCell.font = { name: 'Arial', size: 12 };
                             excelCell.alignment = { horizontal: 'left' };
                         }
-                    }).then(function () {
-                        workbook.xlsx.writeBuffer().then(function (buffer) {
+                    }).then(function() {
+                        workbook.xlsx.writeBuffer().then(function(buffer) {
                             saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'Egitim Grupları Listesi' + parseInt(Math.random() * 1000000000) + '.xlsx');
                         });
                     });
@@ -121,7 +129,7 @@
                         dataType: 'date',
                         format: 'dd/MM/yyyy',
                         sortOrder: "desc",
-                        width: 160
+                        width: 120
                     },
                     {
                         caption: "Grup İsmi",
@@ -132,11 +140,13 @@
                         caption: "Eğitim İsmi",
                         dataField: "educationName"
                     },
-
+                    {
+                        caption: "Kategori Adı",
+                        dataField: "categoryName"
+                    },
                     {
                         caption: "Konum",
-                        dataField: "hostName",
-                        width: 200
+                        dataField: "hostName"
                     },
                     {
                         caption: "Şehir",
@@ -150,13 +160,13 @@
                             },
                             displayExpr: "value",
                             valueExpr: "key",
-                            width: 120
+                            width: 90
                         }
                     },
                     {
                         caption: "Fiyat",
                         dataField: "newPrice",
-                        customizeText: function (newPrice) {
+                        customizeText: function(newPrice) {
                             return newPrice.value + " TL";
                         },
                         width: 90
@@ -164,7 +174,7 @@
                     {
                         caption: "İşlem",
                         allowSearch: false,
-                        cellTemplate: function (container, options) {
+                        cellTemplate: function(container, options) {
                             var current = options.data;
                             var div = $('<div class="btn-group" style="display: inline-flex; width:"auto"></div>');
                             $(`<a class="btn btn-outline-primary btn-sm" href="/admin/grup-detay/${current.id}">Detay</a>`)

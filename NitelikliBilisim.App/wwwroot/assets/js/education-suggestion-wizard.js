@@ -432,6 +432,7 @@ function loadWizardSuggestedEducations() {
             },
             success: (res) => {
                 var suggestedEducations = "";
+
                 $.each(res.data, function (index, e) {
                     suggestedEducations += `<a href="/egitimler/${e.catSeoUrl}/${e.seoUrl}" class="lesson-list__item">
                     <div class="lesson-list__item-img">
@@ -462,6 +463,11 @@ function loadWizardSuggestedEducations() {
                                 </div >
                             </a >`
                 });
+
+                if (res.data.length === 0) {
+                    suggestedEducations = "Seçtiğiniz kriterlere uygun eğitim bulunmamaktadır.";
+                }
+
                 $(".wizard-loaded").html(suggestedEducations);
                 resolve();
             }
