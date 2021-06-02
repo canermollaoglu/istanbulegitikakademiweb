@@ -3,14 +3,15 @@ using Microsoft.Extensions.Caching.Memory;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using System;
+using System.Security.Claims;
 
 namespace NitelikliBilisim.App.Components
 {
-    public class PopularEducations:ViewComponent
+    public class PopularEducations : ViewComponent
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly IMemoryCache _memoryCache;
-        public PopularEducations(UnitOfWork unitOfWork,IMemoryCache memoryCache)
+        public PopularEducations(UnitOfWork unitOfWork, IMemoryCache memoryCache)
         {
             _unitOfWork = unitOfWork;
             _memoryCache = memoryCache;
@@ -18,12 +19,15 @@ namespace NitelikliBilisim.App.Components
 
         public IViewComponentResult Invoke()
         {
-            var model = _memoryCache.GetOrCreate(CacheKeyUtility.PopularEducations, entry =>
+            var userId = UserClaimsPrincipal.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
             {
-                entry.SlidingExpiration = TimeSpan.FromDays(1);
-                return _unitOfWork.Education.GetPopularEducations(5);
-            });
-            return View(model);
+                return View(_unitOfWork.Education.GetGuestUserPopularEducations(3));
+            }
+            else
+            {
+                return View(_unitOfWork.Education.GetCustomerUserPopularEducations(3, userId));
+            }
         }
     }
 }

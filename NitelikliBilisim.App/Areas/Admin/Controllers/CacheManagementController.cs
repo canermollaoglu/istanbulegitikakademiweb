@@ -79,7 +79,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 _memCache.Set(CacheKeyUtility.HomeNbuyCategories, _unitOfWork.EducationCategory.GetNBUYEducationCategories(), options);
                 _memCache.Set(CacheKeyUtility.HomeUserComments, _unitOfWork.EducationComment.GetHighlightComments(5), options);
                
-                _memCache.Set(CacheKeyUtility.PopularEducations, _unitOfWork.Education.GetPopularEducations(5), options);
                 _memCache.Set(CacheKeyUtility.HomeEducationTags, _unitOfWork.Education.GetEducationSearchTags(), options);
                 _memCache.Set(CacheKeyUtility.BlogCategories, _unitOfWork.BlogCategory.GetListForBlogListPage(), options);
                 _memCache.Set(CacheKeyUtility.BlogLastPosts, _unitOfWork.BlogPost.LastBlogPosts(5), options);
@@ -91,8 +90,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 _memCache.Set(key, _unitOfWork.EducationCategory.GetNBUYEducationCategories(), options);
             else if (key.Equals(CacheKeyUtility.HomeUserComments))
                 _memCache.Set(key, _unitOfWork.EducationComment.GetHighlightComments(5), options);
-            else if (key.Equals(CacheKeyUtility.PopularEducations))
-                _memCache.Set(key, _unitOfWork.Education.GetPopularEducations(5), options);
+           
             else if (key.Equals(CacheKeyUtility.HomeEducationTags))
                 _memCache.Set(key, _unitOfWork.Education.GetEducationSearchTags(), options);
             else if (key.Equals(CacheKeyUtility.BlogCategories))

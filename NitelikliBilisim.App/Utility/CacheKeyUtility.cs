@@ -8,7 +8,6 @@ namespace NitelikliBilisim.App.Utility
     public static class CacheKeyUtility
     {
         public static string HeaderMenu = "header-menu";
-        public static string PopularEducations = "popular-educations";
         public static string HomeNbuyCategories = "home-nbuy-categories";
         public static string HomeUserComments = "home-user-comments";
         public static string HomeEducationTags = "home-education-tags";
@@ -18,7 +17,6 @@ namespace NitelikliBilisim.App.Utility
         public static List<string> GetAllCacheKeys() {
             var list = new List<string>();
             list.Add(HeaderMenu);
-            list.Add(PopularEducations);
             list.Add(HomeNbuyCategories);
             list.Add(HomeUserComments);
             list.Add(HomeEducationTags);
