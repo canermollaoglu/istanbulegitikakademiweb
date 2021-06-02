@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NitelikliBilisim.Data;
 
 namespace NitelikliBilisim.Data.Migrations
 {
     [DbContext(typeof(NbDataContext))]
-    partial class NbDataContextModelSnapshot : ModelSnapshot
+    [Migration("20210602060625_EducationComponentItemTableCreated")]
+    partial class EducationComponentItemTableCreated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -813,8 +815,6 @@ namespace NitelikliBilisim.Data.Migrations
                         .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("EducationId");
 
                     b.ToTable("EducationComponentItems");
                 });
@@ -2902,17 +2902,6 @@ namespace NitelikliBilisim.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("BaseComment");
-
-                    b.Navigation("Education");
-                });
-
-            modelBuilder.Entity("NitelikliBilisim.Core.Entities.EducationComponentItem", b =>
-                {
-                    b.HasOne("NitelikliBilisim.Core.Entities.Education", "Education")
-                        .WithMany()
-                        .HasForeignKey("EducationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.Navigation("Education");
                 });

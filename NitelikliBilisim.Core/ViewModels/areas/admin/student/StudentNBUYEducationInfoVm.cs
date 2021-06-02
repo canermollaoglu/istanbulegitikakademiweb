@@ -10,5 +10,6 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.student
         public DateTime StartDate { get; set; }
         public string CategoryName { get; set; }
         public string EducationCenter { get; set; }
+        public bool IsCompleted { get; set; }
     }
 }

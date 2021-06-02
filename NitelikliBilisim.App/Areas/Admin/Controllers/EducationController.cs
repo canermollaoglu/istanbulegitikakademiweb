@@ -254,12 +254,10 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 SlidingExpiration = TimeSpan.FromDays(1)
             };
             _memCache.Remove(CacheKeyUtility.HeaderMenu);
-            _memCache.Remove(CacheKeyUtility.BeginnerEducations);
-            _memCache.Remove(CacheKeyUtility.PopularEducations);
             _memCache.Remove(CacheKeyUtility.HomeEducationTags);
             _memCache.Set(CacheKeyUtility.HeaderMenu, _unitOfWork.Education.GetHeaderEducationMenu(), options);
-            _memCache.Set(CacheKeyUtility.BeginnerEducations, _unitOfWork.Education.GetBeginnerEducations(5), options);
-            _memCache.Set(CacheKeyUtility.PopularEducations, _unitOfWork.Education.GetPopularEducations(5), options);
+         
+           
             _memCache.Set(CacheKeyUtility.HomeEducationTags, _unitOfWork.Education.GetEducationSearchTags(), options);
         }
     }
