@@ -5,7 +5,7 @@ using NitelikliBilisim.App.Filters;
 namespace NitelikliBilisim.App.Controllers.Base
 {
 
-    [Authorize]
+    //[Authorize]
     [TypeFilter(typeof(HandleExceptionAttribute))]
     public class BaseController : Controller
     {
