@@ -130,7 +130,7 @@
                                 <td>@Model.StudentNBUYEducationInfo.StartDate.ToShortDateString()</td>
                                 <td>@Model.StudentNBUYEducationInfo.EducationCenter</td>
                                 <td>@Model.StudentNBUYEducationInfo.CategoryName</td>
-                                <td>@Model.StudentNBUYEducationInfo.EducationDay</td>
+                                <td>@(Model.StudentNBUYEducationInfo.IsCompleted?"Tamamlandı": Model.StudentNBUYEducationInfo.EducationDay)</td>
                             </tr>
                         </tbody>
                     </table>

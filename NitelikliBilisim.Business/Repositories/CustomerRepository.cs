@@ -58,12 +58,16 @@ namespace NitelikliBilisim.Business.Repositories
             var educationDay = _context.EducationDays.Where(x => x.StudentEducationInfoId == studentNBUYEducationDetails.Id && x.Date.Date < DateTime.Now.Date);
             if (studentNBUYEducationDetails!=null)
             {
-                educationInfo= new StudentNBUYEducationInfoVm
+                var lastDay = educationDay != null && educationDay.Count() > 0
+                    ? educationDay.OrderBy(x => x.Date).LastOrDefault().Day
+                    : 0;
+                educationInfo = new StudentNBUYEducationInfoVm
                 {
                     StartDate = studentNBUYEducationDetails.StartedAt,
                     CategoryName = studentNBUYEducationDetails.Category.Name,
                     EducationCenter = EnumHelpers.GetDescription(studentNBUYEducationDetails.EducationCenter),
-                    EducationDay = educationDay!=null&&educationDay.Count()>0?educationDay.OrderBy(x => x.Date).LastOrDefault().Day:0
+                    EducationDay = educationDay!=null&&educationDay.Count()>0?educationDay.OrderBy(x => x.Date).LastOrDefault().Day:0,
+                    IsCompleted = lastDay == studentNBUYEducationDetails.Category.EducationDayCount ? true:false
                 };
             }
             #endregion

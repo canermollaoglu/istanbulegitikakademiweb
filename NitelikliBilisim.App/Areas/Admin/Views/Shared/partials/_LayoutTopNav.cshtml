@@ -161,7 +161,20 @@
                     </li>
                 </ul>
             </li>
-
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Eğitim Komponentleri">
+            <a class="nav-link nav-link-collapse" data-toggle="collapse" href="#collapseeducationcomponents" data-parent="#exampleAccordion">
+                <i class="fa fa-fw fa-id-card"></i>
+                <span class="nav-link-text">Eğitim Komponentleri</span>
+            </a>
+            <ul class="sidenav-second-level collapse" id="collapseeducationcomponents">
+                <li>
+                    <a asp-controller="EducationComponent" asp-action="Index">Listele</a>
+                </li>
+                <li>
+                    <a asp-controller="EducationComponent" asp-action="Add">Ekle</a>
+                </li>
+            </ul>
+        </li>
             <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Yorumlar">
                 <a class="nav-link nav-link-collapse" data-toggle="collapse" href="#collapseComments" data-parent="#exampleAccordion">
                     <i class="fa fa-fw fa-comments"></i>

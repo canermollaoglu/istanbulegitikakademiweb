@@ -1,0 +1,138 @@
+﻿@model NitelikliBilisim.Core.ViewModels.areas.admin.education_component.EducationComponentAddGetVm
+@{
+    ViewData["Title"] = "Komponente Eğitim Ata";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    <link href="~/vendor\select2/dist/css/select2.min.css" rel="stylesheet" />
+}
+@section alerts{
+    <partial name="partials/_Alert" />
+}
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-list"></i> Komponente Eğitim Ata
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <form id="form-add-promotion">
+                    @Html.AntiForgeryToken()
+                    <div class="row" style="margin-bottom: 1%;">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Komponent Tipi</label>
+                                <select class="form-control" id="select-component-type">
+                                    @foreach (var type in Model.ComponentTypes)
+                                    {
+                                        <option value="@type.Key">@type.Value</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Gösterim Tipi</label>
+                                <select class="form-control" id="select-suggestion-type">
+                                    @foreach (var type in Model.SuggestionTypes)
+                                    {
+                                        <option value="@type.Key">@type.Value</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Gösterim Tipi</label>
+                                <select class="form-control" id="select-education">
+                                    @foreach (var education in Model.Educations)
+                                    {
+                                        <option value="@education.Id">@education.Name - @education.Level</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Gösterim Sırası</label>
+                                <input class="form-control" type="number" value="" id="input-order" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="offset-md-10 col-md-2">
+                            <button id="btn-save" type="button" class="btn btn-outline-success pull-right">Kaydet</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section postScripts{
+    <script>
+        /* fields */
+        var selectComponentType = $("#select-component-type");
+        var selectSuggestionType = $("#select-suggestion-type");
+        var selectEducation = $("#select-education");
+        var inputOrder = $("#input-order");
+        /* elements */
+       
+        var btnSave = $("#btn-save");
+
+        /* assignments */
+        $(document).ready(document_onLoad);
+        btnSave.on("click", btnSave_onClick);
+
+        /* events */
+        function document_onLoad() {
+        }
+        
+       
+        function btnSave_onClick() {
+            btnSave.off("click");
+
+            var tokenVerifier = new SecuritySupport.TokenVerifier();
+            var data = tokenVerifier.addToken("form-add-promotion", {
+                ComponentType: selectComponentType.val(),
+                SuggestionType: selectSuggestionType.val(),
+                Order: inputOrder.val(),
+                EducationId: selectEducation.val()
+            });
+            var resultAlert = new AlertSupport.ResultAlert();
+            $.ajax({
+                url: "@Url.Action("Add","EducationComponent")",
+                method: "post",
+                data: data,
+                success: (res) => {
+                    if (res.isSuccess) {
+                        resultAlert.display({
+                            success: true,
+                            message: "Kayıt işlemi başarılı! Listeye gitmek için {link}",
+                            redirectElement: {
+                                content: "tıklayınız",
+                                link: "@Url.Action("Index","EducationComponent")"
+                            }
+                        });
+                    } else {
+                        resultAlert.display({
+                            success: false,
+                            errors: res.errors,
+                            message: "İşlem başarısız"
+                        });
+                    }
+                },
+                complete: () => { btnSave.on("click", btnSave_onClick); }
+            });
+        }
+
+        /* functions */
+
+       
+    </script>
+}
+

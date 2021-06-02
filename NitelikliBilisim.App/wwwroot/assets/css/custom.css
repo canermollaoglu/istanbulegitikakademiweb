@@ -37,6 +37,22 @@
     overflow: hidden;
 }
 
+.suggested_card_text {
+    text-rendering: optimizeLegibility !important;
+    -webkit-font-smoothing: antialiased !important;
+    color: rgba(54,60,82,0.8);
+    font-size: 16px;
+    line-height: 24px;
+    margin-bottom: 0;
+    font-weight: 400;
+    display: -webkit-box;
+    align-items: center;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    overflow: hidden;
+}
+
+
 .lesson-list__item-txt {
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;

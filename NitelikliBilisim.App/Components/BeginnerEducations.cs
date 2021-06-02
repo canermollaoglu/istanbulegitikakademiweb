@@ -3,6 +3,7 @@ using Microsoft.Extensions.Caching.Memory;
 using NitelikliBilisim.App.Utility;
 using NitelikliBilisim.Business.UoW;
 using System;
+using System.Security.Claims;
 
 namespace NitelikliBilisim.App.Components
 {
@@ -18,12 +19,15 @@ namespace NitelikliBilisim.App.Components
 
         public IViewComponentResult Invoke()
         {
-            var model = _memoryCache.GetOrCreate(CacheKeyUtility.BeginnerEducations, entry =>
+            var userId = UserClaimsPrincipal.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
             {
-                entry.SlidingExpiration = TimeSpan.FromDays(1);
-                return _unitOfWork.Education.GetBeginnerEducations(5);
-            });
-            return View(model);
+                return View(_unitOfWork.Education.GetGuestUserBeginnerEducations(3));
+            }
+            else
+            {
+                return View(_unitOfWork.Education.GetCustomerUserBeginnerEducations(3, userId));
+            }
 
         }
     }

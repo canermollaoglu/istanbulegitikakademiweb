@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using NitelikliBilisim.Business.Repositories;
 using NitelikliBilisim.Business.Repositories.BlogRepositories;
 using NitelikliBilisim.Business.Repositories.MongoDbRepositories;
+using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Data;
 
@@ -68,6 +69,7 @@ namespace NitelikliBilisim.Business.UoW
         private CampaignRepository _campaignRepository;
         private EmailTemplateRepository _emailTemplateRepository;
         private PopularTopicRepository _popularTopicRepository;
+        private EducationComponentItemRepository _educationComponentItemRepository;
         #endregion
         #region Mongo Repositories
         private BlogViewLogRepository _blogViewLogRepository;
@@ -92,6 +94,9 @@ namespace NitelikliBilisim.Business.UoW
             _context.EnsureAutoHistory();
             return _context.SaveChanges();
         }
+
+        public EducationComponentItemRepository EducationComponentItem => _educationComponentItemRepository ??=
+            new EducationComponentItemRepository(_context);
         public PopularTopicRepository PopularTopic => _popularTopicRepository ??= new PopularTopicRepository(_context);
 
         public EmailTemplateRepository EmailTemplate => _emailTemplateRepository ??= new EmailTemplateRepository(_context);
