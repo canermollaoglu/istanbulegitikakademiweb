@@ -1168,7 +1168,9 @@ namespace NitelikliBilisim.Business.Repositories
             var hostId = Guid.Parse(_configuration.GetSection("SiteGeneralOptions").GetSection("PriceLocationId").Value);
 
 
-            var educationsList = Context.EducationComponentItems.Include(x => x.Education).Where(x => x.Education.IsActive && x.SuggestionType == EducationComponentSuggestionType.Guest && x.ComponentType == EducationComponentType.BeginnerProjectEducations).OrderBy(x => x.Order).Take(count)
+            var educationsList = Context.EducationComponentItems.Include(x => x.Education).Where(x => x.Education.IsActive && 
+                    x.SuggestionType == EducationComponentSuggestionType.Guest && 
+                    x.ComponentType == EducationComponentType.BeginnerProjectEducations).OrderBy(x => x.Order).Take(count)
                  .Join(Context.EducationMedias.Where(x => x.MediaType == EducationMediaType.Card), l => l.EducationId, r => r.EducationId, (x, y) => new
                  {
                      Education = x.Education,
@@ -1225,7 +1227,7 @@ namespace NitelikliBilisim.Business.Repositories
                .Include(x => x.Education)
                .ThenInclude(x => x.Category)
                .Where(x => x.Education.IsActive &&
-                           x.Education.Level == EducationLevel.Beginner &&
+                           x.ComponentType == EducationComponentType.BeginnerProjectEducations &&
                            x.SuggestionType == EducationComponentSuggestionType.Guest)
                .OrderBy(x => x.Order)
                .Take(count)
@@ -1282,7 +1284,7 @@ namespace NitelikliBilisim.Business.Repositories
                     .Include(x => x.Education)
                     .ThenInclude(x => x.Category)
                     .Where(x => x.Education.IsActive &&
-                                x.Education.Level == EducationLevel.Beginner &&
+                                x.ComponentType == EducationComponentType.BeginnerProjectEducations &&
                                 x.SuggestionType == EducationComponentSuggestionType.Customer && x.Education.Category.BaseCategoryId == userCategoryId)
                     .OrderBy(x => x.Order)
                     .Take(count)
@@ -1340,7 +1342,9 @@ namespace NitelikliBilisim.Business.Repositories
             var hostId = Guid.Parse(_configuration.GetSection("SiteGeneralOptions").GetSection("PriceLocationId").Value);
 
 
-            var educationsList = Context.EducationComponentItems.Include(x => x.Education).Where(x => x.Education.IsActive && x.SuggestionType == EducationComponentSuggestionType.Guest && x.ComponentType == EducationComponentType.PopularProjectEducations).OrderBy(x => x.Order).Take(count)
+            var educationsList = Context.EducationComponentItems.Include(x => x.Education).Where(x => x.Education.IsActive &&
+                    x.SuggestionType == EducationComponentSuggestionType.Guest && 
+                    x.ComponentType == EducationComponentType.PopularProjectEducations).OrderBy(x => x.Order).Take(count)
                  .Join(Context.EducationMedias.Where(x => x.MediaType == EducationMediaType.Card), l => l.EducationId, r => r.EducationId, (x, y) => new
                  {
                      Education = x.Education,
@@ -1440,8 +1444,8 @@ namespace NitelikliBilisim.Business.Repositories
                .Include(x => x.Education)
                .ThenInclude(x => x.Category)
                .Where(x => x.Education.IsActive &&
-                           x.Education.Level == EducationLevel.Beginner &&
-                           x.SuggestionType == EducationComponentSuggestionType.Guest && x.ComponentType == EducationComponentType.PopularProjectEducations)
+                           x.SuggestionType == EducationComponentSuggestionType.Guest && 
+                           x.ComponentType == EducationComponentType.PopularProjectEducations)
                .OrderBy(x => x.Order)
                .Take(count)
                 .Join(Context.EducationMedias.Where(x => x.MediaType == EducationMediaType.Card), l => l.EducationId, r => r.EducationId, (x, y) => new
@@ -1495,8 +1499,8 @@ namespace NitelikliBilisim.Business.Repositories
                     .Include(x => x.Education)
                     .ThenInclude(x => x.Category)
                     .Where(x => x.Education.IsActive &&
-                                x.Education.Level == EducationLevel.Beginner &&
-                                x.SuggestionType == EducationComponentSuggestionType.Customer && x.Education.Category.BaseCategoryId == userCategoryId && x.ComponentType == EducationComponentType.PopularProjectEducations)
+                                x.SuggestionType == EducationComponentSuggestionType.Customer && x.Education.Category.BaseCategoryId == userCategoryId && 
+                                x.ComponentType == EducationComponentType.PopularProjectEducations)
                     .OrderBy(x => x.Order)
                     .Take(count)
                      .Join(Context.EducationMedias.Where(x => x.MediaType == EducationMediaType.Card), l => l.EducationId, r => r.EducationId, (x, y) => new
