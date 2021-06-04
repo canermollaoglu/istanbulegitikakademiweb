@@ -503,6 +503,24 @@ $(function () {
         $('.js-open-education-outer').removeClass('active');
         $('.header__education--subin').removeClass('active');
         $('.js-educationMenu').removeClass('active');
+        $('.header__education--outer2').removeClass('active');
+    });
+    $('.header__education-sub--cnt-wrp span a').mouseover(function () {
+        // mouseover olcak
+        $('.js-open-submenu2').addClass('active');
+        $('.header__education--outer2').addClass('active');
+        $('.header__education--subin2').removeClass('active');
+        $(this).addClass('active');
+        var takeIt = $(this).attr('href');
+        $(takeIt).addClass('active');
+        return false;
+    });
+    $('.header__education-sub--cnt-wrp').mouseleave(function () {
+        $('.js-educationMenu').removeClass('active');
+    });
+    $('.header__education--outer2').mouseleave(function () {
+        $('.header__education--outer2').removeClass('active');
+        
     });
 });
 

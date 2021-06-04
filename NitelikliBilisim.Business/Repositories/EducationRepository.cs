@@ -1414,7 +1414,8 @@ namespace NitelikliBilisim.Business.Repositories
                     subCategoryModel.Name = subCategory.Name;
                     subCategoryModel.SeoUrl = subCategory.SeoUrl;
                     subCategoryModel.Id = subCategory.Id;
-
+                    subCategoryModel.TotalEducationsCount =
+                        allEducations.Where(x => x.CategoryId == subCategory.Id).Count().ToString();
                     foreach (var education in subCategory.Educations.Where(x => x.IsActive).OrderBy(x => x.Order))
                     {
                         var educationModel = new HeaderEducation();
