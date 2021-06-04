@@ -28,6 +28,7 @@ namespace NitelikliBilisim.Core.ViewModels.Main
         public string SeoUrl { get; set; }
         public string Name { get; set; }
         public List<HeaderEducation> Educations { get; set; } = new List<HeaderEducation>();
+        public string TotalEducationsCount { get; set; }
     }
     public class HeaderEducation
     {
