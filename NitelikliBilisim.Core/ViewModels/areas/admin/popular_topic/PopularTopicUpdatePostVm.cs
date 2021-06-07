@@ -15,6 +15,9 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.popular_topic
         [Required(ErrorMessage = "Hedef URL alanı boş olamaz")]
         public string TargetUrl { get; set; }
 
+        [Required(ErrorMessage = "Bağlantılı kategori alanı boş olamaz")]
+        public Guid RelatedCategory { get; set; }
+
         public _NotRequiredPostedFile IconImage { get; set; }
         public _NotRequiredPostedFile BackgroundImage { get; set; }
     }

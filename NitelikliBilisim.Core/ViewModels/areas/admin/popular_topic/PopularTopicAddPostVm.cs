@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace NitelikliBilisim.Core.ViewModels.areas.admin.popular_topic
 {
@@ -12,7 +13,8 @@ namespace NitelikliBilisim.Core.ViewModels.areas.admin.popular_topic
         public string Description { get; set; }
         [Required(ErrorMessage = "Hedef URL alanı boş olamaz")]
         public string TargetUrl { get; set; }
-
+        [Required(ErrorMessage = "Bağlantılı kategori alanı boş olamaz")]
+        public Guid RelatedCategory { get; set; }
 
         public _PostedFile IconImage { get; set; }
         public _PostedFile BackgroundImage { get; set; }

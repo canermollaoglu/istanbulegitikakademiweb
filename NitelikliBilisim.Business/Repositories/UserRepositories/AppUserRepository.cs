@@ -468,6 +468,7 @@ namespace NitelikliBilisim.Business.Repositories
                 model.EducationMonths.Add(eMonth);
             }
             model.EducationCategory = nbuyInfo.Category.Name;
+            model.EducationCategoryId = nbuyInfo.CategoryId;
             model.EducationWeek = currentEducationWeek;
             model.LeftWeeks = totalEducationWeeks - currentEducationWeek;
             model.NbuyStartDate = nbuyInfo.StartedAt.ToString("dd MMMM yyyy");

@@ -166,7 +166,7 @@ namespace NitelikliBilisim.App.Controllers
         }
 
         [Route("sana-ozel/{catSeoUrl?}")]
-        public  IActionResult ForYouAsync(string catSeoUrl)
+        public  IActionResult ForYou(string catSeoUrl)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var model = _userUnitOfWork.User.GetForYouPageData(userId);
@@ -196,7 +196,7 @@ namespace NitelikliBilisim.App.Controllers
             model.TotalEducationCount = _unitOfWork.Education.TotalEducationCount();
             model.Educators =  _unitOfWork.Educator.PopularEducatorsAsync(5);
             model.FeaturedEducation = _unitOfWork.Education.GetFeaturedEducation(userId);
-            var popularTopics = _unitOfWork.PopularTopic.Get().ToList();
+            var popularTopics = _unitOfWork.PopularTopic.Get(x=>x.RelatedCategoryId ==model.EducationCategoryId).ToList();
             foreach (var popularTopic in popularTopics)
             {
                 popularTopic.IconUrl = _storageService.BlobUrl + popularTopic.IconUrl;
