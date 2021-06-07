@@ -1163,14 +1163,14 @@ namespace NitelikliBilisim.Business.Repositories
             return !Context.Educations.Any(x => x.Name == name);
         }
 
-        public List<EducationVm> GetGuestUserBeginnerEducations(int count)
+        public List<EducationVm> GetGuestUserBeginnerEducations()
         {
             var hostId = Guid.Parse(_configuration.GetSection("SiteGeneralOptions").GetSection("PriceLocationId").Value);
 
 
             var educationsList = Context.EducationComponentItems.Include(x => x.Education).Where(x => x.Education.IsActive && 
                     x.SuggestionType == EducationComponentSuggestionType.Guest && 
-                    x.ComponentType == EducationComponentType.BeginnerProjectEducations).OrderBy(x => x.Order).Take(count)
+                    x.ComponentType == EducationComponentType.BeginnerProjectEducations).OrderBy(x => x.Order)
                  .Join(Context.EducationMedias.Where(x => x.MediaType == EducationMediaType.Card), l => l.EducationId, r => r.EducationId, (x, y) => new
                  {
                      Education = x.Education,
@@ -1217,7 +1217,7 @@ namespace NitelikliBilisim.Business.Repositories
 
             return retVal;
         }
-        public List<EducationVm> GetCustomerUserBeginnerEducations(int count, string userId)
+        public List<EducationVm> GetCustomerUserBeginnerEducations(string userId)
         {
             var hostId = Guid.Parse(_configuration.GetSection("SiteGeneralOptions").GetSection("PriceLocationId").Value);
             var userNBUYCategory = Context.StudentEducationInfos.FirstOrDefault(x => x.CustomerId == userId);
@@ -1230,7 +1230,6 @@ namespace NitelikliBilisim.Business.Repositories
                            x.ComponentType == EducationComponentType.BeginnerProjectEducations &&
                            x.SuggestionType == EducationComponentSuggestionType.Guest)
                .OrderBy(x => x.Order)
-               .Take(count)
                 .Join(Context.EducationMedias.Where(x => x.MediaType == EducationMediaType.Card), l => l.EducationId, r => r.EducationId, (x, y) => new
                 {
                     Education = x.Education,
@@ -1287,7 +1286,6 @@ namespace NitelikliBilisim.Business.Repositories
                                 x.ComponentType == EducationComponentType.BeginnerProjectEducations &&
                                 x.SuggestionType == EducationComponentSuggestionType.Customer && x.Education.Category.BaseCategoryId == userCategoryId)
                     .OrderBy(x => x.Order)
-                    .Take(count)
                      .Join(Context.EducationMedias.Where(x => x.MediaType == EducationMediaType.Card), l => l.EducationId, r => r.EducationId, (x, y) => new
                      {
                          Education = x.Education,
@@ -1336,7 +1334,7 @@ namespace NitelikliBilisim.Business.Repositories
             }
             
         }
-        public List<EducationVm> GetGuestUserPopularEducations(int count)
+        public List<EducationVm> GetGuestUserPopularEducations()
         {
 
             var hostId = Guid.Parse(_configuration.GetSection("SiteGeneralOptions").GetSection("PriceLocationId").Value);
@@ -1344,7 +1342,7 @@ namespace NitelikliBilisim.Business.Repositories
 
             var educationsList = Context.EducationComponentItems.Include(x => x.Education).Where(x => x.Education.IsActive &&
                     x.SuggestionType == EducationComponentSuggestionType.Guest && 
-                    x.ComponentType == EducationComponentType.PopularProjectEducations).OrderBy(x => x.Order).Take(count)
+                    x.ComponentType == EducationComponentType.PopularProjectEducations).OrderBy(x => x.Order)
                  .Join(Context.EducationMedias.Where(x => x.MediaType == EducationMediaType.Card), l => l.EducationId, r => r.EducationId, (x, y) => new
                  {
                      Education = x.Education,
@@ -1434,7 +1432,7 @@ namespace NitelikliBilisim.Business.Repositories
         }
 
 
-        public List<EducationVm> GetCustomerUserPopularEducations(int count, string userId)
+        public List<EducationVm> GetCustomerUserPopularEducations(string userId)
         {
             var hostId = Guid.Parse(_configuration.GetSection("SiteGeneralOptions").GetSection("PriceLocationId").Value);
             var userNBUYCategory = Context.StudentEducationInfos.FirstOrDefault(x => x.CustomerId == userId);
@@ -1447,7 +1445,6 @@ namespace NitelikliBilisim.Business.Repositories
                            x.SuggestionType == EducationComponentSuggestionType.Guest && 
                            x.ComponentType == EducationComponentType.PopularProjectEducations)
                .OrderBy(x => x.Order)
-               .Take(count)
                 .Join(Context.EducationMedias.Where(x => x.MediaType == EducationMediaType.Card), l => l.EducationId, r => r.EducationId, (x, y) => new
                 {
                     Education = x.Education,
@@ -1502,7 +1499,6 @@ namespace NitelikliBilisim.Business.Repositories
                                 x.SuggestionType == EducationComponentSuggestionType.Customer && x.Education.Category.BaseCategoryId == userCategoryId && 
                                 x.ComponentType == EducationComponentType.PopularProjectEducations)
                     .OrderBy(x => x.Order)
-                    .Take(count)
                      .Join(Context.EducationMedias.Where(x => x.MediaType == EducationMediaType.Card), l => l.EducationId, r => r.EducationId, (x, y) => new
                      {
                          Education = x.Education,
