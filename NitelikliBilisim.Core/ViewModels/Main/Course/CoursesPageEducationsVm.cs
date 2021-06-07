@@ -23,5 +23,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.Course
         public string Price { get; set; }
         public Guid CategoryId2 { get; set; }
         public byte Order { get; set; }
+        public string LevelString { get; set; }
     }
 }

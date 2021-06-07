@@ -416,6 +416,7 @@ namespace NitelikliBilisim.Business.Repositories
             var filteredEducations = rawData.OrderBy(x => x.Order).ToList();
             foreach (var education in filteredEducations)
             {
+                education.LevelString = EnumHelpers.GetDescription(education.Level);
                 education.Price = Context.EducationGroups.Where(x => x.StartDate > DateTime.Now).OrderBy(x => x.CreatedDate).FirstOrDefault(y => y.HostId == hostId && y.EducationId == education.Id).NewPrice.GetValueOrDefault().ToString(CultureInfo.CreateSpecificCulture("tr-TR"));
             }
             model.Educations = filteredEducations;
