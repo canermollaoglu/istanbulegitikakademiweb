@@ -11,7 +11,10 @@ using NitelikliBilisim.Core.Services.Abstracts;
 using NitelikliBilisim.Core.ViewModels.areas.admin.popular_topic;
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using NitelikliBilisim.Core.Enums;
 
 namespace NitelikliBilisim.App.Areas.Admin.Controllers
 {
@@ -37,6 +40,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         public IActionResult Add()
         {
             ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminPopularTopicAdd");
+            ViewData["Categories"] = _unitOfWork.EducationCategory.Get(x=>!x.BaseCategoryId.HasValue && x.CategoryType== CategoryType.NBUY).ToDictionary(x=>x.Id,x=>x.Name);
             return View();
         }
 
@@ -46,6 +50,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             var detail = _unitOfWork.PopularTopic.GetById(id);
             detail.IconUrl = _storage.BlobUrl + detail.IconUrl;
             detail.BackgroundUrl = _storage.BlobUrl + detail.BackgroundUrl;
+            ViewData["Categories"] = _unitOfWork.EducationCategory.Get(x => !x.BaseCategoryId.HasValue && x.CategoryType == CategoryType.NBUY).ToDictionary(x => x.Id, x => x.Name);
             return View(detail);
         }
 
@@ -68,6 +73,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             entity.Title = data.Title;
             entity.TargetUrl = data.TargetUrl;
             entity.Description = data.Description;
+            entity.RelatedCategoryId = data.RelatedCategory;
 
             if (!string.IsNullOrEmpty(data.BackgroundImage.Base64Content))
             {
@@ -120,7 +126,8 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
                 TargetUrl = data.TargetUrl,
                 Description = data.Description,
                 IconUrl = iconUrl,
-                BackgroundUrl = bgUrl
+                BackgroundUrl = bgUrl,
+                RelatedCategoryId = data.RelatedCategory
             };
             _unitOfWork.PopularTopic.Insert(newPopularTopic);
             return Json(new ResponseModel

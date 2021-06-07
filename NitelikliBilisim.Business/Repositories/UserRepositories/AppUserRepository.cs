@@ -468,6 +468,7 @@ namespace NitelikliBilisim.Business.Repositories
                 model.EducationMonths.Add(eMonth);
             }
             model.EducationCategory = nbuyInfo.Category.Name;
+            model.EducationCategoryId = nbuyInfo.CategoryId;
             model.EducationWeek = currentEducationWeek;
             model.LeftWeeks = totalEducationWeeks - currentEducationWeek;
             model.NbuyStartDate = nbuyInfo.StartedAt.ToString("dd MMMM yyyy");
@@ -1019,6 +1020,19 @@ namespace NitelikliBilisim.Business.Repositories
 
         //    return model;
         //}
+        public HeaderLoggedInUserDropDownVm GetHeaderLoggedInUserDropDownInfo(string userId)
+        {
+            var data = _context.Users.First(x => x.Id == userId);
+            var customer = _context.Customers.FirstOrDefault(x => x.Id == userId);
+            var studentEducationInfo = _context.StudentEducationInfos.Include(x=>x.Category).FirstOrDefault(x => x.CustomerId == userId);
+            var retVal = new HeaderLoggedInUserDropDownVm()
+            {
+                Name = data.Name,
+                Surname = data.Surname,
+                EducationInfo = studentEducationInfo != null ? studentEducationInfo.Category.Name : ""
+            };
+            return retVal;
+        }
     }
 
 

@@ -18,5 +18,9 @@ namespace NitelikliBilisim.Core.Entities
         public string IconUrl { get; set; }
         public string BackgroundUrl { get; set; }
         public string TargetUrl { get; set; }
+        public Guid RelatedCategoryId { get; set; }
+
+        [ForeignKey("RelatedCategoryId")]
+        public virtual EducationCategory RelatedCategory { get; set; }
     }
 }

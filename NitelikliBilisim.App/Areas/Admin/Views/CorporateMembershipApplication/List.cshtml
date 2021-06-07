@@ -98,13 +98,12 @@
                         dataField: "createdDate",
                         dataType: 'date',
                         format: 'dd/MM/yyyy',
-                        width: 160,
+                        width: 120,
                         sortOrder: "desc"
                     },
                     {
                         caption: "Şirket",
-                        dataField: "companyName",
-                        width: 260
+                        dataField: "companyName"
 
                     },
                     {
@@ -116,7 +115,10 @@
                         caption: "İlgili Ad Soyad",
                         dataField: "nameSurname"
                     },
-
+                    {
+                        caption: "Departman",
+                        dataField: "department"
+                    },
                     {
                         caption: "Telefon",
                         dataField: "phone",
@@ -124,11 +126,10 @@
                     },
                     {
                         caption: "Çalışan Sayısı",
-                        dataField:"numberOfEmployees"
-                    },
-                    ,
+                        dataField: "numberOfEmployees"
+                    }, ,
                     {
-                        caption:"Durum",
+                        caption: "Durum",
                         cellTemplate: function (container, options) {
                             var current = options.data;
                             var div = $('<div class="btn-group" style="display: inline-flex; width:"auto"></div>');
@@ -143,26 +144,28 @@
 
                         },
                         alignment: "center",
-                        width:100
+                        width: 100
                     }
                 ],
                 masterDetail: {
                     enabled: true,
-                    template: function (container, options) {
-                        var currentEducatorApplication = options.data;
-                        var currentDiv = $("<div class='row'>")
-                            .appendTo(container);
-                        var address = `<div class="col-md-6">` + 
-                            `<div class="card border-info mb-3">`+
-                            ` <div class="card-header font-weight-bold">Adres</div>` +
-                            `<div class="card-body"><p>${currentEducatorApplication.address}</p></div></div></div>`;
-                        var note = `<div class="col-md-6">` +
-                            `<div class="card border-info mb-3">` +
-                            ` <div class="card-header font-weight-bold">Talep Notu</div>` +
-                            `<div class="card-body"><p>${currentEducatorApplication.requestNote}</p></div></div></div>`;
-                        currentDiv.append(address);
-                        currentDiv.append(note);
-                    }
+                    template:
+
+                        function (container, options) {
+                            var currentEducatorApplication = options.data;
+                            var currentDiv = $("<div class='row'>")
+                                .appendTo(container);
+                            var address = `<div class="col-md-6">` +
+                                `<div class="card border-info mb-3">` +
+                                ` <div class="card-header font-weight-bold">Adres</div>` +
+                                `<div class="card-body"><p>${currentEducatorApplication.address}</p></div></div></div>`;
+                            var note = `<div class="col-md-6">` +
+                                `<div class="card border-info mb-3">` +
+                                ` <div class="card-header font-weight-bold">Talep Notu</div>` +
+                                `<div class="card-body"><p>${currentEducatorApplication.requestNote}</p></div></div></div>`;
+                            currentDiv.append(address);
+                            currentDiv.append(note);
+                        }
                 }
             });
         }

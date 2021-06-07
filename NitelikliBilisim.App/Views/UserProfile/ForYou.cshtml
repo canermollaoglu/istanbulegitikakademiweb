@@ -582,82 +582,84 @@
         var currentOrder = $("#current-order");
         var lessonsContent = $(".lesson-list__items");
         var paginationContent = $(".pagination");
-        var swiper = new Swiper('.js-for-you-card-slider', {
-            keyboard: true,
-            loop: false,
-            pagination: {
-                el: '.swiper-pagination',
-                clickable: true,
-            },
-            navigation: {
-                nextEl: '.js-for-you-card-slider .swiper-button-next',
-                prevEl: '.js-for-you-card-slider .swiper-button-prev',
-            },
-            slidesPerView: 3,
-            spaceBetween: 30,
-            speed: 650,
-            grabCursor: false,
-            breakpoints: {
-                // when window width is >= 640px
-                1026: {
-                    slidesPerView: 3,
+        var swiper = new Swiper('.js-for-you-card-slider',
+            {
+                keyboard: true,
+                loop: false,
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
                 },
-                768: {
-                    slidesPerView: 2.3,
+                navigation: {
+                    nextEl: '.js-for-you-card-slider .swiper-button-next',
+                    prevEl: '.js-for-you-card-slider .swiper-button-prev',
                 },
-                576: {
-                    slidesPerView: 1.1,
+                slidesPerView: 3,
+                spaceBetween: 30,
+                speed: 650,
+                grabCursor: false,
+                breakpoints: {
+                    // when window width is >= 640px
+                    1026: {
+                        slidesPerView: 3,
+                    },
+                    768: {
+                        slidesPerView: 2.3,
+                    },
+                    576: {
+                        slidesPerView: 1.1,
+                    },
+                    320: {
+                        slidesPerView: 1.1,
+                        spaceBetween: 15,
+                    },
                 },
-                320: {
-                    slidesPerView: 1.1,
-                    spaceBetween: 15,
+            });
+        var foryouSlider = new Swiper('.js-for-you-slider',
+            {
+                slidesPerView: 4,
+                spaceBetween: 25,
+                // slidesPerGroup: 4,
+                // loopFillGroupWithBlank: true,
+                grabCursor: false,
+                loop: false,
+                speed: 700,
+                initialSlide: 2,
+                centeredSlides: true,
+                navigation: {
+                    nextEl: '.js-for-you-slider .swiper-button-next',
+                    prevEl: '.js-for-you-slider .swiper-button-prev',
                 },
-            },
-        });
-        var foryouSlider = new Swiper('.js-for-you-slider', {
-            slidesPerView: 4,
-            spaceBetween: 25,
-            // slidesPerGroup: 4,
-            // loopFillGroupWithBlank: true,
-            grabCursor: false,
-            loop: false,
-            speed: 700,
-            initialSlide: 2,
-            centeredSlides: true,
-            navigation: {
-                nextEl: '.js-for-you-slider .swiper-button-next',
-                prevEl: '.js-for-you-slider .swiper-button-prev',
-            },
-            breakpoints: {
-                // when window width is >= 640px
-                1366: {
-                    slidesPerView: 4,
+                breakpoints: {
+                    // when window width is >= 640px
+                    1366: {
+                        slidesPerView: 4,
+                    },
+                    1024: {
+                        slidesPerView: 3,
+                    },
+                    768: {
+                        slidesPerView: 2.5,
+                    },
+                    576: {
+                        slidesPerView: 1.2,
+                    },
+                    320: {
+                        slidesPerView: 1.2,
+                    },
                 },
-                1024: {
-                    slidesPerView: 3,
+                on: {
+                    init: function() {
+                    },
                 },
-                768: {
-                    slidesPerView: 2.5,
-                },
-                576: {
-                    slidesPerView: 1.2,
-                },
-                320: {
-                    slidesPerView: 1.2,
-                },
-            },
-            on: {
-                init: function () {
-                },
-            },
-        });
-        $(function () {
+            });
+        $(function() {
             var jsTakeWeek = $('.for-you__week-item.active')
                 .find('.for-you__week-item-num')
                 .text();
             $('.js-take-week').text(jsTakeWeek);
             var week = parseInt(jsTakeWeek, 10);
-            var selectWeekSlide = week %4 == 0 ? (week / 4) - 1 : week / 4;
+            var selectWeekSlide = week % 4 == 0 ? (week / 4) - 1 : week / 4;
             foryouSlider.slideTo(selectWeekSlide, 200, false);
             swiper.slideTo(0, 200, false);
             loadSuggestedEducations(jsTakeWeek);
@@ -672,9 +674,10 @@
                     week: week,
                 },
                 success: (res) => {
-                    $.each(res.data, function (index, e) {
-                        swiper.appendSlide([
-                            `<div class="swiper-slide">
+                    $.each(res.data,
+                        function(index, e) {
+                            swiper.appendSlide([
+                                `<div class="swiper-slide">
                     <div class="card">
                         <figure>
                             <img src="${e.cardImage}" alt="">
@@ -705,13 +708,14 @@
                             </span>
                         </div>
                     </div>
-                </div>` ]);
-                    });
+                </div>`
+                            ]);
+                        });
                 }
             });
         }
 
-        $('.for-you__week-item').click(function () {
+        $('.for-you__week-item').click(function() {
             var jsTakeWeekSelected = $(this)
                 .find('.for-you__week-item-num')
                 .text();
@@ -719,14 +723,15 @@
             swiper.removeAllSlides();
             loadSuggestedEducations(jsTakeWeekSelected);
         });
-        $(".js-index-location-select").change(function () {
+        $(".js-index-location-select").change(function() {
             currentHostCity.val($("#hostCitySelect").val());
             loadEducations();
         });
-        $(".js-level-select").change(function () {
+        $(".js-level-select").change(function() {
             currentOrder.val($("#orderType").val());
             loadEducations();
         });
+
         function loadEducations() {
             $.ajax({
                 url: `/get-courses`,
@@ -751,8 +756,9 @@
                                 </span>
                                 </div>`);
                     }
-                    $.each(res.data.educations, function (index, e) {
-                        var education = `<a href="/egitimler/${e.cSeo}/${e.seo}" class="lesson-list__item">
+                    $.each(res.data.educations,
+                        function(index, e) {
+                            var education = `<a href="/egitimler/${e.cSeo}/${e.seo}" class="lesson-list__item">
                                                 <div class="lesson-list__item-img">
                                                     <img src="${e.imagePath}" alt="">
                                                 </div>
@@ -766,6 +772,14 @@
                                                         </div>
                                                     </div>
                                                     <div class="lesson-list__item-right">
+                                                        <div class="lesson-list__item-level">
+                                                            <span class="icon-outer">
+                                                                <svg class="icon">
+                                                                    <use xlink:href="../../assets/img/icons.svg#icon-degree-gray"></use>
+                                                                </svg>
+                                                            </span>
+                                                           ${e.levelString} 
+                                                        </div>
                                                         <div class="lesson-list__item-date">
                                                             <span class="icon-outer">
                                                                 <svg class="icon">
@@ -782,8 +796,8 @@
                                                     </div>
                                                 </div>
                                             </a>`;
-                        lessonsContent.append(education);
-                    });
+                            lessonsContent.append(education);
+                        });
 
                     paginationContent.html("");
                     var prev = `<a class="pagination__item prev" onclick=changePage('${res.data.pageIndex - 1}')>
@@ -816,27 +830,32 @@
             });
         }
 
-        $('body').on('click', '.js-location-mobile .sort-mobile__item', function () {
-            var locationId = $(this).data("id");
-            var sortMobileText = $(this).text();
-            $('.js-open-location-mobile .js-select-mobile-change').text(sortMobileText);
-            currentHostCity.val(locationId);
-            loadEducations();
-        });
-        $('body').on('click', '.js-sort-mobile .sort-mobile__item', function () {
-            var orderTypeId = $(this).data("id");
-            var sortMobileText = $(this).text();
-            $('.js-open-sort-mobile .js-select-mobile-change').text(sortMobileText);
-            currentOrder.val(orderTypeId);
-            loadEducations();
-        });
+        $('body').on('click',
+            '.js-location-mobile .sort-mobile__item',
+            function() {
+                var locationId = $(this).data("id");
+                var sortMobileText = $(this).text();
+                $('.js-open-location-mobile .js-select-mobile-change').text(sortMobileText);
+                currentHostCity.val(locationId);
+                loadEducations();
+            });
+        $('body').on('click',
+            '.js-sort-mobile .sort-mobile__item',
+            function() {
+                var orderTypeId = $(this).data("id");
+                var sortMobileText = $(this).text();
+                $('.js-open-sort-mobile .js-select-mobile-change').text(sortMobileText);
+                currentOrder.val(orderTypeId);
+                loadEducations();
+            });
 
         function changePage(page) {
             currentPage.val(page);
             loadEducations();
             $('html, body').animate({
-                scrollTop: $(".lesson-list").offset().top
-            }, 1000);
+                    scrollTop: $(".lesson-list").offset().top
+                },
+                1000);
         }
 
     </script>

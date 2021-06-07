@@ -35,6 +35,23 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
+                    <label>Bağlantılı Eğitim Kategorisi</label>
+                    <select class="form-control" id="select-category">
+                        @foreach (var category in ((Dictionary<Guid, string>) ViewData["Categories"]))
+                        {
+                            @if (category.Key == Model.RelatedCategoryId)
+                            {
+                                <option value="@category.Key" selected >@category.Value</option>
+                            }
+                            else
+                            {
+                                <option value="@category.Key"  >@category.Value</option>
+                            }
+                           
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
                     <label>Açıklama</label>
                     <textarea id="input-description" rows="14" class="form-control">@Model.Description</textarea>
                 </div>
@@ -96,6 +113,7 @@
         var inputTitle = $("#input-title");
         var inputDescription = $("#input-description");
         var inputTargetUrl = $("#input-target-url");
+        var selectRelatedCategory = $("#select-category");
         var btnSave = $("#btn-save");
         /*ImageFields*/
         var fileManager1 = null;
@@ -135,6 +153,7 @@
                 Title: inputTitle.val(),
                 Description: inputDescription.val(),
                 TargetUrl: inputTargetUrl.val(),
+                RelatedCategory: selectRelatedCategory.val(),
                 BackgroundImage: {
                     Base64Content: bgImage.base64content,
                     Extension: bgImage.extension

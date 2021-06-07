@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Linq.Expressions;
 using MUsefulMethods;
 using NitelikliBilisim.Core.Enums.user_details;
 using NitelikliBilisim.Core.ViewModels.Main.Educator;
@@ -140,7 +141,24 @@ namespace NitelikliBilisim.Business.Repositories
             });
             return data.ToList();
         }
+        public  List<EducatorListVm> PopularEducatorsAsync(int count)
+        {
+            var ids =  _context.EducationGroups.GroupBy(x => x.EducatorId)
+                .Select(x=>new {Id=x.Key,Count = x.Count()});
 
+            var orderedIds = ids.OrderByDescending(x => x.Count).Take(count);
+
+            var data = _context.Educators.Include(x => x.User).Where(x=>orderedIds.Any(y=>y.Id == x.Id)).Select(x => new EducatorListVm
+            {
+                Id = x.Id,
+                Name = x.User.Name,
+                Surname = x.User.Surname,
+                Title = x.Title,
+                AvatarPath = x.User.AvatarPath,
+                OrderPoint = orderedIds.First(y=>y.Id==x.Id).Count
+            });
+            return data.OrderByDescending(x=>x.OrderPoint).ToList();
+        }
         /// <summary>
         /// Admin Tarafında kullanılıyor.
         /// </summary>

@@ -13,5 +13,6 @@ namespace NitelikliBilisim.Core.ViewModels.Main.AboutUs
         public string Surname { get; set; }
         public string Title { get; set; }
         public string AvatarPath { get; set; }
+        public int OrderPoint { get; set; } = 0;
     }
 }

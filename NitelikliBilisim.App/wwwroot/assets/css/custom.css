@@ -238,3 +238,16 @@
 .accordion__content p {
     padding-left: 0px !important;
 }
+
+.lesson-list__item-level {
+    color: rgba(54,60,82,0.6);
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+}
+    .lesson-list__item-level span {
+        position: relative;
+        top: -2px;
+        margin-right: 10px;
+    }
