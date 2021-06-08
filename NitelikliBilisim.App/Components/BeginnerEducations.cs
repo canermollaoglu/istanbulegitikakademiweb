@@ -22,11 +22,11 @@ namespace NitelikliBilisim.App.Components
             var userId = UserClaimsPrincipal.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId))
             {
-                return View(_unitOfWork.Education.GetGuestUserBeginnerEducations(3));
+                return View(_unitOfWork.Education.GetGuestUserBeginnerEducations());
             }
             else
             {
-                return View(_unitOfWork.Education.GetCustomerUserBeginnerEducations(3, userId));
+                return View(_unitOfWork.Education.GetCustomerUserBeginnerEducations( userId));
             }
 
         }

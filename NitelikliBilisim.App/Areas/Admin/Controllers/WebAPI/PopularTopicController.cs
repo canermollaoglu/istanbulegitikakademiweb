@@ -18,7 +18,7 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers.WebAPI
         public IActionResult GetList(DataSourceLoadOptions loadOptions)
         {
             loadOptions.PrimaryKey = new[] { "Id" };
-            var data = _unitOfWork.PopularTopic.Get();
+            var data = _unitOfWork.PopularTopic.GetListQueryable();
             return Ok(DataSourceLoader.Load(data, loadOptions));
         }
     }

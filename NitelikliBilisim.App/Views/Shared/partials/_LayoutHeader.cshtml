@@ -1,76 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using NitelikliBilisim.Core.Entities
-@using System.Security.Claims
-@inject SignInManager<ApplicationUser> SignInManager
-@inject UserManager<ApplicationUser> UserManager
 
 @if (User.Identity.IsAuthenticated)
 {
-    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-    var user = await UserManager.FindByIdAsync(userId);
-    <div id="userDropdown" class="user-dropdown">
-        <div class="user-dropdown__top">
-            <div class="user-dropdown__name">
-                @user.Name @user.Surname
-            </div>
-            <div class="user-dropdown__mail">
-                @user.Email
-            </div>
-        </div>
-        @if (User.IsInRole("User"))
-        {
-            <div class="user-dropdown__list">
-                <a asp-controller="UserProfile" asp-action="Profile" class="user-dropdown__item">
-                    <span class="icon-outer button-icon">
-                        <svg class="icon">
-                            <use xlink:href="../../assets/img/icons.svg#icon-home"></use>
-                        </svg>
-                    </span>
-                    Panelim
-                </a>
-                <a asp-controller="UserProfile" asp-action="MyCourses" class="user-dropdown__item">
-                    <span class="icon-outer button-icon">
-                        <svg class="icon">
-                            <use xlink:href="../../assets/img/icons.svg#icon-code-c"></use>
-                        </svg>
-                    </span>
-                    Kurslarım
-                </a>
-                <a asp-controller="UserProfile" asp-action="AccountSettings" class="user-dropdown__item">
-                    <span class="icon-outer button-icon">
-                        <svg class="icon">
-                            <use xlink:href="../../assets/img/icons.svg#icon-settings"></use>
-                        </svg>
-                    </span>
-                    Hesap Ayarları
-                </a>
-            </div>
-        }
-        @if (User.IsInRole("Admin"))
-        {
-            <div class="user-dropdown__list">
-                <a asp-controller="Home" asp-action="Index" asp-area="Admin" class="user-dropdown__item">
-                    <span class="icon-outer button-icon">
-                        <svg class="icon">
-                            <use xlink:href="../../assets/img/icons.svg#icon-home"></use>
-                        </svg>
-                    </span>
-                    Yönetim Paneli
-                </a>
-            </div>
-        }
+    @await Component.InvokeAsync("HeaderLoggedInUserDropDown")
 
-        <div class="user-dropdown__footer">
-            <a asp-controller="Account" asp-action="Logout" class="button button-fw button-icon-left">
-                <span class="icon-outer button-icon">
-                    <svg class="icon">
-                        <use xlink:href="../../assets/img/icons.svg#icon-logout"></use>
-                    </svg>
-                </span>
-                <span class="button-txt">Çıkış Yap</span>
-            </a>
-        </div>
-    </div>
 }
 
 <div id="miniBasket" class="mini-basket">

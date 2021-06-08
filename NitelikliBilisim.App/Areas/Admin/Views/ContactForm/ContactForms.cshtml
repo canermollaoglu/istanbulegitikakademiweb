@@ -112,22 +112,28 @@
 
                     },
                     {
-                        caption: "Telefon",
-                        dataField:"phone"
+                        caption: "Konu",
+                        dataField: "subject"
                     },
+                    {
+                        caption: "Telefon",
+                        dataField: "phone"
+                    }
                 ],
                 masterDetail: {
                     enabled: true,
-                    template: function (container, options) {
-                        var currentForm = options.data;
-                        var currentDiv = $("<div class='row'>")
-                            .appendTo(container);
-                        var content = `<div class="col-md-12">` +
-                            `<div class="card border-info mb-3">`+
-                            ` <div class="card-header font-weight-bold">Mesaj</div>` +
-                            `<div class="card-body"><p>${currentForm.content}</p></div></div></div>`;
-                        currentDiv.append(content);
-                    }
+                    template:
+
+                        function (container, options) {
+                            var currentForm = options.data;
+                            var currentDiv = $("<div class='row'>")
+                                .appendTo(container);
+                            var content = `<div class="col-md-12">` +
+                                `<div class="card border-info mb-3">` +
+                                ` <div class="card-header font-weight-bold">Mesaj</div>` +
+                                `<div class="card-body"><p>${currentForm.content}</p></div></div></div>`;
+                            currentDiv.append(content);
+                        }
                 }
             });
         }
