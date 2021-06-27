@@ -69,7 +69,9 @@
                                 <span>@subCategory.Name</span>
                                 @foreach (var education in subCategory.Educations)
                                 {
-                                    <li><a asp-controller="Course" asp-action="Details" asp-route-catSeoUrl="@subCategory.SeoUrl" asp-route-seoUrl="@education.SeoUrl">@education.Name</a></li>
+                                    <li>
+                                        <a asp-controller="Course" asp-action="Details" asp-route-catSeoUrl="@subCategory.SeoUrl" asp-route-seoUrl="@education.SeoUrl">@education.Name</a>
+                                    </li>
                                 }
 
                             </div>
