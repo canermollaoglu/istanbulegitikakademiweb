@@ -33,10 +33,11 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
         public IActionResult Update(GroupLessonDayUpdatePostVm data)
         {
             var lessonDay = _unitOfWork.GroupLessonDay.GetById(data.Id);
+            var groupInfo = _unitOfWork.EducationGroup.GetByIdWithEducation(lessonDay.GroupId);
             lessonDay.HasAttendanceRecord = data.HasAttendanceRecord;
             lessonDay.ClassroomId = data.ClassroomId;
             lessonDay.DateOfLesson = data.DateOfLesson;
-            lessonDay.EducatorSalary = data.EducatorSalary;
+            lessonDay.EducatorSalary = data.EducatorSalary * groupInfo.Education.HoursPerDay;
             lessonDay.EducatorId = data.EducatorId;
 
             _unitOfWork.GroupLessonDay.Update(lessonDay);

@@ -193,11 +193,13 @@ namespace NitelikliBilisim.Business.Repositories
             {
                 educationDays = _context.GroupLessonDays.Where(x => x.GroupId == groupId && x.DateOfLesson.Date >= startDate.Value.Date).ToList();
             }
+            var groupInfo = _context.EducationGroups.Include(x => x.Education).First(x => x.Id == groupId);
             foreach (var educationDay in educationDays)
             {
-                educationDay.EducatorSalary = educatorSalary ?? educationDay.EducatorSalary;
+                educationDay.EducatorSalary = educatorSalary == null ? educationDay.EducatorSalary : educationDay.EducatorSalary * groupInfo.Education.HoursPerDay;
                 educationDay.EducatorId = educatorId;
             }
+
             _context.GroupLessonDays.UpdateRange(educationDays);
             var group = _context.EducationGroups.First(x => x.Id == groupId);
             var lastEducatorId = educationDays.Last().EducatorId;
