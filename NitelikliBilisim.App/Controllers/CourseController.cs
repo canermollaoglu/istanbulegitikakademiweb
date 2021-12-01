@@ -60,11 +60,16 @@ namespace NitelikliBilisim.App.Controllers
                     model.CategoryIconUrl = "icon-search";
                 }
             }
-
-            model.Categories = _unitOfWork.EducationCategory.GetCoursesPageCategories();
+            var categories = _unitOfWork.EducationCategory.GetCoursesPageCategories();
+            model.Categories = categories;
             model.OrderTypes = EnumHelpers.ToKeyValuePair<OrderCriteria>();
             model.EducationHostCities = EnumHelpers.ToKeyValuePair<HostCity>();
-            model.TotalEducationCount = _unitOfWork.Education.TotalEducationCount();
+            var totalEducationCount = 0;
+            foreach (var cat in categories)
+            {
+                totalEducationCount += cat.EducationCount;
+            }
+            model.TotalEducationCount = totalEducationCount;
 
             return View(model);
         }

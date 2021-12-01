@@ -51,14 +51,18 @@ namespace NitelikliBilisim.Business.Repositories
             List<CoursesPageEducationCategoryVm> model = new List<CoursesPageEducationCategoryVm>();
             var baseCategories = _context.EducationCategories.Where(x => !x.BaseCategoryId.HasValue).OrderBy(x=>x.Order).ToList();
 
-            foreach (var baseCategory in baseCategories)
+                foreach (var baseCategory in baseCategories)
             {
+                var educationCount = (from education in Context.Educations
+                                      join eGroup in Context.EducationGroups on education.Id equals eGroup.EducationId
+                                      join cat in Context.EducationCategories on education.CategoryId equals cat.Id
+                                      join bCat in Context.EducationCategories on cat.BaseCategoryId equals bCat.Id
+                                      where bCat.Id == baseCategory.Id && eGroup.StartDate.Date > DateTime.Now.Date && education.IsActive && eGroup.IsGroupOpenForAssignment
+                                      select education).Count();
                 var category = new CoursesPageEducationCategoryVm();
                 category.Id = baseCategory.Id;
                 category.SeoUrl = baseCategory.SeoUrl;
-                category.Name = baseCategory.Name;
-                var educationCount = _context.Educations.Include(x => x.Category).ThenInclude(x => x.BaseCategory).Count(x => x.Category.BaseCategoryId == baseCategory.Id&& x.IsActive);
-                category.EducationCount = educationCount;
+                category.Name = baseCategory.Name;category.EducationCount = educationCount;
                 model.Add(category);
             }
             return model;
