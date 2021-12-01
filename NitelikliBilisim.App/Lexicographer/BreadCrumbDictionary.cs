@@ -234,6 +234,7 @@ namespace NitelikliBilisim.App.Lexicographer
             _dictionary.Add("AdminPopularTopicAdd",
               new BreadCrumbItem[] { new BreadCrumbItem(title: "Popüler Konu Başlıkları", url: "/admin/populartopic/index"), new BreadCrumbItem(title: "Popüler Konu Başlığı Ekle", url: null) });
 
+
         }
 
         public static BreadCrumbItem[] ReadPart(string part)
