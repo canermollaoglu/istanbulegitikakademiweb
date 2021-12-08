@@ -37,7 +37,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             return View();
         }
 
-
         [Route("admin/grup-detay/{groupId?}")]
         public IActionResult Detail(Guid groupId)
         {
@@ -45,8 +44,6 @@ namespace NitelikliBilisim.App.Areas.Admin.Controllers
             ViewData["bread_crumbs"] = BreadCrumbDictionary.ReadPart("AdminEducationGrupDetail");
             return View();
         }
-
-
 
         [Route("admin/get-calculate-sales-price-model/{groupId?}")]
         public IActionResult GetCalculateSalesPriceInformation(Guid groupId)
