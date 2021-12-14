@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace NitelikliBilisim.Core.MongoOptions
+﻿namespace NitelikliBilisim.Core.MongoOptions
 {
     public static class MongoCollectionNames
     {

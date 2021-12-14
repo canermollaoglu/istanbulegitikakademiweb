@@ -3,7 +3,6 @@ using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.ViewModels.Main.Course;
 using NitelikliBilisim.Core.ViewModels.Main.Home;
-using NitelikliBilisim.Core.ViewModels.Main.Profile;
 using NitelikliBilisim.Data;
 using System;
 using System.Collections.Generic;

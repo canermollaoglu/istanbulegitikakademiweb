@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Worker;Microsoft.NET.Sdk.Publish">
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+	  <LangVersion>9.0</LangVersion>
+	  <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>dotnet-NitelikliBilisim.RefreshSuggestedEducations-A6B6F04B-2731-47CE-BB24-BDAD9F14F0C1</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>

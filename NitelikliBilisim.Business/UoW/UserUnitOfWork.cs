@@ -2,11 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using NitelikliBilisim.Business.Repositories;
 using NitelikliBilisim.Core.Entities;
-using NitelikliBilisim.Core.ViewModels.Main.Profile;
 using NitelikliBilisim.Data;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace NitelikliBilisim.Business.UoW
 {
@@ -17,18 +13,18 @@ namespace NitelikliBilisim.Business.UoW
         private AppUserRepository _appUserRepository;
         private UserGroupRepository _userGroupRepository;
         private readonly IConfiguration _configuration;
-        public UserUnitOfWork(NbDataContext context, UserManager<ApplicationUser> userManager,IConfiguration configuration)
+        public UserUnitOfWork(NbDataContext context, UserManager<ApplicationUser> userManager, IConfiguration configuration)
         {
             _context = context;
             _userManager = userManager;
             _configuration = configuration;
         }
-        
+
         public AppUserRepository User
         {
             get
             {
-                return _appUserRepository ?? (_appUserRepository = new AppUserRepository(_context, _userManager,_configuration));
+                return _appUserRepository ?? (_appUserRepository = new AppUserRepository(_context, _userManager, _configuration));
             }
         }
         public UserGroupRepository Group
