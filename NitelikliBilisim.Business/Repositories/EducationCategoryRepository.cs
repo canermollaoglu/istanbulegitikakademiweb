@@ -86,7 +86,7 @@ namespace NitelikliBilisim.Business.Repositories
             var dictionary = new Dictionary<Guid, int>();
             var baseCategories = _context.EducationCategories.Where(x => !x.BaseCategoryId.HasValue && x.CategoryType == CategoryType.NBUY).OrderBy(x => x.Order).ToList();
 
-           
+
             foreach (var baseCategory in baseCategories)
             {
                 var educationCount = (from education in Context.Educations
@@ -144,7 +144,7 @@ namespace NitelikliBilisim.Business.Repositories
             //}
 
             //return model;
-            #region
+            #endregion
         }
 
         public IQueryable<EducationCategory> GetBaseCategoryListQueryable()
