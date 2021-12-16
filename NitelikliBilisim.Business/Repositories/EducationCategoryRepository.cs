@@ -3,7 +3,6 @@ using NitelikliBilisim.Core.Entities;
 using NitelikliBilisim.Core.Enums;
 using NitelikliBilisim.Core.ViewModels.Main.Course;
 using NitelikliBilisim.Core.ViewModels.Main.Home;
-using NitelikliBilisim.Core.ViewModels.Main.Profile;
 using NitelikliBilisim.Data;
 using System;
 using System.Collections.Generic;
@@ -42,16 +41,16 @@ namespace NitelikliBilisim.Business.Repositories
 
         public EducationCategory GetCategoryBySeoUrl(string catSeoUrl)
         {
-            var category = _context.EducationCategories.Include(x=>x.BaseCategory).FirstOrDefault(x => x.SeoUrl == catSeoUrl);
+            var category = _context.EducationCategories.Include(x => x.BaseCategory).FirstOrDefault(x => x.SeoUrl == catSeoUrl);
             return category;
         }
 
         public List<CoursesPageEducationCategoryVm> GetCoursesPageCategories()
         {
             List<CoursesPageEducationCategoryVm> model = new List<CoursesPageEducationCategoryVm>();
-            var baseCategories = _context.EducationCategories.Where(x => !x.BaseCategoryId.HasValue).OrderBy(x=>x.Order).ToList();
+            var baseCategories = _context.EducationCategories.Where(x => !x.BaseCategoryId.HasValue).OrderBy(x => x.Order).ToList();
 
-                foreach (var baseCategory in baseCategories)
+            foreach (var baseCategory in baseCategories)
             {
                 var educationCount = (from education in Context.Educations
                                       join eGroup in Context.EducationGroups on education.Id equals eGroup.EducationId
@@ -62,7 +61,7 @@ namespace NitelikliBilisim.Business.Repositories
                 var category = new CoursesPageEducationCategoryVm();
                 category.Id = baseCategory.Id;
                 category.SeoUrl = baseCategory.SeoUrl;
-                category.Name = baseCategory.Name;category.EducationCount = educationCount;
+                category.Name = baseCategory.Name; category.EducationCount = educationCount;
                 model.Add(category);
             }
             return model;
@@ -85,51 +84,72 @@ namespace NitelikliBilisim.Business.Repositories
         {
             List<HomePageCategoryVm> model = new();
             var dictionary = new Dictionary<Guid, int>();
-            var baseCategories = _context.EducationCategories.Where(x => x.BaseCategoryId == null && x.CategoryType == CategoryType.NBUY).ToList();
+            var baseCategories = _context.EducationCategories.Where(x => !x.BaseCategoryId.HasValue && x.CategoryType == CategoryType.NBUY).OrderBy(x => x.Order).ToList();
+
 
             foreach (var baseCategory in baseCategories)
             {
-                dictionary.Add(baseCategory.Id, 0);
-                var subCategories = _context.EducationCategories.Where(x => x.BaseCategoryId == baseCategory.Id).Select(x => x.Id).ToList();
-
-                var categoryEducations = _context.EducationCategories.Where(x => subCategories.Contains(x.Id))
-                    .Join(_context.Educations, r => r.Id, l => l.CategoryId, (x, y) => new
-                    {
-                        Category = x,
-                        Education = y
-                    }).Where(x=>x.Education.IsActive)
-                    .ToList()
-                    .GroupBy(x => x.Category)
-                    .Select(x => new
-                    {
-                        Name = x.Key.Name,
-                        Count = x.Count()
-                    }).ToList();
-
-                foreach (var item in categoryEducations)
-                    dictionary[baseCategory.Id] += item.Count;
+                var educationCount = (from education in Context.Educations
+                                      join eGroup in Context.EducationGroups on education.Id equals eGroup.EducationId
+                                      join cat in Context.EducationCategories on education.CategoryId equals cat.Id
+                                      join bCat in Context.EducationCategories on cat.BaseCategoryId equals bCat.Id
+                                      where bCat.Id == baseCategory.Id && eGroup.StartDate.Date > DateTime.Now.Date && education.IsActive && eGroup.IsGroupOpenForAssignment
+                                      select education).Count();
+                var category = new HomePageCategoryVm();
+                category.Id = baseCategory.Id;
+                category.SeoUrl = baseCategory.SeoUrl;
+                category.Name = baseCategory.Name;
+                category.EducationCount = educationCount;
+                category.IconColor = baseCategory.IconColor;
+                category.IconUrl = baseCategory.IconUrl;
+                model.Add(category);
             }
-
-            foreach (var baseCategory in dictionary)
-            {
-                var c = baseCategories.First(x => x.Id == baseCategory.Key);
-                model.Add(new HomePageCategoryVm
-                {
-                    Id = c.Id,
-                    Name = c.Name,
-                    IconColor = c.IconColor,
-                    IconUrl = c.IconUrl,
-                    EducationCount = baseCategory.Value,
-                    SeoUrl =c.SeoUrl
-                });
-            }
-
             return model;
+            #region old
+            //foreach (var baseCategory in baseCategories)
+            //{
+            //    dictionary.Add(baseCategory.Id, 0);
+            //    var subCategories = _context.EducationCategories.Where(x => x.BaseCategoryId == baseCategory.Id).Select(x => x.Id).ToList();
+
+            //    var categoryEducations = _context.EducationCategories.Where(x => subCategories.Contains(x.Id))
+            //        .Join(_context.Educations, r => r.Id, l => l.CategoryId, (x, y) => new
+            //        {
+            //            Category = x,
+            //            Education = y
+            //        }).Where(x=>x.Education.IsActive)
+            //        .ToList()
+            //        .GroupBy(x => x.Category)
+            //        .Select(x => new
+            //        {
+            //            Name = x.Key.Name,
+            //            Count = x.Count()
+            //        }).ToList();
+
+            //    foreach (var item in categoryEducations)
+            //        dictionary[baseCategory.Id] += item.Count;
+            //}
+
+            //foreach (var baseCategory in dictionary)
+            //{
+            //    var c = baseCategories.First(x => x.Id == baseCategory.Key);
+            //    model.Add(new HomePageCategoryVm
+            //    {
+            //        Id = c.Id,
+            //        Name = c.Name,
+            //        IconColor = c.IconColor,
+            //        IconUrl = c.IconUrl,
+            //        EducationCount = baseCategory.Value,
+            //        SeoUrl =c.SeoUrl
+            //    });
+            //}
+
+            //return model;
+            #endregion
         }
 
         public IQueryable<EducationCategory> GetBaseCategoryListQueryable()
         {
-            return Context.EducationCategories.Where(x=>x.BaseCategoryId == null);
+            return Context.EducationCategories.Where(x => x.BaseCategoryId == null);
         }
         public IQueryable<EducationCategory> GetCategoriesByBaseCategoryId(Guid baseCategoryId)
         {
@@ -137,7 +157,7 @@ namespace NitelikliBilisim.Business.Repositories
 
         }
 
-        public Dictionary<Guid,string> GetEducationCategoryDictionary()
+        public Dictionary<Guid, string> GetEducationCategoryDictionary()
         {
             var categories = _context.EducationCategories.Where(x => x.BaseCategoryId != null).ToDictionary(x => x.Id, x => x.Name);
             return categories;
